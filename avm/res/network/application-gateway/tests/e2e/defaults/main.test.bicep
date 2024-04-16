@@ -74,113 +74,63 @@ module testDeployment '../../../main.bicep' = [
       frontendIPConfigurations: [
         {
           name: 'frontendIPConfig1'
-          privateIPAddress: nestedDependencies.outputs.publicIPResourceId
+          properties: {
+            id: nestedDependencies.outputs.publicIPResourceId
+          }
         }
       ]
       frontendPorts: [
         {
           name: 'frontendPort1'
-          port: 80
+          properites: {
+            port: 80
+          }
         }
       ]
       backendAddressPools: [
         {
           name: 'backendAddressPool1'
-          backendAddresses: [
-            {
-              fqdn: 'www.contoso.com'
-            }
-          ]
         }
       ]
       httpListeners: [
         {
           name: 'httpListener1'
-          frontendIPConfigurationId: nestedDependencies.outputs.publicIPResourceId
-          frontendPortId: nestedDependencies.outputs.publicIPResourceId
-          protocol: 'Http'
+          properties: {
+            frontendIPConfigurationId: {
+              id: nestedDependencies.outputs.publicIPResourceId
+            }
+            frontendPortId: {
+              id: nestedDependencies.outputs.publicIPResourceId
+            }
+            protocol: 'Http'
+          }
         }
       ]
       requestRoutingRules: [
         {
           name: 'requestRoutingRule1'
-          ruleType: 'Basic'
-          httpListenerId: nestedDependencies.outputs.publicIPResourceId
-          backendAddressPoolId: nestedDependencies.outputs.publicIPResourceId
-          backendHttpSettingsId: nestedDependencies.outputs.publicIPResourceId
-        }
-      ]
-      probes: [
-        {
-          name: 'probe1'
-          protocol: 'Http'
-          host: 'www.contoso.com'
-          path: '/health'
+          properties: {
+            ruleType: 'Basic'
+            httpListenerId: {
+              id: nestedDependencies.outputs.publicIPResourceId
+            }
+            backendAddressPoolId: {
+              id: nestedDependencies.outputs.publicIPResourceId
+            }
+            backendHttpSettingsId: {
+              id: nestedDependencies.outputs.publicIPResourceId
+            }
+          }
         }
       ]
       backendHttpSettingsCollection: [
         {
           name: 'backendHttpSettings1'
-          port: 80
-          protocol: 'Http'
-          cookieBasedAffinity: 'Disabled'
-          requestTimeout: 20
-          probeId: nestedDependencies.outputs.publicIPResourceId
-        }
-      ]
-      urlPathMaps: [
-        {
-          name: 'urlPathMap1'
-          defaultBackendAddressPoolId: nestedDependencies.outputs.publicIPResourceId
-          defaultBackendHttpSettingsId: nestedDependencies.outputs.publicIPResourceId
-          defaultRedirectConfigurationId: nestedDependencies.outputs.publicIPResourceId
-          defaultRewriteRuleSetId: nestedDependencies.outputs.publicIPResourceId
-          defaultUrlRedirectConfigurationId: nestedDependencies.outputs.publicIPResourceId
-          defaultUrlRewriteRuleSetId: nestedDependencies.outputs.publicIPResourceId
-          pathRules: [
-            {
-              name: 'pathRule1'
-              paths: [
-                '/path1'
-              ]
-              backendAddressPoolId: nestedDependencies.outputs.publicIPResourceId
-              backendHttpSettingsId: nestedDependencies.outputs.publicIPResourceId
-              redirectConfigurationId: nestedDependencies.outputs.publicIPResourceId
-              rewriteRuleSetId: nestedDependencies.outputs.publicIPResourceId
-              urlRedirectConfigurationId: nestedDependencies.outputs.publicIPResourceId
-              urlRewriteRuleSetId: nestedDependencies.outputs.publicIPResourceId
-            }
-          ]
-        }
-      ]
-      redirectConfigurations: [
-        {
-          name: 'redirectConfiguration1'
-          redirectType: 'Permanent'
-          targetUrl: 'https://www.contoso.com'
-        }
-      ]
-      rewriteRuleSets: [
-        {
-          name: 'rewriteRuleSet1'
-          rules: [
-            {
-              name: 'rewriteRule1'
-              actionSet: [
-                {
-                  actionType: 'Redirect'
-                  redirectConfigurationId: nestedDependencies.outputs.publicIPResourceId
-                }
-              ]
-              conditions: [
-                {
-                  matchValue: 'www.contoso.com'
-                  operator: 'Equals'
-                  matchType: 'Host'
-                }
-              ]
-            }
-          ]
+          properties: {
+            port: 80
+            protocol: 'Http'
+            cookieBasedAffinity: 'Disabled'
+          }
         }
       ]
     }
