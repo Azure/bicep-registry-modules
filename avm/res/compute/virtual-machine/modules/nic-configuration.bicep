@@ -66,7 +66,7 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
   }
 ]
 
-module networkInterface 'br/public:avm/res/network/network-interface:0.2.2' = {
+module networkInterface 'br/public:avm/res/network/network-interface:0.2.4' = {
   name: '${deployment().name}-NetworkInterface'
   params: {
     name: networkInterfaceName
