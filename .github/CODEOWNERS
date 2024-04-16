@@ -10,7 +10,7 @@
 /avm/res/app/managed-environment/ @Azure/avm-res-app-managedenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app-configuration/configuration-store/ @Azure/avm-res-appconfiguration-configurationstore-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/lock/ @Azure/avm-res-authorization-lock-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/authorization/policy-assignment/ @Azure/avm-res-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/authorization/policy-assignment/ @Azure/avm-res-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/policy-definition/ @Azure/avm-res-authorization-policydefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/policy-exemption/ @Azure/avm-res-authorization-policyexemption-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/policy-set-definition/ @Azure/avm-res-authorization-policysetdefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
