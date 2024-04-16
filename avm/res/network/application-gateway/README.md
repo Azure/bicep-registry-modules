@@ -92,38 +92,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         publicIPAddressId: '<publicIPAddressId>'
       }
     ]
-    httpListeners: [
-      {
-        name: 'httpListener1'
-        properties: {
-          frontendIPConfigurationId: {
-            id: '<id>'
-          }
-          frontendPortId: {
-            id: '<id>'
-          }
-          protocol: 'Http'
-        }
-      }
-    ]
     location: '<location>'
-    requestRoutingRules: [
-      {
-        name: 'requestRoutingRule1'
-        properties: {
-          backendAddressPoolId: {
-            id: '<id>'
-          }
-          backendHttpSettingsId: {
-            id: '<id>'
-          }
-          httpListenerId: {
-            id: '<id>'
-          }
-          ruleType: 'Basic'
-        }
-      }
-    ]
     zones: [
       '1'
       '2'
@@ -202,43 +171,8 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       ]
     },
-    "httpListeners": {
-      "value": [
-        {
-          "name": "httpListener1",
-          "properties": {
-            "frontendIPConfigurationId": {
-              "id": "<id>"
-            },
-            "frontendPortId": {
-              "id": "<id>"
-            },
-            "protocol": "Http"
-          }
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
-    },
-    "requestRoutingRules": {
-      "value": [
-        {
-          "name": "requestRoutingRule1",
-          "properties": {
-            "backendAddressPoolId": {
-              "id": "<id>"
-            },
-            "backendHttpSettingsId": {
-              "id": "<id>"
-            },
-            "httpListenerId": {
-              "id": "<id>"
-            },
-            "ruleType": "Basic"
-          }
-        }
-      ]
     },
     "zones": {
       "value": [

@@ -92,37 +92,6 @@ module testDeployment '../../../main.bicep' = [
           name: 'backendAddressPool1'
         }
       ]
-      httpListeners: [
-        {
-          name: 'httpListener1'
-          properties: {
-            frontendIPConfigurationId: {
-              id: nestedDependencies.outputs.publicIPResourceId
-            }
-            frontendPortId: {
-              id: nestedDependencies.outputs.publicIPResourceId
-            }
-            protocol: 'Http'
-          }
-        }
-      ]
-      requestRoutingRules: [
-        {
-          name: 'requestRoutingRule1'
-          properties: {
-            ruleType: 'Basic'
-            httpListenerId: {
-              id: nestedDependencies.outputs.publicIPResourceId
-            }
-            backendAddressPoolId: {
-              id: nestedDependencies.outputs.publicIPResourceId
-            }
-            backendHttpSettingsId: {
-              id: nestedDependencies.outputs.publicIPResourceId
-            }
-          }
-        }
-      ]
       backendHttpSettingsCollection: [
         {
           name: 'backendHttpSettings1'
