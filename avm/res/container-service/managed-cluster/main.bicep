@@ -724,7 +724,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         enabled: enableStorageProfileBlobCSIDriver
       }
       diskCSIDriver: {
-        enabled: costAnalysisEnabled == true ? true : enableStorageProfileDiskCSIDriver
+        enabled: costAnalysisEnabled == true && skuTier != 'free' ? true : enableStorageProfileDiskCSIDriver
       }
       fileCSIDriver: {
         enabled: enableStorageProfileFileCSIDriver
