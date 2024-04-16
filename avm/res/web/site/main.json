@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "4987074273069818360"
+      "templateHash": "2844905446650571113"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1299,7 +1299,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "7905135577694473641"
+              "templateHash": "3230692325438187132"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2165,7 +2165,7 @@
               ]
             },
             "slot_appsettings": {
-              "condition": "[not(empty(parameters('appSettingsKeyValuePairs')))]",
+              "condition": "[or(or(not(empty(parameters('appSettingsKeyValuePairs'))), not(empty(parameters('storageAccountResourceId')))), not(empty(parameters('appInsightResourceId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-Slot-{1}-Config-AppSettings', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
