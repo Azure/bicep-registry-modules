@@ -112,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
             hostName: 'www.contoso.com'
             protocol: 'Http'
             frontendIPConfiguration: {
-              id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/${resourceName}/frontendIPConfigurations//frontendIPConfig1'
+              id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/${resourceName}/frontendIPConfigurations/frontendIPConfig1'
             }
           }
         }
