@@ -63,7 +63,6 @@ module testDeployment '../../../main.bicep' = [
       gatewayIPConfigurations: [
         {
           name: 'publicIPConfig1'
-          publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
           properties: {
             subnet: {
               id: nestedDependencies.outputs.defaultSubnetResourceId

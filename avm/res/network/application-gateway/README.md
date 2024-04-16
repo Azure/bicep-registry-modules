@@ -91,7 +91,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
             id: '<id>'
           }
         }
-        publicIPAddressId: '<publicIPAddressId>'
       }
     ]
     location: '<location>'
@@ -170,8 +169,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
             "subnet": {
               "id": "<id>"
             }
-          },
-          "publicIPAddressId": "<publicIPAddressId>"
+          }
         }
       ]
     },
