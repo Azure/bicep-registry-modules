@@ -120,6 +120,24 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      requestRoutingRules: [
+        {
+          name: 'requestRoutingRule1'
+          properties: {
+            ruleType: 'Basic'
+            priority: 100
+            httpListener: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/${resourceName}/httpListeners/httpListener1'
+            }
+            backendAddressPool: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/${resourceName}/backendAddressPools/backendAddressPool1'
+            }
+            backendHttpSettings: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/${resourceName}/backendHttpSettingsCollection/backendHttpSettings1'
+            }
+          }
+        }
+      ]
     }
   }
 ]

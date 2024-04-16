@@ -109,6 +109,24 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       }
     ]
     location: '<location>'
+    requestRoutingRules: [
+      {
+        name: 'requestRoutingRule1'
+        properties: {
+          backendAddressPool: {
+            id: '<id>'
+          }
+          backendHttpSettings: {
+            id: '<id>'
+          }
+          httpListener: {
+            id: '<id>'
+          }
+          priority: 100
+          ruleType: 'Basic'
+        }
+      }
+    ]
     zones: [
       '1'
       '2'
@@ -207,6 +225,26 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     },
     "location": {
       "value": "<location>"
+    },
+    "requestRoutingRules": {
+      "value": [
+        {
+          "name": "requestRoutingRule1",
+          "properties": {
+            "backendAddressPool": {
+              "id": "<id>"
+            },
+            "backendHttpSettings": {
+              "id": "<id>"
+            },
+            "httpListener": {
+              "id": "<id>"
+            },
+            "priority": 100,
+            "ruleType": "Basic"
+          }
+        }
+      ]
     },
     "zones": {
       "value": [
