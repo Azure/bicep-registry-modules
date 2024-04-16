@@ -46,6 +46,8 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+var resourceName = '${namePrefix}${serviceShort}001'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -53,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       // You parameters go here
-      name: '${namePrefix}${serviceShort}001'
+      name: resourceName
       zones: [
         '1'
         '2'
@@ -109,6 +111,9 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             hostName: 'www.contoso.com'
             protocol: 'Http'
+            frontendIPConfiguration: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/frontendIPConfigurations/${resourceName}/frontendIPConfig1'
+            }
           }
         }
       ]

@@ -48,7 +48,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
-    name: 'nagmin001'
+    name: '<name>'
     // Non-required parameters
     backendAddressPools: [
       {
@@ -97,6 +97,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       {
         name: 'httpListener1'
         properties: {
+          frontendIPConfiguration: {
+            id: '<id>'
+          }
           hostName: 'www.contoso.com'
           protocol: 'Http'
         }
@@ -126,7 +129,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nagmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "backendAddressPools": {
@@ -187,6 +190,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         {
           "name": "httpListener1",
           "properties": {
+            "frontendIPConfiguration": {
+              "id": "<id>"
+            },
             "hostName": "www.contoso.com",
             "protocol": "Http"
           }
