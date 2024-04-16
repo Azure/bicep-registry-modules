@@ -77,7 +77,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       {
         name: 'frontendPort1'
         properites: {
-          port: 80
+          port: '80'
         }
       }
     ]
@@ -184,7 +184,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         {
           "name": "frontendPort1",
           "properites": {
-            "port": 80
+            "port": "80"
           }
         }
       ]
