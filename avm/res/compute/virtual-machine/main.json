@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "5957624341289367901"
+      "templateHash": "15709422413061566108"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -1233,7 +1233,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "17324941771101207561"
+              "templateHash": "5821384997735697934"
             }
           },
           "definitions": {
@@ -1544,16 +1544,16 @@
                   "lock": {
                     "value": "[parameters('lock')]"
                   },
-                  "publicIPAddressVersion": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressVersion'), createObject('value', parameters('ipConfigurations')[copyIndex()].publicIPAddressVersion), createObject('value', 'IPv4'))]",
-                  "publicIPAllocationMethod": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAllocationMethod'), createObject('value', parameters('ipConfigurations')[copyIndex()].publicIPAllocationMethod), createObject('value', 'Static'))]",
-                  "publicIpPrefixResourceId": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPPrefixResourceId'), createObject('value', parameters('ipConfigurations')[copyIndex()].publicIPPrefixResourceId), createObject('value', ''))]",
-                  "roleAssignments": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'roleAssignments'), createObject('value', parameters('ipConfigurations')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-                  "skuName": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'skuName'), createObject('value', parameters('ipConfigurations')[copyIndex()].skuName), createObject('value', 'Standard'))]",
-                  "skuTier": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'skuTier'), createObject('value', parameters('ipConfigurations')[copyIndex()].skuTier), createObject('value', 'Regional'))]",
+                  "publicIPAddressVersion": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipconfiguration, 'publicIPAddressVersion'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipconfiguration.publicIPAddressVersion), createObject('value', 'IPv4'))]",
+                  "publicIPAllocationMethod": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipconfiguration, 'publicIPAllocationMethod'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipconfiguration.publicIPAllocationMethod), createObject('value', 'Static'))]",
+                  "publicIpPrefixResourceId": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipconfiguration, 'publicIPPrefixResourceId'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipconfiguration.publicIPPrefixResourceId), createObject('value', ''))]",
+                  "roleAssignments": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipconfiguration, 'roleAssignments'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipconfiguration.roleAssignments), createObject('value', createArray()))]",
+                  "skuName": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipconfiguration, 'skuName'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipconfiguration.skuName), createObject('value', 'Standard'))]",
+                  "skuTier": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipconfiguration, 'skuTier'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipconfiguration.skuTier), createObject('value', 'Regional'))]",
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'tags'), parameters('tags'))]"
                   },
-                  "zones": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'zones'), createObject('value', parameters('ipConfigurations')[copyIndex()].zones), createObject('value', createArray(1, 2, 3)))]",
+                  "zones": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipconfiguration, 'zones'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipconfiguration.zones), createObject('value', createArray(1, 2, 3)))]",
                   "enableTelemetry": {
                     "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                   }

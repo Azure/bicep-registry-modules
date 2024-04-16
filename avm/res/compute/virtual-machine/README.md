@@ -76,13 +76,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              1
-              2
-              3
-            ]
           }
         ]
         nicSuffix: '-nic-01'
@@ -145,14 +145,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01"
+                "publicIpNameSuffix": "-pip-01",
+                "zones": [
+                  1,
+                  2,
+                  3
+                ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                1,
-                2,
-                3
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
           "nicSuffix": "-nic-01"
@@ -228,9 +228,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
-            }
             subnetResourceId: '<subnetResourceId>'
           }
         ]
@@ -293,9 +290,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "ipConfigurations": [
             {
               "name": "ipconfig01",
-              "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01"
-              },
               "subnetResourceId": "<subnetResourceId>"
             }
           ],
@@ -418,13 +412,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   roleDefinitionIdOrName: 'Reader'
                 }
               ]
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              1
-              2
-              3
-            ]
           }
         ]
         nicSuffix: '-nic-01'
@@ -680,14 +674,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                1,
-                2,
-                3
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
           "nicSuffix": "-nic-01",
@@ -996,13 +990,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   roleDefinitionIdOrName: 'Reader'
                 }
               ]
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              1
-              2
-              3
-            ]
           }
         ]
         nicSuffix: '-nic-01'
@@ -1272,14 +1266,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                1,
-                2,
-                3
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
           "nicSuffix": "-nic-01",
@@ -2088,13 +2082,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   roleDefinitionIdOrName: 'Reader'
                 }
               ]
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              1
-              2
-              3
-            ]
           }
         ]
         roleAssignments: [
@@ -2379,14 +2373,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                1,
-                2,
-                3
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
           "roleAssignments": [

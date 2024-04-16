@@ -35,21 +35,27 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
-      publicIPAddressVersion: contains(ipConfiguration, 'publicIPAddressVersion')
-        ? ipConfiguration.publicIPAddressVersion
+      publicIPAddressVersion: contains(ipConfiguration.pipconfiguration, 'publicIPAddressVersion')
+        ? ipConfiguration.pipconfiguration.publicIPAddressVersion
         : 'IPv4'
-      publicIPAllocationMethod: contains(ipConfiguration, 'publicIPAllocationMethod')
-        ? ipConfiguration.publicIPAllocationMethod
+      publicIPAllocationMethod: contains(ipConfiguration.pipconfiguration, 'publicIPAllocationMethod')
+        ? ipConfiguration.pipconfiguration.publicIPAllocationMethod
         : 'Static'
-      publicIpPrefixResourceId: contains(ipConfiguration, 'publicIPPrefixResourceId')
-        ? ipConfiguration.publicIPPrefixResourceId
+      publicIpPrefixResourceId: contains(ipConfiguration.pipconfiguration, 'publicIPPrefixResourceId')
+        ? ipConfiguration.pipconfiguration.publicIPPrefixResourceId
         : ''
-      roleAssignments: contains(ipConfiguration, 'roleAssignments') ? ipConfiguration.roleAssignments : []
-      skuName: contains(ipConfiguration, 'skuName') ? ipConfiguration.skuName : 'Standard'
-      skuTier: contains(ipConfiguration, 'skuTier') ? ipConfiguration.skuTier : 'Regional'
+      roleAssignments: contains(ipConfiguration.pipconfiguration, 'roleAssignments')
+        ? ipConfiguration.pipconfiguration.roleAssignments
+        : []
+      skuName: contains(ipConfiguration.pipconfiguration, 'skuName')
+        ? ipConfiguration.pipconfiguration.skuName
+        : 'Standard'
+      skuTier: contains(ipConfiguration.pipconfiguration, 'skuTier')
+        ? ipConfiguration.pipconfiguration.skuTier
+        : 'Regional'
       tags: ipConfiguration.?tags ?? tags
-      zones: contains(ipConfiguration, 'zones')
-        ? ipConfiguration.zones
+      zones: contains(ipConfiguration.pipconfiguration, 'zones')
+        ? ipConfiguration.pipconfiguration.zones
         : [
             1
             2
