@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module for a VM with dedicated
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param resourceLocation string = 'eastus'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmwinnvidia'
@@ -24,7 +24,7 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be ued in the AVM testing subscription
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var tempLocation = 'eastus'
 
 // ============ //
@@ -35,7 +35,7 @@ var tempLocation = 'eastus'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: tempLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -78,7 +78,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
-        diskSizeGB: '128'
+        diskSizeGB: 128
         caching: 'ReadWrite'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
