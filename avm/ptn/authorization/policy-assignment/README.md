@@ -864,7 +864,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enforcementMode`](#parameter-enforcementmode) | string | The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce. |
 | [`identity`](#parameter-identity) | string | The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -912,7 +912,7 @@ The display name of the policy assignment. Maximum length is 128 characters.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

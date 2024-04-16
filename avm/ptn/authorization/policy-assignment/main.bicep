@@ -68,7 +68,7 @@ param overrides array = []
 @sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.')
 param resourceSelectors array = []
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
