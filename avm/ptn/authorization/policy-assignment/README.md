@@ -656,7 +656,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       }
     ]
     roleDefinitionIds: [
-      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+      '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
     ]
     subscriptionId: '<subscriptionId>'
     userAssignedIdentityId: '<userAssignedIdentityId>'
@@ -768,7 +768,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "roleDefinitionIds": {
       "value": [
-        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
       ]
     },
     "subscriptionId": {

@@ -46,11 +46,11 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-    subscriptionId: subscriptionId
     metadata: {
       assignedBy: 'Bicep'
     }
     location: resourceLocation
     resourceGroupName: resourceGroupName
+    subscriptionId: subscriptionId
   }
 }

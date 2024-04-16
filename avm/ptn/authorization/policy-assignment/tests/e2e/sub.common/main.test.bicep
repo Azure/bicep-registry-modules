@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     roleDefinitionIds: [
-      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+      '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
     ]
     overrides: [
       {
@@ -120,6 +120,6 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     subscriptionId: subscriptionId
-    userAssignedIdentityId: nestedDependencies.outputs.managedIdentityPrincipalId
+    userAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
   }
 }
