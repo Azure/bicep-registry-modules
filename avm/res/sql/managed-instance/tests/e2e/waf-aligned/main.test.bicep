@@ -106,7 +106,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: 'customSetting'
         logCategoriesAndGroups: [
           {
-            category: 'AllLogs'
+            category: 'allLogs'
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
