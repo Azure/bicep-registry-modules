@@ -28,34 +28,34 @@ param diagnosticSettings diagnosticSettingType
 param roleAssignments roleAssignmentType
 
 module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.3.2' = [
-  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipconfiguration')) {
+  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration')) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
-      name: '${virtualMachineName}${ipConfiguration.pipconfiguration.publicIpNameSuffix}'
+      name: '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
-      publicIPAddressVersion: contains(ipConfiguration.pipconfiguration, 'publicIPAddressVersion')
-        ? ipConfiguration.pipconfiguration.publicIPAddressVersion
+      publicIPAddressVersion: contains(ipConfiguration.pipConfiguration, 'publicIPAddressVersion')
+        ? ipConfiguration.pipConfiguration.publicIPAddressVersion
         : 'IPv4'
-      publicIPAllocationMethod: contains(ipConfiguration.pipconfiguration, 'publicIPAllocationMethod')
-        ? ipConfiguration.pipconfiguration.publicIPAllocationMethod
+      publicIPAllocationMethod: contains(ipConfiguration.pipConfiguration, 'publicIPAllocationMethod')
+        ? ipConfiguration.pipConfiguration.publicIPAllocationMethod
         : 'Static'
-      publicIpPrefixResourceId: contains(ipConfiguration.pipconfiguration, 'publicIPPrefixResourceId')
-        ? ipConfiguration.pipconfiguration.publicIPPrefixResourceId
+      publicIpPrefixResourceId: contains(ipConfiguration.pipConfiguration, 'publicIPPrefixResourceId')
+        ? ipConfiguration.pipConfiguration.publicIPPrefixResourceId
         : ''
-      roleAssignments: contains(ipConfiguration.pipconfiguration, 'roleAssignments')
-        ? ipConfiguration.pipconfiguration.roleAssignments
+      roleAssignments: contains(ipConfiguration.pipConfiguration, 'roleAssignments')
+        ? ipConfiguration.pipConfiguration.roleAssignments
         : []
-      skuName: contains(ipConfiguration.pipconfiguration, 'skuName')
-        ? ipConfiguration.pipconfiguration.skuName
+      skuName: contains(ipConfiguration.pipConfiguration, 'skuName')
+        ? ipConfiguration.pipConfiguration.skuName
         : 'Standard'
-      skuTier: contains(ipConfiguration.pipconfiguration, 'skuTier')
-        ? ipConfiguration.pipconfiguration.skuTier
+      skuTier: contains(ipConfiguration.pipConfiguration, 'skuTier')
+        ? ipConfiguration.pipConfiguration.skuTier
         : 'Regional'
       tags: ipConfiguration.?tags ?? tags
-      zones: contains(ipConfiguration.pipconfiguration, 'zones')
-        ? ipConfiguration.pipconfiguration.zones
+      zones: contains(ipConfiguration.pipConfiguration, 'zones')
+        ? ipConfiguration.pipConfiguration.zones
         : [
             1
             2
@@ -80,10 +80,10 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.2.2' = {
         privateIPAddress: contains(ipConfiguration, 'privateIPAddress')
           ? (!empty(ipConfiguration.privateIPAddress) ? ipConfiguration.privateIPAddress : null)
           : null
-        publicIPAddressResourceId: contains(ipConfiguration, 'pipconfiguration')
+        publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration')
           ? resourceId(
               'Microsoft.Network/publicIPAddresses',
-              '${virtualMachineName}${ipConfiguration.pipconfiguration.publicIpNameSuffix}'
+              '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
             )
           : null
         subnetResourceId: ipConfiguration.subnetResourceId
