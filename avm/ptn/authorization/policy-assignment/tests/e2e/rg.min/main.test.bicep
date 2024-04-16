@@ -51,5 +51,6 @@ module testDeployment '../../../main.bicep' = {
       assignedBy: 'Bicep'
     }
     location: resourceLocation
+    resourceGroupName: resourceGroupName
   }
 }

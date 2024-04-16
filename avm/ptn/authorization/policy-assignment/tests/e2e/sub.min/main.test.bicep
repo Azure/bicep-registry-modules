@@ -16,7 +16,7 @@ param namePrefix string = '#_namePrefix_#'
 param subscriptionId string = '#_subscriptionId_#'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 // ============== //
 // Test Execution //
@@ -33,6 +33,6 @@ module testDeployment '../../../main.bicep' = {
       version: '1.0'
       assignedBy: 'Bicep'
     }
-    location: location
+    location: resourceLocation
   }
 }

@@ -531,6 +531,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     metadata: {
       assignedBy: 'Bicep'
     }
+    resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -563,6 +564,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": {
         "assignedBy": "Bicep"
       }
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
