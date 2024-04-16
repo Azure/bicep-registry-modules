@@ -82,8 +82,8 @@ module testDeployment '../../../main.bicep' = [
       frontendPorts: [
         {
           name: 'frontendPort1'
-          properites: {
-            port: '80'
+          properties: {
+            port: 80
           }
         }
       ]
