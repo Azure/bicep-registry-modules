@@ -228,6 +228,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+            }
             subnetResourceId: '<subnetResourceId>'
           }
         ]
@@ -290,6 +293,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "ipConfigurations": [
             {
               "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01"
+              },
               "subnetResourceId": "<subnetResourceId>"
             }
           ],
