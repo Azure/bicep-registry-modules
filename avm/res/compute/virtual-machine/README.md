@@ -2686,7 +2686,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinnvidia'
+    name: 'cvmwinnv'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2743,7 +2743,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinnvidia"
+      "value": "cvmwinnv"
     },
     "nicConfigurations": {
       "value": [

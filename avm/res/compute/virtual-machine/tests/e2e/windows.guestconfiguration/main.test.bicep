@@ -51,7 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: take('${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}', 15)
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       managedIdentities: {
         systemAssigned: true

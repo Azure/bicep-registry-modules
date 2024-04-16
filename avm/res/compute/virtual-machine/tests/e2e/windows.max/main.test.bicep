@@ -74,7 +74,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: take('${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}', 15)
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
