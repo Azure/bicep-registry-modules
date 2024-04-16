@@ -27,7 +27,7 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.3.2' = [
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.4.0' = [
   for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration')) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
