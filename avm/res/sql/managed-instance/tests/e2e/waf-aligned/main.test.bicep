@@ -58,7 +58,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
@@ -104,7 +104,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticSettings: [
       {
         name: 'customSetting'
-        metricCategories: [
+        logCategoriesAndGroups: [
           {
             category: 'AllLogs'
           }

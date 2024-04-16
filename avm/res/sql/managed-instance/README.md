@@ -579,7 +579,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
+        logCategoriesAndGroups: [
           {
             category: 'AllLogs'
           }
@@ -701,7 +701,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
+          "logCategoriesAndGroups": [
             {
               "category": "AllLogs"
             }

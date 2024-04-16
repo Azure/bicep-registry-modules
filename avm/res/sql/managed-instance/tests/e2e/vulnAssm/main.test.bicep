@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     location: resourceLocation
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}${serviceShort}01'
   }
 }
 
