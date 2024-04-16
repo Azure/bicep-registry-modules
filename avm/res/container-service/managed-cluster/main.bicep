@@ -538,6 +538,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         }
       : null
     servicePrincipalProfile: aksServicePrincipalProfile
+    metricsProfile: {
+      costAnalysis: {
+        enabled: skuTier == 'free' ? false : costAnalysisEnabled
+      }
+    }
     ingressProfile: {
       webAppRouting: {
         enabled: webApplicationRoutingEnabled
