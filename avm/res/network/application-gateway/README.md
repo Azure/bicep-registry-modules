@@ -93,6 +93,15 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
+    httpListeners: [
+      {
+        name: 'httpListener1'
+        properties: {
+          hostName: 'www.contoso.com'
+          protocol: 'Http'
+        }
+      }
+    ]
     location: '<location>'
     zones: [
       '1'
@@ -169,6 +178,17 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
             "subnet": {
               "id": "<id>"
             }
+          }
+        }
+      ]
+    },
+    "httpListeners": {
+      "value": [
+        {
+          "name": "httpListener1",
+          "properties": {
+            "hostName": "www.contoso.com",
+            "protocol": "Http"
           }
         }
       ]

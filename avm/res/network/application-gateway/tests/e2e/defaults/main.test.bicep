@@ -103,6 +103,15 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      httpListeners: [
+        {
+          name: 'httpListener1'
+          properties: {
+            hostName: 'www.contoso.com'
+            protocol: 'Http'
+          }
+        }
+      ]
     }
   }
 ]
