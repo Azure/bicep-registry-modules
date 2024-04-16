@@ -58,7 +58,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}wf${serviceShort}01'
+    storageAccountName: toLower('dep${namePrefix}wf${serviceShort}01')
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
