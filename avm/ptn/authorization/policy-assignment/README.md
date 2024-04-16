@@ -31,14 +31,17 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/policy-assignment:<version>`.
 
-- [Mg.Common](#example-1-mgcommon)
-- [Mg.Min](#example-2-mgmin)
-- [Rg.Common](#example-3-rgcommon)
-- [Rg.Min](#example-4-rgmin)
-- [Sub.Common](#example-5-subcommon)
-- [Sub.Min](#example-6-submin)
+- [Policy Assignments (Management Group scope)](#example-1-policy-assignments-management-group-scope)
+- [Policy Assignments (Management Group scope)](#example-2-policy-assignments-management-group-scope)
+- [Policy Assignments (Resource Group)](#example-3-policy-assignments-resource-group)
+- [Policy Assignments (Resource Group)](#example-4-policy-assignments-resource-group)
+- [Policy Assignments (Subscription)](#example-5-policy-assignments-subscription)
+- [Policy Assignments (Subscription)](#example-6-policy-assignments-subscription)
 
-### Example 1: _Mg.Common_
+### Example 1: _Policy Assignments (Management Group scope)_
+
+This module deploys a Policy Assignment at a Management Group scope using common parameters.
+
 
 <details>
 
@@ -237,7 +240,10 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 2: _Mg.Min_
+### Example 2: _Policy Assignments (Management Group scope)_
+
+This module deploys a Policy Assignment at a Management Group scope using minimal parameters.
+
 
 <details>
 
@@ -294,7 +300,10 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 3: _Rg.Common_
+### Example 3: _Policy Assignments (Resource Group)_
+
+This module deploys a Policy Assignment at a Resource Group scope using common parameters.
+
 
 <details>
 
@@ -501,7 +510,10 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 4: _Rg.Min_
+### Example 4: _Policy Assignments (Resource Group)_
+
+This module deploys a Policy Assignment at a Resource Group scope using minimal parameters.
+
 
 <details>
 
@@ -562,7 +574,10 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 5: _Sub.Common_
+### Example 5: _Policy Assignments (Subscription)_
+
+This module deploys a Policy Assignment at a Subscription scope using common parameters.
+
 
 <details>
 
@@ -765,7 +780,10 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 6: _Sub.Min_
+### Example 6: _Policy Assignments (Subscription)_
+
+This module deploys a Policy Assignment at a Subscription scope using common parameters.
+
 
 <details>
 

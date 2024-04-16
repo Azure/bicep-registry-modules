@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "1950415108822733732"
+      "templateHash": "3349971711426420603"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -159,7 +159,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[take(format('46d3xbcp.ptn.authorization.policy-assignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {

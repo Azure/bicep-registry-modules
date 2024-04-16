@@ -72,7 +72,7 @@ param resourceSelectors array = []
 param enableTelemetry bool = true
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.ptn.authorization.policy-assignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
+  name: take('46d3xbcp.ptn.authorization-policyassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
   properties: {
     mode: 'Incremental'
     template: {

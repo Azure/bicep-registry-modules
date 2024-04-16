@@ -1,4 +1,6 @@
 targetScope = 'managementGroup'
+metadata name = 'Policy Assignments (Management Group scope)'
+metadata description = 'This module deploys a Policy Assignment at a Management Group scope using minimal parameters.'
 
 // ========== //
 // Parameters //

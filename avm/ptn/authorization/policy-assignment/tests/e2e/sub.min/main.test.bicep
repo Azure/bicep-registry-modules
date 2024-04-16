@@ -1,4 +1,6 @@
 targetScope = 'managementGroup'
+metadata name = 'Policy Assignments (Subscription)'
+metadata description = 'This module deploys a Policy Assignment at a Subscription scope using common parameters.'
 
 // ========== //
 // Parameters //

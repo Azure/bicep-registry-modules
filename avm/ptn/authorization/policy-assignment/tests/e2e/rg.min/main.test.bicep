@@ -1,4 +1,6 @@
 targetScope = 'managementGroup'
+metadata name = 'Policy Assignments (Resource Group)'
+metadata description = 'This module deploys a Policy Assignment at a Resource Group scope using minimal parameters.'
 
 // ========== //
 // Parameters //
