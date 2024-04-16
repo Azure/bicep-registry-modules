@@ -65,6 +65,16 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
+    frontendIPConfigurations: [
+      {
+        name: 'frontendIPConfig1'
+        properties: {
+          publicIPAddress: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
     frontendPorts: [
       {
         name: 'frontendPort1'
@@ -126,6 +136,18 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
             "cookieBasedAffinity": "Disabled",
             "port": 80,
             "protocol": "Http"
+          }
+        }
+      ]
+    },
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "frontendIPConfig1",
+          "properties": {
+            "publicIPAddress": {
+              "id": "<id>"
+            }
           }
         }
       ]

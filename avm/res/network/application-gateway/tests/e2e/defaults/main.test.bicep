@@ -71,6 +71,16 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      frontendIPConfigurations: [
+        {
+          name: 'frontendIPConfig1'
+          properties: {
+            publicIPAddress: {
+              id: nestedDependencies.outputs.publicIPResourceId
+            }
+          }
+        }
+      ]
       frontendPorts: [
         {
           name: 'frontendPort1'
