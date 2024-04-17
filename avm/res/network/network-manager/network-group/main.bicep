@@ -15,7 +15,7 @@ param name string
 param description string?
 
 @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
-param staticMembers staticMembersType?
+param staticMembers staticMembersType
 
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName

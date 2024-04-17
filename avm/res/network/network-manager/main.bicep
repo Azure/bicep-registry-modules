@@ -259,10 +259,10 @@ type networkGroupType = {
 type networkManagerScopeAccessType = ('Connectivity' | 'SecurityAdmin')[]
 
 type networkManagerScopesType = {
-  @sys.description('Optional. Management groups to assign to the network manager to manage.')
+  @sys.description('Conditional.  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: \'/providers/Microsoft.Management/managementGroups/{managementGroupId}\'.')
   managementGroups: string[]?
 
-  @sys.description('Optional. Subscriptions to assign to the network manager to manage.')
+  @sys.description('Conditional. List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: \'/subscriptions/{subscriptionId}\'.')
   subscriptions: string[]?
 }
 

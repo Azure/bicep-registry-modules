@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "18160172732230368103"
+      "templateHash": "7813198895720100169"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -167,7 +167,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Management groups to assign to the network manager to manage."
+            "description": "Conditional.  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'."
           }
         },
         "subscriptions": {
@@ -177,7 +177,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Subscriptions to assign to the network manager to manage."
+            "description": "Conditional. List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'."
           }
         }
       }
@@ -770,7 +770,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "10982292266934364796"
+              "templateHash": "14574804238780470219"
             },
             "name": "Network Manager Network Groups",
             "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
@@ -823,7 +823,6 @@
             },
             "staticMembers": {
               "$ref": "#/definitions/staticMembersType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
               }

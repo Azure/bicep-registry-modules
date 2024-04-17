@@ -762,23 +762,23 @@ Scope of Network Manager. Contains a list of management groups or a list of subs
 - Required: Yes
 - Type: object
 
-**Optional parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`managementGroups`](#parameter-networkmanagerscopesmanagementgroups) | array | Management groups to assign to the network manager to manage. |
-| [`subscriptions`](#parameter-networkmanagerscopessubscriptions) | array | Subscriptions to assign to the network manager to manage. |
+| [`managementGroups`](#parameter-networkmanagerscopesmanagementgroups) | array |  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'. |
+| [`subscriptions`](#parameter-networkmanagerscopessubscriptions) | array | List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'. |
 
 ### Parameter: `networkManagerScopes.managementGroups`
 
-Management groups to assign to the network manager to manage.
+ List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'.
 
 - Required: No
 - Type: array
 
 ### Parameter: `networkManagerScopes.subscriptions`
 
-Subscriptions to assign to the network manager to manage.
+List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'.
 
 - Required: No
 - Type: array
