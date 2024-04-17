@@ -15,7 +15,7 @@ This module deploys a Site App Setting.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/config` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 
 ## Parameters
 

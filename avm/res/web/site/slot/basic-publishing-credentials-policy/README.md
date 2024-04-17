@@ -14,7 +14,7 @@ This module deploys a Web Site Slot Basic Publishing Credentials Policy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 
 ## Parameters
 
