@@ -152,23 +152,6 @@ function Invoke-ResourcePostRemoval {
       $null = Set-AzRecoveryServicesVaultProperty -VaultId $vaultId -SoftDeleteFeatureState $softDeleteStatus.TrimEnd('d')
       break
     }
-    'Microsoft.Subscription/aliases' {
-      # Decommission subscription
-      $resourceName = Split-Path $ResourceId -Leaf
-      Set-PSRepository PSGallery -InstallationPolicy Trusted
-      Install-Module Az.Subscription -Force
-      Install-Module Az.Resources -Force
-      Install-Module Az.Accounts -Force
-      Update-AzConfig -DisplayBreakingChangeWarning $false
-      $subToCancel = Get-AzSubscription -SubscriptionId $resourceName
-      Write-Host "Subscription to Cancel: $($subToCancel.SubscriptionId)" -ForegroundColor Cyan
-      Write-Host ''
-      Write-Host 'Moving Subscription to Management Group: bicep-lz-vending-automation-decom...' -ForegroundColor Yellow
-      New-AzManagementGroupSubscription -GroupName 'bicep-lz-vending-automation-decom' -SubscriptionId "$($subToCancel.SubscriptionId)"
-      Write-Host ''
-      Write-Host 'Cancelling Subscription...' -ForegroundColor Yellow
-      Update-AzSubscription -SubscriptionId "$($subToCancel.SubscriptionId)" -Action 'Cancel'
-    }
     ### CODE LOCATION: Add custom post-removal operation here
   }
 }

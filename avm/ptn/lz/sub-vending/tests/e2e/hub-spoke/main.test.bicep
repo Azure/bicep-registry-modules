@@ -27,8 +27,8 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
-    subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionWorkload: 'Production'
     subscriptionTags: {
       namePrefix: namePrefix
@@ -63,8 +63,8 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     resourceProviders: {
-      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
-      'Microsoft.AVS': [ 'AzureServicesVm' ]
+      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
+      'Microsoft.AVS': ['AzureServicesVm']
     }
   }
 }

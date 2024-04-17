@@ -28,8 +28,8 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
-    subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionTags: {
       namePrefix: namePrefix
       serviceShort: serviceShort
