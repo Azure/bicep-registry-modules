@@ -127,6 +127,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
+    webApplicationFirewallConfiguration: {
+      enabled: false
+    }
     zones: [
       '1'
       '2'
@@ -245,6 +248,11 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           }
         }
       ]
+    },
+    "webApplicationFirewallConfiguration": {
+      "value": {
+        "enabled": false
+      }
     },
     "zones": {
       "value": [
