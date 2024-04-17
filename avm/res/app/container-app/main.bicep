@@ -27,10 +27,10 @@ param ingressAllowInsecure bool = true
 param ingressTargetPort int = 80
 
 @description('Optional. Maximum number of container replicas. Defaults to 10 if not set.')
-param scaleMaxReplicas int = 1
+param scaleMaxReplicas int = 10
 
-@description('Optional. Minimum number of container replicas.')
-param scaleMinReplicas int = 0
+@description('Optional. Minimum number of container replicas. Defaults to 3 if not set.')
+param scaleMinReplicas int = 3
 
 @description('Optional. Scaling rules.')
 param scaleRules array = []
