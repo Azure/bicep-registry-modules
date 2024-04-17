@@ -122,17 +122,6 @@ function Initialize-DeploymentRemoval {
     #     }
     # }
 
-    $moduleName = Split-Path (Split-Path (Split-Path $templateFilePath -Parent) -Parent) -LeafBase
-    switch ($moduleName) {
-      'sub-vending' {
-        $removalSequence += @(
-          'Microsoft.Network virtualNetworks/virtualNetworkPeerings'
-          'Microsoft.Network virtualHubs/hubVirtualNetworkConnections'
-        )
-        break
-      }
-    }
-
     if ($PurgeTestResources) {
       # Resources
       $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
