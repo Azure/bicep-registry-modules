@@ -3,10 +3,10 @@
 //==============================================================================
 
 @description('Required. Name of the hub. Used to ensure unique resource names.')
-param hubName string
+param hubName string = ''
 
 @description('Required. Suffix to add to the KeyVault instance name to ensure uniqueness.')
-param uniqueSuffix string
+param uniqueSuffix string = ''
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -15,7 +15,7 @@ param location string = resourceGroup().location
 param accessPolicies array = []
 
 @description('Required. Name of the storage account to store access keys for.')
-param storageAccountName string
+param storageAccountName string = ''
 
 @description('Optional. Specifies the SKU for the vault.')
 @allowed([
