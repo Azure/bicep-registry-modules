@@ -107,7 +107,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
 output name string = policyAssignment.name
 
 @sys.description('Policy Assignment principal ID.')
-output principalId string = identity == 'SystemAssigned' ? policyAssignment.identity.principalId : ''
+output principalId string = policyAssignment.?identity.?principalId ?? ''
 
 @sys.description('Policy Assignment resource ID.')
 output resourceId string = policyAssignment.id

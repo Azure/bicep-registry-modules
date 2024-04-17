@@ -24,5 +24,5 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = nestedDependencies.outputs.managedIdentityPrincipalId
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = nestedDependencies.outputs.managedIdentityResourceId

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "7199791591057602066"
+      "templateHash": "3274497359181095240"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -227,7 +227,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "16786602335276719684"
+              "templateHash": "15016174258473942920"
             },
             "name": "Policy Assignments (Management Group scope)",
             "description": "This module deploys a Policy Assignment at a Management Group scope.",
@@ -411,7 +411,7 @@
               "metadata": {
                 "description": "Policy Assignment principal ID."
               },
-              "value": "[if(equals(parameters('identity'), 'SystemAssigned'), reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId, '')]"
+              "value": "[coalesce(tryGet(tryGet(reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
             },
             "resourceId": {
               "type": "string",
@@ -482,7 +482,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "9352667853293675200"
+              "templateHash": "977404313320239280"
             },
             "name": "Policy Assignments (Subscription scope)",
             "description": "This module deploys a Policy Assignment at a Subscription scope.",
@@ -666,7 +666,7 @@
               "metadata": {
                 "description": "Policy Assignment principal ID."
               },
-              "value": "[if(equals(parameters('identity'), 'SystemAssigned'), reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId, '')]"
+              "value": "[coalesce(tryGet(tryGet(reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
             },
             "resourceId": {
               "type": "string",
@@ -737,7 +737,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "6572021544613611615"
+              "templateHash": "17106923564853756802"
             },
             "name": "Policy Assignments (Resource Group scope)",
             "description": "This module deploys a Policy Assignment at a Resource Group scope.",
@@ -928,7 +928,7 @@
               "metadata": {
                 "description": "Policy Assignment principal ID."
               },
-              "value": "[if(equals(parameters('identity'), 'SystemAssigned'), reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId, '')]"
+              "value": "[coalesce(tryGet(tryGet(reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
             },
             "resourceId": {
               "type": "string",
