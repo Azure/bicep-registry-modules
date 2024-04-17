@@ -205,49 +205,25 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.westeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.${location}'
         properties: {
-          addressPrefix: 'AzureCloud.westeurope'
+          addressPrefix: 'AzureCloud.${location}'
           nextHopType: 'Internet'
           hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.northeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.${location}'
         properties: {
-          addressPrefix: 'AzureCloud.northeurope'
+          addressPrefix: 'Storage.${location}'
           nextHopType: 'Internet'
           hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.westeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.${location}'
         properties: {
-          addressPrefix: 'Storage.westeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.northeurope'
-        properties: {
-          addressPrefix: 'Storage.northeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.westeurope'
-        properties: {
-          addressPrefix: 'EventHub.westeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.northeurope'
-        properties: {
-          addressPrefix: 'EventHub.northeurope'
+          addressPrefix: 'EventHub.${location}'
           nextHopType: 'Internet'
           hasBgpOverride: false
         }

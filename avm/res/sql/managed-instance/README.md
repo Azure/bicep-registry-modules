@@ -147,7 +147,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            category: 'allLogs'
+            categoryGroup: 'allLogs'
           }
         ]
         name: 'customSetting'
@@ -286,7 +286,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "category": "allLogs"
+              "categoryGroup": "allLogs"
             }
           ],
           "name": "customSetting",
