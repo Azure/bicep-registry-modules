@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
-metadata name = 'Role Assignments (Management Group scope)'
-metadata description = 'This module deploys a Role Assignment at a Management Group scope using common parameters.'
+metadata name = 'Role Assignments (Resource Group)'
+metadata description = 'This module deploys a Role Assignment at a Resource Group scope using common parameters.'
 
 // ========== //
 // Parameters //
@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-authorization.roleassignment
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'aramgcom'
+param serviceShort string = 'arargmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -28,12 +28,20 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-module nestedDependencies 'interim.dependencies.bicep' = {
+module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
   scope: subscription('${subscriptionId}')
-  name: '${uniqueString(deployment().name, resourceLocation)}-${serviceShort}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
+  params: {
+    name: resourceGroupName
+    location: resourceLocation
+  }
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    resourceGroupName: resourceGroupName
     location: resourceLocation
   }
 }
@@ -46,10 +54,11 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Management Group Reader'
-    description: 'Role Assignment (management group scope)'
-    managementGroupId: last(split(managementGroup().id, '/'))
+    roleDefinitionIdOrName: 'Reader'
+    description: 'Role Assignment (resource group scope)'
     principalType: 'ServicePrincipal'
     location: resourceLocation
+    subscriptionId: subscriptionId
+    resourceGroupName: resourceGroupName
   }
 }
