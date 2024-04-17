@@ -57,7 +57,14 @@ module testDeployment '../../../main.bicep' = [
       siteConfig: {
         healthCheckPath: '/healthz'
         alwaysOn: true
+        minTlsVersion: '1.2'
+        http20Enabled: true
+        ftpsState: 'FtpsOnly'
       }
+      managedIdentities: {
+        systemAssigned: true
+      }
+      clientAffinityEnabled: false
     }
     dependsOn: [
       nestedDependencies

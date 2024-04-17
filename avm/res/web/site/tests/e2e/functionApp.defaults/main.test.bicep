@@ -56,7 +56,13 @@ module testDeployment '../../../main.bicep' = [
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       siteConfig: {
         alwaysOn: true
+        minTlsVersion: '1.2'
+        http20Enabled: true
       }
+      managedIdentities: {
+        systemAssigned: true
+      }
+      clientAffinityEnabled: false
     }
     dependsOn: [
       nestedDependencies
