@@ -104,7 +104,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticSettings: [
       {
         name: 'customSetting'
-        metricCategories: [
+        logCategoriesAndGroups:[
           {
             category: 'allLogs'
           }
