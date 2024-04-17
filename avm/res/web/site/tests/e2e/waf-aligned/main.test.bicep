@@ -18,10 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'wswaf'
 
 @description('Optional. Tags of the resource.')
-param tags object = {
-  'costCenter': 'IT'
-  'environment': 'test'
-}
+param tags object?
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -71,7 +68,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      tags: tags
+      tags: {
+        costCenter: 'IT'
+        environment: 'test'
+      }
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       diagnosticSettings: [

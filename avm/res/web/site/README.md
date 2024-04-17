@@ -571,7 +571,10 @@ module site 'br/public:avm/res/web/site:<version>' = {
       ]
       minTlsVersion: '1.2'
     }
-    tags: '<tags>'
+    tags: {
+      costCenter: 'IT'
+      environment: 'test'
+    }
     vnetContentShareEnabled: true
     vnetImagePullEnabled: true
     vnetRouteAllEnabled: true
@@ -660,7 +663,10 @@ module site 'br/public:avm/res/web/site:<version>' = {
       }
     },
     "tags": {
-      "value": "<tags>"
+      "value": {
+        "costCenter": "IT",
+        "environment": "test"
+      }
     },
     "vnetContentShareEnabled": {
       "value": true
