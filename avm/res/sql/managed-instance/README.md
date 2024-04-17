@@ -149,9 +149,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
           {
             category: 'allLogs'
           }
-          {
-            category: 'audit'
-          }
         ]
         name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -290,9 +287,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
           "metricCategories": [
             {
               "category": "allLogs"
-            },
-            {
-              "category": "audit"
             }
           ],
           "name": "customSetting",
@@ -583,9 +577,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
           {
             categoryGroup: 'allLogs'
           }
-          {
-            categoryGroup: 'audit'
-          }
         ]
         name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -707,9 +698,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
           "logCategoriesAndGroups": [
             {
               "categoryGroup": "allLogs"
-            },
-            {
-              "categoryGroup": "audit"
             }
           ],
           "name": "customSetting",

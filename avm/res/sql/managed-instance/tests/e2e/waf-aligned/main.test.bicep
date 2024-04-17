@@ -108,9 +108,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           {
             categoryGroup: 'allLogs'
           }
-          {
-            categoryGroup: 'audit'
-          }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
