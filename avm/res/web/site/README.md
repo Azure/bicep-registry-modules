@@ -64,9 +64,15 @@ module site 'br/public:avm/res/web/site:<version>' = {
     name: 'wsfamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
+    clientAffinityEnabled: false
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     siteConfig: {
       alwaysOn: true
+      http20Enabled: true
+      minTlsVersion: '1.2'
     }
   }
 }
@@ -95,12 +101,22 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
+    "clientAffinityEnabled": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
     "siteConfig": {
       "value": {
-        "alwaysOn": true
+        "alwaysOn": true,
+        "http20Enabled": true,
+        "minTlsVersion": "1.2"
       }
     }
   }
@@ -526,6 +542,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'scm'
       }
     ]
+    clientAffinityEnabled: false
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -536,18 +553,25 @@ module site 'br/public:avm/res/web/site:<version>' = {
     ]
     httpsOnly: true
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     publicNetworkAccess: 'Disabled'
     scmSiteAlsoStopped: true
     siteConfig: {
       alwaysOn: true
+      ftpsState: 'FtpsOnly'
       healthCheckPath: '/healthz'
+      http20Enabled: true
       metadata: [
         {
           name: 'CURRENT_STACK'
           value: 'dotnetcore'
         }
       ]
+      minTlsVersion: '1.2'
     }
+    tags: '<tags>'
     vnetContentShareEnabled: true
     vnetImagePullEnabled: true
     vnetRouteAllEnabled: true
@@ -590,6 +614,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
+    "clientAffinityEnabled": {
+      "value": false
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -606,6 +633,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
     "publicNetworkAccess": {
       "value": "Disabled"
     },
@@ -615,14 +647,20 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "siteConfig": {
       "value": {
         "alwaysOn": true,
+        "ftpsState": "FtpsOnly",
         "healthCheckPath": "/healthz",
+        "http20Enabled": true,
         "metadata": [
           {
             "name": "CURRENT_STACK",
             "value": "dotnetcore"
           }
-        ]
+        ],
+        "minTlsVersion": "1.2"
       }
+    },
+    "tags": {
+      "value": "<tags>"
     },
     "vnetContentShareEnabled": {
       "value": true
@@ -658,10 +696,17 @@ module site 'br/public:avm/res/web/site:<version>' = {
     name: 'wswamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
+    clientAffinityEnabled: false
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     siteConfig: {
       alwaysOn: true
+      ftpsState: 'FtpsOnly'
       healthCheckPath: '/healthz'
+      http20Enabled: true
+      minTlsVersion: '1.2'
     }
   }
 }
@@ -690,13 +735,24 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
+    "clientAffinityEnabled": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "siteConfig": {
       "value": {
         "alwaysOn": true,
-        "healthCheckPath": "/healthz"
+        "ftpsState": "FtpsOnly",
+        "healthCheckPath": "/healthz",
+        "http20Enabled": true,
+        "minTlsVersion": "1.2"
       }
     }
   }
@@ -1170,10 +1226,17 @@ module site 'br/public:avm/res/web/site:<version>' = {
     name: 'wswalmin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
+    clientAffinityEnabled: false
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     siteConfig: {
       alwaysOn: true
+      ftpsState: 'FtpsOnly'
       healthCheckPath: '/healthz'
+      http20Enabled: true
+      minTlsVersion: '1.2'
     }
   }
 }
@@ -1202,13 +1265,24 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
+    "clientAffinityEnabled": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "siteConfig": {
       "value": {
         "alwaysOn": true,
-        "healthCheckPath": "/healthz"
+        "ftpsState": "FtpsOnly",
+        "healthCheckPath": "/healthz",
+        "http20Enabled": true,
+        "minTlsVersion": "1.2"
       }
     }
   }

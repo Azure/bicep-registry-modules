@@ -18,7 +18,10 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'wswaf'
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags object = {
+  'costCenter': 'IT'
+  'environment': 'test'
+}
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -91,11 +94,11 @@ module testDeployment '../../../main.bicep' = [
         ]
         minTlsVersion: '1.2'
         http20Enabled: true
-        managedIdentities: {
-          systemAssigned: true
-        }
-        clientAffinityEnabled: false
         ftpsState: 'FtpsOnly'
+      }
+      clientAffinityEnabled: false
+      managedIdentities: {
+        systemAssigned: true
       }
       basicPublishingCredentialsPolicies: [
         {
