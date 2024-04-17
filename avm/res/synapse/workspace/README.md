@@ -1590,7 +1590,6 @@ Git integration settings.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 
 ## Outputs

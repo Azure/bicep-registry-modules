@@ -949,6 +949,12 @@ The site config object.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      alwaysOn: true
+  }
+  ```
 
 ### Parameter: `storageAccountRequired`
 
