@@ -8,18 +8,18 @@ param managedIdentityName string
 param actionGroupName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-    name: managedIdentityName
-    location: location
+  name: managedIdentityName
+  location: location
 }
 
 resource actionGroup 'Microsoft.Insights/actionGroups@2022-06-01' = {
-    name: actionGroupName
-    location: 'global'
+  name: actionGroupName
+  location: 'global'
 
-    properties: {
-        enabled: true
-        groupShortName: substring(actionGroupName, 0, 11)
-    }
+  properties: {
+    enabled: true
+    groupShortName: substring(actionGroupName, 0, 11)
+  }
 }
 
 @description('The principal ID of the created Managed Identity.')

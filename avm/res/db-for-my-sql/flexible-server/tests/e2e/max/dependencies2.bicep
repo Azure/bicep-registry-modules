@@ -17,85 +17,91 @@ param geoBackupManagedIdentityName string
 param geoBackupLocation string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-    name: managedIdentityName
-    location: location
+  name: managedIdentityName
+  location: location
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
-    name: keyVaultName
-    location: location
-    properties: {
-        sku: {
-            family: 'A'
-            name: 'standard'
-        }
-        tenantId: tenant().tenantId
-        enablePurgeProtection: true
-        softDeleteRetentionInDays: 90
-        enabledForTemplateDeployment: true
-        enabledForDiskEncryption: true
-        enabledForDeployment: true
-        enableRbacAuthorization: true
-        accessPolicies: []
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
     }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: true // Required for encryption to work
+    softDeleteRetentionInDays: 7
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
 
-    resource key 'keys@2023-02-01' = {
-        name: 'keyEncryptionKey'
-        properties: {
-            kty: 'RSA'
-        }
+  resource key 'keys@2023-02-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
     }
+  }
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-    name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
-    scope: keyVault::key
-    properties: {
-        principalId: managedIdentity.properties.principalId
-        roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
-        principalType: 'ServicePrincipal'
-    }
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
+  scope: keyVault::key
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
 }
 
 resource geoBackupManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-    name: geoBackupManagedIdentityName
-    location: geoBackupLocation
+  name: geoBackupManagedIdentityName
+  location: geoBackupLocation
 }
 
 resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
-    name: geoBackupKeyVaultName
-    location: geoBackupLocation
-    properties: {
-        sku: {
-            family: 'A'
-            name: 'standard'
-        }
-        tenantId: tenant().tenantId
-        enablePurgeProtection: true
-        softDeleteRetentionInDays: 90
-        enabledForTemplateDeployment: true
-        enabledForDiskEncryption: true
-        enabledForDeployment: true
-        enableRbacAuthorization: true
-        accessPolicies: []
+  name: geoBackupKeyVaultName
+  location: geoBackupLocation
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
     }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: true // Required for encryption to work
+    softDeleteRetentionInDays: 7
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
 
-    resource key 'keys@2023-02-01' = {
-        name: 'keyEncryptionKey'
-        properties: {
-            kty: 'RSA'
-        }
+  resource key 'keys@2023-02-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
     }
+  }
 }
 
 resource geoBackupKeyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-    name: guid('msi-${geoBackupKeyVault::key.id}-${geoBackupLocation}-${geoBackupManagedIdentity.id}-Key-Reader-RoleAssignment')
-    scope: geoBackupKeyVault::key
-    properties: {
-        principalId: geoBackupManagedIdentity.properties.principalId
-        roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
-        principalType: 'ServicePrincipal'
-    }
+  name: guid('msi-${geoBackupKeyVault::key.id}-${geoBackupLocation}-${geoBackupManagedIdentity.id}-Key-Reader-RoleAssignment')
+  scope: geoBackupKeyVault::key
+  properties: {
+    principalId: geoBackupManagedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
 }
 
 @description('The resource ID of the created Managed Identity.')

@@ -71,261 +71,266 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}'
-    computerName: '${namePrefix}winvm1'
-    adminUsername: 'VMAdmin'
-    imageReference: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2019-datacenter'
-      version: 'latest'
-    }
-    nicConfigurations: [
-      {
-        deleteOption: 'Delete'
-        ipConfigurations: [
-          {
-            applicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
-            ]
-            loadBalancerBackendAddressPools: [
-              {
-                id: nestedDependencies.outputs.loadBalancerBackendPoolResourceId
-              }
-            ]
-            name: 'ipconfig01'
-            pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
-              roleAssignments: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}'
+      computerName: '${namePrefix}winvm1'
+      adminUsername: 'VMAdmin'
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-datacenter'
+        version: 'latest'
+      }
+      nicConfigurations: [
+        {
+          deleteOption: 'Delete'
+          ipConfigurations: [
+            {
+              applicationSecurityGroups: [
                 {
-                  roleDefinitionIdOrName: 'Reader'
-                  principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                  principalType: 'ServicePrincipal'
+                  id: nestedDependencies.outputs.applicationSecurityGroupResourceId
+                }
+              ]
+              loadBalancerBackendAddressPools: [
+                {
+                  id: nestedDependencies.outputs.loadBalancerBackendPoolResourceId
+                }
+              ]
+              name: 'ipconfig01'
+              pipConfiguration: {
+                publicIpNameSuffix: '-pip-01'
+                roleAssignments: [
+                  {
+                    roleDefinitionIdOrName: 'Reader'
+                    principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                    principalType: 'ServicePrincipal'
+                  }
+                ]
+              }
+              zones: [
+                '1'
+                '2'
+                '3'
+              ]
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+              diagnosticSettings: [
+                {
+                  name: 'customSetting'
+                  metricCategories: [
+                    {
+                      category: 'AllMetrics'
+                    }
+                  ]
+                  eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+                  eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+                  storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+                  workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
                 }
               ]
             }
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
-            subnetResourceId: nestedDependencies.outputs.subnetResourceId
-            diagnosticSettings: [
-              {
-                name: 'customSetting'
-                metricCategories: [
-                  {
-                    category: 'AllMetrics'
-                  }
-                ]
-                eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-                eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-                storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-                workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-              }
-            ]
-          }
-        ]
-        nicSuffix: '-nic-01'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-      }
-    ]
-    osDisk: {
-      caching: 'ReadWrite'
-      createOption: 'fromImage'
-      deleteOption: 'Delete'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
-    adminPassword: password
-    availabilityZone: 2
-    backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
-    backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
-    backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        deleteOption: 'Delete'
-        diskSizeGB: '128'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        deleteOption: 'Delete'
-        diskSizeGB: '128'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    ]
-    enableAutomaticUpdates: true
-    patchMode: 'AutomaticByPlatform'
-    encryptionAtHost: false
-    extensionAntiMalwareConfig: {
-      enabled: true
-      settings: {
-        AntimalwareEnabled: 'true'
-        Exclusions: {
-          Extensions: '.ext1;.ext2'
-          Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
-          Processes: 'excludedproc1.exe;excludedproc2.exe'
-        }
-        RealtimeProtectionEnabled: 'true'
-        ScheduledScanSettings: {
-          day: '7'
-          isEnabled: 'true'
-          scanType: 'Quick'
-          time: '120'
-        }
-      }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
-    }
-    extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-          uri: nestedDependencies.outputs.storageAccountCSEFileUrl
+          ]
+          nicSuffix: '-nic-01'
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
         }
       ]
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      osDisk: {
+        caching: 'ReadWrite'
+        createOption: 'FromImage'
+        deleteOption: 'Delete'
+        diskSizeGB: 128
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
       }
-    }
-    extensionCustomScriptProtectedSetting: {
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
-    }
-    extensionDependencyAgentConfig: {
-      enabled: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
-    }
-    extensionAzureDiskEncryptionConfig: {
-      enabled: true
-      settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KekVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        KeyEncryptionAlgorithm: 'RSA-OAEP'
-        KeyEncryptionKeyURL: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
-        KeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        KeyVaultURL: nestedDependencies.outputs.keyVaultUrl
-        ResizeOSDisk: 'false'
-        VolumeType: 'All'
+      osType: 'Windows'
+      vmSize: 'Standard_DS2_v2'
+      adminPassword: password
+      availabilityZone: 2
+      backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
+      backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
+      backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
+      dataDisks: [
+        {
+          caching: 'ReadOnly'
+          createOption: 'Empty'
+          deleteOption: 'Delete'
+          diskSizeGB: 128
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
+        }
+        {
+          caching: 'ReadOnly'
+          createOption: 'Empty'
+          deleteOption: 'Delete'
+          diskSizeGB: 128
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
+        }
+      ]
+      enableAutomaticUpdates: true
+      patchMode: 'AutomaticByPlatform'
+      encryptionAtHost: false
+      extensionAntiMalwareConfig: {
+        enabled: true
+        settings: {
+          AntimalwareEnabled: 'true'
+          Exclusions: {
+            Extensions: '.ext1;.ext2'
+            Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+            Processes: 'excludedproc1.exe;excludedproc2.exe'
+          }
+          RealtimeProtectionEnabled: 'true'
+          ScheduledScanSettings: {
+            day: '7'
+            isEnabled: 'true'
+            scanType: 'Quick'
+            time: '120'
+          }
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
       }
-    }
-    extensionAadJoinConfig: {
-      enabled: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      extensionCustomScriptConfig: {
+        enabled: true
+        fileData: [
+          {
+            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
+          }
+        ]
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
-    }
-    extensionDSCConfig: {
-      enabled: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      extensionCustomScriptProtectedSetting: {
+        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
       }
-    }
-    extensionMonitoringAgentConfig: {
-      enabled: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      extensionDependencyAgentConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
-    }
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      extensionAzureDiskEncryptionConfig: {
+        enabled: true
+        settings: {
+          EncryptionOperation: 'EnableEncryption'
+          KekVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+          KeyEncryptionAlgorithm: 'RSA-OAEP'
+          KeyEncryptionKeyURL: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
+          KeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+          KeyVaultURL: nestedDependencies.outputs.keyVaultUrl
+          ResizeOSDisk: 'false'
+          VolumeType: 'All'
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
       }
-    }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      extensionAadJoinConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      extensionDSCConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      extensionMonitoringAgentConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+      extensionNetworkWatcherAgentConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
       ]
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}]
+]

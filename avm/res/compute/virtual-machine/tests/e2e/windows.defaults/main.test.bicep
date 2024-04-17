@@ -48,39 +48,42 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}'
-    adminUsername: 'localAdminUser'
-    imageReference: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-azure-edition'
-      version: 'latest'
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig01'
-            subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          }
-        ]
-        nicSuffix: '-nic-01'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}'
+      adminUsername: 'localAdminUser'
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition'
+        version: 'latest'
       }
-    ]
-    osDisk: {
-      diskSizeGB: '128'
-      caching: 'ReadWrite'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
+      availabilityZone: 0
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig01'
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+            }
+          ]
+          nicSuffix: '-nic-01'
+        }
+      ]
+      osDisk: {
+        diskSizeGB: 128
+        caching: 'ReadWrite'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
       }
+      osType: 'Windows'
+      vmSize: 'Standard_DS2_v2'
+      adminPassword: password
     }
-    osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
-    adminPassword: password
   }
-}]
+]

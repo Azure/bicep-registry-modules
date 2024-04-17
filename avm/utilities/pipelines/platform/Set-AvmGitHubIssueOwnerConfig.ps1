@@ -1,77 +1,18 @@
 <#
 .SYNOPSIS
-Parses AVM module CSV file
-
-.DESCRIPTION
-Depending on the parameter, the correct CSV file will be parsed and returned a an object
-
-.PARAMETER ModuleIndex
-Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern')
-
-.EXAMPLE
-Next line will parse the AVM Bicep modules
-Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
-
-#>
-Function Get-AvmCsvData {
-  [CmdletBinding()]
-  param (
-    [Parameter(Mandatory)]
-    [ValidateSet('Bicep-Resource', 'Bicep-Pattern')]
-    [string] $ModuleIndex
-  )
-
-  # CSV file URLs
-  $BicepResourceUrl = "https://aka.ms/avm/index/bicep/res/csv"
-  $BicepPatternUrl = "https://aka.ms/avm/index/bicep/ptn/csv"
-
-  # Retrieve the CSV file
-  switch ($ModuleIndex) {
-    'Bicep-Resource' {
-      try {
-        $unfilteredCSV = Invoke-WebRequest -Uri $BicepResourceUrl
-      }
-      catch {
-        Write-Error "Unable to retrieve CSV file - Check network connection."
-      }
-    }
-    'Bicep-Pattern' {
-      try {
-        $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
-      }
-      catch {
-        Write-Error "Unable to retrieve CSV file - Check network connection."
-      }
-    }
-  }
-
-  # Convert the CSV content to a PowerShell object
-  $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredCSV.Content
-
-  # Loop through each item in the filtered data
-  foreach ($item in $formattedBicepFullCsv) {
-    # Remove '@Azure/' from the ModuleOwnersGHTeam property
-    $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure/', ''
-    # Remove '@Azure/' from the ModuleContributorsGHTeam property
-    $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
-  }
-
-  # Return the modified data
-  return $formattedBicepFullCsv
-}
-
-<#
-.SYNOPSIS
 Assigns issues to module owners and adds comments and labels
 
 .DESCRIPTION
 For the given issue, the module owner (according to the AVM CSV file) will be notified in a comment and assigned to the issue
 
 .PARAMETER Repo
-Repository name according to GitHub (owner/name)
+Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
+
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
 
 .PARAMETER IssueUrl
-The full GitHub URL to the issue
+Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .EXAMPLE
 Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
@@ -86,38 +27,62 @@ function Set-AvmGitHubIssueOwnerConfig {
     [string] $Repo,
 
     [Parameter(Mandatory = $true)]
-    [string] $IssueUrl
+    [string] $IssueUrl,
+
+    [Parameter(Mandatory = $false)]
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
+
+  # Loading helper functions
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
 
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
   if ($issue.title.StartsWith('[AVM Module Issue]')) {
-    $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ', '')
+    $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn)')[0].Trim().Replace(' ', '')
 
     if ([string]::IsNullOrEmpty($moduleName)) {
       throw 'No valid module name was found in the issue.'
     }
 
-    $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
-    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+    $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
+    # get CSV data
+    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
-    if ([string]::IsNullOrEmpty($module)) {
-      throw "Module $moduleName was not found in $moduleIndex CSV file."
-    }
+    # new/unknown module
+    if ($null -eq $module) {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
-    $reply = @"
-@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!
-
-A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+> [!IMPORTANT]
+> The module does not exist yet, we look into it. Please file a new module proposal under [AVM Module proposal](https://aka.ms/avm/moduleproposal).
 "@
-
-    if ($PSCmdlet.ShouldProcess("attention label to issue [$($issue.title)]", 'Add')) {
-      # add labels
-      gh issue edit $issue.url --add-label "Needs: Attention :wave:" --repo $Repo
     }
+    # orphaned module
+    elseif ($module.ModuleStatus -eq 'Module Orphaned :eyes:') {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
+
+> [!IMPORTANT]
+> Please note, that this module is currently orphaned. The @Azure/avm-core-team-technical-bicep, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
+"@
+    }
+    # existing module
+    else {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
+
+> [!IMPORTANT]
+> A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+"@
+    }
+
+    # add issue to project
+    $ProjectNumber = 566 # AVM - Module Issues
+    Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
 
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
-      gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
+      gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
     }
 
     if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
@@ -125,15 +90,21 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
       gh issue comment $issue.url --body $reply --repo $Repo
     }
 
-    if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
-      # assign owner
-      $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
-    }
+    if (($module.ModuleStatus -ne 'Module Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+      if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
+        # assign owner
+        $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+      }
 
-    if ([String]::IsNullOrEmpty($assign)) {
-      if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
-        $reply = "This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support)."
-        gh issue comment $issue.url --body $reply --repo $Repo
+      if ([String]::IsNullOrEmpty($assign)) {
+        if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
+          $reply = @"
+> [!WARNING]
+> This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
+"@
+
+          gh issue comment $issue.url --body $reply --repo $Repo
+        }
       }
     }
   }

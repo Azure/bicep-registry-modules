@@ -542,7 +542,7 @@ function Set-DataCollectionSection {
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
         try {
             $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
-            if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $telemetryFileContent = $rawResponse.Content -split '\n'
             } else {
                 throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
@@ -1342,12 +1342,12 @@ function Set-UsageExamplesSection {
 
         $rawBicepExample = $rawContentArray[$bicepTestStartIndex..$bicepTestEndIndex]
 
-        if (-not ($rawBicepExample | Select-String ("\s+params:.*"))) {
+        if (-not ($rawBicepExample | Select-String ('\s+params:.*'))) {
             # Handle case where params are not provided
             $paramsBlockArray = @()
         } else {
             # Extract params block out of the Bicep example
-            $paramsStartIndex = ($rawBicepExample | Select-String ("\s+params:.*") | ForEach-Object { $_.LineNumber - 1 })[0]
+            $paramsStartIndex = ($rawBicepExample | Select-String ('\s+params:.*') | ForEach-Object { $_.LineNumber - 1 })[0]
             $paramsIndent = ($rawBicepExample[$paramsStartIndex] | Select-String '(\s+).*').Matches.Groups[1].Length
 
 
@@ -1407,7 +1407,7 @@ function Set-UsageExamplesSection {
             $formattedBicepExample = @(
                 "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
                 "  name: '$($moduleNameCamelCase)Deployment'"
-                "  params: {"
+                '  params: {'
             ) + $bicepExample +
             @( '  }',
                 '}'

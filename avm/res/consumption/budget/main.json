@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "4486017492010556264"
+      "version": "0.26.54.24096",
+      "templateHash": "14286788088150860765"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions.",
@@ -117,10 +117,10 @@
       "defaultValue": "Actual",
       "allowedValues": [
         "Actual",
-        "Forecast"
+        "Forecasted"
       ],
       "metadata": {
-        "description": "Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`."
+        "description": "Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`."
       }
     },
     "filter": {

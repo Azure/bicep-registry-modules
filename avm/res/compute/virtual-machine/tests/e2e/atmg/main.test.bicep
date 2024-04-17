@@ -20,6 +20,10 @@ param serviceShort string = 'cvmlinatmg'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Set to fixed location as the RP function returns unsupported locations (configurationProfileAssignments)
+// Right now (2024/04) the following locations are supported: centralus, eastus, eastus2, southcentralus, westus, westus2, westcentralus, northeurope, westeurope, canadacentral, japaneast, uksouth, australiasoutheast, australiaeast, southeastasia, westus3
+param enforcedLocation string = 'westeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -33,9 +37,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
@@ -53,56 +57,59 @@ module nestedDependencies 'dependencies.bicep' = {
 // }
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}'
-    adminUsername: 'localAdminUser'
-    imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig01'
-            pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: enforcedLocation
+      name: '${namePrefix}${serviceShort}'
+      adminUsername: 'localAdminUser'
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-jammy'
+        sku: '22_04-lts-gen2'
+        version: 'latest'
+      }
+      availabilityZone: 0
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig01'
+              pipConfiguration: {
+                publicIpNameSuffix: '-pip-01'
+              }
+              zones: [
+                '1'
+                '2'
+                '3'
+              ]
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
             }
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
-            subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          }
-        ]
-        nicSuffix: '-nic-01'
+          ]
+          nicSuffix: '-nic-01'
+        }
+      ]
+      osDisk: {
+        diskSizeGB: 128
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
       }
-    ]
-    osDisk: {
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
+      osType: 'Linux'
+      vmSize: 'Standard_DS2_v2'
+      configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
+      disablePasswordAuthentication: true
+      publicKeys: [
+        {
+          keyData: nestedDependencies.outputs.SSHKeyPublicKey
+          path: '/home/localAdminUser/.ssh/authorized_keys'
+        }
+      ]
     }
-    osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
-    configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
-    disablePasswordAuthentication: true
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/localAdminUser/.ssh/authorized_keys'
-      }
+    dependsOn: [
+      nestedDependencies // Required to leverage `existing` SSH key reference
     ]
   }
-  dependsOn: [
-    nestedDependencies // Required to leverage `existing` SSH key reference
-  ]
-}]
+]
