@@ -1569,6 +1569,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 
+**Enables Kubernetes Event-driven Autoscaling (KEDA) parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+
 ### Parameter: `name`
 
 Specifies the name of the AKS cluster.
