@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "12102594825738963158"
+      "templateHash": "15934744937416391883"
     },
     "name": "Key Vaults",
     "description": "This module deploys a subscription to accelerate deployment of landing zones.",
@@ -317,9 +317,9 @@
         "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Network Contributor, Role Based Access Control Administrator (Preview), User Access Administrator, Security Admin). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n  - You can provide the RBAC role Id of a Built-in RBAC Role Definition\n    - e.g. `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group\n\n> See below [example in parameter file](#parameter-file) of various combinations\n\n- Type: `[]` Array\n- Default value: `[]` *(empty array)*.\n"
       }
     },
-    "enableTelemetry": {
+    "disableTelemetry": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
@@ -463,6 +463,7 @@
   },
   "variables": {
     "existingSubscriptionIDEmptyCheck": "[if(empty(parameters('existingSubscriptionId')), 'No Subscription ID Provided', parameters('existingSubscriptionId'))]",
+    "cuaPid": "10d75183-0090-47b2-9c1b-48e3a4a36786",
     "deploymentNames": {
       "createSubscription": "[take(format('lz-vend-sub-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), deployment().name)), 64)]",
       "createSubscriptionResources": "[take(format('lz-vend-sub-res-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), parameters('existingSubscriptionId'), deployment().name)), 64)]"
@@ -470,7 +471,22 @@
   },
   "resources": [
     {
-      "condition": "[parameters('enableTelemetry')]",
+      "condition": "[not(parameters('disableTelemetry'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-{0}-{1}', variables('cuaPid'), uniqueString(deployment().name, parameters('virtualNetworkLocation')))]",
+      "location": "[parameters('virtualNetworkLocation')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('disableTelemetry'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.ptn.lz-subvending.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 4))]",

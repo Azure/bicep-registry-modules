@@ -444,7 +444,7 @@ Each object must contain the following `keys`:
 param roleAssignments array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
+param disableTelemetry bool = false
 
 //@description('Optional. Guid for the deployment script resources names based on subscription Id.')
 //var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId, 0, 6)
@@ -476,10 +476,9 @@ param deploymentScriptLocation string = deployment().location
 
 @metadata({
   example: {
-    'Microsoft.Compute': [ 'InGuestHotPatchVMPreview' ]
+    'Microsoft.Compute': ['InGuestHotPatchVMPreview']
     'Microsoft.Storage': []
   }
-
 })
 @description('''
 Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
@@ -623,118 +622,148 @@ param resourceProviders object = {
 
 // VARIABLES
 
-var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId) ? 'No Subscription ID Provided' : existingSubscriptionId
+var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
+  ? 'No Subscription ID Provided'
+  : existingSubscriptionId
 
-//var cuaPid = '10d75183-0090-47b2-9c1b-48e3a4a36786'
+var cuaPid = '10d75183-0090-47b2-9c1b-48e3a4a36786'
 
 // Deployment name variables
 // LIMITS: Tenant = 64, Management Group = 64, Subscription = 64, Resource Group = 64
 var deploymentNames = {
-  createSubscription: take('lz-vend-sub-create-${subscriptionAliasName}-${uniqueString(subscriptionAliasName, subscriptionDisplayName, subscriptionBillingScope, subscriptionWorkload, deployment().name)}', 64)
-  createSubscriptionResources: take('lz-vend-sub-res-create-${subscriptionAliasName}-${uniqueString(subscriptionAliasName, subscriptionDisplayName, subscriptionBillingScope, subscriptionWorkload, existingSubscriptionId, deployment().name)}', 64)
+  createSubscription: take(
+    'lz-vend-sub-create-${subscriptionAliasName}-${uniqueString(subscriptionAliasName, subscriptionDisplayName, subscriptionBillingScope, subscriptionWorkload, deployment().name)}',
+    64
+  )
+  createSubscriptionResources: take(
+    'lz-vend-sub-res-create-${subscriptionAliasName}-${uniqueString(subscriptionAliasName, subscriptionDisplayName, subscriptionBillingScope, subscriptionWorkload, existingSubscriptionId, deployment().name)}',
+    64
+  )
 }
 
 // RESOURCES & MODULES
-/*resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!disableTelemetry) {
-  name: 'pid-${cuaPid}-${uniqueString(deployment().name, virtualNetworkLocation)}'
-  location: virtualNetworkLocation
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
+resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' =
+  if (!disableTelemetry) {
+    name: 'pid-${cuaPid}-${uniqueString(deployment().name, virtualNetworkLocation)}'
+    location: virtualNetworkLocation
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+      }
     }
   }
-}*/
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
-  location: virtualNetworkLocation
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (!disableTelemetry) {
+    name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
+    location: virtualNetworkLocation
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep' = if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
-  scope: managementGroup()
-  name: deploymentNames.createSubscription
-  params: {
-    subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: subscriptionAliasName
-    subscriptionDisplayName: subscriptionDisplayName
-    subscriptionWorkload: subscriptionWorkload
-    subscriptionTenantId: subscriptionTenantId
-    subscriptionOwnerId: subscriptionOwnerId
+module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep' =
+  if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
+    scope: managementGroup()
+    name: deploymentNames.createSubscription
+    params: {
+      subscriptionBillingScope: subscriptionBillingScope
+      subscriptionAliasName: subscriptionAliasName
+      subscriptionDisplayName: subscriptionDisplayName
+      subscriptionWorkload: subscriptionWorkload
+      subscriptionTenantId: subscriptionTenantId
+      subscriptionOwnerId: subscriptionOwnerId
+    }
   }
-}
 
-module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' = if (subscriptionAliasEnabled || !empty(existingSubscriptionId)) {
-  name: deploymentNames.createSubscriptionResources
-  params: {
-    subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId
-    subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
-    subscriptionManagementGroupId: subscriptionManagementGroupId
-    subscriptionTags: subscriptionTags
-    virtualNetworkEnabled: virtualNetworkEnabled
-    virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
-    virtualNetworkResourceGroupTags: virtualNetworkResourceGroupTags
-    virtualNetworkResourceGroupLockEnabled: virtualNetworkResourceGroupLockEnabled
-    virtualNetworkLocation: virtualNetworkLocation
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkTags: virtualNetworkTags
-    virtualNetworkAddressSpace: virtualNetworkAddressSpace
-    virtualNetworkDnsServers: virtualNetworkDnsServers
-    virtualNetworkDdosPlanId: virtualNetworkDdosPlanId
-    virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
-    hubNetworkResourceId: hubNetworkResourceId
-    virtualNetworkUseRemoteGateways: virtualNetworkUseRemoteGateways
-    virtualNetworkVwanEnableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
-    virtualNetworkVwanAssociatedRouteTableResourceId: virtualNetworkVwanAssociatedRouteTableResourceId
-    virtualNetworkVwanPropagatedRouteTablesResourceIds: virtualNetworkVwanPropagatedRouteTablesResourceIds
-    virtualNetworkVwanPropagatedLabels: virtualNetworkVwanPropagatedLabels
-    vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
-    roleAssignmentEnabled: roleAssignmentEnabled
-    roleAssignments: roleAssignments
-    deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
-    deploymentScriptName: deploymentScriptName
-    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
-    resourceProviders: resourceProviders
-    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
-    deploymentScriptLocation: deploymentScriptLocation
-    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
-    virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
-    deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
+module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' =
+  if (subscriptionAliasEnabled || !empty(existingSubscriptionId)) {
+    name: deploymentNames.createSubscriptionResources
+    params: {
+      subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
+        ? createSubscription.outputs.subscriptionId
+        : existingSubscriptionId
+      subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
+      subscriptionManagementGroupId: subscriptionManagementGroupId
+      subscriptionTags: subscriptionTags
+      virtualNetworkEnabled: virtualNetworkEnabled
+      virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
+      virtualNetworkResourceGroupTags: virtualNetworkResourceGroupTags
+      virtualNetworkResourceGroupLockEnabled: virtualNetworkResourceGroupLockEnabled
+      virtualNetworkLocation: virtualNetworkLocation
+      virtualNetworkName: virtualNetworkName
+      virtualNetworkTags: virtualNetworkTags
+      virtualNetworkAddressSpace: virtualNetworkAddressSpace
+      virtualNetworkDnsServers: virtualNetworkDnsServers
+      virtualNetworkDdosPlanId: virtualNetworkDdosPlanId
+      virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
+      hubNetworkResourceId: hubNetworkResourceId
+      virtualNetworkUseRemoteGateways: virtualNetworkUseRemoteGateways
+      virtualNetworkVwanEnableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
+      virtualNetworkVwanAssociatedRouteTableResourceId: virtualNetworkVwanAssociatedRouteTableResourceId
+      virtualNetworkVwanPropagatedRouteTablesResourceIds: virtualNetworkVwanPropagatedRouteTablesResourceIds
+      virtualNetworkVwanPropagatedLabels: virtualNetworkVwanPropagatedLabels
+      vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
+      roleAssignmentEnabled: roleAssignmentEnabled
+      roleAssignments: roleAssignments
+      deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
+      deploymentScriptName: deploymentScriptName
+      deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
+      resourceProviders: resourceProviders
+      deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
+      deploymentScriptLocation: deploymentScriptLocation
+      deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
+      virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
+      deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
+    }
   }
-}
 
 // OUTPUTS
 
 @description('The Subscription ID that has been created or provided.')
-output subscriptionId string = (subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided') ? existingSubscriptionIDEmptyCheck : '${existingSubscriptionId}'
+output subscriptionId string = (subscriptionAliasEnabled && empty(existingSubscriptionId))
+  ? createSubscription.outputs.subscriptionId
+  : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided')
+      ? existingSubscriptionIDEmptyCheck
+      : '${existingSubscriptionId}'
 
 @description('The Subscription Resource ID that has been created or provided.')
-output subscriptionResourceId string = (subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionResourceId : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided') ? existingSubscriptionIDEmptyCheck : '/subscriptions/${existingSubscriptionId}'
+output subscriptionResourceId string = (subscriptionAliasEnabled && empty(existingSubscriptionId))
+  ? createSubscription.outputs.subscriptionResourceId
+  : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided')
+      ? existingSubscriptionIDEmptyCheck
+      : '/subscriptions/${existingSubscriptionId}'
 
 @description('The Subscription Owner State. Only used when creating MCA Subscriptions across tenants.')
-output subscriptionAcceptOwnershipState string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? createSubscription.outputs.subscriptionAcceptOwnershipState : 'N/A'
+output subscriptionAcceptOwnershipState string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+  ? createSubscription.outputs.subscriptionAcceptOwnershipState
+  : 'N/A'
 
 @description('The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants.')
-output subscriptionAcceptOwnershipUrl string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? createSubscription.outputs.subscriptionAcceptOwnershipUrl : 'N/A'
+output subscriptionAcceptOwnershipUrl string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+  ? createSubscription.outputs.subscriptionAcceptOwnershipUrl
+  : 'N/A'
 
 @description('The resource providers that failed to register.')
-output failedResourceProviders string = !empty(resourceProviders) ? createSubscriptionResources.outputs.failedProviders : ''
+output failedResourceProviders string = !empty(resourceProviders)
+  ? createSubscriptionResources.outputs.failedProviders
+  : ''
 
 @description('The resource providers features that failed to register.')
-output failedResourceProvidersFeatures string = !empty(resourceProviders) ? createSubscriptionResources.outputs.failedFeatures : ''
+output failedResourceProvidersFeatures string = !empty(resourceProviders)
+  ? createSubscriptionResources.outputs.failedFeatures
+  : ''
