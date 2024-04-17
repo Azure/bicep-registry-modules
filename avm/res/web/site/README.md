@@ -65,9 +65,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     location: '<location>'
-    siteConfig: {
-      alwaysOn: true
-    }
   }
 }
 ```
@@ -97,11 +94,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "siteConfig": {
-      "value": {
-        "alwaysOn": true
-      }
     }
   }
 }
@@ -659,10 +651,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     location: '<location>'
-    siteConfig: {
-      alwaysOn: true
-      healthCheckPath: '/healthz'
-    }
   }
 }
 ```
@@ -692,12 +680,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "siteConfig": {
-      "value": {
-        "alwaysOn": true,
-        "healthCheckPath": "/healthz"
-      }
     }
   }
 }
@@ -2576,6 +2558,12 @@ The site config object.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      alwaysOn: true
+  }
+  ```
 
 ### Parameter: `slots`
 
