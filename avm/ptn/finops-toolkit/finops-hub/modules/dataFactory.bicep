@@ -3,19 +3,19 @@
 //==============================================================================
 
 @description('Optional. Name of the hub. Used to ensure unique resource names. Default: "finops-hub".')
-param dataFactoryName string
+param dataFactoryName string = ''
 
 @description('Required. The name of the Azure Key Vault instance.')
-param keyVaultName string
+param keyVaultName string = ''
 
 @description('Required. The name of the Azure storage account instance.')
-param storageAccountName string
+param storageAccountName string = ''
 
 @description('Required. The name of the container where Cost Management data is exported.')
-param exportContainerName string
+param exportContainerName string = ''
 
 @description('Required. The name of the container where normalized data is ingested.')
-param ingestionContainerName string
+param ingestionContainerName string = ''
 
 @description('Optional. Indicates whether ingested data should be converted to Parquet. Default: true.')
 param convertToParquet bool = true

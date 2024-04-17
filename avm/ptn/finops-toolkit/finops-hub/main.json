@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "5189348700499000802"
+      "templateHash": "18087659434732887116"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -209,7 +209,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "15467937580213419921"
+              "templateHash": "17047047646426184601"
             }
           },
           "parameters": {
@@ -247,6 +247,7 @@
             },
             "exportScopes": {
               "type": "array",
+              "defaultValue": [],
               "metadata": {
                 "description": "Optional. List of scope IDs to create exports for."
               }
@@ -274,6 +275,7 @@
             },
             "storageAccountName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. Name of the storage account."
               }
@@ -5605,36 +5607,41 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "14902017261335561973"
+              "templateHash": "18164584631803538409"
             }
           },
           "parameters": {
             "dataFactoryName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. Name of the hub. Used to ensure unique resource names. Default: \"finops-hub\"."
               }
             },
             "keyVaultName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Required. The name of the Azure Key Vault instance."
               }
             },
             "storageAccountName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Required. The name of the Azure storage account instance."
               }
             },
             "exportContainerName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Required. The name of the container where Cost Management data is exported."
               }
             },
             "ingestionContainerName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Required. The name of the container where normalized data is ingested."
               }
@@ -8372,18 +8379,20 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "16288635729306037195"
+              "templateHash": "5305192955245650054"
             }
           },
           "parameters": {
             "hubName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Required. Name of the hub. Used to ensure unique resource names."
               }
             },
             "uniqueSuffix": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Required. Suffix to add to the KeyVault instance name to ensure uniqueness."
               }

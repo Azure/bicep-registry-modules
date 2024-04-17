@@ -18,7 +18,7 @@ param tags object?
 param tagsByResource object = {}
 
 @description('Optional. List of scope IDs to create exports for.')
-param exportScopes array
+param exportScopes array = []
 
 @description('The name of the container used for configuration settings.')
 param configContainer string = 'config'
@@ -30,7 +30,7 @@ param exportContainer string = 'exports'
 param ingestionContainer string = 'ingestion'
 
 @description('Optional. Name of the storage account.')
-param storageAccountName string
+param storageAccountName string = ''
 
 //==============================================================================
 // Resources
