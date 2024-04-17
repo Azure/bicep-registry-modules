@@ -47,7 +47,7 @@ var appInsightsValues = !empty(appInsightResourceId)
 
 var expandedAppSettings = union(appSettingsKeyValuePairs ?? {}, azureWebJobsValues, appInsightsValues)
 
-resource app 'Microsoft.Web/sites@2022-09-01' existing = {
+resource app 'Microsoft.Web/sites@2023-01-01' existing = {
   name: appName
 }
 
@@ -66,7 +66,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing 
     )
   }
 
-resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource appSettings 'Microsoft.Web/sites/config@2023-01-01' = {
   name: 'appsettings'
   kind: kind
   parent: app

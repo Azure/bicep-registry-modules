@@ -190,11 +190,11 @@ var builtInRoleNames = {
   )
 }
 
-resource app 'Microsoft.Web/sites@2021-03-01' existing = {
+resource app 'Microsoft.Web/sites@2023-01-01' existing = {
   name: appName
 }
 
-resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
+resource slot 'Microsoft.Web/sites/slots@2023-01-01' = {
   name: name
   parent: app
   location: location

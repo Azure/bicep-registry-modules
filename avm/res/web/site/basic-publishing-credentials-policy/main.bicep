@@ -18,7 +18,7 @@ param webAppName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-resource webApp 'Microsoft.Web/sites@2022-09-01' existing = {
+resource webApp 'Microsoft.Web/sites@2023-01-01' existing = {
   name: webAppName
 }
 

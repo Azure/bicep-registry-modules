@@ -29,7 +29,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   }
 }
 
-resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2022-09-01' = {
+resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2023-01-01' = {
   name: name
   location: location
   parent: app::slot
