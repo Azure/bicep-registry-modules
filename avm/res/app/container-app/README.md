@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/container-app:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:AVM/bicep-registry-modules:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApp 'br/public:avm/res/app/container-app:<version>' = {
+module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
   name: 'containerAppDeployment'
   params: {
     // Required parameters
@@ -115,7 +115,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApp 'br/public:avm/res/app/container-app:<version>' = {
+module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
   name: 'containerAppDeployment'
   params: {
     // Required parameters
@@ -309,7 +309,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApp 'br/public:avm/res/app/container-app:<version>' = {
+module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
   name: 'containerAppDeployment'
   params: {
     // Required parameters
@@ -481,7 +481,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
-| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. |
+| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
 | [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -808,15 +808,15 @@ Maximum number of container replicas. Defaults to 10 if not set.
 
 - Required: No
 - Type: int
-- Default: `1`
+- Default: `10`
 
 ### Parameter: `scaleMinReplicas`
 
-Minimum number of container replicas.
+Minimum number of container replicas. Defaults to 3 if not set.
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `3`
 
 ### Parameter: `scaleRules`
 
