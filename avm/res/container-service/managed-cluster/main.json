@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "11298093745131885845"
+      "templateHash": "3806996475520060110"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1528,6 +1528,11 @@
         "agentPoolProfiles": "[parameters('primaryAgentPoolProfile')]",
         "linuxProfile": "[if(not(empty(parameters('sshPublicKey'))), createObject('adminUsername', parameters('adminUsername'), 'ssh', createObject('publicKeys', createArray(createObject('keyData', coalesce(parameters('sshPublicKey'), ''))))), null())]",
         "servicePrincipalProfile": "[parameters('aksServicePrincipalProfile')]",
+        "metricsProfile": {
+          "costAnalysis": {
+            "enabled": "[if(equals(parameters('skuTier'), 'free'), false(), parameters('costAnalysisEnabled'))]"
+          }
+        },
         "ingressProfile": {
           "webAppRouting": {
             "enabled": "[parameters('webApplicationRoutingEnabled')]",
@@ -1640,7 +1645,7 @@
             "enabled": "[parameters('enableStorageProfileBlobCSIDriver')]"
           },
           "diskCSIDriver": {
-            "enabled": "[if(equals(parameters('costAnalysisEnabled'), true()), true(), parameters('enableStorageProfileDiskCSIDriver'))]"
+            "enabled": "[if(and(equals(parameters('costAnalysisEnabled'), true()), not(equals(parameters('skuTier'), 'free'))), true(), parameters('enableStorageProfileDiskCSIDriver'))]"
           },
           "fileCSIDriver": {
             "enabled": "[parameters('enableStorageProfileFileCSIDriver')]"
