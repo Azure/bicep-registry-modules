@@ -14,7 +14,7 @@ This module deploys a Site Hybrid Connection Namespace Relay.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/hybridConnectionNamespaces/relays) |
+| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/hybridConnectionNamespaces/relays) |
 
 ## Parameters
 

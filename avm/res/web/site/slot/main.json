@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "12157473410186645235"
+      "version": "0.26.170.59819",
+      "templateHash": "15913383794971863370"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -754,12 +754,12 @@
     "app": {
       "existing": true,
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2021-03-01",
+      "apiVersion": "2023-01-01",
       "name": "[parameters('appName')]"
     },
     "slot": {
       "type": "Microsoft.Web/sites/slots",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-01-01",
       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
@@ -872,7 +872,7 @@
       ]
     },
     "slot_appsettings": {
-      "condition": "[not(empty(parameters('appSettingsKeyValuePairs')))]",
+      "condition": "[or(or(not(empty(parameters('appSettingsKeyValuePairs'))), not(empty(parameters('storageAccountResourceId')))), not(empty(parameters('appInsightResourceId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Slot-{1}-Config-AppSettings', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
@@ -911,8 +911,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "12764984503745572183"
+              "version": "0.26.170.59819",
+              "templateHash": "1285612611547537214"
             },
             "name": "Site Slot App Settings",
             "description": "This module deploys a Site Slot App Setting.",
@@ -978,7 +978,7 @@
             "app::slot": {
               "existing": true,
               "type": "Microsoft.Web/sites/slots",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]",
               "dependsOn": [
                 "app"
@@ -987,7 +987,7 @@
             "app": {
               "existing": true,
               "type": "Microsoft.Web/sites",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-01-01",
               "name": "[parameters('appName')]"
             },
             "appInsight": {
@@ -1010,7 +1010,7 @@
             },
             "slotSettings": {
               "type": "Microsoft.Web/sites/slots/config",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
               "kind": "[parameters('kind')]",
               "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
@@ -1081,8 +1081,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1333776366661137381"
+              "version": "0.26.170.59819",
+              "templateHash": "10337463605128548956"
             },
             "name": "Site Slot Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1125,7 +1125,7 @@
           "resources": [
             {
               "type": "Microsoft.Web/sites/slots/config",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'authsettingsV2')]",
               "kind": "[parameters('kind')]",
               "properties": "[parameters('authSettingV2Configuration')]"
@@ -1197,8 +1197,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "2236066853450471067"
+              "version": "0.26.170.59819",
+              "templateHash": "12813497094193025214"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -1245,7 +1245,7 @@
           "resources": [
             {
               "type": "Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -1280,7 +1280,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name')), '2022-09-01', 'full').location]"
+              "value": "[reference(resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name')), '2023-01-01', 'full').location]"
             }
           }
         }
@@ -1323,8 +1323,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1058820827217282473"
+              "version": "0.26.170.59819",
+              "templateHash": "5190800104989758432"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -1360,7 +1360,7 @@
           "resources": [
             {
               "type": "Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
               "properties": {
                 "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",
@@ -2094,14 +2094,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('slot', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('slot', '2023-01-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('slot', '2022-09-01', 'full').location]"
+      "value": "[reference('slot', '2023-01-01', 'full').location]"
     }
   }
 }
