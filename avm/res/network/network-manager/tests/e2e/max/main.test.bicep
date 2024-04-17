@@ -132,14 +132,14 @@ module testDeployment '../../../main.bicep' = [
               resourceType: 'Microsoft.Network/virtualNetworks'
             }
           ]
-          deleteExistingPeering: 'True'
-          isGlobal: 'True'
+          deleteExistingPeering: true
+          isGlobal: false
           appliesToGroups: [
             {
               networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              useHubGateway: 'False'
+              useHubGateway: false
               groupConnectivity: 'None'
-              isGlobal: 'False'
+              isGlobal: false
             }
           ]
         }
@@ -147,14 +147,14 @@ module testDeployment '../../../main.bicep' = [
           name: 'MeshConnectivity-1'
           description: 'MeshConnectivity description'
           connectivityTopology: 'Mesh'
-          deleteExistingPeering: 'True'
-          isGlobal: 'True'
+          deleteExistingPeering: true
+          isGlobal: true
           appliesToGroups: [
             {
               networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              useHubGateway: 'False'
-              groupConnectivity: 'None'
-              isGlobal: 'False'
+              useHubGateway: false
+              groupConnectivity: 'DirectlyConnected'
+              isGlobal: true
             }
           ]
         }
@@ -164,9 +164,12 @@ module testDeployment '../../../main.bicep' = [
           appliesToGroups: [
             {
               networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
+              useHubGateway: false
               groupConnectivity: 'DirectlyConnected'
+              isGlobal: false
             }
           ]
+          isGlobal: false
         }
       ]
       scopeConnections: [
