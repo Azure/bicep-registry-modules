@@ -96,9 +96,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       }
     ]
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'sub-blzv-tests-ssamin'
+    subscriptionAliasName: 'dep-sub-blzv-tests-ssamin'
     subscriptionBillingScope: '<subscriptionBillingScope>'
-    subscriptionDisplayName: 'sub-blzv-tests-ssamin'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-ssamin'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionTags: {
@@ -171,13 +171,13 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionAliasName": {
-      "value": "sub-blzv-tests-ssamin"
+      "value": "dep-sub-blzv-tests-ssamin"
     },
     "subscriptionBillingScope": {
       "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
-      "value": "sub-blzv-tests-ssamin"
+      "value": "dep-sub-blzv-tests-ssamin"
     },
     "subscriptionManagementGroupAssociationEnabled": {
       "value": true
@@ -245,9 +245,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       }
     ]
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'sub-blzv-tests-ssahs'
+    subscriptionAliasName: 'dep-sub-blzv-tests-ssahs'
     subscriptionBillingScope: '<subscriptionBillingScope>'
-    subscriptionDisplayName: 'sub-blzv-tests-ssahs'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-ssahs'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionTags: {
@@ -331,13 +331,13 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionAliasName": {
-      "value": "sub-blzv-tests-ssahs"
+      "value": "dep-sub-blzv-tests-ssahs"
     },
     "subscriptionBillingScope": {
       "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
-      "value": "sub-blzv-tests-ssahs"
+      "value": "dep-sub-blzv-tests-ssahs"
     },
     "subscriptionManagementGroupAssociationEnabled": {
       "value": true
@@ -418,9 +418,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       }
     ]
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'sub-blzv-tests-ssawan'
+    subscriptionAliasName: 'dep-sub-blzv-tests-ssawan'
     subscriptionBillingScope: '<subscriptionBillingScope>'
-    subscriptionDisplayName: 'sub-blzv-tests-ssawan'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-ssawan'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionTags: {
@@ -496,13 +496,13 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionAliasName": {
-      "value": "sub-blzv-tests-ssawan"
+      "value": "dep-sub-blzv-tests-ssawan"
     },
     "subscriptionBillingScope": {
       "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
-      "value": "sub-blzv-tests-ssawan"
+      "value": "dep-sub-blzv-tests-ssawan"
     },
     "subscriptionManagementGroupAssociationEnabled": {
       "value": true
