@@ -45,7 +45,8 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d' //Audit VMs that do not use managed disks
+    //Audit VMs that do not use managed disks
+    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     metadata: {
       assignedBy: 'Bicep'
     }

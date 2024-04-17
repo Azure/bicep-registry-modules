@@ -40,6 +40,66 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Policy Assignments (Management Group scope)_
 
+This module deploys a Policy Assignment at a Management Group scope using minimal parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
+  name: 'policyAssignmentDeployment'
+  params: {
+    // Required parameters
+    name: 'apamgmin001'
+    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+    // Non-required parameters
+    location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apamgmin001"
+    },
+    "policyDefinitionId": {
+      "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Policy Assignments (Management Group scope)_
+
 This module deploys a Policy Assignment at a Management Group scope using common parameters.
 
 
@@ -52,7 +112,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
-    name: 'apamgcom001'
+    name: 'apamgmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
     description: '[Description] Policy Assignment at the management group scope'
@@ -137,7 +197,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apamgcom001"
+      "value": "apamgmax001"
     },
     "policyDefinitionId": {
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
@@ -240,9 +300,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 2: _Policy Assignments (Management Group scope)_
+### Example 3: _Policy Assignments (Resource Group)_
 
-This module deploys a Policy Assignment at a Management Group scope using minimal parameters.
+This module deploys a Policy Assignment at a Resource Group scope using minimal parameters.
 
 
 <details>
@@ -254,13 +314,15 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
-    name: 'apamgmin001'
+    name: 'apargmin001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
     location: '<location>'
     metadata: {
       assignedBy: 'Bicep'
     }
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -279,7 +341,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apamgmin001"
+      "value": "apargmin001"
     },
     "policyDefinitionId": {
       "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
@@ -292,6 +354,12 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": {
         "assignedBy": "Bicep"
       }
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
     }
   }
 }
@@ -300,7 +368,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 3: _Policy Assignments (Resource Group)_
+### Example 4: _Policy Assignments (Resource Group)_
 
 This module deploys a Policy Assignment at a Resource Group scope using common parameters.
 
@@ -314,7 +382,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
-    name: 'apargcom001'
+    name: 'apargmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
     description: '[Description] Policy Assignment at the resource group scope'
@@ -401,7 +469,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apargcom001"
+      "value": "apargmax001"
     },
     "policyDefinitionId": {
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
@@ -510,9 +578,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 4: _Policy Assignments (Resource Group)_
+### Example 5: _Policy Assignments (Subscription)_
 
-This module deploys a Policy Assignment at a Resource Group scope using minimal parameters.
+This module deploys a Policy Assignment at a Subscription scope using common parameters.
 
 
 <details>
@@ -524,14 +592,15 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
-    name: 'apargmin001'
+    name: 'apasubmin001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
     location: '<location>'
     metadata: {
       assignedBy: 'Bicep'
+      category: 'Security'
+      version: '1.0'
     }
-    resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -551,7 +620,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apargmin001"
+      "value": "apasubmin001"
     },
     "policyDefinitionId": {
       "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
@@ -562,11 +631,10 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "metadata": {
       "value": {
-        "assignedBy": "Bicep"
+        "assignedBy": "Bicep",
+        "category": "Security",
+        "version": "1.0"
       }
-    },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
@@ -578,7 +646,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-### Example 5: _Policy Assignments (Subscription)_
+### Example 6: _Policy Assignments (Subscription)_
 
 This module deploys a Policy Assignment at a Subscription scope using common parameters.
 
@@ -592,7 +660,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
-    name: 'apasubcom001'
+    name: 'apasubmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
     description: '[Description] Policy Assignment at the subscription scope'
@@ -678,7 +746,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apasubcom001"
+      "value": "apasubmax001"
     },
     "policyDefinitionId": {
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
@@ -776,74 +844,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "userAssignedIdentityId": {
       "value": "<userAssignedIdentityId>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 6: _Policy Assignments (Subscription)_
-
-This module deploys a Policy Assignment at a Subscription scope using common parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
-  name: 'policyAssignmentDeployment'
-  params: {
-    // Required parameters
-    name: 'apasubmin001'
-    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-    // Non-required parameters
-    location: '<location>'
-    metadata: {
-      assignedBy: 'Bicep'
-      category: 'Security'
-      version: '1.0'
-    }
-    subscriptionId: '<subscriptionId>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "apasubmin001"
-    },
-    "policyDefinitionId": {
-      "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "metadata": {
-      "value": {
-        "assignedBy": "Bicep",
-        "category": "Security",
-        "version": "1.0"
-      }
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     }
   }
 }
