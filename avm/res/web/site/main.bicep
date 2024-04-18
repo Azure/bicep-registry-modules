@@ -56,7 +56,9 @@ param vnetRouteAllEnabled bool = false
 param scmSiteAlsoStopped bool = false
 
 @description('Optional. The site config object.')
-param siteConfig object?
+param siteConfig object = {
+  alwaysOn: true
+}
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
