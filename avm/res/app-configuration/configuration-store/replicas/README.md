@@ -24,12 +24,12 @@ This module deploys an App Configuration Replica.
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the replica. |
 
-**Conditional parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appConfigurationName`](#parameter-appconfigurationname) | string | The name of the parent app configuration store. |
-| [`replicaLocation`](#parameter-replicalocation) | string | Location of the replica |
+| [`replicaLocation`](#parameter-replicalocation) | string | Location of the replica. |
 
 ### Parameter: `name`
 
@@ -47,7 +47,7 @@ The name of the parent app configuration store.
 
 ### Parameter: `replicaLocation`
 
-Location of the replica
+Location of the replica.
 
 - Required: Yes
 - Type: string
@@ -57,8 +57,9 @@ Location of the replica
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `replicaName` | string | The name of the replica that was deployed |
+| `name` | string | The name of the replica that was deployed. |
 | `resourceGroupName` | string | The resource group the app configuration was deployed into. |
+| `resourceId` | string | The resource ID of the replica that was deployed. |
 
 ## Cross-referenced modules
 

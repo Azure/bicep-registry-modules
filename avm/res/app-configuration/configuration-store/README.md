@@ -54,6 +54,15 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Required parameters
     name: 'accmin001'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableLocalAuth: true
     enablePurgeProtection: true
     location: '<location>'
     replicaLocations: [
@@ -81,6 +90,19 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "accmin001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableLocalAuth": {
+      "value": true
+    },
     "enablePurgeProtection": {
       "value": true
     },
