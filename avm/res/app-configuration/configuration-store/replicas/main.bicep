@@ -1,4 +1,4 @@
-metadata name = 'App Configuration Replica Configurations'
+metadata name = 'App Configuration Replicas'
 metadata description = 'This module deploys an App Configuration Replica.'
 metadata owner = 'Azure/module-maintainers'
 
