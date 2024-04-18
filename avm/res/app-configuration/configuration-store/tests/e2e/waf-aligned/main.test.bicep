@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       disableLocalAuth: false
-      enablePurgeProtection: false
+      enablePurgeProtection: true
       keyValues: [
         {
           contentType: 'contentType'
