@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "6312828584864471342"
+      "templateHash": "14301920664802681394"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -543,7 +543,9 @@
     },
     "siteConfig": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {
+        "alwaysOn": true
+      },
       "metadata": {
         "description": "Optional. The site config object."
       }
@@ -1299,7 +1301,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "12157473410186645235"
+              "templateHash": "7436278786647572492"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -1815,7 +1817,9 @@
             },
             "siteConfig": {
               "type": "object",
-              "nullable": true,
+              "defaultValue": {
+                "alwaysOn": true
+              },
               "metadata": {
                 "description": "Optional. The site config object."
               }
