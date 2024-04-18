@@ -352,7 +352,7 @@ param httpProxyConfig object?
 @description('Optional. Identities associated with the cluster.')
 param identityProfile object?
 
-@description('Enables Kubernetes Event-driven Autoscaling (KEDA)')
+@description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
 
 @description('Optional. The customer managed key definition.')

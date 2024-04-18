@@ -1536,6 +1536,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
+| [`kedaAddon`](#parameter-kedaaddon) | bool | Enables Kubernetes Event-driven Autoscaling (KEDA). |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Version of Kubernetes specified when creating the managed cluster. |
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
@@ -1568,11 +1569,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
-
-**Enables Kubernetes Event-driven Autoscaling (KEDA) parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 
 ### Parameter: `name`
 
@@ -2794,6 +2790,14 @@ Identities associated with the cluster.
 ### Parameter: `ingressApplicationGatewayEnabled`
 
 Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `kedaAddon`
+
+Enables Kubernetes Event-driven Autoscaling (KEDA).
 
 - Required: No
 - Type: bool
