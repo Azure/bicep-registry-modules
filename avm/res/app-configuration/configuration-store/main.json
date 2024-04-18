@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "2361713891989826476"
+      "templateHash": "7782666312286784121"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -492,16 +492,16 @@
     },
     "disableLocalAuth": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Disables all authentication methods other than AAD authentication."
       }
     },
     "enablePurgeProtection": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Property specifying whether protection against purge is enabled for this configuration store."
+        "description": "Optional. Property specifying whether protection against purge is enabled for this configuration store.Defaults to true unless sku is set to Free, since purge protection is not available in Free tier."
       }
     },
     "publicNetworkAccess": {

@@ -45,9 +45,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      enablePurgeProtection: true
-      disableLocalAuth: true
-      replicaLocations: ['eastus', 'westus']
     }
   }
 ]

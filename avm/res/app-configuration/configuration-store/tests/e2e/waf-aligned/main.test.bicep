@@ -67,8 +67,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      disableLocalAuth: true
-      enablePurgeProtection: true
       keyValues: [
         {
           contentType: 'contentType'

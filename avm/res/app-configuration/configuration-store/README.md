@@ -54,13 +54,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Required parameters
     name: 'accmin001'
     // Non-required parameters
-    disableLocalAuth: true
-    enablePurgeProtection: true
     location: '<location>'
-    replicaLocations: [
-      'eastus'
-      'westus'
-    ]
   }
 }
 ```
@@ -82,20 +76,8 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "accmin001"
     },
     // Non-required parameters
-    "disableLocalAuth": {
-      "value": true
-    },
-    "enablePurgeProtection": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
-    },
-    "replicaLocations": {
-      "value": [
-        "eastus",
-        "westus"
-      ]
     }
   }
 }
@@ -126,8 +108,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    disableLocalAuth: false
-    enablePurgeProtection: false
     keyValues: [
       {
         contentType: 'contentType'
@@ -179,12 +159,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "disableLocalAuth": {
-      "value": false
-    },
-    "enablePurgeProtection": {
-      "value": false
     },
     "keyValues": {
       "value": [
@@ -253,8 +227,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: false
-    enablePurgeProtection: false
     keyValues: [
       {
         contentType: 'contentType'
@@ -284,6 +256,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         '<managedIdentityResourceId>'
       ]
     }
+    replicaLocations: [
+      'eastus'
+      'westus'
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -347,12 +323,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         }
       ]
     },
-    "disableLocalAuth": {
-      "value": false
-    },
-    "enablePurgeProtection": {
-      "value": false
-    },
     "keyValues": {
       "value": [
         {
@@ -389,6 +359,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "replicaLocations": {
+      "value": [
+        "eastus",
+        "westus"
+      ]
     },
     "roleAssignments": {
       "value": [
@@ -443,8 +419,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     name: 'accpe001'
     // Non-required parameters
     createMode: 'Default'
-    disableLocalAuth: false
-    enablePurgeProtection: false
     location: '<location>'
     privateEndpoints: [
       {
@@ -489,12 +463,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Non-required parameters
     "createMode": {
       "value": "Default"
-    },
-    "disableLocalAuth": {
-      "value": false
-    },
-    "enablePurgeProtection": {
-      "value": false
     },
     "location": {
       "value": "<location>"
@@ -555,8 +523,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: true
-    enablePurgeProtection: true
     keyValues: [
       {
         contentType: 'contentType'
@@ -608,12 +574,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "disableLocalAuth": {
-      "value": true
-    },
-    "enablePurgeProtection": {
-      "value": true
     },
     "keyValues": {
       "value": [
@@ -667,7 +627,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disables all authentication methods other than AAD authentication. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store. |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store.Defaults to true unless sku is set to Free, since purge protection is not available in Free tier. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyValues`](#parameter-keyvalues) | array | All Key / Values to create. Requires local authentication to be enabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -883,15 +843,15 @@ Disables all authentication methods other than AAD authentication.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enablePurgeProtection`
 
-Property specifying whether protection against purge is enabled for this configuration store.
+Property specifying whether protection against purge is enabled for this configuration store.Defaults to true unless sku is set to Free, since purge protection is not available in Free tier.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 

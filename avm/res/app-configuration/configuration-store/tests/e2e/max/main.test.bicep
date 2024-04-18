@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       createMode: 'Default'
+      replicaLocations: ['eastus', 'westus']
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -81,8 +82,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      disableLocalAuth: false
-      enablePurgeProtection: false
       keyValues: [
         {
           contentType: 'contentType'
