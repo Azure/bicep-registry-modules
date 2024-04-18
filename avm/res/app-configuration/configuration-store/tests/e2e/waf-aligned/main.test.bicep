@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      disableLocalAuth: false
+      disableLocalAuth: true
       enablePurgeProtection: true
       keyValues: [
         {
