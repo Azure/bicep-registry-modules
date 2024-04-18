@@ -99,10 +99,10 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'heathProbe'
           properties: {
-            enabledState: ''
-            healthProbeMethod: ''
+            enabledState: 'Enabled'
+            healthProbeMethod: 'HEAD'
             intervalInSeconds: 60
-            path: '/'
+            path: '/healthz'
             protocol: 'Https'
           }
         }
