@@ -28,6 +28,9 @@ spec:
     # Azure Virtual Machine
     - Azure.VM.AMA
     - Azure.VM.Standalone
+    # Azure App Service
+    - Azure.AppService.WebProbe # Supressed as the probe path is specific to the app
+    - Azure.AppService.WebProbePath # Supressed as the probe path is specific to the app
   if:
     name: "."
     contains:

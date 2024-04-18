@@ -481,7 +481,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
-| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. |
+| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
 | [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -808,15 +808,15 @@ Maximum number of container replicas. Defaults to 10 if not set.
 
 - Required: No
 - Type: int
-- Default: `1`
+- Default: `10`
 
 ### Parameter: `scaleMinReplicas`
 
-Minimum number of container replicas.
+Minimum number of container replicas. Defaults to 3 if not set.
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `3`
 
 ### Parameter: `scaleRules`
 
