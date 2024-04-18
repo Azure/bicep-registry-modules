@@ -149,6 +149,9 @@ param primaryAgentPoolProfile array
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType
 
+@description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
+param costAnalysisEnabled bool = false
+
 @description('Optional. Specifies whether the httpApplicationRouting add-on is enabled or not.')
 param httpApplicationRoutingEnabled bool = false
 
@@ -541,6 +544,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         }
       : null
     servicePrincipalProfile: aksServicePrincipalProfile
+    metricsProfile: {
+      costAnalysis: {
+        enabled: skuTier == 'free' ? false : costAnalysisEnabled
+      }
+    }
     ingressProfile: {
       webAppRouting: {
         enabled: webApplicationRoutingEnabled
@@ -728,7 +736,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         enabled: enableStorageProfileBlobCSIDriver
       }
       diskCSIDriver: {
-        enabled: enableStorageProfileDiskCSIDriver
+        enabled: costAnalysisEnabled == true && skuTier != 'free' ? true : enableStorageProfileDiskCSIDriver
       }
       fileCSIDriver: {
         enabled: enableStorageProfileFileCSIDriver

@@ -957,6 +957,13 @@
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
     },
+    "costAnalysisEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed."
+      }
+    },
     "httpApplicationRoutingEnabled": {
       "type": "bool",
       "defaultValue": false,
@@ -1535,6 +1542,11 @@
         "agentPoolProfiles": "[parameters('primaryAgentPoolProfile')]",
         "linuxProfile": "[if(not(empty(parameters('sshPublicKey'))), createObject('adminUsername', parameters('adminUsername'), 'ssh', createObject('publicKeys', createArray(createObject('keyData', coalesce(parameters('sshPublicKey'), ''))))), null())]",
         "servicePrincipalProfile": "[parameters('aksServicePrincipalProfile')]",
+        "metricsProfile": {
+          "costAnalysis": {
+            "enabled": "[if(equals(parameters('skuTier'), 'free'), false(), parameters('costAnalysisEnabled'))]"
+          }
+        },
         "ingressProfile": {
           "webAppRouting": {
             "enabled": "[parameters('webApplicationRoutingEnabled')]",
@@ -1648,7 +1660,7 @@
             "enabled": "[parameters('enableStorageProfileBlobCSIDriver')]"
           },
           "diskCSIDriver": {
-            "enabled": "[parameters('enableStorageProfileDiskCSIDriver')]"
+            "enabled": "[if(and(equals(parameters('costAnalysisEnabled'), true()), not(equals(parameters('skuTier'), 'free'))), true(), parameters('enableStorageProfileDiskCSIDriver'))]"
           },
           "fileCSIDriver": {
             "enabled": "[parameters('enableStorageProfileFileCSIDriver')]"
