@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15989375192995835398"
+      "templateHash": "10969298207545891085"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1263,7 +1263,7 @@
       "type": "int",
       "defaultValue": 120,
       "metadata": {
-        "description": "Optional The interval in hours Image Cleaner will run. Defaults 120, 5 days."
+        "description": "Optional. The interval in hours Image Cleaner will run. Defaults 120, 5 days."
       }
     },
     "enablePodSecurityPolicy": {

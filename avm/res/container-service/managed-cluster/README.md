@@ -1535,6 +1535,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
+| [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. Defaults 120, 5 days. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Version of Kubernetes specified when creating the managed cluster. |
@@ -1568,12 +1569,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
-
-**Optional The interval in hours Image Cleaner will run parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | Defaults 120, 5 days. |
 
 ### Parameter: `name`
 
@@ -2792,6 +2787,14 @@ Identities associated with the cluster.
 - Required: No
 - Type: object
 
+### Parameter: `imageCleanerIntervalHours`
+
+The interval in hours Image Cleaner will run. Defaults 120, 5 days.
+
+- Required: No
+- Type: int
+- Default: `120`
+
 ### Parameter: `ingressApplicationGatewayEnabled`
 
 Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
@@ -3237,14 +3240,6 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `imageCleanerIntervalHours`
-
-Defaults 120, 5 days.
-
-- Required: No
-- Type: int
-- Default: `120`
 
 
 ## Outputs
