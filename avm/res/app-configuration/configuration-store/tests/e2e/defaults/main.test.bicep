@@ -24,8 +24,6 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-// Diagnostics
-// ===========
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
