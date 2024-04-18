@@ -522,7 +522,9 @@
     },
     "siteConfig": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {
+        "alwaysOn": true
+      },
       "metadata": {
         "description": "Optional. The site config object."
       }
