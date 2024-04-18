@@ -294,6 +294,12 @@ param enableWorkloadIdentity bool = false
 @description('Optional. Whether to enable Azure Defender.')
 param enableAzureDefender bool = false
 
+@description('Optional. Whether to enable Image Cleaner for Kubernetes.')
+param enableImageCleaner bool = false
+
+@description('Optional The interval in hours Image Cleaner will run. Defaults 120, 5 days.')
+param imageCleanerIntervalHours int = 120
+
 @description('Optional. Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription.')
 param enablePodSecurityPolicy bool = false
 
@@ -708,6 +714,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       workloadIdentity: enableWorkloadIdentity
         ? {
             enabled: enableWorkloadIdentity
+          }
+        : null
+      imageCleaner: enableImageCleaner
+        ? {
+            enabled: enableImageCleaner
+            intervalHours: imageCleanerIntervalHours
           }
         : null
     }

@@ -1516,6 +1516,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`enableAzureMonitorProfileMetrics`](#parameter-enableazuremonitorprofilemetrics) | bool | Whether the metric state of the kubenetes cluster is enabled. |
 | [`enableContainerInsights`](#parameter-enablecontainerinsights) | bool | Indicates if Azure Monitor Container Insights Logs Addon is enabled. |
 | [`enableDnsZoneContributorRoleAssignment`](#parameter-enablednszonecontributorroleassignment) | bool | Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided. |
+| [`enableImageCleaner`](#parameter-enableimagecleaner) | bool | Whether to enable Image Cleaner for Kubernetes. |
 | [`enableKeyvaultSecretsProvider`](#parameter-enablekeyvaultsecretsprovider) | bool | Specifies whether the KeyvaultSecretsProvider add-on is enabled or not. |
 | [`enableOidcIssuerProfile`](#parameter-enableoidcissuerprofile) | bool | Whether the The OIDC issuer profile of the Managed Cluster is enabled. |
 | [`enablePodSecurityPolicy`](#parameter-enablepodsecuritypolicy) | bool | Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription. |
@@ -1567,6 +1568,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
+
+**Optional The interval in hours Image Cleaner will run parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | Defaults 120, 5 days. |
 
 ### Parameter: `name`
 
@@ -2542,6 +2549,14 @@ Specifies whether assing the DNS zone contributor role to the cluster service pr
 - Type: bool
 - Default: `True`
 
+### Parameter: `enableImageCleaner`
+
+Whether to enable Image Cleaner for Kubernetes.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableKeyvaultSecretsProvider`
 
 Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
@@ -3222,6 +3237,14 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `imageCleanerIntervalHours`
+
+Defaults 120, 5 days.
+
+- Required: No
+- Type: int
+- Default: `120`
 
 
 ## Outputs
