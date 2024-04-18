@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3141223128904182753"
+      "templateHash": "2318180309482229247"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1382,7 +1382,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Enables Kubernetes Event-driven Autoscaling (KEDA)"
+        "description": "Optional. Enables Kubernetes Event-driven Autoscaling (KEDA)."
       }
     },
     "customerManagedKey": {
