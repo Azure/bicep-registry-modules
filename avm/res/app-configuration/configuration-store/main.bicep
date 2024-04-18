@@ -49,6 +49,9 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. All Key / Values to create. Requires local authentication to be enabled.')
 param keyValues array?
 
+@description('Optional. All Replicas to create.')
+param replicaLocations array?
+
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
@@ -198,6 +201,16 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
   }
 ]
 
+module configurationStore_replicas 'replicas/main.bicep' = [
+  for (replicaLocation, index) in (replicaLocations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'
+    params: {
+      appConfigurationName: configurationStore.name
+      replicaLocation: replicaLocation
+      name: '${configurationStore.name}_${replicaLocation}'
+    }
+  }
+]
 resource configurationStore_lock 'Microsoft.Authorization/locks@2020-05-01' =
   if (!empty(lock ?? {}) && lock.?kind != 'None') {
     name: lock.?name ?? 'lock-${name}'
