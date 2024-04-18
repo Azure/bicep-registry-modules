@@ -98,7 +98,7 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
               originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
-              customDomainName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
+              customDomainNames: ['dep-${namePrefix}-test-${serviceShort}-custom-domain']
               ruleSets: [
                 {
                   name: 'dep${namePrefix}test${serviceShort}ruleset'

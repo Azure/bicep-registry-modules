@@ -15,7 +15,7 @@ param afdEndpointName string
 param cacheConfiguration object?
 
 @description('Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains.')
-param customDomainName string?
+param customDomainNames string[]?
 
 @allowed([
   'HttpOnly'
@@ -69,10 +69,11 @@ resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
     name: afdEndpointName
   }
 
-  resource customDomain 'customDomains@2023-05-01' existing =
-    if (!empty(customDomainName)) {
-      name: customDomainName ?? ''
+  resource customDomains 'customDomains@2023-05-01' existing = [
+    for customDomainName in (customDomainNames ?? []): {
+      name: customDomainName
     }
+  ]
 
   resource originGroup 'originGroups@2023-05-01' existing = {
     name: originGroupName
@@ -90,13 +91,11 @@ resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-05-01' = {
   parent: profile::afdEndpoint
   properties: {
     cacheConfiguration: cacheConfiguration
-    customDomains: !empty(customDomainName)
-      ? [
-          {
-            id: profile::customDomain.id
-          }
-        ]
-      : []
+    customDomains: [
+      for index in range(0, length(customDomainNames ?? [])): {
+        id: profile::customDomains[index].id
+      }
+    ]
     enabledState: enabledState
     forwardingProtocol: forwardingProtocol
     httpsRedirect: httpsRedirect

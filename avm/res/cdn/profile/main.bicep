@@ -92,7 +92,7 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource #_namePrefix_#Telemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.cdn-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
@@ -104,7 +104,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
         outputs: {
           telemetry: {
             type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+            value: 'For more information, see https://aka.ms/#_namePrefix_#/TelemetryInfo'
           }
         }
       }

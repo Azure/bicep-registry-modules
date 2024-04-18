@@ -237,7 +237,7 @@
     }
   },
   "resources": {
-    "avmTelemetry": {
+    "#_namePrefix_#Telemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -251,7 +251,7 @@
           "outputs": {
             "telemetry": {
               "type": "String",
-              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+              "value": "For more information, see https://aka.ms/#_namePrefix_#/TelemetryInfo"
             }
           }
         }
