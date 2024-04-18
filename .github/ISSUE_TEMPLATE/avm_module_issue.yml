@@ -38,11 +38,8 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - ""
-<<<<<<< HEAD
         - "avm/ptn/authorization/policy-assignment"
-=======
         - "avm/ptn/authorization/role-assignment"
->>>>>>> cf7c9c70d795f732bcd3a7c40144f029b6e62ef8
         # - "avm/ptn/avd-lza/insights"
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
