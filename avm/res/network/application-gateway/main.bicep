@@ -368,21 +368,21 @@ resource applicationGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSet
   }
 ]
 
-module applicationGateway_privateEndpoints '../../network/private-endpoint/main.bicep' = [
+module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-applicationGateway-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      // Variant 1: A default service can be assumed (i.e., for services that only have one private endpoint type)
-      name: privateEndpoint.?name ?? 'pep-${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? '>defaultServiceName<'}-${index}'
+      // Variant 2: A default service cannot be assumed (i.e., for services that have more than one private endpoint type, like Storage Account)
+      name: privateEndpoint.?name ?? 'pep-${last(split(applicationGateway.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? '>defaultServiceName<'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(applicationGateway.id, '/'))}-${privateEndpoint.service}-${index}'
               properties: {
                 privateLinkServiceId: applicationGateway.id
                 groupIds: [
-                  privateEndpoint.?service ?? '>defaultServiceName<'
+                  privateEndpoint.service
                 ]
               }
             }
@@ -391,11 +391,11 @@ module applicationGateway_privateEndpoints '../../network/private-endpoint/main.
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? '>defaultServiceName<'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(applicationGateway.id, '/'))}-${privateEndpoint.service}-${index}'
               properties: {
                 privateLinkServiceId: applicationGateway.id
                 groupIds: [
-                  privateEndpoint.?service ?? '>defaultServiceName<'
+                  privateEndpoint.service
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }
@@ -501,9 +501,12 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  // Variant 1: A default service can be assumed (i.e., for services that only have one private endpoint type)
-  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
-  service: string?
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
+  // Variant 2: A default subresource cannot be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...)
+  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
+  service: string
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
