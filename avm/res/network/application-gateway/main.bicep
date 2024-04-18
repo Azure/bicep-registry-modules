@@ -503,7 +503,6 @@ type privateEndpointType = {
   @description('Optional. The name of the private link connection to create.')
   privateLinkServiceConnectionName: string?
 
-  // Variant 2: A default subresource cannot be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...)
   @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
   service: string
 
