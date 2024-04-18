@@ -373,7 +373,6 @@ module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-en
     name: '${uniqueString(deployment().name, location)}-applicationGateway-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      // Variant 2: A default service cannot be assumed (i.e., for services that have more than one private endpoint type, like Storage Account)
       name: privateEndpoint.?name ?? 'pep-${last(split(applicationGateway.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
