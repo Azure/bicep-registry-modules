@@ -677,7 +677,7 @@ type networkAclsType = {
 
     @description('Required. The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.')
     resourceId: string
-  }[]?
+  }[]
 
   @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
   bypass: (
