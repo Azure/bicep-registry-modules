@@ -38,6 +38,7 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - ""
+        - "avm/ptn/authorization/role-assignment"
         # - "avm/ptn/avd-lza/insights"
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
@@ -102,7 +103,7 @@ body:
         - "avm/res/key-vault/vault"
         - "avm/res/kubernetes-configuration/extension"
         - "avm/res/kubernetes-configuration/flux-configuration"
-        # - "avm/res/load-test-service/load-test"
+        - "avm/res/load-test-service/load-test"
         - "avm/res/logic/workflow"
         - "avm/res/machine-learning-services/workspace"
         - "avm/res/maintenance/maintenance-configuration"
