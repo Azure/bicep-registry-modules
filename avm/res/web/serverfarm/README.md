@@ -112,11 +112,11 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Required parameters
     name: 'wsfmax001'
     sku: {
-      capacity: 3
-      family: 'P'
-      name: 'P1v3'
-      size: 'P1v3'
-      tier: 'Premium'
+      capacity: 1
+      family: 'S'
+      name: 'S1'
+      size: 'S1'
+      tier: 'Standard'
     }
     // Non-required parameters
     diagnosticSettings: [
@@ -162,7 +162,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: true
+    zoneRedundant: false
   }
 }
 ```
@@ -185,11 +185,11 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     "sku": {
       "value": {
-        "capacity": 3,
-        "family": "P",
-        "name": "P1v3",
-        "size": "P1v3",
-        "tier": "Premium"
+        "capacity": 1,
+        "family": "S",
+        "name": "S1",
+        "size": "S1",
+        "tier": "Standard"
       }
     },
     // Non-required parameters
@@ -251,7 +251,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     "zoneRedundant": {
-      "value": true
+      "value": false
     }
   }
 }
@@ -439,7 +439,7 @@ Defaults to false when creating Windows/app App Service Plan. Required if creati
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `[equals(parameters('kind'), 'Linux')]`
 
 ### Parameter: `appServiceEnvironmentId`
 
