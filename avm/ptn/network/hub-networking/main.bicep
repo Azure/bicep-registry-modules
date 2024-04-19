@@ -221,7 +221,7 @@ output resourceGroupName string[] = [
 ]
 
 @description('The location the virtual network was deployed into.')
-output location string[] = [
+output hubVirtualNetworkLocation string[] = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.location
 ]
 
@@ -331,6 +331,7 @@ type diagnosticSettingType = {
 }[]?
 
 type hubVirtualNetworkObject = {
+  @description('Optional. Array of hub virtual networks to create.')
   *: hubVirtualNetworkType?
 }?
 
@@ -344,12 +345,19 @@ type hubVirtualNetworkType = {
   @description('Optional. The Azure Firewall config.')
   azureFirewallSettings: azureFirewallType?
 
+  @description('Optional. The Azure Bastion config.')
   bastionHost: {
+    @description('Optional. Enable/Disable copy/paste functionality.')
     disableCopyPaste: bool?
+    @description('Optional. Enable/Disable file copy functionality.')
     enableFileCopy: bool?
+    @description('Optional. Enable/Disable IP connect functionality.')
     enableIpConnect: bool?
+    @description('Optional. Enable/Disable shareable link functionality.')
     enableShareableLink: bool?
+    @description('Optional. The number of scale units for the Bastion host. Defaults to 4.')
     scaleUnits: int?
+    @description('Optional. The SKU name of the Bastion host. Defaults to Standard.')
     skuName: string?
   }?
 
@@ -406,15 +414,20 @@ type hubVirtualNetworkType = {
 }
 
 type peerSettingsObject = {
+  @description('Optional. The peerings of the virtual network.')
   *: peeringSettingsType?
 }[]?
 
 type peeringSettingsType = {
-  @description('Optional. The peerings of the virtual network.')
+  @description('Optional. Allow forwarded traffic.')
   allowForwardedTraffic: bool?
+  @description('Optional. Allow gateway transit.')
   allowGatewayTransit: bool?
+  @description('Optional. Allow virtual network access.')
   allowVirtualNetworkAccess: bool?
+  @description('Optional. Use remote gateways.')
   useRemoteGateways: bool?
+  @description('Optional. Remote virtual network name.')
   remoteVirtualNetworkName: string?
 }[]?
 

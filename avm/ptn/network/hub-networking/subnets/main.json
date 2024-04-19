@@ -143,7 +143,7 @@
         ""
       ],
       "metadata": {
-        "description": "Optional. enable or disable apply network policies on private endpoint in the subnet."
+        "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
       }
     },
     "privateLinkServiceNetworkPolicies": {
@@ -155,7 +155,7 @@
         ""
       ],
       "metadata": {
-        "description": "Optional. enable or disable apply network policies on private link service in the subnet."
+        "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
       }
     },
     "addressPrefixes": {

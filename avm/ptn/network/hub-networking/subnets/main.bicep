@@ -26,7 +26,7 @@ param delegations array = []
 @description('Optional. The resource ID of the NAT Gateway to use for the subnet.')
 param natGatewayResourceId string = ''
 
-@description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
+@description('Optional. Enable or disable apply network policies on private endpoint in the subnet.')
 @allowed([
   'Disabled'
   'Enabled'
@@ -34,7 +34,7 @@ param natGatewayResourceId string = ''
 ])
 param privateEndpointNetworkPolicies string = ''
 
-@description('Optional. enable or disable apply network policies on private link service in the subnet.')
+@description('Optional. Enable or disable apply network policies on private link service in the subnet.')
 @allowed([
   'Disabled'
   'Enabled'

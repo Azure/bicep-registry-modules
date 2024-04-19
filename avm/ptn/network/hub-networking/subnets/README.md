@@ -42,8 +42,8 @@ This module deploys a Virtual Network Subnet.
 | [`name`](#parameter-name) | string | The Name of the subnet resource. |
 | [`natGatewayResourceId`](#parameter-natgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroupResourceId`](#parameter-networksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
-| [`privateEndpointNetworkPolicies`](#parameter-privateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
-| [`privateLinkServiceNetworkPolicies`](#parameter-privatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-privateendpointnetworkpolicies) | string | Enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-privatelinkservicenetworkpolicies) | string | Enable or disable apply network policies on private link service in the subnet. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`routeTableResourceId`](#parameter-routetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
 | [`serviceEndpointPolicies`](#parameter-serviceendpointpolicies) | array | An array of service endpoint policies. |
@@ -120,7 +120,7 @@ The resource ID of the network security group to assign to the subnet.
 
 ### Parameter: `privateEndpointNetworkPolicies`
 
-enable or disable apply network policies on private endpoint in the subnet.
+Enable or disable apply network policies on private endpoint in the subnet.
 
 - Required: No
 - Type: string
@@ -136,7 +136,7 @@ enable or disable apply network policies on private endpoint in the subnet.
 
 ### Parameter: `privateLinkServiceNetworkPolicies`
 
-enable or disable apply network policies on private link service in the subnet.
+Enable or disable apply network policies on private link service in the subnet.
 
 - Required: No
 - Type: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "10879124135106969975"
+      "templateHash": "12020567002099517724"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -229,7 +229,10 @@
       "properties": {},
       "additionalProperties": {
         "$ref": "#/definitions/hubVirtualNetworkType",
-        "nullable": true
+        "nullable": true,
+        "metadata": {
+          "description": "Optional. Array of hub virtual networks to create."
+        }
       },
       "nullable": true
     },
@@ -260,30 +263,51 @@
           "properties": {
             "disableCopyPaste": {
               "type": "bool",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable copy/paste functionality."
+              }
             },
             "enableFileCopy": {
               "type": "bool",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable file copy functionality."
+              }
             },
             "enableIpConnect": {
               "type": "bool",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable IP connect functionality."
+              }
             },
             "enableShareableLink": {
               "type": "bool",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable shareable link functionality."
+              }
             },
             "scaleUnits": {
               "type": "int",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The number of scale units for the Bastion host. Defaults to 4."
+              }
             },
             "skuName": {
               "type": "string",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The SKU name of the Bastion host. Defaults to Standard."
+              }
             }
           },
-          "nullable": true
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Azure Bastion config."
+          }
         },
         "enableTelemetry": {
           "type": "bool",
@@ -413,7 +437,10 @@
         "properties": {},
         "additionalProperties": {
           "$ref": "#/definitions/peeringSettingsType",
-          "nullable": true
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The peerings of the virtual network."
+          }
         }
       },
       "nullable": true
@@ -427,24 +454,36 @@
             "type": "bool",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The peerings of the virtual network."
+              "description": "Optional. Allow forwarded traffic."
             }
           },
           "allowGatewayTransit": {
             "type": "bool",
-            "nullable": true
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Allow gateway transit."
+            }
           },
           "allowVirtualNetworkAccess": {
             "type": "bool",
-            "nullable": true
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Allow virtual network access."
+            }
           },
           "useRemoteGateways": {
             "type": "bool",
-            "nullable": true
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Use remote gateways."
+            }
           },
           "remoteVirtualNetworkName": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Remote virtual network name."
+            }
           }
         }
       },
@@ -5461,7 +5500,7 @@
                 ""
               ],
               "metadata": {
-                "description": "Optional. enable or disable apply network policies on private endpoint in the subnet."
+                "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
               }
             },
             "privateLinkServiceNetworkPolicies": {
@@ -5473,7 +5512,7 @@
                 ""
               ],
               "metadata": {
-                "description": "Optional. enable or disable apply network policies on private link service in the subnet."
+                "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
               }
             },
             "addressPrefixes": {
@@ -5634,7 +5673,7 @@
         "input": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceGroupName.value]"
       }
     },
-    "location": {
+    "hubVirtualNetworkLocation": {
       "type": "array",
       "items": {
         "type": "string"
