@@ -259,7 +259,9 @@ resource managedInstance_roleAssignments 'Microsoft.Authorization/roleAssignment
     properties: {
       roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
         ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : roleAssignment.roleDefinitionIdOrName
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
