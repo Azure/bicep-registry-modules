@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "8861608240715532593"
+      "templateHash": "14939164743615879005"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet.",
@@ -263,7 +263,7 @@
       },
       "value": "[resourceGroup().name]"
     },
-    "name": {
+    "subnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the virtual network peering."

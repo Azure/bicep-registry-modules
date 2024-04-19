@@ -1,4 +1,4 @@
-# Virtual Network Subnets `[Microsoft.Network/hubnetworking/modules/subnets]`
+# Virtual Network Subnets `[Microsoft.Network/hubnetworking/subnets]`
 
 This module deploys a Virtual Network Subnet.
 
@@ -268,11 +268,11 @@ The service endpoints to enable on the subnet.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the virtual network peering. |
 | `resourceGroupName` | string | The resource group the virtual network peering was deployed into. |
 | `resourceId` | string | The resource ID of the virtual network peering. |
 | `subnetAddressPrefix` | string | The address prefix for the subnet. |
 | `subnetAddressPrefixes` | array | List of address prefixes for the subnet. |
+| `subnetName` | string | The name of the virtual network peering. |
 
 ## Cross-referenced modules
 
