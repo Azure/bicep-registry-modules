@@ -257,7 +257,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       ]
     }
     replicaLocations: [
-      'eastus'
+      'centralus'
       'westus'
     ]
     roleAssignments: [
@@ -362,7 +362,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "replicaLocations": {
       "value": [
-        "eastus",
+        "centralus",
         "westus"
       ]
     },
@@ -532,7 +532,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     ]
     location: '<location>'
     replicaLocations: [
-      'eastus'
+      'centralus'
       'westus'
     ]
     softDeleteRetentionInDays: 1
@@ -589,7 +589,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "replicaLocations": {
       "value": [
-        "eastus",
+        "centralus",
         "westus"
       ]
     },

@@ -1,4 +1,4 @@
-# App Configuration Replica Configurations `[Microsoft.AppConfiguration/configurationStores/replicas]`
+# App Configuration Replicas `[Microsoft.AppConfiguration/configurationStores/replicas]`
 
 This module deploys an App Configuration Replica.
 
