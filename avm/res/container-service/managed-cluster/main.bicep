@@ -149,6 +149,9 @@ param primaryAgentPoolProfile array
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType
 
+@description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
+param costAnalysisEnabled bool = false
+
 @description('Optional. Specifies whether the httpApplicationRouting add-on is enabled or not.')
 param httpApplicationRoutingEnabled bool = false
 
@@ -349,6 +352,9 @@ param httpProxyConfig object?
 @description('Optional. Identities associated with the cluster.')
 param identityProfile object?
 
+@description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
+param kedaAddon bool = false
+
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -535,6 +541,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         }
       : null
     servicePrincipalProfile: aksServicePrincipalProfile
+    metricsProfile: {
+      costAnalysis: {
+        enabled: skuTier == 'free' ? false : costAnalysisEnabled
+      }
+    }
     ingressProfile: {
       webAppRouting: {
         enabled: webApplicationRoutingEnabled
@@ -604,6 +615,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
     enablePodSecurityPolicy: enablePodSecurityPolicy
+    workloadAutoScalerProfile: {
+      keda: {
+        enabled: kedaAddon
+      }
+    }
     networkProfile: {
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
@@ -716,7 +732,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         enabled: enableStorageProfileBlobCSIDriver
       }
       diskCSIDriver: {
-        enabled: enableStorageProfileDiskCSIDriver
+        enabled: costAnalysisEnabled == true && skuTier != 'free' ? true : enableStorageProfileDiskCSIDriver
       }
       fileCSIDriver: {
         enabled: enableStorageProfileFileCSIDriver
