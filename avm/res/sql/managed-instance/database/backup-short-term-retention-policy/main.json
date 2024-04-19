@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "4816864047763535590"
+    },
+    "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
+    "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Short Term Retention backup policy. For example \"default\"."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent SQL managed instance database. Required if the template is used in a standalone deployment."
+      }
+    },
+    "managedInstanceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+      }
+    },
+    "retentionDays": {
+      "type": "int",
+      "defaultValue": 35,
+      "metadata": {
+        "description": "Optional. The backup retention period in days. This is how many days Point-in-Time Restore will be supported."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
+      "properties": {
+        "retentionDays": "[parameters('retentionDays')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed database backup short-term retention policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed database backup short-term retention policy."
+      },
+      "value": "[resourceId('Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed database backup short-term retention policy."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
