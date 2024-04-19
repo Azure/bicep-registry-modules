@@ -790,8 +790,6 @@ Location for all Resources.
 | `hubBastionName` | array | The name of the bastion host. |
 | `hubBastionResourceId` | array | The resource ID of the bastion host. |
 | `hubVirtualNetworkName` | array | The name of the hub virtual network. |
-| `hubVirtualNetworkNames` | array | The names of the hub virtual network. |
-| `hubVirtualNetworkPeers` | array | The peers of the hub virtual network. |
 | `hubVirtualNetworkResourceId` | array | The resource ID of the hub virtual network. |
 | `hubVirtualNetworkSubnets` | array | The subnets of the hub virtual network. |
 | `location` | array | The location the virtual network was deployed into. |

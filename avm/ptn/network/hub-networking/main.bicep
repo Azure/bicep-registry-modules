@@ -17,10 +17,7 @@ param hubVirtualNetworks hubVirtualNetworkObject
 
 //
 // Add your variables here
-var hubVirtualNetworkNames = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.name]
 var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.peeringSettings ?? []]
-var hubVirtualNetworkRoutes = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.routes ?? []]
-var hubVirtualNetworkSubnets = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.subnets ?? []]
 
 // ============== //
 // Resources      //
@@ -245,12 +242,6 @@ output hubBastionName string[] = [for (hub, index) in items(hubVirtualNetworks ?
 output hubBastionResourceId string[] = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.resourceId
 ]
-
-@description('The peers of the hub virtual network.')
-output hubVirtualNetworkPeers array = hubVirtualNetworkPeerings
-
-@description('The names of the hub virtual network.')
-output hubVirtualNetworkNames array = hubVirtualNetworkNames
 
 @description('The subnets of the hub virtual network.')
 output hubVirtualNetworkSubnets array = [
