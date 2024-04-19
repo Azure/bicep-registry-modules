@@ -1,4 +1,5 @@
-name: "avm.platform.manage-workflow-issue"
+# Workflow for creating issues for failing workflows
+name: .Platform - Manage workflow issue
 
 on:
   schedule:
