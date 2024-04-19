@@ -30,7 +30,7 @@ $res = Measure-Command {
     }
     # Token need to be unique
     AdditionalTokens           = @{
-      namePrefix = 'avm'
+      namePrefix = 'gbd'
     }
     AdditionalParameters       = @{
       resourceLocation = 'swedencentral'

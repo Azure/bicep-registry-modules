@@ -37,12 +37,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cdn/profile:<version>`.
 
-- [Afd](#example-1-afd)
-- [Defaults](#example-2-defaults)
-- [Max](#example-3-max)
-- [Waf-Aligned](#example-4-waf-aligned)
+- [As Azure Front Door](#example-1-as-azure-front-door)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Afd_
+### Example 1: _As Azure Front Door_
+
+This instance deploys the module as Azure Front Door.
+
 
 <details>
 
@@ -233,7 +236,10 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
-### Example 2: _Defaults_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -282,7 +288,10 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -443,7 +452,10 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
-### Example 4: _Waf-Aligned_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -611,7 +623,6 @@ The pricing tier (defines a CDN provider, feature list and rate) of the CDN prof
     'Premium_AzureFrontDoor'
     'Premium_Verizon'
     'Standard_955BandWidth_ChinaCdn'
-    'Standard_Akamai'
     'Standard_AvgBandWidth_ChinaCdn'
     'Standard_AzureFrontDoor'
     'Standard_ChinaCdn'

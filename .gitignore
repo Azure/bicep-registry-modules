@@ -2,3 +2,4 @@ node_modules
 .netrc
 moduleIndex.json
 .DS_Store
+avm/res/cdn/profile/Test-CDN.ps1

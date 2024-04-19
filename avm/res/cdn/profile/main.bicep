@@ -16,7 +16,6 @@ param location string = resourceGroup().location
   'StandardPlus_AvgBandWidth_ChinaCdn'
   'StandardPlus_ChinaCdn'
   'Standard_955BandWidth_ChinaCdn'
-  'Standard_Akamai'
   'Standard_AvgBandWidth_ChinaCdn'
   'Standard_AzureFrontDoor'
   'Standard_ChinaCdn'
@@ -92,7 +91,7 @@ var builtInRoleNames = {
   )
 }
 
-resource #_namePrefix_#Telemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource gbdTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.cdn-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {

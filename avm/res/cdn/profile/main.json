@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "9474385640753599051"
+      "version": "0.26.170.59819",
+      "templateHash": "1958755676681772616"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -129,7 +129,6 @@
         "StandardPlus_AvgBandWidth_ChinaCdn",
         "StandardPlus_ChinaCdn",
         "Standard_955BandWidth_ChinaCdn",
-        "Standard_Akamai",
         "Standard_AvgBandWidth_ChinaCdn",
         "Standard_AzureFrontDoor",
         "Standard_ChinaCdn",
@@ -237,7 +236,7 @@
     }
   },
   "resources": {
-    "#_namePrefix_#Telemetry": {
+    "gbdTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -337,8 +336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "5516612458443504281"
+              "version": "0.26.170.59819",
+              "templateHash": "2906172435071993445"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint.",
@@ -457,8 +456,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "11112660703037023992"
+                      "version": "0.26.170.59819",
+                      "templateHash": "3665403791951260301"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -703,8 +702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "7298174434641608123"
+              "version": "0.26.170.59819",
+              "templateHash": "364931243138434002"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret.",
@@ -852,8 +851,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15657388199001378642"
+              "version": "0.26.170.59819",
+              "templateHash": "15721665305636481516"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -1019,8 +1018,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8706007645911322422"
+              "version": "0.26.170.59819",
+              "templateHash": "12438540618132459307"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -1156,8 +1155,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "16657064743499074369"
+                      "version": "0.26.170.59819",
+                      "templateHash": "8566106020570825253"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin.",
@@ -1382,8 +1381,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1809010747275335698"
+              "version": "0.26.170.59819",
+              "templateHash": "5891069247146856543"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
@@ -1468,8 +1467,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "8195283154733773558"
+                      "version": "0.26.170.59819",
+                      "templateHash": "4690708071413750601"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
@@ -1656,8 +1655,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8869132357079269087"
+              "version": "0.26.170.59819",
+              "templateHash": "17165148529906488800"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1769,8 +1768,8 @@
                   "cacheConfiguration": {
                     "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'cacheConfiguration')]"
                   },
-                  "customDomainName": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'customDomainName')]"
+                  "customDomainNames": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'customDomainNames')]"
                   },
                   "enabledState": {
                     "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'enabledState')]"
@@ -1807,8 +1806,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "8525791914559803218"
+                      "version": "0.26.170.59819",
+                      "templateHash": "8589197902227220833"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -1840,8 +1839,11 @@
                         "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
                       }
                     },
-                    "customDomainName": {
-                      "type": "string",
+                    "customDomainNames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
@@ -1941,12 +1943,15 @@
                         "profile"
                       ]
                     },
-                    "profile::customDomain": {
-                      "condition": "[not(empty(parameters('customDomainName')))]",
+                    "profile::customDomains": {
+                      "copy": {
+                        "name": "customDomains",
+                        "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
+                      },
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/customDomains",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainName'), ''))]",
+                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
                       "dependsOn": [
                         "profile"
                       ]
@@ -1986,6 +1991,13 @@
                       "properties": {
                         "copy": [
                           {
+                            "name": "customDomains",
+                            "count": "[length(range(0, length(coalesce(parameters('customDomainNames'), createArray()))))]",
+                            "input": {
+                              "id": "[resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[range(0, length(coalesce(parameters('customDomainNames'), createArray())))[copyIndex('customDomains')]])]"
+                            }
+                          },
+                          {
                             "name": "ruleSets",
                             "count": "[length(parameters('ruleSets'))]",
                             "input": {
@@ -1994,7 +2006,6 @@
                           }
                         ],
                         "cacheConfiguration": "[parameters('cacheConfiguration')]",
-                        "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainName'), '')))), createArray())]",
                         "enabledState": "[parameters('enabledState')]",
                         "forwardingProtocol": "[parameters('forwardingProtocol')]",
                         "httpsRedirect": "[parameters('httpsRedirect')]",
