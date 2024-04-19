@@ -60,6 +60,13 @@ param loadBalancerSku string = 'standard'
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
 
+@description('Optional. The type of the managed inbound Load Balancer BackendPool.')
+@allowed([
+  'NodeIP'
+  'NodeIPConfiguration'
+])
+param backendPoolType string = 'NodeIPConfiguration'
+
 @description('Optional. Specifies outbound (egress) routing method.')
 @allowed([
   'loadBalancer'
@@ -630,14 +637,15 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       dnsServiceIP: dnsServiceIP
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
-      loadBalancerProfile: managedOutboundIPCount != 0
-        ? {
-            managedOutboundIPs: {
+      loadBalancerProfile: {
+        managedOutboundIPs: managedOutboundIPCount != 0
+          ? {
               count: managedOutboundIPCount
             }
-            effectiveOutboundIPs: []
-          }
-        : null
+          : null
+        effectiveOutboundIPs: []
+        backendPoolType: backendPoolType
+      }
     }
     publicNetworkAccess: publicNetworkAccess
     aadProfile: {
