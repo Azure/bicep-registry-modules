@@ -25,12 +25,32 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/role-assignment:<version>`.
 
-- [Role Assignments (Management Group scope)](#example-1-role-assignments-management-group-scope)
-- [Role Assignments (Management Group scope)](#example-2-role-assignments-management-group-scope)
-- [Role Assignments (Resource Group scope)](#example-3-role-assignments-resource-group-scope)
-- [Role Assignments (Resource Group)](#example-4-role-assignments-resource-group)
-- [Role Assignments (Subscription scope)](#example-5-role-assignments-subscription-scope)
-- [Role Assignments (Subscription scope)](#example-6-role-assignments-subscription-scope)
+- [Role Assignments (All scopes) `[Microsoft.Authorization/roleAssignments]`](#role-assignments-all-scopes-microsoftauthorizationroleassignments)
+  - [Navigation](#navigation)
+  - [Resource Types](#resource-types)
+  - [Usage examples](#usage-examples)
+    - [Example 1: _Role Assignments (Management Group scope)_](#example-1-role-assignments-management-group-scope)
+    - [Example 2: _Role Assignments (Management Group scope)_](#example-2-role-assignments-management-group-scope)
+    - [Example 3: _Role Assignments (Resource Group scope)_](#example-3-role-assignments-resource-group-scope)
+    - [Example 4: _Role Assignments (Resource Group)_](#example-4-role-assignments-resource-group)
+    - [Example 5: _Role Assignments (Subscription scope)_](#example-5-role-assignments-subscription-scope)
+    - [Example 6: _Role Assignments (Subscription scope)_](#example-6-role-assignments-subscription-scope)
+  - [Parameters](#parameters)
+    - [Parameter: `principalId`](#parameter-principalid)
+    - [Parameter: `roleDefinitionIdOrName`](#parameter-roledefinitionidorname)
+    - [Parameter: `condition`](#parameter-condition)
+    - [Parameter: `conditionVersion`](#parameter-conditionversion)
+    - [Parameter: `delegatedManagedIdentityResourceId`](#parameter-delegatedmanagedidentityresourceid)
+    - [Parameter: `description`](#parameter-description)
+    - [Parameter: `enableTelemetry`](#parameter-enabletelemetry)
+    - [Parameter: `location`](#parameter-location)
+    - [Parameter: `managementGroupId`](#parameter-managementgroupid)
+    - [Parameter: `principalType`](#parameter-principaltype)
+    - [Parameter: `resourceGroupName`](#parameter-resourcegroupname)
+    - [Parameter: `subscriptionId`](#parameter-subscriptionid)
+  - [Outputs](#outputs)
+  - [Cross-referenced modules](#cross-referenced-modules)
+  - [Data Collection](#data-collection)
 
 ### Example 1: _Role Assignments (Management Group scope)_
 

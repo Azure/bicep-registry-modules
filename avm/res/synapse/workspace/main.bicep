@@ -74,7 +74,7 @@ param sqlAdministratorLogin string
 param sqlAdministratorLoginPassword string = ''
 
 @description('Optional. Git integration settings.')
-param workspaceRepositoryConfiguration object = {}
+param workspaceRepositoryConfiguration object?
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
