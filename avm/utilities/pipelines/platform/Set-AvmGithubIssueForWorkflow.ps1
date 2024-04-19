@@ -95,6 +95,7 @@ function Set-AvmGithubIssueForWorkflow {
           $ProjectNumber = 538 # AVM - Issue Triage
           $comment = @"
 > [!IMPORTANT]
+> This module is currently orphaned (has no owner), therefore expect a higher response time.
 > @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@
 
