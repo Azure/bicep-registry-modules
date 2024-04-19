@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "12495804892051718765"
+      "version": "0.26.170.59819",
+      "templateHash": "16669238654401736455"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -231,7 +231,7 @@
     },
     "reserved": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": "[equals(parameters('kind'), 'Linux')]",
       "metadata": {
         "description": "Conditional. Defaults to false when creating Windows/app App Service Plan. Required if creating a Linux App Service Plan and must be set to true."
       }
