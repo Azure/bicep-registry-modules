@@ -194,7 +194,7 @@ resource hubAzureFirewallSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-
     name: '${hub.value.name}/AzureFirewallSubnet'
   }
 ]
-module hubAzureFirewallSubnetAssociation 'subnets/main.bicep' = [
+module hubAzureFirewallSubnetAssociation 'modules/subnets.bicep' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nafs'
     params: {
