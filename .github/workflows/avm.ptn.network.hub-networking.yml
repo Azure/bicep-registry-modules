@@ -31,6 +31,7 @@ on:
       - ".github/workflows/avm.ptn.network.hub-networking.yml"
       - "avm/ptn/network/hub-networking/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

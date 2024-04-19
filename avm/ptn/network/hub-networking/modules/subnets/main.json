@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11309828149329550402"
+      "version": "0.26.170.59819",
+      "templateHash": "8861608240715532593"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet.",
@@ -212,7 +212,7 @@
     },
     "subnet": {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
       "properties": {
         "addressPrefix": "[parameters('addressPrefix')]",

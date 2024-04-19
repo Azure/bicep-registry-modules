@@ -25,6 +25,7 @@ This module is designed to simplify the creation of multi-region hub networks in
 | `Microsoft.Network/routeTables/routes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/routeTables/routes) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
 
@@ -557,7 +558,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           }
           publicIPResourceID: ''
           roleAssignments: []
-          routes: []
           tags: {}
           threatIntelMode: 'Alert'
           virtualHub: ''
@@ -667,7 +667,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             },
             "publicIPResourceID": "",
             "roleAssignments": [],
-            "routes": [],
             "tags": {},
             "threatIntelMode": "Alert",
             "virtualHub": "",
@@ -787,6 +786,7 @@ Location for all Resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `hubAzureFirewallSubnetAssociationSubnets` | array |  |
 | `hubBastionName` | array | The name of the bastion host. |
 | `hubBastionResourceId` | array | The resource ID of the bastion host. |
 | `hubVirtualNetworkName` | array | The name of the hub virtual network. |

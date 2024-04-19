@@ -197,7 +197,6 @@ resource hubAzureFirewallSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-
     name: '${hub.value.name}/AzureFirewallSubnet'
   }
 ]
-
 module hubAzureFirewallSubnetAssociation 'modules/subnets/main.bicep' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nafs'
@@ -210,20 +209,6 @@ module hubAzureFirewallSubnetAssociation 'modules/subnets/main.bicep' = [
     dependsOn: [hubAzureFirewallSubnet, hubAzureFirewall, hubVirtualNetwork]
   }
 ]
-
-// If Azure Firewall is enabled and peering is enabled, associate the AuzreFirewallsubnet with the hubRouteTable created above
-
-/* resource hubAzureFirewallSubnetAssociation 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall && hub.value.enablePeering) {
-    name: '${hub.value.name}/AzureFirewallSubnet'
-    properties: {
-      routeTable: {
-        id: hubRouteTable[index].outputs.resourceId
-      }
-    }
-    dependsOn: hubRouteTable
-  }
-] */
 
 //
 // Add your resources here
@@ -270,6 +255,10 @@ output hubVirtualNetworkNames array = hubVirtualNetworkNames
 @description('The subnets of the hub virtual network.')
 output hubVirtualNetworkSubnets array = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.subnetNames
+]
+
+output hubAzureFirewallSubnetAssociationSubnets string[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): hubAzureFirewallSubnetAssociation[index].outputs.subnetAddressPrefix
 ]
 
 // ================ //
