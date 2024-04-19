@@ -1392,6 +1392,13 @@
         "description": "Optional. Identities associated with the cluster."
       }
     },
+    "kedaAddon": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables Kubernetes Event-driven Autoscaling (KEDA)."
+      }
+    },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
@@ -1589,6 +1596,11 @@
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
+        "workloadAutoScalerProfile": {
+          "keda": {
+            "enabled": "[parameters('kedaAddon')]"
+          }
+        },
         "networkProfile": {
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
