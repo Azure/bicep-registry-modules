@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "2418304067112690739"
+      "templateHash": "15581057568665854241"
     },
     "name": "SQL Server Instance Pool",
     "description": "This module deploys an Azure SQL Server Instance Pool.",
@@ -36,7 +36,7 @@
     "subnetId": {
       "type": "string",
       "metadata": {
-        "description": "Required, The subnet ID for the instance pool."
+        "description": "Required. The subnet ID for the instance pool."
       }
     },
     "licenseType": {
@@ -83,24 +83,15 @@
       "type": "string",
       "defaultValue": "GeneralPurpose",
       "allowedValues": [
-        "GeneralPurpose",
-        "BusinessCritical"
+        "GeneralPurpose"
       ],
       "metadata": {
-        "description": "Optional, The vCore service tier for the instance pool."
+        "description": "Optional. The vCore service tier for the instance pool."
       }
     },
     "skuName": {
       "type": "string",
       "defaultValue": "GP_Gen5",
-      "allowedValues": [
-        "GP_Gen5",
-        "GP_G8IM",
-        "GP_G8IH",
-        "BC_Gen5",
-        "BC_G8IM",
-        "BC_G8IH"
-      ],
       "metadata": {
         "description": "Optional. The SKU name for the instance pool."
       }
@@ -135,7 +126,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[take(format('46d3xbcp.res.sql-instance-pool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('46d3xbcp.res.sql-instancepool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -153,14 +144,14 @@
     }
   },
   "outputs": {
-    "instancePoolId": {
+    "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The ID of the SQL instance pool."
       },
       "value": "[resourceId('Microsoft.Sql/instancePools', parameters('name'))]"
     },
-    "instancePoolName": {
+    "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the SQL instance pool."
@@ -174,7 +165,7 @@
       },
       "value": "[reference('instancePool', '2023-05-01-preview', 'full').location]"
     },
-    "instancePoolResourceGroup": {
+    "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "The resource group name of the SQL instance pool."

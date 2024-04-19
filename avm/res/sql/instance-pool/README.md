@@ -23,9 +23,10 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/bicep-registry-modules:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/instance-pool:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
+- [Using only defaults](#example-2-using-only-defaults)
 
 ### Example 1: _Using only defaults_
 
@@ -37,7 +38,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module instancePool 'br/public:avm/bicep-registry-modules:<version>' = {
+module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
   name: 'instancePoolDeployment'
   params: {
     // Required parameters
@@ -79,6 +80,62 @@ module instancePool 'br/public:avm/bicep-registry-modules:<version>' = {
 </details>
 <p>
 
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
+  name: 'instancePoolDeployment'
+  params: {
+    // Required parameters
+    name: '<name>'
+    subnetId: '<subnetId>'
+    // Non-required parameters
+    location: '<location>'
+    skuName: 'GP_Gen8IM'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    "subnetId": {
+      "value": "<subnetId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "GP_Gen8IM"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -87,6 +144,7 @@ module instancePool 'br/public:avm/bicep-registry-modules:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the instance pool. |
+| [`subnetId`](#parameter-subnetid) | string | The subnet ID for the instance pool. |
 
 **Optional parameters**
 
@@ -98,21 +156,19 @@ module instancePool 'br/public:avm/bicep-registry-modules:<version>' = {
 | [`skuFamily`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`skuName`](#parameter-skuname) | string | The SKU name for the instance pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tier`](#parameter-tier) | string | The vCore service tier for the instance pool. |
 | [`vCores`](#parameter-vcores) | int | The number of vCores for the instance pool. |
-
-**Required, The subnet ID for the instance pool parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-
-**Optional, The vCore service tier for the instance pool parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 
 ### Parameter: `name`
 
 The name of the instance pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnetId`
+
+The subnet ID for the instance pool.
 
 - Required: Yes
 - Type: string
@@ -163,17 +219,6 @@ The SKU name for the instance pool.
 - Required: No
 - Type: string
 - Default: `'GP_Gen5'`
-- Allowed:
-  ```Bicep
-  [
-    'BC_G8IH'
-    'BC_G8IM'
-    'BC_Gen5'
-    'GP_G8IH'
-    'GP_G8IM'
-    'GP_Gen5'
-  ]
-  ```
 
 ### Parameter: `tags`
 
@@ -181,6 +226,20 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `tier`
+
+The vCore service tier for the instance pool.
+
+- Required: No
+- Type: string
+- Default: `'GeneralPurpose'`
+- Allowed:
+  ```Bicep
+  [
+    'GeneralPurpose'
+  ]
+  ```
 
 ### Parameter: `vCores`
 
@@ -213,10 +272,10 @@ The number of vCores for the instance pool.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `instancePoolId` | string | The ID of the SQL instance pool. |
 | `instancePoolLocation` | string | The location of the SQL instance pool. |
-| `instancePoolName` | string | The name of the SQL instance pool. |
-| `instancePoolResourceGroup` | string | The resource group name of the SQL instance pool. |
+| `name` | string | The name of the SQL instance pool. |
+| `resourceGroupName` | string | The resource group name of the SQL instance pool. |
+| `resourceId` | string | The ID of the SQL instance pool. |
 
 ## Cross-referenced modules
 

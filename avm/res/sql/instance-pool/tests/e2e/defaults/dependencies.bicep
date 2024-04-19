@@ -10,7 +10,7 @@ param pairedRegionScriptName string
 @description('Required. prefix.')
 param prefix string
 
-@description('Required. The name of the SQL Instance Pool')
+@description('Required. The name of the SQL Instance Pool.')
 param sqlInstancePoolName string
 
 @description('Required. The name of the Virtual Network to create.')

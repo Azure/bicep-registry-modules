@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Required, The subnet ID for the instance pool.')
+@description('Required. The subnet ID for the instance pool.')
 param subnetId string
 
 @description('Optional. The license type to apply for this database.')
@@ -42,22 +42,13 @@ param skuFamily string = 'Gen5'
 ])
 param vCores int = 8
 
-@description('Optional, The vCore service tier for the instance pool.')
+@description('Optional. The vCore service tier for the instance pool.')
 @allowed([
   'GeneralPurpose'
-  'BusinessCritical'
 ])
 param tier string = 'GeneralPurpose'
 
 @description('Optional. The SKU name for the instance pool.')
-@allowed([
-  'GP_Gen5'
-  'GP_G8IM'
-  'GP_G8IH'
-  'BC_Gen5'
-  'BC_G8IM'
-  'BC_G8IH'
-])
 param skuName string = 'GP_Gen5'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -81,10 +72,7 @@ resource instancePool 'Microsoft.Sql/instancePools@2023-05-01-preview' = {
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
-    name: take(
-      '46d3xbcp.res.sql-instance-pool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
-      64
-    )
+    name: '46d3xbcp.res.sql-instancepool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
       mode: 'Incremental'
       template: {
@@ -102,13 +90,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   }
 
 @description('The ID of the SQL instance pool.')
-output instancePoolId string = instancePool.id
+output resourceId string = instancePool.id
 
 @description('The name of the SQL instance pool.')
-output instancePoolName string = instancePool.name
+output name string = instancePool.name
 
 @description('The location of the SQL instance pool.')
 output instancePoolLocation string = instancePool.location
 
 @description('The resource group name of the SQL instance pool.')
-output instancePoolResourceGroup string = resourceGroup().name
+output resourceGroupName string = resourceGroup().name
