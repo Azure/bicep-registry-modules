@@ -14,7 +14,7 @@ param afdEndpointName string
 @description('Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object.')
 param cacheConfiguration object?
 
-@description('Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains.')
+@description('Optional. The names of the custom domains. The custom domains must be defined in the profile customDomains.')
 param customDomainNames string[]?
 
 @allowed([
