@@ -3,3 +3,4 @@ node_modules
 moduleIndex.json
 .DS_Store
 avm/res/cdn/profile/Test-CDN.ps1
+/avm/res/cdn/profile/Test-CDN.ps1
