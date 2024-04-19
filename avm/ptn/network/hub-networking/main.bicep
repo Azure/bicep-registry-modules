@@ -248,10 +248,6 @@ output hubVirtualNetworkSubnets array = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.subnetNames
 ]
 
-output hubAzureFirewallSubnetAssociationSubnets string[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): hubAzureFirewallSubnetAssociation[index].outputs.subnetAddressPrefix
-]
-
 // ================ //
 // Definitions      //
 // ================ //

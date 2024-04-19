@@ -786,7 +786,6 @@ Location for all Resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `hubAzureFirewallSubnetAssociationSubnets` | array |  |
 | `hubBastionName` | array | The name of the bastion host. |
 | `hubBastionResourceId` | array | The resource ID of the bastion host. |
 | `hubVirtualNetworkName` | array | The name of the hub virtual network. |
