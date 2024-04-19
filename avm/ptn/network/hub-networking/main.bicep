@@ -349,14 +349,19 @@ type hubVirtualNetworkType = {
   bastionHost: {
     @description('Optional. Enable/Disable copy/paste functionality.')
     disableCopyPaste: bool?
+
     @description('Optional. Enable/Disable file copy functionality.')
     enableFileCopy: bool?
+
     @description('Optional. Enable/Disable IP connect functionality.')
     enableIpConnect: bool?
+
     @description('Optional. Enable/Disable shareable link functionality.')
     enableShareableLink: bool?
+
     @description('Optional. The number of scale units for the Bastion host. Defaults to 4.')
     scaleUnits: int?
+
     @description('Optional. The SKU name of the Bastion host. Defaults to Standard.')
     skuName: string?
   }?
@@ -421,12 +426,16 @@ type peerSettingsObject = {
 type peeringSettingsType = {
   @description('Optional. Allow forwarded traffic.')
   allowForwardedTraffic: bool?
+
   @description('Optional. Allow gateway transit.')
   allowGatewayTransit: bool?
+
   @description('Optional. Allow virtual network access.')
   allowVirtualNetworkAccess: bool?
+
   @description('Optional. Use remote gateways.')
   useRemoteGateways: bool?
+
   @description('Optional. Remote virtual network name.')
   remoteVirtualNetworkName: string?
 }[]?
@@ -434,42 +443,61 @@ type peeringSettingsType = {
 type azureFirewallType = {
   @description('Optional. Hub IP addresses.')
   hubIpAddresses: object?
+
   @description('Optional. Virtual Hub ID.')
   virtualHub: string?
+
   @description('Optional. Additional public IP configurations.')
   additionalPublicIpConfigurations: array?
+
   @description('Optional. Application rule collections.')
   applicationRuleCollections: array?
+
   @description('Optional. Azure Firewall SKU.')
   azureSkuTier: string?
+
   @description('Optional. Diagnostic settings.')
   diagnosticSettings: diagnosticSettingType?
+
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
   @description('Optional. Firewall policy ID.')
   firewallPolicyId: string?
+
   @description('Optional. The location of the virtual network. Defaults to the location of the resource group.')
   location: string?
+
   @description('Optional. Lock settings.')
   lock: lockType?
+
   @description('Optional. Management IP address configuration.')
   managementIPAddressObject: object?
+
   @description('Optional. Management IP resource ID.')
   managementIPResourceID: string?
+
   @description('Optional. NAT rule collections.')
   natRuleCollections: array?
+
   @description('Optional. Network rule collections.')
   networkRuleCollections: array?
+
   @description('Optional. Public IP address object.')
   publicIPAddressObject: object?
+
   @description('Optional. Public IP resource ID.')
   publicIPResourceID: string?
+
   @description('Optional. Role assignments.')
   roleAssignments: roleAssignmentType?
+
   @description('Optional. Tags.')
   tags: object?
+
   @description('Optional. Threat Intel mode.')
   threatIntelMode: string?
+
   @description('Optional. Zones.')
   zones: array?
 }?
