@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "1958755676681772616"
+      "templateHash": "3647822949037966099"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -1656,7 +1656,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "17165148529906488800"
+              "templateHash": "1139997023996590437"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1807,7 +1807,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.26.170.59819",
-                      "templateHash": "8589197902227220833"
+                      "templateHash": "5770374289363120600"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -1846,7 +1846,7 @@
                       },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
+                        "description": "Optional. The names of the custom domains. The custom domains must be defined in the profile customDomains array."
                       }
                     },
                     "forwardingProtocol": {

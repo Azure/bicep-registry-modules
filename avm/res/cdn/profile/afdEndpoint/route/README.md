@@ -32,7 +32,7 @@ This module deploys a CDN Profile AFD Endpoint route.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cacheConfiguration`](#parameter-cacheconfiguration) | object | The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object. |
-| [`customDomainNames`](#parameter-customdomainnames) | array | The name of the custom domain. The custom domain must be defined in the profile customDomains. |
+| [`customDomainNames`](#parameter-customdomainnames) | array | The names of the custom domains. The custom domains must be defined in the profile customDomains array. |
 | [`enabledState`](#parameter-enabledstate) | string | Whether this route is enabled. |
 | [`forwardingProtocol`](#parameter-forwardingprotocol) | string | The protocol this rule will use when forwarding traffic to backends. |
 | [`httpsRedirect`](#parameter-httpsredirect) | string | Whether to automatically redirect HTTP traffic to HTTPS traffic. |
@@ -79,7 +79,7 @@ The caching configuration for this route. To disable caching, do not provide a c
 
 ### Parameter: `customDomainNames`
 
-The name of the custom domain. The custom domain must be defined in the profile customDomains.
+The names of the custom domains. The custom domains must be defined in the profile customDomains array.
 
 - Required: No
 - Type: array
