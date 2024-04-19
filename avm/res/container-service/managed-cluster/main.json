@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4896491646814133286"
+      "templateHash": "2318180309482229247"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -957,6 +957,13 @@
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
     },
+    "costAnalysisEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed."
+      }
+    },
     "httpApplicationRoutingEnabled": {
       "type": "bool",
       "defaultValue": false,
@@ -1371,6 +1378,13 @@
         "description": "Optional. Identities associated with the cluster."
       }
     },
+    "kedaAddon": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables Kubernetes Event-driven Autoscaling (KEDA)."
+      }
+    },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
@@ -1521,6 +1535,11 @@
         "agentPoolProfiles": "[parameters('primaryAgentPoolProfile')]",
         "linuxProfile": "[if(not(empty(parameters('sshPublicKey'))), createObject('adminUsername', parameters('adminUsername'), 'ssh', createObject('publicKeys', createArray(createObject('keyData', coalesce(parameters('sshPublicKey'), ''))))), null())]",
         "servicePrincipalProfile": "[parameters('aksServicePrincipalProfile')]",
+        "metricsProfile": {
+          "costAnalysis": {
+            "enabled": "[if(equals(parameters('skuTier'), 'free'), false(), parameters('costAnalysisEnabled'))]"
+          }
+        },
         "ingressProfile": {
           "webAppRouting": {
             "enabled": "[parameters('webApplicationRoutingEnabled')]",
@@ -1563,6 +1582,11 @@
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
+        "workloadAutoScalerProfile": {
+          "keda": {
+            "enabled": "[parameters('kedaAddon')]"
+          }
+        },
         "networkProfile": {
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
@@ -1633,7 +1657,7 @@
             "enabled": "[parameters('enableStorageProfileBlobCSIDriver')]"
           },
           "diskCSIDriver": {
-            "enabled": "[parameters('enableStorageProfileDiskCSIDriver')]"
+            "enabled": "[if(and(equals(parameters('costAnalysisEnabled'), true()), not(equals(parameters('skuTier'), 'free'))), true(), parameters('enableStorageProfileDiskCSIDriver'))]"
           },
           "fileCSIDriver": {
             "enabled": "[parameters('enableStorageProfileFileCSIDriver')]"
