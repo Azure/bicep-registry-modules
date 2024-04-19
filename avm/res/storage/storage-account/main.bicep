@@ -701,7 +701,7 @@ type networkAclsType = {
 
   @description('Required. Specifies the default action of allow or deny when no other rules match.')
   defaultAction: ('Allow' | 'Deny')
-}?
+}
 
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
