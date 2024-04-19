@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11298093745131885845"
+      "version": "0.26.170.59819",
+      "templateHash": "12648833747007968061"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -775,6 +775,17 @@
         "description": "Optional. Outbound IP Count for the Load balancer."
       }
     },
+    "backendPoolType": {
+      "type": "string",
+      "defaultValue": "NodeIPConfiguration",
+      "allowedValues": [
+        "NodeIP",
+        "NodeIPConfiguration"
+      ],
+      "metadata": {
+        "description": "Optional. The type of the managed inbound Load Balancer BackendPool."
+      }
+    },
     "outboundType": {
       "type": "string",
       "defaultValue": "loadBalancer",
@@ -1528,6 +1539,11 @@
         "agentPoolProfiles": "[parameters('primaryAgentPoolProfile')]",
         "linuxProfile": "[if(not(empty(parameters('sshPublicKey'))), createObject('adminUsername', parameters('adminUsername'), 'ssh', createObject('publicKeys', createArray(createObject('keyData', coalesce(parameters('sshPublicKey'), ''))))), null())]",
         "servicePrincipalProfile": "[parameters('aksServicePrincipalProfile')]",
+        "metricsProfile": {
+          "costAnalysis": {
+            "enabled": "[if(equals(parameters('skuTier'), 'free'), false(), parameters('costAnalysisEnabled'))]"
+          }
+        },
         "ingressProfile": {
           "webAppRouting": {
             "enabled": "[parameters('webApplicationRoutingEnabled')]",
@@ -1580,7 +1596,11 @@
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
           "outboundType": "[parameters('outboundType')]",
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
-          "loadBalancerProfile": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('managedOutboundIPs', createObject('count', parameters('managedOutboundIPCount')), 'effectiveOutboundIPs', createArray()), null())]"
+          "loadBalancerProfile": {
+            "managedOutboundIPs": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null())]",
+            "effectiveOutboundIPs": [],
+            "backendPoolType": "[parameters('backendPoolType')]"
+          }
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "aadProfile": {
@@ -1640,7 +1660,7 @@
             "enabled": "[parameters('enableStorageProfileBlobCSIDriver')]"
           },
           "diskCSIDriver": {
-            "enabled": "[if(equals(parameters('costAnalysisEnabled'), true()), true(), parameters('enableStorageProfileDiskCSIDriver'))]"
+            "enabled": "[if(and(equals(parameters('costAnalysisEnabled'), true()), not(equals(parameters('skuTier'), 'free'))), true(), parameters('enableStorageProfileDiskCSIDriver'))]"
           },
           "fileCSIDriver": {
             "enabled": "[parameters('enableStorageProfileFileCSIDriver')]"
@@ -1882,8 +1902,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8772299678418708256"
+              "version": "0.26.170.59819",
+              "templateHash": "4264461851737541966"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
