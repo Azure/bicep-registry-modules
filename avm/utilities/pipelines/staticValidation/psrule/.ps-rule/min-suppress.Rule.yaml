@@ -33,6 +33,7 @@ spec:
     - Azure.AppService.WebProbePath # Supressed as the probe path is specific to the app
     # Azure App Configuration Store
     - Azure.AppConfig.GeoReplica # Suppressed as geo-replication is WAF requirement but not required for min
+    - Azure.AppConfig.AuditLogs # Suppressed as Audit Logs are not required for min
   if:
     name: "."
     contains:
