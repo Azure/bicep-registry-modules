@@ -352,6 +352,9 @@ param httpProxyConfig object?
 @description('Optional. Identities associated with the cluster.')
 param identityProfile object?
 
+@description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
+param kedaAddon bool = false
+
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -612,6 +615,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
     enablePodSecurityPolicy: enablePodSecurityPolicy
+    workloadAutoScalerProfile: {
+      keda: {
+        enabled: kedaAddon
+      }
+    }
     networkProfile: {
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
