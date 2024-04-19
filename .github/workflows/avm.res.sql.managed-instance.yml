@@ -1,4 +1,4 @@
-name: "avm.ptn.authorization.role-assignment"
+name: "avm.res.sql.managed-instance"
 
 on:
   schedule:
@@ -26,15 +26,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.authorization.role-assignment.yml"
-      - "avm/ptn/authorization/role-assignment/**"
+      - ".github/workflows/avm.res.sql.managed-instance.yml"
+      - "avm/res/sql/managed-instance/**"
       - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/authorization/role-assignment"
-  workflowPath: ".github/workflows/avm.ptn.authorization.role-assignment.yml"
+  modulePath: "avm/res/sql/managed-instance"
+  workflowPath: ".github/workflows/avm.res.sql.managed-instance.yml"
 
 concurrency:
   group: ${{ github.workflow }}
