@@ -111,7 +111,7 @@ body:
         # - "avm/res/managed-services/registration-definition"
         - "avm/res/management/management-group"
         - "avm/res/net-app/net-app-account"
-        # - "avm/res/network/application-gateway"
+        - "avm/res/network/application-gateway"
         - "avm/res/network/application-gateway-web-application-firewall-policy"
         - "avm/res/network/application-security-group"
         - "avm/res/network/azure-firewall"
