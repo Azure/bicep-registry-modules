@@ -1477,6 +1477,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`autoUpgradeProfileUpgradeChannel`](#parameter-autoupgradeprofileupgradechannel) | string | Auto-upgrade channel on the AKS cluster. |
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
+| [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -2216,6 +2217,21 @@ Specifies the azure policy version to use.
 - Required: No
 - Type: string
 - Default: `'v2'`
+
+### Parameter: `backendPoolType`
+
+The type of the managed inbound Load Balancer BackendPool.
+
+- Required: No
+- Type: string
+- Default: `'NodeIPConfiguration'`
+- Allowed:
+  ```Bicep
+  [
+    'NodeIP'
+    'NodeIPConfiguration'
+  ]
+  ```
 
 ### Parameter: `costAnalysisEnabled`
 

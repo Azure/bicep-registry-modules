@@ -775,6 +775,17 @@
         "description": "Optional. Outbound IP Count for the Load balancer."
       }
     },
+    "backendPoolType": {
+      "type": "string",
+      "defaultValue": "NodeIPConfiguration",
+      "allowedValues": [
+        "NodeIP",
+        "NodeIPConfiguration"
+      ],
+      "metadata": {
+        "description": "Optional. The type of the managed inbound Load Balancer BackendPool."
+      }
+    },
     "outboundType": {
       "type": "string",
       "defaultValue": "loadBalancer",
@@ -1597,7 +1608,11 @@
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
           "outboundType": "[parameters('outboundType')]",
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
-          "loadBalancerProfile": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('managedOutboundIPs', createObject('count', parameters('managedOutboundIPCount')), 'effectiveOutboundIPs', createArray()), null())]"
+          "loadBalancerProfile": {
+            "managedOutboundIPs": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null())]",
+            "effectiveOutboundIPs": [],
+            "backendPoolType": "[parameters('backendPoolType')]"
+          }
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "aadProfile": {
