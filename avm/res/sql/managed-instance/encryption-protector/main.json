@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "13463643567330956322"
+    },
+    "name": "SQL Managed Instance Encryption Protector",
+    "description": "This module deploys a SQL Managed Instance Encryption Protector.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "managedInstanceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+      }
+    },
+    "serverKeyName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the SQL managed instance key."
+      }
+    },
+    "serverKeyType": {
+      "type": "string",
+      "defaultValue": "ServiceManaged",
+      "allowedValues": [
+        "AzureKeyVault",
+        "ServiceManaged"
+      ],
+      "metadata": {
+        "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+      }
+    },
+    "autoRotationEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Key auto rotation opt-in flag."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/managedInstances/encryptionProtector",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'current')]",
+      "properties": {
+        "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
+        "serverKeyName": "[parameters('serverKeyName')]",
+        "serverKeyType": "[parameters('serverKeyType')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed managed instance encryption protector."
+      },
+      "value": "current"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed managed instance encryption protector."
+      },
+      "value": "[resourceId('Microsoft.Sql/managedInstances/encryptionProtector', parameters('managedInstanceName'), 'current')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed managed instance encryption protector."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

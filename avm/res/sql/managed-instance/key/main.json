@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "101283708334468532"
+    },
+    "name": "SQL Managed Instance Keys",
+    "description": "This module deploys a SQL Managed Instance Key.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+      }
+    },
+    "managedInstanceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+      }
+    },
+    "serverKeyType": {
+      "type": "string",
+      "defaultValue": "ServiceManaged",
+      "allowedValues": [
+        "AzureKeyVault",
+        "ServiceManaged"
+      ],
+      "metadata": {
+        "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+      }
+    },
+    "uri": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required."
+      }
+    }
+  },
+  "variables": {
+    "splittedKeyUri": "[split(parameters('uri'), '/')]",
+    "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/managedInstances/keys",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[format('{0}/{1}', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]",
+      "properties": {
+        "serverKeyType": "[parameters('serverKeyType')]",
+        "uri": "[parameters('uri')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed managed instance key."
+      },
+      "value": "[if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed managed instance key."
+      },
+      "value": "[resourceId('Microsoft.Sql/managedInstances/keys', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed managed instance key."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
