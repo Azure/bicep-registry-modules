@@ -138,17 +138,7 @@ param vpnClientAadConfiguration object = {}
 // ================//
 
 // Other Variables
-var zoneRedundantSkus = [
-  'VpnGw1AZ'
-  'VpnGw2AZ'
-  'VpnGw3AZ'
-  'VpnGw4AZ'
-  'VpnGw5AZ'
-  'ErGw1AZ'
-  'ErGw2AZ'
-  'ErGw3AZ'
-]
-var gatewayPipAllocationMethod = contains(zoneRedundantSkus, skuName) ? 'Static' : 'Dynamic'
+var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
 var virtualGatewayPipNameVar = isActiveActiveValid
@@ -310,8 +300,8 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
       publicIPAllocationMethod: gatewayPipAllocationMethod
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
-      skuName: 'Standard'
-      zones: contains(zoneRedundantSkus, skuName) ? publicIpZones : []
+      skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
+      zones: skuName == 'Basic' ? [] : publicIpZones
       dnsSettings: {
         domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]
