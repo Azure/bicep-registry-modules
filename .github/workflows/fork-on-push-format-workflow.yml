@@ -1,0 +1,49 @@
+name: On push format workflow files # fork only, optional
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - .github/**
+      - CONTRIBUTING.md
+
+jobs:
+  check-secret:
+    runs-on: ubuntu-latest
+    outputs:
+      my-key: ${{ steps.my-key.outputs.defined }}
+    steps:
+      - id: my-key
+        if: "${{ env.MY_KEY != '' }}"
+        run: echo "defined=true" >> $GITHUB_OUTPUT
+        env:
+          MY_KEY: ${{ secrets.WORKFLOW_PAT }}
+
+  push-prettier:
+    runs-on: ubuntu-latest
+    needs: [check-secret]
+    if: needs.check-secret.outputs.my-key == 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_PAT }} # A WORKFLOW_PAT must be used to re-trigger workflows after commit. This PAT must have the workflow scope. This is not generally recommended.
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "16"
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run prettier --write .
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: Autogenerate Bicep Files
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          add: .github CONTRIBUTING.md

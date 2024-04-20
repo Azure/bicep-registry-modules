@@ -1,4 +1,4 @@
-name: .Platform - Check PSRule
+name: "avm.platform.check.psrule"
 
 on:
   workflow_dispatch:

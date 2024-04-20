@@ -1,4 +1,4 @@
-name: .Platform - Check Labels
+name: Check Labels
 
 on:
   pull_request_target:
