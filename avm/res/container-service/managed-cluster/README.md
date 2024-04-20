@@ -64,6 +64,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -87,9 +90,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
@@ -112,9 +112,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -289,6 +286,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -314,9 +314,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "proximityPlacementGroupResourceId": "<proximityPlacementGroupResourceId>",
@@ -339,9 +336,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -646,6 +640,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -668,9 +665,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -691,9 +685,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -778,6 +769,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -802,9 +796,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -825,9 +816,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -926,6 +914,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -949,9 +940,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -973,9 +961,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -1029,6 +1014,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -1054,9 +1042,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -1078,9 +1063,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -1152,6 +1134,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 3
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -1175,9 +1160,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
@@ -1200,9 +1182,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
@@ -1296,6 +1275,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 3,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -1321,9 +1303,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
@@ -1346,9 +1325,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
