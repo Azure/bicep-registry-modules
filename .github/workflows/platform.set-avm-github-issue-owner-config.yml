@@ -1,5 +1,5 @@
 # Workflow for notifying and assigning issues on creation
-name: .Platform - Set GitHub issue ownerconfig
+name: .Platform - Set GitHub issue owner config
 
 on:
   issues:
