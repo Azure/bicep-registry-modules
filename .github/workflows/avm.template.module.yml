@@ -19,7 +19,10 @@ on:
         type: string
         description: "Relative path to the module folder"
         required: true
-
+      customLocation:
+        type: string
+        description: "Default location overwrite"
+        required: false
 env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
@@ -129,6 +132,7 @@ jobs:
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+          customLocation: "${{ inputs.customLocation }}"
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 

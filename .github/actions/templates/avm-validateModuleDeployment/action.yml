@@ -14,13 +14,14 @@
 ##   |======================================================================================================================================================================================|
 ##   | Parameter                  | Required | Default | Description                                           | Example                                                                    |
 ##   |----------------------------|----------|---------|-------------------------------------------------------|----------------------------------------------------------------------------|
-##   | modulePath                 | true     | ''      | The path to the module file directory                 | 'modules/api-management/service/main.bicep'
-##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/tests/e2e/maix/main.test.bicep'                                |
+##   | modulePath                 | true     | ''      | The path to the module file directory                 | 'modules/api-management/service/main.bicep'                                |
+##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/tests/e2e/maix/main.test.bicep'            |
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
 ##   | subscriptionId             | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
 ##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
+##   | customLocation             | false    |         | Custom location overwrite, if needed                  | 'WestEurope'                                                               |
 ##   |======================================================================================================================================================================================|
 ##
 #########################################################
@@ -50,6 +51,9 @@ inputs:
   removeDeployment:
     description: 'Set "true" to set module up for removal'
     default: "true"
+    required: false
+  customLocation:
+    description: "Custom location overwrite, if needed"
     required: false
 
 runs:
