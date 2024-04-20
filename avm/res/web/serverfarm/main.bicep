@@ -35,7 +35,7 @@ param location string = resourceGroup().location
 param kind string = 'App'
 
 @description('Conditional. Defaults to false when creating Windows/app App Service Plan. Required if creating a Linux App Service Plan and must be set to true.')
-param reserved bool = false
+param reserved bool = (kind == 'Linux')
 
 @description('Optional. The Resource ID of the App Service Environment to use for the App Service Plan.')
 param appServiceEnvironmentId string = ''
