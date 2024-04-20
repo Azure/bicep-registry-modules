@@ -20,6 +20,10 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite"
+        required: false
   push:
     branches:
       - main
