@@ -2,22 +2,13 @@
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Rule
 metadata:
-  name: 'Azure.Storage.UseReplicationTest'
+  name: 'Custom.Azure.Storage.UseReplication'
 spec:
   type:
   - Microsoft.Storage/storageAccounts
   condition:
     anyOf:
       - field: 'Sku.name'
-        equals: 'Premium_ZRS'
+        contains: 'ZRS'
       - field: 'Sku.name'
-        equals: 'Standard_GRS'
-      - field: 'Sku.name'
-        equals: 'Standard_GZRS'
-      - field: 'Sku.name'
-        equals: 'Standard_RAGRS'
-      - field: 'Sku.name'
-        equals: 'Standard_RAGZRS'
-      - field: 'Sku.name'
-        equals: 'Standard_ZRS'
-
+        contains: 'GRS'
