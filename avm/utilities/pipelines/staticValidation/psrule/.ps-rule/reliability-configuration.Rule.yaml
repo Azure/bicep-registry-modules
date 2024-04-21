@@ -2,7 +2,7 @@
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Rule
 metadata:
-  name: 'Azure.Storage.UseReplication'
+  name: 'Azure.Storage.UseReplicationTest'
 spec:
   type:
   - Microsoft.Storage/storageAccounts
