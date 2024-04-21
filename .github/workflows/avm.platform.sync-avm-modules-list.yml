@@ -1,3 +1,4 @@
+# Workflow to create an issue, if AVM module list is not in sync with CSV file
 name: .Platform - Sync AVM module list
 
 on:
