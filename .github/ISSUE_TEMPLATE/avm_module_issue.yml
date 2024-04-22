@@ -38,6 +38,8 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - ""
+        - "avm/ptn/authorization/policy-assignment"
+        - "avm/ptn/authorization/role-assignment"
         # - "avm/ptn/avd-lza/insights"
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
@@ -110,7 +112,7 @@ body:
         # - "avm/res/managed-services/registration-definition"
         - "avm/res/management/management-group"
         - "avm/res/net-app/net-app-account"
-        # - "avm/res/network/application-gateway"
+        - "avm/res/network/application-gateway"
         - "avm/res/network/application-gateway-web-application-firewall-policy"
         - "avm/res/network/application-security-group"
         - "avm/res/network/azure-firewall"
@@ -163,7 +165,7 @@ body:
         - "avm/res/service-fabric/cluster"
         - "avm/res/signal-r-service/signal-r"
         - "avm/res/signal-r-service/web-pub-sub"
-        # - "avm/res/sql/managed-instance"
+        - "avm/res/sql/managed-instance"
         - "avm/res/sql/server"
         - "avm/res/storage/storage-account"
         - "avm/res/synapse/private-link-hub"
