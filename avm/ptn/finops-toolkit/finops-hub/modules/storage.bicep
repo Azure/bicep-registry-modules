@@ -36,7 +36,7 @@ param storageAccountName string = ''
 // Resources
 //==============================================================================
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.8.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.8.3' = {
   name: storageAccountName
   params: {
     name: storageAccountName

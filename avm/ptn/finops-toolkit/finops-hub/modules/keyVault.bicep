@@ -52,7 +52,7 @@ var formattedAccessPolicies = [
 // Resources
 //==============================================================================
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.4.0' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.5.1' = {
   name: keyVaultName
   params: {
     name: keyVaultName
