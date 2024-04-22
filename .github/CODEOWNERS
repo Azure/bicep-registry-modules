@@ -3,14 +3,16 @@
 /scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
 /avm/ @Azure/avm-core-team-technical-bicep
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
+/avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
+#/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/api-management/service/ @Azure/avm-res-apimanagement-service-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app/container-app/ @Azure/avm-res-app-containerapp-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app/managed-environment/ @Azure/avm-res-app-managedenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app-configuration/configuration-store/ @Azure/avm-res-appconfiguration-configurationstore-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/lock/ @Azure/avm-res-authorization-lock-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/authorization/policy-assignment/ @Azure/avm-res-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/policy-definition/ @Azure/avm-res-authorization-policydefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/policy-exemption/ @Azure/avm-res-authorization-policyexemption-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/policy-set-definition/ @Azure/avm-res-authorization-policysetdefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -76,7 +78,7 @@
 /avm/res/managed-services/registration-definition/ @Azure/avm-res-managedservices-registrationdefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/management/management-group/ @Azure/avm-res-management-managementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/net-app/net-app-account/ @Azure/avm-res-netapp-netappaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/application-gateway/ @Azure/avm-res-network-applicationgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/application-gateway/ @Azure/avm-res-network-applicationgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/application-gateway-web-application-firewall-policy/ @Azure/avm-res-network-applicationgatewaywebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/application-security-group/ @Azure/avm-res-network-applicationsecuritygroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/azure-firewall/ @Azure/avm-res-network-azurefirewall-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -129,7 +131,7 @@
 /avm/res/service-fabric/cluster/ @Azure/avm-res-servicefabric-cluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/signal-r-service/signal-r/ @Azure/avm-res-signalrservice-signalr-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/sql/managed-instance/ @Azure/avm-res-sql-managedinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/sql/managed-instance/ @Azure/avm-res-sql-managedinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/sql/server/ @Azure/avm-res-sql-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/synapse/private-link-hub/ @Azure/avm-res-synapse-privatelinkhub-module-owners-bicep @Azure/avm-core-team-technical-bicep
