@@ -307,7 +307,8 @@ param enableAzureDefender bool = false
 @description('Optional. Whether to enable Image Cleaner for Kubernetes.')
 param enableImageCleaner bool = false
 
-@description('Optional. The interval in hours Image Cleaner will run. Minimum value is 24 hours and maximum is three months.')
+@description('Optional. The interval in hours Image Cleaner will run. The maximum value is three months.')
+@minValue(24)
 param imageCleanerIntervalHours int = 24
 
 @description('Optional. Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription.')
