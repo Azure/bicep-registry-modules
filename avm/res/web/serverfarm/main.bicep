@@ -21,6 +21,8 @@ param name string
 })
 param sku object
 
+param skuName string
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -124,7 +126,15 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   kind: kind
   location: location
   tags: tags
-  sku: sku
+  sku: {
+    name: skuName
+    tier: contains(skuName, 'P')
+      ? 'Premium'
+      : contains(skuName, 'I') ? 'Isolated' : contains(skuName, 'E') ? 'ElasticPremium' : null
+    size: sku.size
+    family: sku.family
+    capacity: sku.capacity
+  }
   properties: {
     workerTierName: workerTierName
     hostingEnvironmentProfile: !empty(appServiceEnvironmentId)
