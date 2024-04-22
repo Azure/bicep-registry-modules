@@ -48,7 +48,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Required parameters
     name: 'wsfmin001'
     skuCapacity: 2
-    skuName: 'B1'
+    skuName: 'S1'
     // Non-required parameters
     location: '<location>'
   }
@@ -75,7 +75,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": 2
     },
     "skuName": {
-      "value": "B1"
+      "value": "S1"
     },
     // Non-required parameters
     "location": {
