@@ -1,8 +1,10 @@
-name: "avm.platform.manage-workflow-issue"
+# Workflow for creating issues for failing workflows
+name: .Platform - Manage workflow issue
 
 on:
   schedule:
     - cron: "30 5 * * *" # Every day at 5:30 am
+  workflow_dispatch:
 
 jobs:
   manage-issues:
@@ -14,16 +16,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - env:
-          GH_TOKEN: ${{ github.token }}
-        name: Manage issues
+      - uses: tibdex/github-app-token@v2
+        id: generate-token
+        with:
+          app_id: ${{ secrets.TEAM_LINTER_APP_ID }}
+          private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
+      - name: Manage issues
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGithubIssueForWorkflow.ps1')
 
           $functionInput = @{
             Repo              = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            RepoRoot          = $env:GITHUB_WORKSPACE
             LimitNumberOfRuns = 500
             LimitInDays       = 2
             IgnoreWorkflows   = @()
