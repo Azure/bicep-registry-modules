@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "15581057568665854241"
+      "templateHash": "1210707271653756300"
     },
     "name": "SQL Server Instance Pool",
     "description": "This module deploys an Azure SQL Server Instance Pool.",
@@ -33,10 +33,10 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. The subnet ID for the instance pool."
+        "description": "Required. The subnet resource ID for the instance pool."
       }
     },
     "licenseType": {
@@ -118,7 +118,7 @@
       },
       "properties": {
         "licenseType": "[parameters('licenseType')]",
-        "subnetId": "[parameters('subnetId')]",
+        "subnetId": "[parameters('subnetResourceId')]",
         "vCores": "[parameters('vCores')]"
       }
     },

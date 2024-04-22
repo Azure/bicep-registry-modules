@@ -26,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/instance-pool:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
+- [WAF-aligned](#example-2-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -43,7 +43,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
   params: {
     // Required parameters
     name: '<name>'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     location: '<location>'
   }
@@ -66,8 +66,8 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -80,9 +80,9 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
@@ -95,7 +95,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
   params: {
     // Required parameters
     name: '<name>'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     location: '<location>'
     skuName: 'GP_Gen8IM'
@@ -119,8 +119,8 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -144,7 +144,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the instance pool. |
-| [`subnetId`](#parameter-subnetid) | string | The subnet ID for the instance pool. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet resource ID for the instance pool. |
 
 **Optional parameters**
 
@@ -166,9 +166,9 @@ The name of the instance pool.
 - Required: Yes
 - Type: string
 
-### Parameter: `subnetId`
+### Parameter: `subnetResourceId`
 
-The subnet ID for the instance pool.
+The subnet resource ID for the instance pool.
 
 - Required: Yes
 - Type: string

@@ -11,8 +11,8 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Required. The subnet ID for the instance pool.')
-param subnetId string
+@description('Required. The subnet resource ID for the instance pool.')
+param subnetResourceId string
 
 @description('Optional. The license type to apply for this database.')
 @allowed([
@@ -65,7 +65,7 @@ resource instancePool 'Microsoft.Sql/instancePools@2023-05-01-preview' = {
   }
   properties: {
     licenseType: licenseType
-    subnetId: subnetId
+    subnetId: subnetResourceId
     vCores: vCores
   }
 }

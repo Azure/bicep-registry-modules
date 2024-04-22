@@ -7,9 +7,6 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
-@description('Required. prefix.')
-param prefix string
-
 @description('Required. The name of the SQL Instance Pool.')
 param sqlInstancePoolName string
 
@@ -18,6 +15,12 @@ param virtualNetworkName string
 
 @description('Optional. The name of the Subnet to create.')
 param subnetName string = 'sql-instancepool-subnet'
+
+@description('Required. The name of the NSG to create.')
+param nsgName string
+
+@description('Required. The name of the route table to create.')
+param routeTableName string
 
 var addressPrefix = '10.0.0.0/16'
 var subnetAddressPrefix = cidrSubnet(addressPrefix, 24, 0)
@@ -61,7 +64,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
 }
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'nsg-${prefix}'
+  name: nsgName
   location: location
   properties: {
     securityRules: [
@@ -182,7 +185,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
 }
 
 resource routeTable 'Microsoft.Network/routeTables@2020-06-01' = {
-  name: 'rt-${prefix}'
+  name: routeTableName
   location: location
   properties: {
     disableBgpRoutePropagation: false
@@ -278,3 +281,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
 
 @description('The subnetId required for the instance pool creation.')
 output subnetId string = virtualNetwork.properties.subnets[0].id
+
+@description('The name of the sql instnce pool to be created.')
+output sqlInstancePoolName string = sqlInstancePoolName

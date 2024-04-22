@@ -21,8 +21,6 @@ param serviceShort string = 'sipmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-var instancePoolName = '${namePrefix}${serviceShort}001'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -41,8 +39,9 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    sqlInstancePoolName: instancePoolName
-    prefix: namePrefix
+    nsgName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
+    sqlInstancePoolName: '${namePrefix}${serviceShort}001'
     location: resourceLocation
   }
 }
@@ -55,8 +54,8 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: instancePoolName
+    name: nestedDependencies.outputs.sqlInstancePoolName
     location: resourceLocation
-    subnetId: nestedDependencies.outputs.subnetId
+    subnetResourceId: nestedDependencies.outputs.subnetId
   }
 }

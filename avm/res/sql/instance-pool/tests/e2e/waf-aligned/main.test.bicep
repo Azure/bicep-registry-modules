@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -21,8 +21,6 @@ param serviceShort string = 'sipwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-var instancePoolName = '${namePrefix}${serviceShort}001'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -41,8 +39,9 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    sqlInstancePoolName: instancePoolName
-    prefix: namePrefix
+    nsgName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
+    sqlInstancePoolName: '${namePrefix}${serviceShort}001'
     location: resourceLocation
   }
 }
@@ -55,9 +54,9 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: instancePoolName
+    name: nestedDependencies.outputs.sqlInstancePoolName
     location: resourceLocation
     skuName: 'GP_Gen8IM'
-    subnetId: nestedDependencies.outputs.subnetId
+    subnetResourceId: nestedDependencies.outputs.subnetId
   }
 }
