@@ -217,7 +217,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
       dataFactoryName: dataFactory.name
       name: integrationRuntime.name
       type: integrationRuntime.type
-      interagrationRuntimeCustomDescription: integrationRuntime.?interagrationRuntimeCustomDescription ?? 'Managed Integration Runtime created by avm-res-datafactory-factories'
+      integrationRuntimeCustomDescription: integrationRuntime.?integrationRuntimeCustomDescription ?? 'Managed Integration Runtime created by avm-res-datafactory-factories'
       managedVirtualNetworkName: contains(integrationRuntime, 'managedVirtualNetworkName')
         ? integrationRuntime.managedVirtualNetworkName
         : ''
@@ -407,6 +407,9 @@ type privateEndpointType = {
 
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
+
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
 
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?

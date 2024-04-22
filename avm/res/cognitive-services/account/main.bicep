@@ -126,6 +126,9 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Array of deployments about cognitive service accounts to create.')
+param deployments deploymentsType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -339,6 +342,21 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   }
 }
 
+@batchSize(1)
+resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
+  for (deployment, index) in (deployments ?? []): {
+    parent: cognitiveService
+    name: deployment.?name ?? '${name}-deployments'
+    properties: {
+      model: deployment.model
+      raiPolicyName: deployment.?raiPolicyName
+    }
+    sku: deployment.?sku ?? {
+      name: sku
+    }
+  }
+]
+
 resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' =
   if (!empty(lock ?? {}) && lock.?kind != 'None') {
     name: lock.?name ?? 'lock-${name}'
@@ -549,6 +567,9 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
@@ -646,3 +667,32 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type deploymentsType = {
+  @description('Optional. Specify the name of cognitive service account deployment.')
+  name: string?
+
+  @description('Required. Properties of Cognitive Services account deployment model.')
+  model: {
+    @description('Required. The name of Cognitive Services account deployment model.')
+    name: string
+
+    @description('Required. The format of Cognitive Services account deployment model.')
+    format: string
+
+    @description('Required. The version of Cognitive Services account deployment model.')
+    version: string
+  }
+
+  @description('Optional. The resource model definition representing SKU.')
+  sku: {
+    @description('Required. The name of the resource model definition representing SKU.')
+    name: string
+
+    @description('Optional. The capacity of the resource model definition representing SKU.')
+    capacity: int?
+  }?
+
+  @description('Optional. The name of RAI policy.')
+  raiPolicyName: string?
+}[]?

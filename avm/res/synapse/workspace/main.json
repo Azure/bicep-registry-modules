@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "229457556089965339"
+      "version": "0.25.3.34343",
+      "templateHash": "14051939023718187274"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -136,6 +136,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The location to deploy the private endpoint to."
+            }
+          },
+          "privateLinkServiceConnectionName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private link connection to create."
             }
           },
           "service": {
@@ -580,7 +587,7 @@
     },
     "workspaceRepositoryConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Git integration settings."
       }
@@ -804,8 +811,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3692817517911366371"
+              "version": "0.25.3.34343",
+              "templateHash": "10907909212229865317"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -902,8 +909,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11661011043333744116"
+              "version": "0.25.3.34343",
+              "templateHash": "6689684157194442067"
             }
           },
           "parameters": {
@@ -990,8 +997,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4754954307876642999"
+              "version": "0.25.3.34343",
+              "templateHash": "13839822979779705807"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",

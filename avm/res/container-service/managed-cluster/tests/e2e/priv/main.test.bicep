@@ -67,6 +67,9 @@ module testDeployment '../../../main.bicep' = [
           minCount: 1
           mode: 'System'
           name: 'systempool'
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
           osDiskSizeGB: 0
           osType: 'Linux'
           serviceCidr: ''
@@ -89,9 +92,6 @@ module testDeployment '../../../main.bicep' = [
           mode: 'User'
           name: 'userpool1'
           nodeLabels: {}
-          nodeTaints: [
-            'CriticalAddonsOnly=true:NoSchedule'
-          ]
           osDiskSizeGB: 128
           osType: 'Linux'
           scaleSetEvictionPolicy: 'Delete'
@@ -113,9 +113,6 @@ module testDeployment '../../../main.bicep' = [
           mode: 'User'
           name: 'userpool2'
           nodeLabels: {}
-          nodeTaints: [
-            'CriticalAddonsOnly=true:NoSchedule'
-          ]
           osDiskSizeGB: 128
           osType: 'Linux'
           scaleSetEvictionPolicy: 'Delete'

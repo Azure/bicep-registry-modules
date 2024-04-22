@@ -74,7 +74,7 @@ param sqlAdministratorLogin string
 param sqlAdministratorLoginPassword string = ''
 
 @description('Optional. Git integration settings.')
-param workspaceRepositoryConfiguration object = {}
+param workspaceRepositoryConfiguration object?
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
@@ -450,6 +450,9 @@ type privateEndpointType = {
 
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
+
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
 
   @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
   service: string

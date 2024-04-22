@@ -64,6 +64,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -87,9 +90,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
@@ -112,9 +112,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -289,6 +286,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -314,9 +314,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "proximityPlacementGroupResourceId": "<proximityPlacementGroupResourceId>",
@@ -339,9 +336,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -562,7 +556,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csmin001'
     primaryAgentPoolProfile: [
       {
-        count: 1
+        count: 3
         mode: 'System'
         name: 'systempool'
         vmSize: 'Standard_DS2_v2'
@@ -596,7 +590,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfile": {
       "value": [
         {
-          "count": 1,
+          "count": 3,
           "mode": "System",
           "name": "systempool",
           "vmSize": "Standard_DS2_v2"
@@ -646,6 +640,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -668,9 +665,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -691,9 +685,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -778,6 +769,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -802,9 +796,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -825,9 +816,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -926,6 +914,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -949,9 +940,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -973,9 +961,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -1029,6 +1014,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -1054,9 +1042,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -1078,9 +1063,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -1149,9 +1131,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -1166,18 +1151,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           '3'
         ]
-        count: 2
+        count: 3
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         minPods: 2
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
@@ -1191,18 +1173,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         availabilityZones: [
           '3'
         ]
-        count: 2
+        count: 3
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         minPods: 2
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
@@ -1293,9 +1272,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 1,
+          "minCount": 3,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -1312,18 +1294,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             "3"
           ],
-          "count": 2,
+          "count": 3,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 1,
+          "minCount": 3,
           "minPods": 2,
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
@@ -1337,18 +1316,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "availabilityZones": [
             "3"
           ],
-          "count": 2,
+          "count": 3,
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 1,
+          "minCount": 3,
           "minPods": 2,
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
@@ -1501,6 +1477,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`autoUpgradeProfileUpgradeChannel`](#parameter-autoupgradeprofileupgradechannel) | string | Auto-upgrade channel on the AKS cluster. |
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
+| [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
+| [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
@@ -1535,6 +1513,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
+| [`kedaAddon`](#parameter-kedaaddon) | bool | Enables Kubernetes Event-driven Autoscaling (KEDA). |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Version of Kubernetes specified when creating the managed cluster. |
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
@@ -1559,6 +1538,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`podIdentityProfileUserAssignedIdentities`](#parameter-podidentityprofileuserassignedidentities) | array | The pod identities to use in the cluster. |
 | [`podIdentityProfileUserAssignedIdentityExceptions`](#parameter-podidentityprofileuserassignedidentityexceptions) | array | The pod identity exceptions to allow. |
 | [`privateDNSZone`](#parameter-privatednszone) | string | Private DNS Zone configuration. Set to 'system' and AKS will create a private DNS zone in the node resource group. Set to '' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
@@ -2210,6 +2190,7 @@ Auto-upgrade channel on the AKS cluster.
 
 - Required: No
 - Type: string
+- Default: `'stable'`
 - Allowed:
   ```Bicep
   [
@@ -2236,6 +2217,29 @@ Specifies the azure policy version to use.
 - Required: No
 - Type: string
 - Default: `'v2'`
+
+### Parameter: `backendPoolType`
+
+The type of the managed inbound Load Balancer BackendPool.
+
+- Required: No
+- Type: string
+- Default: `'NodeIPConfiguration'`
+- Allowed:
+  ```Bicep
+  [
+    'NodeIP'
+    'NodeIPConfiguration'
+  ]
+  ```
+
+### Parameter: `costAnalysisEnabled`
+
+Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `customerManagedKey`
 
@@ -2783,6 +2787,14 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 - Type: bool
 - Default: `False`
 
+### Parameter: `kedaAddon`
+
+Enables Kubernetes Event-driven Autoscaling (KEDA).
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `kubeDashboardEnabled`
 
 Specifies whether the kubeDashboard add-on is enabled or not.
@@ -3056,6 +3068,22 @@ Private DNS Zone configuration. Set to 'system' and AKS will create a private DN
 - Required: No
 - Type: string
 
+### Parameter: `publicNetworkAccess`
+
+Allow or deny public network access for AKS.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'SecuredByPerimeter'
+  ]
+  ```
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -3215,7 +3243,9 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 | `ingressApplicationGatewayIdentityObjectId` | string | The Object ID of Application Gateway Ingress Controller (AGIC) identity. |
 | `keyvaultIdentityClientId` | string | The Client ID of the Key Vault Secrets Provider identity. |
 | `keyvaultIdentityObjectId` | string | The Object ID of the Key Vault Secrets Provider identity. |
-| `kubeletidentityObjectId` | string | The Object ID of the AKS identity. |
+| `kubeletIdentityClientId` | string | The Client ID of the AKS identity. |
+| `kubeletIdentityObjectId` | string | The Object ID of the AKS identity. |
+| `kubeletIdentityResourceId` | string | The Resource ID of the AKS identity. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the managed cluster. |
 | `oidcIssuerUrl` | string | The OIDC token issuer URL. |
