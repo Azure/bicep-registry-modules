@@ -21,7 +21,7 @@ param serviceShort string = 'wsfmin'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var tempLocation = 'eastus'
+var tempLocation = 'australiaeast'
 
 // ============ //
 // Dependencies //
@@ -46,13 +46,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: tempLocation
-      sku: {
-        name: 'P1v3'
-        tier: 'Premium'
-        size: 'P1v3'
-        family: 'P'
-        capacity: 3
-      }
+      skuName: 'B1'
+      skuCapacity: 1
     }
   }
 ]
