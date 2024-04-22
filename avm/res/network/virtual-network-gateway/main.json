@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "13723804921107608390"
+      "templateHash": "10028460278197557916"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -483,6 +483,13 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "zones",
+        "count": "[length(parameters('publicIpZones'))]",
+        "input": "[string(parameters('publicIpZones')[copyIndex('zones')])]"
+      }
+    ],
     "gatewayPipAllocationMethod": "[if(equals(parameters('skuName'), 'Basic'), 'Dynamic', 'Static')]",
     "isActiveActiveValid": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('activeActive'), false())]",
     "virtualGatewayPipNameVar": "[if(variables('isActiveActiveValid'), createArray(parameters('gatewayPipName'), parameters('activeGatewayPipName')), createArray(parameters('gatewayPipName')))]",
@@ -667,7 +674,7 @@
             "value": "[parameters('tags')]"
           },
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
-          "zones": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', createArray()), createObject('value', parameters('publicIpZones')))]",
+          "zones": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', createArray()), createObject('value', variables('zones')))]",
           "dnsSettings": {
             "value": {
               "domainNameLabel": "[if(equals(length(variables('virtualGatewayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('virtualGatewayPipNameVar')[copyIndex()])]",
