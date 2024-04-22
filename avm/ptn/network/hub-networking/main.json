@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "1688188474333470586"
+      "templateHash": "16012881050609034351"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -429,21 +429,6 @@
           }
         }
       }
-    },
-    "peerSettingsObject": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {},
-        "additionalProperties": {
-          "$ref": "#/definitions/peeringSettingsType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The peerings of the virtual network."
-          }
-        }
-      },
-      "nullable": true
     },
     "peeringSettingsType": {
       "type": "array",
@@ -5363,7 +5348,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "3515549870436852598"
+              "templateHash": "11036384263600395953"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -5441,13 +5426,13 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The Name of the subnet resource."
+                "description": "Required. The Name of the subnet resource."
               }
             },
             "virtualNetworkName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment."
+                "description": "Required. The name of the parent virtual network. Required if the template is used in a standalone deployment."
               }
             },
             "addressPrefix": {

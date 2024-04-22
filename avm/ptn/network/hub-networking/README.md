@@ -603,7 +603,15 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         name: 'hub1'
         peeringSettings: []
         roleAssignments: []
-        routes: []
+        routes: [
+          {
+            name: 'defaultRoute'
+            properties: {
+              addressPrefix: '0.0.0.0/0'
+              nextHopType: 'Internet'
+            }
+          }
+        ]
         subnets: [
           {
             addressPrefix: '<addressPrefix>'
@@ -712,7 +720,15 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "name": "hub1",
           "peeringSettings": [],
           "roleAssignments": [],
-          "routes": [],
+          "routes": [
+            {
+              "name": "defaultRoute",
+              "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "Internet"
+              }
+            }
+          ],
           "subnets": [
             {
               "addressPrefix": "<addressPrefix>",

@@ -418,11 +418,6 @@ type hubVirtualNetworkType = {
   vnetEncryptionEnforcement: string?
 }
 
-type peerSettingsObject = {
-  @description('Optional. The peerings of the virtual network.')
-  *: peeringSettingsType?
-}[]?
-
 type peeringSettingsType = {
   @description('Optional. Allow forwarded traffic.')
   allowForwardedTraffic: bool?

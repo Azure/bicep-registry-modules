@@ -123,7 +123,15 @@ module testDeployment '../../../main.bicep' = [
           }
           peeringSettings: []
           roleAssignments: []
-          routes: []
+          routes: [
+            {
+              name: 'defaultRoute'
+              properties: {
+                addressPrefix: '0.0.0.0/0'
+                nextHopType: 'Internet'
+              }
+            }
+          ]
           subnets: [
             {
               name: 'GatewaySubnet'

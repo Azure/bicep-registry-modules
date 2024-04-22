@@ -2,10 +2,10 @@ metadata name = 'Virtual Network Subnets'
 metadata description = 'This module deploys a Virtual Network Subnet.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. The Name of the subnet resource.')
+@description('Required. The Name of the subnet resource.')
 param name string
 
-@description('Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
+@description('Required. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
 param virtualNetworkName string
 
 @description('Required. The address prefix for the subnet.')
