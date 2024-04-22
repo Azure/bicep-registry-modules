@@ -93,9 +93,9 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       publicIpZones: [
-        '1'
-        '2'
-        '3'
+        1
+        2
+        3
       ]
       vpnType: 'RouteBased'
       tags: {

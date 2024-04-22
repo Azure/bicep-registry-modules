@@ -62,9 +62,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     vpnClientAadConfiguration: {
       aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
@@ -121,9 +121,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "vpnClientAadConfiguration": {
@@ -170,9 +170,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -209,9 +209,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -246,9 +246,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     gatewayPipName: 'pip-nvger'
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -293,9 +293,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -387,9 +387,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       }
     ]
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     roleAssignments: [
       {
@@ -531,9 +531,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "roleAssignments": {
@@ -605,9 +605,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
@@ -669,9 +669,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "vpnGatewayGeneration": {
@@ -769,9 +769,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       }
     ]
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -896,9 +896,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "tags": {

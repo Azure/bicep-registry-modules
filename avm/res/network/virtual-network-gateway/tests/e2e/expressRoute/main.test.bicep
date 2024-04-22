@@ -60,9 +60,9 @@ module testDeployment '../../../main.bicep' = [
       ]
       gatewayPipName: '${namePrefix}-pip-${serviceShort}'
       publicIpZones: [
-        '1'
-        '2'
-        '3'
+        1
+        2
+        3
       ]
     }
     dependsOn: [
