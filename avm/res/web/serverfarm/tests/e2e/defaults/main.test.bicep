@@ -47,7 +47,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: tempLocation
       skuName: 'B1'
-      skuCapacity: 1
+      skuCapacity: 2
     }
   }
 ]
