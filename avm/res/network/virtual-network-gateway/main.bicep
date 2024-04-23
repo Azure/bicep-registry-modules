@@ -304,7 +304,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
       skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
-      zones: skuName == 'Basic' ? [] : zones
+      zones: skuName != 'Basic' ? zones : []
       dnsSettings: {
         domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]
