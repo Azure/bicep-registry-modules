@@ -42,7 +42,7 @@ param secrets array = []
 param customDomains array = []
 
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
-param origionGroups array = []
+param originGroups array = []
 
 @description('Optional. Array of rule set objects.')
 param ruleSets array = []
@@ -202,8 +202,8 @@ module profile_customDomains 'customdomain/main.bicep' = [
 ]
 
 module profile_originGroups 'origingroup/main.bicep' = [
-  for (origingroup, index) in origionGroups: {
-    name: '${uniqueString(deployment().name)}-Profile-OrigionGroup-${index}'
+  for (origingroup, index) in originGroups: {
+    name: '${uniqueString(deployment().name)}-Profile-OriginGroup-${index}'
     params: {
       name: origingroup.name
       profileName: profile.name
