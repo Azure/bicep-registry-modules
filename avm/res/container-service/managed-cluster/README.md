@@ -1513,7 +1513,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
-| [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. Minimum value is 24 hours and maximum is three months. |
+| [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. The maximum value is three months. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
 | [`kedaAddon`](#parameter-kedaaddon) | bool | Enables Kubernetes Event-driven Autoscaling (KEDA). |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
@@ -2791,7 +2791,7 @@ Identities associated with the cluster.
 
 ### Parameter: `imageCleanerIntervalHours`
 
-The interval in hours Image Cleaner will run. Minimum value is 24 hours and maximum is three months.
+The interval in hours Image Cleaner will run. The maximum value is three months.
 
 - Required: No
 - Type: int
