@@ -15,7 +15,7 @@ param location string = resourceGroup().location
 param accessPolicies array = []
 
 @description('Required. Name of the storage account to store access keys for.')
-param storageAccountName string = ''
+param storageAccountName string
 
 @description('Optional. Specifies the SKU for the vault.')
 @allowed([
