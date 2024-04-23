@@ -7,19 +7,19 @@ metadata owner = 'Azure/module-maintainers'
 @maxLength(60)
 param name string
 
-@description('Required. Defines the name, tier, size, family and capacity of the App Service Plan.')
+@description('Required. The name of the SKU will Determine the tier, size, family of the App Service Plan.')
 @metadata({
   example: '''
-  {
-    name: 'P1v3'
-    tier: 'Premium'
-    size: 'P1v3'
-    family: 'P'
-    capacity: 3
-  }
+  'F1'
+  'B1'
+  'P1v3'
+  'I1v2'
   '''
 })
-param sku object
+param skuName string
+
+@description('Required. Number of workers associated with the App Service Plan.')
+param skuCapacity int
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -61,7 +61,7 @@ param targetWorkerCount int = 0
 param targetWorkerSize int = 0
 
 @description('Optional. Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).')
-param zoneRedundant bool = (sku.tier == 'Premium' || sku.tier == 'ElasticPremium') ? true : false
+param zoneRedundant bool = startsWith(skuName, 'P') || startsWith(skuName, 'EP') ? true : false
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -124,7 +124,10 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   kind: kind
   location: location
   tags: tags
-  sku: sku
+  sku: {
+    name: skuName
+    capacity: skuCapacity
+  }
   properties: {
     workerTierName: workerTierName
     hostingEnvironmentProfile: !empty(appServiceEnvironmentId)
