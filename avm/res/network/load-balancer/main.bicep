@@ -91,6 +91,13 @@ var frontendIPConfigurationsVar = [
           }
         : null
     }
+    zones: contains(frontendIPConfiguration, 'subnetId') && !empty(frontendIPConfiguration.subnetId)
+    ? [
+        '1'
+        '2'
+        '3'
+      ]
+    :null
   }
 ]
 
