@@ -67,15 +67,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: tempLocation
-      sku: {
-        name: 'P1v3'
-        tier: 'Premium'
-        size: 'P1v3'
-        family: 'P'
-        capacity: 3
-      }
+      skuName: 'S1'
+      skuCapacity: 1
       perSiteScaling: true
-      zoneRedundant: true
+      zoneRedundant: false
       kind: 'App'
       lock: {
         name: 'lock'
