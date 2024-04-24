@@ -127,7 +127,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         publicIPAddressId: '<publicIPAddressId>'
       }
     ]
-    name: 'nlbint001'
+    name: 'nlbext001'
     // Non-required parameters
     backendAddressPools: [
       {
@@ -271,7 +271,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       ]
     },
     "name": {
-      "value": "nlbint001"
+      "value": "nlbext001"
     },
     // Non-required parameters
     "backendAddressPools": {
@@ -963,7 +963,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         subnetId: '<subnetId>'
       }
     ]
-    name: 'nlbint001'
+    name: 'nlbwaf001'
     // Non-required parameters
     backendAddressPools: [
       {
@@ -1077,7 +1077,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       ]
     },
     "name": {
-      "value": "nlbint001"
+      "value": "nlbwaf001"
     },
     // Non-required parameters
     "backendAddressPools": {
