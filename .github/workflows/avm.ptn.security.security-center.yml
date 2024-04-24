@@ -1,4 +1,4 @@
-name: "avm.ptn.security-center"
+name: "avm.ptn.security.security-center"
 
 on:
   schedule:
@@ -26,15 +26,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.security-center.yml"
-      - "avm/ptn/security-center/**"
+      - ".github/workflows/avm.ptn.security.security-center.yml"
+      - "avm/ptn/security/security-center/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/security-center"
-  workflowPath: ".github/workflows/avm.ptn.security-center.yml"
+  modulePath: "avm/ptn/security/security-center"
+  workflowPath: ".github/workflows/avm.ptn.security.security-center.yml"
 
 concurrency:
   group: ${{ github.workflow }}
