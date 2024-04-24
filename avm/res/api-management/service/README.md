@@ -9,7 +9,6 @@ This module deploys an API Management Service.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -41,7 +40,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:AVM/bicep-registry-modules:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -57,7 +56,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module service 'br/public:avm/res/api-management/service:<version>' = {
+module service 'br/public:AVM/bicep-registry-modules:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
@@ -113,7 +112,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module service 'br/public:avm/res/api-management/service:<version>' = {
+module service 'br/public:AVM/bicep-registry-modules:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
@@ -254,6 +253,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         subscriptionRequired: false
       }
     ]
+    publicIpAddressId: '<publicIpAddressId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -468,6 +468,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "publicIpAddressId": {
+      "value": "<publicIpAddressId>"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -519,7 +522,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module service 'br/public:avm/res/api-management/service:<version>' = {
+module service 'br/public:AVM/bicep-registry-modules:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
@@ -930,6 +933,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`policies`](#parameter-policies) | array | Policies. |
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
 | [`products`](#parameter-products) | array | Products. |
+| [`publicIpAddressId`](#parameter-publicipaddressid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
@@ -1339,6 +1343,14 @@ Products.
 - Type: array
 - Default: `[]`
 
+### Parameter: `publicIpAddressId`
+
+Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `restore`
 
 Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored.
@@ -1464,7 +1476,6 @@ The instance size of this API Management service.
 - Allowed:
   ```Bicep
   [
-    0
     1
     2
   ]
@@ -1531,39 +1542,6 @@ A list of availability zones denoting where the resource needs to come from.
 ## Cross-referenced modules
 
 _None_
-
-## Notes
-
-### Parameter Usage: `apiManagementServicePolicy`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"apiManagementServicePolicy": {
-    "value": {
-        "value":"<policies> <inbound> <rate-limit-by-key calls='250' renewal-period='60' counter-key='@(context.Request.IpAddress)' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>",
-        "format":"xml"
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-apiManagementServicePolicy: {
-    value:'<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period='60' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
-    format:'xml'
-}
-```
-
-</details>
-<p>
 
 ## Data Collection
 
