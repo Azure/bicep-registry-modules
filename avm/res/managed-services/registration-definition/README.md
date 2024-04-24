@@ -70,7 +70,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '#_TenantId_#'
+    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     name: 'Component Validation - msrdmin Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -112,7 +112,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "#_TenantId_#"
+      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
     },
     "name": {
       "value": "Component Validation - msrdmin Subscription assignment"
@@ -162,7 +162,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '#_TenantId_#'
+    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -204,7 +204,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "#_TenantId_#"
+      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
     },
     "name": {
       "value": "Component Validation - msrdmax Subscription assignment"
@@ -254,7 +254,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '#_TenantId_#'
+    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -296,7 +296,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "#_TenantId_#"
+      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
     },
     "name": {
       "value": "Component Validation - msrdwaf Subscription assignment"
