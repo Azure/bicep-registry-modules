@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '#_TenantId_#'
+    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     registrationDescription: 'Managed by Lighthouse'
   }
 }]
