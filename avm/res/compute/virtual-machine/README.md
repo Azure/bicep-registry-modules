@@ -574,6 +574,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         path: '/home/localAdministrator/.ssh/authorized_keys'
       }
     ]
+    rebootSetting: 'IfRequired'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -887,6 +888,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "path": "/home/localAdministrator/.ssh/authorized_keys"
         }
       ]
+    },
+    "rebootSetting": {
+      "value": "IfRequired"
     },
     "roleAssignments": {
       "value": [

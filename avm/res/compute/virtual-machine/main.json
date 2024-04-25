@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3394730923782836451"
+      "templateHash": "3101357082139743708"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -866,7 +866,7 @@
         "publicKeys": "[variables('publicKeysFormatted')]"
       },
       "provisionVMAgent": "[parameters('provisionVMAgent')]",
-      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting'))), null())]"
     },
     "windowsConfiguration": {
       "provisionVMAgent": "[parameters('provisionVMAgent')]",

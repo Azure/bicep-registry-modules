@@ -193,6 +193,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     enableAutomaticUpdates: true
     patchMode: 'AutomaticByPlatform'
+    rebootSetting: 'IfRequired'
     disablePasswordAuthentication: true
     encryptionAtHost: false
     extensionCustomScriptConfig: {
