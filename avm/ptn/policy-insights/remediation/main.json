@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1967438300578494233"
+      "templateHash": "4998116513968796720"
     },
     "name": "Policy Insights Remediations",
     "description": "This module deploys a Policy Insights Remediation.",
@@ -115,7 +115,8 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.ptn.policyinsights-remediation.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[take(format('46d3xbcp.ptn.policyinsights-remediation.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -162,9 +163,6 @@
           "resourceCount": {
             "value": "[parameters('resourceCount')]"
           },
-          "resourceDiscoveryMode": {
-            "value": "[parameters('resourceDiscoveryMode')]"
-          },
           "parallelDeployments": {
             "value": "[parameters('parallelDeployments')]"
           },
@@ -179,10 +177,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "1027651078109722063"
+              "templateHash": "13387090227354105998"
             },
             "name": "Policy Insights Remediations (Management Group scope)",
-            "description": "This module deploys a Policy Insights Remediation on a Management Group scope.",
+            "description": "This module starts a Policy Remediation task at a Management Group scope.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -224,17 +222,6 @@
                 "description": "Optional. Determines the max number of resources that can be remediated by the remediation job. Can be between 1-50000. If not provided, the default resource count is used."
               }
             },
-            "resourceDiscoveryMode": {
-              "type": "string",
-              "defaultValue": "ExistingNonCompliant",
-              "allowedValues": [
-                "ExistingNonCompliant",
-                "ReEvaluateCompliance"
-              ],
-              "metadata": {
-                "description": "Optional. The way resources to remediate are discovered. Defaults to ExistingNonCompliant if not specified."
-              }
-            },
             "policyAssignmentId": {
               "type": "string",
               "metadata": {
@@ -271,8 +258,7 @@
                 "parallelDeployments": "[parameters('parallelDeployments')]",
                 "policyAssignmentId": "[parameters('policyAssignmentId')]",
                 "policyDefinitionReferenceId": "[parameters('policyDefinitionReferenceId')]",
-                "resourceCount": "[parameters('resourceCount')]",
-                "resourceDiscoveryMode": "[parameters('resourceDiscoveryMode')]"
+                "resourceCount": "[parameters('resourceCount')]"
               }
             }
           ],
@@ -290,6 +276,13 @@
                 "description": "The resource ID of the remediation."
               },
               "value": "[extensionResourceId(managementGroup().id, 'Microsoft.PolicyInsights/remediations', parameters('name'))]"
+            },
+            "managementGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The managmeent group of the deployed remediation."
+              },
+              "value": "[managementGroup().name]"
             },
             "location": {
               "type": "string",
@@ -350,7 +343,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "5546909082465633989"
+              "templateHash": "9641345465244822217"
             },
             "name": "Policy Insights Remediations (Subscription scope)",
             "description": "This module deploys a Policy Insights Remediation on a Subscription scope.",
@@ -461,6 +454,13 @@
                 "description": "The resource ID of the remediation."
               },
               "value": "[subscriptionResourceId('Microsoft.PolicyInsights/remediations', parameters('name'))]"
+            },
+            "subscriptionName": {
+              "type": "string",
+              "metadata": {
+                "description": "The subscription name of the deployed remediation."
+              },
+              "value": "[subscription().displayName]"
             },
             "location": {
               "type": "string",

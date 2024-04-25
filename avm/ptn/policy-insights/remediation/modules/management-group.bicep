@@ -1,5 +1,5 @@
 metadata name = 'Policy Insights Remediations (Management Group scope)'
-metadata description = 'This module deploys a Policy Insights Remediation on a Management Group scope.'
+metadata description = 'This module starts a Policy Remediation task at a Management Group scope.'
 metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
@@ -27,13 +27,6 @@ param parallelDeployments int = 10
 @maxValue(50000)
 param resourceCount int = 500
 
-@sys.description('Optional. The way resources to remediate are discovered. Defaults to ExistingNonCompliant if not specified.')
-@allowed([
-  'ExistingNonCompliant'
-  'ReEvaluateCompliance'
-])
-param resourceDiscoveryMode string = 'ExistingNonCompliant'
-
 @sys.description('Required. The resource ID of the policy assignment that should be remediated.')
 param policyAssignmentId string
 
@@ -60,7 +53,6 @@ resource remediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
     policyAssignmentId: policyAssignmentId
     policyDefinitionReferenceId: policyDefinitionReferenceId
     resourceCount: resourceCount
-    resourceDiscoveryMode: resourceDiscoveryMode
   }
 }
 
@@ -73,6 +65,9 @@ output name string = remediation.name
 
 @sys.description('The resource ID of the remediation.')
 output resourceId string = remediation.id
+
+@sys.description('The managmeent group of the deployed remediation.')
+output managementGroupName string = managementGroup().name
 
 @sys.description('The location the resource was deployed into.')
 output location string = location
