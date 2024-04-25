@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "10832761360954810646"
+      "templateHash": "3394730923782836451"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -546,68 +546,11 @@
         "description": "Optional. Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault."
       }
     },
-    "autoShutdownStatus": {
-      "type": "string",
-      "defaultValue": "Disabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
+    "autoShutdownConfig": {
+      "type": "object",
+      "defaultValue": {},
       "metadata": {
-        "description": "Optional. The status of the schedule (i.e. Enabled, Disabled)."
-      }
-    },
-    "autoShutdownTime": {
-      "type": "string",
-      "defaultValue": "19:00",
-      "metadata": {
-        "description": "Optional. The time of day the schedule will occur."
-      }
-    },
-    "autoShutdownTimeZone": {
-      "type": "string",
-      "defaultValue": "UTC",
-      "metadata": {
-        "description": "Optional. The time zone id."
-      }
-    },
-    "autoShutdownNotificationStatus": {
-      "type": "string",
-      "defaultValue": "Disabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
-      "metadata": {
-        "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
-      }
-    },
-    "autoShutdownNotificationLocale": {
-      "type": "string",
-      "defaultValue": "en",
-      "metadata": {
-        "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
-      }
-    },
-    "autoShutdownNotificationEmail": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses)."
-      }
-    },
-    "autoShutdownWebhookUrl": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The webhook URL to which the notification will be sent."
-      }
-    },
-    "autoShutdownNotificationTimeInMinutes": {
-      "type": "int",
-      "defaultValue": 30,
-      "metadata": {
-        "description": "Optional. Time in minutes before event at which notification will be sent."
+        "description": "Optional. The configuration for auto-shutdown."
       }
     },
     "allowExtensionOperations": {
@@ -1096,26 +1039,20 @@
       ]
     },
     "vm_autoShutdownConfiguration": {
-      "condition": "[equals(parameters('autoShutdownStatus'), 'Enabled')]",
+      "condition": "[not(empty(parameters('autoShutdownConfig')))]",
       "type": "Microsoft.DevTestLab/schedules",
       "apiVersion": "2018-09-15",
       "name": "[format('shutdown-computevm-{0}', parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
-        "status": "[parameters('autoShutdownStatus')]",
+        "status": "[if(contains(parameters('autoShutdownConfig'), 'status'), parameters('autoShutdownConfig').status, 'Disabled')]",
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
         "taskType": "ComputeVmShutdownTask",
         "dailyRecurrence": {
-          "time": "[parameters('autoShutdownTime')]"
+          "time": "[if(contains(parameters('autoShutdownConfig'), 'time'), parameters('autoShutdownConfig').time, '19:00')]"
         },
-        "timeZoneId": "[parameters('autoShutdownTimeZone')]",
-        "notificationSettings": {
-          "status": "[parameters('autoShutdownNotificationStatus')]",
-          "emailRecipient": "[parameters('autoShutdownNotificationEmail')]",
-          "notificationLocale": "[parameters('autoShutdownNotificationLocale')]",
-          "timeInMinutes": "[parameters('autoShutdownNotificationTimeInMinutes')]",
-          "webhookUrl": "[parameters('autoShutdownWebhookUrl')]"
-        }
+        "timeZoneId": "[if(contains(parameters('autoShutdownConfig'), 'timeZone'), parameters('autoShutdownConfig').timeZone, 'UTC')]",
+        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
       },
       "dependsOn": [
         "vm"

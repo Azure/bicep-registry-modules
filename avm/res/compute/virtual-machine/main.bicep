@@ -120,37 +120,8 @@ param backupVaultResourceGroup string = resourceGroup().name
 @description('Optional. Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault.')
 param backupPolicyName string = 'DefaultPolicy'
 
-@description('Optional. The status of the schedule (i.e. Enabled, Disabled).')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param autoShutdownStatus string = 'Disabled'
-
-@description('Optional. The time of day the schedule will occur.')
-param autoShutdownTime string = '19:00'
-
-@description('Optional. The time zone id.')
-param autoShutdownTimeZone string = 'UTC'
-
-@description('Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled).')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param autoShutdownNotificationStatus string = 'Disabled'
-
-@description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
-param autoShutdownNotificationLocale string = 'en'
-
-@description('Optional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses).')
-param autoShutdownNotificationEmail string = ''
-
-@description('Optional. The webhook URL to which the notification will be sent.')
-param autoShutdownWebhookUrl string = ''
-
-@description('Optional. Time in minutes before event at which notification will be sent.')
-param autoShutdownNotificationTimeInMinutes int = 30
+@description('Optional. The configuration for auto-shutdown.')
+param autoShutdownConfig object = {}
 
 // Child resources
 @description('Optional. Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine.')
@@ -622,24 +593,36 @@ resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationPr
   }
 
 resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' =
-  if (autoShutdownStatus == 'Enabled') {
+  if (!empty(autoShutdownConfig)) {
     name: 'shutdown-computevm-${vm.name}'
     location: location
     properties: {
-      status: autoShutdownStatus
+      status: contains(autoShutdownConfig, 'status') ? autoShutdownConfig.status : 'Disabled'
       targetResourceId: vm.id
       taskType: 'ComputeVmShutdownTask'
       dailyRecurrence: {
-        time: autoShutdownTime
+        time: contains(autoShutdownConfig, 'time') ? autoShutdownConfig.time : '19:00'
       }
-      timeZoneId: autoShutdownTimeZone
-      notificationSettings: {
-        status: autoShutdownNotificationStatus
-        emailRecipient: autoShutdownNotificationEmail
-        notificationLocale: autoShutdownNotificationLocale
-        timeInMinutes: autoShutdownNotificationTimeInMinutes
-        webhookUrl: autoShutdownWebhookUrl
-      }
+      timeZoneId: contains(autoShutdownConfig, 'timeZone') ? autoShutdownConfig.timeZone : 'UTC'
+      notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
+        ? {
+            status: contains(autoShutdownConfig, 'notificationStatus')
+              ? autoShutdownConfig.notificationStatus
+              : 'Disabled'
+            emailRecipient: contains(autoShutdownConfig, 'notificationEmail')
+              ? autoShutdownConfig.notificationEmail
+              : ''
+            notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
+              ? autoShutdownConfig.notificationLocale
+              : 'en'
+            timeInMinutes: contains(autoShutdownConfig, 'notificationWebhookUrl')
+              ? autoShutdownConfig.notificationWebhookUrl
+              : ''
+            webhookUrl: contains(autoShutdownConfig, 'notificationTimeInMinutes')
+              ? autoShutdownConfig.notificationTimeInMinutes
+              : 30
+          }
+        : null
     }
   }
 

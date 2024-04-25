@@ -204,13 +204,15 @@ module testDeployment '../../../main.bicep' = [
       patchMode: 'AutomaticByPlatform'
       rebootSetting: 'IfRequired'
       encryptionAtHost: false
-      autoShutdownStatus: 'Enabled'
-      autoShutdownTime: '19:00'
-      autoShutdownTimeZone: 'UTC'
-      autoShutdownNotificationStatus: 'Enabled'
-      autoShutdownNotificationEmail: 'test@contoso.com'
-      autoShutdownNotificationLocale: 'en'
-      autoShutdownNotificationTimeInMinutes: 30
+      autoShutdownConfig: {
+        status: 'Enabled'
+        time: '19:00'
+        timeZone: 'UTC'
+        notificationStatus: 'Enabled'
+        notificationEmail: 'test@contoso.com'
+        notificationLocale: 'en'
+        notificationTimeInMinutes: 30
+      }
       extensionAntiMalwareConfig: {
         enabled: true
         settings: {
