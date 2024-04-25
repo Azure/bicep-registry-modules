@@ -18,7 +18,7 @@ Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-reg
 Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
-Will be triggered by the workflow avm.platform.set-avm-github-issue-owner-config.yml
+Will be triggered by the workflow platform.set-avm-github-issue-owner-config.yml
 #>
 function Set-AvmGitHubIssueOwnerConfig {
   [CmdletBinding(SupportsShouldProcess)]
