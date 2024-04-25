@@ -43,7 +43,7 @@ module policySetAssignments 'br/public:avm/ptn/authorization/policy-assignment:0
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${namePrefix}${serviceShort}-${substring(uniqueString(deployment().name),0, 4)}'
     location: resourceLocation
     subscriptionId: subscriptionId
     policyAssignmentId: policySetAssignments.outputs.resourceId
