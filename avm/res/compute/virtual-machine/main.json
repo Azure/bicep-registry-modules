@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3101357082139743708"
+      "templateHash": "3020873054028094940"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -1002,7 +1002,7 @@
                   "deleteOption": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].deleteOption, 'Delete')]",
                   "primary": "[if(equals(copyIndex('networkInterfaces'), 0), true(), false())]"
                 },
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'customNicName'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].customNicName, format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix)))]"
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].name, format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix)))]"
               }
             }
           ]
@@ -1132,7 +1132,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "networkInterfaceName": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'customNicName'), createObject('value', parameters('nicConfigurations')[copyIndex()].customNicName), createObject('value', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)))]",
+          "networkInterfaceName": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'name'), createObject('value', parameters('nicConfigurations')[copyIndex()].name), createObject('value', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)))]",
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },

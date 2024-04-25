@@ -2039,7 +2039,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     name: 'cvmwinmax'
     nicConfigurations: [
       {
-        customNicName: 'nic-test-01'
         deleteOption: 'Delete'
         diagnosticSettings: [
           {
@@ -2101,6 +2100,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             subnetResourceId: '<subnetResourceId>'
           }
         ]
+        name: 'nic-test-01'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -2333,7 +2333,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "nicConfigurations": {
       "value": [
         {
-          "customNicName": "nic-test-01",
           "deleteOption": "Delete",
           "diagnosticSettings": [
             {
@@ -2395,6 +2394,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "subnetResourceId": "<subnetResourceId>"
             }
           ],
+          "name": "nic-test-01",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
