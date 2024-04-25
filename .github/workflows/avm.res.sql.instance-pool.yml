@@ -16,11 +16,9 @@ on:
         required: false
         default: true
       removeDeployment:
-        ### We had to set this to false because
-        ### the SQL Instance Pool takes more
-        ### than 24 hours to get deleted
         type: boolean
         description: "Remove deployed module"
+        # We had to set this to false because the SQL Instance Pool takes more than 24 hours to get deleted
         required: false
         default: false
   push:
