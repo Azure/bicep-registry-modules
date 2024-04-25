@@ -28,7 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:AVM/bicep-registry-modules:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/security/security-center:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
 - [Using default parameter set](#example-2-using-default-parameter-set)
@@ -44,7 +44,7 @@ This instance deploys the module with default parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module securityCenter 'br/public:AVM/bicep-registry-modules:<version>' = {
+module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   name: 'securityCenterDeployment'
   params: {
     // Required parameters
@@ -96,7 +96,7 @@ This instance deploys the module with default parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module securityCenter 'br/public:AVM/bicep-registry-modules:<version>' = {
+module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   name: 'securityCenterDeployment'
   params: {
     // Required parameters
@@ -170,7 +170,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module securityCenter 'br/public:AVM/bicep-registry-modules:<version>' = {
+module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   name: 'securityCenterDeployment'
   params: {
     // Required parameters
