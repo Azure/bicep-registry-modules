@@ -74,5 +74,8 @@ output name string = remediation.name
 @sys.description('The resource ID of the remediation.')
 output resourceId string = remediation.id
 
+@sys.description('The subscription name of the deployed remediation.')
+output subscriptionName string = subscription().displayName
+
 @sys.description('The location the resource was deployed into.')
 output location string = location

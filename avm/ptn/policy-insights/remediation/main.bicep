@@ -61,7 +61,11 @@ param enableTelemetry bool = true
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
-    name: '46d3xbcp.ptn.policyinsights-remediation.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    name: take(
+      '46d3xbcp.ptn.policyinsights-remediation.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+      64
+    )
+    location: location
     properties: {
       mode: 'Incremental'
       template: {
@@ -78,7 +82,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-module remediation_mg 'management-group/main.bicep' =
+module remediation_mg 'modules/management-group.bicep' =
   if (empty(subscriptionId) && empty(resourceGroupName)) {
     name: '${uniqueString(deployment().name, location)}-Remediation-MG-Module'
     scope: managementGroup(managementGroupId)
@@ -89,13 +93,12 @@ module remediation_mg 'management-group/main.bicep' =
       policyDefinitionReferenceId: policyDefinitionReferenceId
       filtersLocations: filtersLocations
       resourceCount: resourceCount
-      resourceDiscoveryMode: resourceDiscoveryMode
       parallelDeployments: parallelDeployments
       failureThresholdPercentage: failureThresholdPercentage
     }
   }
 
-module remediation_sub 'subscription/main.bicep' =
+module remediation_sub 'modules/subscription.bicep' =
   if (!empty(subscriptionId) && empty(resourceGroupName)) {
     name: '${uniqueString(deployment().name, location)}-Remediation-Sub-Module'
     scope: subscription(subscriptionId)
@@ -112,7 +115,7 @@ module remediation_sub 'subscription/main.bicep' =
     }
   }
 
-module remediation_rg 'resource-group/main.bicep' =
+module remediation_rg 'modules/resource-group.bicep' =
   if (!empty(resourceGroupName) && !empty(subscriptionId)) {
     name: '${uniqueString(deployment().name, location)}-Remediation-RG-Module'
     scope: resourceGroup(subscriptionId, resourceGroupName)

@@ -25,11 +25,298 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/policy-insights/remediation:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Policy Remediation (Management Group scope)](#example-1-policy-remediation-management-group-scope)
+- [Policy Remediation (Management Group scope)](#example-2-policy-remediation-management-group-scope)
+- [Policy Remediation (Resource Group scope)](#example-3-policy-remediation-resource-group-scope)
+- [Policy Remediation (Resource Group scope)](#example-4-policy-remediation-resource-group-scope)
+- [Policy Remediation (Subscription scope)](#example-5-policy-remediation-subscription-scope)
+- [Policy Remediation (Subscription scope)](#example-6-policy-remediation-subscription-scope)
 
-### Example 1: _Using only defaults_
+### Example 1: _Policy Remediation (Management Group scope)_
+
+This module runs a Policy remediation task at Management Group scope using minimal parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
+  name: 'remediationDeployment'
+  params: {
+    // Required parameters
+    name: 'pirmgmin001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    filtersLocations: []
+    location: '<location>'
+    policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "pirmgmin001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "filtersLocations": {
+      "value": []
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "policyDefinitionReferenceId": {
+      "value": "Prerequisite_DeployExtensionWindows"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Policy Remediation (Management Group scope)_
+
+This module runs a Policy remediation task at Management Group scope using minimal parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
+  name: 'remediationDeployment'
+  params: {
+    // Required parameters
+    name: 'pirmgmax001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    failureThresholdPercentage: '0.5'
+    filtersLocations: []
+    location: '<location>'
+    parallelDeployments: 1
+    policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
+    resourceCount: 10
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "pirmgmax001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "failureThresholdPercentage": {
+      "value": "0.5"
+    },
+    "filtersLocations": {
+      "value": []
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "parallelDeployments": {
+      "value": 1
+    },
+    "policyDefinitionReferenceId": {
+      "value": "Prerequisite_DeployExtensionWindows"
+    },
+    "resourceCount": {
+      "value": 10
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Policy Remediation (Resource Group scope)_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
+  name: 'remediationDeployment'
+  params: {
+    // Required parameters
+    name: 'pirrgmin001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    filtersLocations: []
+    location: '<location>'
+    policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "pirrgmin001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "filtersLocations": {
+      "value": []
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "policyDefinitionReferenceId": {
+      "value": "Prerequisite_DeployExtensionWindows"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Policy Remediation (Resource Group scope)_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
+  name: 'remediationDeployment'
+  params: {
+    // Required parameters
+    name: 'pirrgmax001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    failureThresholdPercentage: '0.5'
+    filtersLocations: []
+    location: '<location>'
+    parallelDeployments: 1
+    policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
+    resourceCount: 10
+    resourceDiscoveryMode: 'ReEvaluateCompliance'
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "pirrgmax001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "failureThresholdPercentage": {
+      "value": "0.5"
+    },
+    "filtersLocations": {
+      "value": []
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "parallelDeployments": {
+      "value": 1
+    },
+    "policyDefinitionReferenceId": {
+      "value": "Prerequisite_DeployExtensionWindows"
+    },
+    "resourceCount": {
+      "value": 10
+    },
+    "resourceDiscoveryMode": {
+      "value": "ReEvaluateCompliance"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Policy Remediation (Subscription scope)_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -48,7 +335,8 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     // Non-required parameters
     filtersLocations: []
     location: '<location>'
-    policyDefinitionReferenceId: '<policyDefinitionReferenceId>'
+    policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
+    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -80,7 +368,10 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "<location>"
     },
     "policyDefinitionReferenceId": {
-      "value": "<policyDefinitionReferenceId>"
+      "value": "Prerequisite_DeployExtensionWindows"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
     }
   }
 }
@@ -89,9 +380,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 6: _Policy Remediation (Subscription scope)_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -110,9 +401,10 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     filtersLocations: []
     location: '<location>'
     parallelDeployments: 1
-    policyDefinitionReferenceId: '<policyDefinitionReferenceId>'
+    policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
     resourceCount: 10
     resourceDiscoveryMode: 'ReEvaluateCompliance'
+    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -150,89 +442,16 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": 1
     },
     "policyDefinitionReferenceId": {
-      "value": "<policyDefinitionReferenceId>"
+      "value": "Prerequisite_DeployExtensionWindows"
     },
     "resourceCount": {
       "value": 10
     },
     "resourceDiscoveryMode": {
       "value": "ReEvaluateCompliance"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
-  name: 'remediationDeployment'
-  params: {
-    // Required parameters
-    name: 'pirsubwaf001'
-    policyAssignmentId: '<policyAssignmentId>'
-    // Non-required parameters
-    failureThresholdPercentage: '0.5'
-    filtersLocations: []
-    location: '<location>'
-    parallelDeployments: 1
-    policyDefinitionReferenceId: '<policyDefinitionReferenceId>'
-    resourceCount: 10
-    resourceDiscoveryMode: 'ReEvaluateCompliance'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "pirsubwaf001"
     },
-    "policyAssignmentId": {
-      "value": "<policyAssignmentId>"
-    },
-    // Non-required parameters
-    "failureThresholdPercentage": {
-      "value": "0.5"
-    },
-    "filtersLocations": {
-      "value": []
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "parallelDeployments": {
-      "value": 1
-    },
-    "policyDefinitionReferenceId": {
-      "value": "<policyDefinitionReferenceId>"
-    },
-    "resourceCount": {
-      "value": 10
-    },
-    "resourceDiscoveryMode": {
-      "value": "ReEvaluateCompliance"
+    "subscriptionId": {
+      "value": "<subscriptionId>"
     }
   }
 }
