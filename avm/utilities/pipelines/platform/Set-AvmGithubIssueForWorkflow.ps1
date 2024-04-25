@@ -26,7 +26,7 @@ Set-AvmGithubIssueForWorkflow -Repo 'owner/repo01' -LimitNumberOfRuns 100 -Limit
 Check the last 100 workflow runs in the repository 'owner/repo01' that happened in the last 2 days. If the workflow name is 'Pipeline 01', then ignore the workflow run.
 
 .NOTES
-Will be triggered by the workflow avm.platform.manage-workflow-issue.yml
+Will be triggered by the workflow platform.manage-workflow-issue.yml
 #>
 function Set-AvmGithubIssueForWorkflow {
   [CmdletBinding(SupportsShouldProcess)]
