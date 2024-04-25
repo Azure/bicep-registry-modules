@@ -239,6 +239,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionDependencyAgentConfig: {
         enabled: true
+        enableAMA: true
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

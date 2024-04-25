@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3020873054028094940"
+      "templateHash": "13812487090890990585"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -3521,7 +3521,7 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
           "settings": {
             "value": {
-              "enableAMA": true
+              "enableAMA": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAMA'), parameters('extensionDependencyAgentConfig').enableAMA, true())]"
             }
           },
           "tags": {

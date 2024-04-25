@@ -427,7 +427,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             subnetResourceId: '<subnetResourceId>'
           }
         ]
-        nicSuffix: '-nic-01'
+        name: 'nic-test-01'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -524,6 +524,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
+      enableAMA: true
       enabled: true
       tags: {
         Environment: 'Non-Prod'
@@ -691,7 +692,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "subnetResourceId": "<subnetResourceId>"
             }
           ],
-          "nicSuffix": "-nic-01",
+          "name": "nic-test-01",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -822,6 +823,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionDependencyAgentConfig": {
       "value": {
+        "enableAMA": true,
         "enabled": true,
         "tags": {
           "Environment": "Non-Prod",
@@ -1126,6 +1128,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
+      enableAMA: true
       enabled: true
       tags: {
         Environment: 'Non-Prod'
@@ -1439,6 +1442,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionDependencyAgentConfig": {
       "value": {
+        "enableAMA": true,
         "enabled": true,
         "tags": {
           "Environment": "Non-Prod",
@@ -2231,6 +2235,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
+      enableAMA: true
       enabled: true
       tags: {
         Environment: 'Non-Prod'
@@ -2563,6 +2568,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionDependencyAgentConfig": {
       "value": {
+        "enableAMA": true,
         "enabled": true,
         "tags": {
           "Environment": "Non-Prod",

@@ -779,7 +779,9 @@ module vm_dependencyAgentExtension 'extension/main.bicep' =
         ? extensionDependencyAgentConfig.enableAutomaticUpgrade
         : true
       settings: {
-        enableAMA: true
+        enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA')
+          ? extensionDependencyAgentConfig.enableAMA
+          : true
       }
       tags: extensionDependencyAgentConfig.?tags ?? tags
     }
