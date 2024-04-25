@@ -34,7 +34,7 @@ param namePrefix string = '#_namePrefix_#'
 // }
 
 resource policySetAssignments 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-psa-mg'
+  name: 'dep-${namePrefix}-psa-${serviceShort}'
   identity: {
     type: 'SystemAssigned'
   }
