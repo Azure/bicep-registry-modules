@@ -2656,7 +2656,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_NV4as_v4'
+    vmSize: 'Standard_NV6ads_A10_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionNvidiaGpuDriverWindows: {
@@ -2723,7 +2723,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_NV4as_v4"
+      "value": "Standard_NV6ads_A10_v5"
     },
     // Non-required parameters
     "adminPassword": {

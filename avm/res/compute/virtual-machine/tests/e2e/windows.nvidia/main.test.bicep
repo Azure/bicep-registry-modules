@@ -85,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_NV4as_v4'
+      vmSize: 'Standard_NV6ads_A10_v5'
       adminPassword: password
       extensionNvidiaGpuDriverWindows: {
         enabled: true
