@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      scope: '/subscriptions/${subscription().subscriptionId}'
+      scope: subscription().Id
       workspaceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
       securityContactProperties: {
