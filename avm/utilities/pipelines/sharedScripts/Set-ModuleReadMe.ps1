@@ -545,10 +545,12 @@ function Set-DataCollectionSection {
             if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $telemetryFileContent = $rawResponse.Content -split '\n'
             } else {
-                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                return $ReadMeFileContent
             }
         } catch {
-            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Invalid url
+            return $ReadMeFileContent
         }
     } else {
         $telemetryFileContent = $PreLoadedContent.TelemetryFileContent
@@ -954,6 +956,11 @@ function ConvertTo-FormattedJSONParameterObject {
     for ($index = 0; $index -lt $paramInJSONFormatArray.Count; $index++) {
 
         $line = $paramInJSONFormatArray[$index]
+
+        if ($line -match '\s*\/\/.*') {
+            # Line is comment
+            continue
+        }
 
         # [2.4] Syntax:
         # - Everything left of a leftest ':' should be wrapped in quotes (as a parameter name is always a string)
