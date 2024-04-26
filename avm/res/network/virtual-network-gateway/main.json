@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "10028460278197557916"
+      "templateHash": "13137403460939656531"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -674,7 +674,7 @@
             "value": "[parameters('tags')]"
           },
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
-          "zones": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', createArray()), createObject('value', variables('zones')))]",
+          "zones": "[if(not(equals(parameters('skuName'), 'Basic')), createObject('value', variables('zones')), createObject('value', createArray()))]",
           "dnsSettings": {
             "value": {
               "domainNameLabel": "[if(equals(length(variables('virtualGatewayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('virtualGatewayPipNameVar')[copyIndex()])]",
