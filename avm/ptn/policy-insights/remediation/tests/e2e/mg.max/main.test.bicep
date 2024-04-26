@@ -23,16 +23,6 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
-// module policySetAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.1.0' = {
-//   name: '${uniqueString(deployment().name, resourceLocation)}-policySetAssignment-mg'
-//   params: {
-//     name: 'dep-${namePrefix}-psa-${serviceShort}'
-//     managementGroupId: managementGroup().id
-//     location: resourceLocation
-//     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/12794019-7a00-42cf-95c2-882eed337cc8'
-//   }
-// }
-
 resource policySetAssignments 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: 'dep-${namePrefix}-psa-${serviceShort}'
   identity: {
