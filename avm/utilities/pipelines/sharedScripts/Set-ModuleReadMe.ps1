@@ -254,6 +254,12 @@ function Set-DefinitionSection {
         $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
     }
 
+    # Error handling: Throw error if any parameter is missing a category
+    if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
+        $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
+        throw ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+    }
+
     # Get the module parameter categories
     $paramCategories = $descriptions | ForEach-Object { $_.Split('.')[0] } | Select-Object -Unique
 
