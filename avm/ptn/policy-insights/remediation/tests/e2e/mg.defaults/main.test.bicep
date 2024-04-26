@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    //managementGroupId: managementGroup().id
     policyAssignmentId: policySetAssignments.id
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
     filtersLocations: []
