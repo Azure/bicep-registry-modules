@@ -49,8 +49,8 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      scope: subscription().Id
-      workspaceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      scope: subscription().id
+      workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
       securityContactProperties: {
         alertNotifications: 'Off'

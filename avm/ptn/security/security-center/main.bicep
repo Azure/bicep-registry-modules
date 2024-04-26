@@ -4,7 +4,7 @@ metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 
-@description('Required. The full resource Id of the workspace to save the data in.')
+@description('Required. The full resource Id of the Log Analytics workspace to save the data in.')
 param workspaceResourceId string
 
 @description('Required. All the VMs in this scope will send their security data to the mentioned workspace unless overridden by a setting with more specific scope.')
@@ -252,7 +252,7 @@ resource securityContacts 'Microsoft.Security/securityContacts@2017-08-01-previe
 resource workspaceSettings 'Microsoft.Security/workspaceSettings@2017-08-01-preview' = {
   name: 'default'
   properties: {
-    workspaceId: workspaceId
+    workspaceId: workspaceResourceId
     scope: scope
   }
   dependsOn: [
@@ -261,7 +261,7 @@ resource workspaceSettings 'Microsoft.Security/workspaceSettings@2017-08-01-prev
 }
 
 @description('The resource ID of the used log analytics workspace.')
-output workspaceResourceId string = workspaceId
+output workspaceResourceId string = workspaceResourceId
 
 @description('The name of the security center.')
 output name string = 'Security'

@@ -49,7 +49,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   params: {
     // Required parameters
     scope: '<scope>'
-    workspaceId: '<workspaceId>'
+    workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
     location: '<location>'
   }
@@ -72,8 +72,8 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     "scope": {
       "value": "<scope>"
     },
-    "workspaceId": {
-      "value": "<workspaceId>"
+    "workspaceResourceId": {
+      "value": "<workspaceResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -101,7 +101,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   params: {
     // Required parameters
     scope: '<scope>'
-    workspaceId: '<workspaceId>'
+    workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
     deviceSecurityGroupProperties: {}
     ioTSecuritySolutionProperties: {}
@@ -132,8 +132,8 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     "scope": {
       "value": "<scope>"
     },
-    "workspaceId": {
-      "value": "<workspaceId>"
+    "workspaceResourceId": {
+      "value": "<workspaceResourceId>"
     },
     // Non-required parameters
     "deviceSecurityGroupProperties": {
@@ -175,7 +175,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   params: {
     // Required parameters
     scope: '<scope>'
-    workspaceId: '<workspaceId>'
+    workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
     location: '<location>'
   }
@@ -198,8 +198,8 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     "scope": {
       "value": "<scope>"
     },
-    "workspaceId": {
-      "value": "<workspaceId>"
+    "workspaceResourceId": {
+      "value": "<workspaceResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -220,7 +220,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`scope`](#parameter-scope) | string | All the VMs in this scope will send their security data to the mentioned workspace unless overridden by a setting with more specific scope. |
-| [`workspaceId`](#parameter-workspaceid) | string | The full Azure ID of the workspace to save the data in. |
+| [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The full resource Id of the Log Analytics workspace to save the data in. |
 
 **Optional parameters**
 
@@ -253,9 +253,9 @@ All the VMs in this scope will send their security data to the mentioned workspa
 - Required: Yes
 - Type: string
 
-### Parameter: `workspaceId`
+### Parameter: `workspaceResourceId`
 
-The full Azure ID of the workspace to save the data in.
+The full resource Id of the Log Analytics workspace to save the data in.
 
 - Required: Yes
 - Type: string
@@ -516,7 +516,7 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the security center. |
-| `workspaceId` | string | The resource ID of the used log analytics workspace. |
+| `workspaceResourceId` | string | The resource ID of the used log analytics workspace. |
 
 ## Cross-referenced modules
 

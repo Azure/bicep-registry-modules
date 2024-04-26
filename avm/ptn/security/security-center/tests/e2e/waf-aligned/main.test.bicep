@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       scope: '/subscriptions/${subscription().subscriptionId}'
-      workspaceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
     }
   }

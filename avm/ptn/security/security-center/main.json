@@ -4,18 +4,18 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "7579834492947731543"
+      "version": "0.26.54.24096",
+      "templateHash": "5215368682061207752"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
-    "workspaceId": {
+    "workspaceResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. The full Azure ID of the workspace to save the data in."
+        "description": "Required. The full resource Id of the Log Analytics workspace to save the data in."
       }
     },
     "scope": {
@@ -343,7 +343,7 @@
       "apiVersion": "2017-08-01-preview",
       "name": "default",
       "properties": {
-        "workspaceId": "[parameters('workspaceId')]",
+        "workspaceId": "[parameters('workspaceResourceId')]",
         "scope": "[parameters('scope')]"
       },
       "dependsOn": [
@@ -372,8 +372,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "16876993197536829325"
+              "version": "0.26.54.24096",
+              "templateHash": "11694037879563074763"
             }
           },
           "parameters": {
@@ -408,12 +408,12 @@
     }
   ],
   "outputs": {
-    "workspaceId": {
+    "workspaceResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the used log analytics workspace."
       },
-      "value": "[parameters('workspaceId')]"
+      "value": "[parameters('workspaceResourceId')]"
     },
     "name": {
       "type": "string",
