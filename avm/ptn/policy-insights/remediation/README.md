@@ -94,7 +94,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 ### Example 2: _Policy Remediation (Management Group scope)_
 
-This module runs a Policy remediation task at Management Group scope using minimal parameters.
+This module runs a Policy remediation task at Management Group scope using common parameters.
 
 
 <details>
@@ -166,7 +166,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 ### Example 3: _Policy Remediation (Resource Group scope)_
 
-This instance deploys the module with the minimum set of required parameters.
+This module runs a Policy remediation task at Resource Group scope using minimal parameters.
 
 
 <details>
@@ -234,7 +234,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 ### Example 4: _Policy Remediation (Resource Group scope)_
 
-This instance deploys the module with the minimum set of required parameters.
+This module runs a Policy remediation task at Resource Group scope using common parameters.
 
 
 <details>
@@ -318,7 +318,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 ### Example 5: _Policy Remediation (Subscription scope)_
 
-This instance deploys the module with the minimum set of required parameters.
+This module runs a Policy remediation task at subscription scope using minimal parameters.
 
 
 <details>
@@ -382,7 +382,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 ### Example 6: _Policy Remediation (Subscription scope)_
 
-This instance deploys the module with the minimum set of required parameters.
+This module runs a Policy remediation task at subscription scope using common parameters.
 
 
 <details>

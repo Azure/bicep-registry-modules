@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 
 metadata name = 'Policy Remediation (Management Group scope)'
-metadata description = 'This module runs a Policy remediation task at Management Group scope using minimal parameters.'
+metadata description = 'This module runs a Policy remediation task at Management Group scope using common parameters.'
 
 // ========== //
 // Parameters //
