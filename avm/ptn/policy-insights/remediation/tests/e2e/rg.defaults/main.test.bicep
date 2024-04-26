@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 
 metadata name = 'Policy Remediation (Resource Group scope)'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata description = 'This module runs a Policy remediation task at Resource Group scope using minimal parameters.'
 
 // ========== //
 // Parameters //
