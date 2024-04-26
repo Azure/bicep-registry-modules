@@ -42,6 +42,10 @@ function Set-AvmGitHubIssueOwnerConfig {
   if ($issue.title.StartsWith('[AVM Module Issue]')) {
     $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn)')[0].Trim().Replace(' ', '')
 
+    if ([string]::IsNullOrEmpty($moduleName)) {
+      throw 'No valid module name was found in the issue.'
+    }
+
     $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
     # get CSV data
     $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
