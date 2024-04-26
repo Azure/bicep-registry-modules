@@ -4,8 +4,8 @@ metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 
-@description('Required. The full Azure ID of the workspace to save the data in.')
-param workspaceId string
+@description('Required. The full resource Id of the workspace to save the data in.')
+param workspaceResourceId string
 
 @description('Required. All the VMs in this scope will send their security data to the mentioned workspace unless overridden by a setting with more specific scope.')
 param scope string
