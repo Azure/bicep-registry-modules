@@ -46,7 +46,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   name: 'remediationDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'pirmgmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     filtersLocations: []
@@ -70,7 +70,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "pirmgmin001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -106,7 +106,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   name: 'remediationDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'pirmgmax001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     failureThresholdPercentage: '0.5'
@@ -133,7 +133,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "pirmgmax001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -178,7 +178,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   name: 'remediationDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'pirrgmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     filtersLocations: []
@@ -204,7 +204,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "pirrgmin001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -246,7 +246,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   name: 'remediationDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'pirrgmax001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     failureThresholdPercentage: '0.5'
@@ -276,7 +276,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "pirrgmax001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -330,7 +330,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   name: 'remediationDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'pirsubmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     filtersLocations: []
@@ -355,7 +355,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "pirsubmin001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -394,7 +394,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   name: 'remediationDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'pirsubmax001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     failureThresholdPercentage: '0.5'
@@ -423,7 +423,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "pirsubmax001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
