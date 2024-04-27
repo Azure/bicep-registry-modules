@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-      availabilityZone: 0
+      zone: 0
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
