@@ -963,7 +963,7 @@ function ConvertTo-FormattedJSONParameterObject {
 
         $line = $paramInJSONFormatArray[$index]
 
-        if ($line -match '\s*\/\/.*') {
+        if ($line -match '^\s*\/\/.*') {
             # Line is comment
             continue
         }
