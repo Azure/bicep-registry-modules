@@ -617,10 +617,10 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
             notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
               ? autoShutdownConfig.notificationLocale
               : 'en'
-            timeInMinutes: contains(autoShutdownConfig, 'notificationWebhookUrl')
+            webhookUrl: contains(autoShutdownConfig, 'notificationWebhookUrl')
               ? autoShutdownConfig.notificationWebhookUrl
               : ''
-            webhookUrl: contains(autoShutdownConfig, 'notificationTimeInMinutes')
+            timeInMinutes: contains(autoShutdownConfig, 'notificationTimeInMinutes')
               ? autoShutdownConfig.notificationTimeInMinutes
               : 30
           }
