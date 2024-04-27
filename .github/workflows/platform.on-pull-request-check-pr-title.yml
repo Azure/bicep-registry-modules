@@ -1,4 +1,4 @@
-name: "Semantic PR Check"
+name: .Platform - Semantic PR Check
 
 on:
   pull_request_target:

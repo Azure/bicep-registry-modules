@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4652975451954294914"
+      "templateHash": "7048259745072727177"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -381,6 +381,7 @@
       "type": "int",
       "defaultValue": 1,
       "allowedValues": [
+        0,
         1,
         2
       ],
