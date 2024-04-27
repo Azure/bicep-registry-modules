@@ -32,7 +32,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 // Diagnostics
-// ===========
+// ============
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
@@ -99,10 +99,10 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'heathProbe'
           properties: {
-            enabledState: ''
-            healthProbeMethod: ''
+            enabledState: 'Enabled'
+            healthProbeMethod: 'HEAD'
             intervalInSeconds: 60
-            path: '/'
+            path: '/healthz'
             protocol: 'Https'
           }
         }
