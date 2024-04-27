@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "12287523603498112228"
+      "version": "0.26.54.24096",
+      "templateHash": "1208664329573960589"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -170,40 +170,40 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform."
+        "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "infrastructureSubnetId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if \"internal\" is set to true."
+        "description": "Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if \"internal\" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "internal": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided."
+        "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "platformReservedCidr": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform."
+        "description": "Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant."
       }
     },
     "platformReservedDnsIP": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform."
+        "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "zoneRedundant": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Whether or not this Managed Environment is zone-redundant."
       }
@@ -239,14 +239,14 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Workload profiles configured for the Managed Environment."
+        "description": "Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "infrastructureResourceGroupName": {
       "type": "string",
       "defaultValue": "[take(format('ME_{0}', parameters('name')), 63)]",
       "metadata": {
-        "description": "Optional. Name of the infrastructure resource group. If not provided, it will be set with a default value."
+        "description": "Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     }
   },

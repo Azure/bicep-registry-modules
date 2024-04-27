@@ -27,48 +27,87 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipconfiguration')) {
-  name: '${deployment().name}-publicIP-${index}'
-  params: {
-    name: '${virtualMachineName}${ipConfiguration.pipconfiguration.publicIpNameSuffix}'
-    diagnosticSettings: ipConfiguration.?diagnosticSettings
-    location: location
-    lock: lock
-    publicIPAddressVersion: contains(ipConfiguration, 'publicIPAddressVersion') ? ipConfiguration.publicIPAddressVersion : 'IPv4'
-    publicIPAllocationMethod: contains(ipConfiguration, 'publicIPAllocationMethod') ? ipConfiguration.publicIPAllocationMethod : 'Static'
-    publicIpPrefixResourceId: contains(ipConfiguration, 'publicIPPrefixResourceId') ? ipConfiguration.publicIPPrefixResourceId : ''
-    roleAssignments: contains(ipConfiguration, 'roleAssignments') ? ipConfiguration.roleAssignments : []
-    skuName: contains(ipConfiguration, 'skuName') ? ipConfiguration.skuName : 'Standard'
-    skuTier: contains(ipConfiguration, 'skuTier') ? ipConfiguration.skuTier : 'Regional'
-    tags: ipConfiguration.?tags ?? tags
-    zones: contains(ipConfiguration, 'zones') ? ipConfiguration.zones : [
-      '1'
-      '2'
-      '3'
-    ]
-    enableTelemetry: ipConfiguration.?enableTelemetry ?? enableTelemetry
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.4.0' = [
+  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration')) {
+    name: '${deployment().name}-publicIP-${index}'
+    params: {
+      name: '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+      diagnosticSettings: ipConfiguration.?diagnosticSettings
+      location: location
+      lock: lock
+      publicIPAddressVersion: contains(ipConfiguration.pipConfiguration, 'publicIPAddressVersion')
+        ? ipConfiguration.pipConfiguration.publicIPAddressVersion
+        : 'IPv4'
+      publicIPAllocationMethod: contains(ipConfiguration.pipConfiguration, 'publicIPAllocationMethod')
+        ? ipConfiguration.pipConfiguration.publicIPAllocationMethod
+        : 'Static'
+      publicIpPrefixResourceId: contains(ipConfiguration.pipConfiguration, 'publicIPPrefixResourceId')
+        ? ipConfiguration.pipConfiguration.publicIPPrefixResourceId
+        : ''
+      roleAssignments: contains(ipConfiguration.pipConfiguration, 'roleAssignments')
+        ? ipConfiguration.pipConfiguration.roleAssignments
+        : []
+      skuName: contains(ipConfiguration.pipConfiguration, 'skuName')
+        ? ipConfiguration.pipConfiguration.skuName
+        : 'Standard'
+      skuTier: contains(ipConfiguration.pipConfiguration, 'skuTier')
+        ? ipConfiguration.pipConfiguration.skuTier
+        : 'Regional'
+      tags: ipConfiguration.?tags ?? tags
+      zones: contains(ipConfiguration.pipConfiguration, 'zones')
+        ? ipConfiguration.pipConfiguration.zones
+        : [
+            1
+            2
+            3
+          ]
+      enableTelemetry: ipConfiguration.?enableTelemetry ?? enableTelemetry
+    }
   }
-}]
+]
 
-module networkInterface 'br/public:avm/res/network/network-interface:0.2.2' = {
+module networkInterface 'br/public:avm/res/network/network-interface:0.2.4' = {
   name: '${deployment().name}-NetworkInterface'
   params: {
     name: networkInterfaceName
-    ipConfigurations: [for (ipConfiguration, index) in ipConfigurations: {
-      name: !empty(ipConfiguration.name) ? ipConfiguration.name : null
-      primary: index == 0
-      privateIPAllocationMethod: contains(ipConfiguration, 'privateIPAllocationMethod') ? (!empty(ipConfiguration.privateIPAllocationMethod) ? ipConfiguration.privateIPAllocationMethod : null) : null
-      privateIPAddress: contains(ipConfiguration, 'privateIPAddress') ? (!empty(ipConfiguration.privateIPAddress) ? ipConfiguration.privateIPAddress : null) : null
-      publicIPAddressResourceId: contains(ipConfiguration, 'pipconfiguration') ? resourceId('Microsoft.Network/publicIPAddresses', '${virtualMachineName}${ipConfiguration.pipconfiguration.publicIpNameSuffix}') : null
-      subnetResourceId: ipConfiguration.subnetResourceId
-      loadBalancerBackendAddressPools: contains(ipConfiguration, 'loadBalancerBackendAddressPools') ? ipConfiguration.loadBalancerBackendAddressPools : null
-      applicationSecurityGroups: contains(ipConfiguration, 'applicationSecurityGroups') ? ipConfiguration.applicationSecurityGroups : null
-      applicationGatewayBackendAddressPools: contains(ipConfiguration, 'applicationGatewayBackendAddressPools') ? ipConfiguration.applicationGatewayBackendAddressPools : null
-      gatewayLoadBalancer: contains(ipConfiguration, 'gatewayLoadBalancer') ? ipConfiguration.gatewayLoadBalancer : null
-      loadBalancerInboundNatRules: contains(ipConfiguration, 'loadBalancerInboundNatRules') ? ipConfiguration.loadBalancerInboundNatRules : null
-      privateIPAddressVersion: contains(ipConfiguration, 'privateIPAddressVersion') ? ipConfiguration.privateIPAddressVersion : null
-      virtualNetworkTaps: contains(ipConfiguration, 'virtualNetworkTaps') ? ipConfiguration.virtualNetworkTaps : null
-    }]
+    ipConfigurations: [
+      for (ipConfiguration, index) in ipConfigurations: {
+        name: !empty(ipConfiguration.name) ? ipConfiguration.name : null
+        primary: index == 0
+        privateIPAllocationMethod: contains(ipConfiguration, 'privateIPAllocationMethod')
+          ? (!empty(ipConfiguration.privateIPAllocationMethod) ? ipConfiguration.privateIPAllocationMethod : null)
+          : null
+        privateIPAddress: contains(ipConfiguration, 'privateIPAddress')
+          ? (!empty(ipConfiguration.privateIPAddress) ? ipConfiguration.privateIPAddress : null)
+          : null
+        publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration')
+          ? resourceId(
+              'Microsoft.Network/publicIPAddresses',
+              '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+            )
+          : null
+        subnetResourceId: ipConfiguration.subnetResourceId
+        loadBalancerBackendAddressPools: contains(ipConfiguration, 'loadBalancerBackendAddressPools')
+          ? ipConfiguration.loadBalancerBackendAddressPools
+          : null
+        applicationSecurityGroups: contains(ipConfiguration, 'applicationSecurityGroups')
+          ? ipConfiguration.applicationSecurityGroups
+          : null
+        applicationGatewayBackendAddressPools: contains(ipConfiguration, 'applicationGatewayBackendAddressPools')
+          ? ipConfiguration.applicationGatewayBackendAddressPools
+          : null
+        gatewayLoadBalancer: contains(ipConfiguration, 'gatewayLoadBalancer')
+          ? ipConfiguration.gatewayLoadBalancer
+          : null
+        loadBalancerInboundNatRules: contains(ipConfiguration, 'loadBalancerInboundNatRules')
+          ? ipConfiguration.loadBalancerInboundNatRules
+          : null
+        privateIPAddressVersion: contains(ipConfiguration, 'privateIPAddressVersion')
+          ? ipConfiguration.privateIPAddressVersion
+          : null
+        virtualNetworkTaps: contains(ipConfiguration, 'virtualNetworkTaps') ? ipConfiguration.virtualNetworkTaps : null
+      }
+    ]
     location: location
     tags: tags
     diagnosticSettings: diagnosticSettings
