@@ -1,21 +1,21 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Resource group deployment'
+metadata description = 'This instance deploys the module on a resource group.'
 
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'msrdwaf'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param serviceShort string = 'msrdrg'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-managedservices-registrationdef-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-managedservices.registrationdefinitions-${serviceShort}-rg'
+
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = [
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
       registrationDescription: 'Managed by Lighthouse'
       resourceLocation: resourceLocation
+      resourceGroupName: resourceGroup.name
       authorizations: [
         {
           principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
