@@ -37,7 +37,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Resource group deployment](#example-3-resource-group-deployment)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -203,7 +204,93 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Resource group deployment_
+
+This instance deploys the module on a resource group.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registrationDefinition 'br/public:avm/res/managed-services/registration-definition:<version>' = {
+  name: 'registrationDefinitionDeployment'
+  params: {
+    // Required parameters
+    authorizations: [
+      {
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Lighthouse Contributor'
+        roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
+        roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
+      }
+    ]
+    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    name: 'Component Validation - msrdrg Subscription assignment'
+    registrationDescription: 'Managed by Lighthouse'
+    // Non-required parameters
+    resourceGroupName: '<resourceGroupName>'
+    resourceLocation: '<resourceLocation>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "authorizations": {
+      "value": [
+        {
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Lighthouse Contributor",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
+          "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
+        }
+      ]
+    },
+    "managedByTenantId": {
+      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+    },
+    "name": {
+      "value": "Component Validation - msrdrg Subscription assignment"
+    },
+    "registrationDescription": {
+      "value": "Managed by Lighthouse"
+    },
+    // Non-required parameters
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "resourceLocation": {
+      "value": "<resourceLocation>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

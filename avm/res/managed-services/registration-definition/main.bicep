@@ -31,26 +31,28 @@ param resourceLocation string = deployment().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var registrationId = empty(resourceGroupName) ? guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId) : guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId, resourceGroupName)
+var registrationId = empty(resourceGroupName)
+  ? guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId)
+  : guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId, resourceGroupName)
 
-// resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-//   if (enableTelemetry) {
-//     name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceLocation), 0, 4)}'
-//     properties: {
-//       mode: 'Incremental'
-//       template: {
-//         '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-//         contentVersion: '1.0.0.0'
-//         resources: []
-//         outputs: {
-//           telemetry: {
-//             type: 'String'
-//             value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-//           }
-//         }
-//       }
-//     }
-//   }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceLocation), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
+        }
+      }
+    }
+  }
 
 resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitions@2022-10-01' = {
   name: registrationId
@@ -62,21 +64,23 @@ resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitio
   }
 }
 
-resource registrationAssignment_sub 'Microsoft.ManagedServices/registrationAssignments@2022-10-01' = if (empty(resourceGroupName)) {
-  name: registrationId
-  properties: {
-    registrationDefinitionId: registrationDefinition.id
+resource registrationAssignment_sub 'Microsoft.ManagedServices/registrationAssignments@2022-10-01' =
+  if (empty(resourceGroupName)) {
+    name: registrationId
+    properties: {
+      registrationDefinitionId: registrationDefinition.id
+    }
   }
-}
 
-module registrationAssignment_rg 'modules/registrationAssignment.bicep' = if (!empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name)}-RegDef-RegAssignment'
-  scope: resourceGroup(resourceGroupName)
-  params: {
-    registrationDefinitionId: registrationDefinition.id
-    registrationAssignmentId: registrationId
+module registrationAssignment_rg 'modules/registrationAssignment.bicep' =
+  if (!empty(resourceGroupName)) {
+    name: '${uniqueString(deployment().name)}-RegDef-RegAssignment'
+    scope: resourceGroup(resourceGroupName)
+    params: {
+      registrationDefinitionId: registrationDefinition.id
+      registrationAssignmentId: registrationId
+    }
   }
-}
 
 @description('The name of the registration definition.')
 output name string = registrationDefinition.name
@@ -88,4 +92,6 @@ output resourceId string = registrationDefinition.id
 output subscriptionName string = subscription().displayName
 
 @description('The registration assignment resource ID.')
-output assignmentResourceId string = empty(resourceGroupName) ? registrationAssignment_sub.id : registrationAssignment_rg.outputs.resourceId
+output assignmentResourceId string = empty(resourceGroupName)
+  ? registrationAssignment_sub.id
+  : registrationAssignment_rg.outputs.resourceId
