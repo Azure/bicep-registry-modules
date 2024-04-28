@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 param resourceLocation string = 'eastus'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinnvidia'
+param serviceShort string = 'cvmwinnv'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
-      availabilityZone: 0
+      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [

@@ -12,6 +12,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceGroupName string = 'dep-${namePrefix}-sql.instancepool-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
+#disable-next-line no-unused-params // A rotation location cannot be used for this test as the SQL Instance Pool deletion is not possible in the same deployment
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
@@ -21,6 +22,9 @@ param serviceShort string = 'sipmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The static location of the resource group & resources.') // Note, we set the location of the SQL Instance Pool to avoid conflicts with the already existing ones
+param tempLocation string = 'uksouth'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -29,12 +33,12 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: tempLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, tempLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -42,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
     nsgName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     sqlInstancePoolName: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+    location: tempLocation
   }
 }
 
@@ -52,10 +56,10 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, tempLocation)}-test-${serviceShort}'
   params: {
     name: nestedDependencies.outputs.sqlInstancePoolName
-    location: resourceLocation
+    location: tempLocation
     subnetResourceId: nestedDependencies.outputs.subnetId
   }
 }
