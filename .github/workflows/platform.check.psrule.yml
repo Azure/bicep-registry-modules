@@ -1,4 +1,4 @@
-name: "avm.platform.check.psrule"
+name: .Platform - Check PSRule
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ on:
     - cron: "0 12 * * 0" # Weekly Sunday Analysis
 
 env:
-  workflowPath: ".github/workflows/avm.platform.check.psrule.yml"
+  workflowPath: ".github/workflows/platform.check.psrule.yml"
   targetPath: "avm/res/"
   PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
   PSRuleInputFilePath: "avm/res/PSRule-output.md"

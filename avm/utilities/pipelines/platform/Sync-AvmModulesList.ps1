@@ -15,7 +15,7 @@ Optional. Path to the root of the repository.
 Sync-AvmModulesList -Repo 'Azure/bicep-registry-modules'
 
 .NOTES
-Will be triggered by the workflow avm.platform.sync-avm-modules-list.yml
+Will be triggered by the workflow platform.sync-avm-modules-list.yml
 #>
 function Sync-AvmModulesList {
   param (
