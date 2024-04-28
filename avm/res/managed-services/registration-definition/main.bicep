@@ -36,6 +36,7 @@ var registrationId = empty(resourceGroupName)
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceLocation), 0, 4)}'
+    location: resourceLocation
     properties: {
       mode: 'Incremental'
       template: {
