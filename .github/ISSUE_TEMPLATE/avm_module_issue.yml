@@ -44,7 +44,7 @@ body:
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
         # - "avm/ptn/avd-lza/session-hosts"
-        # - "avm/ptn/security/security-center"
+        - "avm/ptn/security/security-center"
         - "avm/res/aad/domain-service"
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
