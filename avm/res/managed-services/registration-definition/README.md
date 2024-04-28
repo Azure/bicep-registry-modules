@@ -55,18 +55,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     // Required parameters
     authorizations: [
       {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'Reader'
-        roleDefinitionId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-      }
-      {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'Contributor'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'LHManagement'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -95,18 +90,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     "authorizations": {
       "value": [
         {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "Reader",
-          "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "Contributor",
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "LHManagement",
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
@@ -147,18 +137,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     // Required parameters
     authorizations: [
       {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'Reader'
-        roleDefinitionId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-      }
-      {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'Contributor'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'LHManagement'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -187,18 +172,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     "authorizations": {
       "value": [
         {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "Reader",
-          "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "Contributor",
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "LHManagement",
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
@@ -239,18 +219,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     // Required parameters
     authorizations: [
       {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'Reader'
-        roleDefinitionId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-      }
-      {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'Contributor'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
-        principalId: '<principalId>'
-        principalIdDisplayName: 'LHManagement'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -279,18 +254,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     "authorizations": {
       "value": [
         {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "Reader",
-          "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "Contributor",
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
-          "principalId": "<principalId>",
-          "principalIdDisplayName": "LHManagement",
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]

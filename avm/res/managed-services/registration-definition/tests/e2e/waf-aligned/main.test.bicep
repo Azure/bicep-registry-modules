@@ -31,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -49,6 +40,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name)}-test-${serviceShort}-${iteration}'
   params: {
     name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
+    registrationDescription: 'Managed by Lighthouse'
     resourceLocation: resourceLocation
     authorizations: [
       {
@@ -63,6 +55,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
-    registrationDescription: 'Managed by Lighthouse'
   }
 }]
