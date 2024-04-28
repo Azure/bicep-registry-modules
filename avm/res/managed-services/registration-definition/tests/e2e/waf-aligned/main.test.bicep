@@ -52,19 +52,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     resourceLocation: resourceLocation
     authorizations: [
       {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalIdDisplayName: 'Reader'
-        roleDefinitionId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-      }
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalIdDisplayName: 'Contributor'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalIdDisplayName: 'Lighthouse Contributor'
       }
       {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalIdDisplayName: 'LHManagement'
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
+        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
       }
     ]
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
