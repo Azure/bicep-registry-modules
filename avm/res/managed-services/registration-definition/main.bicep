@@ -23,32 +23,34 @@ param authorizations array
 @description('Optional. Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription.')
 param resourceGroupName string = ''
 
+#disable-next-line no-unused-params
 @description('Optional. Location deployment metadata.')
 param resourceLocation string = deployment().location
 
+#disable-next-line no-unused-params
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var registrationId = empty(resourceGroupName) ? guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId) : guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId, resourceGroupName)
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceLocation), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
-        }
-      }
-    }
-  }
+// resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+//   if (enableTelemetry) {
+//     name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceLocation), 0, 4)}'
+//     properties: {
+//       mode: 'Incremental'
+//       template: {
+//         '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+//         contentVersion: '1.0.0.0'
+//         resources: []
+//         outputs: {
+//           telemetry: {
+//             type: 'String'
+//             value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+//           }
+//         }
+//       }
+//     }
+//   }
 
 resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitions@2022-10-01' = {
   name: registrationId
