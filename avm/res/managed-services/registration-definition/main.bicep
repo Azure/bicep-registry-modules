@@ -23,11 +23,9 @@ param authorizations array
 @description('Optional. Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription.')
 param resourceGroupName string = ''
 
-#disable-next-line no-unused-params
 @description('Optional. Location deployment metadata.')
 param resourceLocation string = deployment().location
 
-#disable-next-line no-unused-params
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
