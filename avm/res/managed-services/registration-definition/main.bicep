@@ -24,7 +24,7 @@ param authorizations array
 param resourceGroupName string = ''
 
 @description('Optional. Location deployment metadata.')
-param resourceLocation string = deployment().location
+param location string = deployment().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -35,8 +35,8 @@ var registrationId = empty(resourceGroupName)
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
-    name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceLocation), 0, 4)}'
-    location: resourceLocation
+    name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    location: location
     properties: {
       mode: 'Incremental'
       template: {

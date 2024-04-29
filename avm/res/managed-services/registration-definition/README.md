@@ -70,7 +70,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdmin Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    resourceLocation: '<resourceLocation>'
+    location: '<location>'
   }
 }
 ```
@@ -112,8 +112,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "resourceLocation": {
-      "value": "<resourceLocation>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -152,7 +152,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    resourceLocation: '<resourceLocation>'
+    location: '<location>'
   }
 }
 ```
@@ -194,8 +194,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "resourceLocation": {
-      "value": "<resourceLocation>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -234,8 +234,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdrg Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
+    location: '<location>'
     resourceGroupName: '<resourceGroupName>'
-    resourceLocation: '<resourceLocation>'
   }
 }
 ```
@@ -277,11 +277,11 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "resourceGroupName": {
       "value": "<resourceGroupName>"
-    },
-    "resourceLocation": {
-      "value": "<resourceLocation>"
     }
   }
 }
@@ -320,7 +320,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    resourceLocation: '<resourceLocation>'
+    location: '<location>'
   }
 }
 ```
@@ -362,8 +362,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "resourceLocation": {
-      "value": "<resourceLocation>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -389,8 +389,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription. |
-| [`resourceLocation`](#parameter-resourcelocation) | string | Location deployment metadata. |
 
 ### Parameter: `authorizations`
 
@@ -428,6 +428,14 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `location`
+
+Location deployment metadata.
+
+- Required: No
+- Type: string
+- Default: `[deployment().location]`
+
 ### Parameter: `resourceGroupName`
 
 Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription.
@@ -435,14 +443,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `resourceLocation`
-
-Location deployment metadata.
-
-- Required: No
-- Type: string
-- Default: `[deployment().location]`
 
 
 ## Outputs

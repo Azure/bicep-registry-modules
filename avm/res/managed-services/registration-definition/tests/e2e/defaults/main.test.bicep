@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param serviceShort string = 'msrdmin'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param location string = deployment().location
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -28,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: location
 }
 
 // ============== //
@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
       registrationDescription: 'Managed by Lighthouse'
-      resourceLocation: resourceLocation
+      location: location
       authorizations: [
         {
           principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
