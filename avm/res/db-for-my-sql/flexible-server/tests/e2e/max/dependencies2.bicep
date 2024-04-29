@@ -40,7 +40,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -85,7 +85,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
