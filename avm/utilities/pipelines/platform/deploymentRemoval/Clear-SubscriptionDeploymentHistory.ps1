@@ -46,9 +46,6 @@ function Clear-SubscriptionDeploymentHistory {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 # Enables web reponse
     $deploymentThreshold = (Get-Date).AddDays(-1 * $maxDeploymentRetentionInDays)
 
-    # Load used functions
-    . (Join-Path (Split-Path $PSScriptRoot -Parent) 'sharedScripts' 'Split-Array.ps1')
-
     # Setting context explicitely in case the principal has permissions on multiple
     Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
     $null = Set-AzContext -Subscription $subscriptionId
