@@ -206,7 +206,7 @@ module testDeployment '../../../main.bicep' = [
       encryptionAtHost: false
       autoShutdownConfig: {
         status: 'Enabled'
-        time: '19:00'
+        dailyRecurrenceTime: '19:00'
         timeZone: 'UTC'
         notificationStatus: 'Enabled'
         notificationEmail: 'test@contoso.com'
