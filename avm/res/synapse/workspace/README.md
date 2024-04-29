@@ -757,6 +757,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`accountUrl`](#parameter-accounturl) | string | The account URL of the data lake storage account. |
 | [`allowedAadTenantIdsForLinking`](#parameter-allowedaadtenantidsforlinking) | array | Allowed AAD Tenant IDs For Linking. |
 | [`azureADOnlyAuthentication`](#parameter-azureadonlyauthentication) | bool | Enable or Disable AzureADOnlyAuthentication on All Workspace sub-resource. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -808,6 +809,14 @@ Login for administrator access to the workspace's SQL pools.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `accountUrl`
+
+The account URL of the data lake storage account.
+
+- Required: No
+- Type: string
+- Default: `[format('https://{0}.dfs.{1}', last(split(parameters('defaultDataLakeStorageAccountResourceId'), '/')), environment().suffixes.storage)]`
 
 ### Parameter: `allowedAadTenantIdsForLinking`
 
