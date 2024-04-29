@@ -154,6 +154,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
     metadataLocation: '<metadataLocation>'
+    registrationId: '<registrationId>'
   }
 }
 ```
@@ -204,6 +205,9 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     // Non-required parameters
     "metadataLocation": {
       "value": "<metadataLocation>"
+    },
+    "registrationId": {
+      "value": "<registrationId>"
     }
   }
 }
@@ -241,6 +245,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
     metadataLocation: '<metadataLocation>'
+    registrationId: '<registrationId>'
     resourceGroupName: '<resourceGroupName>'
   }
 }
@@ -284,6 +289,9 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     "metadataLocation": {
       "value": "<metadataLocation>"
     },
+    "registrationId": {
+      "value": "<registrationId>"
+    },
     "resourceGroupName": {
       "value": "<resourceGroupName>"
     }
@@ -323,6 +331,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
     metadataLocation: '<metadataLocation>'
+    resourceGroupName: '<resourceGroupName>'
   }
 }
 ```
@@ -364,6 +373,9 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     // Non-required parameters
     "metadataLocation": {
       "value": "<metadataLocation>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     }
   }
 }
@@ -390,6 +402,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`metadataLocation`](#parameter-metadatalocation) | string | Location of the deployment metadata. |
+| [`registrationId`](#parameter-registrationid) | string | The Id (GUID) of the registration definition. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription. |
 
 ### Parameter: `authorizations`
@@ -435,6 +448,14 @@ Location of the deployment metadata.
 - Required: No
 - Type: string
 - Default: `[deployment().location]`
+
+### Parameter: `registrationId`
+
+The Id (GUID) of the registration definition.
+
+- Required: No
+- Type: string
+- Default: `[if(empty(parameters('resourceGroupName')), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId, parameters('resourceGroupName')))]`
 
 ### Parameter: `resourceGroupName`
 

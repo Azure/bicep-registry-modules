@@ -41,6 +41,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
+      registrationId: guid(
+        tenant().tenantId,
+        subscription().tenantId,
+        subscription().subscriptionId,
+        resourceGroup.name,
+        namePrefix
+      )
       registrationDescription: 'Managed by Lighthouse'
       metadataLocation: resourceLocation
       resourceGroupName: resourceGroup.name

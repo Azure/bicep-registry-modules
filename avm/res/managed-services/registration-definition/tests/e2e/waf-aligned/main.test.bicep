@@ -10,11 +10,26 @@ metadata description = 'This instance deploys the module in alignment with the b
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'msrdwaf'
 
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-managedservices.registrationdefinitions-${serviceShort}-rg'
+
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
 
 // ============== //
 // Test Execution //
@@ -26,6 +41,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
+      resourceGroupName: resourceGroup.name
       metadataLocation: resourceLocation
       registrationDescription: 'Managed by Lighthouse'
       authorizations: [

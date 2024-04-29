@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "17561180581493197784"
+      "templateHash": "17545129357717553911"
     },
     "name": "Registration Definitions",
     "description": "This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.\nThis type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.\nThe templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.",
@@ -96,10 +96,14 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "registrationId": {
+      "type": "string",
+      "defaultValue": "[if(empty(parameters('resourceGroupName')), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId, parameters('resourceGroupName')))]",
+      "metadata": {
+        "description": "Optional. The Id (GUID) of the registration definition."
+      }
     }
-  },
-  "variables": {
-    "registrationId": "[if(empty(parameters('resourceGroupName')), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId, parameters('resourceGroupName')))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -126,7 +130,7 @@
     "registrationDefinition": {
       "type": "Microsoft.ManagedServices/registrationDefinitions",
       "apiVersion": "2022-10-01",
-      "name": "[variables('registrationId')]",
+      "name": "[parameters('registrationId')]",
       "properties": {
         "registrationDefinitionName": "[parameters('name')]",
         "description": "[parameters('registrationDescription')]",
@@ -138,9 +142,9 @@
       "condition": "[empty(parameters('resourceGroupName'))]",
       "type": "Microsoft.ManagedServices/registrationAssignments",
       "apiVersion": "2022-10-01",
-      "name": "[variables('registrationId')]",
+      "name": "[parameters('registrationId')]",
       "properties": {
-        "registrationDefinitionId": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', variables('registrationId'))]"
+        "registrationDefinitionId": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationId'))]"
       },
       "dependsOn": [
         "registrationDefinition"
@@ -159,10 +163,10 @@
         "mode": "Incremental",
         "parameters": {
           "registrationDefinitionId": {
-            "value": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', variables('registrationId'))]"
+            "value": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationId'))]"
           },
           "registrationAssignmentId": {
-            "value": "[variables('registrationId')]"
+            "value": "[parameters('registrationId')]"
           }
         },
         "template": {
@@ -231,14 +235,14 @@
       "metadata": {
         "description": "The name of the registration definition."
       },
-      "value": "[variables('registrationId')]"
+      "value": "[parameters('registrationId')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the registration definition."
       },
-      "value": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', variables('registrationId'))]"
+      "value": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', parameters('registrationId'))]"
     },
     "subscriptionName": {
       "type": "string",
@@ -252,7 +256,7 @@
       "metadata": {
         "description": "The registration assignment resource ID."
       },
-      "value": "[if(empty(parameters('resourceGroupName')), subscriptionResourceId('Microsoft.ManagedServices/registrationAssignments', variables('registrationId')), reference('registrationAssignment_rg').outputs.resourceId.value)]"
+      "value": "[if(empty(parameters('resourceGroupName')), subscriptionResourceId('Microsoft.ManagedServices/registrationAssignments', parameters('registrationId')), reference('registrationAssignment_rg').outputs.resourceId.value)]"
     }
   }
 }

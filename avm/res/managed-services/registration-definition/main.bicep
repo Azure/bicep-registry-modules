@@ -27,7 +27,8 @@ param metadataLocation string = deployment().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var registrationId = empty(resourceGroupName)
+@description('Optional. The Id (GUID) of the registration definition.')
+param registrationId string = empty(resourceGroupName)
   ? guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId)
   : guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId, resourceGroupName)
 
