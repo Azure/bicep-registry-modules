@@ -58,9 +58,9 @@ module testDeployment '../../../main.bicep' = [
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
       publicIpZones: [
-        '1'
-        '2'
-        '3'
+        1
+        2
+        3
       ]
     }
     dependsOn: [
