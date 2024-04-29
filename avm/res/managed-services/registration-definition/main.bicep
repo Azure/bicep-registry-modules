@@ -1,9 +1,7 @@
 metadata name = 'Registration Definitions'
-metadata description = '''This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation')
-on subscription or resource group scopes. This type of delegation is very similar to role assignments but here the principal that is
-assigned a role is in a remote/managing Azure Active Directory tenant. The templates are run towards the tenant where
-the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a
-remote/managing tenant.'''
+metadata description = '''This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.
+This type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.
+The templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.'''
 metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
@@ -18,7 +16,7 @@ param registrationDescription string
 param managedByTenantId string
 
 @description('Required. Specify an array of objects, containing object of Azure Active Directory principalId, a Azure roleDefinitionId, and an optional principalIdDisplayName. The roleDefinition specified is granted to the principalId in the provider\'s Active Directory and the principalIdDisplayName is visible to customers.')
-param authorizations array
+param authorizations authorizationType[]
 
 @description('Optional. Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription.')
 param resourceGroupName string = ''
@@ -94,3 +92,21 @@ output subscriptionName string = subscription().displayName
 output assignmentResourceId string = empty(resourceGroupName)
   ? registrationAssignment_sub.id
   : registrationAssignment_rg.outputs.resourceId
+
+// ================ //
+// Definitions      //
+// ================ //
+
+type authorizationType = {
+  @description('Conditional. The list of role definition ids which define all the permissions that the user in the authorization can assign to other principals. Required if the `roleDefinitionId` refers to the User Access Administrator Role.')
+  delegatedRoleDefinitionIds: string[]?
+
+  @description('Required. The identifier of the Azure Active Directory principal.')
+  principalId: string
+
+  @description('Optional. The display name of the Azure Active Directory principal.')
+  principalIdDisplayName: string?
+
+  @description('Required. The identifier of the Azure built-in role that defines the permissions that the Azure Active Directory principal will have on the projected scope.')
+  roleDefinitionId: string
+}

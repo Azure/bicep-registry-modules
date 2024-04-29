@@ -5,11 +5,9 @@
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
-This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation')
-on subscription or resource group scopes. This type of delegation is very similar to role assignments but here the principal that is
-assigned a role is in a remote/managing Azure Active Directory tenant. The templates are run towards the tenant where
-the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a
-remote/managing tenant.
+This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.
+This type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.
+The templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.
 
 ## Navigation
 
@@ -36,7 +34,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/managed-services/registration-definition:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-2-waf-aligned)
 - [Resource group deployment](#example-3-resource-group-deployment)
 - [WAF-aligned](#example-4-waf-aligned)
 
@@ -57,12 +55,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     authorizations: [
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -92,12 +88,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": [
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
@@ -122,9 +116,9 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _WAF-aligned_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -147,9 +141,16 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
+      {
+        delegatedRoleDefinitionIds: [
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        ]
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        roleDefinitionId: '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+      }
     ]
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
-    name: 'Component Validation - msrdmax Subscription assignment'
+    name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
     location: '<location>'
@@ -181,6 +182,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
           "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
+        },
+        {
+          "delegatedRoleDefinitionIds": [
+            "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+          ],
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "roleDefinitionId": "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
         }
       ]
     },
@@ -188,7 +196,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
     },
     "name": {
-      "value": "Component Validation - msrdmax Subscription assignment"
+      "value": "Component Validation - msrdwaf Subscription assignment"
     },
     "registrationDescription": {
       "value": "Managed by Lighthouse"
@@ -221,12 +229,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     authorizations: [
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -257,12 +263,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": [
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
@@ -307,12 +311,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     authorizations: [
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -342,12 +344,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": [
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
