@@ -45,6 +45,5 @@ module testDeployment '../../../main.bicep' = {
     location: resourceLocation
     policyAssignmentId: policySetAssignments.id
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
-    filtersLocations: []
   }
 }

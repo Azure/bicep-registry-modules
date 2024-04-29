@@ -59,6 +59,5 @@ module testDeployment '../../../main.bicep' = {
     resourceGroupName: resourceGroupDeploy.outputs.name
     policyAssignmentId: policySetAssignments.outputs.resourceId
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
-    filtersLocations: []
   }
 }
