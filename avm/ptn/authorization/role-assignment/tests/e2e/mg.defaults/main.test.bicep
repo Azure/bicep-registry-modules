@@ -28,12 +28,11 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-module nestedDependencies 'interim.dependencies.bicep' = {
-  scope: subscription('${subscriptionId}')
+module nestedDependencies 'dependencies.bicep' = {
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-${serviceShort}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    resourceGroupName: resourceGroupName
     location: resourceLocation
   }
 }
