@@ -40,6 +40,9 @@ function Clear-SubscriptionDeploymentHistory {
         [int] $maxDeploymentRetentionInDays = 14
     )
 
+    # Load helper functions
+    . (Join-Path (Split-Path $PSScriptRoot) 'helper' 'Split-Array.ps1')
+
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 # Enables web reponse
     $deploymentThreshold = (Get-Date).AddDays(-1 * $maxDeploymentRetentionInDays)
 
