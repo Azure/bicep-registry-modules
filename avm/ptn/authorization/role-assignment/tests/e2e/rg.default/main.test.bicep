@@ -22,22 +22,19 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
 param subscriptionId string = '#_subscriptionId_#'
 
-
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
+module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
     name: resourceGroupName
     location: resourceLocation
   }
-
-
 }
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
@@ -60,6 +57,6 @@ module testDeployment '../../../main.bicep' = {
     principalType: 'ServicePrincipal'
     location: resourceLocation
     subscriptionId: subscriptionId
-    resourceGroupName: resourceGroupName
+    resourceGroupName: resourceGroupDeploy.outputs.name
   }
 }
