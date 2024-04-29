@@ -49,7 +49,6 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     name: 'pirmgmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
-    filtersLocations: []
     location: '<location>'
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
   }
@@ -76,9 +75,6 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "<policyAssignmentId>"
     },
     // Non-required parameters
-    "filtersLocations": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
     },
@@ -181,7 +177,6 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     name: 'pirrgmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
-    filtersLocations: []
     location: '<location>'
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
     resourceGroupName: '<resourceGroupName>'
@@ -210,9 +205,6 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "<policyAssignmentId>"
     },
     // Non-required parameters
-    "filtersLocations": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
     },
