@@ -34,7 +34,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/managed-services/registration-definition:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [Resource group deployment](#example-3-resource-group-deployment)
 - [WAF-aligned](#example-4-waf-aligned)
 
@@ -116,9 +116,9 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
