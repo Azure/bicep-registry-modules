@@ -42,7 +42,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
       registrationDescription: 'Managed by Lighthouse'
-      location: location
       resourceGroupName: resourceGroup.name
       authorizations: [
         {

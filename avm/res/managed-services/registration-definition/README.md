@@ -65,8 +65,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     name: 'Component Validation - msrdmin Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -104,10 +102,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     },
     "registrationDescription": {
       "value": "Managed by Lighthouse"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -152,8 +146,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -200,10 +192,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     },
     "registrationDescription": {
       "value": "Managed by Lighthouse"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -240,7 +228,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdrg Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    location: '<location>'
     resourceGroupName: '<resourceGroupName>'
   }
 }
@@ -281,9 +268,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "resourceGroupName": {
       "value": "<resourceGroupName>"
     }
@@ -321,8 +305,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -360,10 +342,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     },
     "registrationDescription": {
       "value": "Managed by Lighthouse"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -389,7 +367,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription. |
 
 ### Parameter: `authorizations`
@@ -427,14 +404,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `location`
-
-Location deployment metadata.
-
-- Required: No
-- Type: string
-- Default: `[deployment().location]`
 
 ### Parameter: `resourceGroupName`
 

@@ -11,25 +11,11 @@ metadata description = 'This instance deploys the module with most of its featur
 param serviceShort string = 'msrdmax'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-managedservices-registrationdef-${serviceShort}-rg'
+#disable-next-line no-unused-params // Not required by test but passed in via workflow
+param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: location
-}
 
 // ============== //
 // Test Execution //
@@ -42,7 +28,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
       registrationDescription: 'Managed by Lighthouse'
-      location: location
       authorizations: [
         {
           principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
