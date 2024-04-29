@@ -34,8 +34,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-2-using-only-defaults)
 - [ExpressRoute](#example-3-expressroute)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [VPN](#example-5-vpn)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using SKU without Availability Zones](#example-5-using-sku-without-availability-zones)
+- [VPN](#example-6-vpn)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _AAD-VPN_
 
@@ -62,9 +63,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     vpnClientAadConfiguration: {
       aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
@@ -121,9 +122,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "vpnClientAadConfiguration": {
@@ -170,9 +171,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -209,9 +210,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -246,9 +247,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     gatewayPipName: 'pip-nvger'
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -293,9 +294,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -387,9 +388,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       }
     ]
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     roleAssignments: [
       {
@@ -531,9 +532,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "roleAssignments": {
@@ -575,7 +576,67 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 5: _VPN_
+### Example 5: _Using SKU without Availability Zones_
+
+This instance deploys the module with a SKU that does not support Availability Zones.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'Vpn'
+    name: 'nvgnaz001'
+    skuName: 'VpnGw1'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgnaz001"
+    },
+    "skuName": {
+      "value": "VpnGw1"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _VPN_
 
 This instance deploys the module with the VPN set of required parameters.
 
@@ -605,9 +666,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
     location: '<location>'
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
@@ -669,9 +730,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "vpnGatewayGeneration": {
@@ -687,7 +748,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -769,9 +830,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       }
     ]
     publicIpZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -896,9 +957,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "publicIpZones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     },
     "tags": {

@@ -66,6 +66,7 @@ param sku string = 'Developer'
 
 @description('Optional. The instance size of this API Management service.')
 @allowed([
+  0
   1
   2
 ])

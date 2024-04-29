@@ -104,6 +104,11 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIpNameSuffix: '-pip-01'
+                zones: [
+                  1
+                  2
+                  3
+                ]
                 roleAssignments: [
                   {
                     roleDefinitionIdOrName: 'Reader'
@@ -112,11 +117,6 @@ module testDeployment '../../../main.bicep' = [
                   }
                 ]
               }
-              zones: [
-                '1'
-                '2'
-                '3'
-              ]
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               diagnosticSettings: [
                 {
@@ -170,7 +170,7 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
-      availabilityZone: 2
+      zone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
       backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
       backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -239,6 +239,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionDependencyAgentConfig: {
         enabled: true
+        enableAMA: true
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

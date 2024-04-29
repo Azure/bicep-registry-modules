@@ -5,6 +5,7 @@
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -131,6 +132,7 @@
 /avm/res/service-fabric/cluster/ @Azure/avm-res-servicefabric-cluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/signal-r-service/signal-r/ @Azure/avm-res-signalrservice-signalr-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/sql/instance-pool/ @Azure/avm-res-sql-instancepool-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/sql/managed-instance/ @Azure/avm-res-sql-managedinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/sql/server/ @Azure/avm-res-sql-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
