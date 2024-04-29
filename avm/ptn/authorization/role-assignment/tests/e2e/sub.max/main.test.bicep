@@ -44,6 +44,9 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
+  dependsOn: [
+    resourceGroup
+  ]
 }
 
 // ============== //
