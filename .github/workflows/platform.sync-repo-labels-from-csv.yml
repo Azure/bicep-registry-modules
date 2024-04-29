@@ -1,5 +1,5 @@
 # Workflow for syncing CSV labels to GitHub Labels
-name: avm.platform.sync-repo-labels-from-csv
+name: .Platform - Sync repo labels from CSV
 
 on:
   schedule:
