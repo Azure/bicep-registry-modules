@@ -34,6 +34,10 @@ spec:
     # Azure App Configuration Store
     - Azure.AppConfig.GeoReplica # Suppressed as geo-replication is WAF requirement but not required for min
     - Azure.AppConfig.AuditLogs # Suppressed as Audit Logs are not required for min
+    # Azure Front Door
+    - Azure.FrontDoor.Probe # Supressed as the probe is being provided as parameter and we are not able to enforce as default value
+    - Azure.FrontDoor.ProbeMethod # Supressed as the probe method is being provided as parameter and we are not able to enforce as default value
+    - Azure.FrontDoor.ProbePath # Supressed as the probe path is being provided as parameter and we are not able to enforce as default value
   if:
     name: "."
     contains:

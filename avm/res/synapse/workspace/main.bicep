@@ -73,6 +73,9 @@ param sqlAdministratorLogin string
 @secure()
 param sqlAdministratorLoginPassword string = ''
 
+@description('Optional. The account URL of the data lake storage account.')
+param accountUrl string = 'https://${last(split(defaultDataLakeStorageAccountResourceId, '/'))!}.dfs.${environment().suffixes.storage}'
+
 @description('Optional. Git integration settings.')
 param workspaceRepositoryConfiguration object?
 
@@ -186,7 +189,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
       : null
     defaultDataLakeStorage: {
       resourceId: defaultDataLakeStorageAccountResourceId
-      accountUrl: 'https://${last(split(defaultDataLakeStorageAccountResourceId, '/'))!}.dfs.${environment().suffixes.storage}'
+      accountUrl: accountUrl
       filesystem: defaultDataLakeStorageFilesystem
       createManagedPrivateEndpoint: managedVirtualNetwork ? defaultDataLakeStorageCreateManagedPrivateEndpoint : null
     }
