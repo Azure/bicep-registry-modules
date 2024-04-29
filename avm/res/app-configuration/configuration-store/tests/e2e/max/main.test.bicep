@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       createMode: 'Default'
       replicaLocations: ['centralus', 'westus']
+      enablePurgeProtection: false //Only for Testing purposes. Waf Aligned is true
       diagnosticSettings: [
         {
           name: 'customSetting'

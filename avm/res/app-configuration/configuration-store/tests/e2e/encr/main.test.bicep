@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       createMode: 'Default'
+      enablePurgeProtection: false //Only for Testing purposes. Waf Aligned is true
       keyValues: [
         {
           contentType: 'contentType'
