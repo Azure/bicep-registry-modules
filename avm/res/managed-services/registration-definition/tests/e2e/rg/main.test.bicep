@@ -15,7 +15,7 @@ param serviceShort string = 'msrdrg'
 param resourceGroupName string = 'dep-${namePrefix}-managedservices.registrationdefinitions-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -28,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: resourceLocation
 }
 
 // ============== //
@@ -42,6 +42,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
       registrationDescription: 'Managed by Lighthouse'
+      metadataLocation: resourceLocation
       resourceGroupName: resourceGroup.name
       authorizations: [
         {

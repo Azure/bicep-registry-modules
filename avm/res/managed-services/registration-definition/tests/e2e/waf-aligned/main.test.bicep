@@ -11,7 +11,6 @@ metadata description = 'This instance deploys the module in alignment with the b
 param serviceShort string = 'msrdwaf'
 
 @description('Optional. The location to deploy resources to.')
-#disable-next-line no-unused-params // Not required by test but passed in via workflow
 param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource.')
@@ -27,6 +26,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
+      metadataLocation: resourceLocation
       registrationDescription: 'Managed by Lighthouse'
       authorizations: [
         {

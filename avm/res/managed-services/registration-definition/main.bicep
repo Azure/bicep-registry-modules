@@ -21,6 +21,9 @@ param authorizations authorizationType[]
 @description('Optional. Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription.')
 param resourceGroupName string = ''
 
+@description('Optional. Location of the deployment metadata.')
+param metadataLocation string = deployment().location
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -30,7 +33,8 @@ var registrationId = empty(resourceGroupName)
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
-    name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+    name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, metadataLocation), 0, 4)}'
+    location: metadataLocation
     properties: {
       mode: 'Incremental'
       template: {
