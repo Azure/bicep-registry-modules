@@ -150,7 +150,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       }
     ]
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
-    name: 'Component Validation - msrdwaf Subscription assignment'
+    name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
     location: '<location>'
@@ -196,7 +196,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
     },
     "name": {
-      "value": "Component Validation - msrdwaf Subscription assignment"
+      "value": "Component Validation - msrdmax Subscription assignment"
     },
     "registrationDescription": {
       "value": "Managed by Lighthouse"
