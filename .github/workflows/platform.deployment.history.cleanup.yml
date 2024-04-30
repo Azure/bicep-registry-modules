@@ -69,7 +69,7 @@ jobs:
           enable-AzPSSession: true
 
       - name: Remove deployments
-        uses: azure/powershell@v1
+        uses: azure/powershell@v2
         with:
           inlineScript: |
             # Load used functions
@@ -108,7 +108,7 @@ jobs:
           enable-AzPSSession: true
 
       - name: Remove deployments
-        uses: azure/powershell@v1
+        uses: azure/powershell@v2
         with:
           inlineScript: |
             # Load used functions
