@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "15754009504409627537"
+      "version": "0.26.54.24096",
+      "templateHash": "8697354479542896000"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -451,12 +451,14 @@
       "type": "string",
       "defaultValue": "",
       "allowedValues": [
+        "RHEL_BYOS",
+        "SLES_BYOS",
         "Windows_Client",
         "Windows_Server",
         ""
       ],
       "metadata": {
-        "description": "Optional. Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system."
+        "description": "Optional. Specifies that the image or disk that is being used was licensed on-premises."
       }
     },
     "publicKeys": {
@@ -507,7 +509,7 @@
         "description": "Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set."
       }
     },
-    "availabilityZone": {
+    "zone": {
       "type": "int",
       "allowedValues": [
         0,
@@ -544,6 +546,13 @@
       "defaultValue": "DefaultPolicy",
       "metadata": {
         "description": "Optional. Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault."
+      }
+    },
+    "autoShutdownConfig": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The configuration for auto-shutdown."
       }
     },
     "allowExtensionOperations": {
@@ -782,6 +791,26 @@
         "description": "Optional. VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'."
       }
     },
+    "bypassPlatformSafetyChecksOnUserSchedule": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enables customer to schedule patching without accidental upgrades."
+      }
+    },
+    "rebootSetting": {
+      "type": "string",
+      "defaultValue": "IfRequired",
+      "allowedValues": [
+        "Always",
+        "IfRequired",
+        "Never",
+        "Unknown"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the reboot setting for all AutomaticByPlatform patch installation operations."
+      }
+    },
     "patchAssessmentMode": {
       "type": "string",
       "defaultValue": "ImageDefault",
@@ -817,13 +846,8 @@
     "configurationProfile": {
       "type": "string",
       "defaultValue": "",
-      "allowedValues": [
-        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction",
-        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest",
-        ""
-      ],
       "metadata": {
-        "description": "Required. The configuration profile of automanage."
+        "description": "Optional. The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile."
       }
     }
   },
@@ -844,12 +868,12 @@
         "publicKeys": "[variables('publicKeysFormatted')]"
       },
       "provisionVMAgent": "[parameters('provisionVMAgent')]",
-      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting'))), null())]"
     },
     "windowsConfiguration": {
       "provisionVMAgent": "[parameters('provisionVMAgent')]",
       "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
-      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]",
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting'))), null())]",
       "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
       "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
       "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
@@ -907,12 +931,12 @@
     },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "zones": "[if(not(equals(parameters('availabilityZone'), 0)), array(string(parameters('availabilityZone'))), null())]",
+      "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]",
       "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]",
       "properties": {
         "hardwareProfile": {
@@ -980,7 +1004,7 @@
                   "deleteOption": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].deleteOption, 'Delete')]",
                   "primary": "[if(equals(copyIndex('networkInterfaces'), 0), true(), false())]"
                 },
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix))]"
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].name, format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix)))]"
               }
             }
           ]
@@ -1006,11 +1030,31 @@
     "vm_configurationProfileAssignment": {
       "condition": "[not(empty(parameters('configurationProfile')))]",
       "type": "Microsoft.Automanage/configurationProfileAssignments",
-      "apiVersion": "2021-04-30-preview",
+      "apiVersion": "2022-05-04",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
       "name": "default",
       "properties": {
         "configurationProfile": "[parameters('configurationProfile')]"
+      },
+      "dependsOn": [
+        "vm"
+      ]
+    },
+    "vm_autoShutdownConfiguration": {
+      "condition": "[not(empty(parameters('autoShutdownConfig')))]",
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "[format('shutdown-computevm-{0}', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "status": "[if(contains(parameters('autoShutdownConfig'), 'status'), parameters('autoShutdownConfig').status, 'Disabled')]",
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
+        "taskType": "ComputeVmShutdownTask",
+        "dailyRecurrence": {
+          "time": "[if(contains(parameters('autoShutdownConfig'), 'time'), parameters('autoShutdownConfig').dailyRecurrenceTime, '19:00')]"
+        },
+        "timeZoneId": "[if(contains(parameters('autoShutdownConfig'), 'timeZone'), parameters('autoShutdownConfig').timeZone, 'UTC')]",
+        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
       },
       "dependsOn": [
         "vm"
@@ -1090,16 +1134,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "networkInterfaceName": {
-            "value": "[format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)]"
-          },
+          "networkInterfaceName": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'name'), createObject('value', parameters('nicConfigurations')[copyIndex()].name), createObject('value', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)))]",
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
-          "enableIPForwarding": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding'), if(not(empty(parameters('nicConfigurations')[copyIndex()].enableIPForwarding)), createObject('value', parameters('nicConfigurations')[copyIndex()].enableIPForwarding), createObject('value', false())), createObject('value', false()))]",
+          "enableIPForwarding": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding'), createObject('value', parameters('nicConfigurations')[copyIndex()].enableIPForwarding), createObject('value', false()))]",
           "enableAcceleratedNetworking": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'enableAcceleratedNetworking'), createObject('value', parameters('nicConfigurations')[copyIndex()].enableAcceleratedNetworking), createObject('value', true()))]",
           "dnsServers": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'dnsServers'), if(not(empty(parameters('nicConfigurations')[copyIndex()].dnsServers)), createObject('value', parameters('nicConfigurations')[copyIndex()].dnsServers), createObject('value', createArray())), createObject('value', createArray()))]",
           "networkSecurityGroupResourceId": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'networkSecurityGroupResourceId'), createObject('value', parameters('nicConfigurations')[copyIndex()].networkSecurityGroupResourceId), createObject('value', ''))]",
@@ -1129,8 +1171,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "7272408028164257685"
+              "version": "0.26.54.24096",
+              "templateHash": "1849400803354837318"
             }
           },
           "definitions": {
@@ -1419,7 +1461,7 @@
                 "name": "networkInterface_publicIPAddresses",
                 "count": "[length(parameters('ipConfigurations'))]"
               },
-              "condition": "[contains(parameters('ipConfigurations')[copyIndex()], 'pipconfiguration')]",
+              "condition": "[contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
@@ -1430,7 +1472,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex()].pipconfiguration.publicIpNameSuffix)]"
+                    "value": "[format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIpNameSuffix)]"
                   },
                   "diagnosticSettings": {
                     "value": "[tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings')]"
@@ -1441,16 +1483,16 @@
                   "lock": {
                     "value": "[parameters('lock')]"
                   },
-                  "publicIPAddressVersion": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressVersion'), createObject('value', parameters('ipConfigurations')[copyIndex()].publicIPAddressVersion), createObject('value', 'IPv4'))]",
-                  "publicIPAllocationMethod": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAllocationMethod'), createObject('value', parameters('ipConfigurations')[copyIndex()].publicIPAllocationMethod), createObject('value', 'Static'))]",
-                  "publicIpPrefixResourceId": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPPrefixResourceId'), createObject('value', parameters('ipConfigurations')[copyIndex()].publicIPPrefixResourceId), createObject('value', ''))]",
-                  "roleAssignments": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'roleAssignments'), createObject('value', parameters('ipConfigurations')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-                  "skuName": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'skuName'), createObject('value', parameters('ipConfigurations')[copyIndex()].skuName), createObject('value', 'Standard'))]",
-                  "skuTier": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'skuTier'), createObject('value', parameters('ipConfigurations')[copyIndex()].skuTier), createObject('value', 'Regional'))]",
+                  "publicIPAddressVersion": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressVersion'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAddressVersion), createObject('value', 'IPv4'))]",
+                  "publicIPAllocationMethod": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAllocationMethod'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAllocationMethod), createObject('value', 'Static'))]",
+                  "publicIpPrefixResourceId": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPPrefixResourceId'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPPrefixResourceId), createObject('value', ''))]",
+                  "roleAssignments": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'roleAssignments'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.roleAssignments), createObject('value', createArray()))]",
+                  "skuName": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuName'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.skuName), createObject('value', 'Standard'))]",
+                  "skuTier": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuTier'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.skuTier), createObject('value', 'Regional'))]",
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'tags'), parameters('tags'))]"
                   },
-                  "zones": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'zones'), createObject('value', parameters('ipConfigurations')[copyIndex()].zones), createObject('value', createArray('1', '2', '3')))]",
+                  "zones": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'zones'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.zones), createObject('value', createArray(1, 2, 3)))]",
                   "enableTelemetry": {
                     "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                   }
@@ -1462,8 +1504,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "3488076626994379707"
+                      "version": "0.26.54.24096",
+                      "templateHash": "4718335757080871925"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address.",
@@ -1512,7 +1554,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -1606,11 +1648,14 @@
                           "type": "object",
                           "properties": {
                             "id": {
-                              "type": "string"
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
+                              }
                             }
                           },
                           "metadata": {
-                            "description": "Required. The DDoS protection plan ID associated with the public IP address."
+                            "description": "Required. The DDoS protection plan associated with the public IP address."
                           }
                         },
                         "protectionMode": {
@@ -1654,12 +1699,19 @@
                                   "metadata": {
                                     "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                             }
                           },
                           "metricCategories": {
@@ -1672,12 +1724,19 @@
                                   "metadata": {
                                     "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                             }
                           },
                           "logAnalyticsDestinationType": {
@@ -1758,7 +1817,19 @@
                     },
                     "zones": {
                       "type": "array",
-                      "nullable": true,
+                      "items": {
+                        "type": "int"
+                      },
+                      "defaultValue": [
+                        1,
+                        2,
+                        3
+                      ],
+                      "allowedValues": [
+                        1,
+                        2,
+                        3
+                      ],
                       "metadata": {
                         "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
                       }
@@ -1876,7 +1947,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -1894,7 +1965,7 @@
                     },
                     "publicIpAddress": {
                       "type": "Microsoft.Network/publicIPAddresses",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-09-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -1902,7 +1973,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[parameters('zones')]",
+                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -1910,7 +1981,7 @@
                         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                         "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                        "ipTags": []
+                        "ipTags": null
                       }
                     },
                     "publicIpAddress_lock": {
@@ -1959,12 +2030,30 @@
                       "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
                       "properties": {
+                        "copy": [
+                          {
+                            "name": "metrics",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "input": {
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "timeGrain": null
+                            }
+                          },
+                          {
+                            "name": "logs",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "input": {
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                            }
+                          }
+                        ],
                         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                         "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                        "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())))]",
                         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
                       },
@@ -2000,14 +2089,14 @@
                       "metadata": {
                         "description": "The public IP address of the public IP address resource."
                       },
-                      "value": "[if(contains(reference('publicIpAddress'), 'ipAddress'), reference('publicIpAddress').ipAddress, '')]"
+                      "value": "[coalesce(tryGet(reference('publicIpAddress'), 'ipAddress'), '')]"
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('publicIpAddress', '2023-04-01', 'full').location]"
+                      "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
                     }
                   }
                 }
@@ -2031,7 +2120,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('ipConfigurations'))]",
-                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipconfiguration'), resourceId('Microsoft.Network/publicIPAddresses', format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex('value')].pipconfiguration.publicIpNameSuffix)), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerBackendAddressPools, null()), 'applicationSecurityGroups', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), parameters('ipConfigurations')[copyIndex('value')].applicationSecurityGroups, null()), 'applicationGatewayBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].applicationGatewayBackendAddressPools, null()), 'gatewayLoadBalancer', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), parameters('ipConfigurations')[copyIndex('value')].gatewayLoadBalancer, null()), 'loadBalancerInboundNatRules', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerInboundNatRules, null()), 'privateIPAddressVersion', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), parameters('ipConfigurations')[copyIndex('value')].privateIPAddressVersion, null()), 'virtualNetworkTaps', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), parameters('ipConfigurations')[copyIndex('value')].virtualNetworkTaps, null()))]"
+                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), resourceId('Microsoft.Network/publicIPAddresses', format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIpNameSuffix)), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerBackendAddressPools, null()), 'applicationSecurityGroups', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), parameters('ipConfigurations')[copyIndex('value')].applicationSecurityGroups, null()), 'applicationGatewayBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].applicationGatewayBackendAddressPools, null()), 'gatewayLoadBalancer', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), parameters('ipConfigurations')[copyIndex('value')].gatewayLoadBalancer, null()), 'loadBalancerInboundNatRules', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerInboundNatRules, null()), 'privateIPAddressVersion', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), parameters('ipConfigurations')[copyIndex('value')].privateIPAddressVersion, null()), 'virtualNetworkTaps', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), parameters('ipConfigurations')[copyIndex('value')].virtualNetworkTaps, null()))]"
                       }
                     ]
                   },
@@ -2067,8 +2156,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "14617314094453038306"
+                      "version": "0.25.53.49325",
+                      "templateHash": "1612343535299711142"
                     },
                     "name": "Network Interface",
                     "description": "This module deploys a Network Interface.",
@@ -2105,12 +2194,19 @@
                                   "metadata": {
                                     "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                             }
                           },
                           "metricCategories": {
@@ -2123,12 +2219,19 @@
                                   "metadata": {
                                     "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                             }
                           },
                           "logAnalyticsDestinationType": {
@@ -2223,7 +2326,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -2404,7 +2507,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.2.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.2.4', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2485,11 +2588,21 @@
                       "scope": "[format('Microsoft.Network/networkInterfaces/{0}', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
                       "properties": {
+                        "copy": [
+                          {
+                            "name": "metrics",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "input": {
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "timeGrain": null
+                            }
+                          }
+                        ],
                         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                         "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
                         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
                       },
@@ -3405,9 +3518,14 @@
             "value": "Microsoft.Azure.Monitoring.DependencyAgent"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'DependencyAgentWindows'), createObject('value', 'DependencyAgentLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.5'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.10'))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDependencyAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
+          "settings": {
+            "value": {
+              "enableAMA": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAMA'), parameters('extensionDependencyAgentConfig').enableAMA, true())]"
+            }
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'tags'), parameters('tags'))]"
           }
@@ -5170,14 +5288,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('vm', '2022-11-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vm', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vm', '2022-11-01', 'full').location]"
+      "value": "[reference('vm', '2023-09-01', 'full').location]"
     }
   }
 }
