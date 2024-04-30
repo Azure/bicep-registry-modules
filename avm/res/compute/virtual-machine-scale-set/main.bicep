@@ -491,6 +491,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
         ]
       }
       networkProfile: {
+        networkApiVersion: (orchestrationMode == 'Flexible') ? '2020-11-01' : null
         networkInterfaceConfigurations: [
           for (nicConfiguration, index) in nicConfigurations: {
             name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
