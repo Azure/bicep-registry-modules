@@ -487,7 +487,7 @@ type azureFirewallType = {
   @description('Optional. Role assignments.')
   roleAssignments: roleAssignmentType?
 
-  @description('Optional. Tags.')
+  @description('Optional. Tags of the resource.')
   tags: object?
 
   @description('Optional. Threat Intel mode.')
