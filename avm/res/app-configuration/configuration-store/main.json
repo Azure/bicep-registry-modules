@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "9453977421269264612"
+      "templateHash": "10164784648390254757"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -884,7 +884,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}AppConfigReplicas{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[replace(format('{0}AppConfigReplicas{1}', uniqueString(deployment().name, parameters('location')), copyIndex()), '-', '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
