@@ -527,8 +527,10 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
         : null
       scheduledEventsProfile: scheduledEventsProfile
     }
-    overprovision: overprovision
-    doNotRunExtensionsOnOverprovisionedVMs: doNotRunExtensionsOnOverprovisionedVMs
+    overprovision: (orchestrationMode == 'Uniform') ? overprovision : null
+    doNotRunExtensionsOnOverprovisionedVMs: (orchestrationMode == 'Uniform')
+      ? doNotRunExtensionsOnOverprovisionedVMs
+      : null
     zoneBalance: zoneBalance == 'true' ? zoneBalance : null
     platformFaultDomainCount: scaleSetFaultDomain
     singlePlacementGroup: singlePlacementGroup
