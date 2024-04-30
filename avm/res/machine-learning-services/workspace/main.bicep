@@ -451,7 +451,6 @@ type privateEndpointType = {
   @sys.description('Optional. The name of the private link connection to create.')
   privateLinkServiceConnectionName: string?
 
-  // Variant 1: A default service can be assumed (i.e., for services that only have one private endpoint type)
   @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
