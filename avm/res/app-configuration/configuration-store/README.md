@@ -54,6 +54,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Required parameters
     name: 'accmin001'
     // Non-required parameters
+    enablePurgeProtection: '<enablePurgeProtection>'
     location: '<location>'
   }
 }
@@ -76,6 +77,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "accmin001"
     },
     // Non-required parameters
+    "enablePurgeProtection": {
+      "value": "<enablePurgeProtection>"
+    },
     "location": {
       "value": "<location>"
     }
@@ -108,6 +112,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
         contentType: 'contentType'
@@ -159,6 +164,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
+    },
+    "enablePurgeProtection": {
+      "value": "<enablePurgeProtection>"
     },
     "keyValues": {
       "value": [
@@ -227,6 +235,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
         contentType: 'contentType'
@@ -322,6 +331,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "enablePurgeProtection": {
+      "value": "<enablePurgeProtection>"
     },
     "keyValues": {
       "value": [
@@ -419,6 +431,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     name: 'accpe001'
     // Non-required parameters
     createMode: 'Default'
+    enablePurgeProtection: '<enablePurgeProtection>'
     location: '<location>'
     privateEndpoints: [
       {
@@ -463,6 +476,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Non-required parameters
     "createMode": {
       "value": "Default"
+    },
+    "enablePurgeProtection": {
+      "value": "<enablePurgeProtection>"
     },
     "location": {
       "value": "<location>"
@@ -523,6 +539,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
         contentType: 'contentType'
@@ -574,6 +591,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "enablePurgeProtection": {
+      "value": "<enablePurgeProtection>"
     },
     "keyValues": {
       "value": [
@@ -627,7 +647,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disables all authentication methods other than AAD authentication. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store.Defaults to true unless sku is set to Free, since purge protection is not available in Free tier. |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyValues`](#parameter-keyvalues) | array | All Key / Values to create. Requires local authentication to be enabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -847,7 +867,7 @@ Disables all authentication methods other than AAD authentication.
 
 ### Parameter: `enablePurgeProtection`
 
-Property specifying whether protection against purge is enabled for this configuration store.Defaults to true unless sku is set to Free, since purge protection is not available in Free tier.
+Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier.
 
 - Required: No
 - Type: bool

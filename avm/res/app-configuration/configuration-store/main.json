@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "16156067065047655353"
+      "templateHash": "13891541209430539230"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -501,7 +501,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Property specifying whether protection against purge is enabled for this configuration store.Defaults to true unless sku is set to Free, since purge protection is not available in Free tier."
+        "description": "Optional. Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier."
       }
     },
     "publicNetworkAccess": {
