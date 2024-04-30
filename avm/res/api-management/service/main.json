@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "7048259745072727177"
+      "templateHash": "12570584242194581029"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -371,7 +371,9 @@
         "Developer",
         "Basic",
         "Standard",
-        "Premium"
+        "Premium",
+        "StandardV2",
+        "BasicV2"
       ],
       "metadata": {
         "description": "Optional. The pricing tier of this API Management service."
