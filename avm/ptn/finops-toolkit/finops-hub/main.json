@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "8097445583381888829"
+      "templateHash": "1614484396531364977"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -8379,7 +8379,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "12895181983621599198"
+              "templateHash": "2284201316625618072"
             }
           },
           "parameters": {
@@ -8413,7 +8413,6 @@
             },
             "storageAccountName": {
               "type": "string",
-              "defaultValue": "",
               "metadata": {
                 "description": "Required. Name of the storage account to store access keys for."
               }
