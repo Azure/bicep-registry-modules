@@ -28,7 +28,7 @@ param createMode string = 'Default'
 @description('Optional. Disables all authentication methods other than AAD authentication.')
 param disableLocalAuth bool = true
 
-@description('Optional. Property specifying whether protection against purge is enabled for this configuration store.Defaults to true unless sku is set to Free, since purge protection is not available in Free tier.')
+@description('Optional. Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier.')
 param enablePurgeProtection bool = true
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
