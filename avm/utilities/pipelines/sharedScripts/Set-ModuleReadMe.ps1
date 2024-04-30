@@ -276,12 +276,25 @@ function Set-DefinitionSection {
       $categoryParameters = $Properties.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
     }
 
-    $tableSectionContent += @(
-            ('**{0} parameters**' -f $category),
-      '',
-      '| Parameter | Type | Description |',
-      '| :-- | :-- | :-- |'
-    )
+    # Error handling: Throw error if any parameter is missing a category
+    if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
+        $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
+        throw ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+    }
+
+    # Get the module parameter categories
+    $paramCategories = $descriptions | ForEach-Object { $_.Split('.')[0] } | Select-Object -Unique
+
+    # Sort categories
+    $sortedParamCategories = $ColumnsInOrder | Where-Object { $paramCategories -contains $_ }
+    # Add all others that exist but are not specified in the columnsInOrder parameter
+    $sortedParamCategories += $paramCategories | Where-Object { $ColumnsInOrder -notcontains $_ }
+    $newSectionContent = [System.Collections.ArrayList]@()
+    $tableSectionContent = [System.Collections.ArrayList]@()
+    $listSectionContent = [System.Collections.ArrayList]@()
+
+    foreach ($category in $sortedParamCategories) {
+
 
     foreach ($parameter in $categoryParameters) {
 
@@ -536,8 +549,26 @@ function Set-DataCollectionSection {
     [string] $SectionStartIdentifier = '## Data Collection'
   )
 
-  # Load content, if required
-  if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent') {
+
+    # Load content, if required
+    if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent') {
+
+        $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+        try {
+            $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
+                $telemetryFileContent = $rawResponse.Content -split '\n'
+            } else {
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                return $ReadMeFileContent
+            }
+        } catch {
+            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Invalid url
+            return $ReadMeFileContent
+        }
+    } else {
+        $telemetryFileContent = $PreLoadedContent.TelemetryFileContent
+    }
 
     $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
     try {
@@ -998,10 +1029,105 @@ function ConvertTo-FormattedJSONParameterObject {
 
         $linesOfFunction = $functionEndIndex - $functionStartIndex
 
-        # Nullify all but first line
-        for ($functionIndex = 1; $functionIndex -le $linesOfFunction; $functionIndex++) {
-          $functionLineIndex = $index + $functionIndex
-          $paramInJSONFormatArray[$functionLineIndex] = $null
+    # [2/4] Add JSON-specific syntax to the Bicep param block to enable us to treat is as such
+    # [2.1] Syntax: Outer brackets
+    $paramInJsonFormat = @(
+        '{',
+        $BicepParamBlock
+        '}'
+    ) | Out-String
+
+    # [2.2] Syntax: All double quotes must be escaped & single-quotes are double-quotes
+    $paramInJsonFormat = $paramInJsonFormat -replace '"', '\"'
+    $paramInJsonFormat = $paramInJsonFormat -replace "'", '"'
+
+    # [2.3] Split the object to format line-by-line (& also remove any empty lines)
+    $paramInJSONFormatArray = $paramInJsonFormat -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_.Trim()) }
+
+    for ($index = 0; $index -lt $paramInJSONFormatArray.Count; $index++) {
+
+        $line = $paramInJSONFormatArray[$index]
+
+        if ($line -match '^\s*\/\/.*') {
+            # Line is comment
+            continue
+        }
+
+        # [2.4] Syntax:
+        # - Everything left of a leftest ':' should be wrapped in quotes (as a parameter name is always a string)
+        # - However, we don't want to accidently catch something like "CriticalAddonsOnly=true:NoSchedule"
+        [regex]$pattern = '^\s*\"{0}([0-9a-zA-Z_]+):'
+        $line = $pattern.replace($line, '"$1":', 1)
+
+        # [2.5] Syntax: Replace Bicep resource ID references
+        $mayHaveValue = $line -match '\s*.+:\s+'
+        if ($mayHaveValue) {
+
+            $lineValue = ($line -split '\s*.+:\s+')[1].Trim() # i.e. optional spaces, followed by a name ("xzy"), followed by ':', folowed by at least a space
+
+            # Individual checks
+            $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g. test: {}
+            $isLineWithObjectPropertyReferenceValue = $lineValue -like '*.*' # e.g. resourceGroupResources.outputs.virtualWWANResourceId`
+            $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
+
+            $isLineWithStringValue = $lineValue -match '".+"' # e.g. "value"
+            $isLineWithStringNestedFunction = $lineValue -match "^['|`"]{1}.*\$\{.+['|`"]{1}$|^['|`"]{0}[a-zA-Z\(]+\(.+" # e.g. (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4] or '${last(...)}' or last() or "test${environment()}"
+            $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
+            $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g. isSecure: true
+
+            # Special case: Multi-line function
+            $isLineWithMultilineFunction = $lineValue -match '[a-zA-Z]+\s*\([^\)]*\){0}\s*$' # e.g. roleDefinitionIdOrName: subscriptionResourceId( \n 'Microsoft.Authorization/roleDefinitions', \n 'acdd72a7-3385-48ef-bd42-f606fba81ae7' \n )
+            if ($isLineWithMultilineFunction) {
+                # Search leading indent so that we can use it to identify at which line the function ends
+                $indent = ([regex]::Match($paramInJSONFormatArray[$index], '^(\s+)')).Captures.Groups[1].Value.Length
+
+                $functionStartIndex = $index
+                $functionEndIndex = $functionStartIndex
+                do {
+                    $functionEndIndex++
+                } while ($paramInJSONFormatArray[$functionEndIndex] -match "^\s{$($indent+1),}" -and $functionEndIndex -lt $paramInJSONFormatArray.Count)
+
+                if ($functionEndIndex -eq $paramInJSONFormatArray.Count) {
+                    throw "End index of a multi-line function block for test file [$CurrentFilePath] not found."
+                }
+
+                # Overwrite the first line with a default value (i.e., "property": "<property>")
+                $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
+
+                $linesOfFunction = $functionEndIndex - $functionStartIndex
+
+                # Nullify all but first line
+                for ($functionIndex = 1; $functionIndex -le $linesOfFunction; $functionIndex++) {
+                    $functionLineIndex = $index + $functionIndex
+                    $paramInJSONFormatArray[$functionLineIndex] = $null
+                }
+
+                # Increase index to skip the function lines
+                $index += $indexToIncrease
+            } else {
+                # Combined checks
+                # In case of an output reference like '"virtualWanId": resourceGroupResources.outputs.virtualWWANResourceId' we'll only show "<virtualWanId>" (but NOT e.g. 'reference': {})
+                $isLineWithObjectPropertyReference = -not $isLineWithEmptyObjectValue -and -not $isLineWithStringValue -and $isLineWithObjectPropertyReferenceValue
+                # In case of a parameter/variable reference like 'adminPassword: password' we'll only show "<adminPassword>" (but NOT e.g. enableMe: true)
+                $isLineWithParameterOrVariableReferenceValue = $isLineWithPlainValue -and -not $isLineWithPrimitiveValue
+                # In case of any contained line like ''${resourceGroupResources.outputs.managedIdentityResourceId}': {}' we'll only show "managedIdentityResourceId: {}"
+                $isLineWithObjectReferenceKeyAndEmptyObjectValue = $isLineWithEmptyObjectValue -and $isLineWithReferenceInLineKey
+                # In case of any contained function like '"backupVaultResourceGroup": (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4]' we'll only show "<backupVaultResourceGroup>"
+
+                if ($isLineWithObjectPropertyReference -or $isLineWithStringNestedFunction -or $isLineWithParameterOrVariableReferenceValue) {
+                    $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
+                } elseif ($isLineWithObjectReferenceKeyAndEmptyObjectValue) {
+                    $line = '"<{0}>": {1}' -f (($line -split ':')[0] -split '\.')[-1].TrimEnd('}"'), $lineValue
+                }
+            }
+        } else {
+            if ($line -notlike '*"*"*' -and $line -like '*.*') {
+                # In case of a array value like '[ \n -> resourceGroupResources.outputs.managedIdentityPrincipalId <- \n ]' we'll only show "<managedIdentityPrincipalId>""
+                $line = '"<{0}>"' -f $line.Split('.')[-1].Trim()
+            } elseif ($line -match '^\s*[a-zA-Z]+\s*$') {
+                # If there is simply only a value such as a variable reference, we'll wrap it as a string to replace. For example a reference of a variable `addressPrefix` will be replaced with `"<addressPrefix>"`
+                $line = '"<{0}>"' -f $line.Trim()
+            }
         }
 
         # Increase index to skip the function lines

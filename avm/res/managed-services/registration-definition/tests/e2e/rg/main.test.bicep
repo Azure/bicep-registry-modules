@@ -15,7 +15,7 @@ param serviceShort string = 'msrdrg'
 param resourceGroupName string = 'dep-${namePrefix}-managedservices.registrationdefinitions-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -28,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: resourceLocation
 }
 
 // ============== //
@@ -41,19 +41,24 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
+      registrationId: guid(
+        tenant().tenantId,
+        subscription().tenantId,
+        subscription().subscriptionId,
+        resourceGroup.name,
+        namePrefix
+      )
       registrationDescription: 'Managed by Lighthouse'
-      location: location
+      metadataLocation: resourceLocation
       resourceGroupName: resourceGroup.name
       authorizations: [
         {
           principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
           roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalIdDisplayName: 'Lighthouse Contributor'
         }
         {
           principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
           roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
-          principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         }
       ]
       managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'

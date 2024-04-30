@@ -149,6 +149,6 @@
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/security/security-center/ @Azure/avm-ptn-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
-
 *avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep
