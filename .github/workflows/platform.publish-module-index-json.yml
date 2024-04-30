@@ -46,6 +46,7 @@ jobs:
             moduleIndexJsonFilePath                      = 'moduleIndex.json'
             prefixForLastModuleIndexJsonFile             = 'last-'
             prefixForCurrentGeneratedModuleIndexJsonFile = 'generated-'
+            ErrorAction                                  = 'Continue'
           }
 
           Write-Verbose "Invoke task with" -Verbose
