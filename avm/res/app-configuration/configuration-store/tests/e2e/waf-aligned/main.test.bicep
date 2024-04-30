@@ -20,6 +20,9 @@ param serviceShort string = 'accwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Disables all authentication methods other than AAD authentication.')
+param disableLocalAuth bool = false
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -57,6 +60,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      disableLocalAuth: disableLocalAuth
       createMode: 'Default'
       replicaLocations: ['centralus', 'westus']
       enablePurgeProtection: false //Only for Testing purposes. Waf Aligned is true

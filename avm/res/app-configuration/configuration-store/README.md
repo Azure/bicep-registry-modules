@@ -112,6 +112,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    disableLocalAuth: '<disableLocalAuth>'
     enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
@@ -164,6 +165,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
+    },
+    "disableLocalAuth": {
+      "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
       "value": "<enablePurgeProtection>"
@@ -235,6 +239,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    disableLocalAuth: '<disableLocalAuth>'
     enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
@@ -331,6 +336,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "disableLocalAuth": {
+      "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
       "value": "<enablePurgeProtection>"
@@ -539,6 +547,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    disableLocalAuth: '<disableLocalAuth>'
     enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
@@ -591,6 +600,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "disableLocalAuth": {
+      "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
       "value": "<enablePurgeProtection>"
