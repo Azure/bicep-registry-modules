@@ -1,0 +1,678 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "9938615640421486630"
+    },
+    "name": "Policy Insights Remediations",
+    "description": "This module deploys a Policy Insights Remediation.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the name of the policy remediation."
+      }
+    },
+    "failureThresholdPercentage": {
+      "type": "string",
+      "defaultValue": "1",
+      "metadata": {
+        "description": "Optional. The remediation failure threshold settings. A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. 0 means that the remediation will stop after the first failure. 1 means that the remediation will not stop even if all deployments fail."
+      }
+    },
+    "filtersLocations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The filters that will be applied to determine which resources to remediate."
+      }
+    },
+    "parallelDeployments": {
+      "type": "int",
+      "defaultValue": 10,
+      "minValue": 1,
+      "maxValue": 30,
+      "metadata": {
+        "description": "Optional. Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used."
+      }
+    },
+    "resourceCount": {
+      "type": "int",
+      "defaultValue": 500,
+      "minValue": 1,
+      "maxValue": 50000,
+      "metadata": {
+        "description": "Optional. Determines the max number of resources that can be remediated by the remediation job. Can be between 1-50000. If not provided, the default resource count is used."
+      }
+    },
+    "resourceDiscoveryMode": {
+      "type": "string",
+      "defaultValue": "ExistingNonCompliant",
+      "allowedValues": [
+        "ExistingNonCompliant",
+        "ReEvaluateCompliance"
+      ],
+      "metadata": {
+        "description": "Optional. The way resources to remediate are discovered. Defaults to ExistingNonCompliant if not specified."
+      }
+    },
+    "policyAssignmentId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the policy assignment that should be remediated."
+      }
+    },
+    "policyDefinitionReferenceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The policy definition reference ID of the individual definition that should be remediated. Required when the policy assignment being remediated assigns a policy set definition."
+      }
+    },
+    "managementGroupId": {
+      "type": "string",
+      "defaultValue": "[managementGroup().name]",
+      "metadata": {
+        "description": "Optional. The target scope for the remediation. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment."
+      }
+    },
+    "subscriptionId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The target scope for the remediation. The subscription ID of the subscription for the policy assignment."
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The target scope for the remediation. The name of the resource group for the policy assignment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location deployment metadata."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[take(format('46d3xbcp.ptn.policyinsights-remediation.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "policyAssignmentId": {
+            "value": "[parameters('policyAssignmentId')]"
+          },
+          "policyDefinitionReferenceId": {
+            "value": "[parameters('policyDefinitionReferenceId')]"
+          },
+          "filtersLocations": {
+            "value": "[parameters('filtersLocations')]"
+          },
+          "resourceCount": {
+            "value": "[parameters('resourceCount')]"
+          },
+          "parallelDeployments": {
+            "value": "[parameters('parallelDeployments')]"
+          },
+          "failureThresholdPercentage": {
+            "value": "[parameters('failureThresholdPercentage')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "12299861631299116532"
+            },
+            "name": "Policy Insights Remediations (Management Group scope)",
+            "description": "This module starts a Policy Remediation task at a Management Group scope.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the name of the policy remediation."
+              }
+            },
+            "failureThresholdPercentage": {
+              "type": "string",
+              "defaultValue": "1",
+              "metadata": {
+                "description": "Optional. The remediation failure threshold settings. A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. 0 means that the remediation will stop after the first failure. 1 means that the remediation will not stop even if all deployments fail."
+              }
+            },
+            "filtersLocations": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The filters that will be applied to determine which resources to remediate."
+              }
+            },
+            "parallelDeployments": {
+              "type": "int",
+              "defaultValue": 10,
+              "minValue": 1,
+              "maxValue": 30,
+              "metadata": {
+                "description": "Optional. Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used."
+              }
+            },
+            "resourceCount": {
+              "type": "int",
+              "defaultValue": 500,
+              "minValue": 1,
+              "maxValue": 50000,
+              "metadata": {
+                "description": "Optional. Determines the max number of resources that can be remediated by the remediation job. Can be between 1-50000. If not provided, the default resource count is used."
+              }
+            },
+            "policyAssignmentId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the policy assignment that should be remediated."
+              }
+            },
+            "policyDefinitionReferenceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The policy definition reference ID of the individual definition that should be remediated. Required when the policy assignment being remediated assigns a policy set definition."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location deployment metadata."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.PolicyInsights/remediations",
+              "apiVersion": "2021-10-01",
+              "name": "[parameters('name')]",
+              "properties": {
+                "failureThreshold": {
+                  "percentage": "[json(parameters('failureThresholdPercentage'))]"
+                },
+                "filters": {
+                  "locations": "[parameters('filtersLocations')]"
+                },
+                "parallelDeployments": "[parameters('parallelDeployments')]",
+                "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                "policyDefinitionReferenceId": "[parameters('policyDefinitionReferenceId')]",
+                "resourceCount": "[parameters('resourceCount')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the remediation."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the remediation."
+              },
+              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.PolicyInsights/remediations', parameters('name'))]"
+            },
+            "managementGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The managmeent group of the deployed remediation."
+              },
+              "value": "[managementGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[parameters('location')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "policyAssignmentId": {
+            "value": "[parameters('policyAssignmentId')]"
+          },
+          "policyDefinitionReferenceId": {
+            "value": "[parameters('policyDefinitionReferenceId')]"
+          },
+          "filtersLocations": {
+            "value": "[parameters('filtersLocations')]"
+          },
+          "resourceCount": {
+            "value": "[parameters('resourceCount')]"
+          },
+          "resourceDiscoveryMode": {
+            "value": "[parameters('resourceDiscoveryMode')]"
+          },
+          "parallelDeployments": {
+            "value": "[parameters('parallelDeployments')]"
+          },
+          "failureThresholdPercentage": {
+            "value": "[parameters('failureThresholdPercentage')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "1015297291864726810"
+            },
+            "name": "Policy Insights Remediations (Subscription scope)",
+            "description": "This module deploys a Policy Insights Remediation on a Subscription scope.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the name of the policy remediation."
+              }
+            },
+            "failureThresholdPercentage": {
+              "type": "string",
+              "defaultValue": "1",
+              "metadata": {
+                "description": "Optional. The remediation failure threshold settings. A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. 0 means that the remediation will stop after the first failure. 1 means that the remediation will not stop even if all deployments fail."
+              }
+            },
+            "filtersLocations": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The filters that will be applied to determine which resources to remediate."
+              }
+            },
+            "parallelDeployments": {
+              "type": "int",
+              "defaultValue": 10,
+              "minValue": 1,
+              "maxValue": 30,
+              "metadata": {
+                "description": "Optional. Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used."
+              }
+            },
+            "resourceCount": {
+              "type": "int",
+              "defaultValue": 500,
+              "minValue": 1,
+              "maxValue": 50000,
+              "metadata": {
+                "description": "Optional. Determines the max number of resources that can be remediated by the remediation job. Can be between 1-50000. If not provided, the default resource count is used."
+              }
+            },
+            "resourceDiscoveryMode": {
+              "type": "string",
+              "defaultValue": "ExistingNonCompliant",
+              "allowedValues": [
+                "ExistingNonCompliant",
+                "ReEvaluateCompliance"
+              ],
+              "metadata": {
+                "description": "Optional. The way resources to remediate are discovered. Defaults to ExistingNonCompliant if not specified."
+              }
+            },
+            "policyAssignmentId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the policy assignment that should be remediated."
+              }
+            },
+            "policyDefinitionReferenceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The policy definition reference ID of the individual definition that should be remediated. Required when the policy assignment being remediated assigns a policy set definition."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location deployment metadata."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.PolicyInsights/remediations",
+              "apiVersion": "2021-10-01",
+              "name": "[parameters('name')]",
+              "properties": {
+                "failureThreshold": {
+                  "percentage": "[json(parameters('failureThresholdPercentage'))]"
+                },
+                "filters": {
+                  "locations": "[parameters('filtersLocations')]"
+                },
+                "parallelDeployments": "[parameters('parallelDeployments')]",
+                "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                "policyDefinitionReferenceId": "[parameters('policyDefinitionReferenceId')]",
+                "resourceCount": "[parameters('resourceCount')]",
+                "resourceDiscoveryMode": "[parameters('resourceDiscoveryMode')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the remediation."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the remediation."
+              },
+              "value": "[subscriptionResourceId('Microsoft.PolicyInsights/remediations', parameters('name'))]"
+            },
+            "subscriptionName": {
+              "type": "string",
+              "metadata": {
+                "description": "The subscription name of the deployed remediation."
+              },
+              "value": "[subscription().displayName]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[parameters('location')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "policyAssignmentId": {
+            "value": "[parameters('policyAssignmentId')]"
+          },
+          "policyDefinitionReferenceId": {
+            "value": "[parameters('policyDefinitionReferenceId')]"
+          },
+          "filtersLocations": {
+            "value": "[parameters('filtersLocations')]"
+          },
+          "resourceCount": {
+            "value": "[parameters('resourceCount')]"
+          },
+          "resourceDiscoveryMode": {
+            "value": "[parameters('resourceDiscoveryMode')]"
+          },
+          "parallelDeployments": {
+            "value": "[parameters('parallelDeployments')]"
+          },
+          "failureThresholdPercentage": {
+            "value": "[parameters('failureThresholdPercentage')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "10110336327374487357"
+            },
+            "name": "Policy Insights Remediations (Resource Group scope)",
+            "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the name of the policy remediation."
+              }
+            },
+            "failureThresholdPercentage": {
+              "type": "string",
+              "defaultValue": "1",
+              "metadata": {
+                "description": "Optional. The remediation failure threshold settings. A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. 0 means that the remediation will stop after the first failure. 1 means that the remediation will not stop even if all deployments fail."
+              }
+            },
+            "filtersLocations": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The filters that will be applied to determine which resources to remediate."
+              }
+            },
+            "parallelDeployments": {
+              "type": "int",
+              "defaultValue": 10,
+              "minValue": 1,
+              "maxValue": 30,
+              "metadata": {
+                "description": "Optional. Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used."
+              }
+            },
+            "resourceCount": {
+              "type": "int",
+              "defaultValue": 500,
+              "minValue": 1,
+              "maxValue": 50000,
+              "metadata": {
+                "description": "Optional. Determines the max number of resources that can be remediated by the remediation job. Can be between 1-50000. If not provided, the default resource count is used."
+              }
+            },
+            "resourceDiscoveryMode": {
+              "type": "string",
+              "defaultValue": "ExistingNonCompliant",
+              "allowedValues": [
+                "ExistingNonCompliant",
+                "ReEvaluateCompliance"
+              ],
+              "metadata": {
+                "description": "Optional. The way resources to remediate are discovered. Defaults to ExistingNonCompliant if not specified."
+              }
+            },
+            "policyAssignmentId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the policy assignment that should be remediated."
+              }
+            },
+            "policyDefinitionReferenceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The policy definition reference ID of the individual definition that should be remediated. Required when the policy assignment being remediated assigns a policy set definition."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location deployment metadata."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.PolicyInsights/remediations",
+              "apiVersion": "2021-10-01",
+              "name": "[parameters('name')]",
+              "properties": {
+                "failureThreshold": {
+                  "percentage": "[json(parameters('failureThresholdPercentage'))]"
+                },
+                "filters": {
+                  "locations": "[parameters('filtersLocations')]"
+                },
+                "parallelDeployments": "[parameters('parallelDeployments')]",
+                "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                "policyDefinitionReferenceId": "[parameters('policyDefinitionReferenceId')]",
+                "resourceCount": "[parameters('resourceCount')]",
+                "resourceDiscoveryMode": "[parameters('resourceDiscoveryMode')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the remediation."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the remediation."
+              },
+              "value": "[resourceId('Microsoft.PolicyInsights/remediations', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed remediation."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[parameters('location')]"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the remediation."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the remediation."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value))]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value))]"
+    }
+  }
+}
