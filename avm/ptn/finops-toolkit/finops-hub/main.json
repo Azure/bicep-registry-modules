@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "15558651524221253632"
+      "templateHash": "10473516601579391962"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -154,7 +154,8 @@
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
-              "name": "FinOps toolkit"
+              "name": "FinOps toolkit",
+              "version": "0.3"
             }
           },
           "resources": []

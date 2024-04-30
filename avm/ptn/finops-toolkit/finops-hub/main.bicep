@@ -47,7 +47,7 @@ param enableTelemetry bool = true
 var safeHubName = replace(replace(toLower(hubName), '-', ''), '_', '')
 var storageAccountSuffix = uniqueSuffix
 var storageAccountName = '${take(safeHubName, 24 - length(storageAccountSuffix))}${storageAccountSuffix}'
-var ftkVersion = loadTextContent('modules/ftkver.txt')
+var ftkVersion = '0.3'
 
 // Add cm-resource-parent to group resources in Cost Management
 var resourceTags = union(
@@ -188,7 +188,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
         metadata: {
           _generator: {
             name: 'FinOps toolkit'
-            //version: ftkVersion
+            version: '0.3'
           }
         }
         resources: []
