@@ -24,8 +24,6 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   }
 }
 
-
-
 @description('The principal ID of the created managed identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
