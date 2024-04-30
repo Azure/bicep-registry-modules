@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13812487090890990585"
+      "templateHash": "8697354479542896000"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -1051,10 +1051,10 @@
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
         "taskType": "ComputeVmShutdownTask",
         "dailyRecurrence": {
-          "time": "[if(contains(parameters('autoShutdownConfig'), 'time'), parameters('autoShutdownConfig').time, '19:00')]"
+          "time": "[if(contains(parameters('autoShutdownConfig'), 'time'), parameters('autoShutdownConfig').dailyRecurrenceTime, '19:00')]"
         },
         "timeZoneId": "[if(contains(parameters('autoShutdownConfig'), 'timeZone'), parameters('autoShutdownConfig').timeZone, 'UTC')]",
-        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
+        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
       },
       "dependsOn": [
         "vm"

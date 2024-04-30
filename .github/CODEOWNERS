@@ -5,6 +5,7 @@
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -75,7 +76,7 @@
 /avm/res/machine-learning-services/workspace/ @Azure/avm-res-machinelearningservices-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/maintenance/maintenance-configuration/ @Azure/avm-res-maintenance-maintenanceconfiguration-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/managed-identity/user-assigned-identity/ @Azure/avm-res-managedidentity-userassignedidentity-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/managed-services/registration-definition/ @Azure/avm-res-managedservices-registrationdefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/managed-services/registration-definition/ @Azure/avm-res-managedservices-registrationdefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/management/management-group/ @Azure/avm-res-management-managementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/net-app/net-app-account/ @Azure/avm-res-netapp-netappaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/application-gateway/ @Azure/avm-res-network-applicationgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -147,6 +148,6 @@
 #/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/security/security-center/ @Azure/avm-ptn-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
-
 *avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep

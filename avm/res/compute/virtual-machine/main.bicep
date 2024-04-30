@@ -605,7 +605,7 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
       targetResourceId: vm.id
       taskType: 'ComputeVmShutdownTask'
       dailyRecurrence: {
-        time: contains(autoShutdownConfig, 'time') ? autoShutdownConfig.time : '19:00'
+        time: contains(autoShutdownConfig, 'time') ? autoShutdownConfig.dailyRecurrenceTime : '19:00'
       }
       timeZoneId: contains(autoShutdownConfig, 'timeZone') ? autoShutdownConfig.timeZone : 'UTC'
       notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
@@ -619,10 +619,10 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
             notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
               ? autoShutdownConfig.notificationLocale
               : 'en'
-            timeInMinutes: contains(autoShutdownConfig, 'notificationWebhookUrl')
+            webhookUrl: contains(autoShutdownConfig, 'notificationWebhookUrl')
               ? autoShutdownConfig.notificationWebhookUrl
               : ''
-            webhookUrl: contains(autoShutdownConfig, 'notificationTimeInMinutes')
+            timeInMinutes: contains(autoShutdownConfig, 'notificationTimeInMinutes')
               ? autoShutdownConfig.notificationTimeInMinutes
               : 30
           }
