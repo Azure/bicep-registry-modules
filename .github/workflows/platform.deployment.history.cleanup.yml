@@ -63,7 +63,7 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
@@ -102,7 +102,7 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
