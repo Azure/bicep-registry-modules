@@ -325,7 +325,6 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     name: 'pirsubmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
-    filtersLocations: []
     location: '<location>'
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
     subscriptionId: '<subscriptionId>'
@@ -353,9 +352,6 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "<policyAssignmentId>"
     },
     // Non-required parameters
-    "filtersLocations": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
     },
