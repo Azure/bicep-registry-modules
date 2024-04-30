@@ -188,7 +188,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
         metadata: {
           _generator: {
             name: 'FinOps toolkit'
-            version: loadTextContent('modules/ftkver.txt')
+            //version: ftkVersion
           }
         }
         resources: []

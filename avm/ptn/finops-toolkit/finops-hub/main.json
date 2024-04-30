@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "1614484396531364977"
+      "templateHash": "15558651524221253632"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -95,7 +95,6 @@
     }
   },
   "variables": {
-    "$fxv#0": "0.3",
     "safeHubName": "[replace(replace(toLower(parameters('hubName')), '-', ''), '_', '')]",
     "storageAccountSuffix": "[variables('uniqueSuffix')]",
     "storageAccountName": "[format('{0}{1}', take(variables('safeHubName'), sub(24, length(variables('storageAccountSuffix')))), variables('storageAccountSuffix'))]",
@@ -155,8 +154,7 @@
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
-              "name": "FinOps toolkit",
-              "version": "[variables('$fxv#0')]"
+              "name": "FinOps toolkit"
             }
           },
           "resources": []
