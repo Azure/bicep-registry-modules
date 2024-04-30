@@ -23,7 +23,7 @@ on:
         default: false
       customLocation:
         type: string
-        description: "Default location overwrite"
+        description: "Default location overwrite (e.g., eastus)"
         required: false
   push:
     branches:
