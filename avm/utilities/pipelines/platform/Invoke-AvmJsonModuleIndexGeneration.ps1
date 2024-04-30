@@ -41,10 +41,7 @@ The function requires Azure PowerShell Storage Module (Az.Storage) to be install
 
 function Invoke-AvmJsonModuleIndexGeneration {
 
-<<<<<<< HEAD
-=======
   [CmdletBinding()]
->>>>>>> main
   param (
     [Parameter(Mandatory = $false)]
     [string] $storageAccountName = 'biceplivedatasaprod',
