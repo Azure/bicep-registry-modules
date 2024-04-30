@@ -177,6 +177,13 @@ param gracePeriod string = 'PT30M'
 @maxLength(15)
 param vmNamePrefix string = 'vmssvm'
 
+@description('Optional. Specifies the orchestration mode for the virtual machine scale set.')
+@allowed([
+  'Flexible'
+  'Uniform'
+])
+param orchestrationMode string = 'Flexible'
+
 @description('Optional. Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later.')
 param provisionVMAgent bool = true
 
@@ -393,13 +400,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2022-11-01' = {
+resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
   name: name
   location: location
   tags: tags
   identity: identity
   zones: availabilityZones
   properties: {
+    orchestrationMode: orchestrationMode
     proximityPlacementGroup: !empty(proximityPlacementGroupResourceId)
       ? {
           id: proximityPlacementGroupResourceId

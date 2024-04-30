@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15325819648954627762"
+      "templateHash": "1506204671401686112"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -565,6 +565,17 @@
         "description": "Optional. Specifies the computer name prefix for all of the virtual machines in the scale set."
       }
     },
+    "orchestrationMode": {
+      "type": "string",
+      "defaultValue": "Flexible",
+      "allowedValues": [
+        "Flexible",
+        "Uniform"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the orchestration mode for the virtual machine scale set."
+      }
+    },
     "provisionVMAgent": {
       "type": "bool",
       "defaultValue": true,
@@ -815,13 +826,14 @@
     },
     "vmss": {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "zones": "[parameters('availabilityZones')]",
       "properties": {
+        "orchestrationMode": "[parameters('orchestrationMode')]",
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
         "upgradePolicy": {
           "mode": "[parameters('upgradePolicyMode')]",
@@ -1055,7 +1067,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1136,7 +1148,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1217,7 +1229,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1298,7 +1310,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1386,7 +1398,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1467,7 +1479,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1545,7 +1557,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1626,7 +1638,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1703,7 +1715,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1784,7 +1796,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1865,7 +1877,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1946,7 +1958,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -2033,7 +2045,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2114,7 +2126,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -2195,7 +2207,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2276,7 +2288,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -2349,14 +2361,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2022-11-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vmss', '2022-11-01', 'full').location]"
+      "value": "[reference('vmss', '2023-09-01', 'full').location]"
     }
   }
 }
