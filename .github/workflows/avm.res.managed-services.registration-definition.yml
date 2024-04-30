@@ -22,7 +22,7 @@ on:
         default: true
       customLocation:
         type: string
-        description: "Default location overwrite"
+        description: "Default location overwrite (e.g., eastus2)"
         required: false
   push:
     branches:
