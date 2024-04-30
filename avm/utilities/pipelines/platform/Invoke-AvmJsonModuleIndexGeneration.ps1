@@ -40,6 +40,8 @@ The function requires Azure PowerShell Storage Module (Az.Storage) to be install
 #>
 
 function Invoke-AvmJsonModuleIndexGeneration {
+
+  [CmdletBinding()]
   param (
     [Parameter(Mandatory = $false)]
     [string] $storageAccountName = 'biceplivedatasaprod',
@@ -74,7 +76,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
       Get-AzStorageBlobContent -Blob $storageBlobName -Container $storageAccountContainer -Context $storageContext -Destination $lastModuleIndexJsonFilePath -Force | Out-Null
     } catch {
-      Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)" -ErrorAction Stop
+      Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)" -ErrorAction 'Stop'
     }
 
     ## Check if the last version of the moduleIndex.json (last-moduleIndex.json) file exists and is not empty
@@ -82,7 +84,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
     if (Test-Path $lastModuleIndexJsonFilePath) {
       $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
       if ($null -eq $lastModuleIndexJsonFileContent) {
-        Write-Error "The last version of the moduleIndex.json file (last-moduleIndex.json) exists but is empty. File: $lastModuleIndexJsonFilePath" -ErrorAction Stop
+        Write-Error "The last version of the moduleIndex.json file (last-moduleIndex.json) exists but is empty. File: $lastModuleIndexJsonFilePath" -ErrorAction 'Stop'
       }
       Write-Verbose 'The last version of the moduleIndex.json file (last-moduleIndex.json) exists and is not empty. Proceeding...' -Verbose
     }
