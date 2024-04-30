@@ -407,15 +407,15 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? registry}-${index}'
+      name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? registry}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
               properties: {
                 privateLinkServiceId: registry.id
                 groupIds: [
-                  privateEndpoint.?service ?? registry
+                  privateEndpoint.?service ?? 'registry'
                 ]
               }
             }
@@ -424,11 +424,11 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? registry}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
               properties: {
                 privateLinkServiceId: registry.id
                 groupIds: [
-                  privateEndpoint.?service ?? registry
+                  privateEndpoint.?service ?? 'registry'
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }
