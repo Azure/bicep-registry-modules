@@ -2130,12 +2130,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     autoShutdownConfig: {
+      dailyRecurrenceTime: '19:00'
       notificationEmail: 'test@contoso.com'
       notificationLocale: 'en'
       notificationStatus: 'Enabled'
       notificationTimeInMinutes: 30
       status: 'Enabled'
-      time: '19:00'
       timeZone: 'UTC'
     }
     backupPolicyName: '<backupPolicyName>'
@@ -2437,12 +2437,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "autoShutdownConfig": {
       "value": {
+        "dailyRecurrenceTime": "19:00",
         "notificationEmail": "test@contoso.com",
         "notificationLocale": "en",
         "notificationStatus": "Enabled",
         "notificationTimeInMinutes": 30,
         "status": "Enabled",
-        "time": "19:00",
         "timeZone": "UTC"
       }
     },
@@ -3736,6 +3736,8 @@ Specifies that the image or disk that is being used was licensed on-premises.
   ```Bicep
   [
     ''
+    'RHEL_BYOS'
+    'SLES_BYOS'
     'Windows_Client'
     'Windows_Server'
   ]

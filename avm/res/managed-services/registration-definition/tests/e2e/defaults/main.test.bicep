@@ -11,25 +11,10 @@ metadata description = 'This instance deploys the module with the minimum set of
 param serviceShort string = 'msrdmin'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-managedservices-registrationdef-${serviceShort}-rg'
+param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: location
-}
 
 // ============== //
 // Test Execution //
@@ -41,18 +26,16 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'Component Validation - ${namePrefix}${serviceShort} Subscription assignment'
+      metadataLocation: resourceLocation
       registrationDescription: 'Managed by Lighthouse'
-      location: location
       authorizations: [
         {
           principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
           roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalIdDisplayName: 'Lighthouse Contributor'
         }
         {
           principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
           roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
-          principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         }
       ]
       managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
