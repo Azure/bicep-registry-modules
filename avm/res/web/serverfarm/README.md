@@ -47,13 +47,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfmin001'
-    sku: {
-      capacity: 3
-      family: 'P'
-      name: 'P1v3'
-      size: 'P1v3'
-      tier: 'Premium'
-    }
+    skuCapacity: 2
+    skuName: 'S1'
     // Non-required parameters
     location: '<location>'
   }
@@ -76,14 +71,11 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "name": {
       "value": "wsfmin001"
     },
-    "sku": {
-      "value": {
-        "capacity": 3,
-        "family": "P",
-        "name": "P1v3",
-        "size": "P1v3",
-        "tier": "Premium"
-      }
+    "skuCapacity": {
+      "value": 2
+    },
+    "skuName": {
+      "value": "S1"
     },
     // Non-required parameters
     "location": {
@@ -111,13 +103,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfmax001'
-    sku: {
-      capacity: 3
-      family: 'P'
-      name: 'P1v3'
-      size: 'P1v3'
-      tier: 'Premium'
-    }
+    skuCapacity: 1
+    skuName: 'S1'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -162,7 +149,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: true
+    zoneRedundant: false
   }
 }
 ```
@@ -183,14 +170,11 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "name": {
       "value": "wsfmax001"
     },
-    "sku": {
-      "value": {
-        "capacity": 3,
-        "family": "P",
-        "name": "P1v3",
-        "size": "P1v3",
-        "tier": "Premium"
-      }
+    "skuCapacity": {
+      "value": 1
+    },
+    "skuName": {
+      "value": "S1"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -251,7 +235,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     "zoneRedundant": {
-      "value": true
+      "value": false
     }
   }
 }
@@ -275,13 +259,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfwaf001'
-    sku: {
-      capacity: 3
-      family: 'P'
-      name: 'P1v3'
-      size: 'P1v3'
-      tier: 'Premium'
-    }
+    skuCapacity: 3
+    skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -329,14 +308,11 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "name": {
       "value": "wsfwaf001"
     },
-    "sku": {
-      "value": {
-        "capacity": 3,
-        "family": "P",
-        "name": "P1v3",
-        "size": "P1v3",
-        "tier": "Premium"
-      }
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -392,7 +368,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the app service plan. |
-| [`sku`](#parameter-sku) | object | Defines the name, tier, size, family and capacity of the App Service Plan. |
+| [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. |
+| [`skuName`](#parameter-skuname) | string | The name of the SKU will Determine the tier, size, family of the App Service Plan. |
 
 **Conditional parameters**
 
@@ -426,12 +403,19 @@ Name of the app service plan.
 - Required: Yes
 - Type: string
 
-### Parameter: `sku`
+### Parameter: `skuCapacity`
 
-Defines the name, tier, size, family and capacity of the App Service Plan.
+Number of workers associated with the App Service Plan.
 
 - Required: Yes
-- Type: object
+- Type: int
+
+### Parameter: `skuName`
+
+The name of the SKU will Determine the tier, size, family of the App Service Plan.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `reserved`
 
@@ -439,7 +423,7 @@ Defaults to false when creating Windows/app App Service Plan. Required if creati
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `[equals(parameters('kind'), 'Linux')]`
 
 ### Parameter: `appServiceEnvironmentId`
 
@@ -778,7 +762,7 @@ Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within Z
 
 - Required: No
 - Type: bool
-- Default: `[if(or(equals(parameters('sku').tier, 'Premium'), equals(parameters('sku').tier, 'ElasticPremium')), true(), false())]`
+- Default: `[if(or(startsWith(parameters('skuName'), 'P'), startsWith(parameters('skuName'), 'EP')), true(), false())]`
 
 
 ## Outputs

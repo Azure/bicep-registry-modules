@@ -60,9 +60,9 @@ module testDeployment '../../../main.bicep' = [
         '${namePrefix}-dm-${serviceShort}'
       ]
       publicIpZones: [
-        '1'
-        '2'
-        '3'
+        1
+        2
+        3
       ]
       vpnClientAadConfiguration: {
         // The Application ID of the "Azure VPN" Azure AD Enterprise App for Azure Public

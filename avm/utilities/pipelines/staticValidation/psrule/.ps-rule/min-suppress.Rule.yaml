@@ -28,6 +28,13 @@ spec:
     # Azure Virtual Machine
     - Azure.VM.AMA
     - Azure.VM.Standalone
+    # Azure App Service
+    - Azure.AppService.WebProbe # Supressed as the probe path is specific to the app
+    - Azure.AppService.WebProbePath # Supressed as the probe path is specific to the app
+    # Azure Front Door
+    - Azure.FrontDoor.Probe # Supressed as the probe is being provided as parameter and we are not able to enforce as default value
+    - Azure.FrontDoor.ProbeMethod # Supressed as the probe method is being provided as parameter and we are not able to enforce as default value
+    - Azure.FrontDoor.ProbePath # Supressed as the probe path is being provided as parameter and we are not able to enforce as default value
   if:
     name: "."
     contains:
