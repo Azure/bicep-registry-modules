@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "17687470599053936590"
+      "templateHash": "4853007729620729574"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -211,7 +211,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "2951657955684917128"
+              "templateHash": "1568189702556236466"
             }
           },
           "parameters": {
@@ -304,7 +304,7 @@
             "storageAccount": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[parameters('storageAccountName')]",
+              "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -5012,7 +5012,7 @@
             "uploadSettings": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "uploadSettings",
+              "name": "[format('{0}-uploadSettings', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -5563,7 +5563,7 @@
               "metadata": {
                 "description": "The name of the storage account."
               },
-              "value": "[parameters('storageAccountName')]"
+              "value": "[format('{0}-storage', uniqueString(deployment().name, parameters('location')))]"
             }
           }
         }
@@ -5615,7 +5615,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "14367922441785136445"
+              "templateHash": "13617090394106970682"
             }
           },
           "parameters": {
@@ -6675,7 +6675,7 @@
             "deleteOldResources": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}_deleteOldResources', parameters('dataFactoryName'))]",
+              "name": "[format('{0}-deleteOldResources', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -7218,7 +7218,7 @@
             "stopHubTriggers": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}_stopHubTriggers', parameters('dataFactoryName'))]",
+              "name": "[format('{0}-stopHubTriggers', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -7768,7 +7768,7 @@
             "startHubTriggers": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}_startHubTriggers', parameters('dataFactoryName'))]",
+              "name": "[format('{0}-startHubTriggers', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -8387,7 +8387,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "2284201316625618072"
+              "templateHash": "13300622895091091890"
             }
           },
           "parameters": {
@@ -8478,7 +8478,7 @@
             "keyVault": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[variables('keyVaultName')]",
+              "name": "[format('{0}-keyvault', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -10988,7 +10988,7 @@
               "metadata": {
                 "description": "The name of the key vault."
               },
-              "value": "[variables('keyVaultName')]"
+              "value": "[format('{0}-keyvault', uniqueString(deployment().name, parameters('location')))]"
             },
             "uri": {
               "type": "string",

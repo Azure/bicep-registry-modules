@@ -53,7 +53,7 @@ var formattedAccessPolicies = [
 //==============================================================================
 
 module keyVault 'br/public:avm/res/key-vault/vault:0.5.1' = {
-  name: keyVaultName
+  name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
     name: keyVaultName
     location: location

@@ -187,7 +187,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
 //------------------------------------------------------------------------------
 
 module deleteOldResources 'br/public:avm/res/resources/deployment-script:0.2.0' = {
-  name: '${dataFactoryName}_deleteOldResources'
+  name: '${uniqueString(deployment().name, location)}-deleteOldResources'
   dependsOn: [
     identityRoleAssignments
   ]
@@ -254,7 +254,7 @@ resource identityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
 ]
 
 module stopHubTriggers 'br/public:avm/res/resources/deployment-script:0.2.0' = {
-  name: '${dataFactoryName}_stopHubTriggers'
+  name: '${uniqueString(deployment().name, location)}-stopHubTriggers'
   dependsOn: [
     identityRoleAssignments
   ]
@@ -867,7 +867,7 @@ resource pipeline_msexports_ETL_ingestion 'Microsoft.DataFactory/factories/pipel
 // Start hub triggers
 
 module startHubTriggers 'br/public:avm/res/resources/deployment-script:0.2.0' = {
-  name: '${dataFactoryName}_startHubTriggers'
+  name: '${uniqueString(deployment().name, location)}-startHubTriggers'
   dependsOn: [
     identityRoleAssignments
     trigger_msexports_FileAdded
