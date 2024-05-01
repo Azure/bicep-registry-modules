@@ -161,4 +161,4 @@ module uploadSettings 'br/public:avm/res/resources/deployment-script:0.2.0' = {
 output resourceId string = storageAccount.outputs.resourceId
 
 @description('The name of the storage account.')
-output name string = storageAccount.name
+output name string = storageAccount.outputs.name

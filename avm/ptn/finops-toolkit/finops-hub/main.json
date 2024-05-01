@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "4853007729620729574"
+      "templateHash": "17188458143569275776"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -172,6 +172,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "storageAccountName": {
+            "value": "[variables('storageAccountName')]"
+          },
           "sku": {
             "value": "[parameters('storageSku')]"
           },
@@ -196,9 +199,6 @@
           "ingestionContainer": {
             "value": "[parameters('ingestionContainer')]"
           },
-          "storageAccountName": {
-            "value": "[variables('storageAccountName')]"
-          },
           "ftkVersion": {
             "value": "[variables('ftkVersion')]"
           }
@@ -211,7 +211,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "1568189702556236466"
+              "templateHash": "4383879433834970993"
             }
           },
           "parameters": {
@@ -5563,7 +5563,7 @@
               "metadata": {
                 "description": "The name of the storage account."
               },
-              "value": "[format('{0}-storage', uniqueString(deployment().name, parameters('location')))]"
+              "value": "[reference('storageAccount').outputs.name.value]"
             }
           }
         }

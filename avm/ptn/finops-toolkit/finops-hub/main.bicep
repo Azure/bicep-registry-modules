@@ -83,6 +83,7 @@ var telemetryId = '00f120b5-2007-6120-0000-40b000000000'
 module storage 'modules/storage.bicep' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
+    storageAccountName: storageAccountName
     sku: storageSku
     location: location
     tags: resourceTags
@@ -91,7 +92,6 @@ module storage 'modules/storage.bicep' = {
     configContainer: configContainer
     exportContainer: exportContainer
     ingestionContainer: ingestionContainer
-    storageAccountName: storageAccountName
     ftkVersion: ftkVersion
   }
 }

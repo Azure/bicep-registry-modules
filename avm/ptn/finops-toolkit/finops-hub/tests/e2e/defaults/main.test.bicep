@@ -39,7 +39,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    hubName: '${namePrefix}-finops-hub-${serviceShort}'
+    hubName: 'finops-hub-${namePrefix}-${serviceShort}'
     location: resourceLocation
   }
 }
