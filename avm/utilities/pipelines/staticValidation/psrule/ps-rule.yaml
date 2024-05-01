@@ -80,3 +80,4 @@ rule:
     - Azure.KeyVault.PurgeProtect
     - Azure.VM.UseHybridUseBenefit
     - Azure.Storage.UseReplication
+    - Azure.AppConfig.PurgeProtect
