@@ -81,7 +81,7 @@ var telemetryId = '00f120b5-2007-6120-0000-40b000000000'
 //------------------------------------------------------------------------------
 
 module storage 'modules/storage.bicep' = {
-  name: 'storage'
+  name: '${uniqueString(deployment().name, location)}-storage'
   params: {
     sku: storageSku
     location: location
@@ -117,7 +117,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   )
 }
 module dataFactoryResources 'modules/dataFactory.bicep' = {
-  name: 'dataFactoryResources'
+  name: '${uniqueString(deployment().name, location)}-dataFactoryResources'
   params: {
     dataFactoryName: dataFactoryName
     convertToParquet: convertToParquet
@@ -136,7 +136,7 @@ module dataFactoryResources 'modules/dataFactory.bicep' = {
 //------------------------------------------------------------------------------
 
 module keyVault 'modules/keyVault.bicep' = {
-  name: 'keyVault'
+  name: '${uniqueString(deployment().name, location)}-keyVault'
   params: {
     hubName: hubName
     uniqueSuffix: uniqueSuffix
