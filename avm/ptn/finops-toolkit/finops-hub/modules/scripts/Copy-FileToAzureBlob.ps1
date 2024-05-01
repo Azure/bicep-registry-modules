@@ -1,6 +1,6 @@
-#Write-Output "Updating settings.json file..."
-#Write-Output "  Storage account: $env:storageAccountName"
-#Write-Output "  Container: $env:containerName"
+Write-Output 'Updating settings.json file...'
+Write-Output "  Storage account: $env:storageAccountName"
+Write-Output "  Container: $env:containerName"
 
 $validateScopes = { $_.Length -gt 45 }
 
