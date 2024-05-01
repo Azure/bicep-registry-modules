@@ -116,7 +116,6 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
     }
   )
 }
-
 module dataFactoryResources 'modules/dataFactory.bicep' = {
   name: 'dataFactoryResources'
   params: {
