@@ -96,7 +96,7 @@ resource storageRef 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
 output resourceId string = keyVault.outputs.resourceId
 
 @description('The name of the key vault.')
-output name string = keyVault.name
+output name string = keyVault.outputs.name
 
 @description('The URI of the key vault.')
 output uri string = keyVault.outputs.uri

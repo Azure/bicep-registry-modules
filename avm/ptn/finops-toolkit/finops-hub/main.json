@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "17188458143569275776"
+      "templateHash": "13888331902588628493"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -8387,7 +8387,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "13300622895091091890"
+              "templateHash": "18290965054356591240"
             }
           },
           "parameters": {
@@ -10988,7 +10988,7 @@
               "metadata": {
                 "description": "The name of the key vault."
               },
-              "value": "[format('{0}-keyvault', uniqueString(deployment().name, parameters('location')))]"
+              "value": "[reference('keyVault').outputs.name.value]"
             },
             "uri": {
               "type": "string",
