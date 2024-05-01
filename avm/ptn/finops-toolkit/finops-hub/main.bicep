@@ -92,6 +92,7 @@ module storage 'modules/storage.bicep' = {
     exportContainer: exportContainer
     ingestionContainer: ingestionContainer
     storageAccountName: storageAccountName
+    ftkVersion: ftkVersion
   }
 }
 

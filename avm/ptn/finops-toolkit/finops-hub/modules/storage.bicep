@@ -32,6 +32,9 @@ param ingestionContainer string = 'ingestion'
 @description('Optional. Name of the storage account.')
 param storageAccountName string = ''
 
+@description('Optional. The version of the FTK to use.')
+param ftkVersion string = ''
+
 //==============================================================================
 // Resources
 //==============================================================================
@@ -130,7 +133,7 @@ module uploadSettings 'br/public:avm/res/resources/deployment-script:0.2.0' = {
       secureList: [
         {
           name: 'ftkVersion'
-          value: loadTextContent('./ftkver.txt')
+          value: ftkVersion
         }
         {
           name: 'exportScopes'
