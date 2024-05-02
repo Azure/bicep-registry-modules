@@ -58,6 +58,12 @@ param vmUserAssignedIdentities array = []
 @description('Required. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
+@description('Optional. Configuration options and list of validations to be performed on the resulting image.')
+param validationProcess validationProcessType
+
+@description('Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time.')
+param optimize optimizationType
+
 var identity = {
   type: 'UserAssigned'
   userAssignedIdentities: reduce(
@@ -100,7 +106,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14' = {
+resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01' = {
   #disable-next-line use-stable-resource-identifiers // Disabling as ImageTemplates are not idempotent and hence always must have new name
   name: '${name}-${baseTime}'
   location: location
@@ -164,6 +170,8 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
           : {})
       )
     ]
+    validate: validationProcess
+    optimize: optimize
   }
 }
 
@@ -316,6 +324,55 @@ type managedImageDistributionType = {
   @description('Required. The resource ID of the managed image. Defaults to a compute image with name \'imageName-baseTime\' in the current resource group.')
   imageResourceId: string?
 
-  @description('Conditional. Name of the managed or unmanaged image that will be created..')
+  @description('Conditional. Name of the managed or unmanaged image that will be created.')
   imageName: string
 }
+
+type validationProcessType = {
+  @description('Optional. If validation fails and this field is set to false, output image(s) will not be distributed. This is the default behavior. If validation fails and this field is set to true, output image(s) will still be distributed. Please use this option with caution as it may result in bad images being distributed for use. In either case (true or false), the end to end image run will be reported as having failed in case of a validation failure. [Note: This field has no effect if validation succeeds.].')
+  continueDistributeOnFailure: bool?
+
+  @description('Optional. A list of validators that will be performed on the image. Azure Image Builder supports File, PowerShell and Shell validators.')
+  inVMValidations: {
+    @description('Required. The type of validation.')
+    type: ('PowerShell' | 'Shell' | 'File')
+
+    @description('Optional. Friendly Name to provide context on what this validation step does.')
+    name: string?
+
+    @description('Optional. URI of the PowerShell script to be run for validation. It can be a github link, Azure Storage URI, etc.')
+    scriptUri: string?
+
+    @description('Optional. Array of commands to be run, separated by commas.')
+    inline: string[]?
+
+    @description('Optional. Valid codes that can be returned from the script/inline command, this avoids reported failure of the script/inline command.')
+    validExitCodes: int[]?
+
+    @description('Optional. Value of sha256 checksum of the file, you generate this locally, and then Image Builder will checksum and validate.')
+    sha256Checksum: string?
+
+    @description('Optional. The source URI of the file.')
+    sourceUri: string?
+
+    @description('Optional. Destination of the file.')
+    destination: string?
+
+    @description('Optional. If specified, the PowerShell script will be run with elevated privileges using the Local System user. Can only be true when the runElevated field above is set to true.')
+    runAsSystem: bool?
+
+    @description('Optional. If specified, the PowerShell script will be run with elevated privileges.')
+    runElevated: bool?
+  }[]?
+
+  @description('Optional. If this field is set to true, the image specified in the \'source\' section will directly be validated. No separate build will be run to generate and then validate a customized image.')
+  sourceValidationOnly: bool?
+}?
+
+type optimizationType = {
+  @description('Required. Optimization is applied on the image for a faster VM boot.')
+  vmboot: {
+    @description('Required. Enabling this field will improve VM boot time by optimizing the final customized image output.')
+    type: ('Enabled' | 'Disabled')
+  }
+}?
