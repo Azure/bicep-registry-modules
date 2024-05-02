@@ -292,7 +292,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -487,7 +487,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -778,6 +778,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           {
             name: 'ipconfig1'
             properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsswinmin'
+              }
               subnet: {
                 id: '<id>'
               }
@@ -847,6 +850,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
             {
               "name": "ipconfig1",
               "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsswinmin"
+                },
                 "subnet": {
                   "id": "<id>"
                 }
@@ -973,7 +979,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -1158,7 +1164,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -1321,7 +1327,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     }
     location: '<location>'
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -1493,7 +1499,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]

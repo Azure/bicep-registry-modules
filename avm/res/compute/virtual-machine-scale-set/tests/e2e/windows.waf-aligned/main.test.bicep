@@ -178,7 +178,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       skuCapacity: 1
       managedIdentities: {
-        systemAssigned: true
+        systemAssigned: false
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
