@@ -61,7 +61,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Required parameters
     name: 'rsvmin001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     replicationAlertSettings: {
       customEmailAddresses: [
@@ -96,9 +95,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       "value": "rsvmin001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -141,7 +137,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Required parameters
     name: '<name>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     replicationFabrics: [
       {
@@ -224,9 +219,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -571,7 +563,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -960,9 +951,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -1365,7 +1353,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1737,9 +1724,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
