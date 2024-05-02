@@ -365,7 +365,7 @@ type validationProcessType = {
     runElevated: bool?
   }[]?
 
-  @description('Optional. If this field is set to true, the image specified in the \'source\' section will directly be validated. No separate build will be run to generate and then validate a customized image.')
+  @description('Optional. If this field is set to true, the image specified in the \'source\' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image.')
   sourceValidationOnly: bool?
 }?
 
