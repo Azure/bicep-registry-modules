@@ -6,7 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
+<<<<<<< HEAD
       "templateHash": "13052232133939863148"
+=======
+      "templateHash": "5830272725104890600"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -747,7 +751,7 @@
   },
   "variables": {
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "App Compliance Automation Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f37683f-2463-46b6-9ce7-9b788b988ba2')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -930,7 +934,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
+<<<<<<< HEAD
               "templateHash": "11868891425362118539"
+=======
+              "templateHash": "12051629915105082529"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -1081,7 +1089,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
+<<<<<<< HEAD
               "templateHash": "858762269068239553"
+=======
+              "templateHash": "14303407385986258247"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1301,7 +1313,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
+<<<<<<< HEAD
               "templateHash": "15913383794971863370"
+=======
+              "templateHash": "5665258089530156840"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2209,7 +2225,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.26.170.59819",
+<<<<<<< HEAD
                       "templateHash": "1285612611547537214"
+=======
+                      "templateHash": "16550727222833899283"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2379,7 +2399,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.26.170.59819",
+<<<<<<< HEAD
                       "templateHash": "10337463605128548956"
+=======
+                      "templateHash": "512112730780239094"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2495,7 +2519,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.26.170.59819",
+<<<<<<< HEAD
                       "templateHash": "12813497094193025214"
+=======
+                      "templateHash": "4923254671011353973"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -2621,7 +2649,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.26.170.59819",
+<<<<<<< HEAD
                       "templateHash": "5190800104989758432"
+=======
+                      "templateHash": "15033433727480709023"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -3557,7 +3589,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
+<<<<<<< HEAD
               "templateHash": "15035069905429685158"
+=======
+              "templateHash": "15287918657229788223"
+>>>>>>> 2ccb5518bd965dd51141215c4964dc049f91f8e4
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay.",

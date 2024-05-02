@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "3806996475520060110"
+      "version": "0.26.170.59819",
+      "templateHash": "10554258944393732282"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -775,6 +775,17 @@
         "description": "Optional. Outbound IP Count for the Load balancer."
       }
     },
+    "backendPoolType": {
+      "type": "string",
+      "defaultValue": "NodeIPConfiguration",
+      "allowedValues": [
+        "NodeIP",
+        "NodeIPConfiguration"
+      ],
+      "metadata": {
+        "description": "Optional. The type of the managed inbound Load Balancer BackendPool."
+      }
+    },
     "outboundType": {
       "type": "string",
       "defaultValue": "loadBalancer",
@@ -1378,6 +1389,13 @@
         "description": "Optional. Identities associated with the cluster."
       }
     },
+    "kedaAddon": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables Kubernetes Event-driven Autoscaling (KEDA)."
+      }
+    },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
@@ -1575,6 +1593,11 @@
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
+        "workloadAutoScalerProfile": {
+          "keda": {
+            "enabled": "[parameters('kedaAddon')]"
+          }
+        },
         "networkProfile": {
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
@@ -1585,7 +1608,11 @@
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
           "outboundType": "[parameters('outboundType')]",
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
-          "loadBalancerProfile": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('managedOutboundIPs', createObject('count', parameters('managedOutboundIPCount')), 'effectiveOutboundIPs', createArray()), null())]"
+          "loadBalancerProfile": {
+            "managedOutboundIPs": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null())]",
+            "effectiveOutboundIPs": [],
+            "backendPoolType": "[parameters('backendPoolType')]"
+          }
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "aadProfile": {
@@ -1887,8 +1914,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8772299678418708256"
+              "version": "0.26.170.59819",
+              "templateHash": "4264461851737541966"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",

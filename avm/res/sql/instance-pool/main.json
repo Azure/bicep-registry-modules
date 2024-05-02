@@ -1,0 +1,176 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "1210707271653756300"
+    },
+    "name": "SQL Server Instance Pool",
+    "description": "This module deploys an Azure SQL Server Instance Pool.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the instance pool."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "subnetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The subnet resource ID for the instance pool."
+      }
+    },
+    "licenseType": {
+      "type": "string",
+      "defaultValue": "BasePrice",
+      "allowedValues": [
+        "BasePrice",
+        "LicenseIncluded"
+      ],
+      "metadata": {
+        "description": "Optional. The license type to apply for this database."
+      }
+    },
+    "skuFamily": {
+      "type": "string",
+      "defaultValue": "Gen5",
+      "metadata": {
+        "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+      }
+    },
+    "vCores": {
+      "type": "int",
+      "defaultValue": 8,
+      "allowedValues": [
+        8,
+        16,
+        24,
+        32,
+        40,
+        64,
+        80,
+        96,
+        128,
+        160,
+        192,
+        224,
+        256
+      ],
+      "metadata": {
+        "description": "Optional. The number of vCores for the instance pool."
+      }
+    },
+    "tier": {
+      "type": "string",
+      "defaultValue": "GeneralPurpose",
+      "allowedValues": [
+        "GeneralPurpose"
+      ],
+      "metadata": {
+        "description": "Optional. The vCore service tier for the instance pool."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "GP_Gen5",
+      "metadata": {
+        "description": "Optional. The SKU name for the instance pool."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "instancePool": {
+      "type": "Microsoft.Sql/instancePools",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "family": "[parameters('skuFamily')]",
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('tier')]"
+      },
+      "properties": {
+        "licenseType": "[parameters('licenseType')]",
+        "subnetId": "[parameters('subnetResourceId')]",
+        "vCores": "[parameters('vCores')]"
+      }
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.sql-instancepool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the SQL instance pool."
+      },
+      "value": "[resourceId('Microsoft.Sql/instancePools', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the SQL instance pool."
+      },
+      "value": "[parameters('name')]"
+    },
+    "instancePoolLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the SQL instance pool."
+      },
+      "value": "[reference('instancePool', '2023-05-01-preview', 'full').location]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name of the SQL instance pool."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

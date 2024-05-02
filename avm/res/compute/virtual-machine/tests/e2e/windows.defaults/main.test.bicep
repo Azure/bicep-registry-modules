@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
-      availabilityZone: 0
+      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [
