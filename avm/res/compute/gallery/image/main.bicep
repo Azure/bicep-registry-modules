@@ -56,7 +56,7 @@ param minRecommendedMemory int = 4
 param maxRecommendedMemory int = 16
 
 @sys.description('''Optional. The hypervisor generation of the Virtual Machine.
-- If this value is not specified, then it is determined by the securityType parameter.
+- If this value is not specified, it is determined by the securityType parameter.
 - If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
 ''')
 @allowed([
