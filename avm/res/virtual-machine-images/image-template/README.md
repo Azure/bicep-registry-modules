@@ -208,11 +208,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    optimize: {
-      vmboot: {
-        type: 'Enabled'
-      }
-    }
+    optimizeVmBoot: 'Enabled'
     osDiskSizeGB: 127
     roleAssignments: [
       {
@@ -346,12 +342,8 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "name": "myCustomLockName"
       }
     },
-    "optimize": {
-      "value": {
-        "vmboot": {
-          "type": "Enabled"
-        }
-      }
+    "optimizeVmBoot": {
+      "value": "Enabled"
     },
     "osDiskSizeGB": {
       "value": 127
@@ -559,7 +551,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`optimize`](#parameter-optimize) | object | The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time. |
+| [`optimizeVmBoot`](#parameter-optimizevmboot) | string | The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time. |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`stagingResourceGroup`](#parameter-stagingresourcegroup) | string | Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain. |
@@ -683,37 +675,11 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `optimize`
+### Parameter: `optimizeVmBoot`
 
 The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`vmboot`](#parameter-optimizevmboot) | object | Optimization is applied on the image for a faster VM boot. |
-
-### Parameter: `optimize.vmboot`
-
-Optimization is applied on the image for a faster VM boot.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`type`](#parameter-optimizevmboottype) | string | Enabling this field will improve VM boot time by optimizing the final customized image output. |
-
-### Parameter: `optimize.vmboot.type`
-
-Enabling this field will improve VM boot time by optimizing the final customized image output.
-
-- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep

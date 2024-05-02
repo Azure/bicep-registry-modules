@@ -94,11 +94,7 @@ module testDeployment '../../../main.bicep' = {
         }
       ]
     }
-    optimize: {
-      vmboot: {
-        type: 'Enabled'
-      }
-    }
+    optimizeVmBoot: 'Enabled'
     imageSource: {
       type: 'PlatformImage'
       publisher: 'canonical'

@@ -61,8 +61,12 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Configuration options and list of validations to be performed on the resulting image.')
 param validationProcess validationProcessType
 
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 @description('Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time.')
-param optimize optimizationType
+param optimizeVmBoot string?
 
 var identity = {
   type: 'UserAssigned'
@@ -171,7 +175,11 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01
       )
     ]
     validate: validationProcess
-    optimize: optimize
+    optimize: {
+      vmBoot: {
+        state: optimizeVmBoot
+      }
+    }
   }
 }
 
