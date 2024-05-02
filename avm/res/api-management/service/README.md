@@ -15,7 +15,7 @@ This module deploys an API Management Service.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service) |
+| `Microsoft.ApiManagement/service` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2023-05-01-preview/service) |
 | `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
 | `Microsoft.ApiManagement/service/apiVersionSets` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apiVersionSets) |
@@ -271,6 +271,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    subnetResourceId: '<subnetResourceId>'
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
@@ -282,6 +283,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkType: 'External'
   }
 }
 ```
@@ -490,6 +492,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
     "subscriptions": {
       "value": [
         {
@@ -504,6 +509,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualNetworkType": {
+      "value": "External"
     }
   }
 }
