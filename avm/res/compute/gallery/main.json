@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5329218260776835511"
+      "version": "0.26.170.59819",
+      "templateHash": "4844281425258868514"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -319,8 +319,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3817884050778525461"
+              "version": "0.26.170.59819",
+              "templateHash": "9175012718933553578"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -676,8 +676,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15034895982698413313"
+              "version": "0.26.170.59819",
+              "templateHash": "3295734017184499195"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -855,7 +855,7 @@
                 "V2"
               ],
               "metadata": {
-                "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n- If this value is not specified, then it is determined by the securityType parameter.\r\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
               }
             },
             "securityType": {
@@ -882,7 +882,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
+                "description": "Optional. Specify if the image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\r\n"
               }
             },
             "description": {
@@ -1111,6 +1111,16 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('gallery', '2022-03-03', 'full').location]"
+    },
+    "imageResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource ids of the deployed images."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('images'), createArray()))))]",
+        "input": "[reference(format('galleries_images[{0}]', range(0, length(coalesce(parameters('images'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
     }
   }
 }
