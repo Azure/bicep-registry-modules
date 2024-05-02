@@ -49,10 +49,14 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      availabilityZone: '1'
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
+      highAvailability: 'ZoneRedundant'
+      highAvailabilityZone: '2'
       skuName: 'Standard_B1ms'
-      tier: 'Burstable'
+      tier: 'GeneralPurpose'
+      storageAutoGrow: 'Enabled'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

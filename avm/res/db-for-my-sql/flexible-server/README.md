@@ -536,15 +536,19 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Required parameters
     name: 'dfmswaf001'
     skuName: 'Standard_B1ms'
-    tier: 'Burstable'
+    tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    availabilityZone: '1'
+    highAvailability: 'ZoneRedundant'
+    highAvailabilityZone: '2'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    storageAutoGrow: 'Enabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -574,7 +578,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Standard_B1ms"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -582,6 +586,15 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "availabilityZone": {
+      "value": "1"
+    },
+    "highAvailability": {
+      "value": "ZoneRedundant"
+    },
+    "highAvailabilityZone": {
+      "value": "2"
     },
     "location": {
       "value": "<location>"
@@ -591,6 +604,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
     },
     "tags": {
       "value": {
@@ -646,6 +662,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the MySQL flexible server. |
 | [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. If "Enabled" and "cMKKeyName" is not empty, then "geoBackupCMKKeyVaultResourceId" and "cMKUserAssignedIdentityResourceId" are also required. |
 | [`highAvailability`](#parameter-highavailability) | string | The mode for High Availability (HA). It is not supported for the Burstable pricing tier and Zone redundant HA can only be set during server provisioning. |
+| [`highAvailabilityZone`](#parameter-highavailabilityzone) | string | Standby availability zone information of the server. Default will have no preference set. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
@@ -1117,6 +1134,14 @@ The mode for High Availability (HA). It is not supported for the Burstable prici
     'ZoneRedundant'
   ]
   ```
+
+### Parameter: `highAvailabilityZone`
+
+Standby availability zone information of the server. Default will have no preference set.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 

@@ -44,6 +44,9 @@ param tier string
 @description('Optional. Availability zone information of the server. Default will have no preference set.')
 param availabilityZone string = ''
 
+@description('Optional. Standby availability zone information of the server. Default will have no preference set.')
+param highAvailabilityZone string = ''
+
 @minValue(1)
 @maxValue(35)
 @description('Optional. Backup retention days for the server.')
@@ -161,6 +164,16 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+var standByAvailabilityZoneTable = {
+  'Disabled': null
+  'SameZone': availabilityZone
+  'ZoneRedundant': highAvailabilityZone
+}
+
+var standByAvailabilityZone = contains(standByAvailabilityZoneTable, highAvailability)
+  ? standByAvailabilityZoneTable[highAvailability]
+  : null
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -293,7 +306,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: highAvailability == 'SameZone' ? availabilityZone : null
+      standbyAvailabilityZone: standByAvailabilityZone
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
