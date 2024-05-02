@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     validationProcess: {
       continueDistributeOnFailure: true
-      sourceValidationOnly: true
+      sourceValidationOnly: false
       inVMValidations: [
         {
           type: 'Shell'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "14263118186300644708"
+      "templateHash": "5135786203341001527"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -392,7 +392,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image."
+            "description": "Optional. If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image."
           }
         }
       },
@@ -532,7 +532,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\nBe aware, the user assigned identities specified in the \\'managedIdentities\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.\n"
+        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\r\nBe aware, the user assigned identities specified in the \\'managedIdentities\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.\r\n"
       }
     },
     "managedIdentities": {

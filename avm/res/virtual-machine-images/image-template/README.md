@@ -249,7 +249,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
           type: 'Shell'
         }
       ]
-      sourceValidationOnly: true
+      sourceValidationOnly: false
     }
     vmSize: 'Standard_D2s_v3'
     vmUserAssignedIdentities: [
@@ -400,7 +400,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
             "type": "Shell"
           }
         ],
-        "sourceValidationOnly": true
+        "sourceValidationOnly": false
       }
     },
     "vmSize": {
@@ -854,7 +854,7 @@ Configuration options and list of validations to be performed on the resulting i
 | :-- | :-- | :-- |
 | [`continueDistributeOnFailure`](#parameter-validationprocesscontinuedistributeonfailure) | bool | If validation fails and this field is set to false, output image(s) will not be distributed. This is the default behavior. If validation fails and this field is set to true, output image(s) will still be distributed. Please use this option with caution as it may result in bad images being distributed for use. In either case (true or false), the end to end image run will be reported as having failed in case of a validation failure. [Note: This field has no effect if validation succeeds.]. |
 | [`inVMValidations`](#parameter-validationprocessinvmvalidations) | array | A list of validators that will be performed on the image. Azure Image Builder supports File, PowerShell and Shell validators. |
-| [`sourceValidationOnly`](#parameter-validationprocesssourcevalidationonly) | bool | If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image. |
+| [`sourceValidationOnly`](#parameter-validationprocesssourcevalidationonly) | bool | If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image. |
 
 ### Parameter: `validationProcess.continueDistributeOnFailure`
 
@@ -970,7 +970,7 @@ Valid codes that can be returned from the script/inline command, this avoids rep
 
 ### Parameter: `validationProcess.sourceValidationOnly`
 
-If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image.
+If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image.
 
 - Required: No
 - Type: bool
