@@ -46,88 +46,91 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Env: 'test'
-    }
-    environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
-    workloadProfileName: serviceShort
-    location: resourceLocation
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    secrets: {
-      secureList: [
-        {
-          name: 'customtest'
-          value: guid(deployment().name)
-        }
-      ]
-    }
-    triggerType: 'Manual'
-    manualTriggerConfig: {
-      replicaCompletionCount: 1
-      parallelism: 1
-    }
-    containers: [
-      {
-        name: 'simple-hello-world-container'
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-        resources: {
-          // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
-          cpu: json('0.25')
-          memory: '0.5Gi'
-        }
-        probes: [
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Env: 'test'
+      }
+      environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
+      workloadProfileName: serviceShort
+      location: resourceLocation
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      secrets: {
+        secureList: [
           {
-            type: 'Liveness'
-            httpGet: {
-              path: '/health'
-              port: 8080
-              httpHeaders: [
-                {
-                  name: 'Custom-Header'
-                  value: 'Awesome'
-                }
-              ]
-            }
-            initialDelaySeconds: 3
-            periodSeconds: 3
+            name: 'customtest'
+            value: guid(deployment().name)
           }
         ]
       }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      triggerType: 'Manual'
+      manualTriggerConfig: {
+        replicaCompletionCount: 1
+        parallelism: 1
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId(
-          'Microsoft.Authorization/roleDefinitions',
-          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-        )
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
+      containers: [
+        {
+          name: 'simple-hello-world-container'
+          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          resources: {
+            // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
+            cpu: json('0.25')
+            memory: '0.5Gi'
+          }
+          probes: [
+            {
+              type: 'Liveness'
+              httpGet: {
+                path: '/health'
+                port: 8080
+                httpHeaders: [
+                  {
+                    name: 'Custom-Header'
+                    value: 'Awesome'
+                  }
+                ]
+              }
+              initialDelaySeconds: 3
+              periodSeconds: 3
+            }
+          ]
+        }
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+    }
   }
-}
+]
