@@ -112,7 +112,9 @@ function Set-AvmGithubIssueForWorkflow {
 > @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
               # assign owner
+              Write-Host 'assinging {0}' -f $module.PrimaryModuleOwnerGHHandle
               $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+              Write-Host 'result: {0}' -f $assign
 
               if ([String]::IsNullOrEmpty($assign)) {
                 if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
