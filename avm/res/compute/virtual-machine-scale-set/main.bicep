@@ -148,6 +148,18 @@ param lock lockType
 ])
 param upgradePolicyMode string = 'Manual'
 
+@description('Optional. Allow VMSS to ignore AZ boundaries when constructing upgrade batches. Take into consideration the Update Domain and maxBatchInstancePercent to determine the batch size.')
+param enableCrossZoneUpgrade bool = false
+
+@description('Optional. Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch.')
+param maxSurge bool = false
+
+@description('Optional. Upgrade all unhealthy instances in a scale set before any healthy instances.')
+param prioritizeUnhealthyInstances bool = false
+
+@description('Optional. Rollback failed instances to previous model if the Rolling Upgrade policy is violated.')
+param rollbackFailedInstancesOnPolicyBreach bool = false
+
 @description('Optional. The maximum percent of total virtual machine instances that will be upgraded simultaneously by the rolling upgrade in one batch. As this is a maximum, unhealthy instances in previous or future batches can cause the percentage of instances in a batch to decrease to ensure higher reliability.')
 param maxBatchInstancePercent int = 20
 
@@ -415,12 +427,18 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
       : null
     upgradePolicy: {
       mode: upgradePolicyMode
-      rollingUpgradePolicy: {
-        maxBatchInstancePercent: maxBatchInstancePercent
-        maxUnhealthyInstancePercent: maxUnhealthyInstancePercent
-        maxUnhealthyUpgradedInstancePercent: maxUnhealthyUpgradedInstancePercent
-        pauseTimeBetweenBatches: pauseTimeBetweenBatches
-      }
+      rollingUpgradePolicy: upgradePolicyMode == 'Rolling'
+        ? {
+            enableCrossZoneUpgrade: enableCrossZoneUpgrade
+            maxBatchInstancePercent: maxBatchInstancePercent
+            maxSurge: maxSurge
+            maxUnhealthyInstancePercent: maxUnhealthyInstancePercent
+            maxUnhealthyUpgradedInstancePercent: maxUnhealthyUpgradedInstancePercent
+            pauseTimeBetweenBatches: pauseTimeBetweenBatches
+            prioritizeUnhealthyInstances: prioritizeUnhealthyInstances
+            rollbackFailedInstancesOnPolicyBreach: rollbackFailedInstancesOnPolicyBreach
+          }
+        : null
       automaticOSUpgradePolicy: {
         enableAutomaticOSUpgrade: enableAutomaticOSUpgrade
         disableAutomaticRollback: disableAutomaticRollback
