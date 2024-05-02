@@ -990,6 +990,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           {
             name: 'ipconfig1'
             properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsswinmax'
+              }
               subnet: {
                 id: '<id>'
               }
@@ -1177,6 +1180,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
             {
               "name": "ipconfig1",
               "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsswinmax"
+                },
                 "subnet": {
                   "id": "<id>"
                 }
@@ -1338,6 +1344,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           {
             name: 'ipconfig1'
             properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsswinwaf'
+              }
               subnet: {
                 id: '<id>'
               }
@@ -1512,6 +1521,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
             {
               "name": "ipconfig1",
               "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsswinwaf"
+                },
                 "subnet": {
                   "id": "<id>"
                 }
