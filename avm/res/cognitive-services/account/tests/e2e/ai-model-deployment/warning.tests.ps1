@@ -11,18 +11,14 @@ param (
     [hashtable] $TestInputData = @{}
 )
 
-Describe 'Warn about disabled test' {
+Describe 'Warning' {
 
-    It 'Inner' {
+    It 'Disabled test' {
 
-        $warningMessage = @'
-Note, this test is temporarily disabled as it needs to be enabled on the subscription.
-As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
-You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
-And register here: https://aka.ms/oai/access
-'@
+        Write-Output @{
+            Warning = "Note, the OpenAI-Deployments test is temporarily disabled as it needs to be enabled on the subscription.<br>As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt. For more information please review the [offical docs](https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access) and or register [here](https://aka.ms/oai/access"
 
-        Write-Warning $warningMessage -Verbose
+        }
     }
 }
 
