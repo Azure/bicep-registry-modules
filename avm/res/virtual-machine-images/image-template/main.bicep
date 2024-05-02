@@ -376,11 +376,3 @@ type validationProcessType = {
   @description('Optional. If this field is set to true, the image specified in the \'source\' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image.')
   sourceValidationOnly: bool?
 }?
-
-type optimizationType = {
-  @description('Required. Optimization is applied on the image for a faster VM boot.')
-  vmboot: {
-    @description('Required. Enabling this field will improve VM boot time by optimizing the final customized image output.')
-    type: ('Enabled' | 'Disabled')
-  }
-}?
