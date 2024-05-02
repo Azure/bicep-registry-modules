@@ -19,10 +19,7 @@ on:
         type: string
         description: "Relative path to the module folder"
         required: true
-      customLocation:
-        type: string
-        description: "Default location overwrite (e.g., eastus)"
-        required: false
+
 env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
