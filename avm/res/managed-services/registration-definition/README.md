@@ -5,11 +5,9 @@
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
-This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation')
-on subscription or resource group scopes. This type of delegation is very similar to role assignments but here the principal that is
-assigned a role is in a remote/managing Azure Active Directory tenant. The templates are run towards the tenant where
-the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a
-remote/managing tenant.
+This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.
+This type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.
+The templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.
 
 ## Navigation
 
@@ -57,12 +55,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     authorizations: [
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -70,7 +66,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdmin Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    location: '<location>'
+    metadataLocation: '<metadataLocation>'
   }
 }
 ```
@@ -92,12 +88,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": [
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
@@ -112,8 +106,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "metadataLocation": {
+      "value": "<metadataLocation>"
     }
   }
 }
@@ -147,12 +141,20 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
+      {
+        delegatedRoleDefinitionIds: [
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        ]
+        principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
+        roleDefinitionId: '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+      }
     ]
     managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
     name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    location: '<location>'
+    metadataLocation: '<metadataLocation>'
+    registrationId: '<registrationId>'
   }
 }
 ```
@@ -181,6 +183,13 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
           "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
+        },
+        {
+          "delegatedRoleDefinitionIds": [
+            "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+          ],
+          "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
+          "roleDefinitionId": "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
         }
       ]
     },
@@ -194,8 +203,11 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "metadataLocation": {
+      "value": "<metadataLocation>"
+    },
+    "registrationId": {
+      "value": "<registrationId>"
     }
   }
 }
@@ -221,12 +233,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     authorizations: [
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -234,7 +244,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdrg Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    location: '<location>'
+    metadataLocation: '<metadataLocation>'
+    registrationId: '<registrationId>'
     resourceGroupName: '<resourceGroupName>'
   }
 }
@@ -257,12 +268,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": [
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
@@ -277,8 +286,11 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "metadataLocation": {
+      "value": "<metadataLocation>"
+    },
+    "registrationId": {
+      "value": "<registrationId>"
     },
     "resourceGroupName": {
       "value": "<resourceGroupName>"
@@ -307,12 +319,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     authorizations: [
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Lighthouse Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: 'ecadddf6-78c3-4516-afb2-7d30a174ea13'
-        principalIdDisplayName: 'Managed Services Registration assignment Delete Role'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -320,7 +330,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
-    location: '<location>'
+    metadataLocation: '<metadataLocation>'
+    resourceGroupName: '<resourceGroupName>'
   }
 }
 ```
@@ -342,12 +353,10 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": [
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Lighthouse Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "ecadddf6-78c3-4516-afb2-7d30a174ea13",
-          "principalIdDisplayName": "Managed Services Registration assignment Delete Role",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
@@ -362,8 +371,11 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": "Managed by Lighthouse"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "metadataLocation": {
+      "value": "<metadataLocation>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     }
   }
 }
@@ -389,7 +401,8 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Location deployment metadata. |
+| [`metadataLocation`](#parameter-metadatalocation) | string | Location of the deployment metadata. |
+| [`registrationId`](#parameter-registrationid) | string | The Id (GUID) of the registration definition. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | Specify the name of the Resource Group to delegate access to. If not provided, delegation will be done on the targeted subscription. |
 
 ### Parameter: `authorizations`
@@ -428,13 +441,21 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `location`
+### Parameter: `metadataLocation`
 
-Location deployment metadata.
+Location of the deployment metadata.
 
 - Required: No
 - Type: string
 - Default: `[deployment().location]`
+
+### Parameter: `registrationId`
+
+The Id (GUID) of the registration definition.
+
+- Required: No
+- Type: string
+- Default: `[if(empty(parameters('resourceGroupName')), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId), guid(parameters('managedByTenantId'), subscription().tenantId, subscription().subscriptionId, parameters('resourceGroupName')))]`
 
 ### Parameter: `resourceGroupName`
 
