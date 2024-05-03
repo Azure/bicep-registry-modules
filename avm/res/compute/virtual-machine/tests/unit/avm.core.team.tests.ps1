@@ -26,14 +26,10 @@ BeforeAll {
 }
 
 Describe 'AVM Core Team Module Specific Tests' {
-
   Context 'WAF - Reliability Pillar - Parameter Tests' {
-
     It 'VM Module Availability Zone Parameter Should Not Have A Default Value Set' {
-      $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.availabilityZone
+      $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.zone
       $isRequired | Should -Be $true
     }
-
   }
-
 }

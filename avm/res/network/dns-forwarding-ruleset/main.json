@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "12711184694701779710"
+      "templateHash": "12463687171976184963"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -149,6 +149,28 @@
       },
       "nullable": true
     },
+    "virtualNetworkLinkType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the virtual network link."
+            }
+          },
+          "virtualNetworkResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the virtual network to link."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
     "targetDnsServers": {
       "type": "array",
       "items": {
@@ -217,9 +239,8 @@
         "description": "Optional. Array of forwarding rules."
       }
     },
-    "vNetLinks": {
-      "type": "array",
-      "nullable": true,
+    "virtualNetworkLinks": {
+      "$ref": "#/definitions/virtualNetworkLinkType",
       "metadata": {
         "description": "Optional. Array of virtual network links."
       }
@@ -461,7 +482,7 @@
     "dnsForwardingRuleset_virtualNetworkLinks": {
       "copy": {
         "name": "dnsForwardingRuleset_virtualNetworkLinks",
-        "count": "[length(coalesce(parameters('vNetLinks'), createArray()))]"
+        "count": "[length(coalesce(parameters('virtualNetworkLinks'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -472,10 +493,13 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'name'), format('{0}-vnetlink-{1}', last(split(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()].virtualNetworkResourceId, '/')), copyIndex()))]"
+          },
           "dnsForwardingRulesetName": {
             "value": "[parameters('name')]"
           },
-          "virtualNetworkResourceId": "[if(not(empty(parameters('vNetLinks'))), createObject('value', coalesce(parameters('vNetLinks'), createArray())[copyIndex()]), createObject('value', null()))]"
+          "virtualNetworkResourceId": "[if(not(empty(parameters('virtualNetworkLinks'))), createObject('value', coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()].virtualNetworkResourceId), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

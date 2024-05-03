@@ -14,7 +14,7 @@ This module deploys an Azure Automation Account Runbook.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/runbooks` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/runbooks) |
+| `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
 
 ## Parameters
 
@@ -69,7 +69,11 @@ The type of the runbook.
     'GraphPowerShell'
     'GraphPowerShellWorkflow'
     'PowerShell'
+    'PowerShell72'
     'PowerShellWorkflow'
+    'Python2'
+    'Python3'
+    'Script'
   ]
   ```
 
