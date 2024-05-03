@@ -34,6 +34,12 @@ function Get-GitHubWorkflowDefaultInput {
 
         $workflowParameters = @{}
         foreach ($inputName in $inputs.Keys) {
+
+            if (-not $inputs[$inputName].default) {
+                Write-Verbose "Skipping parameter [$inputName] as it has not default value"
+                continue
+            }
+
             $workflowParameters[$inputName] = $inputs[$inputName].default
         }
 

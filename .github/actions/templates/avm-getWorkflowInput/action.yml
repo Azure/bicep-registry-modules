@@ -66,6 +66,11 @@ runs:
           # Output values to be accessed by next jobs
           $workflowInput = @{}
           foreach($parameterName in $parameters.Keys) {
+            if([String]::IsNullOrEmpty($parameters[$parameterName])) {
+              Write-Verbose "Skipping parameter [$parameterName] as it has not default value" -Verbose
+              continue
+            }
+
             Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $parameters[$parameterName]) -Verbose
             $workflowInput[$parameterName] = $parameters[$parameterName]
           }
@@ -89,7 +94,7 @@ runs:
           $workflowInput = @{}
           foreach($parameterName in $workflowParameters.Keys) {
             Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $workflowParameters[$parameterName]) -Verbose
-            $workflowInput[$parameterName] = (-not [String]::IsNullOrEmpty($workflowParameters[$parameterName])) ? $workflowParameters[$parameterName].toString() : ''
+            $workflowInput[$parameterName] = $workflowParameters[$parameterName].toString()
           }
           Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
         }
