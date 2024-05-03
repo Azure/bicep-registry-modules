@@ -14,7 +14,7 @@ This module deploys a Virtual Machine Scale Set Extension.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Compute/virtualMachineScaleSets/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachineScaleSets/extensions) |
+| `Microsoft.Compute/virtualMachineScaleSets/extensions` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions) |
 
 ## Parameters
 
