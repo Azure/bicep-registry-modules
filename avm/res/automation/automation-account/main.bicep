@@ -172,7 +172,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
     }
     encryption: !empty(customerManagedKey)
       ? {
-          keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Automation'
+          keySource: 'Microsoft.Keyvault'
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
             ? {
                 userAssignedIdentity: cMKUserAssignedIdentity.id
