@@ -21,12 +21,12 @@ Optional. The root path of the repository.
 Required. The location of the resource group where the global resources will be deployed.
 
 .EXAMPLE
-Get-AzAvailableResourceLocation -ModuleRoot ".\avm\res\resources\resource-group" -repoRoot .\
+Get-AvailableResourceLocation -ModuleRoot ".\avm\res\resources\resource-group" -repoRoot .\
 
 Get the recommended paired regions available for the service.
 #>
 
-function Get-AzAvailableResourceLocation {
+function Get-AvailableResourceLocation {
   param (
 
     [Parameter(Mandatory = $false)]
@@ -58,7 +58,6 @@ function Get-AzAvailableResourceLocation {
       'switzerlandnorth',
       'uaenorth',
       'westeurope',
-      'westus2',
       'westus2'
     )
   )
