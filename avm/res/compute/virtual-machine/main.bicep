@@ -657,6 +657,9 @@ module vm_aadJoinExtension 'extension/main.bicep' =
         ? extensionAadJoinConfig.enableAutomaticUpgrade
         : false
       settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
+      supressFailures: contains(extensionAadJoinConfig, 'supressFailures')
+        ? extensionAadJoinConfig.supressFailures
+        : false
       tags: extensionAadJoinConfig.?tags ?? tags
     }
   }
@@ -680,6 +683,9 @@ module vm_domainJoinExtension 'extension/main.bicep' =
         ? extensionDomainJoinConfig.enableAutomaticUpgrade
         : false
       settings: extensionDomainJoinConfig.settings
+      supressFailures: contains(extensionDomainJoinConfig, 'supressFailures')
+        ? extensionDomainJoinConfig.supressFailures
+        : false
       tags: extensionDomainJoinConfig.?tags ?? tags
       protectedSettings: {
         Password: extensionDomainJoinPassword
@@ -709,6 +715,9 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
         ? extensionAntiMalwareConfig.enableAutomaticUpgrade
         : false
       settings: extensionAntiMalwareConfig.settings
+      supressFailures: contains(extensionAntiMalwareConfig, 'supressFailures')
+        ? extensionAntiMalwareConfig.supressFailures
+        : false
       tags: extensionAntiMalwareConfig.?tags ?? tags
     }
     dependsOn: [
@@ -758,6 +767,9 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' =
           : ''
         GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
       }
+      supressFailures: contains(extensionMonitoringAgentConfig, 'supressFailures')
+        ? extensionMonitoringAgentConfig.supressFailures
+        : false
       tags: extensionMonitoringAgentConfig.?tags ?? tags
       protectedSettings: {
         workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
@@ -793,6 +805,9 @@ module vm_dependencyAgentExtension 'extension/main.bicep' =
           ? extensionDependencyAgentConfig.enableAMA
           : true
       }
+      supressFailures: contains(extensionDependencyAgentConfig, 'supressFailures')
+        ? extensionDependencyAgentConfig.supressFailures
+        : false
       tags: extensionDependencyAgentConfig.?tags ?? tags
     }
     dependsOn: [
@@ -817,6 +832,9 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' =
         : true
       enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
         ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
+        : false
+      supressFailures: contains(extensionNetworkWatcherAgentConfig, 'supressFailures')
+        ? extensionNetworkWatcherAgentConfig.supressFailures
         : false
       tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
     }
@@ -844,6 +862,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
         ? extensionDSCConfig.enableAutomaticUpgrade
         : false
       settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
+      supressFailures: contains(extensionDSCConfig, 'supressFailures') ? extensionDSCConfig.supressFailures : false
       tags: extensionDSCConfig.?tags ?? tags
       protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
     }
@@ -877,6 +896,9 @@ module vm_customScriptExtension 'extension/main.bicep' =
             : fileData.uri
         ]
       }
+      supressFailures: contains(extensionCustomScriptConfig, 'supressFailures')
+        ? extensionCustomScriptConfig.supressFailures
+        : false
       tags: extensionCustomScriptConfig.?tags ?? tags
       protectedSettings: extensionCustomScriptProtectedSetting
     }
@@ -906,7 +928,12 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' =
       forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag')
         ? extensionAzureDiskEncryptionConfig.forceUpdateTag
         : '1.0'
-      settings: extensionAzureDiskEncryptionConfig.settings
+      settings: contains(extensionAzureDiskEncryptionConfig, 'settings')
+        ? extensionAzureDiskEncryptionConfig.settings
+        : false
+      supressFailures: contains(extensionAzureDiskEncryptionConfig, 'supressFailures')
+        ? extensionAzureDiskEncryptionConfig.supressFailures
+        : false
       tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
     }
     dependsOn: [
@@ -931,6 +958,9 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' =
         : true
       enableAutomaticUpgrade: contains(extensionNvidiaGpuDriverWindows, 'enableAutomaticUpgrade')
         ? extensionNvidiaGpuDriverWindows.enableAutomaticUpgrade
+        : false
+      supressFailures: contains(extensionNvidiaGpuDriverWindows, 'supressFailures')
+        ? extensionNvidiaGpuDriverWindows.supressFailures
         : false
       tags: extensionNvidiaGpuDriverWindows.?tags ?? tags
     }
@@ -965,6 +995,9 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
           registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
           aadJoin: true
         }
+        supressFailures: contains(extensionHostPoolRegistration, 'supressFailures')
+          ? extensionHostPoolRegistration.supressFailures
+          : false
       }
       tags: extensionHostPoolRegistration.?tags ?? tags
     }
@@ -997,6 +1030,9 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
       settings: contains(extensionGuestConfigurationExtension, 'settings')
         ? extensionGuestConfigurationExtension.settings
         : {}
+      supressFailures: contains(extensionGuestConfigurationExtension, 'supressFailures')
+        ? extensionGuestConfigurationExtension.supressFailures
+        : false
       protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
       tags: extensionGuestConfigurationExtension.?tags ?? tags
     }
