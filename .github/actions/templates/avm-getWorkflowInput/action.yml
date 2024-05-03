@@ -67,7 +67,7 @@ runs:
           $workflowInput = @{}
           foreach($parameterName in $parameters.Keys) {
             if([String]::IsNullOrEmpty($parameters[$parameterName])) {
-              Write-Verbose "Skipping parameter [$parameterName] as it has not default value" -Verbose
+              Write-Verbose "Skipping parameter [$parameterName] as it has no explicit or default value" -Verbose
               continue
             }
 
@@ -93,6 +93,12 @@ runs:
           # Output values to be accessed by next jobs
           $workflowInput = @{}
           foreach($parameterName in $workflowParameters.Keys) {
+
+            if([String]::IsNullOrEmpty($workflowParameters[$parameterName])) {
+              Write-Verbose "Skipping parameter [$parameterName] as it has no explicit or default value" -Verbose
+              continue
+            }
+
             Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $workflowParameters[$parameterName]) -Verbose
             $workflowInput[$parameterName] = $workflowParameters[$parameterName].toString()
           }
