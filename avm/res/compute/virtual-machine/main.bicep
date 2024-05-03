@@ -97,6 +97,9 @@ param bootDiagnosticStorageAccountUri string = '.blob.${environment().suffixes.s
 @description('Optional. Resource ID of a proximity placement group.')
 param proximityPlacementGroupResourceId string = ''
 
+@description('Optional. Resource ID of a virtual machine scale set, where the VM should be added.')
+param virtualMachineScaleSetId string = ''
+
 @description('Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set.')
 param availabilitySetResourceId string = ''
 
@@ -565,6 +568,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
     proximityPlacementGroup: !empty(proximityPlacementGroupResourceId)
       ? {
           id: proximityPlacementGroupResourceId
+        }
+      : null
+    virtualMachineScaleSet: !empty(virtualMachineScaleSetId)
+      ? {
+          id: virtualMachineScaleSetId
         }
       : null
     priority: priority
