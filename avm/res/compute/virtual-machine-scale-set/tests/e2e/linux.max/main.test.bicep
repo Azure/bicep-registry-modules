@@ -173,6 +173,9 @@ module testDeployment '../../../main.bicep' = [
                 subnet: {
                   id: nestedDependencies.outputs.subnetResourceId
                 }
+                publicIPAddressConfiguration: {
+                  name: '${namePrefix}-pip-${serviceShort}'
+                }
               }
             }
           ]
