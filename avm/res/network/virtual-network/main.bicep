@@ -130,12 +130,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
             : []
           delegations: contains(subnet, 'delegations') ? subnet.delegations : []
           ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-          natGateway: contains(subnet, 'natGatewayResourceId')
+          natGateway: contains(subnet, 'natGatewayResourceId') && !empty(subnet.natGatewayResourceId)
             ? {
                 id: subnet.natGatewayResourceId
               }
             : null
-          networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId')
+          networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId') && !empty(subnet.networkSecurityGroupResourceId)
             ? {
                 id: subnet.networkSecurityGroupResourceId
               }
@@ -146,7 +146,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
           privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies')
             ? subnet.privateLinkServiceNetworkPolicies
             : null
-          routeTable: contains(subnet, 'routeTableResourceId')
+          routeTable: contains(subnet, 'routeTableResourceId') && !empty(subnet.routeTableResourceId)
             ? {
                 id: subnet.routeTableResourceId
               }

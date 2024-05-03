@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "403988613434431623"
+      "templateHash": "15351421638054038409"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -382,11 +382,11 @@
                 "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations'), parameters('subnets')[copyIndex('subnets')].applicationGatewayIPConfigurations, createArray())]",
                 "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
                 "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
-                "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
-                "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
+                "natGateway": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].natGatewayResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
+                "networkSecurityGroup": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
                 "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
                 "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
-                "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
+                "routeTable": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].routeTableResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
                 "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints'), parameters('subnets')[copyIndex('subnets')].serviceEndpoints, createArray())]",
                 "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex('subnets')].serviceEndpointPolicies, createArray())]"
               }
