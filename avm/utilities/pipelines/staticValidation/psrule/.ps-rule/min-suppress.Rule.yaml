@@ -15,6 +15,8 @@ spec:
     - Azure.Cognitive.ManagedIdentity
       # Automation specific
     - Azure.Automation.ManagedIdentity
+    - Azure.Automation.AuditLogs
+    - Azure.Automation.PlatformLogs
       # Key Vault specific
     - Azure.KeyVault.Logs
     - Azure.KeyVault.Firewall
