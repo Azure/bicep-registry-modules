@@ -711,9 +711,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
         ? extensionAntiMalwareConfig.enableAutomaticUpgrade
         : false
       settings: extensionAntiMalwareConfig.settings
-      supressFailures: contains(extensionAntiMalwareConfig, 'supressFailures')
-        ? extensionAntiMalwareConfig.supressFailures
-        : false
+      supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
       tags: extensionAntiMalwareConfig.?tags ?? tags
     }
     dependsOn: [
