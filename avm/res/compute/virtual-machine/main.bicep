@@ -850,7 +850,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
         ? extensionDSCConfig.enableAutomaticUpgrade
         : false
       settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
-      supressFailures: contains(extensionDSCConfig, 'supressFailures') ? extensionDSCConfig.supressFailures : false
+      supressFailures: extensionDSCConfig.?supressFailures ?? false
       tags: extensionDSCConfig.?tags ?? tags
       protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
     }
