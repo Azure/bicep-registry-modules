@@ -797,9 +797,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' =
           ? extensionDependencyAgentConfig.enableAMA
           : true
       }
-      supressFailures: contains(extensionDependencyAgentConfig, 'supressFailures')
-        ? extensionDependencyAgentConfig.supressFailures
-        : false
+      supressFailures: extensionDependencyAgentConfig.?supressFailures ?? false
       tags: extensionDependencyAgentConfig.?tags ?? tags
     }
     dependsOn: [
