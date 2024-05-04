@@ -172,11 +172,13 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01
       )
     ]
     validate: validationProcess
-    optimize: {
-      vmBoot: {
-        state: optimizeVmBoot
-      }
-    }
+    optimize: optimizeVmBoot != null
+      ? {
+          vmBoot: {
+            state: optimizeVmBoot
+          }
+        }
+      : null
   }
 }
 
