@@ -1008,9 +1008,7 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
       settings: contains(extensionGuestConfigurationExtension, 'settings')
         ? extensionGuestConfigurationExtension.settings
         : {}
-      supressFailures: contains(extensionGuestConfigurationExtension, 'supressFailures')
-        ? extensionGuestConfigurationExtension.supressFailures
-        : false
+      supressFailures: extensionGuestConfigurationExtension.?supressFailures ?? false
       protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
       tags: extensionGuestConfigurationExtension.?tags ?? tags
     }
