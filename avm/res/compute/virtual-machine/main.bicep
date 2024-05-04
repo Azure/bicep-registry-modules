@@ -823,9 +823,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' =
       enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
         ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
         : false
-      supressFailures: contains(extensionNetworkWatcherAgentConfig, 'supressFailures')
-        ? extensionNetworkWatcherAgentConfig.supressFailures
-        : false
+      supressFailures: extensionNetworkWatcherAgentConfig.?supressFailures ?? false
       tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
     }
     dependsOn: [
