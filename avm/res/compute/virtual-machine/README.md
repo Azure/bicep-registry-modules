@@ -2994,7 +2994,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
-    virtualMachineScaleSetId: '<virtualMachineScaleSetId>'
+    virtualMachineScaleSetResourceId: '<virtualMachineScaleSetResourceId>'
   }
 }
 ```
@@ -3064,8 +3064,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualMachineScaleSetId": {
-      "value": "<virtualMachineScaleSetId>"
+    "virtualMachineScaleSetResourceId": {
+      "value": "<virtualMachineScaleSetResourceId>"
     }
   }
 }
@@ -3153,7 +3153,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeZone`](#parameter-timezone) | string | Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`. |
 | [`ultraSSDEnabled`](#parameter-ultrassdenabled) | bool | The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled. |
-| [`virtualMachineScaleSetId`](#parameter-virtualmachinescalesetid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
+| [`virtualMachineScaleSetResourceId`](#parameter-virtualmachinescalesetresourceid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
 | [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
 | [`winRM`](#parameter-winrm) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object. |
 
@@ -4185,7 +4185,7 @@ The flag that enables or disables a capability to have one or more managed data 
 - Type: bool
 - Default: `False`
 
-### Parameter: `virtualMachineScaleSetId`
+### Parameter: `virtualMachineScaleSetResourceId`
 
 Resource ID of a virtual machine scale set, where the VM should be added.
 

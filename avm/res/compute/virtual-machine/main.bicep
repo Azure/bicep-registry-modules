@@ -570,9 +570,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           id: proximityPlacementGroupResourceId
         }
       : null
-    virtualMachineScaleSet: !empty(virtualMachineScaleSetId)
+    virtualMachineScaleSet: !empty(virtualMachineScaleSetResourceId)
       ? {
-          id: virtualMachineScaleSetId
+          id: virtualMachineScaleSetResourceId
         }
       : null
     priority: priority
