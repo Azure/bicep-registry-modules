@@ -761,9 +761,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' =
           : ''
         GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
       }
-      supressFailures: contains(extensionMonitoringAgentConfig, 'supressFailures')
-        ? extensionMonitoringAgentConfig.supressFailures
-        : false
+      supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
       tags: extensionMonitoringAgentConfig.?tags ?? tags
       protectedSettings: {
         workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
