@@ -98,7 +98,7 @@ param bootDiagnosticStorageAccountUri string = '.blob.${environment().suffixes.s
 param proximityPlacementGroupResourceId string = ''
 
 @description('Optional. Resource ID of a virtual machine scale set, where the VM should be added.')
-param virtualMachineScaleSetId string = ''
+param virtualMachineScaleSetResourceId string = ''
 
 @description('Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set.')
 param availabilitySetResourceId string = ''
