@@ -941,9 +941,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' =
       enableAutomaticUpgrade: contains(extensionNvidiaGpuDriverWindows, 'enableAutomaticUpgrade')
         ? extensionNvidiaGpuDriverWindows.enableAutomaticUpgrade
         : false
-      supressFailures: contains(extensionNvidiaGpuDriverWindows, 'supressFailures')
-        ? extensionNvidiaGpuDriverWindows.supressFailures
-        : false
+      supressFailures: extensionNvidiaGpuDriverWindows.?supressFailures ?? false
       tags: extensionNvidiaGpuDriverWindows.?tags ?? tags
     }
     dependsOn: [
