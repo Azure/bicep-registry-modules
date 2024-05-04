@@ -975,9 +975,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
           registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
           aadJoin: true
         }
-        supressFailures: contains(extensionHostPoolRegistration, 'supressFailures')
-          ? extensionHostPoolRegistration.supressFailures
-          : false
+        supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
       }
       tags: extensionHostPoolRegistration.?tags ?? tags
     }
