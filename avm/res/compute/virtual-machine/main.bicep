@@ -681,9 +681,7 @@ module vm_domainJoinExtension 'extension/main.bicep' =
         ? extensionDomainJoinConfig.enableAutomaticUpgrade
         : false
       settings: extensionDomainJoinConfig.settings
-      supressFailures: contains(extensionDomainJoinConfig, 'supressFailures')
-        ? extensionDomainJoinConfig.supressFailures
-        : false
+      supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
       tags: extensionDomainJoinConfig.?tags ?? tags
       protectedSettings: {
         Password: extensionDomainJoinPassword
