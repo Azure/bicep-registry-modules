@@ -884,9 +884,7 @@ module vm_customScriptExtension 'extension/main.bicep' =
             : fileData.uri
         ]
       }
-      supressFailures: contains(extensionCustomScriptConfig, 'supressFailures')
-        ? extensionCustomScriptConfig.supressFailures
-        : false
+      supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
       tags: extensionCustomScriptConfig.?tags ?? tags
       protectedSettings: extensionCustomScriptProtectedSetting
     }
