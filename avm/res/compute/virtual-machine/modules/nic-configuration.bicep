@@ -35,15 +35,9 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
-      idleTimeoutInMinutes: contains(ipConfiguration.pipConfiguration, 'idleTimeoutInMinutes')
-        ? ipConfiguration.pipConfiguration.idleTimeoutInMinutes
-        : null
-      ddosSettings: contains(ipConfiguration.pipConfiguration, 'ddosSettings')
-        ? ipConfiguration.pipConfiguration.ddosSettings
-        : null
-      dnsSettings: contains(ipConfiguration.pipConfiguration, 'dnsSettings')
-        ? ipConfiguration.pipConfiguration.dnsSettings
-        : null
+      idleTimeoutInMinutes: ipConfiguration.pipConfiguration.?idleTimeoutInMinutes
+      ddosSettings: ipConfiguration.pipConfiguration.?ddosSettings
+      dnsSettings: ipConfiguration.pipConfiguration.?dnsSettings
       publicIPAddressVersion: contains(ipConfiguration.pipConfiguration, 'publicIPAddressVersion')
         ? ipConfiguration.pipConfiguration.publicIPAddressVersion
         : 'IPv4'
