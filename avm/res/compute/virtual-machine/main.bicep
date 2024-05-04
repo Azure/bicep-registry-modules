@@ -657,9 +657,7 @@ module vm_aadJoinExtension 'extension/main.bicep' =
         ? extensionAadJoinConfig.enableAutomaticUpgrade
         : false
       settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
-      supressFailures: contains(extensionAadJoinConfig, 'supressFailures')
-        ? extensionAadJoinConfig.supressFailures
-        : false
+      supressFailures: extensionAadJoinConfig.?supressFailures ?? false
       tags: extensionAadJoinConfig.?tags ?? tags
     }
   }
