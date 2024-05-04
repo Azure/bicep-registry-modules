@@ -914,12 +914,8 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' =
       forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag')
         ? extensionAzureDiskEncryptionConfig.forceUpdateTag
         : '1.0'
-      settings: contains(extensionAzureDiskEncryptionConfig, 'settings')
-        ? extensionAzureDiskEncryptionConfig.settings
-        : false
-      supressFailures: contains(extensionAzureDiskEncryptionConfig, 'supressFailures')
-        ? extensionAzureDiskEncryptionConfig.supressFailures
-        : false
+      settings: extensionAzureDiskEncryptionConfig.?settings ?? {}
+      supressFailures: extensionAzureDiskEncryptionConfig.?supressFailures ?? false
       tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
     }
     dependsOn: [
