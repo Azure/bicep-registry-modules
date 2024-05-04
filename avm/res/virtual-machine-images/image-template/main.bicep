@@ -49,10 +49,7 @@ param roleAssignments roleAssignmentType
 @description('Required. The distribution targets where the image output needs to go to.')
 param distributions distributionType[]
 
-@description('''
-Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.
-Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
-''')
+@description('Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.')
 param vmUserAssignedIdentities array = []
 
 @description('Required. The managed identity definition for this resource.')
