@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5875996178087031221"
+      "version": "0.26.170.59819",
+      "templateHash": "1499559142748969883"
     },
     "name": "Communication Services",
     "description": "This module deploys a Communication Service",
@@ -418,9 +418,9 @@
         "communicationService"
       ]
     },
-    "namespace_roleAssignments": {
+    "communicationService_roleAssignments": {
       "copy": {
-        "name": "namespace_roleAssignments",
+        "name": "communicationService_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
