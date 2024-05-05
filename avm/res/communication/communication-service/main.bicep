@@ -138,7 +138,7 @@ resource communicationService_diagnosticSettings 'Microsoft.Insights/diagnosticS
   }
 ]
 
-resource namespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource communicationService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(communicationService.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
