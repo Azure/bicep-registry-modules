@@ -684,6 +684,7 @@ Tags for all resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `imageResourceIds` | array | The resource ids of the deployed images. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed image gallery. |
 | `resourceGroupName` | string | The resource group of the deployed image gallery. |
