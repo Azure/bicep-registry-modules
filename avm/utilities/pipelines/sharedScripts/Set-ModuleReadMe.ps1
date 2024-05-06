@@ -254,6 +254,12 @@ function Set-DefinitionSection {
         $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
     }
 
+    # Error handling: Throw error if any parameter is missing a category
+    if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
+        $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
+        throw ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+    }
+
     # Get the module parameter categories
     $paramCategories = $descriptions | ForEach-Object { $_.Split('.')[0] } | Select-Object -Unique
 
@@ -545,10 +551,12 @@ function Set-DataCollectionSection {
             if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $telemetryFileContent = $rawResponse.Content -split '\n'
             } else {
-                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                return $ReadMeFileContent
             }
         } catch {
-            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Invalid url
+            return $ReadMeFileContent
         }
     } else {
         $telemetryFileContent = $PreLoadedContent.TelemetryFileContent
@@ -954,6 +962,11 @@ function ConvertTo-FormattedJSONParameterObject {
     for ($index = 0; $index -lt $paramInJSONFormatArray.Count; $index++) {
 
         $line = $paramInJSONFormatArray[$index]
+
+        if ($line -match '^\s*\/\/.*') {
+            # Line is comment
+            continue
+        }
 
         # [2.4] Syntax:
         # - Everything left of a leftest ':' should be wrapped in quotes (as a parameter name is always a string)
