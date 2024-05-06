@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "5668118199015896027"
+      "version": "0.26.54.24096",
+      "templateHash": "16646471610876147779"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -560,11 +560,6 @@
       "allowedValues": [
         "AIServices",
         "AnomalyDetector",
-        "Bing.Autosuggest.v7",
-        "Bing.CustomSearch",
-        "Bing.EntitySearch",
-        "Bing.Search.v7",
-        "Bing.SpellCheck.v7",
         "CognitiveServices",
         "ComputerVision",
         "ContentModerator",
