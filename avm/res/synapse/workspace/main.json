@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "14051939023718187274"
+      "version": "0.26.170.59819",
+      "templateHash": "9840642184886177634"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -585,6 +585,13 @@
         "description": "Optional. Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later."
       }
     },
+    "accountUrl": {
+      "type": "string",
+      "defaultValue": "[format('https://{0}.dfs.{1}', last(split(parameters('defaultDataLakeStorageAccountResourceId'), '/')), environment().suffixes.storage)]",
+      "metadata": {
+        "description": "Optional. The account URL of the data lake storage account."
+      }
+    },
     "workspaceRepositoryConfiguration": {
       "type": "object",
       "nullable": true,
@@ -703,7 +710,7 @@
         "cspWorkspaceAdminProperties": "[if(not(empty(parameters('initialWorkspaceAdminObjectID'))), createObject('initialWorkspaceAdminObjectId', parameters('initialWorkspaceAdminObjectID')), null())]",
         "defaultDataLakeStorage": {
           "resourceId": "[parameters('defaultDataLakeStorageAccountResourceId')]",
-          "accountUrl": "[format('https://{0}.dfs.{1}', last(split(parameters('defaultDataLakeStorageAccountResourceId'), '/')), environment().suffixes.storage)]",
+          "accountUrl": "[parameters('accountUrl')]",
           "filesystem": "[parameters('defaultDataLakeStorageFilesystem')]",
           "createManagedPrivateEndpoint": "[if(parameters('managedVirtualNetwork'), parameters('defaultDataLakeStorageCreateManagedPrivateEndpoint'), null())]"
         },
@@ -811,8 +818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "10907909212229865317"
+              "version": "0.26.170.59819",
+              "templateHash": "12068224449891293218"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -909,8 +916,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "6689684157194442067"
+              "version": "0.26.170.59819",
+              "templateHash": "23966606142695564"
             }
           },
           "parameters": {
@@ -997,8 +1004,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "13839822979779705807"
+              "version": "0.26.170.59819",
+              "templateHash": "15295521192306502787"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
