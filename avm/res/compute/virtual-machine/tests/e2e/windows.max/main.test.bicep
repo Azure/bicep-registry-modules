@@ -104,6 +104,11 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIpNameSuffix: '-pip-01'
+                zones: [
+                  1
+                  2
+                  3
+                ]
                 roleAssignments: [
                   {
                     roleDefinitionIdOrName: 'Reader'
@@ -112,11 +117,6 @@ module testDeployment '../../../main.bicep' = [
                   }
                 ]
               }
-              zones: [
-                '1'
-                '2'
-                '3'
-              ]
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               diagnosticSettings: [
                 {
@@ -134,7 +134,8 @@ module testDeployment '../../../main.bicep' = [
               ]
             }
           ]
-          nicSuffix: '-nic-01'
+          name: 'nic-test-01'
+          enableIPForwarding: true
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -171,7 +172,7 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
-      availabilityZone: 2
+      zone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
       backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
       backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -201,7 +202,17 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
+      rebootSetting: 'IfRequired'
       encryptionAtHost: false
+      autoShutdownConfig: {
+        status: 'Enabled'
+        dailyRecurrenceTime: '19:00'
+        timeZone: 'UTC'
+        notificationStatus: 'Enabled'
+        notificationEmail: 'test@contoso.com'
+        notificationLocale: 'en'
+        notificationTimeInMinutes: 30
+      }
       extensionAntiMalwareConfig: {
         enabled: true
         settings: {
@@ -244,6 +255,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionDependencyAgentConfig: {
         enabled: true
+        enableAMA: true
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
