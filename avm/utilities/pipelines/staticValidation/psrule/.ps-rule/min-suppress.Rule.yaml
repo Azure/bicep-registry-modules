@@ -15,6 +15,8 @@ spec:
     - Azure.Cognitive.ManagedIdentity
       # Automation specific
     - Azure.Automation.ManagedIdentity
+    - Azure.Automation.AuditLogs # Diagnostic Settings cannot be set by default, but require user input
+    - Azure.Automation.PlatformLogs # Diagnostic Settings cannot be set by default, but require user input
       # Key Vault specific
     - Azure.KeyVault.Logs
     - Azure.KeyVault.Firewall
@@ -31,6 +33,13 @@ spec:
     # Azure App Service
     - Azure.AppService.WebProbe # Supressed as the probe path is specific to the app
     - Azure.AppService.WebProbePath # Supressed as the probe path is specific to the app
+    # Azure App Configuration Store
+    - Azure.AppConfig.GeoReplica # Suppressed as geo-replication is WAF requirement but not required for min
+    - Azure.AppConfig.AuditLogs # Suppressed as Audit Logs are not required for min
+    # Azure Front Door
+    - Azure.FrontDoor.Probe # Supressed as the probe is being provided as parameter and we are not able to enforce as default value
+    - Azure.FrontDoor.ProbeMethod # Supressed as the probe method is being provided as parameter and we are not able to enforce as default value
+    - Azure.FrontDoor.ProbePath # Supressed as the probe path is being provided as parameter and we are not able to enforce as default value
   if:
     name: "."
     contains:

@@ -18,8 +18,13 @@ on:
       removeDeployment:
         type: boolean
         description: "Remove deployed module"
+        # We had to set this to false because the SQL Instance Pool takes more than 24 hours to get deleted
         required: false
         default: false
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main
