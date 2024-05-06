@@ -626,6 +626,11 @@ Describe 'Module tests' -Tag 'Module' {
         $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
+          if ($moduleFolderPath -match '[\/|\\]avm[\/|\\]ptn[\/|\\]') {
+            # Skip UDT interface tests for ptn modules
+            continue
+          }
+
           $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
           $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
           $templateFileContent = $builtTestFileMap[$templateFilePath]
