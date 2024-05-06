@@ -167,6 +167,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 // You can safely remove the below child module (virtualNetwork_subnets) in your consumption of the module (virtualNetworks) to reduce the template size and duplication.
 //NOTE End  : ------------------------------------
 
+@batchSize(1)
 module virtualNetwork_subnets 'subnet/main.bicep' = [
   for (subnet, index) in subnets: {
     name: '${uniqueString(deployment().name, location)}-subnet-${index}'
