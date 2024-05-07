@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13403868700445795620"
+      "version": "0.26.170.59819",
+      "templateHash": "14911705346376844157"
     },
     "name": "Network Watchers Connection Monitors",
     "description": "This module deploys a Network Watcher Connection Monitor.",
