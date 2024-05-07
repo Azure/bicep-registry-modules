@@ -99,6 +99,11 @@ module testDeployment '../../../main.bicep' = {
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
+              zones: [
+                1
+                2
+                3
+              ]
               roleAssignments: [
                 {
                   roleDefinitionIdOrName: 'Reader'
@@ -107,11 +112,6 @@ module testDeployment '../../../main.bicep' = {
                 }
               ]
             }
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
             subnetResourceId: nestedDependencies.outputs.subnetResourceId
             diagnosticSettings: [
               {
@@ -129,7 +129,7 @@ module testDeployment '../../../main.bicep' = {
             ]
           }
         ]
-        nicSuffix: '-nic-01'
+        name: 'nic-test-01'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -165,7 +165,7 @@ module testDeployment '../../../main.bicep' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
-    availabilityZone: 1
+    zone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -193,6 +193,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     enableAutomaticUpdates: true
     patchMode: 'AutomaticByPlatform'
+    rebootSetting: 'IfRequired'
     disablePasswordAuthentication: true
     encryptionAtHost: false
     extensionCustomScriptConfig: {
@@ -214,6 +215,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionDependencyAgentConfig: {
       enabled: true
+      enableAMA: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

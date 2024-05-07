@@ -1447,10 +1447,12 @@ The pricing tier of this API Management service.
   ```Bicep
   [
     'Basic'
+    'BasicV2'
     'Consumption'
     'Developer'
     'Premium'
     'Standard'
+    'StandardV2'
   ]
   ```
 

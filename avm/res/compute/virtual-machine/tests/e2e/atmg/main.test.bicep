@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '22_04-lts-gen2'
         version: 'latest'
       }
-      availabilityZone: 0
+      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -79,12 +79,12 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIpNameSuffix: '-pip-01'
+                zones: [
+                  1
+                  2
+                  3
+                ]
               }
-              zones: [
-                '1'
-                '2'
-                '3'
-              ]
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
             }
           ]
