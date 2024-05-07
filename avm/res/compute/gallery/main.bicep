@@ -183,6 +183,11 @@ output name string = gallery.name
 @sys.description('The location the resource was deployed into.')
 output location string = gallery.location
 
+@sys.description('The resource ids of the deployed images.')
+output imageResourceIds array = [
+  for index in range(0, length(images ?? [])): galleries_images[index].outputs.resourceId
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
