@@ -36,7 +36,7 @@ function Get-ResourceIdsAsFormattedObjectList {
 
         switch ($idElements.Count) {
             { $PSItem -eq 5 } {
-                if ($idElements[3] -eq 'managementGroups') {
+                if ($idElements[2] -eq 'Microsoft.Management' -and $idElements[3] -eq 'managementGroups') {
                     # management-group level management group (e.g. '/providers/Microsoft.Management/managementGroups/testMG')
                     $formattedResources += @{
                         resourceId = $resourceId
