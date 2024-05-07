@@ -132,9 +132,7 @@ function Get-DeploymentTargetResourceListInner {
         }
     }
 
-    $resultSet = $resultSet | Select-Object -Unique
-
-    return $resultSet
+    return $resultSet | Select-Object -Unique
 }
 #endregion
 
