@@ -65,7 +65,7 @@ function Get-DeploymentTargetResourceListInner {
     switch ($Scope) {
         'resourcegroup' {
             if (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue') {
-                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null }
+                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
@@ -74,15 +74,15 @@ function Get-DeploymentTargetResourceListInner {
             break
         }
         'subscription' {
-            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'managementgroup' {
-            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'tenant' {
-            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
     }
@@ -131,6 +131,12 @@ function Get-DeploymentTargetResourceListInner {
             [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'tenant'
         }
     }
+
+    Write-Host "Deployment [$name]" -ForegroundColor 'Cyan'
+    Write-Host ($resultSet | ConvertTo-Json) -ForegroundColor 'Cyan'
+    Write-Host '=============================================================' -ForegroundColor 'Green'
+
+
 
     return $resultSet
 }
