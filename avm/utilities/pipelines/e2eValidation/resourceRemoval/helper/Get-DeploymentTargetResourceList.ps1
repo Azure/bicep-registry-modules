@@ -69,7 +69,7 @@ function Get-DeploymentTargetResourceListInner {
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
-                [array]$resultSet = $resultSet | Where-Object { $_ -notmatch "/resourceGroups/$resourceGroupName/" }
+                [array]$resultSet = $resultSet | Where-Object { $_ -notmatch "\/resourceGroups\/$resourceGroupName\/" }
             }
             break
         }
@@ -90,7 +90,7 @@ function Get-DeploymentTargetResourceListInner {
     ###########################
     # Manage nested resources #
     ###########################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '/deployments/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/deployments\/' } )) {
         Write-Verbose ('Found deployed resource [{0}]' -f $deployment)
         [array]$resultSet += $deployment
     }
@@ -98,7 +98,7 @@ function Get-DeploymentTargetResourceListInner {
     #############################
     # Manage nested deployments #
     #############################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '/deployments/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/deployments\/' } )) {
         $name = Split-Path $deployment -Leaf
         if ($deployment -match '/resourceGroups/') {
             # Resource Group Level Child Deployments #
