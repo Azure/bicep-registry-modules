@@ -42,6 +42,11 @@ function Get-ResourceIdsAsFormattedObjectList {
                         resourceId = $resourceId
                         type       = $idElements[2, 3] -join '/'
                     }
+                } elseif ($idElements[2] -eq 'Microsoft.Subscription' -and $idElements[3] -eq 'aliases') {
+                    $formattedResources += @{
+                        resourceId = $resourceId
+                        type       = 'Microsoft.Subscription/aliases'
+                    }
                 } else {
                     # subscription level resource group (e.g. '/subscriptions/<subId>/resourceGroups/myRG')
                     $formattedResources += @{
