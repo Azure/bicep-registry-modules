@@ -132,11 +132,11 @@ function Get-DeploymentTargetResourceListInner {
         }
     }
 
+    $resultSet = $resultSet | Select-Object -Unique
+
     Write-Host "Deployment [$name]" -ForegroundColor 'Cyan'
     Write-Host ($resultSet | ConvertTo-Json) -ForegroundColor 'Cyan'
     Write-Host '=============================================================' -ForegroundColor 'Green'
-
-
 
     return $resultSet
 }
