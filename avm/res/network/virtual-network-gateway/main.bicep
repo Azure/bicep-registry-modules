@@ -79,6 +79,15 @@ param enableBgp bool = true
 @description('Optional. ASN value.')
 param asn int = 65815
 
+@description('Optional. Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled.')
+param PrimaryCustomBgpIPs array = [] 
+
+@description('Optional. Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled.')
+param SecondaryCustomBgpIPs array = [] 
+
+@description('Optional. The weight added to routes learned from this BGP speaker.')
+param peerWeight int = 0
+
 @description('Optional. The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network.')
 param vpnClientAddressPoolPrefix string = ''
 
@@ -155,9 +164,35 @@ var virtualGatewayPipNameVar = isActiveActiveValid
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
 var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
-var bgpSettings = {
+
+// Potential configurations (active-active vs active-passive)
+var bgpSettings = isActiveActiveValid
+? {
   asn: asn
+  bgpPeeringAddresses: [
+    {
+      customBgpIpAddresses: PrimaryCustomBgpIPs
+      ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+    }
+    {
+      customBgpIpAddresses: SecondaryCustomBgpIPs
+      ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
+    }
+
+  ]
+  peerWeight: peerWeight
 }
+: {
+  asn: asn
+  bgpPeeringAddresses: [
+    {
+      customBgpIpAddresses: PrimaryCustomBgpIPs
+      ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+    }
+  ]
+  peerWeight: peerWeight
+}
+
 
 // Potential configurations (active-active vs active-passive)
 var ipConfiguration = isActiveActiveValid
