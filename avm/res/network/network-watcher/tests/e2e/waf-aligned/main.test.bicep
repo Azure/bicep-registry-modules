@@ -72,85 +72,87 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, tempLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: 'NetworkWatcher_${tempLocation}'
-    location: tempLocation
-    connectionMonitors: [
-      {
-        name: '${namePrefix}-${serviceShort}-cm-001'
-        endpoints: [
-          {
-            name: '${namePrefix}-subnet-001(${resourceGroup.name})'
-            resourceId: nestedDependencies.outputs.virtualMachineResourceId
-            type: 'AzureVM'
-          }
-          {
-            address: 'www.bing.com'
-            name: 'Bing'
-            type: 'ExternalAddress'
-          }
-        ]
-        testConfigurations: [
-          {
-            httpConfiguration: {
-              method: 'Get'
-              port: 80
-              preferHTTPS: false
-              requestHeaders: []
-              validStatusCodeRanges: [
-                '200'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, tempLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: 'NetworkWatcher_${tempLocation}'
+      location: tempLocation
+      connectionMonitors: [
+        {
+          name: '${namePrefix}-${serviceShort}-cm-001'
+          endpoints: [
+            {
+              name: '${namePrefix}-subnet-001(${resourceGroup.name})'
+              resourceId: nestedDependencies.outputs.virtualMachineResourceId
+              type: 'AzureVM'
+            }
+            {
+              address: 'www.bing.com'
+              name: 'Bing'
+              type: 'ExternalAddress'
+            }
+          ]
+          testConfigurations: [
+            {
+              httpConfiguration: {
+                method: 'Get'
+                port: 80
+                preferHTTPS: false
+                requestHeaders: []
+                validStatusCodeRanges: [
+                  '200'
+                ]
+              }
+              name: 'HTTP Bing Test'
+              protocol: 'Http'
+              successThreshold: {
+                checksFailedPercent: 5
+                roundTripTimeMs: 100
+              }
+              testFrequencySec: 30
+            }
+          ]
+          testGroups: [
+            {
+              destinations: [
+                'Bing'
+              ]
+              disable: false
+              name: 'test-http-Bing'
+              sources: [
+                '${namePrefix}-subnet-001(${resourceGroup.name})'
+              ]
+              testConfigurations: [
+                'HTTP Bing Test'
               ]
             }
-            name: 'HTTP Bing Test'
-            protocol: 'Http'
-            successThreshold: {
-              checksFailedPercent: 5
-              roundTripTimeMs: 100
-            }
-            testFrequencySec: 30
-          }
-        ]
-        testGroups: [
-          {
-            destinations: [
-              'Bing'
-            ]
-            disable: false
-            name: 'test-http-Bing'
-            sources: [
-              '${namePrefix}-subnet-001(${resourceGroup.name})'
-            ]
-            testConfigurations: [
-              'HTTP Bing Test'
-            ]
-          }
-        ]
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          ]
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      flowLogs: [
+        {
+          enabled: false
+          storageId: diagnosticDependencies.outputs.storageAccountResourceId
+          targetResourceId: nestedDependencies.outputs.firstNetworkSecurityGroupResourceId
+        }
+        {
+          formatVersion: 1
+          name: '${namePrefix}-${serviceShort}-fl-001'
+          retentionInDays: 8
+          storageId: diagnosticDependencies.outputs.storageAccountResourceId
+          targetResourceId: nestedDependencies.outputs.secondNetworkSecurityGroupResourceId
+          trafficAnalyticsInterval: 10
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    flowLogs: [
-      {
-        enabled: false
-        storageId: diagnosticDependencies.outputs.storageAccountResourceId
-        targetResourceId: nestedDependencies.outputs.firstNetworkSecurityGroupResourceId
-      }
-      {
-        formatVersion: 1
-        name: '${namePrefix}-${serviceShort}-fl-001'
-        retentionInDays: 8
-        storageId: diagnosticDependencies.outputs.storageAccountResourceId
-        targetResourceId: nestedDependencies.outputs.secondNetworkSecurityGroupResourceId
-        trafficAnalyticsInterval: 10
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]
