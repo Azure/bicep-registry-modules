@@ -103,12 +103,20 @@ function Get-DeploymentTargetResourceListInner {
         if ($deployment -match '/resourceGroups/') {
             # Resource Group Level Child Deployments #
             ##########################################
+            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                $subscriptionId = $Matches[1]
+                $null = Set-AzContext -Subscription $subscriptionId
+            }
             Write-Verbose ('Found [resource group] deployment [{0}]' -f $deployment)
             $resourceGroupName = $deployment.split('/resourceGroups/')[1].Split('/')[0]
             [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'resourcegroup' -ResourceGroupName $ResourceGroupName
         } elseif ($deployment -match '/subscriptions/') {
             # Subscription Level Child Deployments #
             ########################################
+            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                $subscriptionId = $Matches[1]
+                $null = Set-AzContext -Subscription $subscriptionId
+            }
             Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
             [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription'
         } elseif ($deployment -match '/managementgroups/') {
