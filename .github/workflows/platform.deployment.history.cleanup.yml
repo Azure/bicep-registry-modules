@@ -1,0 +1,126 @@
+name: ".Platform - Clean up deployment history"
+
+on:
+  workflow_dispatch:
+    inputs:
+      handleSubscriptionScope:
+        type: boolean
+        description: "Include Subscription deployments"
+        required: false
+        default: true # Note: This requires your service principal to have permissions on the subscription scope.
+      handleManagementGroupScope:
+        type: boolean
+        description: "Include Management Group deployments"
+        required: false
+        default: true # Note: This requires your service principal to have permissions on the management group scope.
+      maxDeploymentRetentionInDays:
+        type: string
+        description: "The number of days to keep deployments with status [failed]" # 'Running' are always excluded
+        required: false
+        default: "14"
+  schedule:
+    - cron: "0 0 * * *"
+
+env:
+  workflowPath: ".github/workflows/platform.deployment.history.cleanup.yml"
+
+jobs:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+
+  ###############
+  #   Removal   #
+  ###############
+  job_cleanup_subscription_deployments:
+    runs-on: ubuntu-20.04
+    name: "Remove Subscription deployments"
+    needs:
+      - job_initialize_pipeline
+    if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleSubscriptionScope == 'true' }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
+      - name: Remove deployments
+        uses: azure/powershell@v2
+        with:
+          inlineScript: |
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-SubscriptionDeploymentHistory.ps1')
+
+            $functionInput = @{
+              SubscriptionId               = '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+              maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+            }
+
+            Write-Verbose "Invoke task with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            Clear-SubscriptionDeploymentHistory @functionInput
+          azPSVersion: "latest"
+
+  job_cleanup_managementGroup_deployments:
+    runs-on: ubuntu-20.04
+    name: "Remove Management Group deployments"
+    needs:
+      - job_initialize_pipeline
+    if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleManagementGroupScope == 'true' }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
+      - name: Remove deployments
+        uses: azure/powershell@v2
+        with:
+          inlineScript: |
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-ManagementGroupDeploymentHistory.ps1')
+
+            $functionInput = @{
+              ManagementGroupId            = '${{ secrets.ARM_MGMTGROUP_ID }}'
+              maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+            }
+
+            Write-Verbose "Invoke task with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            Clear-ManagementGroupDeploymentHistory @functionInput
+          azPSVersion: "latest"

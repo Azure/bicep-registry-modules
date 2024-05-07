@@ -18,13 +18,14 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2021-04-30-preview](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.Compute/virtualMachines` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Compute/virtualMachines` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
+| `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
-| `Microsoft.Network/publicIPAddresses` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/publicIPAddresses) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 
 ## Usage examples
@@ -61,7 +62,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
-    availabilityZone: 0
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -76,13 +76,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
           }
         ]
         nicSuffix: '-nic-01'
@@ -96,6 +96,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
+    zone: 0
     // Non-required parameters
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
@@ -126,9 +127,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
-    "availabilityZone": {
-      "value": 0
-    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-jammy",
@@ -147,14 +145,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01"
+                "publicIpNameSuffix": "-pip-01",
+                "zones": [
+                  1,
+                  2,
+                  3
+                ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                "1",
-                "2",
-                "3"
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
           "nicSuffix": "-nic-01"
@@ -174,6 +172,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_DS2_v2"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
     "configurationProfile": {
@@ -215,7 +216,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
-    availabilityZone: 0
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -246,6 +246,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
+    zone: 0
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
@@ -274,9 +275,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
-    },
-    "availabilityZone": {
-      "value": 0
     },
     "imageReference": {
       "value": {
@@ -320,6 +318,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_DS2_v2"
     },
+    "zone": {
+      "value": 0
+    },
     // Non-required parameters
     "disablePasswordAuthentication": {
       "value": true
@@ -357,7 +358,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdministrator'
-    availabilityZone: 1
     imageReference: {
       offer: '0001-com-ubuntu-server-focal'
       publisher: 'Canonical'
@@ -418,16 +418,16 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   roleDefinitionIdOrName: 'Reader'
                 }
               ]
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
           }
         ]
-        nicSuffix: '-nic-01'
+        name: 'nic-test-01'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -449,6 +449,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
+    zone: 1
     // Non-required parameters
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
@@ -523,6 +524,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
+      enableAMA: true
       enabled: true
       tags: {
         Environment: 'Non-Prod'
@@ -573,6 +575,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         path: '/home/localAdministrator/.ssh/authorized_keys'
       }
     ]
+    rebootSetting: 'IfRequired'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -614,9 +617,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdministrator"
-    },
-    "availabilityZone": {
-      "value": 1
     },
     "imageReference": {
       "value": {
@@ -682,17 +682,17 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                "1",
-                "2",
-                "3"
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
-          "nicSuffix": "-nic-01",
+          "name": "nic-test-01",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -720,6 +720,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_DS2_v2"
+    },
+    "zone": {
+      "value": 1
     },
     // Non-required parameters
     "backupPolicyName": {
@@ -820,6 +823,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionDependencyAgentConfig": {
       "value": {
+        "enableAMA": true,
         "enabled": true,
         "tags": {
           "Environment": "Non-Prod",
@@ -887,6 +891,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
     },
+    "rebootSetting": {
+      "value": "IfRequired"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -935,7 +942,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
-    availabilityZone: 2
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -996,13 +1002,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   roleDefinitionIdOrName: 'Reader'
                 }
               ]
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
           }
         ]
         nicSuffix: '-nic-01'
@@ -1026,6 +1032,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
+    zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
     backupPolicyName: '<backupPolicyName>'
@@ -1121,6 +1128,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
+      enableAMA: true
       enabled: true
       tags: {
         Environment: 'Non-Prod'
@@ -1207,9 +1215,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
-    "availabilityZone": {
-      "value": 2
-    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -1274,14 +1279,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                "1",
-                "2",
-                "3"
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
           "nicSuffix": "-nic-01",
@@ -1311,6 +1316,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_DS2_v2"
+    },
+    "zone": {
+      "value": 2
     },
     // Non-required parameters
     "adminPassword": {
@@ -1434,6 +1442,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionDependencyAgentConfig": {
       "value": {
+        "enableAMA": true,
         "enabled": true,
         "tags": {
           "Environment": "Non-Prod",
@@ -1543,7 +1552,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
-    availabilityZone: 0
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1571,6 +1579,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -1593,9 +1602,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
-    },
-    "availabilityZone": {
-      "value": 0
     },
     "imageReference": {
       "value": {
@@ -1636,6 +1642,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_DS2_v2"
     },
+    "zone": {
+      "value": 0
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -1665,7 +1674,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
-    availabilityZone: 0
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1693,6 +1701,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionGuestConfigurationExtension: {
@@ -1745,9 +1754,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
-    "availabilityZone": {
-      "value": 0
-    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -1786,6 +1792,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_DS2_v2"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
     "adminPassword": {
@@ -1851,7 +1860,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
-    availabilityZone: 0
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1879,6 +1887,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
@@ -1925,9 +1934,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
-    "availabilityZone": {
-      "value": 0
-    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -1966,6 +1972,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_DS2_v2"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
     "adminPassword": {
@@ -2025,7 +2034,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
-    availabilityZone: 2
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2050,6 +2058,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             workspaceResourceId: '<workspaceResourceId>'
           }
         ]
+        enableIPForwarding: true
         ipConfigurations: [
           {
             applicationSecurityGroups: [
@@ -2086,16 +2095,16 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   roleDefinitionIdOrName: 'Reader'
                 }
               ]
+              zones: [
+                1
+                2
+                3
+              ]
             }
             subnetResourceId: '<subnetResourceId>'
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
           }
         ]
-        nicSuffix: '-nic-01'
+        name: 'nic-test-01'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -2117,8 +2126,18 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
+    zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
+    autoShutdownConfig: {
+      dailyRecurrenceTime: '19:00'
+      notificationEmail: 'test@contoso.com'
+      notificationLocale: 'en'
+      notificationStatus: 'Enabled'
+      notificationTimeInMinutes: 30
+      status: 'Enabled'
+      timeZone: 'UTC'
+    }
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -2216,6 +2235,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
+      enableAMA: true
       enabled: true
       tags: {
         Environment: 'Non-Prod'
@@ -2261,6 +2281,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     patchMode: 'AutomaticByPlatform'
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
+    rebootSetting: 'IfRequired'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -2303,9 +2324,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
-    "availabilityZone": {
-      "value": 2
-    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2335,6 +2353,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "workspaceResourceId": "<workspaceResourceId>"
             }
           ],
+          "enableIPForwarding": true,
           "ipConfigurations": [
             {
               "applicationSecurityGroups": [
@@ -2370,17 +2389,17 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
+                ],
+                "zones": [
+                  1,
+                  2,
+                  3
                 ]
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "zones": [
-                "1",
-                "2",
-                "3"
-              ]
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
-          "nicSuffix": "-nic-01",
+          "name": "nic-test-01",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -2409,9 +2428,23 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_DS2_v2"
     },
+    "zone": {
+      "value": 2
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
+    },
+    "autoShutdownConfig": {
+      "value": {
+        "dailyRecurrenceTime": "19:00",
+        "notificationEmail": "test@contoso.com",
+        "notificationLocale": "en",
+        "notificationStatus": "Enabled",
+        "notificationTimeInMinutes": 30,
+        "status": "Enabled",
+        "timeZone": "UTC"
+      }
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -2535,6 +2568,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionDependencyAgentConfig": {
       "value": {
+        "enableAMA": true,
         "enabled": true,
         "tags": {
           "Environment": "Non-Prod",
@@ -2597,6 +2631,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "proximityPlacementGroupResourceId": {
       "value": "<proximityPlacementGroupResourceId>"
     },
+    "rebootSetting": {
+      "value": "IfRequired"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -2645,14 +2682,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
-    availabilityZone: 0
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinnvidia'
+    name: 'cvmwinnv'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2673,6 +2709,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_NV6ads_A10_v5'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionNvidiaGpuDriverWindows: {
@@ -2699,9 +2736,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
-    "availabilityZone": {
-      "value": 0
-    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2711,7 +2745,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinnvidia"
+      "value": "cvmwinnv"
     },
     "nicConfigurations": {
       "value": [
@@ -2740,6 +2774,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_NV6ads_A10_v5"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
     "adminPassword": {
@@ -2775,7 +2812,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdministrator'
-    availabilityZone: 0
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2805,6 +2841,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -2838,9 +2875,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "VMAdministrator"
-    },
-    "availabilityZone": {
-      "value": 0
     },
     "imageReference": {
       "value": {
@@ -2883,6 +2917,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_DS2_v2"
     },
+    "zone": {
+      "value": 0
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -2918,14 +2955,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
-| [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
 | [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. |
 | [`osDisk`](#parameter-osdisk) | object | Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`osType`](#parameter-ostype) | string | The chosen OS type. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VMs. |
+| [`zone`](#parameter-zone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 
 **Optional parameters**
 
@@ -2934,6 +2970,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`additionalUnattendContent`](#parameter-additionalunattendcontent) | array | Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied. |
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`allowExtensionOperations`](#parameter-allowextensionoperations) | bool | Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine. |
+| [`autoShutdownConfig`](#parameter-autoshutdownconfig) | object | The configuration for auto-shutdown. |
 | [`availabilitySetResourceId`](#parameter-availabilitysetresourceid) | string | Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | Recovery service vault name to add VMs to backup. |
@@ -2941,8 +2978,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`bootDiagnostics`](#parameter-bootdiagnostics) | bool | Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled. |
 | [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | Custom storage account used to store boot diagnostic information. Boot diagnostics will be enabled with a custom storage account if a value is provided. |
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
+| [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
 | [`certificatesToBeInstalled`](#parameter-certificatestobeinstalled) | array | Specifies set of certificates that should be installed onto the virtual machine. |
 | [`computerName`](#parameter-computername) | string | Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name. |
+| [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile. |
 | [`customData`](#parameter-customdata) | string | Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format. |
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`dedicatedHostId`](#parameter-dedicatedhostid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
@@ -2967,7 +3006,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
-| [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system. |
+| [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
@@ -2979,6 +3018,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`provisionVMAgent`](#parameter-provisionvmagent) | bool | Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | Resource ID of a proximity placement group. |
 | [`publicKeys`](#parameter-publickeys) | array | The list of SSH public keys used to authenticate with linux based VMs. |
+| [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
@@ -3001,38 +3041,6 @@ Administrator username.
 
 - Required: Yes
 - Type: securestring
-
-### Parameter: `availabilityZone`
-
-If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
-
-- Required: Yes
-- Type: int
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
-  ]
-  ```
-
-### Parameter: `configurationProfile`
-
-The configuration profile of automanage.
-
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
-    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
-  ]
-  ```
 
 ### Parameter: `imageReference`
 
@@ -3202,6 +3210,22 @@ Specifies the size for the VMs.
 - Required: Yes
 - Type: string
 
+### Parameter: `zone`
+
+If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `additionalUnattendContent`
 
 Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.
@@ -3225,6 +3249,14 @@ Specifies whether extension operations should be allowed on the virtual machine.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `autoShutdownConfig`
+
+The configuration for auto-shutdown.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `availabilitySetResourceId`
 
@@ -3282,6 +3314,14 @@ Storage account boot diagnostic base URI.
 - Type: string
 - Default: `[format('.blob.{0}/', environment().suffixes.storage)]`
 
+### Parameter: `bypassPlatformSafetyChecksOnUserSchedule`
+
+Enables customer to schedule patching without accidental upgrades.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `certificatesToBeInstalled`
 
 Specifies set of certificates that should be installed onto the virtual machine.
@@ -3297,6 +3337,14 @@ Can be used if the computer name needs to be different from the Azure VM resourc
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
+
+### Parameter: `configurationProfile`
+
+The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `customData`
 
@@ -3679,7 +3727,7 @@ The guest configuration for the virtual machine. Needs the Guest Configuration e
 
 ### Parameter: `licenseType`
 
-Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.
+Specifies that the image or disk that is being used was licensed on-premises.
 
 - Required: No
 - Type: string
@@ -3688,6 +3736,8 @@ Specifies that the image or disk that is being used was licensed on-premises. Th
   ```Bicep
   [
     ''
+    'RHEL_BYOS'
+    'SLES_BYOS'
     'Windows_Client'
     'Windows_Server'
   ]
@@ -3853,6 +3903,23 @@ The list of SSH public keys used to authenticate with linux based VMs.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `rebootSetting`
+
+Specifies the reboot setting for all AutomaticByPlatform patch installation operations.
+
+- Required: No
+- Type: string
+- Default: `'IfRequired'`
+- Allowed:
+  ```Bicep
+  [
+    'Always'
+    'IfRequired'
+    'Never'
+    'Unknown'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -4031,8 +4098,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/network-interface:0.2.2` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.2.4` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.4.0` | Remote reference |
 
 ## Notes
 

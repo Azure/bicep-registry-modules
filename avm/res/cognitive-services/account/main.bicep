@@ -9,11 +9,6 @@ param name string
 @allowed([
   'AIServices'
   'AnomalyDetector'
-  'Bing.Autosuggest.v7'
-  'Bing.CustomSearch'
-  'Bing.EntitySearch'
-  'Bing.Search.v7'
-  'Bing.SpellCheck.v7'
   'CognitiveServices'
   'ComputerVision'
   'ContentModerator'
@@ -137,7 +132,7 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }

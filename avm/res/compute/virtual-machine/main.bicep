@@ -69,8 +69,10 @@ param maxPriceForLowPriorityVm string = ''
 @description('Optional. Specifies resource ID about the dedicated host that the virtual machine resides in.')
 param dedicatedHostId string = ''
 
-@description('Optional. Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.')
+@description('Optional. Specifies that the image or disk that is being used was licensed on-premises.')
 @allowed([
+  'RHEL_BYOS'
+  'SLES_BYOS'
   'Windows_Client'
   'Windows_Server'
   ''
@@ -105,7 +107,7 @@ param availabilitySetResourceId string = ''
   2
   3
 ])
-param availabilityZone int
+param zone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -119,6 +121,9 @@ param backupVaultResourceGroup string = resourceGroup().name
 
 @description('Optional. Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault.')
 param backupPolicyName string = 'DefaultPolicy'
+
+@description('Optional. The configuration for auto-shutdown.')
+param autoShutdownConfig object = {}
 
 // Child resources
 @description('Optional. Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine.')
@@ -249,6 +254,18 @@ param enableAutomaticUpdates bool = true
 ])
 param patchMode string = ''
 
+@description('Optional. Enables customer to schedule patching without accidental upgrades.')
+param bypassPlatformSafetyChecksOnUserSchedule bool = true
+
+@description('Optional. Specifies the reboot setting for all AutomaticByPlatform patch installation operations.')
+@allowed([
+  'Always'
+  'IfRequired'
+  'Never'
+  'Unknown'
+])
+param rebootSetting string = 'IfRequired'
+
 @description('Optional. VM guest patching assessment mode. Set it to \'AutomaticByPlatform\' to enable automatically check for updates every 24 hours.')
 @allowed([
   'AutomaticByPlatform'
@@ -265,12 +282,7 @@ param additionalUnattendContent array = []
 @description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.')
 param winRM array = []
 
-@description('Required. The configuration profile of automanage.')
-@allowed([
-  '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
-  '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
-  ''
-])
+@description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
 
 var publicKeysFormatted = [
@@ -290,6 +302,10 @@ var linuxConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
+        automaticByPlatformSettings: {
+          bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+          rebootSetting: rebootSetting
+        }
       }
     : null
 }
@@ -301,6 +317,10 @@ var windowsConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
+        automaticByPlatformSettings: {
+          bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+          rebootSetting: rebootSetting
+        }
       }
     : null
   timeZone: empty(timeZone) ? null : timeZone
@@ -425,12 +445,12 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   for (nicConfiguration, index) in nicConfigurations: {
     name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
     params: {
-      networkInterfaceName: '${name}${nicConfiguration.nicSuffix}'
+      networkInterfaceName: contains(nicConfiguration, 'name')
+        ? nicConfiguration.name
+        : '${name}${nicConfiguration.nicSuffix}'
       virtualMachineName: name
       location: location
-      enableIPForwarding: contains(nicConfiguration, 'enableIPForwarding')
-        ? (!empty(nicConfiguration.enableIPForwarding) ? nicConfiguration.enableIPForwarding : false)
-        : false
+      enableIPForwarding: contains(nicConfiguration, 'enableIPForwarding') ? nicConfiguration.enableIPForwarding : false
       enableAcceleratedNetworking: contains(nicConfiguration, 'enableAcceleratedNetworking')
         ? nicConfiguration.enableAcceleratedNetworking
         : true
@@ -450,12 +470,12 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: name
   location: location
   identity: identity
   tags: tags
-  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
+  zones: zone != 0 ? array(string(zone)) : null
   plan: !empty(plan) ? plan : null
   properties: {
     hardwareProfile: {
@@ -522,7 +542,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
             primary: index == 0 ? true : false
           }
           #disable-next-line use-resource-id-functions // It's a reference from inside a loop which makes resolving it using a resource reference particulary difficult.
-          id: az.resourceId('Microsoft.Network/networkInterfaces', '${name}${nicConfiguration.nicSuffix}')
+          id: az.resourceId(
+            'Microsoft.Network/networkInterfaces',
+            contains(nicConfiguration, 'name') ? nicConfiguration.name : '${name}${nicConfiguration.nicSuffix}'
+          )
         }
       ]
     }
@@ -564,13 +587,47 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
   ]
 }
 
-resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2021-04-30-preview' =
+resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' =
   if (!empty(configurationProfile)) {
     name: 'default'
     properties: {
       configurationProfile: configurationProfile
     }
     scope: vm
+  }
+
+resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' =
+  if (!empty(autoShutdownConfig)) {
+    name: 'shutdown-computevm-${vm.name}'
+    location: location
+    properties: {
+      status: contains(autoShutdownConfig, 'status') ? autoShutdownConfig.status : 'Disabled'
+      targetResourceId: vm.id
+      taskType: 'ComputeVmShutdownTask'
+      dailyRecurrence: {
+        time: contains(autoShutdownConfig, 'time') ? autoShutdownConfig.dailyRecurrenceTime : '19:00'
+      }
+      timeZoneId: contains(autoShutdownConfig, 'timeZone') ? autoShutdownConfig.timeZone : 'UTC'
+      notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
+        ? {
+            status: contains(autoShutdownConfig, 'notificationStatus')
+              ? autoShutdownConfig.notificationStatus
+              : 'Disabled'
+            emailRecipient: contains(autoShutdownConfig, 'notificationEmail')
+              ? autoShutdownConfig.notificationEmail
+              : ''
+            notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
+              ? autoShutdownConfig.notificationLocale
+              : 'en'
+            webhookUrl: contains(autoShutdownConfig, 'notificationWebhookUrl')
+              ? autoShutdownConfig.notificationWebhookUrl
+              : ''
+            timeInMinutes: contains(autoShutdownConfig, 'notificationTimeInMinutes')
+              ? autoShutdownConfig.notificationTimeInMinutes
+              : 30
+          }
+        : null
+    }
   }
 
 module vm_aadJoinExtension 'extension/main.bicep' =
@@ -716,13 +773,18 @@ module vm_dependencyAgentExtension 'extension/main.bicep' =
       type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
       typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
         ? extensionDependencyAgentConfig.typeHandlerVersion
-        : '9.5'
+        : '9.10'
       autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
         ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
         : true
       enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
         ? extensionDependencyAgentConfig.enableAutomaticUpgrade
         : true
+      settings: {
+        enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA')
+          ? extensionDependencyAgentConfig.enableAMA
+          : true
+      }
       tags: extensionDependencyAgentConfig.?tags ?? tags
     }
     dependsOn: [
