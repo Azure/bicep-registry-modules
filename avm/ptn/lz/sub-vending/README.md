@@ -30,7 +30,7 @@ This module deploys a subscription to accelerate deployment of landing zones.
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
-| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/deploymentScripts) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
 | `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/tags) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
@@ -564,6 +564,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 | [`deploymentScriptStorageAccountName`](#parameter-deploymentscriptstorageaccountname) | string | The name of the storage account for the deployment script. |
 | [`deploymentScriptVirtualNetworkName`](#parameter-deploymentscriptvirtualnetworkname) | string | The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length. |
 | [`disableTelemetry`](#parameter-disabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingSubscriptionId`](#parameter-existingsubscriptionid) | string | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.<p><li>Type: String<li>Default value: `''` *(empty string)*.<p> |
 | [`hubNetworkResourceId`](#parameter-hubnetworkresourceid) | string | The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.<p><p>**Example Expected Values:**<li>`''` (empty string)<li>Hub Virtual Network Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx`<li>Virtual WAN Virtual Hub Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxxx`<p><li>Type: String<li>Default value: `''` *(empty string)*.<p> |
 | [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p><li>Type: `{}` Object<li>Default value: `{<p>  'Microsoft.ApiManagement'             : []<p>    'Microsoft.AppPlatform'             : []<p>    'Microsoft.Authorization'           : []<p>    'Microsoft.Automation'              : []<p>    'Microsoft.AVS'                     : []<p>    'Microsoft.Blueprint'               : []<p>    'Microsoft.BotService'              : []<p>    'Microsoft.Cache'                   : []<p>    'Microsoft.Cdn'                     : []<p>    'Microsoft.CognitiveServices'       : []<p>    'Microsoft.Compute'                 : []<p>    'Microsoft.ContainerInstance'       : []<p>    'Microsoft.ContainerRegistry'       : []<p>    'Microsoft.ContainerService'        : []<p>    'Microsoft.CostManagement'          : []<p>    'Microsoft.CustomProviders'         : []<p>    'Microsoft.Databricks'              : []<p>    'Microsoft.DataLakeAnalytics'       : []<p>    'Microsoft.DataLakeStore'           : []<p>    'Microsoft.DataMigration'           : []<p>    'Microsoft.DataProtection'          : []<p>    'Microsoft.DBforMariaDB'            : []<p>    'Microsoft.DBforMySQL'              : []<p>    'Microsoft.DBforPostgreSQL'         : []<p>    'Microsoft.DesktopVirtualization'   : []<p>    'Microsoft.Devices'                 : []<p>    'Microsoft.DevTestLab'              : []<p>    'Microsoft.DocumentDB'              : []<p>    'Microsoft.EventGrid'               : []<p>    'Microsoft.EventHub'                : []<p>    'Microsoft.HDInsight'               : []<p>    'Microsoft.HealthcareApis'          : []<p>    'Microsoft.GuestConfiguration'      : []<p>    'Microsoft.KeyVault'                : []<p>    'Microsoft.Kusto'                   : []<p>    'microsoft.insights'                : []<p>    'Microsoft.Logic'                   : []<p>    'Microsoft.MachineLearningServices' : []<p>    'Microsoft.Maintenance'             : []<p>    'Microsoft.ManagedIdentity'         : []<p>    'Microsoft.ManagedServices'         : []<p>    'Microsoft.Management'              : []<p>    'Microsoft.Maps'                    : []<p>    'Microsoft.MarketplaceOrdering'     : []<p>    'Microsoft.Media'                   : []<p>    'Microsoft.MixedReality'            : []<p>    'Microsoft.Network'                 : []<p>    'Microsoft.NotificationHubs'        : []<p>    'Microsoft.OperationalInsights'     : []<p>    'Microsoft.OperationsManagement'    : []<p>    'Microsoft.PolicyInsights'          : []<p>    'Microsoft.PowerBIDedicated'        : []<p>    'Microsoft.Relay'                   : []<p>    'Microsoft.RecoveryServices'        : []<p>    'Microsoft.Resources'               : []<p>    'Microsoft.Search'                  : []<p>    'Microsoft.Security'                : []<p>    'Microsoft.SecurityInsights'        : []<p>    'Microsoft.ServiceBus'              : []<p>    'Microsoft.ServiceFabric'           : []<p>    'Microsoft.Sql'                     : []<p>    'Microsoft.Storage'                 : []<p>    'Microsoft.StreamAnalytics'         : []<p>    'Microsoft.TimeSeriesInsights'      : []<p>    'Microsoft.Web'                     : []<p>}`.<p> |
@@ -661,6 +662,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `[parameters('disableTelemetry')]`
 
 ### Parameter: `existingSubscriptionId`
 
@@ -1025,6 +1034,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/virtual-network:0.1.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.1.0` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.2.0` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.2.3` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.5.0` | Remote reference |
 
 ## Data Collection

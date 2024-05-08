@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "15934744937416391883"
+      "version": "0.27.1.19265",
+      "templateHash": "12240013095501643558"
     },
     "name": "Key Vaults",
     "description": "This module deploys a subscription to accelerate deployment of landing zones.",
@@ -324,6 +324,13 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": "[parameters('disableTelemetry')]",
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
     "deploymentScriptResourceGroupName": {
       "type": "string",
       "defaultValue": "[format('rsg-{0}-ds', deployment().location)]",
@@ -471,7 +478,7 @@
   },
   "resources": [
     {
-      "condition": "[not(parameters('disableTelemetry'))]",
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
       "name": "[format('pid-{0}-{1}', variables('cuaPid'), uniqueString(deployment().name, parameters('virtualNetworkLocation')))]",
@@ -486,7 +493,7 @@
       }
     },
     {
-      "condition": "[not(parameters('disableTelemetry'))]",
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.ptn.lz-subvending.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 4))]",
@@ -543,8 +550,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "10375311946374939082"
+              "version": "0.27.1.19265",
+              "templateHash": "2756176519640330469"
             }
           },
           "parameters": {
@@ -747,8 +754,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "6725552621182181517"
+              "version": "0.27.1.19265",
+              "templateHash": "469138057943622745"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1123,8 +1130,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "17038101250188230732"
+                      "version": "0.27.1.19265",
+                      "templateHash": "13155599995698230637"
                     }
                   },
                   "parameters": {
@@ -1181,8 +1188,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "12538577557250560506"
+                      "version": "0.27.1.19265",
+                      "templateHash": "8425857249567929128"
                     }
                   },
                   "parameters": {
@@ -1241,8 +1248,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10232863967814403981"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14609714565542482184"
                             }
                           },
                           "parameters": {
@@ -1297,8 +1304,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "2507739551231446569"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "7642326843162944636"
                                     }
                                   },
                                   "parameters": {
@@ -1375,8 +1382,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "18000834900454799369"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14231500222877479740"
                             }
                           },
                           "parameters": {
@@ -1430,8 +1437,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "18300877385604985444"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "17070976327321568542"
                                     }
                                   },
                                   "parameters": {
@@ -1902,8 +1909,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "12538577557250560506"
+                      "version": "0.27.1.19265",
+                      "templateHash": "8425857249567929128"
                     }
                   },
                   "parameters": {
@@ -1962,8 +1969,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10232863967814403981"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14609714565542482184"
                             }
                           },
                           "parameters": {
@@ -2018,8 +2025,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "2507739551231446569"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "7642326843162944636"
                                     }
                                   },
                                   "parameters": {
@@ -2096,8 +2103,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "18000834900454799369"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14231500222877479740"
                             }
                           },
                           "parameters": {
@@ -2151,8 +2158,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "18300877385604985444"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "17070976327321568542"
                                     }
                                   },
                                   "parameters": {
@@ -3446,8 +3453,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "5820769560955863201"
+                      "version": "0.27.1.19265",
+                      "templateHash": "8939245293578564787"
                     }
                   },
                   "parameters": {
@@ -3563,8 +3570,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -3692,8 +3699,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -3852,8 +3859,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -4015,8 +4022,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -4218,8 +4225,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -4347,8 +4354,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -4507,8 +4514,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -4670,8 +4677,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -4876,8 +4883,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -5005,8 +5012,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -5165,8 +5172,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -5328,8 +5335,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -5523,8 +5530,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "3602482923715259848"
+                      "version": "0.25.53.49325",
+                      "templateHash": "6727498516867168543"
                     },
                     "name": "Resource Groups",
                     "description": "This module deploys a Resource Group.",
@@ -5598,7 +5605,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -5664,26 +5671,12 @@
                       }
                     }
                   },
-                  "variables": {
-                    "builtInRoleNames": {
-                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                      "Quota Request Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e5f05e5-9ab9-446b-b98d-1e2157c94125')]",
-                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                      "Tag Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4a9ae827-6dc8-4573-8ac7-8239d42aa03f')]",
-                      "Template Spec Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c9b6475-caf0-4164-b5a1-2142a7116f4b')]",
-                      "Template Spec Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '392ae280-861d-42bd-9ea5-08ee6d83b80e')]",
-                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-                    }
-                  },
                   "resources": {
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.2.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "mode": "Incremental",
@@ -5707,27 +5700,6 @@
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
                       "properties": {}
-                    },
-                    "resourceGroup_roleAssignments": {
-                      "copy": {
-                        "name": "resourceGroup_roleAssignments",
-                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
-                      },
-                      "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2022-04-01",
-                      "name": "[guid(subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
-                      "properties": {
-                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-                      },
-                      "dependsOn": [
-                        "resourceGroup"
-                      ]
                     },
                     "resourceGroup_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -5755,8 +5727,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "3720705918360023027"
+                              "version": "0.25.53.49325",
+                              "templateHash": "7668050384482764751"
                             }
                           },
                           "definitions": {
@@ -5809,6 +5781,149 @@
                               "properties": {
                                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
                                 "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "resourceGroup"
+                      ]
+                    },
+                    "resourceGroup_roleAssignments": {
+                      "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "resourceGroup": "[parameters('name')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "roleAssignments": {
+                            "value": "[parameters('roleAssignments')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.25.53.49325",
+                              "templateHash": "3156241559834375483"
+                            }
+                          },
+                          "definitions": {
+                            "roleAssignmentType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "roleDefinitionIdOrName": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                    }
+                                  },
+                                  "principalId": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                    }
+                                  },
+                                  "principalType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "Device",
+                                      "ForeignGroup",
+                                      "Group",
+                                      "ServicePrincipal",
+                                      "User"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The principal type of the assigned principal ID."
+                                    }
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The description of the role assignment."
+                                    }
+                                  },
+                                  "condition": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                    }
+                                  },
+                                  "conditionVersion": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "2.0"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Version of the condition."
+                                    }
+                                  },
+                                  "delegatedManagedIdentityResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            }
+                          },
+                          "parameters": {
+                            "roleAssignments": {
+                              "$ref": "#/definitions/roleAssignmentType",
+                              "metadata": {
+                                "description": "Optional. Array of role assignments to create."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "builtInRoleNames": {
+                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                              "Quota Request Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e5f05e5-9ab9-446b-b98d-1e2157c94125')]",
+                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "Tag Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4a9ae827-6dc8-4573-8ac7-8239d42aa03f')]",
+                              "Template Spec Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c9b6475-caf0-4164-b5a1-2142a7116f4b')]",
+                              "Template Spec Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '392ae280-861d-42bd-9ea5-08ee6d83b80e')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                            }
+                          },
+                          "resources": {
+                            "resourceGroup_roleAssignments": {
+                              "copy": {
+                                "name": "resourceGroup_roleAssignments",
+                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                              },
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "name": "[guid(resourceGroup().id, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                              "properties": {
+                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                               }
                             }
                           }
@@ -6294,8 +6409,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -6423,8 +6538,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -6583,8 +6698,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -6746,8 +6861,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -6946,8 +7061,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -7075,8 +7190,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -7235,8 +7350,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -7398,8 +7513,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
