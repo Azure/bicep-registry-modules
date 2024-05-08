@@ -15,9 +15,6 @@ param enableTelemetry bool = true
 @description('Optional. A map of the hub virtual networks to create.')
 param hubVirtualNetworks hubVirtualNetworkObject
 
-@description('Optional. Type test')
-param testObject testObjectType
-
 //
 // Add your variables here
 var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.peeringSettings ?? []]
@@ -336,10 +333,6 @@ type hubVirtualNetworkObject = {
   @description('Optional. Array of hub virtual networks to create.')
   *: hubVirtualNetworkType?
 }?
-type testObjectType = {
-  @description('Optional. Array of hub virtual networks to create.')
-  *: hubVirtualNetworkType?
-}[]?
 
 type hubVirtualNetworkType = {
   @description('Required. The name of the virtual network.')
