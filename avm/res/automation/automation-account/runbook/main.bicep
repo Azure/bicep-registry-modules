@@ -13,7 +13,11 @@ param automationAccountName string
   'GraphPowerShell'
   'GraphPowerShellWorkflow'
   'PowerShell'
+  'PowerShell72'
   'PowerShellWorkflow'
+  'Python2'
+  'Python3'
+  'Script'
 ])
 @sys.description('Required. The type of the runbook.')
 param type string
@@ -74,7 +78,7 @@ var publishContentLink = empty(uri)
       version: !empty(version) ? version : null
     }
 
-resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2022-08-08' = {
+resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-01' = {
   name: name
   parent: automationAccount
   location: location

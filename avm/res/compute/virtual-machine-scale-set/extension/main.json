@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "8948100547542268397"
+      "templateHash": "1737879623418595926"
     },
     "name": "Virtual Machine Scale Set Extensions",
     "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -86,7 +86,7 @@
   "resources": [
     {
       "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
       "properties": {
         "publisher": "[parameters('publisher')]",
