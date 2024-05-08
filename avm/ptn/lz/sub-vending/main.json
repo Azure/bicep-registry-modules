@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "11255496909208597889"
+      "version": "0.27.1.19265",
+      "templateHash": "3113007542340152602"
     },
     "name": "Key Vaults",
     "description": "This module deploys a subscription to accelerate deployment of landing zones.",
@@ -543,8 +543,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "10375311946374939082"
+              "version": "0.27.1.19265",
+              "templateHash": "2756176519640330469"
             }
           },
           "parameters": {
@@ -750,8 +750,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "7344660484542729765"
+              "version": "0.27.1.19265",
+              "templateHash": "3326205902035640136"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1061,7 +1061,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "param(\r\n  [string]$subscriptionId,\r\n  [string]$resourceProviders\r\n)\r\n\r\n$ErrorActionPreference = \"SilentlyContinue\"\r\n# Selecting the right subscription\r\nSelect-AzSubscription -SubscriptionId $subscriptionId\r\n\r\n# Defining variables\r\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\r\n$failedProviders = \"\"\r\n$failedFeatures = \"\"\r\n$DeploymentScriptOutputs = @{}\r\n\r\n##############################################\r\n## Registering resource providers and features\r\n##############################################\r\n\r\nif ($providers.Count -gt 0) {\r\n  foreach ($provider in $providers.keys) {\r\n    try {\r\n      # Registering resource providers\r\n      $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -eq $provider).registrationState\r\n      # Check if the providered is registered\r\n      if ($providerStatus -eq 'NotRegistered') {\r\n        Write-Output \"`n Registering the '$provider' provider\"\r\n        if (Register-AzResourceProvider -ProviderNamespace $provider) {\r\n          Write-Output \"`n The registration for provider'$provider' has started successfully\"\r\n        }\r\n        else {\r\n          Write-Output \"`n The '$provider' provider has not been registered successfully\"\r\n          $failedProviders += \",$provider\"\r\n        }\r\n      }\r\n      elseif ($providerStatus -eq 'Registering') {\r\n        Write-Output \"`n The '$provider' provider is in registering state\"\r\n        $failedProviders += \",$provider\"\r\n      }\r\n      elseif( $null -eq $providerStatus) {\r\n        Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\r\n        $failedProviders += \",$provider\"\r\n      }\r\n\r\n      if ($failedProviders.length -gt 0) {\r\n        $output = $failedProviders.substring(1)\r\n      }\r\n      else {\r\n        $output = \"No failures\"\r\n      }\r\n      $DeploymentScriptOutputs[\"failedProvidersRegistrations\"] = $output\r\n    }\r\n    catch {\r\n      Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\r\n      $failedProviders += \",$provider\"\r\n      if ($failedProviders.length -gt 0) {\r\n        $output = $failedProviders.substring(1)\r\n      }\r\n      $DeploymentScriptOutputs[\"failedProvidersRegistrations\"] = $output\r\n    }\r\n    # Registering resource providers features\r\n    $features = $providers[$provider]\r\n    if ($features.length -gt 0) {\r\n      foreach ($feature in $features) {\r\n        try {\r\n          # Define variables\r\n          $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -eq $feature).RegistrationState\r\n          # Check if the feature is registered\r\n          if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\r\n            Write-Output \"`n Registering the '$feature' feature\"\r\n            if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\r\n              Write-Output \"`n The The registration for feature '$feature' has started successfully\"\r\n            }\r\n            else {\r\n              Write-Output \"`n The '$feature' feature has not been registered successfully\"\r\n              $failedFeatures += \",$feature\"\r\n            }\r\n          }\r\n          elseif ($null -eq $featureStatus) {\r\n            Write-Output \"`n The '$feature' feature doesn't exist.\"\r\n            $failedFeatures += \",$feature\"\r\n          }\r\n          if ($failedFeatures.length -gt 0) {\r\n            $output = $failedFeatures.substring(1)\r\n          }\r\n          else {\r\n            $output = \"No failures\"\r\n          }\r\n          $DeploymentScriptOutputs[\"failedFeaturesRegistrations\"] = $output\r\n        }\r\n        catch {\r\n          Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\r\n          $failedFeatures += \",$feature\"\r\n          if ($failedFeatures.length -gt 0) {\r\n            $output = $failedFeatures.substring(1)\r\n          }\r\n          $DeploymentScriptOutputs[\"failedFeaturesRegistrations\"] = $output\r\n        }\r\n      }\r\n    }else{\r\n      $output = \"No failures\"\r\n      $DeploymentScriptOutputs[\"failedFeaturesRegistrations\"] = $output\r\n    }\r\n  }\r\n}\r\nelse {\r\n  Write-Output \"`n No providers or features to register\"\r\n}\r\n",
+            "$fxv#0": "Param(\n  [string]$subscriptionId,\n  [string]$resourceProviders\n)\n\n$ErrorActionPreference = 'SilentlyContinue'\n# Selecting the right subscription\nSelect-AzSubscription -SubscriptionId $subscriptionId\n\n# Defining variables\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\n$failedProviders = ''\n$failedFeatures = ''\n$DeploymentScriptOutputs = @{}\n\n##############################################\n## Registering resource providers and features\n##############################################\n\nif ($providers.Count -gt 0) {\n  foreach ($provider in $providers.keys) {\n    try {\n      # Registering resource providers\n      $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -eq $provider).registrationState\n      # Check if the providered is registered\n      if ($providerStatus -eq 'NotRegistered') {\n        Write-Output \"`n Registering the '$provider' provider\"\n        if (Register-AzResourceProvider -ProviderNamespace $provider) {\n          Write-Output \"`n The registration for provider'$provider' has started successfully\"\n        } else {\n          Write-Output \"`n The '$provider' provider has not been registered successfully\"\n          $failedProviders += \",$provider\"\n        }\n      } elseif ($providerStatus -eq 'Registering') {\n        Write-Output \"`n The '$provider' provider is in registering state\"\n        $failedProviders += \",$provider\"\n      } elseif ( $null -eq $providerStatus) {\n        Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n        $failedProviders += \",$provider\"\n      }\n\n      if ($failedProviders.length -gt 0) {\n        $output = $failedProviders.substring(1)\n      } else {\n        $output = 'No failures'\n      }\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n    } catch {\n      Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n      $failedProviders += \",$provider\"\n      if ($failedProviders.length -gt 0) {\n        $output = $failedProviders.substring(1)\n      }\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n    }\n    # Registering resource providers features\n    $features = $providers[$provider]\n    if ($features.length -gt 0) {\n      foreach ($feature in $features) {\n        try {\n          # Define variables\n          $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).RegistrationState\n          # Check if the feature is registered\n          if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\n            Write-Output \"`n Registering the '$feature' feature\"\n            if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\n              Write-Output \"`n The The registration for feature '$feature' has started successfully\"\n            } else {\n              Write-Output \"`n The '$feature' feature has not been registered successfully\"\n              $failedFeatures += \",$feature\"\n            }\n          } elseif ($null -eq $featureStatus) {\n            Write-Output \"`n The '$feature' feature doesn't exist.\"\n            $failedFeatures += \",$feature\"\n          }\n          if ($failedFeatures.length -gt 0) {\n            $output = $failedFeatures.substring(1)\n          } else {\n            $output = 'No failures'\n          }\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        } catch {\n          Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\n          $failedFeatures += \",$feature\"\n          if ($failedFeatures.length -gt 0) {\n            $output = $failedFeatures.substring(1)\n          }\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        }\n      }\n    } else {\n      $output = 'No failures'\n      $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n    }\n  }\n} else {\n  Write-Output \"`n No providers or features to register\"\n}\n",
             "deploymentNames": {
               "moveSubscriptionToManagementGroup": "[take(format('lz-vend-move-sub-{0}', uniqueString(parameters('subscriptionId'), parameters('subscriptionManagementGroupId'), deployment().name)), 64)]",
               "tagSubscription": "[take(format('lz-vend-tag-sub-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
@@ -1126,8 +1126,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "17038101250188230732"
+                      "version": "0.27.1.19265",
+                      "templateHash": "13155599995698230637"
                     }
                   },
                   "parameters": {
@@ -1184,8 +1184,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "12538577557250560506"
+                      "version": "0.27.1.19265",
+                      "templateHash": "8425857249567929128"
                     }
                   },
                   "parameters": {
@@ -1244,8 +1244,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10232863967814403981"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14609714565542482184"
                             }
                           },
                           "parameters": {
@@ -1300,8 +1300,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "2507739551231446569"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "7642326843162944636"
                                     }
                                   },
                                   "parameters": {
@@ -1378,8 +1378,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "18000834900454799369"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14231500222877479740"
                             }
                           },
                           "parameters": {
@@ -1433,8 +1433,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "18300877385604985444"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "17070976327321568542"
                                     }
                                   },
                                   "parameters": {
@@ -1905,8 +1905,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "12538577557250560506"
+                      "version": "0.27.1.19265",
+                      "templateHash": "8425857249567929128"
                     }
                   },
                   "parameters": {
@@ -1965,8 +1965,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10232863967814403981"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14609714565542482184"
                             }
                           },
                           "parameters": {
@@ -2021,8 +2021,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "2507739551231446569"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "7642326843162944636"
                                     }
                                   },
                                   "parameters": {
@@ -2099,8 +2099,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "18000834900454799369"
+                              "version": "0.27.1.19265",
+                              "templateHash": "14231500222877479740"
                             }
                           },
                           "parameters": {
@@ -2154,8 +2154,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.26.170.59819",
-                                      "templateHash": "18300877385604985444"
+                                      "version": "0.27.1.19265",
+                                      "templateHash": "17070976327321568542"
                                     }
                                   },
                                   "parameters": {
@@ -3449,8 +3449,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "5820769560955863201"
+                      "version": "0.27.1.19265",
+                      "templateHash": "8939245293578564787"
                     }
                   },
                   "parameters": {
@@ -3566,8 +3566,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -3695,8 +3695,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -3855,8 +3855,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -4018,8 +4018,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -4221,8 +4221,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -4350,8 +4350,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -4510,8 +4510,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -4673,8 +4673,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -4879,8 +4879,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -5008,8 +5008,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -5168,8 +5168,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -5331,8 +5331,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -6405,8 +6405,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -6534,8 +6534,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -6694,8 +6694,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -6857,8 +6857,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {
@@ -7057,8 +7057,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "2002922492874779896"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6852216891713843385"
                     }
                   },
                   "parameters": {
@@ -7186,8 +7186,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "8327364027450324189"
+                              "version": "0.27.1.19265",
+                              "templateHash": "16440162699061833602"
                             }
                           },
                           "parameters": {
@@ -7346,8 +7346,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "12666032492593168825"
+                              "version": "0.27.1.19265",
+                              "templateHash": "471642734000016654"
                             }
                           },
                           "parameters": {
@@ -7509,8 +7509,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "10031786251142869277"
+                              "version": "0.27.1.19265",
+                              "templateHash": "8761763138795349356"
                             }
                           },
                           "parameters": {

@@ -1,5 +1,5 @@
 {
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "onFocusChange",
   "git.autofetch": true,
