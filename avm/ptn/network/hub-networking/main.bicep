@@ -15,6 +15,9 @@ param enableTelemetry bool = true
 @description('Optional. A map of the hub virtual networks to create.')
 param hubVirtualNetworks hubVirtualNetworkObject
 
+@description('Optional. Type test')
+param testObject testObjectType
+
 //
 // Add your variables here
 var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.peeringSettings ?? []]
@@ -23,24 +26,23 @@ var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ??
 // Resources      //
 // ============== //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.ptn.network-hubnetworking.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.network-hubnetworking.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 // Create hub virtual networks
 module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [
@@ -334,6 +336,10 @@ type hubVirtualNetworkObject = {
   @description('Optional. Array of hub virtual networks to create.')
   *: hubVirtualNetworkType?
 }?
+type testObjectType = {
+  @description('Optional. Array of hub virtual networks to create.')
+  *: hubVirtualNetworkType?
+}[]?
 
 type hubVirtualNetworkType = {
   @description('Required. The name of the virtual network.')
