@@ -83,8 +83,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -172,7 +172,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
     }
     encryption: !empty(customerManagedKey)
       ? {
-          keySource: 'Microsoft.KeyVault'
+          keySource: 'Microsoft.Keyvault'
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
             ? {
                 userAssignedIdentity: cMKUserAssignedIdentity.id
@@ -180,7 +180,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
             : null
           keyVaultProperties: {
             keyName: customerManagedKey!.keyName
-            keyVaultUri: cMKKeyVault.properties.vaultUri
+            keyvaultUri: cMKKeyVault.properties.vaultUri
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
               ? customerManagedKey!.keyVersion
               : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5329218260776835511"
+      "version": "0.26.170.59819",
+      "templateHash": "4586802822078326566"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -319,8 +319,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3817884050778525461"
+              "version": "0.26.170.59819",
+              "templateHash": "9175012718933553578"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -676,8 +676,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15034895982698413313"
+              "version": "0.26.170.59819",
+              "templateHash": "7059991596058545894"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -1111,6 +1111,16 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('gallery', '2022-03-03', 'full').location]"
+    },
+    "imageResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource ids of the deployed images."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('images'), createArray()))))]",
+        "input": "[reference(format('galleries_images[{0}]', range(0, length(coalesce(parameters('images'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
     }
   }
 }
