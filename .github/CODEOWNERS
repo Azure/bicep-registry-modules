@@ -5,6 +5,7 @@
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/lz/sub-vending/ @Azure/avm-ptn-lz-subvending-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
