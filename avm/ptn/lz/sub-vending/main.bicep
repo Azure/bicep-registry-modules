@@ -446,6 +446,9 @@ param roleAssignments array = []
 @description('Optional. Enable/Disable usage telemetry for module.')
 param disableTelemetry bool = false
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = disableTelemetry
+
 //@description('Optional. Guid for the deployment script resources names based on subscription Id.')
 //var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId, 0, 6)
 
@@ -643,7 +646,7 @@ var deploymentNames = {
 
 // RESOURCES & MODULES
 resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' =
-  if (!disableTelemetry) {
+  if (enableTelemetry) {
     name: 'pid-${cuaPid}-${uniqueString(deployment().name, virtualNetworkLocation)}'
     location: virtualNetworkLocation
     properties: {
@@ -657,7 +660,7 @@ resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' =
   }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (!disableTelemetry) {
+  if (enableTelemetry) {
     name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
     location: virtualNetworkLocation
     properties: {
