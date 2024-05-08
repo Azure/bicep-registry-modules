@@ -80,10 +80,10 @@ param enableBgp bool = true
 param asn int = 65815
 
 @description('Optional. Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled.')
-param PrimaryCustomBgpIPs array = [] 
+param primaryCustomBgpIPs array = [] 
 
 @description('Optional. Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled.')
-param SecondaryCustomBgpIPs array = [] 
+param secondaryCustomBgpIPs array = [] 
 
 @description('Optional. The weight added to routes learned from this BGP speaker.')
 param peerWeight int = 0
@@ -171,11 +171,11 @@ var bgpSettings = isActiveActiveValid
   asn: asn
   bgpPeeringAddresses: [
     {
-      customBgpIpAddresses: PrimaryCustomBgpIPs
+      customBgpIpAddresses: primaryCustomBgpIPs
       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
     }
     {
-      customBgpIpAddresses: SecondaryCustomBgpIPs
+      customBgpIpAddresses: secondaryCustomBgpIPs
       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
     }
 
@@ -186,7 +186,7 @@ var bgpSettings = isActiveActiveValid
   asn: asn
   bgpPeeringAddresses: [
     {
-      customBgpIpAddresses: PrimaryCustomBgpIPs
+      customBgpIpAddresses: primaryCustomBgpIPs
       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
     }
   ]

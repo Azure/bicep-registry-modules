@@ -60,10 +60,10 @@ module testDeployment '../../../main.bicep' = [
       activeActive: true
       enableBgp: true
       asn: 65515
-      PrimaryCustomBgpIPs:[
+      primaryCustomBgpIPs:[
         '169.254.21.4'
       ]
-      SecondaryCustomBgpIPs:[
+      secondaryCustomBgpIPs:[
         '169.254.21.5'
       ]
       domainNameLabel: [
