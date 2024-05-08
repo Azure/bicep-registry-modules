@@ -416,17 +416,32 @@ function Set-DefinitionSection {
 
             #recursive call for children
             if ($definition) {
-                if ($definition.ContainsKey('items') -and $definition['items'].ContainsKey('properties')) {
-                    $childProperties = $definition['items']['properties']
-                    $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
-
-                    $listSectionContent += $sectionContent
-
-                } elseif ($definition.type -eq 'object' -and $definition['properties']) {
-                    $childProperties = $definition['properties']
-                    $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
-
-                    $listSectionContent += $sectionContent
+                # 'items' refers to an array
+                # 'properties' is the default for UDTs, 'additionalProperties' represents a used '*' identifier
+                if ($definition.Keys -contains 'items' -and ($definition['items']['properties'].Keys -or $definition['items']['additionalProperties'].Keys)) {
+                    if ($definition['items']['properties'].Keys) {
+                        $childProperties = $definition['items']['properties']
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
+                    if ($definition['items']['additionalProperties'].Keys) {
+                        $childProperties = $definition['items']['additionalProperties']
+                        $formattedProperties = @{ '>Any_other_property<' = $childProperties }
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
+                } elseif ($definition.type -eq 'object' -and ($definition['properties'].Keys -or $definition['additionalProperties'].Keys)) {
+                    if ($definition['properties'].Keys) {
+                        $childProperties = $definition['properties']
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
+                    if ($definition['additionalProperties'].Keys) {
+                        $childProperties = $definition['additionalProperties']
+                        $formattedProperties = @{ '>Any_other_property<' = $childProperties }
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
                 }
             }
         }
