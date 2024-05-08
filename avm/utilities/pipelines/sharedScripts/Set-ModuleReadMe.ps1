@@ -247,11 +247,11 @@ function Set-DefinitionSection {
         # Get all descriptions
         $descriptions = $TemplateFileContent.parameters.Values.metadata.description
         # Add name as property for later reference
-        $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_].name = $_ }
+        $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
     } else {
         $descriptions = $Properties.Values.metadata.description
         # Add name as property for later reference
-        $Properties.Keys | ForEach-Object { $Properties[$_].name = $_ }
+        $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
     }
 
     # Error handling: Throw error if any parameter is missing a category
@@ -303,8 +303,8 @@ function Set-DefinitionSection {
             if ($parameter.Keys -contains '$ref') {
                 $identifier = Split-Path $parameter.'$ref' -Leaf
                 $definition = $TemplateFileContent.definitions[$identifier]
-                $type = $definition.type
-                $rawAllowedValues = $definition.allowedValues
+                $type = $definition['type']
+                $rawAllowedValues = $definition['allowedValues']
             } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
                 # Array has nested non-primitive type (array/object)
                 $definition = $parameter
@@ -317,7 +317,7 @@ function Set-DefinitionSection {
             }
 
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
-            $description = $parameter.ContainsKey('metadata') ? $parameter.metadata.description.substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
+            $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
 
             #####################
             #   Table content   #
@@ -563,7 +563,7 @@ function Set-DataCollectionSection {
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
         try {
             $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
-            if (($rawResponse.Headers.Content-Type | Out-String) -like '*text/plain*') {
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $telemetryFileContent = $rawResponse.Content -split '\n'
             } else {
                 Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
@@ -656,14 +656,14 @@ function Set-CrossReferencesSection {
 
     $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
 
-    if ($dependencies.Keys -contains 'localPathReferences' -and $dependencies.localPathReferences) {
-        foreach ($reference in ($dependencies.localPathReferences | Sort-Object)) {
+    if ($dependencies.Keys -contains 'localPathReferences' -and $dependencies['localPathReferences']) {
+        foreach ($reference in ($dependencies['localPathReferences'] | Sort-Object)) {
             $SectionContent += ("| ``{0}`` | {1} |" -f $reference, 'Local reference')
         }
     }
 
-    if ($dependencies.Keys -contains 'remoteReferences' -and $dependencies.remoteReferences) {
-        foreach ($reference in ($dependencies.remoteReferences | Sort-Object)) {
+    if ($dependencies.Keys -contains 'remoteReferences' -and $dependencies['remoteReferences']) {
+        foreach ($reference in ($dependencies['remoteReferences'] | Sort-Object)) {
             $SectionContent += ("| ``{0}`` | {1} |" -f $reference, 'Remote reference')
         }
     }
@@ -1157,7 +1157,7 @@ function ConvertTo-FormattedBicep {
     if ($templateParameterObject -ne '{}') {
         $bicepParamsArray = $templateParameterObject -split '\r?\n' | ForEach-Object {
             $line = $_
-            $line = $line -replace "'", "\'" # Update any [ "field": "[[concat('tags., parameters('tagName'), ')]"] to [ "field": "[[concat(\'tags[\', parameters(\'tagName\'), \']\')]"]
+            $line = $line -replace "'", "\'" # Update any [ "field": "[[concat('tags[', parameters('tagName'), ']')]"] to [ "field": "[[concat(\'tags[\', parameters(\'tagName\'), \']\')]"]
             $line = $line -replace '"', "'" # Update any [xyz: "xyz"] to [xyz: 'xyz']
             $line = $line -replace ',$', '' # Update any [xyz: abc,xyz,] to [xyz: abc,xyz]
             $line = $line -replace "'(\w+)':", '$1:' # Update any  ['xyz': xyz] to [xyz: xyz]
