@@ -443,11 +443,8 @@ Each object must contain the following `keys`:
 ''')
 param roleAssignments array = []
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param disableTelemetry bool = false
-
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = disableTelemetry
+param enableTelemetry bool = true
 
 //@description('Optional. Guid for the deployment script resources names based on subscription Id.')
 //var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId, 0, 6)
@@ -645,95 +642,92 @@ var deploymentNames = {
 }
 
 // RESOURCES & MODULES
-resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' =
-  if (enableTelemetry) {
-    name: 'pid-${cuaPid}-${uniqueString(deployment().name, virtualNetworkLocation)}'
-    location: virtualNetworkLocation
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-      }
+resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
+  name: 'pid-${cuaPid}-${uniqueString(deployment().name, virtualNetworkLocation)}'
+  location: virtualNetworkLocation
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
     }
   }
+}
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
-    location: virtualNetworkLocation
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
+  location: virtualNetworkLocation
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep' =
-  if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
-    scope: managementGroup()
-    name: deploymentNames.createSubscription
-    params: {
-      subscriptionBillingScope: subscriptionBillingScope
-      subscriptionAliasName: subscriptionAliasName
-      subscriptionDisplayName: subscriptionDisplayName
-      subscriptionWorkload: subscriptionWorkload
-      subscriptionTenantId: subscriptionTenantId
-      subscriptionOwnerId: subscriptionOwnerId
-    }
+module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep' = if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
+  scope: managementGroup()
+  name: deploymentNames.createSubscription
+  params: {
+    subscriptionBillingScope: subscriptionBillingScope
+    subscriptionAliasName: subscriptionAliasName
+    subscriptionDisplayName: subscriptionDisplayName
+    subscriptionWorkload: subscriptionWorkload
+    subscriptionTenantId: subscriptionTenantId
+    subscriptionOwnerId: subscriptionOwnerId
   }
+}
 
-module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' =
-  if (subscriptionAliasEnabled || !empty(existingSubscriptionId)) {
-    name: deploymentNames.createSubscriptionResources
-    params: {
-      subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
-        ? createSubscription.outputs.subscriptionId
-        : existingSubscriptionId
-      subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
-      subscriptionManagementGroupId: subscriptionManagementGroupId
-      subscriptionTags: subscriptionTags
-      virtualNetworkEnabled: virtualNetworkEnabled
-      virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
-      virtualNetworkResourceGroupTags: virtualNetworkResourceGroupTags
-      virtualNetworkResourceGroupLockEnabled: virtualNetworkResourceGroupLockEnabled
-      virtualNetworkLocation: virtualNetworkLocation
-      virtualNetworkName: virtualNetworkName
-      virtualNetworkTags: virtualNetworkTags
-      virtualNetworkAddressSpace: virtualNetworkAddressSpace
-      virtualNetworkDnsServers: virtualNetworkDnsServers
-      virtualNetworkDdosPlanId: virtualNetworkDdosPlanId
-      virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
-      hubNetworkResourceId: hubNetworkResourceId
-      virtualNetworkUseRemoteGateways: virtualNetworkUseRemoteGateways
-      virtualNetworkVwanEnableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
-      virtualNetworkVwanAssociatedRouteTableResourceId: virtualNetworkVwanAssociatedRouteTableResourceId
-      virtualNetworkVwanPropagatedRouteTablesResourceIds: virtualNetworkVwanPropagatedRouteTablesResourceIds
-      virtualNetworkVwanPropagatedLabels: virtualNetworkVwanPropagatedLabels
-      vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
-      roleAssignmentEnabled: roleAssignmentEnabled
-      roleAssignments: roleAssignments
-      deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
-      deploymentScriptName: deploymentScriptName
-      deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
-      resourceProviders: resourceProviders
-      deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
-      deploymentScriptLocation: deploymentScriptLocation
-      deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
-      virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
-      deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
-    }
+module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' = if (subscriptionAliasEnabled || !empty(existingSubscriptionId)) {
+  name: deploymentNames.createSubscriptionResources
+  params: {
+    subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
+      ? createSubscription.outputs.subscriptionId
+      : existingSubscriptionId
+    subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
+    subscriptionManagementGroupId: subscriptionManagementGroupId
+    subscriptionTags: subscriptionTags
+    virtualNetworkEnabled: virtualNetworkEnabled
+    virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
+    virtualNetworkResourceGroupTags: virtualNetworkResourceGroupTags
+    virtualNetworkResourceGroupLockEnabled: virtualNetworkResourceGroupLockEnabled
+    virtualNetworkLocation: virtualNetworkLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkTags: virtualNetworkTags
+    virtualNetworkAddressSpace: virtualNetworkAddressSpace
+    virtualNetworkDnsServers: virtualNetworkDnsServers
+    virtualNetworkDdosPlanId: virtualNetworkDdosPlanId
+    virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
+    hubNetworkResourceId: hubNetworkResourceId
+    virtualNetworkUseRemoteGateways: virtualNetworkUseRemoteGateways
+    virtualNetworkVwanEnableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
+    virtualNetworkVwanAssociatedRouteTableResourceId: virtualNetworkVwanAssociatedRouteTableResourceId
+    virtualNetworkVwanPropagatedRouteTablesResourceIds: virtualNetworkVwanPropagatedRouteTablesResourceIds
+    virtualNetworkVwanPropagatedLabels: virtualNetworkVwanPropagatedLabels
+    vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
+    roleAssignmentEnabled: roleAssignmentEnabled
+    roleAssignments: roleAssignments
+    deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
+    deploymentScriptName: deploymentScriptName
+    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
+    resourceProviders: resourceProviders
+    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
+    deploymentScriptLocation: deploymentScriptLocation
+    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
+    virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
+    deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
+    enableTelemetry: enableTelemetry
   }
+}
 
 // OUTPUTS
 

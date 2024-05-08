@@ -563,7 +563,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 | [`deploymentScriptResourceGroupName`](#parameter-deploymentscriptresourcegroupname) | string | The name of the resource group to create the deployment script for resource providers registration. |
 | [`deploymentScriptStorageAccountName`](#parameter-deploymentscriptstorageaccountname) | string | The name of the storage account for the deployment script. |
 | [`deploymentScriptVirtualNetworkName`](#parameter-deploymentscriptvirtualnetworkname) | string | The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length. |
-| [`disableTelemetry`](#parameter-disabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingSubscriptionId`](#parameter-existingsubscriptionid) | string | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.<p><li>Type: String<li>Default value: `''` *(empty string)*.<p> |
 | [`hubNetworkResourceId`](#parameter-hubnetworkresourceid) | string | The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.<p><p>**Example Expected Values:**<li>`''` (empty string)<li>Hub Virtual Network Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx`<li>Virtual WAN Virtual Hub Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxxx`<p><li>Type: String<li>Default value: `''` *(empty string)*.<p> |
@@ -655,21 +654,13 @@ The name of the private virtual network for the deployment script. The string mu
 - Type: string
 - Default: `[format('vnet-{0}', deployment().location)]`
 
-### Parameter: `disableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Default: `[parameters('disableTelemetry')]`
+- Default: `True`
 
 ### Parameter: `existingSubscriptionId`
 

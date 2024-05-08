@@ -89,7 +89,7 @@ param roleAssignmentEnabled bool = false
 param roleAssignments array = []
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
-param disableTelemetry bool = false
+param enableTelemetry bool = true
 
 @maxLength(90)
 @sys.description('The name of the resource group to create the deployment script for resource providers registration.')
@@ -381,118 +381,112 @@ var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
 // RESOURCES & MODULES
 
-module moveSubscriptionToManagementGroup '../Microsoft.Management/managementGroups/subscriptions/deploy.bicep' =
-  if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
-    scope: managementGroup(subscriptionManagementGroupId)
-    name: deploymentNames.moveSubscriptionToManagementGroup
-    params: {
-      subscriptionManagementGroupId: subscriptionManagementGroupId
-      subscriptionId: subscriptionId
-    }
+module moveSubscriptionToManagementGroup '../Microsoft.Management/managementGroups/subscriptions/deploy.bicep' = if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
+  scope: managementGroup(subscriptionManagementGroupId)
+  name: deploymentNames.moveSubscriptionToManagementGroup
+  params: {
+    subscriptionManagementGroupId: subscriptionManagementGroupId
+    subscriptionId: subscriptionId
   }
+}
 
-module tagSubscription '../../modules/Microsoft.Resources/tags/deploy.bicep' =
-  if (!empty(subscriptionTags)) {
-    scope: subscription(subscriptionId)
-    name: deploymentNames.tagSubscription
-    params: {
-      subscriptionId: subscriptionId
-      onlyUpdate: true
-      tags: subscriptionTags
-    }
+module tagSubscription '../../modules/Microsoft.Resources/tags/deploy.bicep' = if (!empty(subscriptionTags)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.tagSubscription
+  params: {
+    subscriptionId: subscriptionId
+    onlyUpdate: true
+    tags: subscriptionTags
   }
-module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.2.0' =
-  if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
-    scope: subscription(subscriptionId)
-    name: deploymentNames.createResourceGroupForLzNetworking
-    params: {
-      name: virtualNetworkResourceGroupName
-      location: virtualNetworkLocation
-      lock: virtualNetworkResourceGroupLockEnabled
-        ? {
-            kind: 'CanNotDelete'
-            name: 'CanNotDelete'
+}
+module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.2.0' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForLzNetworking
+  params: {
+    name: virtualNetworkResourceGroupName
+    location: virtualNetworkLocation
+    lock: virtualNetworkResourceGroupLockEnabled
+      ? {
+          kind: 'CanNotDelete'
+          name: 'CanNotDelete'
+        }
+      : null
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module tagResourceGroup '../../modules/Microsoft.Resources/tags/deploy.bicep' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualNetworkResourceGroupTags)) {
+  dependsOn: [
+    createResourceGroupForLzNetworking
+  ]
+  scope: subscription(subscriptionId)
+  name: deploymentNames.tagResoruceGroupForLzNetworking
+  params: {
+    subscriptionId: subscriptionId
+    resourceGroupName: virtualNetworkResourceGroupName
+    onlyUpdate: true
+    tags: virtualNetworkResourceGroupTags
+  }
+}
+
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+  dependsOn: [
+    createResourceGroupForLzNetworking
+  ]
+  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+  name: deploymentNames.createLzVnet
+  params: {
+    name: virtualNetworkName
+    tags: virtualNetworkTags
+    location: virtualNetworkLocation
+    addressPrefixes: virtualNetworkAddressSpace
+    dnsServers: virtualNetworkDnsServers
+    ddosProtectionPlanResourceId: virtualNetworkDdosPlanId
+    peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
+      ? [
+          {
+            allowForwardedTraffic: true
+            allowVirtualNetworkAccess: true
+            allowGatewayTransit: false
+            useRemoteGateways: virtualNetworkUseRemoteGateways
+            remotePeeringEnabled: virtualNetworkPeeringEnabled
+            remoteVirtualNetworkId: hubVirtualNetworkResourceIdChecked
+            remotePeeringAllowForwardedTraffic: true
+            remotePeeringAllowVirtualNetworkAccess: true
+            remotePeeringAllowGatewayTransit: true
+            remotePeeringUseRemoteGateways: false
           }
-        : null
-      enableTelemetry: disableTelemetry
-    }
+        ]
+      : []
+    enableTelemetry: enableTelemetry
   }
+}
 
-module tagResourceGroup '../../modules/Microsoft.Resources/tags/deploy.bicep' =
-  if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualNetworkResourceGroupTags)) {
-    dependsOn: [
-      createResourceGroupForLzNetworking
-    ]
-    scope: subscription(subscriptionId)
-    name: deploymentNames.tagResoruceGroupForLzNetworking
-    params: {
-      subscriptionId: subscriptionId
-      resourceGroupName: virtualNetworkResourceGroupName
-      onlyUpdate: true
-      tags: virtualNetworkResourceGroupTags
-    }
-  }
-
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' =
-  if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
-    dependsOn: [
-      createResourceGroupForLzNetworking
-    ]
-    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
-    name: deploymentNames.createLzVnet
-    params: {
-      name: virtualNetworkName
-      tags: virtualNetworkTags
-      location: virtualNetworkLocation
-      addressPrefixes: virtualNetworkAddressSpace
-      dnsServers: virtualNetworkDnsServers
-      ddosProtectionPlanResourceId: virtualNetworkDdosPlanId
-      peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
-        ? [
-            {
-              allowForwardedTraffic: true
-              allowVirtualNetworkAccess: true
-              allowGatewayTransit: false
-              useRemoteGateways: virtualNetworkUseRemoteGateways
-              remotePeeringEnabled: virtualNetworkPeeringEnabled
-              remoteVirtualNetworkId: hubVirtualNetworkResourceIdChecked
-              remotePeeringAllowForwardedTraffic: true
-              remotePeeringAllowVirtualNetworkAccess: true
-              remotePeeringAllowGatewayTransit: true
-              remotePeeringUseRemoteGateways: false
-            }
-          ]
-        : []
-      enableTelemetry: disableTelemetry
-    }
-  }
-
-module createLzVirtualWanConnection '../../modules/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' =
-  if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
-    dependsOn: [
-      createResourceGroupForLzNetworking
-      createLzVnet
-    ]
-    scope: resourceGroup(virtualWanHubSubscriptionId, virtualWanHubResourceGroupName)
-    name: deploymentNames.createLzVirtualWanConnection
-    params: {
-      name: virtualWanHubConnectionName
-      virtualHubName: virtualWanHubName
-      remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${virtualNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName}'
-      enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
-      routingConfiguration: !vHubRoutingIntentEnabled
-        ? {
-            associatedRouteTable: {
-              id: virtualWanHubConnectionAssociatedRouteTable
-            }
-            propagatedRouteTables: {
-              ids: virtualWanHubConnectionPropogatedRouteTables
-              labels: virtualWanHubConnectionPropogatedLabels
-            }
+module createLzVirtualWanConnection '../../modules/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
+  dependsOn: [
+    createResourceGroupForLzNetworking
+    createLzVnet
+  ]
+  scope: resourceGroup(virtualWanHubSubscriptionId, virtualWanHubResourceGroupName)
+  name: deploymentNames.createLzVirtualWanConnection
+  params: {
+    name: virtualWanHubConnectionName
+    virtualHubName: virtualWanHubName
+    remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${virtualNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName}'
+    enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
+    routingConfiguration: !vHubRoutingIntentEnabled
+      ? {
+          associatedRouteTable: {
+            id: virtualWanHubConnectionAssociatedRouteTable
           }
-        : {}
-    }
+          propagatedRouteTables: {
+            ids: virtualWanHubConnectionPropogatedRouteTables
+            labels: virtualWanHubConnectionPropogatedLabels
+          }
+        }
+      : {}
   }
+}
 
 module createLzRoleAssignmentsSub '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = [
   for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
@@ -544,157 +538,147 @@ module createLzRoleAssignmentsRsgsNotSelf '../../modules/Microsoft.Authorization
   }
 ]
 
-module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.2.3' =
-  if (!empty(resourceProviders)) {
-    scope: subscription(subscriptionId)
-    name: deploymentNames.createResourceGroupForDeploymentScript
-    params: {
-      name: deploymentScriptResourceGroupName
-      location: deploymentScriptLocation
-      enableTelemetry: disableTelemetry
-    }
+module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.2.3' = if (!empty(resourceProviders)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForDeploymentScript
+  params: {
+    name: deploymentScriptResourceGroupName
+    location: deploymentScriptLocation
+    enableTelemetry: enableTelemetry
   }
+}
 
-module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.1.0' =
-  if (!empty(resourceProviders)) {
-    scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
-    name: deploymentNames.createDeploymentScriptManagedIdentity
-    dependsOn: [
-      createResourceGroupForDeploymentScript
+module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.1.0' = if (!empty(resourceProviders)) {
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  name: deploymentNames.createDeploymentScriptManagedIdentity
+  dependsOn: [
+    createResourceGroupForDeploymentScript
+  ]
+  params: {
+    location: deploymentScriptLocation
+    name: deploymentScriptManagedIdentityName
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createRoleAssignmentsDeploymentScript '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
+  name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
+  params: {
+    location: deploymentScriptLocation
+    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
+    roleDefinitionIdOrName: 'Contributor'
+    subscriptionId: subscriptionId
+  }
+}
+
+module createRoleAssignmentsDeploymentScriptStorageAccount '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
+  name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
+  params: {
+    location: deploymentScriptLocation
+    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
+    roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+    subscriptionId: subscriptionId
+    resourceGroupName: deploymentScriptResourceGroupName
+  }
+}
+
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.1.0' = if (!empty(resourceProviders)) {
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  dependsOn: [
+    createResourceGroupForDeploymentScript
+  ]
+  name: deploymentNames.createDsNsg
+  params: {
+    name: deploymentScriptNetworkSecurityGroupName
+    location: deploymentScriptLocation
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' = if (!empty(resourceProviders)) {
+  dependsOn: [
+    createRoleAssignmentsDeploymentScriptStorageAccount
+  ]
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  name: deploymentNames.createDsStorageAccount
+  params: {
+    location: deploymentScriptLocation
+    name: deploymentScriptStorageAccountName
+    kind: 'StorageV2'
+    skuName: 'Standard_ZRS'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      virtualNetworkRules: [
+        {
+          action: 'Allow'
+          id: !empty(resourceProviders) ? createDsVnet.outputs.subnetResourceIds[0] : null
+        }
+      ]
+    }
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!empty(resourceProviders)) {
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  name: deploymentNames.createdsVnet
+  params: {
+    name: deploymentScriptVirtualNetworkName
+    location: deploymentScriptLocation
+    addressPrefixes: [
+      virtualNetworkDeploymentScriptAddressPrefix
     ]
-    params: {
-      location: deploymentScriptLocation
-      name: deploymentScriptManagedIdentityName
-      enableTelemetry: disableTelemetry
-    }
-  }
-
-module createRoleAssignmentsDeploymentScript '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' =
-  if (!empty(resourceProviders)) {
-    name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
-    params: {
-      location: deploymentScriptLocation
-      principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
-      roleDefinitionIdOrName: 'Contributor'
-      subscriptionId: subscriptionId
-    }
-  }
-
-module createRoleAssignmentsDeploymentScriptStorageAccount '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' =
-  if (!empty(resourceProviders)) {
-    name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
-    params: {
-      location: deploymentScriptLocation
-      principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
-      roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
-      subscriptionId: subscriptionId
-      resourceGroupName: deploymentScriptResourceGroupName
-    }
-  }
-
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.1.0' =
-  if (!empty(resourceProviders)) {
-    scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
-    dependsOn: [
-      createResourceGroupForDeploymentScript
-    ]
-    name: deploymentNames.createDsNsg
-    params: {
-      name: deploymentScriptNetworkSecurityGroupName
-      location: deploymentScriptLocation
-      enableTelemetry: disableTelemetry
-    }
-  }
-
-module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' =
-  if (!empty(resourceProviders)) {
-    dependsOn: [
-      createRoleAssignmentsDeploymentScriptStorageAccount
-    ]
-    scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
-    name: deploymentNames.createDsStorageAccount
-    params: {
-      location: deploymentScriptLocation
-      name: deploymentScriptStorageAccountName
-      kind: 'StorageV2'
-      skuName: 'Standard_ZRS'
-      networkAcls: {
-        bypass: 'AzureServices'
-        defaultAction: 'Deny'
-        virtualNetworkRules: [
+    subnets: [
+      {
+        addressPrefix: !empty(resourceProviders) ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0) : null
+        name: 'ds-subnet-001'
+        networkSecurityGroupId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+        serviceEndpoints: [
           {
-            action: 'Allow'
-            id: !empty(resourceProviders) ? createDsVnet.outputs.subnetResourceIds[0] : null
+            service: 'Microsoft.Storage'
+          }
+        ]
+        delegations: [
+          {
+            name: 'Microsoft.ContainerInstance.containerGroups'
+            properties: {
+              serviceName: 'Microsoft.ContainerInstance/containerGroups'
+            }
           }
         ]
       }
-      enableTelemetry: disableTelemetry
-    }
+    ]
+    enableTelemetry: enableTelemetry
   }
+}
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.0' =
-  if (!empty(resourceProviders)) {
-    scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
-    name: deploymentNames.createdsVnet
-    params: {
-      name: deploymentScriptVirtualNetworkName
-      location: deploymentScriptLocation
-      addressPrefixes: [
-        virtualNetworkDeploymentScriptAddressPrefix
-      ]
-      subnets: [
-        {
-          addressPrefix: !empty(resourceProviders)
-            ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0)
-            : null
-          name: 'ds-subnet-001'
-          networkSecurityGroupId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-            }
-          ]
-          delegations: [
-            {
-              name: 'Microsoft.ContainerInstance.containerGroups'
-              properties: {
-                serviceName: 'Microsoft.ContainerInstance/containerGroups'
-              }
-            }
+module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.1.0' = if (!empty(resourceProviders)) {
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  name: deploymentNames.registerResourceProviders
+  params: {
+    name: deploymentScriptName
+    kind: 'AzurePowerShell'
+    azPowerShellVersion: '3.0'
+    cleanupPreference: 'Always'
+    enableTelemetry: enableTelemetry
+    location: deploymentScriptLocation
+    retentionInterval: 'P1D'
+    timeout: 'PT1H'
+    runOnce: true
+    managedIdentities: !(empty(resourceProviders))
+      ? {
+          userAssignedResourcesIds: [
+            createManagedIdentityForDeploymentScript.outputs.resourceId
           ]
         }
-      ]
-      enableTelemetry: disableTelemetry
-    }
+      : null
+    storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
+    subnetResourceIds: !(empty(resourceProviders)) ? createDsVnet.outputs.subnetResourceIds : null
+    arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
+    scriptContent: loadTextContent('../../scripts/Invoke-RegisterSubscriptionResourceProviders.ps1')
   }
-
-module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.1.0' =
-  if (!empty(resourceProviders)) {
-    scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
-    name: deploymentNames.registerResourceProviders
-    params: {
-      name: deploymentScriptName
-      kind: 'AzurePowerShell'
-      azPowerShellVersion: '3.0'
-      cleanupPreference: 'Always'
-      enableTelemetry: disableTelemetry
-      location: deploymentScriptLocation
-      retentionInterval: 'P1D'
-      timeout: 'PT1H'
-      runOnce: true
-      managedIdentities: !(empty(resourceProviders))
-        ? {
-            userAssignedResourcesIds: [
-              createManagedIdentityForDeploymentScript.outputs.resourceId
-            ]
-          }
-        : null
-      storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
-      subnetResourceIds: !(empty(resourceProviders)) ? createDsVnet.outputs.subnetResourceIds : null
-      arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
-      scriptContent: loadTextContent('../../scripts/Invoke-RegisterSubscriptionResourceProviders.ps1')
-    }
-  }
+}
 
 // OUTPUTS
 output failedProviders string = !empty(resourceProviders)
