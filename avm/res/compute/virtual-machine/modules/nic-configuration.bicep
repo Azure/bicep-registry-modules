@@ -35,6 +35,9 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
+      idleTimeoutInMinutes: ipConfiguration.pipConfiguration.?idleTimeoutInMinutes
+      ddosSettings: ipConfiguration.pipConfiguration.?ddosSettings
+      dnsSettings: ipConfiguration.pipConfiguration.?dnsSettings
       publicIPAddressVersion: contains(ipConfiguration.pipConfiguration, 'publicIPAddressVersion')
         ? ipConfiguration.pipConfiguration.publicIPAddressVersion
         : 'IPv4'
