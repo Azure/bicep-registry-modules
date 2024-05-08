@@ -122,6 +122,11 @@ function Initialize-DeploymentRemoval {
         #             '<resourceType02>',
         #             '<resourceType03>'
         #         )
+        #         $RemoveLastSequence += @(
+        #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
+        #             '<resourceType02>',
+        #             '<resourceType03>'
+        #         )
         #         break
         #     }
         # }
