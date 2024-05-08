@@ -26,7 +26,6 @@ param testGroups array = []
 @description('Optional. Specify the Log Analytics Workspace Resource ID.')
 param workspaceResourceId string = ''
 
-
 resource networkWatcher 'Microsoft.Network/networkWatchers@2023-04-01' existing = {
   name: networkWatcherName
 }

@@ -97,6 +97,9 @@ param bootDiagnosticStorageAccountUri string = '.blob.${environment().suffixes.s
 @description('Optional. Resource ID of a proximity placement group.')
 param proximityPlacementGroupResourceId string = ''
 
+@description('Optional. Resource ID of a virtual machine scale set, where the VM should be added.')
+param virtualMachineScaleSetResourceId string = ''
+
 @description('Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set.')
 param availabilitySetResourceId string = ''
 
@@ -567,6 +570,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           id: proximityPlacementGroupResourceId
         }
       : null
+    virtualMachineScaleSet: !empty(virtualMachineScaleSetResourceId)
+      ? {
+          id: virtualMachineScaleSetResourceId
+        }
+      : null
     priority: priority
     evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
     #disable-next-line BCP036
@@ -649,6 +657,7 @@ module vm_aadJoinExtension 'extension/main.bicep' =
         ? extensionAadJoinConfig.enableAutomaticUpgrade
         : false
       settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
+      supressFailures: extensionAadJoinConfig.?supressFailures ?? false
       tags: extensionAadJoinConfig.?tags ?? tags
     }
   }
@@ -672,6 +681,7 @@ module vm_domainJoinExtension 'extension/main.bicep' =
         ? extensionDomainJoinConfig.enableAutomaticUpgrade
         : false
       settings: extensionDomainJoinConfig.settings
+      supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
       tags: extensionDomainJoinConfig.?tags ?? tags
       protectedSettings: {
         Password: extensionDomainJoinPassword
@@ -701,6 +711,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
         ? extensionAntiMalwareConfig.enableAutomaticUpgrade
         : false
       settings: extensionAntiMalwareConfig.settings
+      supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
       tags: extensionAntiMalwareConfig.?tags ?? tags
     }
     dependsOn: [
@@ -750,6 +761,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' =
           : ''
         GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
       }
+      supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
       tags: extensionMonitoringAgentConfig.?tags ?? tags
       protectedSettings: {
         workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
@@ -785,6 +797,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' =
           ? extensionDependencyAgentConfig.enableAMA
           : true
       }
+      supressFailures: extensionDependencyAgentConfig.?supressFailures ?? false
       tags: extensionDependencyAgentConfig.?tags ?? tags
     }
     dependsOn: [
@@ -810,6 +823,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' =
       enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
         ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
         : false
+      supressFailures: extensionNetworkWatcherAgentConfig.?supressFailures ?? false
       tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
     }
     dependsOn: [
@@ -836,6 +850,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
         ? extensionDSCConfig.enableAutomaticUpgrade
         : false
       settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
+      supressFailures: extensionDSCConfig.?supressFailures ?? false
       tags: extensionDSCConfig.?tags ?? tags
       protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
     }
@@ -869,6 +884,7 @@ module vm_customScriptExtension 'extension/main.bicep' =
             : fileData.uri
         ]
       }
+      supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
       tags: extensionCustomScriptConfig.?tags ?? tags
       protectedSettings: extensionCustomScriptProtectedSetting
     }
@@ -898,7 +914,8 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' =
       forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag')
         ? extensionAzureDiskEncryptionConfig.forceUpdateTag
         : '1.0'
-      settings: extensionAzureDiskEncryptionConfig.settings
+      settings: extensionAzureDiskEncryptionConfig.?settings ?? {}
+      supressFailures: extensionAzureDiskEncryptionConfig.?supressFailures ?? false
       tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
     }
     dependsOn: [
@@ -924,6 +941,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' =
       enableAutomaticUpgrade: contains(extensionNvidiaGpuDriverWindows, 'enableAutomaticUpgrade')
         ? extensionNvidiaGpuDriverWindows.enableAutomaticUpgrade
         : false
+      supressFailures: extensionNvidiaGpuDriverWindows.?supressFailures ?? false
       tags: extensionNvidiaGpuDriverWindows.?tags ?? tags
     }
     dependsOn: [
@@ -957,6 +975,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
           registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
           aadJoin: true
         }
+        supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
       }
       tags: extensionHostPoolRegistration.?tags ?? tags
     }
@@ -989,6 +1008,7 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
       settings: contains(extensionGuestConfigurationExtension, 'settings')
         ? extensionGuestConfigurationExtension.settings
         : {}
+      supressFailures: extensionGuestConfigurationExtension.?supressFailures ?? false
       protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
       tags: extensionGuestConfigurationExtension.?tags ?? tags
     }
