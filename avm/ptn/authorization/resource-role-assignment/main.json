@@ -1,11 +1,11 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "15111475392680889649"
+      "templateHash": "9912378437381690323"
     },
     "name": "ResourceRole Assignments (All scopes)",
     "description": "This module deploys a Role Assignment for a specific resource.",
@@ -27,7 +27,7 @@
     "roleDefinitionId": {
       "type": "string",
       "metadata": {
-        "description": "Required. You can provide the role definition as a fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Required. The role definition ID for the role assignment."
       }
     },
     "roleName": {
@@ -63,13 +63,6 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. The Description of role assignment."
-      }
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[deployment().location]",
-      "metadata": {
-        "description": "Optional. Location deployment metadata."
       }
     },
     "enableTelemetry": {
@@ -123,7 +116,7 @@
           "scope": "[[parameters('scope')]",
           "name": "[[parameters('name')]",
           "properties": {
-            "roleDefinitionId": "[[resourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
+            "roleDefinitionId": "[[parameters('roleDefinitionId')]",
             "principalId": "[[parameters('principalId')]",
             "principalType": "[[parameters('principalType')]",
             "description": "[[parameters('description')]"
@@ -143,7 +136,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -157,13 +150,12 @@
             }
           }
         }
-      },
-      "location": "[parameters('location')]"
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[take(format('rra-{0}-{1}', parameters('name'), last(split(parameters('resourceId'), '/'))), 64)]",
+      "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('roleDefinitionId')))]",
       "properties": {
         "mode": "Incremental",
         "expressionEvaluationOptions": {
@@ -178,7 +170,7 @@
             "value": "[parameters('name')]"
           },
           "roleDefinitionId": {
-            "value": "[parameters('roleDefinitionId')]"
+            "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]"
           },
           "principalId": {
             "value": "[parameters('principalId')]"
@@ -213,7 +205,14 @@
       "metadata": {
         "description": "The resource ID of the Role Assignment."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('rra-{0}-{1}', parameters('name'), last(split(parameters('resourceId'), '/'))), 64)), '2023-07-01').outputs.roleAssignmentId.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the role assignment was applied at."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

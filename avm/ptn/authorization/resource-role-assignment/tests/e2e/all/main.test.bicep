@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 metadata name = 'Resource Role Assignments'
-metadata description = 'This module deploys a Role Assignment at a Resource scope using common parameters.'
+metadata description = 'This module deploys a Resource Role Assignment using all parameters.'
 
 // ========== //
 // Parameters //
@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-authorization.resourceroleas
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'arrawaf'
+param serviceShort string = 'arraall'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -52,12 +52,14 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: guid(
         nestedDependencies.outputs.managedIdentityPrincipalId,
-        nestedDependencies.outputs.storageAccountResourceId,
+        nestedDependencies.outputs.storageAccountResourceId
       )
       resourceId: nestedDependencies.outputs.storageAccountResourceId
       principalId: nestedDependencies.outputs.managedIdentityPrincipalId
       principalType: 'ServicePrincipal'
-      roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1' // Storage Blob Data Reader
+      roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+      roleName: 'Storage Blob Data Reader'
+      description: 'Assign Storage Blob Data Reader role to the managed identity on the storage account.'
     }
   }
 ]

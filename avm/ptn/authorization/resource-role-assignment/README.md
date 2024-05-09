@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Resource Role Assignments_
 
-This module deploys a Resource Role Assignment using minimal parameters.
+This module deploys a Resource Role Assignment using all parameters.
 
 
 <details>
@@ -46,8 +46,9 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
     resourceId: '<resourceId>'
     roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
     // Non-required parameters
-    enableTelemetry: false
+    description: 'Assign Storage Blob Data Reader role to the managed identity on the storage account.'
     principalType: 'ServicePrincipal'
+    roleName: 'Storage Blob Data Reader'
   }
 }
 ```
@@ -78,11 +79,14 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
       "value": "2a2b9908-6ea1-4ae2-8e65-a410df84e7d1"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": false
+    "description": {
+      "value": "Assign Storage Blob Data Reader role to the managed identity on the storage account."
     },
     "principalType": {
       "value": "ServicePrincipal"
+    },
+    "roleName": {
+      "value": "Storage Blob Data Reader"
     }
   }
 }
@@ -93,7 +97,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 
 ### Example 2: _Resource Role Assignments_
 
-This module deploys a Role Assignment at a Resource scope using common parameters.
+This module deploys a Resource Role Assignment using minimal parameters.
 
 
 <details>
