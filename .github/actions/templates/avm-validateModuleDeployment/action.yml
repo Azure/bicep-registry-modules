@@ -205,7 +205,11 @@ runs:
             SubscriptionId             = $subscriptionId
             ManagementGroupId          = $managementGroupId
             RepoRoot                   = $env:GITHUB_WORKSPACE
-            AdditionalParameters       = @{
+            AdditionalParameters       = @{}
+          }
+
+          if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
+            $functionInput.AdditionalParameters += @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
             }
           }
@@ -257,7 +261,11 @@ runs:
             ManagementGroupId          = $managementGroupId
             DoNotThrow                 = $true
             RepoRoot                   = $env:GITHUB_WORKSPACE
-            AdditionalParameters       = @{
+            AdditionalParameters       = @{}
+          }
+
+          if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
+            $functionInput.AdditionalParameters += @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
             }
           }
