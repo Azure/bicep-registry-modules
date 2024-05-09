@@ -47,11 +47,14 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${guid(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    scope: resourceGroup
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      resourceId: ''
+      name: guid(
+        nestedDependencies.outputs.managedIdentityPrincipalId,
+        nestedDependencies.outputs.storageAccountResourceId,
+      )
+      resourceId: nestedDependencies.outputs.storageAccountResourceId
       principalId: nestedDependencies.outputs.managedIdentityPrincipalId
       principalType: 'ServicePrincipal'
       roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1' // Storage Blob Data Reader

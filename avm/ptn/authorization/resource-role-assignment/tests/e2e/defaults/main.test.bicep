@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 metadata name = 'Resource Role Assignments'
-metadata description = 'This module deploys a Role Assignment at a Resource scope using minimal parameters.'
+metadata description = 'This module deploys a Resource Role Assignment using minimal parameters.'
 
 // ========== //
 // Parameters //
@@ -47,10 +47,13 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${guid(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    scope: resourceGroup
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      name: guid(
+        nestedDependencies.outputs.managedIdentityPrincipalId,
+        nestedDependencies.outputs.storageAccountResourceId
+      )
       resourceId: nestedDependencies.outputs.storageAccountResourceId
       principalId: nestedDependencies.outputs.managedIdentityPrincipalId
       principalType: 'ServicePrincipal'
