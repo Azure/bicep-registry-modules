@@ -40,7 +40,7 @@
             "scope": "[parameters('scope')]",
             "name": "[parameters('name')]",
             "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
                 "principalId": "[parameters('principalId')]",
                 "principalType": "[parameters('principalType')]",
                 "description": "[parameters('description')]"

@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Resource Role Assignments_
 
-This module deploys a Role Assignment at a Resource scope using minimal parameters.
+This module deploys a Resource Role Assignment using minimal parameters.
 
 
 <details>
@@ -41,12 +41,12 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   name: 'resourceRoleAssignmentDeployment'
   params: {
     // Required parameters
-    name: 'arramin001'
+    name: '<name>'
     principalId: '<principalId>'
     resourceId: '<resourceId>'
     roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
     // Non-required parameters
-    location: '<location>'
+    enableTelemetry: false
     principalType: 'ServicePrincipal'
   }
 }
@@ -66,7 +66,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   "parameters": {
     // Required parameters
     "name": {
-      "value": "arramin001"
+      "value": "<name>"
     },
     "principalId": {
       "value": "<principalId>"
@@ -78,8 +78,8 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
       "value": "2a2b9908-6ea1-4ae2-8e65-a410df84e7d1"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "enableTelemetry": {
+      "value": false
     },
     "principalType": {
       "value": "ServicePrincipal"
@@ -105,12 +105,11 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   name: 'resourceRoleAssignmentDeployment'
   params: {
     // Required parameters
-    name: 'arrawaf001'
+    name: '<name>'
     principalId: '<principalId>'
-    resourceId: ''
+    resourceId: '<resourceId>'
     roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
     // Non-required parameters
-    location: '<location>'
     principalType: 'ServicePrincipal'
   }
 }
@@ -130,21 +129,18 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   "parameters": {
     // Required parameters
     "name": {
-      "value": "arrawaf001"
+      "value": "<name>"
     },
     "principalId": {
       "value": "<principalId>"
     },
     "resourceId": {
-      "value": ""
+      "value": "<resourceId>"
     },
     "roleDefinitionId": {
       "value": "2a2b9908-6ea1-4ae2-8e65-a410df84e7d1"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
     }
@@ -165,7 +161,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 | [`name`](#parameter-name) | string | The unique guid name for the role assignment. |
 | [`principalId`](#parameter-principalid) | string | The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity). |
 | [`resourceId`](#parameter-resourceid) | string | The scope for the role assignment, fully qualified resourceId. |
-| [`roleDefinitionId`](#parameter-roledefinitionid) | string | You can provide the role definition as a fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleDefinitionId`](#parameter-roledefinitionid) | string | The role definition ID for the role assignment. |
 
 **Optional parameters**
 
@@ -173,7 +169,6 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | The Description of role assignment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`principalType`](#parameter-principaltype) | string | The principal type of the assigned principal ID. |
 | [`roleName`](#parameter-rolename) | string | The name for the role, used for logging. |
 
@@ -200,7 +195,7 @@ The scope for the role assignment, fully qualified resourceId.
 
 ### Parameter: `roleDefinitionId`
 
-You can provide the role definition as a fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+The role definition ID for the role assignment.
 
 - Required: Yes
 - Type: string
@@ -220,14 +215,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `location`
-
-Location deployment metadata.
-
-- Required: No
-- Type: string
-- Default: `[deployment().location]`
 
 ### Parameter: `principalType`
 
@@ -262,6 +249,7 @@ The name for the role, used for logging.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The GUID of the Role Assignment. |
+| `resourceGroupName` | string | The name of the resource group the role assignment was applied at. |
 | `resourceId` | string | The resource ID of the Role Assignment. |
 | `roleName` | string | The name for the role, used for logging. |
 
