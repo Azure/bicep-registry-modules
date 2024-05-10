@@ -158,7 +158,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
         }
-        name: 'hub1'
         peeringSettings: [
           {
             allowForwardedTraffic: true
@@ -251,7 +250,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           kind: 'CanNotDelete'
           name: 'hub2Lock'
         }
-        name: 'hub2'
         peeringSettings: [
           {
             allowForwardedTraffic: true
@@ -376,7 +374,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "kind": "CanNotDelete",
             "name": "hub1Lock"
           },
-          "name": "hub1",
           "peeringSettings": [
             {
               "allowForwardedTraffic": true,
@@ -469,7 +466,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "kind": "CanNotDelete",
             "name": "hub2Lock"
           },
-          "name": "hub2",
           "peeringSettings": [
             {
               "allowForwardedTraffic": true,
@@ -600,7 +596,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
         }
-        name: 'hub1'
         peeringSettings: []
         roleAssignments: []
         routes: [
@@ -717,7 +712,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "kind": "CanNotDelete",
             "name": "hub1Lock"
           },
-          "name": "hub1",
           "peeringSettings": [],
           "roleAssignments": [],
           "routes": [
@@ -793,9 +787,9 @@ A map of the hub virtual networks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`<Any other property>`](#parameter-hubvirtualnetworks<any other property>) | object | Array of hub virtual networks to create. |
+| [`>Any_other_property<`](#parameter-hubvirtualnetworks>any_other_property<) | object | Array of hub virtual networks to create. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>`
+### Parameter: `hubVirtualNetworks.>Any_other_property<`
 
 Array of hub virtual networks to create.
 
@@ -806,48 +800,40 @@ Array of hub virtual networks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-hubvirtualnetworks<any other property>addressprefixes) | array | The address prefixes for the virtual network. |
-| [`name`](#parameter-hubvirtualnetworks<any other property>name) | string | The name of the virtual network. |
+| [`addressPrefixes`](#parameter-hubvirtualnetworks>any_other_property<addressprefixes) | array | The address prefixes for the virtual network. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureFirewallSettings`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettings) | object | The Azure Firewall config. |
-| [`bastionHost`](#parameter-hubvirtualnetworks<any other property>bastionhost) | object | The Azure Bastion config. |
-| [`ddosProtectionPlanResourceId`](#parameter-hubvirtualnetworks<any other property>ddosprotectionplanresourceid) | string | The DDoS protection plan resource ID. |
-| [`diagnosticSettings`](#parameter-hubvirtualnetworks<any other property>diagnosticsettings) | array | The diagnostic settings of the virtual network. |
-| [`dnsServers`](#parameter-hubvirtualnetworks<any other property>dnsservers) | array | The DNS servers of the virtual network. |
-| [`enableAzureFirewall`](#parameter-hubvirtualnetworks<any other property>enableazurefirewall) | bool | Enable/Disable Azure Firewall for the virtual network. |
-| [`enableBastion`](#parameter-hubvirtualnetworks<any other property>enablebastion) | bool | Enable/Disable Azure Bastion for the virtual network. |
-| [`enablePeering`](#parameter-hubvirtualnetworks<any other property>enablepeering) | bool | Enable/Disable peering for the virtual network. |
-| [`enableTelemetry`](#parameter-hubvirtualnetworks<any other property>enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`flowTimeoutInMinutes`](#parameter-hubvirtualnetworks<any other property>flowtimeoutinminutes) | int | The flow timeout in minutes. |
-| [`location`](#parameter-hubvirtualnetworks<any other property>location) | string | The location of the virtual network. Defaults to the location of the resource group. |
-| [`lock`](#parameter-hubvirtualnetworks<any other property>lock) | object | The lock settings of the virtual network. |
-| [`peeringSettings`](#parameter-hubvirtualnetworks<any other property>peeringsettings) | array | The peerings of the virtual network. |
-| [`roleAssignments`](#parameter-hubvirtualnetworks<any other property>roleassignments) | array | The role assignments to create. |
-| [`routes`](#parameter-hubvirtualnetworks<any other property>routes) | array | Routes to add to the virtual network route table. |
-| [`subnets`](#parameter-hubvirtualnetworks<any other property>subnets) | array | The subnets of the virtual network. |
-| [`tags`](#parameter-hubvirtualnetworks<any other property>tags) | object | The tags of the virtual network. |
-| [`vnetEncryption`](#parameter-hubvirtualnetworks<any other property>vnetencryption) | bool | Enable/Disable VNet encryption. |
-| [`vnetEncryptionEnforcement`](#parameter-hubvirtualnetworks<any other property>vnetencryptionenforcement) | string | The VNet encryption enforcement settings of the virtual network. |
+| [`azureFirewallSettings`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettings) | object | The Azure Firewall config. |
+| [`bastionHost`](#parameter-hubvirtualnetworks>any_other_property<bastionhost) | object | The Azure Bastion config. |
+| [`ddosProtectionPlanResourceId`](#parameter-hubvirtualnetworks>any_other_property<ddosprotectionplanresourceid) | string | The DDoS protection plan resource ID. |
+| [`diagnosticSettings`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettings) | array | The diagnostic settings of the virtual network. |
+| [`dnsServers`](#parameter-hubvirtualnetworks>any_other_property<dnsservers) | array | The DNS servers of the virtual network. |
+| [`enableAzureFirewall`](#parameter-hubvirtualnetworks>any_other_property<enableazurefirewall) | bool | Enable/Disable Azure Firewall for the virtual network. |
+| [`enableBastion`](#parameter-hubvirtualnetworks>any_other_property<enablebastion) | bool | Enable/Disable Azure Bastion for the virtual network. |
+| [`enablePeering`](#parameter-hubvirtualnetworks>any_other_property<enablepeering) | bool | Enable/Disable peering for the virtual network. |
+| [`enableTelemetry`](#parameter-hubvirtualnetworks>any_other_property<enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`flowTimeoutInMinutes`](#parameter-hubvirtualnetworks>any_other_property<flowtimeoutinminutes) | int | The flow timeout in minutes. |
+| [`location`](#parameter-hubvirtualnetworks>any_other_property<location) | string | The location of the virtual network. Defaults to the location of the resource group. |
+| [`lock`](#parameter-hubvirtualnetworks>any_other_property<lock) | object | The lock settings of the virtual network. |
+| [`peeringSettings`](#parameter-hubvirtualnetworks>any_other_property<peeringsettings) | array | The peerings of the virtual network. |
+| [`roleAssignments`](#parameter-hubvirtualnetworks>any_other_property<roleassignments) | array | The role assignments to create. |
+| [`routes`](#parameter-hubvirtualnetworks>any_other_property<routes) | array | Routes to add to the virtual network route table. |
+| [`subnets`](#parameter-hubvirtualnetworks>any_other_property<subnets) | array | The subnets of the virtual network. |
+| [`tags`](#parameter-hubvirtualnetworks>any_other_property<tags) | object | The tags of the virtual network. |
+| [`vnetEncryption`](#parameter-hubvirtualnetworks>any_other_property<vnetencryption) | bool | Enable/Disable VNet encryption. |
+| [`vnetEncryptionEnforcement`](#parameter-hubvirtualnetworks>any_other_property<vnetencryptionenforcement) | string | The VNet encryption enforcement settings of the virtual network. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.addressPrefixes`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.addressPrefixes`
 
 The address prefixes for the virtual network.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.name`
-
-The name of the virtual network.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings`
 
 The Azure Firewall config.
 
@@ -858,49 +844,49 @@ The Azure Firewall config.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`additionalPublicIpConfigurations`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsadditionalpublicipconfigurations) | array | Additional public IP configurations. |
-| [`applicationRuleCollections`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsapplicationrulecollections) | array | Application rule collections. |
-| [`azureSkuTier`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsazureskutier) | string | Azure Firewall SKU. |
-| [`diagnosticSettings`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettings) | array | Diagnostic settings. |
-| [`enableTelemetry`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`firewallPolicyId`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsfirewallpolicyid) | string | Firewall policy ID. |
-| [`hubIpAddresses`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingshubipaddresses) | object | Hub IP addresses. |
-| [`location`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingslocation) | string | The location of the virtual network. Defaults to the location of the resource group. |
-| [`lock`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingslock) | object | Lock settings. |
-| [`managementIPAddressObject`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsmanagementipaddressobject) | object | Management IP address configuration. |
-| [`managementIPResourceID`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsmanagementipresourceid) | string | Management IP resource ID. |
-| [`natRuleCollections`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsnatrulecollections) | array | NAT rule collections. |
-| [`networkRuleCollections`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsnetworkrulecollections) | array | Network rule collections. |
-| [`publicIPAddressObject`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingspublicipaddressobject) | object | Public IP address object. |
-| [`publicIPResourceID`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingspublicipresourceid) | string | Public IP resource ID. |
-| [`roleAssignments`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignments) | array | Role assignments. |
-| [`tags`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingstags) | object | Tags of the resource. |
-| [`threatIntelMode`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsthreatintelmode) | string | Threat Intel mode. |
-| [`virtualHub`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsvirtualhub) | string | Virtual Hub ID. |
-| [`zones`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingszones) | array | Zones. |
+| [`additionalPublicIpConfigurations`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsadditionalpublicipconfigurations) | array | Additional public IP configurations. |
+| [`applicationRuleCollections`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsapplicationrulecollections) | array | Application rule collections. |
+| [`azureSkuTier`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazureskutier) | string | Azure Firewall SKU. |
+| [`diagnosticSettings`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettings) | array | Diagnostic settings. |
+| [`enableTelemetry`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`firewallPolicyId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsfirewallpolicyid) | string | Firewall policy ID. |
+| [`hubIpAddresses`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingshubipaddresses) | object | Hub IP addresses. |
+| [`location`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslocation) | string | The location of the virtual network. Defaults to the location of the resource group. |
+| [`lock`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslock) | object | Lock settings. |
+| [`managementIPAddressObject`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsmanagementipaddressobject) | object | Management IP address configuration. |
+| [`managementIPResourceID`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsmanagementipresourceid) | string | Management IP resource ID. |
+| [`natRuleCollections`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsnatrulecollections) | array | NAT rule collections. |
+| [`networkRuleCollections`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsnetworkrulecollections) | array | Network rule collections. |
+| [`publicIPAddressObject`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingspublicipaddressobject) | object | Public IP address object. |
+| [`publicIPResourceID`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingspublicipresourceid) | string | Public IP resource ID. |
+| [`roleAssignments`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignments) | array | Role assignments. |
+| [`tags`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingstags) | object | Tags of the resource. |
+| [`threatIntelMode`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsthreatintelmode) | string | Threat Intel mode. |
+| [`virtualHub`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsvirtualhub) | string | Virtual Hub ID. |
+| [`zones`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingszones) | array | Zones. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.additionalPublicIpConfigurations`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.additionalPublicIpConfigurations`
 
 Additional public IP configurations.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.applicationRuleCollections`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.applicationRuleCollections`
 
 Application rule collections.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.azureSkuTier`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.azureSkuTier`
 
 Azure Firewall SKU.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings`
 
 Diagnostic settings.
 
@@ -911,31 +897,31 @@ Diagnostic settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
-| [`logAnalyticsDestinationType`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
-| [`workspaceResourceId`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`logAnalyticsDestinationType`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`workspaceResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.eventHubName`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -949,7 +935,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -960,39 +946,39 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.metricCategories`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.metricCategories`
 
 The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
@@ -1003,78 +989,78 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`category`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`enabled`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.metricCategories.category`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.metricCategories.category`
 
 Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.metricCategories.enabled`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.metricCategories.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.name`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.name`
 
 The name of diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.storageAccountResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.diagnosticSettings.workspaceResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.enableTelemetry`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.enableTelemetry`
 
 Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.firewallPolicyId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.firewallPolicyId`
 
 Firewall policy ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.hubIpAddresses`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.hubIpAddresses`
 
 Hub IP addresses.
 
 - Required: No
 - Type: object
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.location`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.location`
 
 The location of the virtual network. Defaults to the location of the resource group.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.lock`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock`
 
 Lock settings.
 
@@ -1085,10 +1071,10 @@ Lock settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingslockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingslockname) | string | Specify the name of lock. |
+| [`kind`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslockname) | string | Specify the name of lock. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.lock.kind`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.kind`
 
 Specify the type of lock.
 
@@ -1103,56 +1089,56 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.lock.name`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.managementIPAddressObject`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.managementIPAddressObject`
 
 Management IP address configuration.
 
 - Required: No
 - Type: object
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.managementIPResourceID`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.managementIPResourceID`
 
 Management IP resource ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.natRuleCollections`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.natRuleCollections`
 
 NAT rule collections.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.networkRuleCollections`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.networkRuleCollections`
 
 Network rule collections.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.publicIPAddressObject`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.publicIPAddressObject`
 
 Public IP address object.
 
 - Required: No
 - Type: object
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.publicIPResourceID`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.publicIPResourceID`
 
 Public IP resource ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments`
 
 Role assignments.
 
@@ -1163,41 +1149,41 @@ Role assignments.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignmentsdescription) | string | The description of the role assignment. |
-| [`principalType`](#parameter-hubvirtualnetworks<any other property>azurefirewallsettingsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments.principalId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments.roleDefinitionIdOrName`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments.condition`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments.conditionVersion`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -1210,21 +1196,21 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments.description`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.roleAssignments.principalType`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -1241,35 +1227,35 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.tags`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.tags`
 
 Tags of the resource.
 
 - Required: No
 - Type: object
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.threatIntelMode`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.threatIntelMode`
 
 Threat Intel mode.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.virtualHub`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.virtualHub`
 
 Virtual Hub ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.azureFirewallSettings.zones`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.zones`
 
 Zones.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.bastionHost`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost`
 
 The Azure Bastion config.
 
@@ -1280,63 +1266,63 @@ The Azure Bastion config.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`disableCopyPaste`](#parameter-hubvirtualnetworks<any other property>bastionhostdisablecopypaste) | bool | Enable/Disable copy/paste functionality. |
-| [`enableFileCopy`](#parameter-hubvirtualnetworks<any other property>bastionhostenablefilecopy) | bool | Enable/Disable file copy functionality. |
-| [`enableIpConnect`](#parameter-hubvirtualnetworks<any other property>bastionhostenableipconnect) | bool | Enable/Disable IP connect functionality. |
-| [`enableShareableLink`](#parameter-hubvirtualnetworks<any other property>bastionhostenableshareablelink) | bool | Enable/Disable shareable link functionality. |
-| [`scaleUnits`](#parameter-hubvirtualnetworks<any other property>bastionhostscaleunits) | int | The number of scale units for the Bastion host. Defaults to 4. |
-| [`skuName`](#parameter-hubvirtualnetworks<any other property>bastionhostskuname) | string | The SKU name of the Bastion host. Defaults to Standard. |
+| [`disableCopyPaste`](#parameter-hubvirtualnetworks>any_other_property<bastionhostdisablecopypaste) | bool | Enable/Disable copy/paste functionality. |
+| [`enableFileCopy`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenablefilecopy) | bool | Enable/Disable file copy functionality. |
+| [`enableIpConnect`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenableipconnect) | bool | Enable/Disable IP connect functionality. |
+| [`enableShareableLink`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenableshareablelink) | bool | Enable/Disable shareable link functionality. |
+| [`scaleUnits`](#parameter-hubvirtualnetworks>any_other_property<bastionhostscaleunits) | int | The number of scale units for the Bastion host. Defaults to 4. |
+| [`skuName`](#parameter-hubvirtualnetworks>any_other_property<bastionhostskuname) | string | The SKU name of the Bastion host. Defaults to Standard. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.bastionHost.disableCopyPaste`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.disableCopyPaste`
 
 Enable/Disable copy/paste functionality.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.bastionHost.enableFileCopy`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableFileCopy`
 
 Enable/Disable file copy functionality.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.bastionHost.enableIpConnect`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableIpConnect`
 
 Enable/Disable IP connect functionality.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.bastionHost.enableShareableLink`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableShareableLink`
 
 Enable/Disable shareable link functionality.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.bastionHost.scaleUnits`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.scaleUnits`
 
 The number of scale units for the Bastion host. Defaults to 4.
 
 - Required: No
 - Type: int
 
-### Parameter: `hubVirtualNetworks.<Any other property>.bastionHost.skuName`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.skuName`
 
 The SKU name of the Bastion host. Defaults to Standard.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.ddosProtectionPlanResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.ddosProtectionPlanResourceId`
 
 The DDoS protection plan resource ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings`
 
 The diagnostic settings of the virtual network.
 
@@ -1347,31 +1333,31 @@ The diagnostic settings of the virtual network.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
-| [`logAnalyticsDestinationType`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
-| [`workspaceResourceId`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`logAnalyticsDestinationType`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`workspaceResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.eventHubName`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -1385,7 +1371,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.logCategoriesAndGroups`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -1396,39 +1382,39 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.metricCategories`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.metricCategories`
 
 The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
@@ -1439,99 +1425,99 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`category`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-hubvirtualnetworks<any other property>diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`enabled`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.metricCategories.category`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.metricCategories.category`
 
 Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.metricCategories.enabled`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.metricCategories.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.name`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.name`
 
 The name of diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.storageAccountResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.diagnosticSettings.workspaceResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.dnsServers`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.dnsServers`
 
 The DNS servers of the virtual network.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.enableAzureFirewall`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.enableAzureFirewall`
 
 Enable/Disable Azure Firewall for the virtual network.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.enableBastion`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.enableBastion`
 
 Enable/Disable Azure Bastion for the virtual network.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.enablePeering`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.enablePeering`
 
 Enable/Disable peering for the virtual network.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.enableTelemetry`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.enableTelemetry`
 
 Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.flowTimeoutInMinutes`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.flowTimeoutInMinutes`
 
 The flow timeout in minutes.
 
 - Required: No
 - Type: int
 
-### Parameter: `hubVirtualNetworks.<Any other property>.location`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.location`
 
 The location of the virtual network. Defaults to the location of the resource group.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.lock`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.lock`
 
 The lock settings of the virtual network.
 
@@ -1542,10 +1528,10 @@ The lock settings of the virtual network.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-hubvirtualnetworks<any other property>lockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-hubvirtualnetworks<any other property>lockname) | string | Specify the name of lock. |
+| [`kind`](#parameter-hubvirtualnetworks>any_other_property<lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<lockname) | string | Specify the name of lock. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.lock.kind`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.kind`
 
 Specify the type of lock.
 
@@ -1560,14 +1546,14 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.lock.name`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.peeringSettings`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings`
 
 The peerings of the virtual network.
 
@@ -1578,48 +1564,48 @@ The peerings of the virtual network.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowForwardedTraffic`](#parameter-hubvirtualnetworks<any other property>peeringsettingsallowforwardedtraffic) | bool | Allow forwarded traffic. |
-| [`allowGatewayTransit`](#parameter-hubvirtualnetworks<any other property>peeringsettingsallowgatewaytransit) | bool | Allow gateway transit. |
-| [`allowVirtualNetworkAccess`](#parameter-hubvirtualnetworks<any other property>peeringsettingsallowvirtualnetworkaccess) | bool | Allow virtual network access. |
-| [`remoteVirtualNetworkName`](#parameter-hubvirtualnetworks<any other property>peeringsettingsremotevirtualnetworkname) | string | Remote virtual network name. |
-| [`useRemoteGateways`](#parameter-hubvirtualnetworks<any other property>peeringsettingsuseremotegateways) | bool | Use remote gateways. |
+| [`allowForwardedTraffic`](#parameter-hubvirtualnetworks>any_other_property<peeringsettingsallowforwardedtraffic) | bool | Allow forwarded traffic. |
+| [`allowGatewayTransit`](#parameter-hubvirtualnetworks>any_other_property<peeringsettingsallowgatewaytransit) | bool | Allow gateway transit. |
+| [`allowVirtualNetworkAccess`](#parameter-hubvirtualnetworks>any_other_property<peeringsettingsallowvirtualnetworkaccess) | bool | Allow virtual network access. |
+| [`remoteVirtualNetworkName`](#parameter-hubvirtualnetworks>any_other_property<peeringsettingsremotevirtualnetworkname) | string | Remote virtual network name. |
+| [`useRemoteGateways`](#parameter-hubvirtualnetworks>any_other_property<peeringsettingsuseremotegateways) | bool | Use remote gateways. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.peeringSettings.allowForwardedTraffic`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.allowForwardedTraffic`
 
 Allow forwarded traffic.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.peeringSettings.allowGatewayTransit`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.allowGatewayTransit`
 
 Allow gateway transit.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.peeringSettings.allowVirtualNetworkAccess`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.allowVirtualNetworkAccess`
 
 Allow virtual network access.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.peeringSettings.remoteVirtualNetworkName`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.remoteVirtualNetworkName`
 
 Remote virtual network name.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.peeringSettings.useRemoteGateways`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.peeringSettings.useRemoteGateways`
 
 Use remote gateways.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments`
 
 The role assignments to create.
 
@@ -1630,41 +1616,41 @@ The role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-hubvirtualnetworks<any other property>roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-hubvirtualnetworks<any other property>roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-hubvirtualnetworks<any other property>roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-hubvirtualnetworks<any other property>roleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-hubvirtualnetworks<any other property>roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-hubvirtualnetworks<any other property>roleassignmentsdescription) | string | The description of the role assignment. |
-| [`principalType`](#parameter-hubvirtualnetworks<any other property>roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments.principalId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments.roleDefinitionIdOrName`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments.condition`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments.conditionVersion`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -1677,21 +1663,21 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments.description`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.<Any other property>.roleAssignments.principalType`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -1708,35 +1694,35 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `hubVirtualNetworks.<Any other property>.routes`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.routes`
 
 Routes to add to the virtual network route table.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.subnets`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.subnets`
 
 The subnets of the virtual network.
 
 - Required: No
 - Type: array
 
-### Parameter: `hubVirtualNetworks.<Any other property>.tags`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.tags`
 
 The tags of the virtual network.
 
 - Required: No
 - Type: object
 
-### Parameter: `hubVirtualNetworks.<Any other property>.vnetEncryption`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.vnetEncryption`
 
 Enable/Disable VNet encryption.
 
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.<Any other property>.vnetEncryptionEnforcement`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.vnetEncryptionEnforcement`
 
 The VNet encryption enforcement settings of the virtual network.
 

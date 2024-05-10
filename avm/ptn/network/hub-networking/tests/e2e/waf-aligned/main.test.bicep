@@ -61,7 +61,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       hubVirtualNetworks: {
         hub1: {
-          name: 'hub1'
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
             hubIpAddresses: {}

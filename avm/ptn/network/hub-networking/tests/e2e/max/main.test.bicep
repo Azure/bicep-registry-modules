@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       hubVirtualNetworks: {
         hub1: {
-          name: 'hub1'
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
             hubIpAddresses: {}
@@ -166,7 +165,6 @@ module testDeployment '../../../main.bicep' = [
           vnetEncryptionEnforcement: 'AllowUnencrypted'
         }
         hub2: {
-          name: 'hub2'
           addressPrefixes: array(addressPrefix2)
           azureFirewallSettings: {
             hubIpAddresses: {}
