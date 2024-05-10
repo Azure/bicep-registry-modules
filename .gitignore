@@ -1,6 +1,8 @@
 node_modules
 .netrc
 moduleIndex.json
+last-moduleIndex.json
+generated-moduleIndex.json
 .DS_Store
 avm/res/cdn/profile/Test-CDN.ps1
 /avm/res/cdn/profile/Test-CDN.ps1

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "14911705346376844157"
+    },
+    "name": "Network Watchers Connection Monitors",
+    "description": "This module deploys a Network Watcher Connection Monitor.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "networkWatcherName": {
+      "type": "string",
+      "defaultValue": "[format('NetworkWatcher_{0}', resourceGroup().location)]",
+      "metadata": {
+        "description": "Optional. Name of the network watcher resource. Must be in the resource group where the Flow log will be created and same region as the NSG."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the resource."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "endpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of connection monitor endpoints."
+      }
+    },
+    "testConfigurations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of connection monitor test configurations."
+      }
+    },
+    "testGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of connection monitor test groups."
+      }
+    },
+    "workspaceResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Specify the Log Analytics Workspace Resource ID."
+      }
+    }
+  },
+  "resources": {
+    "networkWatcher": {
+      "existing": true,
+      "type": "Microsoft.Network/networkWatchers",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('networkWatcherName')]"
+    },
+    "connectionMonitor": {
+      "type": "Microsoft.Network/networkWatchers/connectionMonitors",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "endpoints": "[parameters('endpoints')]",
+        "testConfigurations": "[parameters('testConfigurations')]",
+        "testGroups": "[parameters('testGroups')]",
+        "outputs": "[if(not(empty(parameters('workspaceResourceId'))), createArray(createObject('type', 'Workspace', 'workspaceSettings', createObject('workspaceResourceId', parameters('workspaceResourceId')))), null())]"
+      },
+      "dependsOn": [
+        "networkWatcher"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed connection monitor."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed connection monitor."
+      },
+      "value": "[resourceId('Microsoft.Network/networkWatchers/connectionMonitors', parameters('networkWatcherName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the connection monitor was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('connectionMonitor', '2023-04-01', 'full').location]"
+    }
+  }
+}

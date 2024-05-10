@@ -626,6 +626,11 @@ Describe 'Module tests' -Tag 'Module' {
         $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
+          if ($moduleFolderPath -match '[\/|\\]avm[\/|\\]ptn[\/|\\]') {
+            # Skip UDT interface tests for ptn modules
+            continue
+          }
+
           $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
           $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
           $templateFileContent = $builtTestFileMap[$templateFilePath]
@@ -833,7 +838,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
         $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
       }
 
@@ -850,7 +855,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -873,7 +878,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -927,7 +932,7 @@ Describe 'Module tests' -Tag 'Module' {
         } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
-        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' }).name # The AVM telemetry prefix
+        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' }).name # The AVM telemetry prefix
         $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
       }
     }

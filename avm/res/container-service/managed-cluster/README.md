@@ -64,6 +64,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -87,9 +90,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
@@ -112,9 +112,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -289,6 +286,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -314,9 +314,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "proximityPlacementGroupResourceId": "<proximityPlacementGroupResourceId>",
@@ -339,9 +336,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -646,6 +640,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -668,9 +665,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -691,9 +685,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -778,6 +769,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -802,9 +796,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -825,9 +816,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -926,6 +914,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 1
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -949,9 +940,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -973,9 +961,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -1029,6 +1014,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -1054,9 +1042,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -1078,9 +1063,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 128,
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -1152,6 +1134,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         minCount: 3
         mode: 'System'
         name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
@@ -1175,9 +1160,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
@@ -1200,9 +1182,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         mode: 'User'
         name: 'userpool2'
         nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
         osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
@@ -1296,6 +1275,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "minCount": 3,
           "mode": "System",
           "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
@@ -1321,9 +1303,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
@@ -1346,9 +1325,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "mode": "User",
           "name": "userpool2",
           "nodeLabels": {},
-          "nodeTaints": [
-            "CriticalAddonsOnly=true:NoSchedule"
-          ],
           "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
@@ -1501,6 +1477,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`autoUpgradeProfileUpgradeChannel`](#parameter-autoupgradeprofileupgradechannel) | string | Auto-upgrade channel on the AKS cluster. |
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
+| [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
+| [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
@@ -1516,6 +1494,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`enableAzureMonitorProfileMetrics`](#parameter-enableazuremonitorprofilemetrics) | bool | Whether the metric state of the kubenetes cluster is enabled. |
 | [`enableContainerInsights`](#parameter-enablecontainerinsights) | bool | Indicates if Azure Monitor Container Insights Logs Addon is enabled. |
 | [`enableDnsZoneContributorRoleAssignment`](#parameter-enablednszonecontributorroleassignment) | bool | Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided. |
+| [`enableImageCleaner`](#parameter-enableimagecleaner) | bool | Whether to enable Image Cleaner for Kubernetes. |
 | [`enableKeyvaultSecretsProvider`](#parameter-enablekeyvaultsecretsprovider) | bool | Specifies whether the KeyvaultSecretsProvider add-on is enabled or not. |
 | [`enableOidcIssuerProfile`](#parameter-enableoidcissuerprofile) | bool | Whether the The OIDC issuer profile of the Managed Cluster is enabled. |
 | [`enablePodSecurityPolicy`](#parameter-enablepodsecuritypolicy) | bool | Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription. |
@@ -1534,7 +1513,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
+| [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. The maximum value is three months. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
+| [`kedaAddon`](#parameter-kedaaddon) | bool | Enables Kubernetes Event-driven Autoscaling (KEDA). |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Version of Kubernetes specified when creating the managed cluster. |
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
@@ -2239,6 +2220,29 @@ Specifies the azure policy version to use.
 - Type: string
 - Default: `'v2'`
 
+### Parameter: `backendPoolType`
+
+The type of the managed inbound Load Balancer BackendPool.
+
+- Required: No
+- Type: string
+- Default: `'NodeIPConfiguration'`
+- Allowed:
+  ```Bicep
+  [
+    'NodeIP'
+    'NodeIPConfiguration'
+  ]
+  ```
+
+### Parameter: `costAnalysisEnabled`
+
+Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `customerManagedKey`
 
 The customer managed key definition.
@@ -2542,6 +2546,14 @@ Specifies whether assing the DNS zone contributor role to the cluster service pr
 - Type: bool
 - Default: `True`
 
+### Parameter: `enableImageCleaner`
+
+Whether to enable Image Cleaner for Kubernetes.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableKeyvaultSecretsProvider`
 
 Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
@@ -2777,9 +2789,25 @@ Identities associated with the cluster.
 - Required: No
 - Type: object
 
+### Parameter: `imageCleanerIntervalHours`
+
+The interval in hours Image Cleaner will run. The maximum value is three months.
+
+- Required: No
+- Type: int
+- Default: `24`
+
 ### Parameter: `ingressApplicationGatewayEnabled`
 
 Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `kedaAddon`
+
+Enables Kubernetes Event-driven Autoscaling (KEDA).
 
 - Required: No
 - Type: bool
