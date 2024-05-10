@@ -171,7 +171,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-description) | string | The Description of role assignment. |
+| [`description`](#parameter-description) | string | The description of role assignment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`principalType`](#parameter-principaltype) | string | The principal type of the assigned principal ID. |
 | [`roleName`](#parameter-rolename) | string | The name for the role, used for logging. |
@@ -206,7 +206,7 @@ The role definition ID for the role assignment.
 
 ### Parameter: `description`
 
-The Description of role assignment.
+The description of role assignment.
 
 - Required: No
 - Type: string

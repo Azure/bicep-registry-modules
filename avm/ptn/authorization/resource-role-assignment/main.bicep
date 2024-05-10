@@ -2,8 +2,6 @@ metadata name = 'ResourceRole Assignments (All scopes)'
 metadata description = 'This module deploys a Role Assignment for a specific resource.'
 metadata owner = 'Azure/module-maintainers'
 
-// targetScope = 'subscription'
-
 @sys.description('Required. The scope for the role assignment, fully qualified resourceId.')
 param resourceId string
 
@@ -30,7 +28,7 @@ param principalId string
 ])
 param principalType string = ''
 
-@sys.description('Optional. The Description of role assignment.')
+@sys.description('Optional. The description of role assignment.')
 param description string = ''
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
@@ -46,7 +44,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '#_moduleVersion_#.0'
+      contentVersion: '1.0.0.0'
       resources: []
       outputs: {
         telemetry: {
@@ -58,6 +56,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+// Workaround to make Pester test work.
+// Simple loadJsonContent creates a variable in main.json
+// with a name which is NOT camelCase,
+// hence failing the Pester test
+var tFile = loadFileAsBase64('modules/generic-role-assignment.json')
+
 resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
   name: '${guid(resourceId, roleDefinitionId)}-ResourceRoleAssignment'
   properties: {
@@ -65,7 +69,7 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
     expressionEvaluationOptions: {
       scope: 'Outer'
     }
-    template: loadJsonContent('modules/generic-role-assignment.json')
+    template: json(base64ToString(tFile))
     parameters: {
       scope: {
         value: resourceId
