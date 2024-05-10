@@ -1485,6 +1485,7 @@ PostgreSQL Server version.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fqdn` | string | The FQDN of the PostgreSQL Flexible server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |
