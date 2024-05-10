@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploy a VM with nVidia graphic card'
-metadata description = 'This instance deploys the module for a VM with dedicated nVidia graphic card.'
+metadata name = 'Adding the VM to a VMSS.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters and adds it to a VMSS.'
 
 // ========== //
 // Parameters //
@@ -11,8 +11,11 @@ metadata description = 'This instance deploys the module for a VM with dedicated
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinnv'
+param serviceShort string = 'cvmwinvmss'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -20,9 +23,6 @@ param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'eastus'
 
 // ============ //
 // Dependencies //
@@ -32,15 +32,18 @@ var enforcedLocation = 'eastus'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
+    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    vmssName: 'dep-${namePrefix}-vmss-${serviceShort}'
+    pipName: 'dep-${namePrefix}-pip-${serviceShort}'
+    password: password
   }
 }
 
@@ -51,9 +54,9 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: enforcedLocation
+      location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
       imageReference: {
@@ -82,11 +85,9 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_NV6ads_A10_v5'
+      vmSize: 'Standard_DS2_v2'
       adminPassword: password
-      extensionNvidiaGpuDriverWindows: {
-        enabled: true
-      }
+      virtualMachineScaleSetResourceId: nestedDependencies.outputs.vmssResourceId
     }
   }
 ]
