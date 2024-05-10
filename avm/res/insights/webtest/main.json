@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "279019710662992731"
+      "version": "0.26.170.59819",
+      "templateHash": "9763185230579436305"
     },
     "name": "Web Tests",
     "description": "This module deploys a Web Test.",

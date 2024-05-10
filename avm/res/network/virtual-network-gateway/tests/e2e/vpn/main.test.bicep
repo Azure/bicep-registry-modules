@@ -62,9 +62,9 @@ module testDeployment '../../../main.bicep' = [
         '${namePrefix}-dm-${serviceShort}'
       ]
       publicIpZones: [
-        '1'
-        '2'
-        '3'
+        1
+        2
+        3
       ]
       vpnType: 'RouteBased'
       enablePrivateIpAddress: true

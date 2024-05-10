@@ -639,10 +639,10 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
       {
         name: 'heathProbe'
         properties: {
-          enabledState: ''
-          healthProbeMethod: ''
+          enabledState: 'Enabled'
+          healthProbeMethod: 'HEAD'
           intervalInSeconds: 60
-          path: '/'
+          path: '/healthz'
           protocol: 'Https'
         }
       }
@@ -765,10 +765,10 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
         {
           "name": "heathProbe",
           "properties": {
-            "enabledState": "",
-            "healthProbeMethod": "",
+            "enabledState": "Enabled",
+            "healthProbeMethod": "HEAD",
             "intervalInSeconds": 60,
-            "path": "/",
+            "path": "/healthz",
             "protocol": "Https"
           }
         }
