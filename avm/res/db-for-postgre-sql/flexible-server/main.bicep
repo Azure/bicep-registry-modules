@@ -414,6 +414,7 @@ output location string = flexibleServer.location
 
 @description('The FQDN of the PostgreSQL Flexible server.')
 output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+
 // =============== //
 //   Definitions   //
 // =============== //
