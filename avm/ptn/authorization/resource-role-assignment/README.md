@@ -41,7 +41,6 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   name: 'resourceRoleAssignmentDeployment'
   params: {
     // Required parameters
-    name: '<name>'
     principalId: '<principalId>'
     resourceId: '<resourceId>'
     roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
@@ -66,9 +65,6 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "<name>"
-    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -109,7 +105,6 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   name: 'resourceRoleAssignmentDeployment'
   params: {
     // Required parameters
-    name: '<name>'
     principalId: '<principalId>'
     resourceId: '<resourceId>'
     roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
@@ -132,9 +127,6 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "<name>"
-    },
     "principalId": {
       "value": "<principalId>"
     },
@@ -162,7 +154,6 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The unique guid name for the role assignment. |
 | [`principalId`](#parameter-principalid) | string | The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity). |
 | [`resourceId`](#parameter-resourceid) | string | The scope for the role assignment, fully qualified resourceId. |
 | [`roleDefinitionId`](#parameter-roledefinitionid) | string | The role definition ID for the role assignment. |
@@ -173,15 +164,9 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | The description of role assignment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`name`](#parameter-name) | string | The unique guid name for the role assignment. |
 | [`principalType`](#parameter-principaltype) | string | The principal type of the assigned principal ID. |
 | [`roleName`](#parameter-rolename) | string | The name for the role, used for logging. |
-
-### Parameter: `name`
-
-The unique guid name for the role assignment.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `principalId`
 
@@ -219,6 +204,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `name`
+
+The unique guid name for the role assignment.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `principalType`
 

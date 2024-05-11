@@ -5,8 +5,8 @@ metadata owner = 'Azure/module-maintainers'
 @sys.description('Required. The scope for the role assignment, fully qualified resourceId.')
 param resourceId string
 
-@sys.description('Required. The unique guid name for the role assignment.')
-param name string
+@sys.description('Optional. The unique guid name for the role assignment.')
+param name string = ''
 
 @sys.description('Required. The role definition ID for the role assignment.')
 param roleDefinitionId string
@@ -63,7 +63,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 var tFile = loadFileAsBase64('modules/generic-role-assignment.json')
 
 resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
-  name: '${guid(resourceId, roleDefinitionId)}-ResourceRoleAssignment'
+  name: '${guid(resourceId, principalId, roleDefinitionId)}-ResourceRoleAssignment'
   properties: {
     mode: 'Incremental'
     expressionEvaluationOptions: {
@@ -75,10 +75,20 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
         value: resourceId
       }
       name: {
-        value: name
+        value: !empty(name)
+          ? name
+          : guid(
+              resourceId,
+              principalId,
+              contains(roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
+                ? roleDefinitionId
+                : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
+            )
       }
       roleDefinitionId: {
-        value: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
+        value: contains(roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
+          ? roleDefinitionId
+          : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
       }
       principalId: {
         value: principalId
@@ -94,7 +104,7 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
 }
 
 @sys.description('The GUID of the Role Assignment.')
-output name string = name
+output name string = name!
 
 @sys.description('The name for the role, used for logging.')
 output roleName string = roleName

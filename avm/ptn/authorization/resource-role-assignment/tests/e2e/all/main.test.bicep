@@ -50,10 +50,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${guid(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     scope: resourceGroup
     params: {
-      name: guid(
-        nestedDependencies.outputs.managedIdentityPrincipalId,
-        nestedDependencies.outputs.storageAccountResourceId
-      )
       resourceId: nestedDependencies.outputs.storageAccountResourceId
       principalId: nestedDependencies.outputs.managedIdentityPrincipalId
       principalType: 'ServicePrincipal'
