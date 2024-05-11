@@ -60,7 +60,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
         }
       }
     ]
-    environmentId: '<environmentId>'
+    environmentResourceId: '<environmentResourceId>'
     name: 'ajmin001'
     triggerType: 'Manual'
     // Non-required parameters
@@ -98,8 +98,8 @@ module job 'br/public:avm/res/app/job:<version>' = {
         }
       ]
     },
-    "environmentId": {
-      "value": "<environmentId>"
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
     },
     "name": {
       "value": "ajmin001"
@@ -165,7 +165,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
         }
       }
     ]
-    environmentId: '<environmentId>'
+    environmentResourceId: '<environmentResourceId>'
     name: 'ajmax001'
     triggerType: 'Manual'
     // Non-required parameters
@@ -260,8 +260,8 @@ module job 'br/public:avm/res/app/job:<version>' = {
         }
       ]
     },
-    "environmentId": {
-      "value": "<environmentId>"
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
     },
     "name": {
       "value": "ajmax001"
@@ -379,7 +379,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
         }
       }
     ]
-    environmentId: '<environmentId>'
+    environmentResourceId: '<environmentResourceId>'
     name: 'ajwaf001'
     triggerType: 'Manual'
     // Non-required parameters
@@ -439,8 +439,8 @@ module job 'br/public:avm/res/app/job:<version>' = {
         }
       ]
     },
-    "environmentId": {
-      "value": "<environmentId>"
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
     },
     "name": {
       "value": "ajwaf001"
@@ -482,7 +482,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containers`](#parameter-containers) | array | List of container definitions for the Container App. |
-| [`environmentId`](#parameter-environmentid) | string | Resource ID of environment. |
+| [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of environment. |
 | [`name`](#parameter-name) | string | Name of the Container App. |
 | [`triggerType`](#parameter-triggertype) | string | Trigger type of the job. |
 
@@ -514,7 +514,7 @@ List of container definitions for the Container App.
 - Required: Yes
 - Type: array
 
-### Parameter: `environmentId`
+### Parameter: `environmentResourceId`
 
 Resource ID of environment.
 

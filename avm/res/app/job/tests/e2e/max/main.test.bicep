@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
-      environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
+      environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       workloadProfileName: serviceShort
       location: resourceLocation
       lock: {
