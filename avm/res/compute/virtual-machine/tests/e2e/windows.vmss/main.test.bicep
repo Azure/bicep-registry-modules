@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for Windows'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Adding the VM to a VMSS.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters and adds it to a VMSS.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescalesets-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmsswinmin'
+param serviceShort string = 'cvmwinvmss'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -41,13 +41,15 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    vmssName: 'dep-${namePrefix}-vmss-${serviceShort}'
+    pipName: 'dep-${namePrefix}-pip-${serviceShort}'
+    password: password
   }
 }
 
 // ============== //
 // Test Execution //
 // ============== //
-
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -55,42 +57,37 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
-      adminPassword: password
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
+      zone: 0
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig01'
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+            }
+          ]
+          nicSuffix: '-nic-01'
+        }
+      ]
       osDisk: {
-        createOption: 'fromImage'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        caching: 'ReadWrite'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
       }
       osType: 'Windows'
-      skuName: 'Standard_B12ms'
-      nicConfigurations: [
-        {
-          ipConfigurations: [
-            {
-              name: 'ipconfig1'
-              properties: {
-                subnet: {
-                  id: nestedDependencies.outputs.subnetResourceId
-                }
-                publicIPAddressConfiguration: {
-                  name: '${namePrefix}-pip-${serviceShort}'
-                }
-              }
-            }
-          ]
-          nicSuffix: '-nic01'
-        }
-      ]
+      vmSize: 'Standard_DS2_v2'
+      adminPassword: password
+      virtualMachineScaleSetResourceId: nestedDependencies.outputs.vmssResourceId
     }
   }
 ]
