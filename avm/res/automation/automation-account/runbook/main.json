@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "14714097202201612277"
+      "version": "0.26.170.59819",
+      "templateHash": "6946565957724859459"
     },
     "name": "Automation Account Runbooks",
     "description": "This module deploys an Azure Automation Account Runbook.",
@@ -32,7 +32,11 @@
         "GraphPowerShell",
         "GraphPowerShellWorkflow",
         "PowerShell",
-        "PowerShellWorkflow"
+        "PowerShell72",
+        "PowerShellWorkflow",
+        "Python2",
+        "Python3",
+        "Script"
       ],
       "metadata": {
         "description": "Required. The type of the runbook."
@@ -122,7 +126,7 @@
     },
     "runbook": {
       "type": "Microsoft.Automation/automationAccounts/runbooks",
-      "apiVersion": "2022-08-08",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -164,7 +168,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('runbook', '2022-08-08', 'full').location]"
+      "value": "[reference('runbook', '2023-11-01', 'full').location]"
     }
   }
 }

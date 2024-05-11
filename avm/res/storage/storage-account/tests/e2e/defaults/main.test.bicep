@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = [
       allowBlobPublicAccess: false
       location: resourceLocation
       networkAcls: {
-        defaultAction: 'Allow'
+        defaultAction: 'Deny'
         bypass: 'AzureServices'
       }
     }

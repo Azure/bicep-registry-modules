@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
           certificateType: 'ManagedCertificate'
         }
       ]
-      origionGroups: [
+      originGroups: [
         {
           name: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
           loadBalancingSettings: {

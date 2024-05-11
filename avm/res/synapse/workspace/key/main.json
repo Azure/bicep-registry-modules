@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "4754954307876642999"
+      "version": "0.26.170.59819",
+      "templateHash": "15295521192306502787"
     },
     "name": "Synapse Workspaces Keys",
     "description": "This module deploys a Synapse Workspaces Key.",

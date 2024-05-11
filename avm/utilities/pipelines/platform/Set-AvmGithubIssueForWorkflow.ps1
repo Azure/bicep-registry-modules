@@ -26,7 +26,7 @@ Set-AvmGithubIssueForWorkflow -Repo 'owner/repo01' -LimitNumberOfRuns 100 -Limit
 Check the last 100 workflow runs in the repository 'owner/repo01' that happened in the last 2 days. If the workflow name is 'Pipeline 01', then ignore the workflow run.
 
 .NOTES
-Will be triggered by the workflow avm.platform.manage-workflow-issue.yml
+Will be triggered by the workflow platform.manage-workflow-issue.yml
 #>
 function Set-AvmGithubIssueForWorkflow {
   [CmdletBinding(SupportsShouldProcess)]
@@ -95,6 +95,7 @@ function Set-AvmGithubIssueForWorkflow {
           $ProjectNumber = 538 # AVM - Issue Triage
           $comment = @"
 > [!IMPORTANT]
+> This module is currently orphaned (has no owner), therefore expect a higher response time.
 > @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@
 
@@ -104,23 +105,23 @@ function Set-AvmGithubIssueForWorkflow {
             # get CSV data
             $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
-            if (($module.ModuleStatus -ne 'Module Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+            if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
               $ProjectNumber = 566 # AVM - Module Issues
               $comment = @"
 > [!IMPORTANT]
-> @$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
+> @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
               # assign owner
-              $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+              $assign = gh issue edit $issueUrl --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
 
               if ([String]::IsNullOrEmpty($assign)) {
-                if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
+                if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issueName)]", 'Add')) {
                   $comment = @"
 > [!WARNING]
 > This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
 
-                  gh issue comment $issue.url --body $reply --repo $Repo
+                  gh issue comment $issueUrl --body $comment --repo $Repo
                 }
               }
             }
