@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
 - [AAD-VPN](#example-1-aad-vpn)
-- [VPN](#example-2-vpn)
+- [VPN with APIPA BGP settings](#example-2-vpn-with-apipa-bgp-settings)
 - [Using only defaults](#example-3-using-only-defaults)
 - [ExpressRoute](#example-4-expressroute)
 - [Using large parameter set](#example-5-using-large-parameter-set)
@@ -151,9 +151,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 2: _VPN_
+### Example 2: _VPN with APIPA BGP settings_
 
-This instance deploys the module with the VPN with APIPA bgp settings.
+This instance deploys the module with the VPN with APIPA BGP settings.
 
 
 <details>
