@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "5575495379257050285"
+      "templateHash": "12137155538756504441"
     },
     "name": "ResourceRole Assignments (All scopes)",
     "description": "This module deploys a Role Assignment for a specific resource.",
@@ -20,8 +20,9 @@
     },
     "name": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Required. The unique guid name for the role assignment."
+        "description": "Optional. The unique guid name for the role assignment."
       }
     },
     "roleDefinitionId": {
@@ -100,7 +101,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('roleDefinitionId')))]",
+      "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
       "properties": {
         "mode": "Incremental",
         "expressionEvaluationOptions": {
@@ -112,10 +113,10 @@
             "value": "[parameters('resourceId')]"
           },
           "name": {
-            "value": "[parameters('name')]"
+            "value": "[if(not(empty(parameters('name'))), parameters('name'), guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))))]"
           },
           "roleDefinitionId": {
-            "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]"
+            "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
           },
           "principalId": {
             "value": "[parameters('principalId')]"
@@ -150,7 +151,7 @@
       "metadata": {
         "description": "The resource ID of the Role Assignment."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
     },
     "resourceGroupName": {
       "type": "string",
