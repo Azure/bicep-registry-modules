@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'VPN'
+metadata name = 'VPN with APIPA BGP settings'
 metadata description = 'This instance deploys the module with the VPN with APIPA bgp settings.'
 
 // ========== //
