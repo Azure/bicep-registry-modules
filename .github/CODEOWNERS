@@ -8,10 +8,10 @@
 /avm/ptn/lz/sub-vending/ @Azure/avm-ptn-lz-subvending-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/api-management/service/ @Azure/avm-res-apimanagement-service-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app/container-app/ @Azure/avm-res-app-containerapp-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/app/job/ @Azure/avm-res-app-job-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app/managed-environment/ @Azure/avm-res-app-managedenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app-configuration/configuration-store/ @Azure/avm-res-appconfiguration-configurationstore-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/lock/ @Azure/avm-res-authorization-lock-module-owners-bicep @Azure/avm-core-team-technical-bicep
