@@ -24,8 +24,11 @@ Optional. The resource Id(s) of the resources to remove. Combined with resources
 .PARAMETER TemplateFilePath
 Optional. The path to the template used for the deployment(s). Used to determine the level/scope (e.g. subscription). Required if deploymentName(s) are provided.
 
-.PARAMETER RemovalSequence
-Optional. The order of resource types to apply for deletion
+.PARAMETER RemoveFirstSequence
+Optional. The order of resource types to remove before all others
+
+.PARAMETER RemoveLastSequence
+Optional. The order of resource types to remove after all others
 
 .EXAMPLE
 Remove-Deployment -DeploymentNames @('KeyVault-t1','KeyVault-t2') -TemplateFilePath 'C:/main.json'
@@ -52,7 +55,10 @@ function Remove-Deployment {
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
-        [string[]] $RemovalSequence = @()
+        [string[]] $RemoveFirstSequence = @(),
+
+        [Parameter(Mandatory = $false)]
+        [string[]] $RemoveLastSequence = @()
     )
 
     begin {
@@ -152,7 +158,12 @@ function Remove-Deployment {
 
         # Order resources
         # ===============
-        [array] $resourcesToRemove = Get-OrderedResourcesList -ResourcesToOrder $resourcesToRemove -Order $RemovalSequence
+        $orderListInputObject = @{
+            ResourcesToOrder    = $resourcesToRemove
+            RemoveFirstSequence = $RemoveFirstSequence
+            RemoveLastSequence  = $RemoveLastSequence
+        }
+        [array] $resourcesToRemove = Get-OrderedResourcesList @orderListInputObject
         Write-Verbose ('Total number of deployments after final ordering of resources [{0}]' -f $resourcesToRemove.Count) -Verbose
 
         # Remove resources
