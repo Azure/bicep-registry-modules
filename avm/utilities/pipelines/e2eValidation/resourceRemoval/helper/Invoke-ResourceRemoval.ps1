@@ -202,11 +202,15 @@ function Invoke-ResourceRemoval {
                 Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
                 Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
 
+                # Delete NetworkWatcher resource group
+                $rsgNetworkWatcherName = "NetworkWatcherRG"
+                Remove-AzResourceGroup -Name $rsgNetworkWatcherName -Force
+
                 # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
                 New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
 
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
-                $null = Update-AzSubscription -SubscriptionId $subscriptionId -Action "Cancel"
+                $null = Disable-AzSubscription -SubscriptionId $subscriptionId
             }
             break
         }
