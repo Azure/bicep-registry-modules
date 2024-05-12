@@ -95,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
       }
       networkGroups: [
         {
-          name: 'network-group-spokes'
+          name: 'network-group-spokes-1'
           description: 'network-group-spokes description'
           staticMembers: [
             {

@@ -191,7 +191,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     networkGroups: [
       {
         description: 'network-group-spokes description'
-        name: 'network-group-spokes'
+        name: 'network-group-spokes-1'
         staticMembers: [
           {
             name: 'virtualNetworkSpoke1'
@@ -452,7 +452,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       "value": [
         {
           "description": "network-group-spokes description",
-          "name": "network-group-spokes",
+          "name": "network-group-spokes-1",
           "staticMembers": [
             {
               "name": "virtualNetworkSpoke1",
