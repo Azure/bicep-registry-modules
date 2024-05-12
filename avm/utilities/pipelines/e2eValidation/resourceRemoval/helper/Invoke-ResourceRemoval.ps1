@@ -186,29 +186,28 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.Subscription/aliases' {
-          Install-Module Az.Subscription -Force
-          Install-Module Az.Resources -Force
-          Install-Module Az.Accounts -Force
-          Update-AzConfig -DisplayBreakingChangeWarning $false
+            Install-Module Az.Subscription -Force
+            Install-Module Az.Accounts -Force
+            Update-AzConfig -DisplayBreakingChangeWarning $false
 
-          $subscriptionName = $ResourceId.Split('/')[4]
-          $subscriptionId = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName} | Select-Object -ExpandProperty Id
-          Select-AzSubscription -SubscriptionId $subscriptionId
+            $subscriptionName = $ResourceId.Split('/')[4]
+            $subscriptionId = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName} | Select-Object -ExpandProperty Id
+            Select-AzSubscription -SubscriptionId $subscriptionId
 
-          if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
-            # Unregister resource providers and features
-            Write-Verbose "Cleanup registered resource providers and features..."
-            Unregister-AzProviderFeature -FeatureName "ArcServerPrivateLinkPreview" -ProviderNamespace "Microsoft.HybridCompute"
-            Unregister-AzProviderFeature -FeatureName "AzureServicesVm" -ProviderNamespace "Microsoft.AVS"
-            Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
-            Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
+            if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
+                # Unregister resource providers and features
+                Write-Verbose "Cleanup registered resource providers and features..."
+                Unregister-AzProviderFeature -FeatureName "ArcServerPrivateLinkPreview" -ProviderNamespace "Microsoft.HybridCompute"
+                Unregister-AzProviderFeature -FeatureName "AzureServicesVm" -ProviderNamespace "Microsoft.AVS"
+                Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
+                Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
 
-            # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
-            New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
+                # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
+                New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
 
-            Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
-            $null = Update-AzSubscription -SubscriptionId $subscriptionId -Action "Cancel"
-          }
+                Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
+                $null = Update-AzSubscription -SubscriptionId $subscriptionId -Action "Cancel"
+            }
           break
       }
       ### CODE LOCATION: Add custom removal action here
