@@ -810,17 +810,17 @@ Describe 'Module tests' -Tag 'Module' {
           return
         }
 
-        $CamelCasingFlag = @()
-        $Variable = $templateFileContent.variables.Keys
+        $incorrectVariables = @()
+        $Variables = $templateFileContent.variables.Keys
 
-        foreach ($Variab in $Variable) {
-          if ($Variab.substring(0, 1) -cnotmatch '[a-z]' -or $Variab -match '-') {
-            $CamelCasingFlag += $false
-          } else {
-            $CamelCasingFlag += $true
+        foreach ($variable in $Variables) {
+          # ^[a-z]+[a-zA-Z]+$ = starts with lower-case letter & may have uppercase letter later
+          # ^\$fxv#[0-9]+$ = starts with [$fxv#] & ends with a number. This function value is created as a variable when using the Bicep function loadFileAsBase64()
+          if ($variable -cnotmatch '^[a-z]+[a-zA-Z]+$|^\$fxv#[0-9]+$' -or $variable -match '-') {
+            $incorrectVariables += $variable
           }
         }
-        $CamelCasingFlag | Should -Not -Contain $false
+        $incorrectVariables | Should -BeNullOrEmpty
       }
     }
 
