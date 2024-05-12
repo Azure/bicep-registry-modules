@@ -208,9 +208,9 @@ function Invoke-ResourceRemoval {
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
                 $null = Update-AzSubscription -SubscriptionId $subscriptionId -Action "Cancel"
             }
-          break
-      }
-      ### CODE LOCATION: Add custom removal action here
+            break
+        }
+        ### CODE LOCATION: Add custom removal action here
         Default {
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
                 $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
