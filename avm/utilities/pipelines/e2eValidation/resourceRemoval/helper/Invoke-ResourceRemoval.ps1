@@ -186,7 +186,6 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.Subscription/aliases' {
-            Install-Module Az.Subscription -AllowClobber
             Import-Module Az.Subscription
 
             $subscriptionName = $ResourceId.Split('/')[4]
