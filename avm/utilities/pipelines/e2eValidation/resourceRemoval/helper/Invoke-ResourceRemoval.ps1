@@ -186,9 +186,8 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.Subscription/aliases' {
-            Install-Module Az.Subscription -Force
-            Install-Module Az.Accounts -Force
-            Import-Module Az.Subscription
+            #Install-Module Az.Subscription -Force
+            #Install-Module Az.Accounts -Force
             Update-AzConfig -DisplayBreakingChangeWarning $false
 
             $subscriptionName = $ResourceId.Split('/')[4]
