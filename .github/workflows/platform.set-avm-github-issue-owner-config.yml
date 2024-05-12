@@ -1,0 +1,41 @@
+# Workflow for notifying and assigning issues on creation
+name: .Platform - Set GitHub issue owner config
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  SetAvmGitHubIssueOwnerConfig:
+    name: Set-AvmGitHubIssueOwnerConfig
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: tibdex/github-app-token@v2
+        id: generate-token
+        with:
+          app_id: ${{ secrets.TEAM_LINTER_APP_ID }}
+          private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
+      - name: "Run scripts"
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubIssueOwnerConfig.ps1')
+
+          $functionInput = @{
+            Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            RepoRoot = $env:GITHUB_WORKSPACE
+            IssueUrl = "${{ github.event.issue.url }}"
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Set-AvmGitHubIssueOwnerConfig @functionInput -Verbose # -WhatIf

@@ -135,7 +135,8 @@ function Set-PesterGitHubOutput {
       $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
-      $errorTestFile = (($failedTest.ErrorRecord.TargetObject.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+      $errorFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+      $errorTestFile = ('avm/{0}/{1}' -f $errorFileIdentifier[1], $errorFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
       $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
       $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
@@ -181,7 +182,8 @@ function Set-PesterGitHubOutput {
       $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
       $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
-      $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+      $testFileIdentifier = $passedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+      $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
       $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
@@ -228,7 +230,8 @@ function Set-PesterGitHubOutput {
       $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
 
       $testLine = $skippedTest.ScriptBlock.StartPosition.StartLine
-      $testFile = (($skippedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+      $testFileIdentifier = $skippedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+      $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
       $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
@@ -273,7 +276,8 @@ function Set-PesterGitHubOutput {
         $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
         $testLine = $test.ScriptBlock.StartPosition.StartLine
-        $testFile = (($test.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+        $testFileIdentifier = $test.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+        $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
         $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
         if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {

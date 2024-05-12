@@ -626,6 +626,11 @@ Describe 'Module tests' -Tag 'Module' {
         $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
+          if ($moduleFolderPath -match '[\/|\\]avm[\/|\\]ptn[\/|\\]') {
+            # Skip UDT interface tests for ptn modules
+            continue
+          }
+
           $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
           $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
           $templateFileContent = $builtTestFileMap[$templateFilePath]
@@ -833,7 +838,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
         $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
       }
 
@@ -850,7 +855,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -873,7 +878,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -884,52 +889,52 @@ Describe 'Module tests' -Tag 'Module' {
         $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
       }
 
-      # It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+      It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
-      #   param(
-      #     [string] $templateFilePath,
-      #     [hashtable] $templateFileContent
-      #   )
+        param(
+          [string] $templateFilePath,
+          [hashtable] $templateFileContent
+        )
 
-      #   # Use correct telemetry link based on file path
-      #   $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+        # Use correct telemetry link based on file path
+        $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
 
-      #   # Fetch CSV
-      #   # =========
-      #   try {
-      #     $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-      #   } catch {
-      #     $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-      #     Write-Error $errorMessage
-      #     Set-ItResult -Skipped -Because $errorMessage
-      #   }
-      #   $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+        # Fetch CSV
+        # =========
+        try {
+          $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+        } catch {
+          $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+          Write-Error $errorMessage
+          Set-ItResult -Skipped -Because $errorMessage
+        }
+        $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
-      #   # Get correct row item & expected identifier
-      #   # ==========================================
-      #   $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
-      #   $relevantCSVRow = $csvData | Where-Object {
-      #     $_.ModuleName -eq $moduleName
-      #   }
+        # Get correct row item & expected identifier
+        # ==========================================
+        $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+        $relevantCSVRow = $csvData | Where-Object {
+          $_.ModuleName -eq $moduleName
+        }
 
-      #   if (-not $relevantCSVRow) {
-      #     $errorMessage = "Failed to identify module [$moduleName]."
-      #     Write-Error $errorMessage
-      #     Set-ItResult -Skipped -Because $errorMessage
-      #   }
-      #   $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
+        if (-not $relevantCSVRow) {
+          $errorMessage = "Failed to identify module [$moduleName]."
+          Write-Error $errorMessage
+          Set-ItResult -Skipped -Because $errorMessage
+        }
+        $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
 
-      #   # Collect resource & compare
-      #   # ==========================
-      #   # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
-      #   if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
-      #     $templateResources = $templateFileContent.resources
-      #   } else {
-      #     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
-      #   }
-      #   $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' }).name # The AVM telemetry prefix
-      #   $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
-      # }
+        # Collect resource & compare
+        # ==========================
+        # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+        if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
+          $templateResources = $templateFileContent.resources
+        } else {
+          $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
+        }
+        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' }).name # The AVM telemetry prefix
+        $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+      }
     }
 
     Context 'Output' {
