@@ -13,7 +13,7 @@ param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAcco
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssawan'
+param serviceShort string = 'sawan'
 
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -28,8 +28,8 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: 'dep-sub-tests-${namePrefix}-${serviceShort}'
-    subscriptionDisplayName: 'dep-sub-tests-${namePrefix}-${serviceShort}'
+    subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionTags: {
       namePrefix: namePrefix
       serviceShort: serviceShort
