@@ -20,7 +20,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     }
 
     It 'Should have a Subscription with the correct name' {
-      $sub.Name | Should -Be "dep-sub-blzv-tests-$namePrefix-$serviceShort"
+      $sub.Name | Should -Be "dep-sub-tests-$namePrefix-$serviceShort"
     }
 
     It 'Should have a Subscription that is enabled' {
