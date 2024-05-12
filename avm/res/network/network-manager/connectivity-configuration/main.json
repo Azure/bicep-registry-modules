@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "730590109700461307"
+      "version": "0.27.1.19265",
+      "templateHash": "7128754512003459525"
     },
     "name": "Network Manager Connectivity Configurations",
     "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
@@ -29,11 +29,7 @@
             }
           },
           "isGlobal": {
-            "type": "string",
-            "allowedValues": [
-              "False",
-              "True"
-            ],
+            "type": "bool",
             "nullable": true,
             "metadata": {
               "description": "Optional. Flag if global is supported."
@@ -46,11 +42,7 @@
             }
           },
           "useHubGateway": {
-            "type": "string",
-            "allowedValues": [
-              "False",
-              "True"
-            ],
+            "type": "bool",
             "nullable": true,
             "metadata": {
               "description": "Optional. Flag if use hub gateway."
@@ -129,23 +121,15 @@
       }
     },
     "deleteExistingPeering": {
-      "type": "string",
-      "defaultValue": "False",
-      "allowedValues": [
-        "True",
-        "False"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Flag if need to remove current existing peerings. If set to \"True\", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type \"HubAndSpoke\"."
       }
     },
     "isGlobal": {
-      "type": "string",
-      "defaultValue": "False",
-      "allowedValues": [
-        "True",
-        "False"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to \"True\", a global mesh enables connectivity across regions."
       }
@@ -163,12 +147,12 @@
       "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "appliesToGroups": "[parameters('appliesToGroups')]",
+        "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
         "connectivityTopology": "[parameters('connectivityTopology')]",
-        "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('deleteExistingPeering'), 'False')]",
+        "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
         "description": "[coalesce(parameters('description'), '')]",
         "hubs": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('hubs'), createArray())]",
-        "isGlobal": "[parameters('isGlobal')]"
+        "isGlobal": "[coalesce(string(parameters('isGlobal')), 'false')]"
       },
       "dependsOn": [
         "networkManager"

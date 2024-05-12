@@ -137,13 +137,13 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         appliesToGroups: [
           {
             groupConnectivity: 'None'
-            isGlobal: 'False'
+            isGlobal: false
             networkGroupId: '<networkGroupId>'
-            useHubGateway: 'False'
+            useHubGateway: false
           }
         ]
         connectivityTopology: 'HubAndSpoke'
-        deleteExistingPeering: 'True'
+        deleteExistingPeering: true
         description: 'hubSpokeConnectivity description'
         hubs: [
           {
@@ -151,32 +151,35 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             resourceType: 'Microsoft.Network/virtualNetworks'
           }
         ]
-        isGlobal: 'True'
+        isGlobal: false
         name: 'hubSpokeConnectivity'
       }
       {
         appliesToGroups: [
           {
-            groupConnectivity: 'None'
-            isGlobal: 'False'
+            groupConnectivity: 'DirectlyConnected'
+            isGlobal: true
             networkGroupId: '<networkGroupId>'
-            useHubGateway: 'False'
+            useHubGateway: false
           }
         ]
         connectivityTopology: 'Mesh'
-        deleteExistingPeering: 'True'
+        deleteExistingPeering: true
         description: 'MeshConnectivity description'
-        isGlobal: 'True'
+        isGlobal: true
         name: 'MeshConnectivity-1'
       }
       {
         appliesToGroups: [
           {
             groupConnectivity: 'DirectlyConnected'
+            isGlobal: false
             networkGroupId: '<networkGroupId>'
+            useHubGateway: false
           }
         ]
         connectivityTopology: 'Mesh'
+        isGlobal: false
         name: 'MeshConnectivity-2'
       }
     ]
@@ -389,13 +392,13 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           "appliesToGroups": [
             {
               "groupConnectivity": "None",
-              "isGlobal": "False",
+              "isGlobal": false,
               "networkGroupId": "<networkGroupId>",
-              "useHubGateway": "False"
+              "useHubGateway": false
             }
           ],
           "connectivityTopology": "HubAndSpoke",
-          "deleteExistingPeering": "True",
+          "deleteExistingPeering": true,
           "description": "hubSpokeConnectivity description",
           "hubs": [
             {
@@ -403,32 +406,35 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
               "resourceType": "Microsoft.Network/virtualNetworks"
             }
           ],
-          "isGlobal": "True",
+          "isGlobal": false,
           "name": "hubSpokeConnectivity"
         },
         {
           "appliesToGroups": [
             {
-              "groupConnectivity": "None",
-              "isGlobal": "False",
+              "groupConnectivity": "DirectlyConnected",
+              "isGlobal": true,
               "networkGroupId": "<networkGroupId>",
-              "useHubGateway": "False"
+              "useHubGateway": false
             }
           ],
           "connectivityTopology": "Mesh",
-          "deleteExistingPeering": "True",
+          "deleteExistingPeering": true,
           "description": "MeshConnectivity description",
-          "isGlobal": "True",
+          "isGlobal": true,
           "name": "MeshConnectivity-1"
         },
         {
           "appliesToGroups": [
             {
               "groupConnectivity": "DirectlyConnected",
-              "networkGroupId": "<networkGroupId>"
+              "isGlobal": false,
+              "networkGroupId": "<networkGroupId>",
+              "useHubGateway": false
             }
           ],
           "connectivityTopology": "Mesh",
+          "isGlobal": false,
           "name": "MeshConnectivity-2"
         }
       ]
@@ -864,10 +870,10 @@ Connectivity Configurations to create for the network manager. Network manager m
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deleteExistingPeering`](#parameter-connectivityconfigurationsdeleteexistingpeering) | string | Delete existing peering connections. |
+| [`deleteExistingPeering`](#parameter-connectivityconfigurationsdeleteexistingpeering) | bool | Delete existing peering connections. |
 | [`description`](#parameter-connectivityconfigurationsdescription) | string | A description of the connectivity configuration. |
 | [`hubs`](#parameter-connectivityconfigurationshubs) | array | The hubs to apply the configuration to. |
-| [`isGlobal`](#parameter-connectivityconfigurationsisglobal) | string | Is global configuration. |
+| [`isGlobal`](#parameter-connectivityconfigurationsisglobal) | bool | Is global configuration. |
 
 ### Parameter: `connectivityConfigurations.appliesToGroups`
 
@@ -887,8 +893,8 @@ Network Groups for the configuration. A connectivity configuration must be assoc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isGlobal`](#parameter-connectivityconfigurationsappliestogroupsisglobal) | string | Flag if global is supported. |
-| [`useHubGateway`](#parameter-connectivityconfigurationsappliestogroupsusehubgateway) | string | Flag if use hub gateway. |
+| [`isGlobal`](#parameter-connectivityconfigurationsappliestogroupsisglobal) | bool | Flag if global is supported. |
+| [`useHubGateway`](#parameter-connectivityconfigurationsappliestogroupsusehubgateway) | bool | Flag if use hub gateway. |
 
 ### Parameter: `connectivityConfigurations.appliesToGroups.groupConnectivity`
 
@@ -916,28 +922,14 @@ Network group Id.
 Flag if global is supported.
 
 - Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
 
 ### Parameter: `connectivityConfigurations.appliesToGroups.useHubGateway`
 
 Flag if use hub gateway.
 
 - Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
 
 ### Parameter: `connectivityConfigurations.connectivityTopology`
 
@@ -965,14 +957,7 @@ The name of the connectivity configuration.
 Delete existing peering connections.
 
 - Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
 
 ### Parameter: `connectivityConfigurations.description`
 
@@ -1020,14 +1005,7 @@ Resource type of the hub.
 Is global configuration.
 
 - Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
 
 ### Parameter: `description`
 
