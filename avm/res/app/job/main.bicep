@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. Location for all Resources.')
-param location string = 'global'
+param location string = resourceGroup().location
 
 @description('Required. Resource ID of environment.')
 param environmentResourceId string
