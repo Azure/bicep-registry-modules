@@ -62,14 +62,14 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             command: []
             environmentVariables: [
-              // {
-              //   name: 'CLIENT_ID'
-              //   value: 'TestClientId'
-              // }
-              // {
-              //   name: 'CLIENT_SECRET'
-              //   secureValue: 'TestSecret'
-              // }
+              {
+                name: 'CLIENT_ID'
+                value: 'TestClientId'
+              }
+              {
+                name: 'CLIENT_SECRET'
+                secureValue: 'TestSecret'
+              }
             ]
             image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
             ports: [

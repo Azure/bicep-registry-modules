@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "1114274520149552239"
+      "version": "0.27.1.19265",
+      "templateHash": "6402315070002671076"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -115,6 +115,7 @@
               },
               "livenessProbe": {
                 "type": "object",
+                "properties": {},
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. The liveness probe."
@@ -335,7 +336,7 @@
                       }
                     },
                     "secureValue": {
-                      "type": "string",
+                      "type": "securestring",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. The value of the secure environment variable."
