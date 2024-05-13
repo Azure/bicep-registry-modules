@@ -30,7 +30,7 @@ param restartPolicy string = 'Always'
 param ipAddressType string = 'Public'
 
 @description('Optional. The image registry credentials by which the container group is created from.')
-param imageRegistryCredentials array?
+param imageRegistryCredentials imageRegistryCredentialType
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -356,6 +356,24 @@ type containerType = {
     }[]?
   }
 }[]
+
+type imageRegistryCredentialType = {
+  @description('Required. The Docker image registry server without a protocol such as "http" and "https".')
+  server: string
+
+  @description('Optional. The identity for the private registry.')
+  identity: string?
+
+  @description('Optional. The identity URL for the private registry.')
+  identityUrl: string?
+
+  @description('Optional. The username for the private registry.')
+  username: string?
+
+  @description('Optional. The password for the private registry.')
+  @secure()
+  password: string?
+}[]?
 
 type ipAddressPortsType = {
   @description('Required. The port number exposed on the container instance.')

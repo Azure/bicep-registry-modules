@@ -1524,6 +1524,56 @@ The image registry credentials by which the container group is created from.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`server`](#parameter-imageregistrycredentialsserver) | string | The Docker image registry server without a protocol such as "http" and "https". |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-imageregistrycredentialsidentity) | string | The identity for the private registry. |
+| [`identityUrl`](#parameter-imageregistrycredentialsidentityurl) | string | The identity URL for the private registry. |
+| [`password`](#parameter-imageregistrycredentialspassword) | securestring | The password for the private registry. |
+| [`username`](#parameter-imageregistrycredentialsusername) | string | The username for the private registry. |
+
+### Parameter: `imageRegistryCredentials.server`
+
+The Docker image registry server without a protocol such as "http" and "https".
+
+- Required: Yes
+- Type: string
+
+### Parameter: `imageRegistryCredentials.identity`
+
+The identity for the private registry.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageRegistryCredentials.identityUrl`
+
+The identity URL for the private registry.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageRegistryCredentials.password`
+
+The password for the private registry.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `imageRegistryCredentials.username`
+
+The username for the private registry.
+
+- Required: No
+- Type: string
+
 ### Parameter: `initContainers`
 
 A list of container definitions which will be executed before the application container starts.

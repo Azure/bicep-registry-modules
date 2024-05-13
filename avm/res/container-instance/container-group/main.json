@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6402315070002671076"
+      "templateHash": "5407376593955341482"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -364,6 +364,49 @@
         }
       }
     },
+    "imageRegistryCredentialType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The Docker image registry server without a protocol such as \"http\" and \"https\"."
+            }
+          },
+          "identity": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The identity for the private registry."
+            }
+          },
+          "identityUrl": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The identity URL for the private registry."
+            }
+          },
+          "username": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The username for the private registry."
+            }
+          },
+          "password": {
+            "type": "securestring",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The password for the private registry."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
     "ipAddressPortsType": {
       "type": "array",
       "items": {
@@ -458,8 +501,7 @@
       }
     },
     "imageRegistryCredentials": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/imageRegistryCredentialType",
       "metadata": {
         "description": "Optional. The image registry credentials by which the container group is created from."
       }
