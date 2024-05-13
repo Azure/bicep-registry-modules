@@ -81,7 +81,7 @@ Location for all Resources.
 
 - Required: No
 - Type: string
-- Default: `[resourceGroup().location]`
+- Default: `'global'`
 
 ### Parameter: `lock`
 
