@@ -58,6 +58,7 @@ body:
         - "avm/res/cache/redis"
         - "avm/res/cdn/profile"
         - "avm/res/cognitive-services/account"
+        - "avm/res/communication/email-service"
         - "avm/res/compute/availability-set"
         - "avm/res/compute/disk"
         - "avm/res/compute/disk-encryption-set"
