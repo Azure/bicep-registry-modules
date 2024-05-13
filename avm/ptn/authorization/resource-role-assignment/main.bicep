@@ -1,4 +1,4 @@
-metadata name = 'ResourceRole Assignments (All scopes)'
+metadata name = 'Resource-scoped role assignment'
 metadata description = 'This module deploys a Role Assignment for a specific resource.'
 metadata owner = 'Azure/module-maintainers'
 
@@ -75,7 +75,7 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
         value: resourceId
       }
       name: {
-        value: name
+        value: !empty(name) ? name : guid(resourceId, principalId, roleDefinitionId)
       }
       roleDefinitionId: {
         value: contains(roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
@@ -96,7 +96,7 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
 }
 
 @sys.description('The GUID of the Role Assignment.')
-output name string = name!
+output name string = name
 
 @sys.description('The name for the role, used for logging.')
 output roleName string = roleName

@@ -5,9 +5,9 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "12472585536276024107"
+      "templateHash": "5637636545859912302"
     },
-    "name": "ResourceRole Assignments (All scopes)",
+    "name": "Resource-scoped role assignment",
     "description": "This module deploys a Role Assignment for a specific resource.",
     "owner": "Azure/module-maintainers"
   },
@@ -168,7 +168,7 @@
             "value": "[parameters('resourceId')]"
           },
           "name": {
-            "value": "[parameters('name')]"
+            "value": "[if(not(empty(parameters('name'))), parameters('name'), guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]"
           },
           "roleDefinitionId": {
             "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
