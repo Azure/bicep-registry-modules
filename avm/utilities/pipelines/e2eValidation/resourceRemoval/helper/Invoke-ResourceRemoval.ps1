@@ -191,9 +191,11 @@ function Invoke-ResourceRemoval {
             #Import-Module Az.Subscription
 
             $subscriptionName = $ResourceId.Split('/')[4]
-            $subscriptionId = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName} | Select-Object -ExpandProperty Id
+            $subscription = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName}
+            $subscriptionId =  $subscription.Id
+            $subscriptionState = $subscription.State
+
             $null = Select-AzSubscription -SubscriptionId $subscriptionId
-            $null = Set-AzContext -SubscriptionId $subscriptionId
 
             if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
                 # Unregister resource providers and features
@@ -208,10 +210,14 @@ function Invoke-ResourceRemoval {
                 $null = Remove-AzResourceGroup -Name $rsgNetworkWatcherName -Force
 
                 # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
-                $null = New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
+                if($null -eq (Get-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId)){
+                  $null = New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
+                }
 
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
-                #$null = Disable-AzSubscription -SubscriptionId $subscriptionId
+                if($subscriptionState -eq "Enabled"){
+                  $null = Disable-AzSubscription -SubscriptionId $subscriptionId
+                }
             }
             break
         }
