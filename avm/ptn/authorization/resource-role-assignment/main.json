@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "12137155538756504441"
+      "templateHash": "9533603348987584092"
     },
     "name": "ResourceRole Assignments (All scopes)",
     "description": "This module deploys a Role Assignment for a specific resource.",
@@ -20,7 +21,7 @@
     },
     "name": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The unique guid name for the role assignment."
       }
@@ -75,10 +76,65 @@
     }
   },
   "variables": {
-    "tFile": "ewogICAgIiRzY2hlbWEiOiAiaHR0cHM6Ly9zY2hlbWEubWFuYWdlbWVudC5henVyZS5jb20vc2NoZW1hcy8yMDE5LTA0LTAxL2RlcGxveW1lbnRUZW1wbGF0ZS5qc29uIyIsCiAgICAiY29udGVudFZlcnNpb24iOiAiMS4wLjAuMCIsCiAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAic2NvcGUiOiB7CiAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICB9LAogICAgICAgICJuYW1lIjogewogICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfSwKICAgICAgICAicm9sZURlZmluaXRpb25JZCI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgInByaW5jaXBhbElkIjogewogICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfSwKICAgICAgICAicHJpbmNpcGFsVHlwZSI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgICAgICAgImFsbG93ZWRWYWx1ZXMiOiBbCiAgICAgICAgICAgICAgICAiRGV2aWNlIiwKICAgICAgICAgICAgICAgICJGb3JlaWduR3JvdXAiLAogICAgICAgICAgICAgICAgIkdyb3VwIiwKICAgICAgICAgICAgICAgICJTZXJ2aWNlUHJpbmNpcGFsIiwKICAgICAgICAgICAgICAgICJVc2VyIiwKICAgICAgICAgICAgICAgICIiCiAgICAgICAgICAgIF0sCiAgICAgICAgICAgICJkZWZhdWx0VmFsdWUiOiAiIiwKICAgICAgICAgICAgIm1ldGFkYXRhIjogewogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogIk9wdGlvbmFsLiBUaGUgcHJpbmNpcGFsIHR5cGUgb2YgdGhlIGFzc2lnbmVkIHByaW5jaXBhbCBJRC4iCiAgICAgICAgICAgIH0KICAgICAgICB9LAogICAgICAgICJkZXNjcmlwdGlvbiI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0KICAgIH0sCiAgICAicmVzb3VyY2VzIjogWwogICAgICAgIHsKICAgICAgICAgICAgInR5cGUiOiAiTWljcm9zb2Z0LkF1dGhvcml6YXRpb24vcm9sZUFzc2lnbm1lbnRzIiwKICAgICAgICAgICAgImFwaVZlcnNpb24iOiAiMjAyMi0wNC0wMSIsCiAgICAgICAgICAgICJzY29wZSI6ICJbcGFyYW1ldGVycygnc2NvcGUnKV0iLAogICAgICAgICAgICAibmFtZSI6ICJbcGFyYW1ldGVycygnbmFtZScpXSIsCiAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgInJvbGVEZWZpbml0aW9uSWQiOiAiW3BhcmFtZXRlcnMoJ3JvbGVEZWZpbml0aW9uSWQnKV0iLAogICAgICAgICAgICAgICAgInByaW5jaXBhbElkIjogIltwYXJhbWV0ZXJzKCdwcmluY2lwYWxJZCcpXSIsCiAgICAgICAgICAgICAgICAicHJpbmNpcGFsVHlwZSI6ICJbcGFyYW1ldGVycygncHJpbmNpcGFsVHlwZScpXSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiW3BhcmFtZXRlcnMoJ2Rlc2NyaXB0aW9uJyldIgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgXSwKICAgICJvdXRwdXRzIjogewogICAgICAgICJyb2xlQXNzaWdubWVudElkIjogewogICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAgICAgICAidmFsdWUiOiAiW2V4dGVuc2lvblJlc291cmNlSWQocGFyYW1ldGVycygnc2NvcGUnKSwgJ01pY3Jvc29mdC5BdXRob3JpemF0aW9uL3JvbGVBc3NpZ25tZW50cycsIHBhcmFtZXRlcnMoJ25hbWUnKSldIgogICAgICAgIH0KICAgIH0KfQ=="
+    "$fxv#0": {
+      "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "scope": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "roleDefinitionId": {
+          "type": "string"
+        },
+        "principalId": {
+          "type": "string"
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User",
+            ""
+          ],
+          "defaultValue": "",
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Authorization/roleAssignments",
+          "apiVersion": "2022-04-01",
+          "scope": "[[parameters('scope')]",
+          "name": "[[parameters('name')]",
+          "properties": {
+            "roleDefinitionId": "[[parameters('roleDefinitionId')]",
+            "principalId": "[[parameters('principalId')]",
+            "principalType": "[[parameters('principalType')]",
+            "description": "[[parameters('description')]"
+          }
+        }
+      ],
+      "outputs": {
+        "roleAssignmentId": {
+          "type": "string",
+          "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+        }
+      }
+    }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -98,7 +154,7 @@
         }
       }
     },
-    {
+    "resourceRoleAssignment": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
@@ -107,7 +163,7 @@
         "expressionEvaluationOptions": {
           "scope": "Outer"
         },
-        "template": "[json(base64ToString(variables('tFile')))]",
+        "template": "[variables('$fxv#0')]",
         "parameters": {
           "scope": {
             "value": "[parameters('resourceId')]"
@@ -130,7 +186,7 @@
         }
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
@@ -151,7 +207,7 @@
       "metadata": {
         "description": "The resource ID of the Role Assignment."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
+      "value": "[reference('resourceRoleAssignment').outputs.roleAssignmentId.value]"
     },
     "resourceGroupName": {
       "type": "string",

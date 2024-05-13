@@ -211,7 +211,6 @@ The unique guid name for the role assignment.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `principalType`
 

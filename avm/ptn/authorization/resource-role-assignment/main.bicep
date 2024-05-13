@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param resourceId string
 
 @sys.description('Optional. The unique guid name for the role assignment.')
-param name string = ''
+param name string?
 
 @sys.description('Required. The role definition ID for the role assignment.')
 param roleDefinitionId string
@@ -56,12 +56,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-// Workaround to make Pester test work.
-// Simple loadJsonContent creates a variable in main.json
-// with a name which is NOT camelCase,
-// hence failing the Pester test
-var tFile = loadFileAsBase64('modules/generic-role-assignment.json')
-
 resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
   name: '${guid(resourceId, principalId, roleDefinitionId)}-ResourceRoleAssignment'
   properties: {
@@ -69,7 +63,7 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
     expressionEvaluationOptions: {
       scope: 'Outer'
     }
-    template: json(base64ToString(tFile))
+    template: loadJsonContent('modules/generic-role-assignment.json')
     parameters: {
       scope: {
         value: resourceId
