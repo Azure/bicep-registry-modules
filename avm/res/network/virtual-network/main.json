@@ -483,7 +483,9 @@
     "virtualNetwork_subnets": {
       "copy": {
         "name": "virtualNetwork_subnets",
-        "count": "[length(parameters('subnets'))]"
+        "count": "[length(parameters('subnets'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",

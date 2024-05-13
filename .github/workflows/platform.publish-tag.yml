@@ -87,7 +87,7 @@ jobs:
             $functionInput = @{
               Version             = "${{ steps.publish_tag.outputs.version }}"
               PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
-              GitTagName          = "${{ steps.publish_step.outputs.gitTagName }}"
+              GitTagName          = "${{ steps.publish_tag.outputs.gitTagName }}"
 
             }
 
