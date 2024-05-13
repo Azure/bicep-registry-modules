@@ -192,23 +192,23 @@ function Invoke-ResourceRemoval {
 
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscriptionId = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName} | Select-Object -ExpandProperty Id
-            $null =Select-AzSubscription -SubscriptionId $subscriptionId
-            $null =Set-AzContext -SubscriptionId $subscriptionId
+            $null = Select-AzSubscription -SubscriptionId $subscriptionId
+            $null = Set-AzContext -SubscriptionId $subscriptionId
 
             if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
                 # Unregister resource providers and features
                 Write-Verbose "Cleanup registered resource providers and features..."
-                $null =Unregister-AzProviderFeature -FeatureName "ArcServerPrivateLinkPreview" -ProviderNamespace "Microsoft.HybridCompute"
-                $null =Unregister-AzProviderFeature -FeatureName "AzureServicesVm" -ProviderNamespace "Microsoft.AVS"
-                $null =Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
-                $null =Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
+                $null = Unregister-AzProviderFeature -FeatureName "ArcServerPrivateLinkPreview" -ProviderNamespace "Microsoft.HybridCompute"
+                $null = Unregister-AzProviderFeature -FeatureName "AzureServicesVm" -ProviderNamespace "Microsoft.AVS"
+                $null = Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
+                $null = Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
 
                 # Delete NetworkWatcher resource group
                 $rsgNetworkWatcherName = "NetworkWatcherRG"
-                $null =Remove-AzResourceGroup -Name $rsgNetworkWatcherName -Force
+                $null = Remove-AzResourceGroup -Name $rsgNetworkWatcherName -Force
 
                 # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
-                $null =New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
+                $null = New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
 
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
                 #$null = Disable-AzSubscription -SubscriptionId $subscriptionId
