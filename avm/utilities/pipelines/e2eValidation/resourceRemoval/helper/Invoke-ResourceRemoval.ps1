@@ -186,7 +186,8 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.Subscription/aliases' {
-            Install-Module Az.Accounts -AllowClobber
+            Install-Module Az.Accounts -AllowClobber -MinimumVersion 2.19.0 -Force
+            Install-Module Az.Subscription -MinimumVersion 0.11.1 -AllowClobber -Force
             Import-Module Az.Subscription
 
             $subscriptionName = $ResourceId.Split('/')[4]
