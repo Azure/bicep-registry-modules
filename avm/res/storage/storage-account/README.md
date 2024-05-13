@@ -19,6 +19,7 @@ This module deploys a Storage Account.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
@@ -45,12 +46,13 @@ The following section provides usage examples for the module, which were used to
 - [Deploying as a Blob Storage](#example-1-deploying-as-a-blob-storage)
 - [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-5-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-6-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-7-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-8-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-4-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-6-deploying-with-a-nfs-file-share)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-7-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-8-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-9-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -226,7 +228,65 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'kvref'
+    // Non-required parameters
+    location: '<location>'
+    secretsKeyVault: {
+      keyVaultName: '<keyVaultName>'
+      primaryConnectionStringSecretName: 'custom-secret-name'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kvref"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsKeyVault": {
+      "value": {
+        "keyVaultName": "<keyVaultName>",
+        "primaryConnectionStringSecretName": "custom-secret-name"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1092,7 +1152,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Deploying with a NFS File Share_
+### Example 6: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -1166,7 +1226,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 7: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -1270,7 +1330,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 8: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -1390,7 +1450,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 8: _Deploying as Storage Account version 1_
+### Example 9: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -1442,7 +1502,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1663,7 +1723,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
     requireInfrastructureEncryption: true
     sasExpirationPeriod: '180.00:00:00'
-    skuName: 'Standard_LRS'
+    skuName: 'Standard_ZRS'
     tableServices: {
       diagnosticSettings: [
         {
@@ -1954,7 +2014,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": "180.00:00:00"
     },
     "skuName": {
-      "value": "Standard_LRS"
+      "value": "Standard_ZRS"
     },
     "tableServices": {
       "value": {
@@ -2048,6 +2108,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
+| [`secretsKeyVault`](#parameter-secretskeyvault) | object | Key vault reference and secret settings to add the connection strings and keys generated by the storage account. |
 | [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. |
 | [`supportsHttpsTrafficOnly`](#parameter-supportshttpstrafficonly) | bool | Allows HTTPS traffic only to storage service if sets to true. |
 | [`tableServices`](#parameter-tableservices) | object | Table service and tables to create. |
@@ -3074,6 +3135,71 @@ The SAS expiration period. DD.HH:MM:SS.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `secretsKeyVault`
+
+Key vault reference and secret settings to add the connection strings and keys generated by the storage account.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultName`](#parameter-secretskeyvaultkeyvaultname) | string | The key vault name where to store the keys and connection strings generated by the modules. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`primaryConnectionStringSecretName`](#parameter-secretskeyvaultprimaryconnectionstringsecretname) | string | Default to Key1-ConnectionString. The primary connection string secret name to create. |
+| [`primaryKeySecretName`](#parameter-secretskeyvaultprimarykeysecretname) | string | Default to Key1-Key. The primary key secret name to create. |
+| [`resourceGroupName`](#parameter-secretskeyvaultresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
+| [`secondaryConnectionStringKeySecretName`](#parameter-secretskeyvaultsecondaryconnectionstringkeysecretname) | string | Default to Key2-ConnectionString. The secondary connection string secret name to create. |
+| [`secondaryKeySecretName`](#parameter-secretskeyvaultsecondarykeysecretname) | string | Default to Key2-Key. The secondary key secret name to create. |
+
+### Parameter: `secretsKeyVault.keyVaultName`
+
+The key vault name where to store the keys and connection strings generated by the modules.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsKeyVault.primaryConnectionStringSecretName`
+
+Default to Key1-ConnectionString. The primary connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsKeyVault.primaryKeySecretName`
+
+Default to Key1-Key. The primary key secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsKeyVault.resourceGroupName`
+
+Default to the resource group where this account is. The resource group name where the key vault is.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsKeyVault.secondaryConnectionStringKeySecretName`
+
+Default to Key2-ConnectionString. The secondary connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsKeyVault.secondaryKeySecretName`
+
+Default to Key2-Key. The secondary key secret name to create.
+
+- Required: No
+- Type: string
 
 ### Parameter: `skuName`
 
