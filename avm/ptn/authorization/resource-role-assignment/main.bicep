@@ -6,7 +6,13 @@ metadata owner = 'Azure/module-maintainers'
 param resourceId string
 
 @sys.description('Optional. The unique guid name for the role assignment.')
-param name string?
+param name string = guid(
+  resourceId,
+  principalId,
+  contains(roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
+    ? roleDefinitionId
+    : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
+)
 
 @sys.description('Required. The role definition ID for the role assignment.')
 param roleDefinitionId string
@@ -69,15 +75,7 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
         value: resourceId
       }
       name: {
-        value: !empty(name)
-          ? name
-          : guid(
-              resourceId,
-              principalId,
-              contains(roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
-                ? roleDefinitionId
-                : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
-            )
+        value: name
       }
       roleDefinitionId: {
         value: contains(roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')

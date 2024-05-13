@@ -1,12 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "9533603348987584092"
+      "templateHash": "12472585536276024107"
     },
     "name": "ResourceRole Assignments (All scopes)",
     "description": "This module deploys a Role Assignment for a specific resource.",
@@ -21,7 +20,7 @@
     },
     "name": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]",
       "metadata": {
         "description": "Optional. The unique guid name for the role assignment."
       }
@@ -133,8 +132,8 @@
       }
     }
   },
-  "resources": {
-    "avmTelemetry": {
+  "resources": [
+    {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -154,7 +153,7 @@
         }
       }
     },
-    "resourceRoleAssignment": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))]",
@@ -169,7 +168,7 @@
             "value": "[parameters('resourceId')]"
           },
           "name": {
-            "value": "[if(not(empty(parameters('name'))), parameters('name'), guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))))]"
+            "value": "[parameters('name')]"
           },
           "roleDefinitionId": {
             "value": "[if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId')))]"
@@ -186,7 +185,7 @@
         }
       }
     }
-  },
+  ],
   "outputs": {
     "name": {
       "type": "string",
@@ -207,7 +206,7 @@
       "metadata": {
         "description": "The resource ID of the Role Assignment."
       },
-      "value": "[reference('resourceRoleAssignment').outputs.roleAssignmentId.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ResourceRoleAssignment', guid(parameters('resourceId'), parameters('principalId'), parameters('roleDefinitionId')))), '2023-07-01').outputs.roleAssignmentId.value]"
     },
     "resourceGroupName": {
       "type": "string",

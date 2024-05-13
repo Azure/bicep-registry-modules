@@ -211,6 +211,7 @@ The unique guid name for the role assignment.
 
 - Required: No
 - Type: string
+- Default: `[guid(parameters('resourceId'), parameters('principalId'), if(contains(parameters('roleDefinitionId'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))))]`
 
 ### Parameter: `principalType`
 
