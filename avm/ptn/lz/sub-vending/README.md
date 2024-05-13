@@ -74,7 +74,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
-    deploymentScriptName: 'ds-samin2'
+    deploymentScriptName: 'ds-samin3'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
@@ -96,9 +96,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       }
     ]
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'dep-sub-blzv-tests-samin2'
+    subscriptionAliasName: 'dep-sub-blzv-tests-samin3'
     subscriptionBillingScope: '<subscriptionBillingScope>'
-    subscriptionDisplayName: 'dep-sub-blzv-tests-samin2'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-samin3'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionTags: {
@@ -131,7 +131,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptManagedIdentityName>"
     },
     "deploymentScriptName": {
-      "value": "ds-samin2"
+      "value": "ds-samin3"
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "value": "<deploymentScriptNetworkSecurityGroupName>"
@@ -171,13 +171,13 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionAliasName": {
-      "value": "dep-sub-blzv-tests-samin2"
+      "value": "dep-sub-blzv-tests-samin3"
     },
     "subscriptionBillingScope": {
       "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
-      "value": "dep-sub-blzv-tests-samin2"
+      "value": "dep-sub-blzv-tests-samin3"
     },
     "subscriptionManagementGroupAssociationEnabled": {
       "value": true
@@ -222,7 +222,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
-    deploymentScriptName: 'ds-sahs2'
+    deploymentScriptName: 'ds-sahs3'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
@@ -245,9 +245,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       }
     ]
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'dep-sub-blzv-tests-sahs2'
+    subscriptionAliasName: 'dep-sub-blzv-tests-sahs3'
     subscriptionBillingScope: '<subscriptionBillingScope>'
-    subscriptionDisplayName: 'dep-sub-blzv-tests-sahs2'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-sahs3'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionTags: {
@@ -288,7 +288,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptManagedIdentityName>"
     },
     "deploymentScriptName": {
-      "value": "ds-sahs2"
+      "value": "ds-sahs3"
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "value": "<deploymentScriptNetworkSecurityGroupName>"
@@ -331,13 +331,13 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionAliasName": {
-      "value": "dep-sub-blzv-tests-sahs2"
+      "value": "dep-sub-blzv-tests-sahs3"
     },
     "subscriptionBillingScope": {
       "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
-      "value": "dep-sub-blzv-tests-sahs2"
+      "value": "dep-sub-blzv-tests-sahs3"
     },
     "subscriptionManagementGroupAssociationEnabled": {
       "value": true
@@ -402,7 +402,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
-    deploymentScriptName: 'ds-sawan2'
+    deploymentScriptName: 'ds-sawan3'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
@@ -418,9 +418,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       }
     ]
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'dep-sub-blzv-tests-sawan2'
+    subscriptionAliasName: 'dep-sub-blzv-tests-sawan3'
     subscriptionBillingScope: '<subscriptionBillingScope>'
-    subscriptionDisplayName: 'dep-sub-blzv-tests-sawan2'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-sawan3'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionTags: {
@@ -460,7 +460,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptManagedIdentityName>"
     },
     "deploymentScriptName": {
-      "value": "ds-sawan2"
+      "value": "ds-sawan3"
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "value": "<deploymentScriptNetworkSecurityGroupName>"
@@ -496,13 +496,13 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionAliasName": {
-      "value": "dep-sub-blzv-tests-sawan2"
+      "value": "dep-sub-blzv-tests-sawan3"
     },
     "subscriptionBillingScope": {
       "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
-      "value": "dep-sub-blzv-tests-sawan2"
+      "value": "dep-sub-blzv-tests-sawan3"
     },
     "subscriptionManagementGroupAssociationEnabled": {
       "value": true

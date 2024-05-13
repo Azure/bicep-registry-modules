@@ -13,7 +13,7 @@ param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAcco
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'samin2'
+param serviceShort string = 'samin3'
 
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
