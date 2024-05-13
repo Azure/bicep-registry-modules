@@ -355,7 +355,16 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         name: 'az-aci-x-001'
         properties: {
           command: []
-          environmentVariables: []
+          environmentVariables: [
+            {
+              name: 'CLIENT_ID'
+              value: 'TestClientId'
+            }
+            {
+              name: 'CLIENT_SECRET'
+              secureValue: 'TestSecret'
+            }
+          ]
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
@@ -447,7 +456,16 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           "name": "az-aci-x-001",
           "properties": {
             "command": [],
-            "environmentVariables": [],
+            "environmentVariables": [
+              {
+                "name": "CLIENT_ID",
+                "value": "TestClientId"
+              },
+              {
+                "name": "CLIENT_SECRET",
+                "secureValue": "TestSecret"
+              }
+            ],
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
@@ -1268,7 +1286,7 @@ The environment variables to set in the container instance.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`secureValue`](#parameter-containerspropertiesenvironmentvariablessecurevalue) | string | The value of the secure environment variable. |
+| [`secureValue`](#parameter-containerspropertiesenvironmentvariablessecurevalue) | securestring | The value of the secure environment variable. |
 | [`value`](#parameter-containerspropertiesenvironmentvariablesvalue) | string | The value of the environment variable. |
 
 ### Parameter: `containers.properties.environmentVariables.name`
@@ -1283,7 +1301,7 @@ The name of the environment variable.
 The value of the secure environment variable.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `containers.properties.environmentVariables.value`
 
