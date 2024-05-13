@@ -85,7 +85,7 @@ module email_domains 'domain/main.bicep' = [
       userEngagementTracking: domain.?userEngagementTracking
       senderUsernames: domain.?senderUsernames
       roleAssignments: domain.?roleAssignments
-      lock: domain.?lock
+      lock: domain.?lock ?? lock
       tags: domain.?tags ?? tags
     }
   }
