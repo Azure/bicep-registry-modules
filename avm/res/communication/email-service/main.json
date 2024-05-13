@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6909323473215245684"
+      "version": "0.26.170.59819",
+      "templateHash": "18054526583802186058"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service",
@@ -116,7 +116,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
+      "defaultValue": "global",
       "metadata": {
         "description": "Optional. Location for all Resources."
       }
@@ -273,7 +273,7 @@
             "value": "[tryGet(coalesce(parameters('domains'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "lock": {
-            "value": "[tryGet(coalesce(parameters('domains'), createArray())[copyIndex()], 'lock')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('domains'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('domains'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
@@ -286,8 +286,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15607021669582489302"
+              "version": "0.26.170.59819",
+              "templateHash": "18151204652337188735"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain",
@@ -560,8 +560,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "17166679001728078734"
+                      "version": "0.26.170.59819",
+                      "templateHash": "11776160114645029549"
                     },
                     "name": "Sender Usernames",
                     "description": "This module deploys an Sender",
