@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "18235826179924928068"
+      "templateHash": "12164182418818397403"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service.",
@@ -162,7 +162,7 @@
       "minValue": 1,
       "maxValue": 146000,
       "metadata": {
-        "description": "Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. A \"0\" value indicates an infinite retention of the change feed."
+        "description": "Optional. Indicates the duration of changeFeed retention in days. Minimum value is 1 day and maximum value is 146000 days (400 years). A null value indicates an infinite retention of the change feed."
       }
     },
     "containerDeleteRetentionPolicyEnabled": {
