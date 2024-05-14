@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12964938684839299735"
+      "templateHash": "3585751615323485845"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -135,7 +135,7 @@
         }
       }
     },
-    "AType": {
+    "aType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -168,7 +168,7 @@
       },
       "nullable": true
     },
-    "AAAAType": {
+    "aaaaType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -201,7 +201,7 @@
       },
       "nullable": true
     },
-    "CNAMEType": {
+    "cnameType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -231,7 +231,7 @@
       },
       "nullable": true
     },
-    "MXType": {
+    "mxType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -270,7 +270,7 @@
       },
       "nullable": true
     },
-    "PTRType": {
+    "ptrType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -296,14 +296,14 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "The list of PTR records in the record set."
+              "description": "Optional. The list of PTR records in the record set."
             }
           }
         }
       },
       "nullable": true
     },
-    "SOAType": {
+    "soaType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -369,7 +369,7 @@
       },
       "nullable": true
     },
-    "SRVType": {
+    "srvType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -420,7 +420,7 @@
       },
       "nullable": true
     },
-    "TXTType": {
+    "txtType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -465,49 +465,49 @@
       }
     },
     "a": {
-      "$ref": "#/definitions/AType",
+      "$ref": "#/definitions/aType",
       "metadata": {
         "description": "Optional. Array of A records."
       }
     },
     "aaaa": {
-      "$ref": "#/definitions/AAAAType",
+      "$ref": "#/definitions/aaaaType",
       "metadata": {
         "description": "Optional. Array of AAAA records."
       }
     },
     "cname": {
-      "$ref": "#/definitions/CNAMEType",
+      "$ref": "#/definitions/cnameType",
       "metadata": {
         "description": "Optional. Array of CNAME records."
       }
     },
     "mx": {
-      "$ref": "#/definitions/MXType",
+      "$ref": "#/definitions/mxType",
       "metadata": {
         "description": "Optional. Array of MX records."
       }
     },
     "ptr": {
-      "$ref": "#/definitions/PTRType",
+      "$ref": "#/definitions/ptrType",
       "metadata": {
         "description": "Optional. Array of PTR records."
       }
     },
     "soa": {
-      "$ref": "#/definitions/SOAType",
+      "$ref": "#/definitions/soaType",
       "metadata": {
         "description": "Optional. Array of SOA records."
       }
     },
     "srv": {
-      "$ref": "#/definitions/SRVType",
+      "$ref": "#/definitions/srvType",
       "metadata": {
         "description": "Optional. Array of SRV records."
       }
     },
     "txt": {
-      "$ref": "#/definitions/TXTType",
+      "$ref": "#/definitions/txtType",
       "metadata": {
         "description": "Optional. Array of TXT records."
       }

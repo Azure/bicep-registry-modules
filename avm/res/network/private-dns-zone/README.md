@@ -1538,10 +1538,168 @@ Array of PTR records.
 - Required: No
 - Type: array
 
-**RequiredThe list of PTR records in the record set parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`base`](#parameter-ptrbase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ptrRecords`](#parameter-ptrptrrecords) | array | The list of PTR records in the record set. |
+
+### Parameter: `ptr.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-ptrbasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-ptrbasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-ptrbaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-ptrbasettl) | int | The TTL of the record. |
+
+### Parameter: `ptr.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ptr.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `ptr.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-ptrbaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-ptrbaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-ptrbaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-ptrbaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-ptrbaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-ptrbaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-ptrbaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `ptr.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ptr.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ptr.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `ptr.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `ptr.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `ptr.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `ptr.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `ptr.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `ptr.ptrRecords`
+
+The list of PTR records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ptrdname`](#parameter-ptrptrrecordsptrdname) | string | The PTR target domain name for this PTR record. |
+
+### Parameter: `ptr.ptrRecords.ptrdname`
+
+The PTR target domain name for this PTR record.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments`
 

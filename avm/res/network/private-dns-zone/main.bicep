@@ -358,7 +358,7 @@ type ptrType = {
   @description('Required. The base properties of the record.')
   base: zoneBaseType
 
-  @description('The list of PTR records in the record set.')
+  @description('Optional. The list of PTR records in the record set.')
   ptrRecords: {
     @description('Required. The PTR target domain name for this PTR record.')
     ptrdname: string
