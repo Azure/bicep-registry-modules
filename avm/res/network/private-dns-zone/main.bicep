@@ -98,7 +98,7 @@ module privateDnsZone_A 'a/main.bicep' = [
       aRecords: aRecord.?aRecords
       metadata: aRecord.base.?metadata
       ttl: aRecord.base.?ttl ?? 3600
-      roleAssignments: aRecord.?roleAssignments
+      roleAssignments: aRecord.base.?roleAssignments
     }
   }
 ]
@@ -112,7 +112,7 @@ module privateDnsZone_AAAA 'aaaa/main.bicep' = [
       aaaaRecords: aaaaRecord.?aaaaRecords
       metadata: aaaaRecord.base.?metadata
       ttl: aaaaRecord.base.?ttl ?? 3600
-      roleAssignments: aaaaRecord.?roleAssignments
+      roleAssignments: aaaaRecord.base.?roleAssignments
     }
   }
 ]
@@ -126,7 +126,7 @@ module privateDnsZone_CNAME 'cname/main.bicep' = [
       cnameRecord: cnameRecord.?cnameRecord
       metadata: cnameRecord.base.?metadata
       ttl: cnameRecord.base.?ttl ?? 3600
-      roleAssignments: cnameRecord.?roleAssignments
+      roleAssignments: cnameRecord.base.?roleAssignments
     }
   }
 ]
@@ -140,7 +140,7 @@ module privateDnsZone_MX 'mx/main.bicep' = [
       metadata: mxRecord.base.?metadata
       mxRecords: mxRecord.?mxRecords
       ttl: mxRecord.base.?ttl ?? 3600
-      roleAssignments: mxRecord.?roleAssignments
+      roleAssignments: mxRecord.base.?roleAssignments
     }
   }
 ]
@@ -154,7 +154,7 @@ module privateDnsZone_PTR 'ptr/main.bicep' = [
       metadata: ptrRecord.base.?metadata
       ptrRecords: ptrRecord.?ptrRecords
       ttl: ptrRecord.base.?ttl ?? 3600
-      roleAssignments: ptrRecord.?roleAssignments
+      roleAssignments: ptrRecord.base.?roleAssignments
     }
   }
 ]
@@ -168,7 +168,7 @@ module privateDnsZone_SOA 'soa/main.bicep' = [
       metadata: soaRecord.base.?metadata
       soaRecord: soaRecord.?soaRecord
       ttl: soaRecord.base.?ttl ?? 3600
-      roleAssignments: soaRecord.?roleAssignments
+      roleAssignments: soaRecord.base.?roleAssignments
     }
   }
 ]
@@ -182,7 +182,7 @@ module privateDnsZone_SRV 'srv/main.bicep' = [
       metadata: srvRecord.base.?metadata
       srvRecords: srvRecord.?srvRecords
       ttl: srvRecord.base.?ttl ?? 3600
-      roleAssignments: srvRecord.?roleAssignments
+      roleAssignments: srvRecord.base.?roleAssignments
     }
   }
 ]
@@ -196,7 +196,7 @@ module privateDnsZone_TXT 'txt/main.bicep' = [
       metadata: txtRecord.base.?metadata
       txtRecords: txtRecord.?txtRecords
       ttl: txtRecord.base.?ttl ?? 3600
-      roleAssignments: txtRecord.?roleAssignments
+      roleAssignments: txtRecord.base.?roleAssignments
     }
   }
 ]

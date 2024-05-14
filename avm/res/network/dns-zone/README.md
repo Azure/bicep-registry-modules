@@ -1436,27 +1436,27 @@ The list of CAA records in the record set.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`flags`](#parameter-caacaarecordsflags) | int | The flags value for this CAA record. |
-| [`tag`](#parameter-caacaarecordstag) | string | The tag value for this CAA record. |
-| [`value`](#parameter-caacaarecordsvalue) | string | The value of this CAA record. |
+| [`flags`](#parameter-caacaarecordsflags) | int | The flags for this CAA record as an integer between 0 and 255. |
+| [`tag`](#parameter-caacaarecordstag) | string | The tag for this CAA record.. |
+| [`value`](#parameter-caacaarecordsvalue) | string | The value for this CAA record. |
 
 ### Parameter: `caa.caaRecords.flags`
 
-The flags value for this CAA record.
+The flags for this CAA record as an integer between 0 and 255.
 
 - Required: Yes
 - Type: int
 
 ### Parameter: `caa.caaRecords.tag`
 
-The tag value for this CAA record.
+The tag for this CAA record..
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `caa.caaRecords.value`
 
-The value of this CAA record.
+The value for this CAA record.
 
 - Required: Yes
 - Type: string
@@ -2030,11 +2030,11 @@ The list of NS records in the record set.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`nsdname`](#parameter-nsnsrecordsnsdname) | string | The name server domain name for this NS record. |
+| [`nsdname`](#parameter-nsnsrecordsnsdname) | string | The name server name for this NS record. |
 
 ### Parameter: `ns.nsRecords.nsdname`
 
-The name server domain name for this NS record.
+The name server name for this NS record.
 
 - Required: Yes
 - Type: string

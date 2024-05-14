@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12360815671077606165"
+      "templateHash": "7135831677613401533"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone.",
@@ -270,20 +270,22 @@
               "properties": {
                 "flags": {
                   "type": "int",
+                  "minValue": 0,
+                  "maxValue": 255,
                   "metadata": {
-                    "description": "Required. The flags value for this CAA record."
+                    "description": "Required. The flags for this CAA record as an integer between 0 and 255."
                   }
                 },
                 "tag": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The tag value for this CAA record."
+                    "description": "Required. The tag for this CAA record.."
                   }
                 },
                 "value": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The value of this CAA record."
+                    "description": "Required. The value for this CAA record."
                   }
                 }
               }
@@ -355,7 +357,7 @@
                 "nsdname": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The name server domain name for this NS record."
+                    "description": "Required. The name server name for this NS record."
                   }
                 }
               }
@@ -759,22 +761,22 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('a'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('a'), createArray())[copyIndex()].base.name]"
           },
           "aRecords": {
             "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'aRecords')]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "targetResourceId": {
-            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'targetResourceId')]"
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'targetResourceId')]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -1013,22 +1015,22 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('aaaa'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('aaaa'), createArray())[copyIndex()].base.name]"
           },
           "aaaaRecords": {
             "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'aaaaRecords')]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "targetResourceId": {
-            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'targetResourceId')]"
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'targetResourceId')]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -1267,22 +1269,22 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('cname'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('cname'), createArray())[copyIndex()].base.name]"
           },
           "cnameRecord": {
             "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'cnameRecord')]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "targetResourceId": {
-            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'targetResourceId')]"
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'targetResourceId')]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -1521,19 +1523,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('caa'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('caa'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "caaRecords": {
             "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'caaRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('caa'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -1764,19 +1766,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('mx'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('mx'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "mxRecords": {
             "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'mxRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('mx'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -2007,19 +2009,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('ns'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('ns'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "nsRecords": {
             "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'nsRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('ns'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -2250,19 +2252,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('ptr'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('ptr'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ptrRecords": {
             "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ptrRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -2493,19 +2495,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('soa'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('soa'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "soaRecord": {
             "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'soaRecord')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('soa'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -2736,19 +2738,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('srv'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('srv'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "srvRecords": {
             "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'srvRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('srv'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {
@@ -2979,19 +2981,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('txt'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('txt'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "txtRecords": {
             "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'txtRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('txt'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'roleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()].base, 'roleAssignments')]"
           }
         },
         "template": {

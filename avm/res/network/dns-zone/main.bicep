@@ -122,12 +122,12 @@ module dnsZone_A 'a/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-ARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: aRecord.name
+      name: aRecord.base.name
       aRecords: aRecord.?aRecords
-      metadata: aRecord.?metadata
-      ttl: aRecord.?ttl ?? 3600
-      targetResourceId: aRecord.?targetResourceId
-      roleAssignments: aRecord.?roleAssignments
+      metadata: aRecord.base.?metadata
+      ttl: aRecord.base.?ttl ?? 3600
+      targetResourceId: aRecord.base.?targetResourceId
+      roleAssignments: aRecord.base.?roleAssignments
     }
   }
 ]
@@ -137,12 +137,12 @@ module dnsZone_AAAA 'aaaa/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-AAAARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: aaaaRecord.name
+      name: aaaaRecord.base.name
       aaaaRecords: aaaaRecord.?aaaaRecords
-      metadata: aaaaRecord.?metadata
-      ttl: aaaaRecord.?ttl ?? 3600
-      targetResourceId: aaaaRecord.?targetResourceId
-      roleAssignments: aaaaRecord.?roleAssignments
+      metadata: aaaaRecord.base.?metadata
+      ttl: aaaaRecord.base.?ttl ?? 3600
+      targetResourceId: aaaaRecord.base.?targetResourceId
+      roleAssignments: aaaaRecord.base.?roleAssignments
     }
   }
 ]
@@ -152,12 +152,12 @@ module dnsZone_CNAME 'cname/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-CNAMERecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: cnameRecord.name
+      name: cnameRecord.base.name
       cnameRecord: cnameRecord.?cnameRecord
-      metadata: cnameRecord.?metadata
-      ttl: cnameRecord.?ttl ?? 3600
-      targetResourceId: cnameRecord.?targetResourceId
-      roleAssignments: cnameRecord.?roleAssignments
+      metadata: cnameRecord.base.?metadata
+      ttl: cnameRecord.base.?ttl ?? 3600
+      targetResourceId: cnameRecord.base.?targetResourceId
+      roleAssignments: cnameRecord.base.?roleAssignments
     }
   }
 ]
@@ -167,11 +167,11 @@ module dnsZone_CAA 'caa/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-CAARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: caaRecord.name
-      metadata: caaRecord.?metadata
+      name: caaRecord.base.name
+      metadata: caaRecord.base.?metadata
       caaRecords: caaRecord.?caaRecords
-      ttl: caaRecord.?ttl ?? 3600
-      roleAssignments: caaRecord.?roleAssignments
+      ttl: caaRecord.base.?ttl ?? 3600
+      roleAssignments: caaRecord.base.?roleAssignments
     }
   }
 ]
@@ -181,11 +181,11 @@ module dnsZone_MX 'mx/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-MXRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: mxRecord.name
-      metadata: mxRecord.?metadata
+      name: mxRecord.base.name
+      metadata: mxRecord.base.?metadata
       mxRecords: mxRecord.?mxRecords
-      ttl: mxRecord.?ttl ?? 3600
-      roleAssignments: mxRecord.?roleAssignments
+      ttl: mxRecord.base.?ttl ?? 3600
+      roleAssignments: mxRecord.base.?roleAssignments
     }
   }
 ]
@@ -195,11 +195,11 @@ module dnsZone_NS 'ns/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-NSRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: nsRecord.name
-      metadata: nsRecord.?metadata
+      name: nsRecord.base.name
+      metadata: nsRecord.base.?metadata
       nsRecords: nsRecord.?nsRecords
-      ttl: nsRecord.?ttl ?? 3600
-      roleAssignments: nsRecord.?roleAssignments
+      ttl: nsRecord.base.?ttl ?? 3600
+      roleAssignments: nsRecord.base.?roleAssignments
     }
   }
 ]
@@ -209,11 +209,11 @@ module dnsZone_PTR 'ptr/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-PTRRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: ptrRecord.name
-      metadata: ptrRecord.?metadata
+      name: ptrRecord.base.name
+      metadata: ptrRecord.base.?metadata
       ptrRecords: ptrRecord.?ptrRecords
-      ttl: ptrRecord.?ttl ?? 3600
-      roleAssignments: ptrRecord.?roleAssignments
+      ttl: ptrRecord.base.?ttl ?? 3600
+      roleAssignments: ptrRecord.base.?roleAssignments
     }
   }
 ]
@@ -223,11 +223,11 @@ module dnsZone_SOA 'soa/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-SOARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: soaRecord.name
-      metadata: soaRecord.?metadata
+      name: soaRecord.base.name
+      metadata: soaRecord.base.?metadata
       soaRecord: soaRecord.?soaRecord
-      ttl: soaRecord.?ttl ?? 3600
-      roleAssignments: soaRecord.?roleAssignments
+      ttl: soaRecord.base.?ttl ?? 3600
+      roleAssignments: soaRecord.base.?roleAssignments
     }
   }
 ]
@@ -237,11 +237,11 @@ module dnsZone_SRV 'srv/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-SRVRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: srvRecord.name
-      metadata: srvRecord.?metadata
+      name: srvRecord.base.name
+      metadata: srvRecord.base.?metadata
       srvRecords: srvRecord.?srvRecords
-      ttl: srvRecord.?ttl ?? 3600
-      roleAssignments: srvRecord.?roleAssignments
+      ttl: srvRecord.base.?ttl ?? 3600
+      roleAssignments: srvRecord.base.?roleAssignments
     }
   }
 ]
@@ -251,11 +251,11 @@ module dnsZone_TXT 'txt/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-TXTRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: txtRecord.name
-      metadata: txtRecord.?metadata
+      name: txtRecord.base.name
+      metadata: txtRecord.base.?metadata
       txtRecords: txtRecord.?txtRecords
-      ttl: txtRecord.?ttl ?? 3600
-      roleAssignments: txtRecord.?roleAssignments
+      ttl: txtRecord.base.?ttl ?? 3600
+      roleAssignments: txtRecord.base.?roleAssignments
     }
   }
 ]
@@ -400,13 +400,15 @@ type caaType = {
 
   @description('Optional. The list of CAA records in the record set.')
   caaRecords: {
-    @description('Required. The flags value for this CAA record.')
+    @description('Required. The flags for this CAA record as an integer between 0 and 255.')
+    @minValue(0)
+    @maxValue(255)
     flags: int
 
-    @description('Required. The tag value for this CAA record.')
+    @description('Required. The tag for this CAA record..')
     tag: string
 
-    @description('Required. The value of this CAA record.')
+    @description('Required. The value for this CAA record.')
     value: string
   }[]?
 }[]?
@@ -431,7 +433,7 @@ type nsType = {
 
   @description('Optional. The list of NS records in the record set.')
   nsRecords: {
-    @description('Required. The name server domain name for this NS record.')
+    @description('Required. The name server name for this NS record.')
     nsdname: string
   }[]?
 }[]?
