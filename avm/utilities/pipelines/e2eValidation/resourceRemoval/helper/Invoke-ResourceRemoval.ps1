@@ -208,7 +208,7 @@ function Invoke-ResourceRemoval {
                 }
 
                 # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
-                if($null -eq (Get-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId)){
+                if($null -eq (Get-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId -ErrorAction SilentlyContinue)){
                   $null = New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
                 }
 
