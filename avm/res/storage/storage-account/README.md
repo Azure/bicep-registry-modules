@@ -2277,8 +2277,8 @@ Restrict copy to and from Storage Accounts within an AAD tenant or with Private 
   ```Bicep
   [
     ''
-    'PrivateLink'
     'AAD'
+    'PrivateLink'
   ]
   ```
 
