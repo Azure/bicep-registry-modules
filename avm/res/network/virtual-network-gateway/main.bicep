@@ -76,8 +76,8 @@ param activeActive bool = true
 @description('Optional. Value to specify if BGP is enabled or not.')
 param enableBgp bool = true
 
-@description('Optional. ASN value.')
-param asn int = 65815
+@description('Optional. BGP Settings')
+param bgpSettings bgpSettingsType
 
 @description('Optional. Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled.')
 param primaryCustomBgpIPs array = [] 
@@ -558,3 +558,26 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type bgpSettingsType = {
+  @description('Optional. The Autonomous System Number value.')
+  @minValue(0)
+  @maxValue(4294967295)
+  asn: 65815? 
+
+  @description('Optional. The BGP peering address and BGP identifier of this BGP speaker.')
+  bgpPeeringAddress: string?
+
+  @description('Optional. BGP peering address with IP configuration ID for virtual network gateway.')
+  bgpPeeringAddresses: {
+    @description('Required. The list of custom BGP peering addresses which belong to IP configuration.')
+    customBgpIpAddresses: string[]
+
+    @description('Required. The ID of IP configuration which belongs to gateway.')
+    ipconfigurationId: string?
+  }[]?
+
+
+  @description('Optional. The weight added to routes learned from this BGP speaker.')
+  peerWeight: int?
+}?
