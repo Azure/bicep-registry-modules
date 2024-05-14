@@ -138,18 +138,9 @@ param vpnClientAadConfiguration object = {}
 // ================//
 
 // Other Variables
-var zoneRedundantSkus = [
-  'VpnGw1AZ'
-  'VpnGw2AZ'
-  'VpnGw3AZ'
-  'VpnGw4AZ'
-  'VpnGw5AZ'
-  'ErGw1AZ'
-  'ErGw2AZ'
-  'ErGw3AZ'
-]
-var gatewayPipSku = contains(zoneRedundantSkus, skuName) ? 'Standard' : 'Basic'
-var gatewayPipAllocationMethod = contains(zoneRedundantSkus, skuName) ? 'Static' : 'Dynamic'
+var zones = [for zone in publicIpZones: string(zone)]
+
+var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
 var virtualGatewayPipNameVar = isActiveActiveValid
@@ -224,7 +215,7 @@ var vpnClientConfiguration = !empty(clientRootCertData)
         {
           name: 'RootCert1'
           properties: {
-            PublicCertData: clientRootCertData
+            publicCertData: clientRootCertData
           }
         }
       ]
@@ -233,7 +224,7 @@ var vpnClientConfiguration = !empty(clientRootCertData)
             {
               name: 'RevokedCert1'
               properties: {
-                Thumbprint: clientRevokedCertThumbprint
+                thumbprint: clientRevokedCertThumbprint
               }
             }
           ]
@@ -271,6 +262,7 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
 
 // ================//
 // Deployments     //
@@ -311,8 +303,8 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
       publicIPAllocationMethod: gatewayPipAllocationMethod
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
-      skuName: gatewayPipSku
-      zones: contains(zoneRedundantSkus, skuName) ? publicIpZones : []
+      skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
+      zones: skuName != 'Basic' ? zones : []
       dnsSettings: {
         domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]

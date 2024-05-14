@@ -67,23 +67,23 @@ module testDeployment '../../../main.bicep' = [
         sku: '22_04-lts-gen2'
         version: 'latest'
       }
-      availabilityZone: 0
+      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [
             {
               name: 'ipconfig01'
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
               pipConfiguration: {
                 publicIpNameSuffix: '-pip-01'
               }
-              subnetResourceId: nestedDependencies.outputs.subnetResourceId
             }
           ]
           nicSuffix: '-nic-01'
         }
       ]
       osDisk: {
-        diskSizeGB: '128'
+        diskSizeGB: 128
         caching: 'ReadWrite'
         managedDisk: {
           storageAccountType: 'Premium_LRS'

@@ -59,7 +59,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
     $moduleFolderTestCases = [System.Collections.ArrayList] @()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
-      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
       $moduleFolderTestCases += @{
         moduleFolderName = $resourceTypeIdentifier
         moduleFolderPath = $moduleFolderPath
@@ -146,11 +146,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
     $topLevelModuleTestCases = [System.Collections.ArrayList]@()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
-      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+      $moduleTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[1] # 'avm/res|ptn/<provider>/<resourceType>' would return 'res|ptn'
       if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
         $topLevelModuleTestCases += @{
-          moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-          moduleFolderPath = $moduleFolderPath
+          moduleFolderName     = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+          moduleFolderPath     = $moduleFolderPath
+          moduleTypeIdentifier = $moduleTypeIdentifier
         }
       }
     }
@@ -185,7 +187,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases $topLevelModuleTestCases {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleTypeIdentifier -eq 'res' }) {
 
       param(
         [string] $moduleFolderPath
@@ -195,11 +197,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $wafAlignedFolder | Should -Not -BeNullOrEmpty
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases $topLevelModuleTestCases {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleTypeIdentifier -eq 'res' }) {
 
       param(
         [string] $moduleFolderPath
       )
+
+      # only one Domain-Services instance can be provisioned in a tenant and only one test (the waf-aligned) is possible.
+      if ($moduleFolderName.Equals('res/aad/domain-service')) {
+        Set-ItResult -Skipped -Because 'only one instance of the Domain-Service can be deployed at a time, and as such, also only one test can exist at a time.'
+        return
+      }
 
       $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
       $defaultsFolder | Should -Not -BeNullOrEmpty
@@ -227,7 +235,7 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
   $pipelineTestCases = [System.Collections.ArrayList] @()
   foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
     $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
 
     $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
@@ -282,7 +290,7 @@ Describe 'Module tests' -Tag 'Module' {
 
     foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
       $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
       $readmeFileTestCases += @{
@@ -324,7 +332,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
       $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
-      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `Set-ModuleReadMe` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the script for this module''s template.' -f $mdFormattedDiff)
+      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/avm/utilities/tools/Set-AVMModule.ps1` and more precisely the `/avm/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
     }
   }
 
@@ -340,7 +348,7 @@ Describe 'Module tests' -Tag 'Module' {
         continue
       }
 
-      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
 
       $armTemplateTestCases += @{
         moduleFolderName = $resourceTypeIdentifier
@@ -392,7 +400,7 @@ Describe 'Module tests' -Tag 'Module' {
       $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
       $templateFileContent = $builtTestFileMap[$templateFilePath]
 
-      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
 
       # Test file setup
       $moduleFolderTestCases += @{
@@ -618,7 +626,12 @@ Describe 'Module tests' -Tag 'Module' {
         $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-          $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+          if ($moduleFolderPath -match '[\/|\\]avm[\/|\\]ptn[\/|\\]') {
+            # Skip UDT interface tests for ptn modules
+            continue
+          }
+
+          $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
           $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
           $templateFileContent = $builtTestFileMap[$templateFilePath]
 
@@ -797,17 +810,17 @@ Describe 'Module tests' -Tag 'Module' {
           return
         }
 
-        $CamelCasingFlag = @()
-        $Variable = $templateFileContent.variables.Keys
+        $incorrectVariables = @()
+        $Variables = $templateFileContent.variables.Keys
 
-        foreach ($Variab in $Variable) {
-          if ($Variab.substring(0, 1) -cnotmatch '[a-z]' -or $Variab -match '-') {
-            $CamelCasingFlag += $false
-          } else {
-            $CamelCasingFlag += $true
+        foreach ($variable in $Variables) {
+          # ^[a-z]+[a-zA-Z]+$ = starts with lower-case letter & may have uppercase letter later
+          # ^\$fxv#[0-9]+$ = starts with [$fxv#] & ends with a number. This function value is created as a variable when using a Bicep function like loadFileAsBase64() or loadFromJson()
+          if ($variable -cnotmatch '^[a-z]+[a-zA-Z]+$|^\$fxv#[0-9]+$' -or $variable -match '-') {
+            $incorrectVariables += $variable
           }
         }
-        $CamelCasingFlag | Should -Not -Contain $false
+        $incorrectVariables | Should -BeNullOrEmpty
       }
     }
 
@@ -825,7 +838,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
         $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
       }
 
@@ -842,7 +855,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -865,7 +878,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -919,7 +932,7 @@ Describe 'Module tests' -Tag 'Module' {
         } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
-        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' }).name # The AVM telemetry prefix
+        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' }).name # The AVM telemetry prefix
         $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
       }
     }
@@ -1102,7 +1115,7 @@ Describe 'Governance tests' {
   $governanceTestCases = [System.Collections.ArrayList] @()
   foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
     $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
 
     $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
@@ -1138,7 +1151,6 @@ Describe 'Governance tests' {
     $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
   }
 
-
   It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
 
     param(
@@ -1151,10 +1163,9 @@ Describe 'Governance tests' {
 
     # Identify listed modules
     $startIndex = 0
-    while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
+    while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
       $startIndex++
     }
-    $startIndex++ # Go one further than dummy value line
 
     $endIndex = $startIndex
     while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
@@ -1195,7 +1206,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
         foreach ($testFilePath in $testFilePaths) {
           $testFileContent = Get-Content $testFilePath
-          $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+          $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
 
           $deploymentTestFileTestCases += @{
             testName         = Split-Path (Split-Path $testFilePath) -Leaf

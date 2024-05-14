@@ -20,6 +20,10 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main
@@ -29,6 +33,7 @@ on:
       - ".github/workflows/avm.res.recovery-services.vault.yml"
       - "avm/res/recovery-services/vault/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

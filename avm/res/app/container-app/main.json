@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "18118452764225711784"
+      "version": "0.26.170.59819",
+      "templateHash": "11829581770848647649"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -178,16 +178,16 @@
     },
     "scaleMaxReplicas": {
       "type": "int",
-      "defaultValue": 1,
+      "defaultValue": 10,
       "metadata": {
         "description": "Optional. Maximum number of container replicas. Defaults to 10 if not set."
       }
     },
     "scaleMinReplicas": {
       "type": "int",
-      "defaultValue": 0,
+      "defaultValue": 3,
       "metadata": {
-        "description": "Optional. Minimum number of container replicas."
+        "description": "Optional. Minimum number of container replicas. Defaults to 3 if not set."
       }
     },
     "scaleRules": {
@@ -483,6 +483,13 @@
         "description": "The resource ID of the Container App."
       },
       "value": "[resourceId('Microsoft.App/containerApps', parameters('name'))]"
+    },
+    "fqdn": {
+      "type": "string",
+      "metadata": {
+        "description": "The configuration of ingress fqdn."
+      },
+      "value": "[reference('containerApp').configuration.ingress.fqdn]"
     },
     "resourceGroupName": {
       "type": "string",

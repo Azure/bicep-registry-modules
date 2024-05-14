@@ -254,6 +254,12 @@ function Set-DefinitionSection {
         $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
     }
 
+    # Error handling: Throw error if any parameter is missing a category
+    if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
+        $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
+        throw ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+    }
+
     # Get the module parameter categories
     $paramCategories = $descriptions | ForEach-Object { $_.Split('.')[0] } | Select-Object -Unique
 
@@ -410,17 +416,32 @@ function Set-DefinitionSection {
 
             #recursive call for children
             if ($definition) {
-                if ($definition.ContainsKey('items') -and $definition['items'].ContainsKey('properties')) {
-                    $childProperties = $definition['items']['properties']
-                    $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
-
-                    $listSectionContent += $sectionContent
-
-                } elseif ($definition.type -eq 'object' -and $definition['properties']) {
-                    $childProperties = $definition['properties']
-                    $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
-
-                    $listSectionContent += $sectionContent
+                # 'items' refers to an array
+                # 'properties' is the default for UDTs, 'additionalProperties' represents a used '*' identifier
+                if ($definition.Keys -contains 'items' -and ($definition.items.properties.Keys -or $definition.items.additionalProperties.Keys)) {
+                    if ($definition.items.properties.Keys) {
+                        $childProperties = $definition.items.properties
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
+                    if ($definition.items.additionalProperties.Keys) {
+                        $childProperties = $definition.items.additionalProperties
+                        $formattedProperties = @{ '>Any_other_property<' = $childProperties }
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
+                } elseif ($definition.type -eq 'object' -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
+                    if ($definition.properties.Keys) {
+                        $childProperties = $definition.properties
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
+                    if ($definition.additionalProperties.Keys) {
+                        $childProperties = $definition.additionalProperties
+                        $formattedProperties = @{ '>Any_other_property<' = $childProperties }
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $listSectionContent += $sectionContent
+                    }
                 }
             }
         }
@@ -545,10 +566,12 @@ function Set-DataCollectionSection {
             if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $telemetryFileContent = $rawResponse.Content -split '\n'
             } else {
-                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                return $ReadMeFileContent
             }
         } catch {
-            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Invalid url
+            return $ReadMeFileContent
         }
     } else {
         $telemetryFileContent = $PreLoadedContent.TelemetryFileContent
@@ -954,6 +977,11 @@ function ConvertTo-FormattedJSONParameterObject {
     for ($index = 0; $index -lt $paramInJSONFormatArray.Count; $index++) {
 
         $line = $paramInJSONFormatArray[$index]
+
+        if ($line -match '^\s*\/\/.*') {
+            # Line is comment
+            continue
+        }
 
         # [2.4] Syntax:
         # - Everything left of a leftest ':' should be wrapped in quotes (as a parameter name is always a string)

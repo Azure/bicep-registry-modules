@@ -1,4 +1,6 @@
 node_modules
 .netrc
 moduleIndex.json
+last-moduleIndex.json
+generated-moduleIndex.json
 .DS_Store

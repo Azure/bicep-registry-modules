@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15192198614426327006"
+      "version": "0.26.170.59819",
+      "templateHash": "16322713515483912947"
     },
     "name": "Service Bus Namespace Migration Configuration",
     "description": "This module deploys a Service Bus Namespace Migration Configuration.",
@@ -14,8 +14,8 @@
   "parameters": {
     "namespaceName": {
       "type": "string",
-      "minLength": 6,
-      "maxLength": 50,
+      "minLength": 1,
+      "maxLength": 260,
       "metadata": {
         "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
       }

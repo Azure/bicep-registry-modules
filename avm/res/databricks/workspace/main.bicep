@@ -103,45 +103,62 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (!empty(customerManagedKey.?keyVaultResourceId)) {
+    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    resource cMKKey 'keys@2023-02-01' existing =
+      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+        name: customerManagedKey.?keyName ?? 'dummyKey'
+      }
   }
-}
 
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId)) {
-  name: last(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '////'), '/')[4])
+resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId)) {
+    name: last(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '//'), '/')[2],
+      split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '////'), '/')[4]
+    )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
-    name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
+    resource cMKKey 'keys@2023-02-01' existing =
+      if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
+        name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
+      }
   }
-}
 
 resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
   name: name
@@ -151,7 +168,9 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
     name: skuName
   }
   properties: {
-    managedResourceGroupId: !empty(managedResourceGroupResourceId) ? managedResourceGroupResourceId : '${subscription().id}/resourceGroups/${name}-rg'
+    managedResourceGroupId: !empty(managedResourceGroupResourceId)
+      ? managedResourceGroupResourceId
+      : '${subscription().id}/resourceGroups/${name}-rg'
     parameters: union(
       // Always added parameters
       {
@@ -169,166 +188,220 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
         }
       },
       // Parameters only added if not empty
-      !empty(customVirtualNetworkResourceId) ? {
-        customVirtualNetworkId: {
-          value: customVirtualNetworkResourceId
-        }
-      } : {},
-      !empty(amlWorkspaceResourceId) ? {
-        amlWorkspaceId: {
-          value: amlWorkspaceResourceId
-        }
-      } : {},
-      !empty(customPrivateSubnetName) ? {
-        customPrivateSubnetName: {
-          value: customPrivateSubnetName
-        }
-      } : {},
-      !empty(customPublicSubnetName) ? {
-        customPublicSubnetName: {
-          value: customPublicSubnetName
-        }
-      } : {},
-      !empty(loadBalancerBackendPoolName) ? {
-        loadBalancerBackendPoolName: {
-          value: loadBalancerBackendPoolName
-        }
-      } : {},
-      !empty(loadBalancerResourceId) ? {
-        loadBalancerId: {
-          value: loadBalancerResourceId
-        }
-      } : {},
-      !empty(natGatewayName) ? {
-        natGatewayName: {
-          value: natGatewayName
-        }
-      } : {},
-      !empty(publicIpName) ? {
-        publicIpName: {
-          value: publicIpName
-        }
-      } : {},
-      !empty(storageAccountName) ? {
-        storageAccountName: {
-          value: storageAccountName
-        }
-      } : {},
-      !empty(storageAccountSkuName) ? {
-        storageAccountSkuName: {
-          value: storageAccountSkuName
-        }
-      } : {})
+      !empty(customVirtualNetworkResourceId)
+        ? {
+            customVirtualNetworkId: {
+              value: customVirtualNetworkResourceId
+            }
+          }
+        : {},
+      !empty(amlWorkspaceResourceId)
+        ? {
+            amlWorkspaceId: {
+              value: amlWorkspaceResourceId
+            }
+          }
+        : {},
+      !empty(customPrivateSubnetName)
+        ? {
+            customPrivateSubnetName: {
+              value: customPrivateSubnetName
+            }
+          }
+        : {},
+      !empty(customPublicSubnetName)
+        ? {
+            customPublicSubnetName: {
+              value: customPublicSubnetName
+            }
+          }
+        : {},
+      !empty(loadBalancerBackendPoolName)
+        ? {
+            loadBalancerBackendPoolName: {
+              value: loadBalancerBackendPoolName
+            }
+          }
+        : {},
+      !empty(loadBalancerResourceId)
+        ? {
+            loadBalancerId: {
+              value: loadBalancerResourceId
+            }
+          }
+        : {},
+      !empty(natGatewayName)
+        ? {
+            natGatewayName: {
+              value: natGatewayName
+            }
+          }
+        : {},
+      !empty(publicIpName)
+        ? {
+            publicIpName: {
+              value: publicIpName
+            }
+          }
+        : {},
+      !empty(storageAccountName)
+        ? {
+            storageAccountName: {
+              value: storageAccountName
+            }
+          }
+        : {},
+      !empty(storageAccountSkuName)
+        ? {
+            storageAccountSkuName: {
+              value: storageAccountSkuName
+            }
+          }
+        : {}
+    )
     publicNetworkAccess: publicNetworkAccess
     requiredNsgRules: requiredNsgRules
-    encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk) ? {
-      entities: {
-        managedServices: !empty(customerManagedKey) ? {
-          keySource: 'Microsoft.Keyvault'
-          keyVaultProperties: {
-            keyVaultUri: cMKKeyVault.properties.vaultUri
-            keyName: customerManagedKey!.keyName
-            keyVersion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+    encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
+      ? {
+          entities: {
+            managedServices: !empty(customerManagedKey)
+              ? {
+                  keySource: 'Microsoft.Keyvault'
+                  keyVaultProperties: {
+                    keyVaultUri: cMKKeyVault.properties.vaultUri
+                    keyName: customerManagedKey!.keyName
+                    keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                      ? customerManagedKey!.keyVersion
+                      : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                  }
+                }
+              : null
+            managedDisk: !empty(customerManagedKeyManagedDisk)
+              ? {
+                  keySource: 'Microsoft.Keyvault'
+                  keyVaultProperties: {
+                    keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
+                    keyName: customerManagedKeyManagedDisk!.keyName
+                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
+                      ? customerManagedKeyManagedDisk!.keyVersion
+                      : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                  }
+                  rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
+                }
+              : null
           }
-        } : null
-        managedDisk: !empty(customerManagedKeyManagedDisk) ? {
-          keySource: 'Microsoft.Keyvault'
-          keyVaultProperties: {
-            keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
-            keyName: customerManagedKeyManagedDisk!.keyName
-            keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '') ? customerManagedKeyManagedDisk!.keyVersion : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-          }
-          rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
-        } : null
-      }
-    } : null
+        }
+      : null
   }
 }
 
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: workspace
   }
-  scope: workspace
-}
 
 // Note: Diagnostic Settings are only supported by the premium tier
-resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: workspace
   }
-  scope: workspace
-}]
+]
 
-resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: workspace
   }
-  scope: workspace
-}]
+]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Databricks-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: workspace.id
-          groupIds: [
-            privateEndpoint.service
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Databricks-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: workspace.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+              }
+            }
           ]
-        }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: workspace.id
-          groupIds: [
-            privateEndpoint.service
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: workspace.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
           ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-        }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-}]
+]
 
 @description('The name of the deployed databricks workspace.')
 output name string = workspace.name
@@ -352,7 +425,11 @@ output managedResourceGroupName string = last(split(workspace.properties.managed
 output storageAccountName string = workspace.properties.parameters.storageAccountName.value
 
 @description('The resource ID of the DBFS storage account.')
-output storageAccountId string = resourceId(last(split(workspace.properties.managedResourceGroupId, '/')), 'microsoft.storage/storageAccounts', workspace.properties.parameters.storageAccountName.value)
+output storageAccountId string = resourceId(
+  last(split(workspace.properties.managedResourceGroupId, '/')),
+  'microsoft.storage/storageAccounts',
+  workspace.properties.parameters.storageAccountName.value
+)
 
 @description('The workspace URL which is of the format \'adb-{workspaceId}.{random}.azuredatabricks.net\'.')
 output workspaceUrl string = workspace.properties.workspaceUrl
@@ -361,10 +438,12 @@ output workspaceUrl string = workspace.properties.workspaceUrl
 output workspaceId string = workspace.properties.workspaceId
 
 @description('The private endpoints for the Databricks Workspace.')
-output privateEndpoints array = [for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-  name: workspace_privateEndpoints[i].outputs.name
-  resourceId: workspace_privateEndpoints[i].outputs.resourceId
-}]
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: workspace_privateEndpoints[i].outputs.name
+    resourceId: workspace_privateEndpoints[i].outputs.resourceId
+  }
+]
 
 // =============== //
 //   Definitions   //

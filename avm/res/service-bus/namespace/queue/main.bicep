@@ -3,13 +3,13 @@ metadata description = 'This module deploys a Service Bus Namespace Queue.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment.')
-@minLength(6)
-@maxLength(50)
+@minLength(1)
+@maxLength(260)
 param namespaceName string
 
 @description('Required. Name of the Service Bus Queue.')
-@minLength(6)
-@maxLength(50)
+@minLength(1)
+@maxLength(260)
 param name string
 
 @description('Optional. ISO 8061 timeSpan idle interval after which the queue is automatically deleted. The minimum duration is 5 minutes (PT5M).')
@@ -72,18 +72,7 @@ param enablePartitioning bool = false
 param enableExpress bool = false
 
 @description('Optional. Authorization Rules for the Service Bus Queue.')
-param authorizationRules array = [
-  {
-    name: 'RootManageSharedAccessKey'
-    properties: {
-      rights: [
-        'Listen'
-        'Manage'
-        'Send'
-      ]
-    }
-  }
-]
+param authorizationRules array = []
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -156,17 +145,16 @@ module queue_authorizationRules 'authorization-rule/main.bicep' = [
   }
 ]
 
-resource queue_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: queue
+resource queue_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: queue
+}
 
 resource queue_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
