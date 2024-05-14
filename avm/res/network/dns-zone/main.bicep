@@ -8,34 +8,34 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. Array of A records.')
-param a array?
+param a aType
 
 @description('Optional. Array of AAAA records.')
-param aaaa array?
+param aaaa aaaaType
 
 @description('Optional. Array of CNAME records.')
-param cname array?
+param cname cnameType
 
 @description('Optional. Array of CAA records.')
-param caa array?
+param caa caaType
 
 @description('Optional. Array of MX records.')
-param mx array?
+param mx mxType
 
 @description('Optional. Array of NS records.')
-param ns array?
+param ns nsType
 
 @description('Optional. Array of PTR records.')
-param ptr array?
+param ptr ptrType
 
 @description('Optional. Array of SOA records.')
-param soa array?
+param soa soaType
 
 @description('Optional. Array of SRV records.')
-param srv array?
+param srv srvType
 
 @description('Optional. Array of TXT records.')
-param txt array?
+param txt txtType
 
 @description('Optional. The location of the dnsZone. Should be global.')
 param location string = 'global'
