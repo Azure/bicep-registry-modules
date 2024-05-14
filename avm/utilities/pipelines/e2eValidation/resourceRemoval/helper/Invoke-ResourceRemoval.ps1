@@ -203,8 +203,9 @@ function Invoke-ResourceRemoval {
                 $null = Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
 
                 # Delete NetworkWatcher resource group
-                $rsgNetworkWatcherName = "NetworkWatcherRG"
-                $null = Remove-AzResourceGroup -Name $rsgNetworkWatcherName -Force
+                if($null -ne (Get-AzResourceGroup -Name "NetworkWatcherRG")){
+                  $null = Remove-AzResourceGroup -Name "NetworkWatcherRG" -Force
+                }
 
                 # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
                 if($null -eq (Get-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId)){
