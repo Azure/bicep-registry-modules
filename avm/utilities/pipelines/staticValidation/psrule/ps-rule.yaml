@@ -81,4 +81,3 @@ rule:
     - Azure.VM.UseHybridUseBenefit
     - Azure.Storage.UseReplication
     - Azure.AppConfig.PurgeProtect
-    - Custom.Azure.Storage.UseReplication # Custom rule not working as expected
