@@ -188,6 +188,7 @@ function Invoke-ResourceRemoval {
         'Microsoft.Subscription/aliases' {
             Update-Module -Name Az.Accounts -Force
             Update-Module -Name Az.Subscription -Force
+            Import-Module Az.Subscription -Force
 
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscription = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName}
