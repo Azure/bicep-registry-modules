@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "10912300028765364457"
+      "version": "0.26.54.24096",
+      "templateHash": "9794166259717067711"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1249,8 +1249,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4734944821726851280"
+              "version": "0.26.54.24096",
+              "templateHash": "3826907101153138616"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1379,8 +1379,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4529365096533369295"
+                      "version": "0.26.54.24096",
+                      "templateHash": "11250469246171251281"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1496,7 +1496,7 @@
                         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
                       }
                     ],
-                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'Range'), 1, 2)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, 1)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
                   },
                   "resources": {
                     "databaseAccount::sqlDatabase": {
@@ -1622,8 +1622,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "5639056745845676149"
+              "version": "0.26.54.24096",
+              "templateHash": "7706794569430424680"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -1725,8 +1725,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "1386103721330773514"
+                      "version": "0.26.54.24096",
+                      "templateHash": "1989910090472113779"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -1881,8 +1881,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "3109673018135989316"
+              "version": "0.26.54.24096",
+              "templateHash": "13414524346849431368"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -1985,8 +1985,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "6724425358975181223"
+                      "version": "0.26.54.24096",
+                      "templateHash": "2823004405398378621"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
@@ -2848,8 +2848,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "10852346882277791994"
+              "version": "0.26.54.24096",
+              "templateHash": "3376784638805058420"
             }
           },
           "definitions": {

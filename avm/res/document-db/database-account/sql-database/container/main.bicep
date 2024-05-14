@@ -62,7 +62,7 @@ var containerResourceParams = union(
     partitionKey: {
       paths: partitionKeyPaths
       kind: kind
-      version: kind == 'Range' ? 1 : 2
+      version: kind == 'MultiHash' ? 2 : 1
     }
     uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
       ? {

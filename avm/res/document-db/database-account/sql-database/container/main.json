@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "4529365096533369295"
+      "version": "0.26.54.24096",
+      "templateHash": "11250469246171251281"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -122,7 +122,7 @@
         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
       }
     ],
-    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'Range'), 1, 2)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, 1)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
   },
   "resources": {
     "databaseAccount::sqlDatabase": {
