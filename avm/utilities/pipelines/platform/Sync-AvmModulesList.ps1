@@ -36,7 +36,7 @@ function Sync-AvmModulesList {
 
   $issueTemplatePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
   $issueTemplateContent = Get-Content $issueTemplatePath
-
+  
   # Identify listed modules
   $startIndex = 0
   while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
@@ -54,41 +54,45 @@ function Sync-AvmModulesList {
 
   $body = ''
 
-  $missingModules = $targetModules | Where-Object { $listedModules -NotContains $_ }
-  $unexpectedModules = $listedModules | Where-Object { $targetModules -NotContains $_ }
-  $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -NotContains $_ }
-  $missingPatterns = $targetPatterns | Where-Object { $listedPatterns -NotContains $_ }
+  $missingModules = $targetModules | Where { $listedModules -NotContains $_ }
+  $unexpectedModules = $listedModules | Where { $targetModules -NotContains $_ }
+  $unexpectedPatterns = $listedPatterns | Where { $targetPatterns -NotContains $_ }
+  $missingPatterns = $targetPatterns | Where { $listedPatterns -NotContains $_ }
 
-  if ($missingModules.Count -gt 0) {
+  if ($missingModules.Count -gt 0)
+  {
     $body += @"
-**Missing modules:**
+**Missing resource modules:**
 
 $($missingModules -join ([Environment]::NewLine))
 $([Environment]::NewLine)
 "@
   }
 
-  if ($unexpectedModules.Count -gt 0) {
+  if ($unexpectedModules.Count -gt 0)
+  {
     $body += @"
-**Unexpected modules:**
+**Unexpected resource modules:**
 
 $($unexpectedModules -join ([Environment]::NewLine))
 $([Environment]::NewLine)
 "@
   }
 
-  if ($missingPatterns.Count -gt 0) {
+  if ($missingPatterns.Count -gt 0)
+  {
     $body += @"
-**Missing patterns:**
+**Missing pattern modules:**
 
 $($missingPatterns -join ([Environment]::NewLine))
 $([Environment]::NewLine)
 "@
   }
 
-  if ($unexpectedPatterns.Count -gt 0) {
+  if ($unexpectedPatterns.Count -gt 0)
+  {
     $body += @"
-**Unexpected patterns:**
+**Unexpected pattern modules:**
 
 $($unexpectedPatterns -join ([Environment]::NewLine))
 $([Environment]::NewLine)
@@ -104,9 +108,10 @@ $([Environment]::NewLine)
   }
   $incorrectModuleLines = $incorrectModuleLines | Sort-Object -Unique
 
-  if ($incorrectModuleLines.Count -gt 0) {
+  if ($incorrectModuleLines.Count -gt 0)
+  {
     $body += @"
-**Modules that are not correctly sorted:**
+**Resource modules that are not correctly sorted:**
 
 $($incorrectModuleLines -join ([Environment]::NewLine))
 $([Environment]::NewLine)
@@ -121,9 +126,10 @@ $([Environment]::NewLine)
   }
   $incorrectPatternLines = $incorrectPatternLines | Sort-Object -Unique
 
-  if ($incorrectPatternLines.Count -gt 0) {
+  if ($incorrectPatternLines.Count -gt 0)
+  {
     $body += @"
-**Patterns that are not correctly sorted:**
+**Pattern modules that are not correctly sorted:**
 
 $($incorrectPatternLines -join ([Environment]::NewLine))
 $([Environment]::NewLine)
@@ -131,13 +137,13 @@ $([Environment]::NewLine)
   }
 
   if ($body -ne '') {
-    $title = '[AVM core] AVM Module Issue template is not in sync with published module list'
+    $title = '[AVM core] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
     $label = 'Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:'
     $issues = gh issue list --state open --limit 500 --label $label --json 'title,url' --repo $Repo | ConvertFrom-Json -Depth 100
 
     $body = @"
 > [!IMPORTANT]
-> The file '.github/ISSUE_TEMPLATE/avm_module_issue.yml' which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under 'https://aka.ms/avm/index/bicep/res/csv' and 'https://aka.ms/avm/index/bicep/ptn/csv'. These CSV files are the single source of truth regarding published modules. Please update the 'avm_module_issue.yml' accordingly. Please see the following differences that were found.
+> The file [avm_module_issue.yml](https://github.com/Azure/bicep-registry-modules/blob/main/.github/ISSUE_TEMPLATE/avm_module_issue.yml?plain=1) which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under [resource modules](https://aka.ms/avm/index/bicep/res/csv) and [pattern modules](https://aka.ms/avm/index/bicep/ptn/csv). These CSV files are the single source of truth regarding published modules. Please update the ``avm_module_issue.yml`` accordingly. Please see the following differences that were found.
 $([Environment]::NewLine)
 "@ + $body
 
@@ -147,7 +153,8 @@ $([Environment]::NewLine)
       # add issue to project
       $ProjectNumber = 538 # AVM - Issue Triage
       Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
-    } else {
+    }
+    else {
       # update body
       gh issue edit $issues[0].url --body $body --repo $Repo
     }
