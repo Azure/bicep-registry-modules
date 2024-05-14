@@ -420,7 +420,7 @@ type txtType = {
 
   @description('Optional. The list of TXT records in the record set.')
   txtRecords: {
-    @description('Required.	The text value of this TXT record.')
-    value: array
+    @description('Required. The text value of this TXT record.')
+    value: string[]
   }[]?
 }[]?

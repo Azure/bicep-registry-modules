@@ -2370,6 +2370,14 @@ The list of TXT records in the record set.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`value`](#parameter-txttxtrecordsvalue) | array | The text value of this TXT record. |
+
+### Parameter: `txt.txtRecords.value`
+
+The text value of this TXT record.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `virtualNetworkLinks`
 
