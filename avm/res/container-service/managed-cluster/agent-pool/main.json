@@ -1,0 +1,380 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "8772299678418708256"
+    },
+    "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "managedClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the agent pool."
+      }
+    },
+    "availabilityZones": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of Availability zones to use for nodes. This can only be specified if the AgentPoolType property is \"VirtualMachineScaleSets\"."
+      }
+    },
+    "count": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 0,
+      "maxValue": 1000,
+      "metadata": {
+        "description": "Optional. Desired Number of agents (VMs) specified to host docker containers. Allowed values must be in the range of 0 to 1000 (inclusive) for user pools and in the range of 1 to 1000 (inclusive) for system pools. The default value is 1."
+      }
+    },
+    "sourceResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. This is the ARM ID of the source object to be used to create the target object."
+      }
+    },
+    "enableAutoScaling": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to enable auto-scaler."
+      }
+    },
+    "enableEncryptionAtHost": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. This is only supported on certain VM sizes and in certain Azure regions. For more information, see: /azure/aks/enable-host-encryption. For security reasons, this setting should be enabled."
+      }
+    },
+    "enableFIPS": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. See Add a FIPS-enabled node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview) for more details."
+      }
+    },
+    "enableNodePublicIP": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Some scenarios may require nodes in a node pool to receive their own dedicated public IP addresses. A common scenario is for gaming workloads, where a console needs to make a direct connection to a cloud virtual machine to minimize hops. For more information see assigning a public IP per node (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools)."
+      }
+    },
+    "enableUltraSSD": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to enable UltraSSD."
+      }
+    },
+    "gpuInstanceProfile": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "MIG1g",
+        "MIG2g",
+        "MIG3g",
+        "MIG4g",
+        "MIG7g"
+      ],
+      "metadata": {
+        "description": "Optional. GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU."
+      }
+    },
+    "kubeletDiskType": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage."
+      }
+    },
+    "maxCount": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The maximum number of nodes for auto-scaling."
+      }
+    },
+    "maxPods": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The maximum number of pods that can run on a node."
+      }
+    },
+    "minCount": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The minimum number of nodes for auto-scaling."
+      }
+    },
+    "mode": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A cluster must have at least one \"System\" Agent Pool at all times. For additional information on agent pool restrictions and best practices, see: /azure/aks/use-system-pools."
+      }
+    },
+    "nodeLabels": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The node labels to be persisted across all nodes in agent pool."
+      }
+    },
+    "nodePublicIpPrefixId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. ResourceId of the node PublicIPPrefix."
+      }
+    },
+    "nodeTaints": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule."
+      }
+    },
+    "orchestratorVersion": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. As a best practice, you should upgrade all node pools in an AKS cluster to the same Kubernetes version. The node pool version must have the same major version as the control plane. The node pool minor version must be within two minor versions of the control plane version. The node pool version cannot be greater than the control plane version. For more information see upgrading a node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#upgrade-a-node-pool)."
+      }
+    },
+    "osDiskSizeGB": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. OS Disk Size in GB to be used to specify the disk size for every machine in the master/agent pool. If you specify 0, it will apply the default osDisk size according to the vmSize specified."
+      }
+    },
+    "osDiskType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Ephemeral",
+        "Managed"
+      ],
+      "metadata": {
+        "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
+      }
+    },
+    "osSku": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "AzureLinux",
+        "CBLMariner",
+        "Ubuntu",
+        "Windows2019",
+        "Windows2022"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows."
+      }
+    },
+    "osType": {
+      "type": "string",
+      "defaultValue": "Linux",
+      "allowedValues": [
+        "Linux",
+        "Windows"
+      ],
+      "metadata": {
+        "description": "Optional. The operating system type. The default is Linux."
+      }
+    },
+    "podSubnetId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
+      }
+    },
+    "proximityPlacementGroupResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The ID for the Proximity Placement Group."
+      }
+    },
+    "scaleDownMode": {
+      "type": "string",
+      "defaultValue": "Delete",
+      "allowedValues": [
+        "Deallocate",
+        "Delete"
+      ],
+      "metadata": {
+        "description": "Optional. Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing)."
+      }
+    },
+    "scaleSetEvictionPolicy": {
+      "type": "string",
+      "defaultValue": "Delete",
+      "allowedValues": [
+        "Deallocate",
+        "Delete"
+      ],
+      "metadata": {
+        "description": "Optional. The eviction policy specifies what to do with the VM when it is evicted. The default is Delete. For more information about eviction see spot VMs."
+      }
+    },
+    "scaleSetPriority": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Regular",
+        "Spot"
+      ],
+      "metadata": {
+        "description": "Optional. The Virtual Machine Scale Set priority."
+      }
+    },
+    "spotMaxPrice": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Possible values are any decimal value greater than zero or -1 which indicates the willingness to pay any on-demand price. For more details on spot pricing, see spot VMs pricing (https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms#pricing)."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "type": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The type of Agent Pool."
+      }
+    },
+    "maxSurge": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. This can either be set to an integer (e.g. \"5\") or a percentage (e.g. \"50%\"). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1. For more information, including best practices, see: /azure/aks/upgrade-cluster#customize-node-surge-upgrade."
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v3",
+      "metadata": {
+        "description": "Optional. VM size. VM size availability varies by region. If a node contains insufficient compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted VM sizes, see: /azure/aks/quotas-skus-regions."
+      }
+    },
+    "vnetSubnetId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
+      }
+    },
+    "workloadRuntime": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Determines the type of workload a node can run."
+      }
+    }
+  },
+  "resources": {
+    "managedCluster": {
+      "existing": true,
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2023-07-02-preview",
+      "name": "[parameters('managedClusterName')]"
+    },
+    "agentPool": {
+      "type": "Microsoft.ContainerService/managedClusters/agentPools",
+      "apiVersion": "2023-07-02-preview",
+      "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
+      "properties": {
+        "availabilityZones": "[parameters('availabilityZones')]",
+        "count": "[parameters('count')]",
+        "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
+        "enableAutoScaling": "[parameters('enableAutoScaling')]",
+        "enableEncryptionAtHost": "[parameters('enableEncryptionAtHost')]",
+        "enableFIPS": "[parameters('enableFIPS')]",
+        "enableNodePublicIP": "[parameters('enableNodePublicIP')]",
+        "enableUltraSSD": "[parameters('enableUltraSSD')]",
+        "gpuInstanceProfile": "[parameters('gpuInstanceProfile')]",
+        "kubeletDiskType": "[parameters('kubeletDiskType')]",
+        "maxCount": "[parameters('maxCount')]",
+        "maxPods": "[parameters('maxPods')]",
+        "minCount": "[parameters('minCount')]",
+        "mode": "[parameters('mode')]",
+        "nodeLabels": "[parameters('nodeLabels')]",
+        "nodePublicIPPrefixID": "[parameters('nodePublicIpPrefixId')]",
+        "nodeTaints": "[parameters('nodeTaints')]",
+        "orchestratorVersion": "[parameters('orchestratorVersion')]",
+        "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+        "osDiskType": "[parameters('osDiskType')]",
+        "osSKU": "[parameters('osSku')]",
+        "osType": "[parameters('osType')]",
+        "podSubnetID": "[parameters('podSubnetId')]",
+        "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",
+        "scaleDownMode": "[parameters('scaleDownMode')]",
+        "scaleSetEvictionPolicy": "[parameters('scaleSetEvictionPolicy')]",
+        "scaleSetPriority": "[parameters('scaleSetPriority')]",
+        "spotMaxPrice": "[parameters('spotMaxPrice')]",
+        "tags": "[parameters('tags')]",
+        "type": "[parameters('type')]",
+        "upgradeSettings": {
+          "maxSurge": "[parameters('maxSurge')]"
+        },
+        "vmSize": "[parameters('vmSize')]",
+        "vnetSubnetID": "[parameters('vnetSubnetId')]",
+        "workloadRuntime": "[parameters('workloadRuntime')]"
+      },
+      "dependsOn": [
+        "managedCluster"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the agent pool."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the agent pool."
+      },
+      "value": "[resourceId('Microsoft.ContainerService/managedClusters/agentPools', parameters('managedClusterName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the agent pool was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

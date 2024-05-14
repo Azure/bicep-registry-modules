@@ -1,10 +1,5 @@
 # App ManagedEnvironments `[Microsoft.App/managedEnvironments]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an App Managed Environment (also known as a Container App Environment).
 
 ## Navigation
@@ -14,6 +9,7 @@ This module deploys an App Managed Environment (also known as a Container App En
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -46,13 +42,27 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemin'
+  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemin001'
     // Non-required parameters
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetId: '<infrastructureSubnetId>'
+    internal: true
     location: '<location>'
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
   }
 }
 ```
@@ -77,8 +87,36 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemin001"
     },
     // Non-required parameters
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetId": {
+      "value": "<infrastructureSubnetId>"
+    },
+    "internal": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
     }
   }
 }
@@ -98,7 +136,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemax'
+  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -248,7 +286,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amewaf'
+  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -401,7 +439,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`infrastructureSubnetId`](#parameter-infrastructuresubnetid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. |
+| [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureSubnetId`](#parameter-infrastructuresubnetid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
+| [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 
 **Optional parameters**
 
@@ -412,18 +456,12 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix for the environment domain. |
-| [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. |
-| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
-| [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. |
-| [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
@@ -440,13 +478,61 @@ Name of the Container Apps Managed Environment.
 - Required: Yes
 - Type: string
 
-### Parameter: `infrastructureSubnetId`
+### Parameter: `dockerBridgeCidr`
 
-Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true.
+CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `infrastructureResourceGroupName`
+
+Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `[take(format('ME_{0}', parameters('name')), 63)]`
+
+### Parameter: `infrastructureSubnetId`
+
+Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `internal`
+
+Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `platformReservedCidr`
+
+IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `platformReservedDnsIP`
+
+An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `workloadProfiles`
+
+Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `certificatePassword`
 
@@ -488,37 +574,13 @@ DNS suffix for the environment domain.
 - Type: string
 - Default: `''`
 
-### Parameter: `dockerBridgeCidr`
-
-CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `infrastructureResourceGroupName`
-
-Name of the infrastructure resource group. If not provided, it will be set with a default value.
-
-- Required: No
-- Type: string
-- Default: `[take(format('ME_{0}', parameters('name')), 63)]`
-
-### Parameter: `internal`
-
-Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `location`
 
@@ -571,22 +633,6 @@ Logs destination.
 - Required: No
 - Type: string
 - Default: `'log-analytics'`
-
-### Parameter: `platformReservedCidr`
-
-IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `platformReservedDnsIP`
-
-An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -684,21 +730,13 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `workloadProfiles`
-
-Workload profiles configured for the Managed Environment.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `zoneRedundant`
 
 Whether or not this Managed Environment is zone-redundant.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 
 ## Outputs
@@ -714,3 +752,7 @@ Whether or not this Managed Environment is zone-redundant.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

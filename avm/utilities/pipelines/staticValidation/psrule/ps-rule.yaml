@@ -16,7 +16,7 @@ binding:
 # Require minimum versions of modules.
 requires:
   PSRule: "@pre >=2.9.0"
-  PSRule.Rules.Azure: ">=1.29.0"
+  PSRule.Rules.Azure: "@pre >=1.29.0"
 
 # Use PSRule for Azure.
 include:
@@ -35,8 +35,9 @@ input:
   pathIgnore:
     # Exclude all files.
     - "*"
-    # Only process test files.
-    - "!avm/**/*.test.bicep"
+    # Only process defaults and waf-aligned test files.
+    - "!avm/**/defaults/*.test.bicep"
+    - "!avm/**/waf-aligned/*.test.bicep"
 
 configuration:
   # Enable automatic expansion of Azure parameter files.
@@ -49,11 +50,34 @@ configuration:
   AZURE_BICEP_FILE_EXPANSION_TIMEOUT: 10
 
   # Custom non-sensitive parameters' names
-  AZURE_DEPLOYMENT_NONSENSITIVE_PARAMETER_NAMES: ["sasTokenValidityLength", "passwordlength","secretname","secreturl","secreturi","secretrotation","secretinterval","secretprovider","secretsprovider","secretref","secretid","disablepassword","sync*passwords","tokenname"]
+  AZURE_DEPLOYMENT_NONSENSITIVE_PARAMETER_NAMES:
+    [
+      "sasTokenValidityLength",
+      "passwordlength",
+      "secretname",
+      "secreturl",
+      "secreturi",
+      "secretrotation",
+      "secretinterval",
+      "secretprovider",
+      "secretsprovider",
+      "secretref",
+      "secretid",
+      "disablepassword",
+      "sync*passwords",
+      "sqlAdministratorLogin",
+      "tokenname",
+      "ssoClientSecretKeyVaultPath",
+      "ssoSecretType",
+      "tokenValidityLength",
+    ]
 
 rule:
   # Enable custom rules that don't exist in the baseline
-  includeLocal: false
+  includeLocal: true
   exclude:
     # Ignore the following rules for all resources
     - Azure.KeyVault.PurgeProtect
+    - Azure.VM.UseHybridUseBenefit
+    - Azure.Storage.UseReplication
+    - Azure.AppConfig.PurgeProtect

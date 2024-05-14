@@ -10,6 +10,7 @@ This module deploys a Kubernetes Configuration Extension.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -33,8 +34,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -43,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcemin'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -107,7 +106,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcemax'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -138,6 +137,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           }
         }
         namespace: 'flux-system'
+        scope: 'cluster'
         suspend: false
       }
     ]
@@ -199,6 +199,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             }
           },
           "namespace": "flux-system",
+          "scope": "cluster",
           "suspend": false
         }
       ]
@@ -233,7 +234,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcewaf'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -264,6 +265,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           }
         }
         namespace: 'flux-system'
+        scope: 'cluster'
         suspend: false
       }
     ]
@@ -325,6 +327,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             }
           },
           "namespace": "flux-system",
+          "scope": "cluster",
           "suspend": false
         }
       ]
@@ -470,7 +473,7 @@ Version of the extension for this extension, if it is "pinned" to a specific ver
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
@@ -493,3 +496,7 @@ az provider register --namespace Microsoft.KubernetesConfiguration
 ```
 
 For more details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

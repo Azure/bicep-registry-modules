@@ -152,6 +152,7 @@ function Test-ModuleLocally {
         $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName
         $ModuleName = Split-Path (Split-Path $TemplateFilePath -Parent) -Leaf
         $utilitiesFolderPath = Split-Path $PSScriptRoot -Parent
+        $moduleRoot = Split-Path $TemplateFilePath
         Write-Verbose "Running local tests for [$ModuleName]"
         # Load Tokens Converter Scripts
         . (Join-Path $utilitiesFolderPath 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
@@ -162,35 +163,6 @@ function Test-ModuleLocally {
         . (Join-Path $PSScriptRoot 'helper' 'Get-TemplateDeploymentWhatIf.ps1')
     }
     process {
-
-        # Find Test Parameter Files
-        # -------------------------
-        if ((Get-Item -Path $ModuleTestFilePath) -is [System.IO.DirectoryInfo]) {
-            $moduleTestFiles = (Get-ChildItem -Path $ModuleTestFilePath -File).FullName
-        } else {
-            $moduleTestFiles = @($ModuleTestFilePath)
-        }
-
-        # Construct Token Configuration Input
-        $tokenConfiguration = @{
-            FilePathList = @($moduleTestFiles)
-            Tokens       = @{}
-        }
-
-        # Add any additional file that may contain tokens
-        foreach ($testFilePath in $moduleTestFiles) {
-            $tokenConfiguration.FilePathList += (Get-LocallyReferencedFileList -FilePath $testFilePath)
-        }
-        $tokenConfiguration.FilePathList = $tokenConfiguration.FilePathList | Sort-Object -Unique
-
-        # Add other template files as they may contain the 'moduleVersion'
-        $moduleRoot = Split-Path $TemplateFilePath
-        $tokenConfiguration.FilePathList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }
-
-        # Add Other Parameter File Tokens (For Testing)
-        $AdditionalTokens.Keys | ForEach-Object {
-            $tokenConfiguration.Tokens[$PSItem] = $AdditionalTokens.$PSItem
-        }
 
         ################
         # PESTER Tests #
@@ -226,19 +198,53 @@ function Test-ModuleLocally {
 
         if (($ValidationTest -or $DeploymentTest -or $WhatIfTest) -and $ValidateOrDeployParameters) {
 
+            # Find Test Parameter Files
+            # -------------------------
+            if ((Get-Item -Path $ModuleTestFilePath) -is [System.IO.DirectoryInfo]) {
+                $moduleTestFiles = (Get-ChildItem -Path $ModuleTestFilePath -File).FullName
+            } else {
+                $moduleTestFiles = @($ModuleTestFilePath)
+            }
+
+            # Construct Token Configuration Input
+            $tokenConfiguration = @{
+                FilePathList = @($moduleTestFiles)
+                Tokens       = @{}
+            }
+
+            # Add any additional file that may contain tokens
+            foreach ($testFilePath in $moduleTestFiles) {
+                $tokenConfiguration.FilePathList += (Get-LocallyReferencedFileList -FilePath $testFilePath)
+            }
+            $tokenConfiguration.FilePathList = $tokenConfiguration.FilePathList | Sort-Object -Unique
+
+            # Add other template files as they may contain the 'moduleVersion'
+            $tokenConfiguration.FilePathList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }
+
+            # Default tokens
+            $tokenConfiguration.Tokens += @{
+                subscriptionId    = $ValidateOrDeployParameters.SubscriptionId
+                managementGroupId = $ValidateOrDeployParameters.ManagementGroupId
+            }
+
+            # Add Other Parameter File Tokens (For Testing)
+            $AdditionalTokens.Keys | ForEach-Object {
+                $tokenConfiguration.Tokens[$PSItem] = $AdditionalTokens.$PSItem
+            }
+
             # Invoke Token Replacement Functionality and Convert Tokens in Parameter Files
             $null = Convert-TokensInFileList @tokenConfiguration
 
             # Deployment & Validation Testing
             # -------------------------------
             $functionInput = @{
-                location             = $ValidateOrDeployParameters.Location
-                resourceGroupName    = $ValidateOrDeployParameters.ResourceGroupName
-                subscriptionId       = $ValidateOrDeployParameters.SubscriptionId
-                managementGroupId    = $ValidateOrDeployParameters.ManagementGroupId
-                additionalParameters = $additionalParameters
-                RepoRoot             = $repoRootPath
-                Verbose              = $true
+                DeploymentMetadataLocation = $ValidateOrDeployParameters.Location
+                resourceGroupName          = $ValidateOrDeployParameters.ResourceGroupName
+                subscriptionId             = $ValidateOrDeployParameters.SubscriptionId
+                managementGroupId          = $ValidateOrDeployParameters.ManagementGroupId
+                additionalParameters       = $additionalParameters
+                RepoRoot                   = $repoRootPath
+                Verbose                    = $true
             }
 
             try {

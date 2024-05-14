@@ -28,7 +28,10 @@ Optional. Set this parameter if you don't want to generate the ReadMe file(s) fo
 Optional. Set this parameter if you don't want to setup the file & folder structure for the module(s).
 
 .PARAMETER ThrottleLimit
-Optional. The number of parallel threads to use for the generation. Defaults to 5.
+Optional. The number of parallel threads to use for the generation.
+
+.PARAMETER SkipVersionCheck
+Optional. Do not check for the latest Bicep CLI version.
 
 .EXAMPLE
 Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
@@ -70,6 +73,9 @@ function Set-AVMModule {
         [switch] $SkipFileAndFolderSetup,
 
         [Parameter(Mandatory = $false)]
+        [switch] $SkipVersionCheck,
+
+        [Parameter(Mandatory = $false)]
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
@@ -83,7 +89,7 @@ function Set-AVMModule {
 
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     if (-not $SkipFileAndFolderSetup -and ((($resolvedPath -split '\bavm\b')[1].Trim('\,/') -split '[\/|\\]').Count -gt 2)) {
-        if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", "Setup")) {
+        if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
             Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
         }
     }
@@ -103,11 +109,62 @@ function Set-AVMModule {
         $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
     }
 
+    if (-not $SkipVersionCheck) {
+
+        # Get latest release from Azure/Bicep repository
+        # ----------------------------------------------
+        $latestReleaseUrl = 'https://api.github.com/repos/azure/bicep/releases/latest'
+
+        $latestReleaseObject = Invoke-RestMethod -Uri $latestReleaseUrl -Method 'GET'
+        $releaseTag = $latestReleaseObject.tag_name
+        $latestReleaseVersion = [version]($releaseTag -replace 'v', '')
+        $latestReleaseUrl = $latestReleaseObject.html_url
+
+        # Get latest installed Bicep CLI version
+        # --------------------------------------
+        $latestInstalledVersionOutput = bicep --version
+
+        if ($latestInstalledVersionOutput -match ' ([0-9]+\.[0-9]+\.[0-9]+) ') {
+            $latestInstalledVersion = [version]$matches[1]
+        }
+
+        # Compare the versions
+        # --------------------
+        if ($latestInstalledVersion -ne $latestReleaseVersion) {
+            Write-Warning """
+You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
+You can find the latest release at: $latestReleaseUrl.
+
+On Windows, you can use winget to update the Bicep CLI by running 'winget update Microsoft.Bicep' or chocolatey via 'choco upgrade bicep'.
+For other OSs, please refer to the Bicep documentation (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
+
+Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
+"""
+        } else {
+            Write-Verbose "You're using the latest available Bicep CLI version [$latestInstalledVersion]."
+        }
+
+    }
+
     # Load recurring information we'll need for the modules
     if (-not $SkipReadMe) {
         .  (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
         # load cross-references
         $crossReferencedModuleList = Get-CrossReferencedModuleList
+
+        # load AVM references (done to reduce WebRequests to GitHub repository)
+        # Telemetry
+        $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+        try {
+            $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
+                $TelemetryFileContent = $rawResponse.Content -split '\n'
+            } else {
+                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+            }
+        } catch {
+            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+        }
 
         # create reference as it must be loaded in the thread to work
         $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
@@ -115,13 +172,15 @@ function Set-AVMModule {
         # Instatiate values to enable safe $using usage
         $crossReferencedModuleList = $null
         $ReadMeScriptFilePath = $null
+        $TelemetryFileContent = $null
     }
 
     # Using threading to speed up the process
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
-                $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+                $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+                $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
                 ###############
                 ##   Build   ##
@@ -137,11 +196,18 @@ function Set-AVMModule {
                 if (-not $using:SkipReadMe) {
                     Write-Output "Generating readme for [$resourceTypeIdentifier]"
 
-                    # If the template was just build, we can pass the JSON into the readme script to be more efficient
-                    $readmeTemplateFilePath = (-not $using:SkipBuild) ? (Join-Path (Split-Path $_ -Parent) 'main.json') : $_
-
                     . $using:ReadMeScriptFilePath
-                    Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath -CrossReferencedModuleList $using:crossReferencedModuleList
+                    $readmeInputObject = @{
+                        TemplateFilePath = $_
+                        PreLoadedContent = @{
+                            CrossReferencedModuleList = $using:crossReferencedModuleList
+                            TelemetryFileContent      = $using:TelemetryFileContent
+                        } + (-not $using:SkipBuild ? @{
+                                # If the template was just build, we can pass the JSON into the readme script to be more efficient
+                                TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $_ -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
+                            } : @{})
+                    }
+                    Set-ModuleReadMe @readmeInputObject
                 }
             }
 

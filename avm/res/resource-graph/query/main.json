@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "4934723615532636044"
+      "version": "0.26.54.24096",
+      "templateHash": "9585256428416945935"
     },
     "name": "Resource Graph Queries",
     "description": "This module deploys a Resource Graph Query.",
@@ -80,7 +80,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -109,7 +109,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Resource Graph Query."
+        "description": "Required. The name of the Resource Graph Query."
       }
     },
     "location": {
@@ -148,7 +148,7 @@
     "query": {
       "type": "string",
       "metadata": {
-        "description": "Required. KQL query that will be graph."
+        "description": "Required. The KQL query that will be graph."
       }
     },
     "queryDescription": {

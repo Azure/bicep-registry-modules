@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "2821141217598568122"
+      "version": "0.26.54.24096",
+      "templateHash": "2264842680766745282"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -55,7 +55,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -476,8 +476,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "18168683629401652671"
+              "version": "0.26.54.24096",
+              "templateHash": "13696906123248879101"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
             "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -588,6 +588,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+    },
+    "groupId": {
+      "type": "string",
+      "metadata": {
+        "description": "The group Id for the private endpoint Group."
+      },
+      "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
     }
   }
 }

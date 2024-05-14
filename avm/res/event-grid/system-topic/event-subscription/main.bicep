@@ -5,12 +5,6 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the Event Subscription.')
 param name string
 
-@description('Optional. Location for all Resources.')
-param location string = resourceGroup().location
-
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Required. Name of the Event Grid System Topic.')
 param systemTopicName string
 
@@ -27,14 +21,12 @@ param deliveryWithResourceIdentity object = {}
 param destination object
 
 @description('Optional. The event delivery schema for the event subscription.')
-@allowed(
-  [
-    'CloudEventSchemaV1_0'
-    'CustomInputSchema'
-    'EventGridSchema'
-    'EventGridEvent'
-  ]
-)
+@allowed([
+  'CloudEventSchemaV1_0'
+  'CustomInputSchema'
+  'EventGridSchema'
+  'EventGridEvent'
+])
 param eventDeliverySchema string = 'EventGridSchema'
 
 @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
@@ -49,30 +41,18 @@ param labels array = []
 @description('Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.')
 param retryPolicy object = {}
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2022-06-15' existing = {
+resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' existing = {
   name: systemTopicName
 }
 
-resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2022-06-15' = {
+resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2023-12-15-preview' = {
   name: name
   parent: systemTopic
   properties: {
     deadLetterDestination: !empty(deadLetterDestination) ? deadLetterDestination : null
     deadLetterWithResourceIdentity: !empty(deadLetterWithResourceIdentity) ? deadLetterWithResourceIdentity : null
     deliveryWithResourceIdentity: !empty(deliveryWithResourceIdentity) ? deliveryWithResourceIdentity : null
-    destination: empty(deliveryWithResourceIdentity) ? destination: null
+    destination: empty(deliveryWithResourceIdentity) ? destination : null
     eventDeliverySchema: eventDeliverySchema
     expirationTimeUtc: !empty(expirationTimeUtc) ? expirationTimeUtc : ''
     filter: !empty(filter) ? filter : {}

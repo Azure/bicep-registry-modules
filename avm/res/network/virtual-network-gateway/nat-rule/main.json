@@ -1,0 +1,110 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "3348839995550946472"
+    },
+    "name": "VPN Gateway NAT Rules",
+    "description": "This module deploys a Virtual Network Gateway NAT Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the NAT rule."
+      }
+    },
+    "virtualNetworkGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Virtual Network Gateway this NAT rule is associated with. Required if the template is used in a standalone deployment."
+      }
+    },
+    "externalMappings": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
+      }
+    },
+    "internalMappings": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
+      }
+    },
+    "ipConfigurationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances."
+      }
+    },
+    "mode": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "EgressSnat",
+        "IngressSnat"
+      ],
+      "metadata": {
+        "description": "Optional. The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub's site-to-site Virtual Network gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub's Site-to-site Virtual Network gateway."
+      }
+    },
+    "type": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "Dynamic",
+        "Static"
+      ],
+      "metadata": {
+        "description": "Optional. The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworkGateways/natRules",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('virtualNetworkGatewayName'), parameters('name'))]",
+      "properties": {
+        "externalMappings": "[parameters('externalMappings')]",
+        "internalMappings": "[parameters('internalMappings')]",
+        "ipConfigurationId": "[if(not(empty(parameters('ipConfigurationId'))), parameters('ipConfigurationId'), null())]",
+        "mode": "[if(not(empty(parameters('mode'))), parameters('mode'), null())]",
+        "type": "[if(not(empty(parameters('type'))), parameters('type'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the NAT rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the NAT rule."
+      },
+      "value": "[resourceId('Microsoft.Network/virtualNetworkGateways/natRules', parameters('virtualNetworkGatewayName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the NAT rule was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

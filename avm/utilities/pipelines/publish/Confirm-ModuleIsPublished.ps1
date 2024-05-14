@@ -11,6 +11,9 @@ Mandatory. The version of the module to check for. For example: '0.2.0'
 .PARAMETER PublishedModuleName
 Mandatory. The path of the module to check for. For example: 'avm/res/key-vault/vault'
 
+.PARAMETER GitTagName
+Mandatory. The tag name of the module's git tag to check for. For example: 'avm/res/event-hub/namespace/0.2.0'
+
 .EXAMPLE
 Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -Verbose
 
@@ -24,7 +27,10 @@ function Confirm-ModuleIsPublished {
         [string] $Version,
 
         [Parameter(Mandatory)]
-        [string] $PublishedModuleName
+        [string] $PublishedModuleName,
+
+        [Parameter(Mandatory)]
+        [string] $GitTagName
     )
 
     $baseUrl = 'https://mcr.microsoft.com/v2'
@@ -35,6 +41,16 @@ function Confirm-ModuleIsPublished {
     $end_time = (Get-Date).AddSeconds($time_limit_seconds)
     $retry_seconds = 60
     $index = 0
+
+    #######################################
+    ##   Confirm module tag is created   ##
+    #######################################
+    $existingTag = git ls-remote --tags origin $GitTagName
+    if (-not $existingTag) {
+        throw "Tag [$GitTagName] was not successfully created. Please review."
+    } else {
+        Write-Verbose "Passed: Found Git tag [$GitTagName]" -Verbose
+    }
 
     #####################################
     ##   Confirm module is published   ##
@@ -82,7 +98,7 @@ function Confirm-ModuleIsPublished {
         Write-Verbose ("Tags for module in path [$PublishedModuleName] found in MCR catalog:`n{0}" -f ($tagsContent | Out-String))
 
         if ($tagsContent -match $Version) {
-            Write-Host "Passed: Found new tag [$Version] for published module"
+            Write-Verbose "Passed: Found new tag [$Version] for published module" -Verbose
             break
         } else {
             Write-Warning "Warning: Could not find new tag [$Version] for published module. Retrying in [$retry_seconds] seconds [$index/$($time_limit_seconds/$retry_seconds)]"
@@ -90,8 +106,7 @@ function Confirm-ModuleIsPublished {
         }
 
         if ((Get-Date) -ge $end_time) {
-            Write-Host 'Time limit reached. Failed to validate publish within the specified time.'
-            exit 1
+            throw "Time limit reached. Failed to validate published version of module in path [$PublishedModuleName] within the specified time."
         }
     }
 }

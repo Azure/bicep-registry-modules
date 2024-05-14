@@ -1,0 +1,283 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "11267524415855336246"
+    },
+    "name": "DevTest Lab Costs",
+    "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "labName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+      }
+    },
+    "cycleType": {
+      "type": "string",
+      "allowedValues": [
+        "Custom",
+        "CalendarMonth"
+      ],
+      "metadata": {
+        "description": "Required. Reporting cycle type."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "cycleStartDateTime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
+      }
+    },
+    "cycleEndDateTime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
+      }
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target cost status."
+      }
+    },
+    "target": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. Lab target cost (e.g. 100). The target cost will appear in the \"Cost trend\" chart to allow tracking lab spending relative to the target cost for the current reporting cycleSetting the target cost to 0 will disable all thresholds."
+      }
+    },
+    "currencyCode": {
+      "type": "string",
+      "defaultValue": "USD",
+      "metadata": {
+        "description": "Optional. The currency code of the cost."
+      }
+    },
+    "thresholdValue25DisplayOnChart": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target Cost threshold at 25% display on chart. Indicates whether this threshold will be displayed on cost charts."
+      }
+    },
+    "thresholdValue25SendNotificationWhenExceeded": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target cost threshold at 25% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+      }
+    },
+    "thresholdValue50DisplayOnChart": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target Cost threshold at 50% display on chart. Indicates whether this threshold will be displayed on cost charts."
+      }
+    },
+    "thresholdValue50SendNotificationWhenExceeded": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target cost threshold at 50% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+      }
+    },
+    "thresholdValue75DisplayOnChart": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target Cost threshold at 75% display on chart. Indicates whether this threshold will be displayed on cost charts."
+      }
+    },
+    "thresholdValue75SendNotificationWhenExceeded": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target cost threshold at 75% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+      }
+    },
+    "thresholdValue100DisplayOnChart": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target Cost threshold at 100% display on chart. Indicates whether this threshold will be displayed on cost charts."
+      }
+    },
+    "thresholdValue100SendNotificationWhenExceeded": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target cost threshold at 100% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+      }
+    },
+    "thresholdValue125DisplayOnChart": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target Cost threshold at 125% display on chart. Indicates whether this threshold will be displayed on cost charts."
+      }
+    },
+    "thresholdValue125SendNotificationWhenExceeded": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Target cost threshold at 125% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+      }
+    }
+  },
+  "resources": {
+    "lab": {
+      "existing": true,
+      "type": "Microsoft.DevTestLab/labs",
+      "apiVersion": "2018-09-15",
+      "name": "[parameters('labName')]"
+    },
+    "cost": {
+      "type": "Microsoft.DevTestLab/labs/costs",
+      "apiVersion": "2018-09-15",
+      "name": "[format('{0}/{1}', parameters('labName'), 'targetCost')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "currencyCode": "[parameters('currencyCode')]",
+        "startDateTime": "[parameters('cycleStartDateTime')]",
+        "endDateTime": "[parameters('cycleEndDateTime')]",
+        "targetCost": {
+          "target": "[parameters('target')]",
+          "cycleStartDateTime": "[parameters('cycleStartDateTime')]",
+          "cycleEndDateTime": "[parameters('cycleEndDateTime')]",
+          "cycleType": "[parameters('cycleType')]",
+          "status": "[parameters('status')]",
+          "costThresholds": [
+            {
+              "thresholdId": "00000000-0000-0000-0000-000000000001",
+              "percentageThreshold": {
+                "thresholdValue": 25
+              },
+              "displayOnChart": "[parameters('thresholdValue25DisplayOnChart')]",
+              "sendNotificationWhenExceeded": "[parameters('thresholdValue25SendNotificationWhenExceeded')]"
+            },
+            {
+              "thresholdId": "00000000-0000-0000-0000-000000000002",
+              "percentageThreshold": {
+                "thresholdValue": 50
+              },
+              "displayOnChart": "[parameters('thresholdValue50DisplayOnChart')]",
+              "sendNotificationWhenExceeded": "[parameters('thresholdValue50SendNotificationWhenExceeded')]"
+            },
+            {
+              "thresholdId": "00000000-0000-0000-0000-000000000003",
+              "percentageThreshold": {
+                "thresholdValue": 75
+              },
+              "displayOnChart": "[parameters('thresholdValue75DisplayOnChart')]",
+              "sendNotificationWhenExceeded": "[parameters('thresholdValue75SendNotificationWhenExceeded')]"
+            },
+            {
+              "thresholdId": "00000000-0000-0000-0000-000000000004",
+              "percentageThreshold": {
+                "thresholdValue": 100
+              },
+              "displayOnChart": "[parameters('thresholdValue100DisplayOnChart')]",
+              "sendNotificationWhenExceeded": "[parameters('thresholdValue100SendNotificationWhenExceeded')]"
+            },
+            {
+              "thresholdId": "00000000-0000-0000-0000-000000000005",
+              "percentageThreshold": {
+                "thresholdValue": 125
+              },
+              "displayOnChart": "[parameters('thresholdValue125DisplayOnChart')]",
+              "sendNotificationWhenExceeded": "[parameters('thresholdValue125SendNotificationWhenExceeded')]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the cost."
+      },
+      "value": "targetCost"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the cost."
+      },
+      "value": "[resourceId('Microsoft.DevTestLab/labs/costs', parameters('labName'), 'targetCost')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the cost was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "11424915933898928003"
+    },
+    "name": "Data Protection Backup Vault Backup Policies",
+    "description": "This module deploys a Data Protection Backup Vault Backup Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "backupVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the backup vault."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "DefaultPolicy",
+      "metadata": {
+        "description": "Optional. The name of the backup policy."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The properties of the backup policy."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('name'))]",
+      "properties": "[parameters('properties')]"
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the backup policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the backup policy."
+      },
+      "value": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the backup policy was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

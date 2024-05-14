@@ -9,6 +9,7 @@ This template deploys an dns forwarding ruleset.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -35,8 +36,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -45,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndfrsmin'
+  name: 'dnsForwardingRulesetDeployment'
   params: {
     // Required parameters
     dnsForwardingRulesetOutboundEndpointResourceIds: [
@@ -101,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndfrsmax'
+  name: 'dnsForwardingRulesetDeployment'
   params: {
     // Required parameters
     dnsForwardingRulesetOutboundEndpointResourceIds: [
@@ -149,8 +148,11 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    vNetLinks: [
-      '<virtualNetworkResourceId>'
+    virtualNetworkLinks: [
+      {
+        name: 'mytestvnetlink1'
+        virtualNetworkResourceId: '<virtualNetworkResourceId>'
+      }
     ]
   }
 }
@@ -228,9 +230,12 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         "Role": "DeploymentValidation"
       }
     },
-    "vNetLinks": {
+    "virtualNetworkLinks": {
       "value": [
-        "<virtualNetworkResourceId>"
+        {
+          "name": "mytestvnetlink1",
+          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
+        }
       ]
     }
   }
@@ -251,7 +256,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndfrswaf'
+  name: 'dnsForwardingRulesetDeployment'
   params: {
     // Required parameters
     dnsForwardingRulesetOutboundEndpointResourceIds: [
@@ -332,13 +337,13 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`forwardingRules`](#parameter-forwardingrules) | array | Array of forwarding rules. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`vNetLinks`](#parameter-vnetlinks) | array | Array of virtual network links. |
+| [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of virtual network links. |
 
 ### Parameter: `dnsForwardingRulesetOutboundEndpointResourceIds`
 
@@ -356,7 +361,7 @@ Name of the DNS Forwarding Ruleset.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -509,7 +514,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -531,7 +536,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -587,12 +592,38 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `vNetLinks`
+### Parameter: `virtualNetworkLinks`
 
 Array of virtual network links.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworklinksvirtualnetworkresourceid) | string | The resource ID of the virtual network to link. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworklinksname) | string | The name of the virtual network link. |
+
+### Parameter: `virtualNetworkLinks.virtualNetworkResourceId`
+
+The resource ID of the virtual network to link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkLinks.name`
+
+The name of the virtual network link.
+
+- Required: No
+- Type: string
 
 
 ## Outputs
@@ -607,3 +638,7 @@ Array of virtual network links.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

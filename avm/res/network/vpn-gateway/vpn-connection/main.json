@@ -1,0 +1,176 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "13703101435058090684"
+    },
+    "name": "VPN Gateway VPN Connections",
+    "description": "This module deploys a VPN Gateway VPN Connection.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the VPN connection."
+      }
+    },
+    "vpnGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent VPN gateway this VPN connection is associated with. Required if the template is used in a standalone deployment."
+      }
+    },
+    "ipsecPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The IPSec policies to be considered by this connection."
+      }
+    },
+    "trafficSelectorPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The traffic selector policies to be considered by this connection."
+      }
+    },
+    "vpnLinkConnections": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of all VPN site link connections to the gateway."
+      }
+    },
+    "routingConfiguration": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Routing configuration indicating the associated and propagated route tables for this connection."
+      }
+    },
+    "usePolicyBasedTrafficSelectors": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable policy-based traffic selectors."
+      }
+    },
+    "useLocalAzureIpAddress": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Use local Azure IP to initiate connection."
+      }
+    },
+    "enableRateLimiting": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable rate limiting."
+      }
+    },
+    "enableInternetSecurity": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable internet security."
+      }
+    },
+    "enableBgp": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable BGP flag."
+      }
+    },
+    "routingWeight": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. Routing weight for VPN connection."
+      }
+    },
+    "connectionBandwidth": {
+      "type": "int",
+      "defaultValue": 10,
+      "metadata": {
+        "description": "Optional. Expected bandwidth in MBPS."
+      }
+    },
+    "vpnConnectionProtocolType": {
+      "type": "string",
+      "defaultValue": "IKEv2",
+      "allowedValues": [
+        "IKEv1",
+        "IKEv2"
+      ],
+      "metadata": {
+        "description": "Optional. Gateway connection protocol."
+      }
+    },
+    "sharedKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. SharedKey for the VPN connection."
+      }
+    },
+    "remoteVpnSiteResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Reference to a VPN site to link to."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/vpnGateways/vpnConnections",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
+      "properties": {
+        "connectionBandwidth": "[parameters('connectionBandwidth')]",
+        "enableBgp": "[parameters('enableBgp')]",
+        "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
+        "enableRateLimiting": "[parameters('enableRateLimiting')]",
+        "ipsecPolicies": "[parameters('ipsecPolicies')]",
+        "remoteVpnSite": "[if(not(empty(parameters('remoteVpnSiteResourceId'))), createObject('id', parameters('remoteVpnSiteResourceId')), null())]",
+        "routingConfiguration": "[parameters('routingConfiguration')]",
+        "routingWeight": "[parameters('routingWeight')]",
+        "sharedKey": "[parameters('sharedKey')]",
+        "trafficSelectorPolicies": "[parameters('trafficSelectorPolicies')]",
+        "useLocalAzureIpAddress": "[parameters('useLocalAzureIpAddress')]",
+        "usePolicyBasedTrafficSelectors": "[parameters('usePolicyBasedTrafficSelectors')]",
+        "vpnConnectionProtocolType": "[parameters('vpnConnectionProtocolType')]",
+        "vpnLinkConnections": "[parameters('vpnLinkConnections')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the VPN connection."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the VPN connection."
+      },
+      "value": "[resourceId('Microsoft.Network/vpnGateways/vpnConnections', parameters('vpnGatewayName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the VPN connection was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

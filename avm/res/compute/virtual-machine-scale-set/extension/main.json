@@ -1,0 +1,127 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "1737879623418595926"
+    },
+    "name": "Virtual Machine Scale Set Extensions",
+    "description": "This module deploys a Virtual Machine Scale Set Extension.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "virtualMachineScaleSetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the virtual machine scale set extension."
+      }
+    },
+    "publisher": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the extension handler publisher."
+      }
+    },
+    "type": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+      }
+    },
+    "typeHandlerVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the version of the script handler."
+      }
+    },
+    "autoUpgradeMinorVersion": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+      }
+    },
+    "forceUpdateTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+      }
+    },
+    "settings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Any object that contains the extension specific settings."
+      }
+    },
+    "protectedSettings": {
+      "type": "secureObject",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Any object that contains the extension specific protected settings."
+      }
+    },
+    "supressFailures": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+      }
+    },
+    "enableAutomaticUpgrade": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+      "properties": {
+        "publisher": "[parameters('publisher')]",
+        "type": "[parameters('type')]",
+        "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+        "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+        "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+        "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+        "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+        "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+        "suppressFailures": "[parameters('supressFailures')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the extension."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ResourceId of the extension."
+      },
+      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the extension was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

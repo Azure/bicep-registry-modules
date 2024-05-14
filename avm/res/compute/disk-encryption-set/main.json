@@ -1,0 +1,738 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "12741671665077521328"
+    },
+    "name": "Disk Encryption Sets",
+    "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the disk encryption set that is being created."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Resource location."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "keyVaultResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the KeyVault containing the key or secret."
+      }
+    },
+    "keyName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Key URL (with version) pointing to a key or secret in KeyVault."
+      }
+    },
+    "keyVersion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used."
+      }
+    },
+    "encryptionType": {
+      "type": "string",
+      "defaultValue": "EncryptionAtRestWithPlatformAndCustomerKeys",
+      "allowedValues": [
+        "EncryptionAtRestWithCustomerKey",
+        "EncryptionAtRestWithPlatformAndCustomerKeys"
+      ],
+      "metadata": {
+        "description": "Optional. The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys."
+      }
+    },
+    "federatedClientId": {
+      "type": "string",
+      "defaultValue": "None",
+      "metadata": {
+        "description": "Optional. Multi-tenant application client ID to access key vault in a different tenant. Setting the value to \"None\" will clear the property."
+      }
+    },
+    "rotationToLatestKeyVersionEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Set this flag to true to enable auto-updating of this disk encryption set to the latest key version."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "defaultValue": {
+        "systemAssigned": true
+      },
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource. At least one identity type is required."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the disk encryption resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
+      "Disk Backup Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
+      "Disk Pool Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '60fc6e62-5479-42d4-8bf4-67625fcc2840')]",
+      "Disk Restore Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b50d9833-a0cb-478e-945f-707fcc997c13')]",
+      "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "keyVault::key": {
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2021-10-01",
+      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]",
+      "dependsOn": [
+        "keyVault"
+      ]
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.compute-diskencryptionset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "keyVault": {
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2021-10-01",
+      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+    },
+    "diskEncryptionSet": {
+      "type": "Microsoft.Compute/diskEncryptionSets",
+      "apiVersion": "2023-10-02",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "activeKey": {
+          "sourceVault": {
+            "id": "[parameters('keyVaultResourceId')]"
+          },
+          "keyUrl": "[if(not(empty(parameters('keyVersion'))), format('{0}/{1}', reference('keyVault::key').keyUri, parameters('keyVersion')), reference('keyVault::key').keyUriWithVersion)]"
+        },
+        "encryptionType": "[parameters('encryptionType')]",
+        "federatedClientId": "[parameters('federatedClientId')]",
+        "rotationToLatestKeyVersionEnabled": "[parameters('rotationToLatestKeyVersionEnabled')]"
+      },
+      "dependsOn": [
+        "keyVault",
+        "keyVaultPermissions"
+      ]
+    },
+    "diskEncryptionSet_roleAssignments": {
+      "copy": {
+        "name": "diskEncryptionSet_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Compute/diskEncryptionSets/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.Compute/diskEncryptionSets', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "diskEncryptionSet"
+      ]
+    },
+    "diskEncryptionSet_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Compute/diskEncryptionSets/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "diskEncryptionSet"
+      ]
+    },
+    "keyVaultPermissions": {
+      "copy": {
+        "name": "keyVaultPermissions",
+        "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-DiskEncrSet-KVPermissions-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyName": {
+            "value": "[parameters('keyName')]"
+          },
+          "keyVaultResourceId": {
+            "value": "[parameters('keyVaultResourceId')]"
+          },
+          "userAssignedIdentityResourceId": {
+            "value": "[coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()]]"
+          },
+          "rbacAuthorizationEnabled": {
+            "value": "[reference('keyVault').enableRbacAuthorization]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "11328049361610922964"
+            }
+          },
+          "parameters": {
+            "rbacAuthorizationEnabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Required. A boolean to specify whether or not the used Key Vault has RBAC authentication enabled or not."
+              }
+            },
+            "userAssignedIdentityResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resourceID of the User Assigned Identity to assign permissions to."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Resource location."
+              }
+            },
+            "keyVaultResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the KeyVault containing the key or secret."
+              }
+            },
+            "keyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the key to set the permissions for."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[equals(parameters('rbacAuthorizationEnabled'), true())]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]",
+              "name": "[guid(format('msi-{0}-{1}-{2}-Key-Reader-RoleAssignment', resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), parameters('location'), parameters('userAssignedIdentityResourceId')))]",
+              "properties": {
+                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('userAssignedIdentityResourceId'), '/')[2], split(parameters('userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('userAssignedIdentityResourceId'), '/'))), '2023-01-31').principalId]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
+                "principalType": "ServicePrincipal"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('rbacAuthorizationEnabled'), true()))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-DiskEncrSet-KVAccessPolicies', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "keyVaultName": {
+                    "value": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+                  },
+                  "accessPolicies": {
+                    "value": [
+                      {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('userAssignedIdentityResourceId'), '/')[2], split(parameters('userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('userAssignedIdentityResourceId'), '/'))), '2023-01-31').principalId]",
+                        "permissions": {
+                          "keys": [
+                            "get",
+                            "wrapKey",
+                            "unwrapKey"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.26.54.24096",
+                      "templateHash": "3020199531226338329"
+                    },
+                    "name": "Key Vault Access Policies",
+                    "description": "This module deploys a Key Vault Access Policy.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "accessPoliciesType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "tenantId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+                            }
+                          },
+                          "objectId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+                            }
+                          },
+                          "applicationId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Application ID of the client making request on behalf of a principal."
+                            }
+                          },
+                          "permissions": {
+                            "type": "object",
+                            "properties": {
+                              "keys": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "create",
+                                  "decrypt",
+                                  "delete",
+                                  "encrypt",
+                                  "get",
+                                  "getrotationpolicy",
+                                  "import",
+                                  "list",
+                                  "purge",
+                                  "recover",
+                                  "release",
+                                  "restore",
+                                  "rotate",
+                                  "setrotationpolicy",
+                                  "sign",
+                                  "unwrapKey",
+                                  "update",
+                                  "verify",
+                                  "wrapKey"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to keys."
+                                }
+                              },
+                              "secrets": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "delete",
+                                  "get",
+                                  "list",
+                                  "purge",
+                                  "recover",
+                                  "restore",
+                                  "set"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to secrets."
+                                }
+                              },
+                              "certificates": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "create",
+                                  "delete",
+                                  "deleteissuers",
+                                  "get",
+                                  "getissuers",
+                                  "import",
+                                  "list",
+                                  "listissuers",
+                                  "managecontacts",
+                                  "manageissuers",
+                                  "purge",
+                                  "recover",
+                                  "restore",
+                                  "setissuers",
+                                  "update"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to certificates."
+                                }
+                              },
+                              "storage": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "delete",
+                                  "deletesas",
+                                  "get",
+                                  "getsas",
+                                  "list",
+                                  "listsas",
+                                  "purge",
+                                  "recover",
+                                  "regeneratekey",
+                                  "restore",
+                                  "set",
+                                  "setsas",
+                                  "update"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to storage accounts."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "keyVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "accessPolicies": {
+                      "$ref": "#/definitions/accessPoliciesType",
+                      "metadata": {
+                        "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedAccessPolicies",
+                        "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
+                        "input": {
+                          "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
+                          "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
+                          "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
+                          "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
+                        }
+                      }
+                    ]
+                  },
+                  "resources": {
+                    "keyVault": {
+                      "existing": true,
+                      "type": "Microsoft.KeyVault/vaults",
+                      "apiVersion": "2022-07-01",
+                      "name": "[parameters('keyVaultName')]"
+                    },
+                    "policies": {
+                      "type": "Microsoft.KeyVault/vaults/accessPolicies",
+                      "apiVersion": "2022-07-01",
+                      "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
+                      "properties": {
+                        "accessPolicies": "[variables('formattedAccessPolicies')]"
+                      },
+                      "dependsOn": [
+                        "keyVault"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the access policies assignment was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the access policies assignment."
+                      },
+                      "value": "add"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the access policies assignment."
+                      },
+                      "value": "[resourceId('Microsoft.KeyVault/vaults/accessPolicies', parameters('keyVaultName'), 'add')]"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "keyVault"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the disk encryption set."
+      },
+      "value": "[resourceId('Microsoft.Compute/diskEncryptionSets', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the disk encryption set."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the disk encryption set was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('diskEncryptionSet', '2023-10-02', 'full'), 'identity'), 'principalId'), '')]"
+    },
+    "identities": {
+      "type": "object",
+      "metadata": {
+        "description": "The idenities of the disk encryption set."
+      },
+      "value": "[reference('diskEncryptionSet', '2023-10-02', 'full').identity]"
+    },
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the key vault with the disk encryption key."
+      },
+      "value": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('diskEncryptionSet', '2023-10-02', 'full').location]"
+    }
+  }
+}

@@ -84,7 +84,7 @@ resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021
     duplicateDetectionHistoryTimeWindow: duplicateDetectionHistoryTimeWindow
     enableBatchedOperations: enableBatchedOperations
     forwardDeadLetteredMessagesTo: forwardDeadLetteredMessagesTo
-    forwardTo: !empty(forwardTo) ? forwardTo : namespace::topic.name
+    forwardTo: !empty(forwardTo) ? forwardTo : null
     isClientAffine: isClientAffine
     lockDuration: lockDuration
     maxDeliveryCount: maxDeliveryCount

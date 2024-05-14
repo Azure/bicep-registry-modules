@@ -1,4 +1,4 @@
-# DNS Resolvers `[Microsoft.Network/dnsResolvers]`
+# DNS Resolver `[Microsoft.Network/dnsResolvers]`
 
 This module deploys a DNS Resolver.
 
@@ -9,6 +9,7 @@ This module deploys a DNS Resolver.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -35,8 +36,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -45,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndrmin'
+  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrmin001'
@@ -97,7 +96,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndrmax'
+  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrmax001'
@@ -235,7 +234,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndrwaf'
+  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrwaf001'
@@ -333,38 +332,38 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Private DNS Resolver. |
-| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | ResourceId of the virtual network to attach the Private DNS Resolver to. |
+| [`name`](#parameter-name) | string | Name of the DNS Private Resolver. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | ResourceId of the virtual network to attach the DNS Private Resolver to. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`inboundEndpoints`](#parameter-inboundendpoints) | array | Inbound Endpoints for Private DNS Resolver. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`inboundEndpoints`](#parameter-inboundendpoints) | array | Inbound Endpoints for DNS Private Resolver. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`outboundEndpoints`](#parameter-outboundendpoints) | array | Outbound Endpoints for Private DNS Resolver. |
+| [`outboundEndpoints`](#parameter-outboundendpoints) | array | Outbound Endpoints for DNS Private Resolver. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
-Name of the Private DNS Resolver.
+Name of the DNS Private Resolver.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `virtualNetworkResourceId`
 
-ResourceId of the virtual network to attach the Private DNS Resolver to.
+ResourceId of the virtual network to attach the DNS Private Resolver to.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -372,10 +371,75 @@ Enable telemetry via a Globally Unique Identifier (GUID).
 
 ### Parameter: `inboundEndpoints`
 
-Inbound Endpoints for Private DNS Resolver.
+Inbound Endpoints for DNS Private Resolver.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-inboundendpointsname) | string | Name of the inbound endpoint. |
+| [`subnetResourceId`](#parameter-inboundendpointssubnetresourceid) | string | The reference to the subnet bound to the IP configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-inboundendpointslocation) | string | Location for all resources. |
+| [`privateIpAddress`](#parameter-inboundendpointsprivateipaddress) | string | Private IP address of the IP configuration. |
+| [`privateIpAllocationMethod`](#parameter-inboundendpointsprivateipallocationmethod) | string | Private IP address allocation method. |
+| [`tags`](#parameter-inboundendpointstags) | object | Tags for the resource. |
+
+### Parameter: `inboundEndpoints.name`
+
+Name of the inbound endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `inboundEndpoints.subnetResourceId`
+
+The reference to the subnet bound to the IP configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `inboundEndpoints.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `inboundEndpoints.privateIpAddress`
+
+Private IP address of the IP configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `inboundEndpoints.privateIpAllocationMethod`
+
+Private IP address allocation method.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
+### Parameter: `inboundEndpoints.tags`
+
+Tags for the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -423,10 +487,52 @@ Specify the name of lock.
 
 ### Parameter: `outboundEndpoints`
 
-Outbound Endpoints for Private DNS Resolver.
+Outbound Endpoints for DNS Private Resolver.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-outboundendpointsname) | string | Name of the outbound endpoint. |
+| [`subnetResourceId`](#parameter-outboundendpointssubnetresourceid) | string | ResourceId of the subnet to attach the outbound endpoint to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-outboundendpointslocation) | string | Location for all resources. |
+| [`tags`](#parameter-outboundendpointstags) | object | Tags of the resource. |
+
+### Parameter: `outboundEndpoints.name`
+
+Name of the outbound endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `outboundEndpoints.subnetResourceId`
+
+ResourceId of the subnet to attach the outbound endpoint to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `outboundEndpoints.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `outboundEndpoints.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 
@@ -446,7 +552,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -468,7 +574,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -530,10 +636,14 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the Private DNS Resolver. |
-| `resourceGroupName` | string | The resource group the Private DNS Resolver was deployed into. |
-| `resourceId` | string | The resource ID of the Private DNS Resolver. |
+| `name` | string | The name of the DNS Private Resolver. |
+| `resourceGroupName` | string | The resource group the DNS Private Resolver was deployed into. |
+| `resourceId` | string | The resource ID of the DNS Private Resolver. |
 
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

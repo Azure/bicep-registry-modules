@@ -1,0 +1,2398 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "9133361224761516270"
+    },
+    "name": "Virtual Machine Scale Sets",
+    "description": "This module deploys a Virtual Machine Scale Set.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "diagnosticSettingType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "metricCategories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+            }
+          },
+          "logAnalyticsDestinationType": {
+            "type": "string",
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+            }
+          },
+          "workspaceResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "storageAccountResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "eventHubAuthorizationRuleResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+          },
+          "eventHubName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "marketplacePartnerResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the VMSS."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "encryptionAtHost": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets."
+      }
+    },
+    "securityType": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch to enable UefiSettings."
+      }
+    },
+    "secureBootEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings."
+      }
+    },
+    "vTpmEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings."
+      }
+    },
+    "imageReference": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image."
+      }
+    },
+    "plan": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use."
+      }
+    },
+    "osDisk": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets."
+      }
+    },
+    "dataDisks": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets."
+      }
+    },
+    "ultraSSDEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled."
+      }
+    },
+    "adminUsername": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Required. Administrator username."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. When specifying a Windows Virtual Machine, this value should be passed."
+      }
+    },
+    "customData": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "scaleSetFaultDomain": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. Fault Domain count for each placement group."
+      }
+    },
+    "proximityPlacementGroupResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of a proximity placement group."
+      }
+    },
+    "nicConfigurations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Required. Configures NICs and PIPs."
+      }
+    },
+    "vmPriority": {
+      "type": "string",
+      "defaultValue": "Regular",
+      "allowedValues": [
+        "Regular",
+        "Low",
+        "Spot"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the priority for the virtual machine."
+      }
+    },
+    "enableEvictionPolicy": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy."
+      }
+    },
+    "maxPriceForLowPriorityVm": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars."
+      }
+    },
+    "licenseType": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "Windows_Client",
+        "Windows_Server",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system."
+      }
+    },
+    "extensionDomainJoinPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Required if name is specified. Password of the user specified in user parameter."
+      }
+    },
+    "extensionDomainJoinConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Domain Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "extensionAntiMalwareConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Anti Malware] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "extensionMonitoringAgentConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "monitoringWorkspaceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of the monitoring log analytics workspace."
+      }
+    },
+    "extensionDependencyAgentConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Dependency Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "extensionNetworkWatcherAgentConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Network Watcher Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "extensionAzureDiskEncryptionConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Azure Disk Encryption] extension. Must at least contain the [\"enabled\": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys."
+      }
+    },
+    "extensionDSCConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "extensionCustomScriptConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": false,
+        "fileData": []
+      },
+      "metadata": {
+        "description": "Optional. The configuration for the [Custom Script] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "bootDiagnosticStorageAccountUri": {
+      "type": "string",
+      "defaultValue": "[format('.blob.{0}/', environment().suffixes.storage)]",
+      "metadata": {
+        "description": "Optional. Storage account boot diagnostic base URI."
+      }
+    },
+    "bootDiagnosticStorageAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Storage account used to store boot diagnostic information. Boot diagnostics will be disabled if no value is provided."
+      }
+    },
+    "diagnosticSettings": {
+      "$ref": "#/definitions/diagnosticSettingType",
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "upgradePolicyMode": {
+      "type": "string",
+      "defaultValue": "Manual",
+      "allowedValues": [
+        "Manual",
+        "Automatic",
+        "Rolling"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the mode of an upgrade to virtual machines in the scale set.' Manual - You control the application of updates to virtual machines in the scale set. You do this by using the manualUpgrade action. ; Automatic - All virtual machines in the scale set are automatically updated at the same time. - Automatic, Manual, Rolling."
+      }
+    },
+    "enableCrossZoneUpgrade": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Allow VMSS to ignore AZ boundaries when constructing upgrade batches. Take into consideration the Update Domain and maxBatchInstancePercent to determine the batch size."
+      }
+    },
+    "maxSurge": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch."
+      }
+    },
+    "prioritizeUnhealthyInstances": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Upgrade all unhealthy instances in a scale set before any healthy instances."
+      }
+    },
+    "rollbackFailedInstancesOnPolicyBreach": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Rollback failed instances to previous model if the Rolling Upgrade policy is violated."
+      }
+    },
+    "maxBatchInstancePercent": {
+      "type": "int",
+      "defaultValue": 20,
+      "metadata": {
+        "description": "Optional. The maximum percent of total virtual machine instances that will be upgraded simultaneously by the rolling upgrade in one batch. As this is a maximum, unhealthy instances in previous or future batches can cause the percentage of instances in a batch to decrease to ensure higher reliability."
+      }
+    },
+    "maxUnhealthyInstancePercent": {
+      "type": "int",
+      "defaultValue": 20,
+      "metadata": {
+        "description": "Optional. The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch."
+      }
+    },
+    "maxUnhealthyUpgradedInstancePercent": {
+      "type": "int",
+      "defaultValue": 20,
+      "metadata": {
+        "description": "Optional. The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch."
+      }
+    },
+    "pauseTimeBetweenBatches": {
+      "type": "string",
+      "defaultValue": "PT0S",
+      "metadata": {
+        "description": "Optional. The wait time between completing the update for all virtual machines in one batch and starting the next batch. The time duration should be specified in ISO 8601 format."
+      }
+    },
+    "enableAutomaticOSUpgrade": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether OS upgrades should automatically be applied to scale set instances in a rolling fashion when a newer version of the OS image becomes available. Default value is false. If this is set to true for Windows based scale sets, enableAutomaticUpdates is automatically set to false and cannot be set to true."
+      }
+    },
+    "disableAutomaticRollback": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether OS image rollback feature should be disabled."
+      }
+    },
+    "automaticRepairsPolicyEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether automatic repairs should be enabled on the virtual machine scale set."
+      }
+    },
+    "gracePeriod": {
+      "type": "string",
+      "defaultValue": "PT30M",
+      "metadata": {
+        "description": "Optional. The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M)."
+      }
+    },
+    "vmNamePrefix": {
+      "type": "string",
+      "defaultValue": "vmssvm",
+      "minLength": 1,
+      "maxLength": 15,
+      "metadata": {
+        "description": "Optional. Specifies the computer name prefix for all of the virtual machines in the scale set."
+      }
+    },
+    "orchestrationMode": {
+      "type": "string",
+      "defaultValue": "Flexible",
+      "allowedValues": [
+        "Flexible",
+        "Uniform"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the orchestration mode for the virtual machine scale set."
+      }
+    },
+    "provisionVMAgent": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later."
+      }
+    },
+    "enableAutomaticUpdates": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning."
+      }
+    },
+    "timeZone": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`."
+      }
+    },
+    "additionalUnattendContent": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object."
+      }
+    },
+    "winRM": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object."
+      }
+    },
+    "disablePasswordAuthentication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether password authentication should be disabled."
+      }
+    },
+    "publicKeys": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The list of SSH public keys used to authenticate with linux based VMs."
+      }
+    },
+    "secrets": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies set of certificates that should be installed onto the virtual machines in the scale set."
+      }
+    },
+    "scheduledEventsProfile": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Specifies Scheduled Event related configurations."
+      }
+    },
+    "overprovision": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the Virtual Machine Scale Set should be overprovisioned."
+      }
+    },
+    "doNotRunExtensionsOnOverprovisionedVMs": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. When Overprovision is enabled, extensions are launched only on the requested number of VMs which are finally kept. This property will hence ensure that the extensions do not run on the extra overprovisioned VMs."
+      }
+    },
+    "zoneBalance": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to force strictly even Virtual Machine distribution cross x-zones in case there is zone outage."
+      }
+    },
+    "singlePlacementGroup": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. When true this limits the scale set to a single placement group, of max size 100 virtual machines. NOTE: If singlePlacementGroup is true, it may be modified to false. However, if singlePlacementGroup is false, it may not be modified to true."
+      }
+    },
+    "scaleInPolicy": {
+      "type": "object",
+      "defaultValue": {
+        "rules": [
+          "Default"
+        ]
+      },
+      "metadata": {
+        "description": "Optional. Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The SKU size of the VMs."
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The initial instance count of scale set VMs."
+      }
+    },
+    "availabilityZones": {
+      "type": "array",
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "osType": {
+      "type": "string",
+      "allowedValues": [
+        "Windows",
+        "Linux"
+      ],
+      "metadata": {
+        "description": "Required. The chosen OS type."
+      }
+    },
+    "baseTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]",
+      "metadata": {
+        "description": "Generated. Do not provide a value! This date value is used to generate a registration token."
+      }
+    },
+    "sasTokenValidityLength": {
+      "type": "string",
+      "defaultValue": "PT8H",
+      "metadata": {
+        "description": "Optional. SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "publicKeysFormatted",
+        "count": "[length(parameters('publicKeys'))]",
+        "input": {
+          "path": "[parameters('publicKeys')[copyIndex('publicKeysFormatted')].path]",
+          "keyData": "[parameters('publicKeys')[copyIndex('publicKeysFormatted')].keyData]"
+        }
+      }
+    ],
+    "linuxConfiguration": {
+      "disablePasswordAuthentication": "[parameters('disablePasswordAuthentication')]",
+      "ssh": {
+        "publicKeys": "[variables('publicKeysFormatted')]"
+      },
+      "provisionVMAgent": "[parameters('provisionVMAgent')]"
+    },
+    "windowsConfiguration": {
+      "provisionVMAgent": "[parameters('provisionVMAgent')]",
+      "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
+      "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
+      "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
+      "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
+    },
+    "accountSasProperties": {
+      "signedServices": "b",
+      "signedPermission": "r",
+      "signedExpiry": "[dateTimeAdd(parameters('baseTime'), parameters('sasTokenValidityLength'))]",
+      "signedResourceTypes": "o",
+      "signedProtocol": "https"
+    },
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "enableReferencedModulesTelemetry": false,
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
+      "Desktop Virtualization Power On Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '489581de-a3bd-480d-9518-53dea7416b33')]",
+      "Desktop Virtualization Power On Off Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '40c5ff49-9181-41f8-ae61-143b0e78555e')]",
+      "Desktop Virtualization Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')]",
+      "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+      "Disk Backup Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
+      "Disk Pool Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '60fc6e62-5479-42d4-8bf4-67625fcc2840')]",
+      "Disk Restore Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b50d9833-a0cb-478e-945f-707fcc997c13')]",
+      "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
+      "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
+      "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
+      "VM Scanner Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd')]"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.compute-virtualmachinescaleset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "vmss": {
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2023-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "identity": "[variables('identity')]",
+      "zones": "[parameters('availabilityZones')]",
+      "properties": {
+        "orchestrationMode": "[parameters('orchestrationMode')]",
+        "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
+        "upgradePolicy": {
+          "mode": "[parameters('upgradePolicyMode')]",
+          "rollingUpgradePolicy": "[if(equals(parameters('upgradePolicyMode'), 'Rolling'), createObject('enableCrossZoneUpgrade', parameters('enableCrossZoneUpgrade'), 'maxBatchInstancePercent', parameters('maxBatchInstancePercent'), 'maxSurge', parameters('maxSurge'), 'maxUnhealthyInstancePercent', parameters('maxUnhealthyInstancePercent'), 'maxUnhealthyUpgradedInstancePercent', parameters('maxUnhealthyUpgradedInstancePercent'), 'pauseTimeBetweenBatches', parameters('pauseTimeBetweenBatches'), 'prioritizeUnhealthyInstances', parameters('prioritizeUnhealthyInstances'), 'rollbackFailedInstancesOnPolicyBreach', parameters('rollbackFailedInstancesOnPolicyBreach')), null())]",
+          "automaticOSUpgradePolicy": {
+            "enableAutomaticOSUpgrade": "[parameters('enableAutomaticOSUpgrade')]",
+            "disableAutomaticRollback": "[parameters('disableAutomaticRollback')]"
+          }
+        },
+        "automaticRepairsPolicy": {
+          "enabled": "[parameters('automaticRepairsPolicyEnabled')]",
+          "gracePeriod": "[parameters('gracePeriod')]"
+        },
+        "virtualMachineProfile": {
+          "osProfile": {
+            "computerNamePrefix": "[parameters('vmNamePrefix')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[if(not(empty(parameters('adminPassword'))), parameters('adminPassword'), null())]",
+            "customData": "[if(not(empty(parameters('customData'))), base64(parameters('customData')), null())]",
+            "windowsConfiguration": "[if(equals(parameters('osType'), 'Windows'), variables('windowsConfiguration'), null())]",
+            "linuxConfiguration": "[if(equals(parameters('osType'), 'Linux'), variables('linuxConfiguration'), null())]",
+            "secrets": "[parameters('secrets')]"
+          },
+          "securityProfile": {
+            "encryptionAtHost": "[if(parameters('encryptionAtHost'), parameters('encryptionAtHost'), null())]",
+            "securityType": "[parameters('securityType')]",
+            "uefiSettings": "[if(equals(parameters('securityType'), 'TrustedLaunch'), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null())]"
+          },
+          "storageProfile": {
+            "copy": [
+              {
+                "name": "dataDisks",
+                "count": "[length(parameters('dataDisks'))]",
+                "input": {
+                  "lun": "[copyIndex('dataDisks')]",
+                  "diskSizeGB": "[parameters('dataDisks')[copyIndex('dataDisks')].diskSizeGB]",
+                  "createOption": "[parameters('dataDisks')[copyIndex('dataDisks')].createOption]",
+                  "caching": "[parameters('dataDisks')[copyIndex('dataDisks')].caching]",
+                  "writeAcceleratorEnabled": "[if(contains(parameters('osDisk'), 'writeAcceleratorEnabled'), parameters('osDisk').writeAcceleratorEnabled, null())]",
+                  "managedDisk": {
+                    "storageAccountType": "[parameters('dataDisks')[copyIndex('dataDisks')].managedDisk.storageAccountType]",
+                    "diskEncryptionSet": "[if(contains(parameters('dataDisks')[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', parameters('dataDisks')[copyIndex('dataDisks')].managedDisk.diskEncryptionSet.id), null())]"
+                  },
+                  "diskIOPSReadWrite": "[if(contains(parameters('osDisk'), 'diskIOPSReadWrite'), parameters('dataDisks')[copyIndex('dataDisks')].diskIOPSReadWrite, null())]",
+                  "diskMBpsReadWrite": "[if(contains(parameters('osDisk'), 'diskMBpsReadWrite'), parameters('dataDisks')[copyIndex('dataDisks')].diskMBpsReadWrite, null())]"
+                }
+              }
+            ],
+            "imageReference": "[parameters('imageReference')]",
+            "osDisk": {
+              "createOption": "[parameters('osDisk').createOption]",
+              "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
+              "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, null())]",
+              "writeAcceleratorEnabled": "[if(contains(parameters('osDisk'), 'writeAcceleratorEnabled'), parameters('osDisk').writeAcceleratorEnabled, null())]",
+              "diffDiskSettings": "[if(contains(parameters('osDisk'), 'diffDiskSettings'), parameters('osDisk').diffDiskSettings, null())]",
+              "osType": "[if(contains(parameters('osDisk'), 'osType'), parameters('osDisk').osType, null())]",
+              "image": "[if(contains(parameters('osDisk'), 'image'), parameters('osDisk').image, null())]",
+              "vhdContainers": "[if(contains(parameters('osDisk'), 'vhdContainers'), parameters('osDisk').vhdContainers, null())]",
+              "managedDisk": {
+                "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
+                "diskEncryptionSet": "[if(contains(parameters('osDisk').managedDisk, 'diskEncryptionSet'), createObject('id', parameters('osDisk').managedDisk.diskEncryptionSet.id), null())]"
+              }
+            }
+          },
+          "networkProfile": {
+            "copy": [
+              {
+                "name": "networkInterfaceConfigurations",
+                "count": "[length(parameters('nicConfigurations'))]",
+                "input": {
+                  "name": "[format('{0}{1}configuration-{2}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].nicSuffix, copyIndex('networkInterfaceConfigurations'))]",
+                  "properties": {
+                    "primary": "[if(equals(copyIndex('networkInterfaceConfigurations'), 0), true(), null())]",
+                    "enableAcceleratedNetworking": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')], 'enableAcceleratedNetworking'), parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].enableAcceleratedNetworking, true())]",
+                    "networkSecurityGroup": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')], 'nsgId'), createObject('id', parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].nsgId), null())]",
+                    "ipConfigurations": "[parameters('nicConfigurations')[copyIndex('networkInterfaceConfigurations')].ipConfigurations]"
+                  }
+                }
+              }
+            ],
+            "networkApiVersion": "[if(equals(parameters('orchestrationMode'), 'Flexible'), '2020-11-01', null())]"
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": "[not(empty(parameters('bootDiagnosticStorageAccountName')))]",
+              "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
+            }
+          },
+          "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
+          "priority": "[parameters('vmPriority')]",
+          "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
+          "billingProfile": "[if(and(not(empty(parameters('vmPriority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', parameters('maxPriceForLowPriorityVm')), null())]",
+          "scheduledEventsProfile": "[parameters('scheduledEventsProfile')]"
+        },
+        "overprovision": "[if(equals(parameters('orchestrationMode'), 'Uniform'), parameters('overprovision'), null())]",
+        "doNotRunExtensionsOnOverprovisionedVMs": "[if(equals(parameters('orchestrationMode'), 'Uniform'), parameters('doNotRunExtensionsOnOverprovisionedVMs'), null())]",
+        "zoneBalance": "[if(equals(parameters('zoneBalance'), 'true'), parameters('zoneBalance'), null())]",
+        "platformFaultDomainCount": "[parameters('scaleSetFaultDomain')]",
+        "singlePlacementGroup": "[parameters('singlePlacementGroup')]",
+        "additionalCapabilities": {
+          "ultraSSDEnabled": "[parameters('ultraSSDEnabled')]"
+        },
+        "scaleInPolicy": "[parameters('scaleInPolicy')]"
+      },
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "capacity": "[parameters('skuCapacity')]"
+      },
+      "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]"
+    },
+    "vmss_logAnalyticsWorkspace": {
+      "condition": "[not(empty(parameters('monitoringWorkspaceId')))]",
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-06-01",
+      "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]]",
+      "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))]"
+    },
+    "vmss_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Compute/virtualMachineScaleSets/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "vmss"
+      ]
+    },
+    "vmss_diagnosticSettings": {
+      "copy": {
+        "name": "vmss_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Compute/virtualMachineScaleSets/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "vmss"
+      ]
+    },
+    "vmss_roleAssignments": {
+      "copy": {
+        "name": "vmss_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Compute/virtualMachineScaleSets/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "vmss"
+      ]
+    },
+    "vmss_domainJoinExtension": {
+      "condition": "[parameters('extensionDomainJoinConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "DomainJoin"
+          },
+          "publisher": {
+            "value": "Microsoft.Compute"
+          },
+          "type": {
+            "value": "JsonADDomainExtension"
+          },
+          "typeHandlerVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDomainJoinConfig').typeHandlerVersion), createObject('value', '1.3'))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDomainJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDomainJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "settings": {
+            "value": "[parameters('extensionDomainJoinConfig').settings]"
+          },
+          "protectedSettings": {
+            "value": {
+              "Password": "[parameters('extensionDomainJoinPassword')]"
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss"
+      ]
+    },
+    "vmss_microsoftAntiMalwareExtension": {
+      "condition": "[parameters('extensionAntiMalwareConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-MicrosoftAntiMalware', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "MicrosoftAntiMalware"
+          },
+          "publisher": {
+            "value": "Microsoft.Azure.Security"
+          },
+          "type": {
+            "value": "IaaSAntimalware"
+          },
+          "typeHandlerVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAntiMalwareConfig').typeHandlerVersion), createObject('value', '1.3'))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAntiMalwareConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAntiMalwareConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "settings": {
+            "value": "[parameters('extensionAntiMalwareConfig').settings]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss",
+        "vmss_domainJoinExtension"
+      ]
+    },
+    "vmss_azureMonitorAgentExtension": {
+      "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-AzureMonitorAgent', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "AzureMonitorAgent"
+          },
+          "publisher": {
+            "value": "Microsoft.Azure.Monitor"
+          },
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureMonitorWindowsAgent'), createObject('value', 'AzureMonitorLinuxAgent'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.22'), createObject('value', '1.29')))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionMonitoringAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "settings": {
+            "value": {
+              "workspaceId": "[if(not(empty(parameters('monitoringWorkspaceId'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').customerId, '')]",
+              "GCS_AUTO_CONFIG": "[if(equals(parameters('osType'), 'Linux'), true(), null())]"
+            }
+          },
+          "protectedSettings": {
+            "value": {
+              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss",
+        "vmss_logAnalyticsWorkspace",
+        "vmss_microsoftAntiMalwareExtension"
+      ]
+    },
+    "vmss_dependencyAgentExtension": {
+      "condition": "[parameters('extensionDependencyAgentConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-DependencyAgent', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "DependencyAgent"
+          },
+          "publisher": {
+            "value": "Microsoft.Azure.Monitoring.DependencyAgent"
+          },
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'DependencyAgentWindows'), createObject('value', 'DependencyAgentLinux'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.5'))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDependencyAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss",
+        "vmss_azureMonitorAgentExtension"
+      ]
+    },
+    "vmss_networkWatcherAgentExtension": {
+      "condition": "[parameters('extensionNetworkWatcherAgentConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-NetworkWatcherAgent', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "NetworkWatcherAgent"
+          },
+          "publisher": {
+            "value": "Microsoft.Azure.NetworkWatcher"
+          },
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'NetworkWatcherAgentWindows'), createObject('value', 'NetworkWatcherAgentLinux'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').typeHandlerVersion), createObject('value', '1.4'))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss",
+        "vmss_dependencyAgentExtension"
+      ]
+    },
+    "vmss_desiredStateConfigurationExtension": {
+      "condition": "[parameters('extensionDSCConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-DesiredStateConfiguration', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "DesiredStateConfiguration"
+          },
+          "publisher": {
+            "value": "Microsoft.Powershell"
+          },
+          "type": {
+            "value": "DSC"
+          },
+          "typeHandlerVersion": "[if(contains(parameters('extensionDSCConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDSCConfig').typeHandlerVersion), createObject('value', '2.77'))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDSCConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDSCConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "settings": "[if(contains(parameters('extensionDSCConfig'), 'settings'), createObject('value', parameters('extensionDSCConfig').settings), createObject('value', createObject()))]",
+          "protectedSettings": "[if(contains(parameters('extensionDSCConfig'), 'protectedSettings'), createObject('value', parameters('extensionDSCConfig').protectedSettings), createObject('value', createObject()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss",
+        "vmss_networkWatcherAgentExtension"
+      ]
+    },
+    "vmss_customScriptExtension": {
+      "condition": "[parameters('extensionCustomScriptConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-CustomScriptExtension', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "CustomScriptExtension"
+          },
+          "publisher": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'Microsoft.Compute'), createObject('value', 'Microsoft.Azure.Extensions'))]",
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'CustomScriptExtension'), createObject('value', 'CustomScript'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionCustomScriptConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.10'), createObject('value', '2.1')))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionCustomScriptConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionCustomScriptConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "settings": {
+            "value": {
+              "copy": [
+                {
+                  "name": "fileUris",
+                  "count": "[length(parameters('extensionCustomScriptConfig').fileData)]",
+                  "input": "[if(contains(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')], 'storageAccountId'), format('{0}?{1}', parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri, listAccountSas(parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].storageAccountId, '2019-04-01', variables('accountSasProperties')).accountSasToken), parameters('extensionCustomScriptConfig').fileData[copyIndex('fileUris')].uri)]"
+                }
+              ]
+            }
+          },
+          "protectedSettings": "[if(contains(parameters('extensionCustomScriptConfig'), 'protectedSettings'), createObject('value', parameters('extensionCustomScriptConfig').protectedSettings), createObject('value', createObject()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss",
+        "vmss_desiredStateConfigurationExtension"
+      ]
+    },
+    "vmss_azureDiskEncryptionExtension": {
+      "condition": "[parameters('extensionAzureDiskEncryptionConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VMSS-AzureDiskEncryption', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineScaleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "AzureDiskEncryption"
+          },
+          "publisher": {
+            "value": "Microsoft.Azure.Security"
+          },
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureDiskEncryption'), createObject('value', 'AzureDiskEncryptionForLinux'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '2.2'), createObject('value', '1.1')))]",
+          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "forceUpdateTag": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').forceUpdateTag), createObject('value', '1.0'))]",
+          "settings": {
+            "value": "[parameters('extensionAzureDiskEncryptionConfig').settings]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
+            },
+            "name": "Virtual Machine Scale Set Extensions",
+            "description": "This module deploys a Virtual Machine Scale Set Extension.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "virtualMachineScaleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine scale set extension."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ResourceId of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vmss",
+        "vmss_customScriptExtension"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the virtual machine scale set."
+      },
+      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the virtual machine scale set."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the virtual machine scale set."
+      },
+      "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('vmss', '2023-09-01', 'full').location]"
+    }
+  }
+}

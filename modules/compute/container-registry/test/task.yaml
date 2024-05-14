@@ -1,5 +1,0 @@
-version: v1.1.0
-steps:
-  - cmd: acr purge --filter 'hello:.*' --untagged --ago 1d
-    disableWorkingDirectoryOverride: true
-    timeout: 3600

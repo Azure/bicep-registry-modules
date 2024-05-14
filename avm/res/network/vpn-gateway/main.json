@@ -1,0 +1,626 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "16246563114829739207"
+    },
+    "name": "VPN Gateways",
+    "description": "This module deploys a VPN Gateway.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the VPN gateway."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location where all resources will be created."
+      }
+    },
+    "vpnConnections": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The VPN connections to create in the VPN gateway."
+      }
+    },
+    "natRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of all the NAT Rules to associate with the gateway."
+      }
+    },
+    "virtualHubResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gateway must be deployed into the same location."
+      }
+    },
+    "bgpSettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. BGP settings details."
+      }
+    },
+    "enableBgpRouteTranslationForNat": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable BGP routes translation for NAT on this VPN gateway."
+      }
+    },
+    "isRoutingPreferenceInternet": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable routing preference property for the public IP interface of the VPN gateway."
+      }
+    },
+    "vpnGatewayScaleUnit": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Optional. The scale unit for this VPN gateway."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[take(format('46d3xbcp.res.network-vpngateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "vpnGateway": {
+      "type": "Microsoft.Network/vpnGateways",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "copy": [
+          {
+            "name": "connections",
+            "count": "[length(parameters('vpnConnections'))]",
+            "input": {
+              "name": "[parameters('vpnConnections')[copyIndex('connections')].name]",
+              "properties": {
+                "connectionBandwidth": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'connectionBandwidth')]",
+                "enableBgp": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableBgp')]",
+                "enableInternetSecurity": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableInternetSecurity')]",
+                "remoteVpnSite": "[if(contains(parameters('vpnConnections')[copyIndex('connections')], 'remoteVpnSiteResourceId'), createObject('id', parameters('vpnConnections')[copyIndex('connections')].remoteVpnSiteResourceId), null())]",
+                "enableRateLimiting": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'enableRateLimiting')]",
+                "routingConfiguration": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'routingConfiguration')]",
+                "routingWeight": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'routingWeight')]",
+                "sharedKey": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'sharedKey')]",
+                "useLocalAzureIpAddress": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'useLocalAzureIpAddress')]",
+                "usePolicyBasedTrafficSelectors": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'usePolicyBasedTrafficSelectors')]",
+                "vpnConnectionProtocolType": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'vpnConnectionProtocolType')]",
+                "ipsecPolicies": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'ipsecPolicies')]",
+                "trafficSelectorPolicies": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'trafficSelectorPolicies')]",
+                "vpnLinkConnections": "[tryGet(parameters('vpnConnections')[copyIndex('connections')], 'vpnLinkConnections')]"
+              }
+            }
+          }
+        ],
+        "bgpSettings": "[parameters('bgpSettings')]",
+        "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
+        "isRoutingPreferenceInternet": "[parameters('isRoutingPreferenceInternet')]",
+        "vpnGatewayScaleUnit": "[parameters('vpnGatewayScaleUnit')]",
+        "virtualHub": {
+          "id": "[parameters('virtualHubResourceId')]"
+        }
+      }
+    },
+    "vpnGateway_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/vpnGateways/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "vpnGateway"
+      ]
+    },
+    "vpnGateway_natRules": {
+      "copy": {
+        "name": "vpnGateway_natRules",
+        "count": "[length(parameters('natRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-NATRule-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('natRules')[copyIndex()].name]"
+          },
+          "vpnGatewayName": {
+            "value": "[parameters('name')]"
+          },
+          "externalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'externalMappings'), createObject('value', parameters('natRules')[copyIndex()].externalMappings), createObject('value', createArray()))]",
+          "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
+          "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
+          "mode": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'mode')]"
+          },
+          "type": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'type')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "15540036539979482149"
+            },
+            "name": "VPN Gateway NAT Rules",
+            "description": "This module deploys a VPN Gateway NAT Rule.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the NAT rule."
+              }
+            },
+            "vpnGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent VPN gateway this NAT rule is associated with. Required if the template is used in a standalone deployment."
+              }
+            },
+            "externalMappings": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
+              }
+            },
+            "internalMappings": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
+              }
+            },
+            "ipConfigurationId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A NAT rule must be configured to a specific VPN Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both VPN Gateway instances."
+              }
+            },
+            "mode": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "EgressSnat",
+                "IngressSnat"
+              ],
+              "metadata": {
+                "description": "Optional. The type of NAT rule for VPN NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub's site-to-site VPN gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub's Site-to-site VPN gateway."
+              }
+            },
+            "type": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Dynamic",
+                "Static"
+              ],
+              "metadata": {
+                "description": "Optional. The type of NAT rule for VPN NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability."
+              }
+            }
+          },
+          "resources": {
+            "vpnGateway": {
+              "existing": true,
+              "type": "Microsoft.Network/vpnGateways",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('vpnGatewayName')]"
+            },
+            "natRule": {
+              "type": "Microsoft.Network/vpnGateways/natRules",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
+              "properties": {
+                "externalMappings": "[parameters('externalMappings')]",
+                "internalMappings": "[parameters('internalMappings')]",
+                "ipConfigurationId": "[parameters('ipConfigurationId')]",
+                "mode": "[parameters('mode')]",
+                "type": "[parameters('type')]"
+              },
+              "dependsOn": [
+                "vpnGateway"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the NAT rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the NAT rule."
+              },
+              "value": "[resourceId('Microsoft.Network/vpnGateways/natRules', parameters('vpnGatewayName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the NAT rule was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vpnGateway"
+      ]
+    },
+    "vpnGateway_vpnConnections": {
+      "copy": {
+        "name": "vpnGateway_vpnConnections",
+        "count": "[length(parameters('vpnConnections'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Connection-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('vpnConnections')[copyIndex()].name]"
+          },
+          "vpnGatewayName": {
+            "value": "[parameters('name')]"
+          },
+          "connectionBandwidth": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'connectionBandwidth')]"
+          },
+          "enableBgp": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'enableBgp')]"
+          },
+          "enableInternetSecurity": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'enableInternetSecurity')]"
+          },
+          "remoteVpnSiteResourceId": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'remoteVpnSiteResourceId')]"
+          },
+          "enableRateLimiting": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'enableRateLimiting')]"
+          },
+          "routingConfiguration": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'routingConfiguration')]"
+          },
+          "routingWeight": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'routingWeight')]"
+          },
+          "sharedKey": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'sharedKey')]"
+          },
+          "useLocalAzureIpAddress": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'useLocalAzureIpAddress')]"
+          },
+          "usePolicyBasedTrafficSelectors": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'usePolicyBasedTrafficSelectors')]"
+          },
+          "vpnConnectionProtocolType": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'vpnConnectionProtocolType')]"
+          },
+          "trafficSelectorPolicies": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'trafficSelectorPolicies')]"
+          },
+          "vpnLinkConnections": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'vpnLinkConnections')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "13703101435058090684"
+            },
+            "name": "VPN Gateway VPN Connections",
+            "description": "This module deploys a VPN Gateway VPN Connection.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the VPN connection."
+              }
+            },
+            "vpnGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent VPN gateway this VPN connection is associated with. Required if the template is used in a standalone deployment."
+              }
+            },
+            "ipsecPolicies": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IPSec policies to be considered by this connection."
+              }
+            },
+            "trafficSelectorPolicies": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The traffic selector policies to be considered by this connection."
+              }
+            },
+            "vpnLinkConnections": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. List of all VPN site link connections to the gateway."
+              }
+            },
+            "routingConfiguration": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Routing configuration indicating the associated and propagated route tables for this connection."
+              }
+            },
+            "usePolicyBasedTrafficSelectors": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable policy-based traffic selectors."
+              }
+            },
+            "useLocalAzureIpAddress": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Use local Azure IP to initiate connection."
+              }
+            },
+            "enableRateLimiting": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable rate limiting."
+              }
+            },
+            "enableInternetSecurity": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable internet security."
+              }
+            },
+            "enableBgp": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable BGP flag."
+              }
+            },
+            "routingWeight": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. Routing weight for VPN connection."
+              }
+            },
+            "connectionBandwidth": {
+              "type": "int",
+              "defaultValue": 10,
+              "metadata": {
+                "description": "Optional. Expected bandwidth in MBPS."
+              }
+            },
+            "vpnConnectionProtocolType": {
+              "type": "string",
+              "defaultValue": "IKEv2",
+              "allowedValues": [
+                "IKEv1",
+                "IKEv2"
+              ],
+              "metadata": {
+                "description": "Optional. Gateway connection protocol."
+              }
+            },
+            "sharedKey": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. SharedKey for the VPN connection."
+              }
+            },
+            "remoteVpnSiteResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Reference to a VPN site to link to."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/vpnGateways/vpnConnections",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
+              "properties": {
+                "connectionBandwidth": "[parameters('connectionBandwidth')]",
+                "enableBgp": "[parameters('enableBgp')]",
+                "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
+                "enableRateLimiting": "[parameters('enableRateLimiting')]",
+                "ipsecPolicies": "[parameters('ipsecPolicies')]",
+                "remoteVpnSite": "[if(not(empty(parameters('remoteVpnSiteResourceId'))), createObject('id', parameters('remoteVpnSiteResourceId')), null())]",
+                "routingConfiguration": "[parameters('routingConfiguration')]",
+                "routingWeight": "[parameters('routingWeight')]",
+                "sharedKey": "[parameters('sharedKey')]",
+                "trafficSelectorPolicies": "[parameters('trafficSelectorPolicies')]",
+                "useLocalAzureIpAddress": "[parameters('useLocalAzureIpAddress')]",
+                "usePolicyBasedTrafficSelectors": "[parameters('usePolicyBasedTrafficSelectors')]",
+                "vpnConnectionProtocolType": "[parameters('vpnConnectionProtocolType')]",
+                "vpnLinkConnections": "[parameters('vpnLinkConnections')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the VPN connection."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the VPN connection."
+              },
+              "value": "[resourceId('Microsoft.Network/vpnGateways/vpnConnections', parameters('vpnGatewayName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the VPN connection was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vpnGateway"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the VPN gateway."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the VPN gateway."
+      },
+      "value": "[resourceId('Microsoft.Network/vpnGateways', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the VPN gateway was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('vpnGateway', '2023-04-01', 'full').location]"
+    }
+  }
+}

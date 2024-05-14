@@ -9,6 +9,7 @@ This module deploys Deployment Scripts.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -16,7 +17,7 @@ This module deploys Deployment Scripts.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/deploymentScripts) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
 ## Usage examples
 
@@ -44,7 +45,7 @@ This instance deploys the module with an Azure CLI script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdscli'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -134,8 +135,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -144,7 +143,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -159,7 +158,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     }
     retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
-    storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
 ```
@@ -202,9 +200,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "scriptContent": {
       "value": "Write-Host \"AVM Deployment Script test!\""
-    },
-    "storageAccountResourceId": {
-      "value": "<storageAccountResourceId>"
     }
   }
 }
@@ -224,7 +219,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -406,7 +401,7 @@ This instance deploys the module with access to a private network.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsnet'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -506,7 +501,7 @@ This instance deploys the module with an Azure PowerShell script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsps'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -590,7 +585,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdswaf'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -598,7 +593,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     // Non-required parameters
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'None'
@@ -647,9 +641,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "cleanupPreference": {
       "value": "Always"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -725,7 +716,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 | [`runOnce`](#parameter-runonce) | bool | When set to false, script will run every time the template is deployed. When set to true, the script will only run once. |
 | [`scriptContent`](#parameter-scriptcontent) | string | Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account. |
-| [`subnetResourceIds`](#parameter-subnetresourceids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. |
+| [`subnetResourceIds`](#parameter-subnetresourceids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet). |
 | [`supportingScriptUris`](#parameter-supportingscripturis) | array | List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent). |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`timeout`](#parameter-timeout) | string | Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year. |
@@ -815,7 +806,6 @@ The environment variables to pass over to the script. The list is passed as an o
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
 
 ### Parameter: `location`
 
@@ -913,7 +903,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -935,7 +925,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -1009,7 +999,7 @@ The resource ID of the storage account to use for this deployment script. If non
 
 ### Parameter: `subnetResourceIds`
 
-List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.
+List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet).
 
 - Required: No
 - Type: array
@@ -1057,3 +1047,7 @@ Do not provide a value! This date value is used to make sure the script run ever
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

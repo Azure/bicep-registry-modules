@@ -1,0 +1,428 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "5451872777085737013"
+    },
+    "name": "Firewall Policies",
+    "description": "This module deploys a Firewall Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Firewall Policy."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Firewall policy resource."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "basePolicyResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the base policy."
+      }
+    },
+    "enableProxy": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable DNS Proxy on Firewalls attached to the Firewall Policy."
+      }
+    },
+    "servers": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of Custom DNS Servers."
+      }
+    },
+    "insightsIsEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A flag to indicate if the insights are enabled on the policy."
+      }
+    },
+    "defaultWorkspaceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Default Log Analytics Resource ID for Firewall Policy Insights."
+      }
+    },
+    "workspaces": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of workspaces for Firewall Policy Insights."
+      }
+    },
+    "retentionDays": {
+      "type": "int",
+      "defaultValue": 365,
+      "metadata": {
+        "description": "Optional. Number of days the insights should be enabled on the policy."
+      }
+    },
+    "bypassTrafficSettings": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of rules for traffic to bypass."
+      }
+    },
+    "signatureOverrides": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of specific signatures states."
+      }
+    },
+    "mode": {
+      "type": "string",
+      "defaultValue": "Off",
+      "allowedValues": [
+        "Alert",
+        "Deny",
+        "Off"
+      ],
+      "metadata": {
+        "description": "Optional. The configuring of intrusion detection."
+      }
+    },
+    "tier": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Premium",
+        "Standard",
+        "Basic"
+      ],
+      "metadata": {
+        "description": "Optional. Tier of Firewall Policy."
+      }
+    },
+    "privateRanges": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of private IP addresses/IP address ranges to not be SNAT."
+      }
+    },
+    "autoLearnPrivateRanges": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. The operation mode for automatically learning private ranges to not be SNAT."
+      }
+    },
+    "threatIntelMode": {
+      "type": "string",
+      "defaultValue": "Off",
+      "allowedValues": [
+        "Alert",
+        "Deny",
+        "Off"
+      ],
+      "metadata": {
+        "description": "Optional. The operation mode for Threat Intel."
+      }
+    },
+    "allowSqlRedirect": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the flag requires no rule using port 11000-11999."
+      }
+    },
+    "fqdns": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of FQDNs for the ThreatIntel Allowlist."
+      }
+    },
+    "ipAddresses": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of IP addresses for the ThreatIntel Allowlist."
+      }
+    },
+    "keyVaultSecretId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Secret ID of (base-64 encoded unencrypted PFX) Secret or Certificate object stored in KeyVault."
+      }
+    },
+    "certificateName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Name of the CA certificate."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "ruleCollectionGroups": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Rule collection groups."
+      }
+    }
+  },
+  "variables": {
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', 'UserAssigned', 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.network-firewallpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "firewallPolicy": {
+      "type": "Microsoft.Network/firewallPolicies",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "basePolicy": "[if(not(empty(coalesce(parameters('basePolicyResourceId'), ''))), createObject('id', parameters('basePolicyResourceId')), null())]",
+        "dnsSettings": "[if(parameters('enableProxy'), createObject('enableProxy', parameters('enableProxy'), 'servers', coalesce(parameters('servers'), createArray())), null())]",
+        "insights": "[if(parameters('insightsIsEnabled'), createObject('isEnabled', parameters('insightsIsEnabled'), 'logAnalyticsResources', createObject('defaultWorkspaceId', createObject('id', parameters('defaultWorkspaceId')), 'workspaces', parameters('workspaces')), 'retentionDays', parameters('retentionDays')), null())]",
+        "intrusionDetection": "[if(not(equals(parameters('mode'), 'Off')), createObject('configuration', createObject('bypassTrafficSettings', parameters('bypassTrafficSettings'), 'signatureOverrides', parameters('signatureOverrides')), 'mode', parameters('mode')), null())]",
+        "sku": {
+          "tier": "[parameters('tier')]"
+        },
+        "snat": "[if(not(empty(parameters('privateRanges'))), createObject('autoLearnPrivateRanges', parameters('autoLearnPrivateRanges'), 'privateRanges', parameters('privateRanges')), null())]",
+        "sql": {
+          "allowSqlRedirect": "[parameters('allowSqlRedirect')]"
+        },
+        "threatIntelMode": "[parameters('threatIntelMode')]",
+        "threatIntelWhitelist": {
+          "fqdns": "[coalesce(parameters('fqdns'), createArray())]",
+          "ipAddresses": "[coalesce(parameters('ipAddresses'), createArray())]"
+        },
+        "transportSecurity": "[if(or(not(empty(coalesce(parameters('keyVaultSecretId'), createArray()))), not(empty(coalesce(parameters('certificateName'), '')))), createObject('certificateAuthority', createObject('keyVaultSecretId', parameters('keyVaultSecretId'), 'name', parameters('certificateName'))), null())]"
+      }
+    },
+    "firewallPolicy_ruleCollectionGroups": {
+      "copy": {
+        "name": "firewallPolicy_ruleCollectionGroups",
+        "count": "[length(coalesce(parameters('ruleCollectionGroups'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-firewallPolicy_ruleCollectionGroups-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "firewallPolicyName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('ruleCollectionGroups'), createArray())[copyIndex()].name]"
+          },
+          "priority": {
+            "value": "[coalesce(parameters('ruleCollectionGroups'), createArray())[copyIndex()].priority]"
+          },
+          "ruleCollections": {
+            "value": "[coalesce(parameters('ruleCollectionGroups'), createArray())[copyIndex()].ruleCollections]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "15656278354863511578"
+            },
+            "name": "Firewall Policy Rule Collection Groups",
+            "description": "This module deploys a Firewall Policy Rule Collection Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "firewallPolicyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Firewall Policy. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the rule collection group to deploy."
+              }
+            },
+            "priority": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Priority of the Firewall Policy Rule Collection Group resource."
+              }
+            },
+            "ruleCollections": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Group of Firewall Policy rule collections."
+              }
+            }
+          },
+          "resources": {
+            "firewallPolicy": {
+              "existing": true,
+              "type": "Microsoft.Network/firewallPolicies",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('firewallPolicyName')]"
+            },
+            "ruleCollectionGroup": {
+              "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}', parameters('firewallPolicyName'), parameters('name'))]",
+              "properties": {
+                "priority": "[parameters('priority')]",
+                "ruleCollections": "[coalesce(parameters('ruleCollections'), createArray())]"
+              },
+              "dependsOn": [
+                "firewallPolicy"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed rule collection group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed rule collection group."
+              },
+              "value": "[resourceId('Microsoft.Network/firewallPolicies/ruleCollectionGroups', parameters('firewallPolicyName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed rule collection group."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "firewallPolicy"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed firewall policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed firewall policy."
+      },
+      "value": "[resourceId('Microsoft.Network/firewallPolicies', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed firewall policy."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('firewallPolicy', '2023-04-01', 'full').location]"
+    }
+  }
+}

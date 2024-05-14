@@ -25,93 +25,125 @@ param dnsForwardingRulesetOutboundEndpointResourceIds array
 param forwardingRules forwardingRuleType?
 
 @description('Optional. Array of virtual network links.')
-param vNetLinks array?
+param virtualNetworkLinks virtualNetworkLinkType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'DNS Resolver Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')
-  'DNS Zone Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')
-  'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  'DNS Resolver Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d'
+  )
+  'DNS Zone Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'befefa01-2a29-4197-83a8-272ff33ce314'
+  )
+  'Network Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4d97b98b-1d4f-4787-a291-c67834d212e7'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-  'Private DNS Zone Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')
+  'Private DNS Zone Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
+  )
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-dnsforwardingruleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.network-dnsforwardingruleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource dnsForwardingRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-01' = {
   name: name
   location: location
   tags: tags
   properties: {
-    dnsResolverOutboundEndpoints: [for dnsForwardingRulesetOutboundEndpointResourceId in dnsForwardingRulesetOutboundEndpointResourceIds: {
-      id: dnsForwardingRulesetOutboundEndpointResourceId
-    }]
+    dnsResolverOutboundEndpoints: [
+      for dnsForwardingRulesetOutboundEndpointResourceId in dnsForwardingRulesetOutboundEndpointResourceIds: {
+        id: dnsForwardingRulesetOutboundEndpointResourceId
+      }
+    ]
   }
 }
 
-module dnsForwardingRuleset_forwardingRule 'forwarding-rule/main.bicep' = [for (forwardingRule, index) in (forwardingRules ?? []): {
-  name: '${uniqueString(deployment().name, location)}-forwardingRule-${index}'
-  params: {
-    dnsForwardingRulesetName: dnsForwardingRuleset.name
-    name: forwardingRule.?name
-    forwardingRuleState: forwardingRule.?forwardingRuleState ?? 'Enabled'
-    domainName: forwardingRule.?domainName
-    targetDnsServers: forwardingRule.?targetDnsServers
-    metadata: forwardingRule.?metadata
+module dnsForwardingRuleset_forwardingRule 'forwarding-rule/main.bicep' = [
+  for (forwardingRule, index) in (forwardingRules ?? []): {
+    name: '${uniqueString(deployment().name, location)}-forwardingRule-${index}'
+    params: {
+      dnsForwardingRulesetName: dnsForwardingRuleset.name
+      name: forwardingRule.?name
+      forwardingRuleState: forwardingRule.?forwardingRuleState ?? 'Enabled'
+      domainName: forwardingRule.?domainName
+      targetDnsServers: forwardingRule.?targetDnsServers
+      metadata: forwardingRule.?metadata
+    }
   }
-}]
+]
 
-module dnsForwardingRuleset_virtualNetworkLinks 'virtual-network-link/main.bicep' = [for (vnetId, index) in (vNetLinks ?? []): {
-  name: '${uniqueString(deployment().name, location)}-virtualNetworkLink-${index}'
-  params: {
-    dnsForwardingRulesetName: dnsForwardingRuleset.name
-    virtualNetworkResourceId: !empty(vNetLinks) ? vnetId : null
+module dnsForwardingRuleset_virtualNetworkLinks 'virtual-network-link/main.bicep' = [
+  for (virtualNetworkLink, index) in (virtualNetworkLinks ?? []): {
+    name: '${uniqueString(deployment().name, location)}-virtualNetworkLink-${index}'
+    params: {
+      name: virtualNetworkLink.?name ?? '${last(split(virtualNetworkLink.virtualNetworkResourceId, '/'))}-vnetlink-${index}'
+      dnsForwardingRulesetName: dnsForwardingRuleset.name
+      virtualNetworkResourceId: !empty(virtualNetworkLinks) ? virtualNetworkLink.virtualNetworkResourceId : null
+    }
   }
-}]
+]
 
-resource dnsForwardingRuleset_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource dnsForwardingRuleset_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: dnsForwardingRuleset
   }
-  scope: dnsForwardingRuleset
-}
 
-resource dnsForwardingRuleset_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(dnsForwardingRuleset.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource dnsForwardingRuleset_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(dnsForwardingRuleset.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: dnsForwardingRuleset
   }
-  scope: dnsForwardingRuleset
-}]
+]
 
 @description('The resource group the DNS Forwarding Ruleset was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -142,7 +174,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -175,6 +207,14 @@ type forwardingRuleType = {
 
   @description('Optional. Metadata attached to the forwarding rule.')
   metadata: string?
+}[]?
+
+type virtualNetworkLinkType = {
+  @description('Optional. The name of the virtual network link.')
+  name: string?
+
+  @description('Required. The resource ID of the virtual network to link.')
+  virtualNetworkResourceId: string
 }[]?
 
 type targetDnsServers = {

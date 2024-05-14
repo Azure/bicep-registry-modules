@@ -1,0 +1,313 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "17255378550715069548"
+    },
+    "name": "Virtual Network Gateway Connections",
+    "description": "This module deploys a Virtual Network Gateway Connection.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Remote connection name."
+      }
+    },
+    "vpnSharedKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Specifies a VPN shared key. The same value has to be specified on both Virtual Network Gateways."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "connectionType": {
+      "type": "string",
+      "defaultValue": "IPsec",
+      "allowedValues": [
+        "IPsec",
+        "Vnet2Vnet",
+        "ExpressRoute",
+        "VPNClient"
+      ],
+      "metadata": {
+        "description": "Optional. Gateway connection connectionType."
+      }
+    },
+    "enableBgp": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Value to specify if BGP is enabled or not."
+      }
+    },
+    "connectionMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "InitiatorOnly",
+        "ResponderOnly"
+      ],
+      "metadata": {
+        "description": "Optional. The connection connectionMode for this connection. Available for IPSec connections."
+      }
+    },
+    "connectionProtocol": {
+      "type": "string",
+      "defaultValue": "IKEv2",
+      "allowedValues": [
+        "IKEv1",
+        "IKEv2"
+      ],
+      "metadata": {
+        "description": "Optional. Connection connectionProtocol used for this connection. Available for IPSec connections."
+      }
+    },
+    "dpdTimeoutSeconds": {
+      "type": "int",
+      "defaultValue": 45,
+      "minValue": 9,
+      "maxValue": 3600,
+      "metadata": {
+        "description": "Optional. The dead peer detection timeout of this connection in seconds. Setting the timeout to shorter periods will cause IKE to rekey more aggressively, causing the connection to appear to be disconnected in some instances. The general recommendation is to set the timeout between 30 to 45 seconds."
+      }
+    },
+    "usePolicyBasedTrafficSelectors": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable policy-based traffic selectors."
+      }
+    },
+    "enablePrivateLinkFastPath": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Bypass the ExpressRoute gateway when accessing private-links. ExpressRoute FastPath (expressRouteGatewayBypass) must be enabled. Only available when connection connectionType is Express Route."
+      }
+    },
+    "expressRouteGatewayBypass": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Bypass ExpressRoute Gateway for data forwarding. Only available when connection connectionType is Express Route."
+      }
+    },
+    "useLocalAzureIpAddress": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property."
+      }
+    },
+    "customIPSecPolicy": {
+      "type": "object",
+      "defaultValue": {
+        "saLifeTimeSeconds": 0,
+        "saDataSizeKilobytes": 0,
+        "ipsecEncryption": "",
+        "ipsecIntegrity": "",
+        "ikeEncryption": "",
+        "ikeIntegrity": "",
+        "dhGroup": "",
+        "pfsGroup": ""
+      },
+      "metadata": {
+        "description": "Optional. The IPSec Policies to be considered by this connection."
+      }
+    },
+    "routingWeight": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The weight added to routes learned from this BGP speaker."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "virtualNetworkGateway1": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. The primary Virtual Network Gateway."
+      }
+    },
+    "virtualNetworkGateway2": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]."
+      }
+    },
+    "peer": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The remote peer. Used for connection connectionType [ExpressRoute]."
+      }
+    },
+    "authorizationKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The Authorization Key to connect to an Express Route Circuit. Used for connection type [ExpressRoute]."
+      }
+    },
+    "localNetworkGateway2": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The local network gateway. Used for connection type [IPsec]."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.network-connection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "connection": {
+      "type": "Microsoft.Network/connections",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "connectionType": "[parameters('connectionType')]",
+        "connectionMode": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('connectionMode'), null())]",
+        "connectionProtocol": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('connectionProtocol'), null())]",
+        "dpdTimeoutSeconds": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('dpdTimeoutSeconds'), null())]",
+        "enablePrivateLinkFastPath": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('enablePrivateLinkFastPath'), null())]",
+        "expressRouteGatewayBypass": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('expressRouteGatewayBypass'), null())]",
+        "virtualNetworkGateway1": "[parameters('virtualNetworkGateway1')]",
+        "virtualNetworkGateway2": "[if(equals(parameters('connectionType'), 'Vnet2Vnet'), parameters('virtualNetworkGateway2'), null())]",
+        "localNetworkGateway2": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('localNetworkGateway2'), null())]",
+        "peer": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('peer'), null())]",
+        "authorizationKey": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('authorizationKey')))), parameters('authorizationKey'), null())]",
+        "sharedKey": "[if(not(equals(parameters('connectionType'), 'ExpressRoute')), parameters('vpnSharedKey'), null())]",
+        "usePolicyBasedTrafficSelectors": "[parameters('usePolicyBasedTrafficSelectors')]",
+        "ipsecPolicies": "[if(not(empty(parameters('customIPSecPolicy').ipsecEncryption)), createArray(createObject('saLifeTimeSeconds', parameters('customIPSecPolicy').saLifeTimeSeconds, 'saDataSizeKilobytes', parameters('customIPSecPolicy').saDataSizeKilobytes, 'ipsecEncryption', parameters('customIPSecPolicy').ipsecEncryption, 'ipsecIntegrity', parameters('customIPSecPolicy').ipsecIntegrity, 'ikeEncryption', parameters('customIPSecPolicy').ikeEncryption, 'ikeIntegrity', parameters('customIPSecPolicy').ikeIntegrity, 'dhGroup', parameters('customIPSecPolicy').dhGroup, 'pfsGroup', parameters('customIPSecPolicy').pfsGroup)), parameters('customIPSecPolicy').ipsecEncryption)]",
+        "routingWeight": "[parameters('routingWeight')]",
+        "enableBgp": "[parameters('enableBgp')]",
+        "useLocalAzureIpAddress": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('useLocalAzureIpAddress'), null())]"
+      }
+    },
+    "connection_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/connections/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "connection"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the remote connection was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the remote connection."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the remote connection."
+      },
+      "value": "[resourceId('Microsoft.Network/connections', parameters('name'))]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('connection', '2023-04-01', 'full').location]"
+    }
+  }
+}

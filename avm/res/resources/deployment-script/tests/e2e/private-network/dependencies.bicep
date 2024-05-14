@@ -23,7 +23,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource storagePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource storageFileSharePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('storageFileDataPrivilegedContributorRole', managedIdentity.id, storageAccount.id)
   scope: storageAccount
   properties: {
@@ -42,6 +42,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   kind: 'StorageV2'
   properties: {
     supportsHttpsTrafficOnly: true
+    allowSharedKeyAccess: true // Cannot be set to false when using a private network for the deployment script
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'

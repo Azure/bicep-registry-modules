@@ -1,0 +1,1126 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "4586802822078326566"
+    },
+    "name": "Azure Compute Galleries",
+    "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required. Name of the Azure Compute Gallery."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Description of the Azure Shared Image Gallery."
+      }
+    },
+    "applications": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Applications to create."
+      }
+    },
+    "images": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Images to create."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags for all resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "sharingProfile": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Profile for gallery sharing to subscription or tenant."
+      }
+    },
+    "softDeletePolicy": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Soft deletion policy of the gallery."
+      }
+    }
+  },
+  "variables": {
+    "builtInRoleNames": {
+      "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.compute-gallery.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "gallery": {
+      "type": "Microsoft.Compute/galleries",
+      "apiVersion": "2022-03-03",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "sharingProfile": "[parameters('sharingProfile')]",
+        "softDeletePolicy": "[parameters('softDeletePolicy')]"
+      }
+    },
+    "gallery_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Compute/galleries/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "gallery"
+      ]
+    },
+    "gallery_roleAssignments": {
+      "copy": {
+        "name": "gallery_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Compute/galleries/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.Compute/galleries', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "gallery"
+      ]
+    },
+    "galleries_applications": {
+      "copy": {
+        "name": "galleries_applications",
+        "count": "[length(coalesce(parameters('applications'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Gallery-Application-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].name]"
+          },
+          "galleryName": {
+            "value": "[parameters('name')]"
+          },
+          "supportedOSType": {
+            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].supportedOSType]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'description')]"
+          },
+          "eula": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'eula')]"
+          },
+          "privacyStatementUri": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'privacyStatementUri')]"
+          },
+          "releaseNoteUri": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'releaseNoteUri')]"
+          },
+          "endOfLifeDate": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'endOfLifeDate')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "customActions": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'customActions')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "9175012718933553578"
+            },
+            "name": "Compute Galleries Applications",
+            "description": "This module deploys an Azure Compute Gallery Application.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the application definition."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "galleryName": {
+              "type": "string",
+              "minLength": 1,
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Compute Gallery. Required if the template is used in a standalone deployment."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The description of this gallery Application Definition resource. This property is updatable."
+              }
+            },
+            "eula": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Eula agreement for the gallery Application Definition. Has to be a valid URL."
+              }
+            },
+            "privacyStatementUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The privacy statement uri. Has to be a valid URL."
+              }
+            },
+            "releaseNoteUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The release note uri. Has to be a valid URL."
+              }
+            },
+            "supportedOSType": {
+              "type": "string",
+              "allowedValues": [
+                "Windows",
+                "Linux"
+              ],
+              "metadata": {
+                "description": "Required. This property allows you to specify the supported type of the OS that application is built for."
+              }
+            },
+            "endOfLifeDate": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags for all resources."
+              }
+            },
+            "customActions": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
+              }
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "gallery": {
+              "existing": true,
+              "type": "Microsoft.Compute/galleries",
+              "apiVersion": "2022-03-03",
+              "name": "[parameters('galleryName')]"
+            },
+            "application": {
+              "type": "Microsoft.Compute/galleries/applications",
+              "apiVersion": "2022-03-03",
+              "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "customActions": "[parameters('customActions')]",
+                "description": "[parameters('description')]",
+                "endOfLifeDate": "[parameters('endOfLifeDate')]",
+                "eula": "[parameters('eula')]",
+                "privacyStatementUri": "[parameters('privacyStatementUri')]",
+                "releaseNoteUri": "[parameters('releaseNoteUri')]",
+                "supportedOSType": "[parameters('supportedOSType')]"
+              },
+              "dependsOn": [
+                "gallery"
+              ]
+            },
+            "application_roleAssignments": {
+              "copy": {
+                "name": "application_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Compute/galleries/{0}/applications/{1}', parameters('galleryName'), parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.Compute/galleries/applications', parameters('galleryName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "application"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the image was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the image."
+              },
+              "value": "[resourceId('Microsoft.Compute/galleries/applications', parameters('galleryName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the image."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('application', '2022-03-03', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "gallery"
+      ]
+    },
+    "galleries_images": {
+      "copy": {
+        "name": "galleries_images",
+        "count": "[length(coalesce(parameters('images'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Gallery-Image-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].name]"
+          },
+          "galleryName": {
+            "value": "[parameters('name')]"
+          },
+          "osType": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].osType]"
+          },
+          "osState": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'osState')]"
+          },
+          "publisher": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].publisher]"
+          },
+          "offer": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].offer]"
+          },
+          "sku": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].sku]"
+          },
+          "minRecommendedvCPUs": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedvCPUs')]"
+          },
+          "maxRecommendedvCPUs": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedvCPUs')]"
+          },
+          "minRecommendedMemory": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedMemory')]"
+          },
+          "maxRecommendedMemory": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedMemory')]"
+          },
+          "hyperVGeneration": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'hyperVGeneration')]"
+          },
+          "securityType": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'securityType')]"
+          },
+          "isAcceleratedNetworkSupported": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'isAcceleratedNetworkSupported')]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'description')]"
+          },
+          "eula": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'eula')]"
+          },
+          "privacyStatementUri": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'privacyStatementUri')]"
+          },
+          "releaseNoteUri": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'releaseNoteUri')]"
+          },
+          "productName": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'productName')]"
+          },
+          "planName": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'planName')]"
+          },
+          "planPublisherName": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'planPublisherName')]"
+          },
+          "endOfLife": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'endOfLife')]"
+          },
+          "excludedDiskTypes": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'excludedDiskTypes')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "7059991596058545894"
+            },
+            "name": "Compute Galleries Image Definitions",
+            "description": "This module deploys an Azure Compute Gallery Image Definition.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the image definition."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "galleryName": {
+              "type": "string",
+              "minLength": 1,
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Shared Image Gallery. Required if the template is used in a standalone deployment."
+              }
+            },
+            "osType": {
+              "type": "string",
+              "allowedValues": [
+                "Windows",
+                "Linux"
+              ],
+              "metadata": {
+                "description": "Required. OS type of the image to be created."
+              }
+            },
+            "osState": {
+              "type": "string",
+              "defaultValue": "Generalized",
+              "allowedValues": [
+                "Generalized",
+                "Specialized"
+              ],
+              "metadata": {
+                "description": "Optional. This property allows the user to specify whether the virtual machines created under this image are 'Generalized' or 'Specialized'."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the gallery Image Definition publisher."
+              }
+            },
+            "offer": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the gallery Image Definition offer."
+              }
+            },
+            "sku": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the gallery Image Definition SKU."
+              }
+            },
+            "minRecommendedvCPUs": {
+              "type": "int",
+              "defaultValue": 1,
+              "minValue": 1,
+              "maxValue": 128,
+              "metadata": {
+                "description": "Optional. The minimum number of the CPU cores recommended for this image."
+              }
+            },
+            "maxRecommendedvCPUs": {
+              "type": "int",
+              "defaultValue": 4,
+              "minValue": 1,
+              "maxValue": 128,
+              "metadata": {
+                "description": "Optional. The maximum number of the CPU cores recommended for this image."
+              }
+            },
+            "minRecommendedMemory": {
+              "type": "int",
+              "defaultValue": 4,
+              "minValue": 1,
+              "maxValue": 4000,
+              "metadata": {
+                "description": "Optional. The minimum amount of RAM in GB recommended for this image."
+              }
+            },
+            "maxRecommendedMemory": {
+              "type": "int",
+              "defaultValue": 16,
+              "minValue": 1,
+              "maxValue": 4000,
+              "metadata": {
+                "description": "Optional. The maximum amount of RAM in GB recommended for this image."
+              }
+            },
+            "hyperVGeneration": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "V1",
+                "V2"
+              ],
+              "metadata": {
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
+              }
+            },
+            "securityType": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "allowedValues": [
+                "Standard",
+                "TrustedLaunch",
+                "ConfidentialVM",
+                "ConfidentialVMSupported"
+              ],
+              "metadata": {
+                "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
+              }
+            },
+            "isHibernateSupported": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifiy if the image supports hibernation."
+              }
+            },
+            "isAcceleratedNetworkSupported": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The description of this gallery Image Definition resource. This property is updatable."
+              }
+            },
+            "eula": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Eula agreement for the gallery Image Definition. Has to be a valid URL."
+              }
+            },
+            "privacyStatementUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The privacy statement uri. Has to be a valid URL."
+              }
+            },
+            "releaseNoteUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The release note uri. Has to be a valid URL."
+              }
+            },
+            "productName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The product ID."
+              }
+            },
+            "planName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The plan ID."
+              }
+            },
+            "planPublisherName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The publisher ID."
+              }
+            },
+            "endOfLife": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
+              }
+            },
+            "excludedDiskTypes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. List of the excluded disk types (e.g., Standard_LRS)."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags for all resources."
+              }
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "gallery": {
+              "existing": true,
+              "type": "Microsoft.Compute/galleries",
+              "apiVersion": "2022-03-03",
+              "name": "[parameters('galleryName')]"
+            },
+            "image": {
+              "type": "Microsoft.Compute/galleries/images",
+              "apiVersion": "2022-03-03",
+              "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "osType": "[parameters('osType')]",
+                "osState": "[parameters('osState')]",
+                "identifier": {
+                  "publisher": "[parameters('publisher')]",
+                  "offer": "[parameters('offer')]",
+                  "sku": "[parameters('sku')]"
+                },
+                "recommended": {
+                  "vCPUs": {
+                    "min": "[parameters('minRecommendedvCPUs')]",
+                    "max": "[parameters('maxRecommendedvCPUs')]"
+                  },
+                  "memory": {
+                    "min": "[parameters('minRecommendedMemory')]",
+                    "max": "[parameters('maxRecommendedMemory')]"
+                  }
+                },
+                "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
+                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported'))), createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), if(not(equals(parameters('securityType'), 'Standard')), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType'))), createArray()))]",
+                "description": "[parameters('description')]",
+                "eula": "[parameters('eula')]",
+                "privacyStatementUri": "[parameters('privacyStatementUri')]",
+                "releaseNoteUri": "[parameters('releaseNoteUri')]",
+                "purchasePlan": {
+                  "product": "[parameters('productName')]",
+                  "name": "[parameters('planName')]",
+                  "publisher": "[parameters('planPublisherName')]"
+                },
+                "endOfLifeDate": "[parameters('endOfLife')]",
+                "disallowed": {
+                  "diskTypes": "[parameters('excludedDiskTypes')]"
+                }
+              },
+              "dependsOn": [
+                "gallery"
+              ]
+            },
+            "image_roleAssignments": {
+              "copy": {
+                "name": "image_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Compute/galleries/{0}/images/{1}', parameters('galleryName'), parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "image"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the image was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the image."
+              },
+              "value": "[resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the image."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('image', '2022-03-03', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "gallery"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed image gallery."
+      },
+      "value": "[resourceId('Microsoft.Compute/galleries', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed image gallery."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed image gallery."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('gallery', '2022-03-03', 'full').location]"
+    },
+    "imageResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The resource ids of the deployed images."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('images'), createArray()))))]",
+        "input": "[reference(format('galleries_images[{0}]', range(0, length(coalesce(parameters('images'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
+    }
+  }
+}

@@ -13,12 +13,14 @@ param privateDNSResourceIds array
 @description('Optional. The name of the private DNS zone group.')
 param name string = 'default'
 
-var privateDnsZoneConfigs = [for privateDNSResourceId in privateDNSResourceIds: {
-  name: last(split(privateDNSResourceId, '/'))!
-  properties: {
-    privateDnsZoneId: privateDNSResourceId
+var privateDnsZoneConfigs = [
+  for privateDNSResourceId in privateDNSResourceIds: {
+    name: last(split(privateDNSResourceId, '/'))!
+    properties: {
+      privateDnsZoneId: privateDNSResourceId
+    }
   }
-}]
+]
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' existing = {
   name: privateEndpointName

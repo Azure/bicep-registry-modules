@@ -1,0 +1,160 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "8063436714999902780"
+    },
+    "name": "Virtual Machine Extensions",
+    "description": "This module deploys a Virtual Machine Extension.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "virtualMachineName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent virtual machine that extension is provisioned for. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the virtual machine extension."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location the extension is deployed to."
+      }
+    },
+    "publisher": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the extension handler publisher."
+      }
+    },
+    "type": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+      }
+    },
+    "typeHandlerVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the version of the script handler."
+      }
+    },
+    "autoUpgradeMinorVersion": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+      }
+    },
+    "forceUpdateTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+      }
+    },
+    "settings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Any object that contains the extension specific settings."
+      }
+    },
+    "protectedSettings": {
+      "type": "secureObject",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Any object that contains the extension specific protected settings."
+      }
+    },
+    "supressFailures": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+      }
+    },
+    "enableAutomaticUpgrade": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    }
+  },
+  "resources": {
+    "virtualMachine": {
+      "existing": true,
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2022-11-01",
+      "name": "[parameters('virtualMachineName')]"
+    },
+    "extension": {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2022-11-01",
+      "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "publisher": "[parameters('publisher')]",
+        "type": "[parameters('type')]",
+        "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+        "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+        "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+        "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+        "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+        "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+        "suppressFailures": "[parameters('supressFailures')]"
+      },
+      "dependsOn": [
+        "virtualMachine"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the extension."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the extension."
+      },
+      "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the extension was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('extension', '2022-11-01', 'full').location]"
+    }
+  }
+}
