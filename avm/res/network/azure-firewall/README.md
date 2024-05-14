@@ -886,7 +886,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
   name: 'azureFirewallDeployment'
   params: {
     // Required parameters
-    name: 'nafcustom001'
+    name: 'nafpip001'
     // Non-required parameters
     azureSkuTier: 'Basic'
     location: '<location>'
@@ -924,7 +924,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nafcustom001"
+      "value": "nafpip001"
     },
     // Non-required parameters
     "azureSkuTier": {
