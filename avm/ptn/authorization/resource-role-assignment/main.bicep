@@ -75,7 +75,7 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
         value: resourceId
       }
       name: {
-        value: !empty(name) ? name : guid(resourceId, principalId, roleDefinitionId)
+        value: name
       }
       roleDefinitionId: {
         value: contains(roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
