@@ -214,7 +214,7 @@ function Invoke-ResourceRemoval {
 
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
                 if($subscriptionState -eq "Enabled"){
-                  $null = Disable-AzSubscription -SubscriptionId $subscriptionId
+                  $null = Disable-AzSubscription -SubscriptionId $subscriptionId -Confirm:$false
                 }
             }
             break
