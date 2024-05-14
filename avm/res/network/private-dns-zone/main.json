@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "3585751615323485845"
+      "templateHash": "5225477623506570535"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -438,9 +438,6 @@
               "properties": {
                 "value": {
                   "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
                   "metadata": {
                     "description": "Required.\tThe text value of this TXT record."
                   }
