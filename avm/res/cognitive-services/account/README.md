@@ -152,7 +152,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     // Non-required parameters
     location: '<location>'
     secretsKeyVault: {
-      Key1: 'custom-secret-name'
+      key1: 'custom-secret-name'
       keyVaultName: '<keyVaultName>'
     }
   }
@@ -184,7 +184,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "secretsKeyVault": {
       "value": {
-        "Key1": "custom-secret-name",
+        "key1": "custom-secret-name",
         "keyVaultName": "<keyVaultName>"
       }
     }
