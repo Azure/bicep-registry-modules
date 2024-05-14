@@ -4,9 +4,6 @@ param location string = resourceGroup().location
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
-@description('Required. The name of the Firewall Policy to create.')
-param firewallPolicyName string
-
 @description('Required. The name of the Public IP Prefix to create.')
 param publicIPPrefixName string
 
@@ -62,9 +59,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id
-
-@description('The resource ID of the created Firewall Policy.')
-output firewallPolicyResourceId string = policy.id
 
 @description('The resource ID of the created Public IP Prefix')
 output publicIPPrefixResourceId string = publicIPPrefix.id

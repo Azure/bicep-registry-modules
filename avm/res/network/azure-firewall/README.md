@@ -36,7 +36,7 @@ The following section provides usage examples for the module, which were used to
 - [Hub-commom](#example-5-hub-commom)
 - [Hub-min](#example-6-hub-min)
 - [Using large parameter set](#example-7-using-large-parameter-set)
-- [Publicipprefix](#example-8-publicipprefix)
+- [Public-IP-Prefix](#example-8-public-ip-prefix)
 - [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _Issue-1867_
@@ -875,7 +875,10 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 8: _Publicipprefix_
+### Example 8: _Public-IP-Prefix_
+
+This instance deploys the module and will use a public IP prefix.
+
 
 <details>
 
