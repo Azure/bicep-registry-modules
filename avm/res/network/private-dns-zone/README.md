@@ -111,25 +111,27 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             ipv4Address: '10.240.4.4'
           }
         ]
-        name: 'A_10.240.4.4'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
-        ttl: 3600
+        base: {
+          name: 'A_10.240.4.4'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          ttl: 3600
+        }
       }
     ]
     aaaa: [
@@ -139,34 +141,38 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             ipv6Address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
           }
         ]
-        name: 'AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334'
-        ttl: 3600
+        base: {
+          name: 'AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334'
+          ttl: 3600
+        }
       }
     ]
     cname: [
       {
+        base: {
+          name: 'CNAME_test'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          ttl: 3600
+        }
         cnameRecord: {
           cname: 'test'
         }
-        name: 'CNAME_test'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
-        ttl: 3600
       }
     ]
     location: 'global'
@@ -176,59 +182,63 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     }
     mx: [
       {
+        base: {
+          name: 'MX_contoso'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          ttl: 3600
+        }
         mxRecords: [
           {
             exchange: 'contoso.com'
             preference: 100
           }
         ]
-        name: 'MX_contoso'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
-        ttl: 3600
       }
     ]
     ptr: [
       {
-        name: 'PTR_contoso'
+        base: {
+          name: 'PTR_contoso'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          ttl: 3600
+        }
         ptrRecords: [
           {
             ptrdname: 'contoso.com'
           }
         ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
-        ttl: 3600
       }
     ]
     roleAssignments: [
@@ -250,24 +260,27 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     ]
     soa: [
       {
-        name: '@'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
+        base: {
+          name: '@'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          ttl: 3600
+        }
         soaRecord: {
           email: 'azureprivatedns-host.microsoft.com'
           expireTime: 2419200
@@ -275,31 +288,33 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           minimumTtl: 10
           refreshTime: 3600
           retryTime: 300
-          serialNumber: '1'
+          serialNumber: 1
         }
-        ttl: 3600
       }
     ]
     srv: [
       {
-        name: 'SRV_contoso'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
+        base: {
+          name: 'SRV_contoso'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          ttl: 3600
+        }
         srvRecords: [
           {
             port: 9332
@@ -308,7 +323,6 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             weight: 0
           }
         ]
-        ttl: 3600
       }
     ]
     tags: {
@@ -318,25 +332,27 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     }
     txt: [
       {
-        name: 'TXT_test'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
-        ttl: 3600
+        base: {
+          name: 'TXT_test'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          ttl: 3600
+        }
         txtRecords: [
           {
             value: [
@@ -381,25 +397,27 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
               "ipv4Address": "10.240.4.4"
             }
           ],
-          "name": "A_10.240.4.4",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
-          "ttl": 3600
+          "base": {
+            "name": "A_10.240.4.4",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ],
+            "ttl": 3600
+          }
         }
       ]
     },
@@ -411,36 +429,40 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
               "ipv6Address": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
             }
           ],
-          "name": "AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334",
-          "ttl": 3600
+          "base": {
+            "name": "AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334",
+            "ttl": 3600
+          }
         }
       ]
     },
     "cname": {
       "value": [
         {
+          "base": {
+            "name": "CNAME_test",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ],
+            "ttl": 3600
+          },
           "cnameRecord": {
             "cname": "test"
-          },
-          "name": "CNAME_test",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
-          "ttl": 3600
+          }
         }
       ]
     },
@@ -456,61 +478,65 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     "mx": {
       "value": [
         {
+          "base": {
+            "name": "MX_contoso",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ],
+            "ttl": 3600
+          },
           "mxRecords": [
             {
               "exchange": "contoso.com",
               "preference": 100
             }
-          ],
-          "name": "MX_contoso",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
-          "ttl": 3600
+          ]
         }
       ]
     },
     "ptr": {
       "value": [
         {
-          "name": "PTR_contoso",
+          "base": {
+            "name": "PTR_contoso",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ],
+            "ttl": 3600
+          },
           "ptrRecords": [
             {
               "ptrdname": "contoso.com"
             }
-          ],
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
-          "ttl": 3600
+          ]
         }
       ]
     },
@@ -536,24 +562,27 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     "soa": {
       "value": [
         {
-          "name": "@",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
+          "base": {
+            "name": "@",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ],
+            "ttl": 3600
+          },
           "soaRecord": {
             "email": "azureprivatedns-host.microsoft.com",
             "expireTime": 2419200,
@@ -561,33 +590,35 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             "minimumTtl": 10,
             "refreshTime": 3600,
             "retryTime": 300,
-            "serialNumber": "1"
-          },
-          "ttl": 3600
+            "serialNumber": 1
+          }
         }
       ]
     },
     "srv": {
       "value": [
         {
-          "name": "SRV_contoso",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
+          "base": {
+            "name": "SRV_contoso",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ],
+            "ttl": 3600
+          },
           "srvRecords": [
             {
               "port": 9332,
@@ -595,8 +626,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
               "target": "test.contoso.com",
               "weight": 0
             }
-          ],
-          "ttl": 3600
+          ]
         }
       ]
     },
@@ -610,25 +640,27 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     "txt": {
       "value": [
         {
-          "name": "TXT_test",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
-          "ttl": 3600,
+          "base": {
+            "name": "TXT_test",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ],
+            "ttl": 3600
+          },
           "txtRecords": [
             {
               "value": [
@@ -766,6 +798,169 @@ Array of A records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`base`](#parameter-abase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aRecords`](#parameter-aarecords) | array | The list of A records in the record set. |
+
+### Parameter: `a.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-abasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-abasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-abaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-abasettl) | int | The TTL of the record. |
+
+### Parameter: `a.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `a.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `a.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-abaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-abaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-abaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-abaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-abaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-abaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-abaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `a.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `a.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `a.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `a.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `a.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `a.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `a.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `a.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `a.aRecords`
+
+The list of A records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv4Address`](#parameter-aarecordsipv4address) | string | The IPv4 address of this A record. |
+
+### Parameter: `a.aRecords.ipv4Address`
+
+The IPv4 address of this A record.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `aaaa`
 
 Array of AAAA records.
@@ -773,12 +968,338 @@ Array of AAAA records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`base`](#parameter-aaaabase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aaaaRecords`](#parameter-aaaaaaaarecords) | array | The list of AAAA records in the record set. |
+
+### Parameter: `aaaa.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-aaaabasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-aaaabasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-aaaabaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-aaaabasettl) | int | The TTL of the record. |
+
+### Parameter: `aaaa.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aaaa.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `aaaa.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-aaaabaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-aaaabaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-aaaabaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-aaaabaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-aaaabaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-aaaabaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-aaaabaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `aaaa.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aaaa.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aaaa.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `aaaa.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `aaaa.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `aaaa.aaaaRecords`
+
+The list of AAAA records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv6Address`](#parameter-aaaaaaaarecordsipv6address) | string | The IPv6 address of this AAAA record. |
+
+### Parameter: `aaaa.aaaaRecords.ipv6Address`
+
+The IPv6 address of this AAAA record.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `cname`
 
 Array of CNAME records.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`base`](#parameter-cnamebase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cnameRecord`](#parameter-cnamecnamerecord) | object | The CNAME record in the record set. |
+
+### Parameter: `cname.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cnamebasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-cnamebasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-cnamebaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-cnamebasettl) | int | The TTL of the record. |
+
+### Parameter: `cname.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cname.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `cname.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-cnamebaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-cnamebaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-cnamebaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-cnamebaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-cnamebaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-cnamebaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-cnamebaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `cname.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cname.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cname.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `cname.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `cname.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `cname.cnameRecord`
+
+The CNAME record in the record set.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cname`](#parameter-cnamecnamerecordcname) | string | The canonical name of the CNAME record. |
+
+### Parameter: `cname.cnameRecord.cname`
+
+The canonical name of the CNAME record.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -839,12 +1360,188 @@ Array of MX records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`base`](#parameter-mxbase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mxRecords`](#parameter-mxmxrecords) | array | The list of MX records in the record set. |
+
+### Parameter: `mx.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-mxbasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-mxbasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-mxbaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-mxbasettl) | int | The TTL of the record. |
+
+### Parameter: `mx.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `mx.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-mxbaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-mxbaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-mxbaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-mxbaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-mxbaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-mxbaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-mxbaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `mx.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `mx.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `mx.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `mx.mxRecords`
+
+The list of MX records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exchange`](#parameter-mxmxrecordsexchange) | string | The domain name of the mail host for this MX record. |
+| [`preference`](#parameter-mxmxrecordspreference) | int | The preference value for this MX record. |
+
+### Parameter: `mx.mxRecords.exchange`
+
+The domain name of the mail host for this MX record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.mxRecords.preference`
+
+The preference value for this MX record.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `ptr`
 
 Array of PTR records.
 
 - Required: No
 - Type: array
+
+**RequiredThe list of PTR records in the record set parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 
 ### Parameter: `roleAssignments`
 
@@ -942,12 +1639,410 @@ Array of SOA records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`base`](#parameter-soabase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`soaRecord`](#parameter-soasoarecord) | object | The SOA record in the record set. |
+
+### Parameter: `soa.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-soabasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-soabasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-soabaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-soabasettl) | int | The TTL of the record. |
+
+### Parameter: `soa.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `soa.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-soabaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-soabaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-soabaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-soabaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-soabaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-soabaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-soabaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `soa.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `soa.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `soa.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `soa.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `soa.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `soa.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `soa.soaRecord`
+
+The SOA record in the record set.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`email`](#parameter-soasoarecordemail) | string | The email contact for this SOA record. |
+| [`expireTime`](#parameter-soasoarecordexpiretime) | int | The expire time for this SOA record. |
+| [`host`](#parameter-soasoarecordhost) | string | The domain name of the authoritative name server for this SOA record. |
+| [`minimumTtl`](#parameter-soasoarecordminimumttl) | int | The minimum value for this SOA record. By convention this is used to determine the negative caching duration. |
+| [`refreshTime`](#parameter-soasoarecordrefreshtime) | int | The refresh value for this SOA record. |
+| [`retryTime`](#parameter-soasoarecordretrytime) | int | The retry time for this SOA record. |
+| [`serialNumber`](#parameter-soasoarecordserialnumber) | int | The serial number for this SOA record. |
+
+### Parameter: `soa.soaRecord.email`
+
+The email contact for this SOA record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.soaRecord.expireTime`
+
+The expire time for this SOA record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.host`
+
+The domain name of the authoritative name server for this SOA record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.soaRecord.minimumTtl`
+
+The minimum value for this SOA record. By convention this is used to determine the negative caching duration.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.refreshTime`
+
+The refresh value for this SOA record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.retryTime`
+
+The retry time for this SOA record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.serialNumber`
+
+The serial number for this SOA record.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `srv`
 
 Array of SRV records.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`base`](#parameter-srvbase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`srvRecords`](#parameter-srvsrvrecords) | array | The list of SRV records in the record set. |
+
+### Parameter: `srv.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-srvbasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-srvbasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-srvbaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-srvbasettl) | int | The TTL of the record. |
+
+### Parameter: `srv.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `srv.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-srvbaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-srvbaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-srvbaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-srvbaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-srvbaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-srvbaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-srvbaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `srv.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `srv.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `srv.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `srv.srvRecords`
+
+The list of SRV records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-srvsrvrecordsport) | int | The port value for this SRV record. |
+| [`priority`](#parameter-srvsrvrecordspriority) | int | The priority value for this SRV record. |
+| [`target`](#parameter-srvsrvrecordstarget) | string | The target domain name for this SRV record. |
+| [`weight`](#parameter-srvsrvrecordsweight) | int | The weight value for this SRV record. |
+
+### Parameter: `srv.srvRecords.port`
+
+The port value for this SRV record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `srv.srvRecords.priority`
+
+The priority value for this SRV record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `srv.srvRecords.target`
+
+The target domain name for this SRV record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.srvRecords.weight`
+
+The weight value for this SRV record.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `tags`
 
@@ -962,6 +2057,161 @@ Array of TXT records.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`base`](#parameter-txtbase) | object | The base properties of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`txtRecords`](#parameter-txttxtrecords) | array | The list of TXT records in the record set. |
+
+### Parameter: `txt.base`
+
+The base properties of the record.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-txtbasename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-txtbasemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-txtbaseroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-txtbasettl) | int | The TTL of the record. |
+
+### Parameter: `txt.base.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `txt.base.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `txt.base.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-txtbaseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-txtbaseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-txtbaseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-txtbaseroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-txtbaseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-txtbaseroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-txtbaseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `txt.base.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `txt.base.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `txt.base.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `txt.base.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `txt.base.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `txt.base.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `txt.base.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `txt.base.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `txt.txtRecords`
+
+The list of TXT records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 
 ### Parameter: `virtualNetworkLinks`
 

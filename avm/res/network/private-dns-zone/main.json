@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "8731170458098397142"
+      "version": "0.27.1.19265",
+      "templateHash": "12964938684839299735"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -103,6 +103,358 @@
         }
       },
       "nullable": true
+    },
+    "zoneBaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the record."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The metadata of the record."
+          }
+        },
+        "ttl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The TTL of the record."
+          }
+        },
+        "roleAssignments": {
+          "$ref": "#/definitions/roleAssignmentType",
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      }
+    },
+    "AType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "aRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ipv4Address": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IPv4 address of this A record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of A records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "AAAAType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "aaaaRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ipv6Address": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IPv6 address of this AAAA record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of AAAA records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "CNAMEType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "cnameRecord": {
+            "type": "object",
+            "properties": {
+              "cname": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The canonical name of the CNAME record."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The CNAME record in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "MXType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "mxRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "exchange": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The domain name of the mail host for this MX record."
+                  }
+                },
+                "preference": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The preference value for this MX record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of MX records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "PTRType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "ptrRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ptrdname": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The PTR target domain name for this PTR record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "The list of PTR records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "SOAType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "soaRecord": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The email contact for this SOA record."
+                }
+              },
+              "expireTime": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The expire time for this SOA record."
+                }
+              },
+              "host": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The domain name of the authoritative name server for this SOA record."
+                }
+              },
+              "minimumTtl": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."
+                }
+              },
+              "refreshTime": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The refresh value for this SOA record."
+                }
+              },
+              "retryTime": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The retry time for this SOA record."
+                }
+              },
+              "serialNumber": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The serial number for this SOA record."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The SOA record in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "SRVType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "srvRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "priority": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The priority value for this SRV record."
+                  }
+                },
+                "weight": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The weight value for this SRV record."
+                  }
+                },
+                "port": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The port value for this SRV record."
+                  }
+                },
+                "target": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The target domain name for this SRV record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of SRV records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "TXTType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/definitions/zoneBaseType",
+            "metadata": {
+              "description": "Required. The base properties of the record."
+            }
+          },
+          "txtRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required.\tThe text value of this TXT record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of TXT records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -113,57 +465,49 @@
       }
     },
     "a": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/AType",
       "metadata": {
         "description": "Optional. Array of A records."
       }
     },
     "aaaa": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/AAAAType",
       "metadata": {
         "description": "Optional. Array of AAAA records."
       }
     },
     "cname": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/CNAMEType",
       "metadata": {
         "description": "Optional. Array of CNAME records."
       }
     },
     "mx": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/MXType",
       "metadata": {
         "description": "Optional. Array of MX records."
       }
     },
     "ptr": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/PTRType",
       "metadata": {
         "description": "Optional. Array of PTR records."
       }
     },
     "soa": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/SOAType",
       "metadata": {
         "description": "Optional. Array of SOA records."
       }
     },
     "srv": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/SRVType",
       "metadata": {
         "description": "Optional. Array of SRV records."
       }
     },
     "txt": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/TXTType",
       "metadata": {
         "description": "Optional. Array of TXT records."
       }
@@ -301,16 +645,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('a'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('a'), createArray())[copyIndex()].base.name]"
           },
           "aRecords": {
             "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'aRecords')]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -323,8 +667,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "12306956034851223701"
+              "version": "0.27.1.19265",
+              "templateHash": "1479424254286113961"
             },
             "name": "Private DNS Zone A record",
             "description": "This module deploys a Private DNS Zone A record.",
@@ -540,16 +884,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('aaaa'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('aaaa'), createArray())[copyIndex()].base.name]"
           },
           "aaaaRecords": {
             "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'aaaaRecords')]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -562,8 +906,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15517532978293030748"
+              "version": "0.27.1.19265",
+              "templateHash": "9900490286335618416"
             },
             "name": "Private DNS Zone AAAA record",
             "description": "This module deploys a Private DNS Zone AAAA record.",
@@ -779,16 +1123,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('cname'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('cname'), createArray())[copyIndex()].base.name]"
           },
           "cnameRecord": {
             "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'cnameRecord')]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -801,8 +1145,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4178056552366181250"
+              "version": "0.27.1.19265",
+              "templateHash": "9775157141161355944"
             },
             "name": "Private DNS Zone CNAME record",
             "description": "This module deploys a Private DNS Zone CNAME record.",
@@ -891,7 +1235,7 @@
             },
             "cnameRecord": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A CNAME record."
               }
@@ -1018,16 +1362,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('mx'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('mx'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "mxRecords": {
             "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'mxRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('mx'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -1040,8 +1384,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "10977884265298427114"
+              "version": "0.27.1.19265",
+              "templateHash": "12759370349231900780"
             },
             "name": "Private DNS Zone MX record",
             "description": "This module deploys a Private DNS Zone MX record.",
@@ -1257,16 +1601,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('ptr'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('ptr'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "ptrRecords": {
             "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ptrRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -1279,8 +1623,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "10561246444555326733"
+              "version": "0.27.1.19265",
+              "templateHash": "13592920041250204501"
             },
             "name": "Private DNS Zone PTR record",
             "description": "This module deploys a Private DNS Zone PTR record.",
@@ -1496,16 +1840,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('soa'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('soa'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "soaRecord": {
             "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'soaRecord')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('soa'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -1518,8 +1862,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17840534414219914835"
+              "version": "0.27.1.19265",
+              "templateHash": "17659308471739059293"
             },
             "name": "Private DNS Zone SOA record",
             "description": "This module deploys a Private DNS Zone SOA record.",
@@ -1735,16 +2079,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('srv'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('srv'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "srvRecords": {
             "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'srvRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('srv'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -1757,8 +2101,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17625006509638611979"
+              "version": "0.27.1.19265",
+              "templateHash": "6384537155512618270"
             },
             "name": "Private DNS Zone SRV record",
             "description": "This module deploys a Private DNS Zone SRV record.",
@@ -1974,16 +2318,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('txt'), createArray())[copyIndex()].name]"
+            "value": "[coalesce(parameters('txt'), createArray())[copyIndex()].base.name]"
           },
           "metadata": {
-            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'metadata')]"
+            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()].base, 'metadata')]"
           },
           "txtRecords": {
             "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'txtRecords')]"
           },
           "ttl": {
-            "value": "[coalesce(tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'ttl'), 3600)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('txt'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -1996,8 +2340,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1962752727391912227"
+              "version": "0.27.1.19265",
+              "templateHash": "14210083655409825976"
             },
             "name": "Private DNS Zone TXT record",
             "description": "This module deploys a Private DNS Zone TXT record.",
@@ -2235,8 +2579,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8223766852442158769"
+              "version": "0.27.1.19265",
+              "templateHash": "17374916809049988585"
             },
             "name": "Private DNS Zone Virtual Network Link",
             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
