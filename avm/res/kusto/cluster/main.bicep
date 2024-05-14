@@ -19,7 +19,7 @@ param sku kustoSkuType = 'Dev(No SLA)_Standard_D11_v2'
 @description('Optional. The tier of the Kusto Cluster.')
 param tier kustoTierType = 'Basic'
 
-@description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
+@description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. The Kusto Cluster\'s accepted audiences.')
