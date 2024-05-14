@@ -58,6 +58,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    geoRedundantBackup: 'Enabled'
     location: '<location>'
   }
 }
@@ -91,6 +92,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "geoRedundantBackup": {
+      "value": "Enabled"
     },
     "location": {
       "value": "<location>"
