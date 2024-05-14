@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csamin'
+param serviceShort string = 'csakv'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       secretsKeyVault: {
         keyVaultName: nestedDependencies.outputs.keyVaultName
-        Key1: 'custom-secret-name'
+        key1: 'custom-secret-name'
       }
     }
   }

@@ -148,7 +148,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'SpeechServices'
-    name: 'csamin001'
+    name: 'csakv001'
     // Non-required parameters
     location: '<location>'
     secretsKeyVault: {
@@ -176,7 +176,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "SpeechServices"
     },
     "name": {
-      "value": "csamin001"
+      "value": "csakv001"
     },
     // Non-required parameters
     "location": {
