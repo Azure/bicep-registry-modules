@@ -203,7 +203,7 @@ function Invoke-ResourceRemoval {
                 $null = Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
 
                 # Delete NetworkWatcher resource group
-                if($null -ne (Get-AzResourceGroup -Name "NetworkWatcherRG")){
+                if($null -ne (Get-AzResourceGroup -Name "NetworkWatcherRG" -ErrorAction SilentlyContinue)){
                   $null = Remove-AzResourceGroup -Name "NetworkWatcherRG" -Force
                 }
 
