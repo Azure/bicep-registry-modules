@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "7135831677613401533"
+      "templateHash": "6685135527822465374"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone.",
@@ -773,7 +773,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "targetResourceId": {
-            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'targetResourceId')]"
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'targetResourceId')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()].base, 'roleAssignments')]"
@@ -1027,7 +1027,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "targetResourceId": {
-            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'targetResourceId')]"
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'targetResourceId')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()].base, 'roleAssignments')]"
@@ -1281,7 +1281,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'ttl'), 3600)]"
           },
           "targetResourceId": {
-            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'targetResourceId')]"
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'targetResourceId')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()].base, 'roleAssignments')]"

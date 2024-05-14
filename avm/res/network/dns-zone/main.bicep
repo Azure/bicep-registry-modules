@@ -126,7 +126,7 @@ module dnsZone_A 'a/main.bicep' = [
       aRecords: aRecord.?aRecords
       metadata: aRecord.base.?metadata
       ttl: aRecord.base.?ttl ?? 3600
-      targetResourceId: aRecord.base.?targetResourceId
+      targetResourceId: aRecord.?targetResourceId
       roleAssignments: aRecord.base.?roleAssignments
     }
   }
@@ -141,7 +141,7 @@ module dnsZone_AAAA 'aaaa/main.bicep' = [
       aaaaRecords: aaaaRecord.?aaaaRecords
       metadata: aaaaRecord.base.?metadata
       ttl: aaaaRecord.base.?ttl ?? 3600
-      targetResourceId: aaaaRecord.base.?targetResourceId
+      targetResourceId: aaaaRecord.?targetResourceId
       roleAssignments: aaaaRecord.base.?roleAssignments
     }
   }
@@ -156,7 +156,7 @@ module dnsZone_CNAME 'cname/main.bicep' = [
       cnameRecord: cnameRecord.?cnameRecord
       metadata: cnameRecord.base.?metadata
       ttl: cnameRecord.base.?ttl ?? 3600
-      targetResourceId: cnameRecord.base.?targetResourceId
+      targetResourceId: cnameRecord.?targetResourceId
       roleAssignments: cnameRecord.base.?roleAssignments
     }
   }
