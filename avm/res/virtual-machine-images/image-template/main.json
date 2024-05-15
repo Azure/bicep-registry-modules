@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "4620280027037163005"
+      "version": "0.26.170.59819",
+      "templateHash": "16618215702378872010"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -281,10 +281,122 @@
         "imageName": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Name of the managed or unmanaged image that will be created.."
+            "description": "Conditional. Name of the managed or unmanaged image that will be created."
           }
         }
       }
+    },
+    "validationProcessType": {
+      "type": "object",
+      "properties": {
+        "continueDistributeOnFailure": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If validation fails and this field is set to false, output image(s) will not be distributed. This is the default behavior. If validation fails and this field is set to true, output image(s) will still be distributed. Please use this option with caution as it may result in bad images being distributed for use. In either case (true or false), the end to end image run will be reported as having failed in case of a validation failure. [Note: This field has no effect if validation succeeds.]."
+          }
+        },
+        "inVMValidations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "allowedValues": [
+                  "File",
+                  "PowerShell",
+                  "Shell"
+                ],
+                "metadata": {
+                  "description": "Required. The type of validation."
+                }
+              },
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Friendly Name to provide context on what this validation step does."
+                }
+              },
+              "scriptUri": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. URI of the PowerShell script to be run for validation. It can be a github link, Azure Storage URI, etc."
+                }
+              },
+              "inline": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Array of commands to be run, separated by commas."
+                }
+              },
+              "validExitCodes": {
+                "type": "array",
+                "items": {
+                  "type": "int"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Valid codes that can be returned from the script/inline command, this avoids reported failure of the script/inline command."
+                }
+              },
+              "sha256Checksum": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Value of sha256 checksum of the file, you generate this locally, and then Image Builder will checksum and validate."
+                }
+              },
+              "sourceUri": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The source URI of the file."
+                }
+              },
+              "destination": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Destination of the file."
+                }
+              },
+              "runAsSystem": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. If specified, the PowerShell script will be run with elevated privileges using the Local System user. Can only be true when the runElevated field above is set to true."
+                }
+              },
+              "runElevated": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. If specified, the PowerShell script will be run with elevated privileges."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of validators that will be performed on the image. Azure Image Builder supports File, PowerShell and Shell validators."
+          }
+        },
+        "sourceValidationOnly": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -396,13 +508,30 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\nBe aware, the user assigned identities specified in the \\'managedIdentities\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.\n"
+        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the 'managedIdentities' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM."
       }
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
         "description": "Required. The managed identity definition for this resource."
+      }
+    },
+    "validationProcess": {
+      "$ref": "#/definitions/validationProcessType",
+      "metadata": {
+        "description": "Optional. Configuration options and list of validations to be performed on the resulting image."
+      }
+    },
+    "optimizeVmBoot": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time."
       }
     }
   },
@@ -442,7 +571,7 @@
     },
     "imageTemplate": {
       "type": "Microsoft.VirtualMachineImages/imageTemplates",
-      "apiVersion": "2022-02-14",
+      "apiVersion": "2023-07-01",
       "name": "[format('{0}-{1}', parameters('name'), parameters('baseTime'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -464,7 +593,9 @@
         },
         "source": "[parameters('imageSource')]",
         "customize": "[parameters('customizationSteps')]",
-        "stagingResourceGroup": "[parameters('stagingResourceGroup')]"
+        "stagingResourceGroup": "[parameters('stagingResourceGroup')]",
+        "validate": "[parameters('validationProcess')]",
+        "optimize": "[if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null())]"
       }
     },
     "imageTemplate_lock": {
@@ -545,7 +676,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('imageTemplate', '2022-02-14', 'full').location]"
+      "value": "[reference('imageTemplate', '2023-07-01', 'full').location]"
     }
   }
 }
