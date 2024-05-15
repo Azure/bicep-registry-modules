@@ -471,6 +471,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
 | [`ingressTargetPort`](#parameter-ingresstargetport) | int | Target Port in containers for traffic from ingress. |
 | [`ingressTransport`](#parameter-ingresstransport) | string | Ingress transport protocol. |
+| [`stickySessionsAffinity`](#parameter-stickySessionsAffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`initContainersTemplate`](#parameter-initcontainerstemplate) | array | List of specialized containers that run before app containers. |
 | [`ipSecurityRestrictions`](#parameter-ipsecurityrestrictions) | array | Rules to restrict incoming IP address. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -598,6 +599,19 @@ Ingress transport protocol.
     'http'
     'http2'
     'tcp'
+  ]
+  ```
+
+### Parameter: `stickySessionsAffinity`
+
+- Required: No
+- Type: string
+- Default: `'none'`
+- Allowed:
+  ```Bicep
+  [
+    'none'
+    'sticky'
   ]
   ```
 
