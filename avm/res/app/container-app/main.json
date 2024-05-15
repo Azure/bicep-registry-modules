@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "10046254839293356785"
+      "templateHash": "4576386881131789247"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -183,7 +183,7 @@
           }
         },
         "resources": {
-          "$ref": "#/definitions/containerResources",
+          "type": "object",
           "metadata": {
             "description": "Required. Container resource requirements."
           }
@@ -382,23 +382,6 @@
           "type": "int",
           "metadata": {
             "description": "Required. Number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
-          }
-        }
-      }
-    },
-    "containerResources": {
-      "type": "object",
-      "properties": {
-        "cpu": {
-          "type": "int",
-          "metadata": {
-            "description": "Required. Required CPU in cores, e.g. 0.5 To specify a decimal value, use the json() function."
-          }
-        },
-        "memory": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Required memory, e.g. \"250Mb\""
           }
         }
       }
