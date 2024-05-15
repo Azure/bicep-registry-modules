@@ -25,7 +25,10 @@ resource eventGridTopicRbacAssignment 'Microsoft.Authorization/roleAssignments@2
   name: guid(managedIdentity.id, 'evgtRbacAssignment')
   scope: eventGridTopic
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd5a91429-5739-47e2-a06b-3470a27159e7') // EventGrid Data Sender
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'd5a91429-5739-47e2-a06b-3470a27159e7'
+    ) // EventGrid Data Sender
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }

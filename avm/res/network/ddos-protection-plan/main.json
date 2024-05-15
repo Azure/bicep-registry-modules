@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "1916218161096059486"
+      "version": "0.26.54.24096",
+      "templateHash": "1494680317385040277"
     },
     "name": "DDoS Protection Plans",
     "description": "This module deploys a DDoS Protection Plan.",

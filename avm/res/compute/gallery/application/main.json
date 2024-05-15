@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "1766982665283226409"
+      "version": "0.26.170.59819",
+      "templateHash": "9175012718933553578"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application.",

@@ -99,50 +99,89 @@ param topicSpaces array?
 @description('Optional. All namespace Permission Bindings to create. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param permissionBindings array?
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
-  'Azure Resource Notifications System Topics Subscriber': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')
+  'Azure Resource Notifications System Topics Subscriber': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0b962ed2-6d56-471c-bd5f-3477d83a7ba4'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'EventGrid Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')
-  'EventGrid Data Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d8c3fe3-8864-474b-8749-01e3783e8157')
-  'EventGrid Data Receiver': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '78cbd9e7-9798-4e2e-9b5a-547d9ebb31fb')
-  'EventGrid Data Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd5a91429-5739-47e2-a06b-3470a27159e7')
-  'EventGrid EventSubscription Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '428e0ff0-5e57-4d9c-a221-2c70d0e0a443')
-  'EventGrid EventSubscription Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2414bbcf-6497-4faf-8c65-045460748405')
-  'EventGrid TopicSpaces Publisher': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a12b0b94-b317-4dcd-84a8-502ce99884c6')
-  'EventGrid TopicSpaces Subscriber': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b0f2fd7-60b4-4eca-896f-4435034f8bf5')
+  'EventGrid Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1e241071-0855-49ea-94dc-649edcd759de'
+  )
+  'EventGrid Data Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1d8c3fe3-8864-474b-8749-01e3783e8157'
+  )
+  'EventGrid Data Receiver': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '78cbd9e7-9798-4e2e-9b5a-547d9ebb31fb'
+  )
+  'EventGrid Data Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'd5a91429-5739-47e2-a06b-3470a27159e7'
+  )
+  'EventGrid EventSubscription Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '428e0ff0-5e57-4d9c-a221-2c70d0e0a443'
+  )
+  'EventGrid EventSubscription Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2414bbcf-6497-4faf-8c65-045460748405'
+  )
+  'EventGrid TopicSpaces Publisher': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a12b0b94-b317-4dcd-84a8-502ce99884c6'
+  )
+  'EventGrid TopicSpaces Subscriber': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4b0f2fd7-60b4-4eca-896f-4435034f8bf5'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 // ============== //
 // Resources      //
 // ============== //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.eventgrid-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.eventgrid-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' = {
   name: name
@@ -151,183 +190,232 @@ resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' = {
   identity: identity
   properties: {
     isZoneRedundant: isZoneRedundant
-    publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? publicNetworkAccess
+      : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
     inboundIpRules: inboundIpRules
-    topicSpacesConfiguration: topicSpacesState == 'Enabled' ? {
-      state: topicSpacesState
-      clientAuthentication: !empty(alternativeAuthenticationNameSources) ? {
-        alternativeAuthenticationNameSources: alternativeAuthenticationNameSources
-      } : null
-      maximumSessionExpiryInHours: maximumSessionExpiryInHours
-      maximumClientSessionsPerAuthenticationName: maximumClientSessionsPerAuthenticationName
-      routeTopicResourceId: routeTopicResourceId
-      routingEnrichments: !empty(routeTopicResourceId) ? routingEnrichments : null
-      routingIdentityInfo: !empty(routeTopicResourceId) && !startsWith(routeTopicResourceId ?? '', '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.EventGrid/namespaces/${name}/topics/') ? routingIdentityInfo : null // Use routingIdentityInfo only if the topic is not in the same namespace
-    } : null
+    topicSpacesConfiguration: topicSpacesState == 'Enabled'
+      ? {
+          state: topicSpacesState
+          clientAuthentication: !empty(alternativeAuthenticationNameSources)
+            ? {
+                alternativeAuthenticationNameSources: alternativeAuthenticationNameSources
+              }
+            : null
+          maximumSessionExpiryInHours: maximumSessionExpiryInHours
+          maximumClientSessionsPerAuthenticationName: maximumClientSessionsPerAuthenticationName
+          routeTopicResourceId: routeTopicResourceId
+          routingEnrichments: !empty(routeTopicResourceId) ? routingEnrichments : null
+          routingIdentityInfo: !empty(routeTopicResourceId) && !startsWith(
+              routeTopicResourceId ?? '',
+              '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.EventGrid/namespaces/${name}/topics/'
+            )
+            ? routingIdentityInfo
+            : null // Use routingIdentityInfo only if the topic is not in the same namespace
+        }
+      : null
   }
 }
 
-resource namespace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource namespace_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: namespace
   }
-  scope: namespace
-}
 
-resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: namespace
-}]
-
-module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
-        properties: {
-          privateLinkServiceId: namespace.id
-          groupIds: [
-            privateEndpoint.?service ?? 'topic'
-          ]
+resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
-        properties: {
-          privateLinkServiceId: namespace.id
-          groupIds: [
-            privateEndpoint.?service ?? 'topic'
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: namespace
   }
-}]
+]
 
-resource namespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(namespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
+              properties: {
+                privateLinkServiceId: namespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'topic'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
+              properties: {
+                privateLinkServiceId: namespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'topic'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-  scope: namespace
-}]
+]
 
-module namespace_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Namespace-Topic-${index}'
-  params: {
-    name: topic.name
-    namespaceName: namespace.name
-    eventRetentionInDays: topic.?eventRetentionInDays
-    inputSchema: topic.?inputSchema
-    publisherType: topic.?publisherType
-    roleAssignments: topic.?roleAssignments
-    eventSubscriptions: topic.?eventSubscriptions
+resource namespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(namespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: namespace
   }
-}]
+]
 
-module namespace_caCertificates 'ca-certificate/main.bicep' = [for (caCertificate, index) in (caCertificates ?? []): if (topicSpacesState == 'Enabled') {
-  name: '${uniqueString(deployment().name, location)}-Namespace-caCertificate-${index}'
-  params: {
-    name: caCertificate.name
-    namespaceName: namespace.name
-    description: caCertificate.?description
-    encodedCertificate: caCertificate.encodedCertificate
+module namespace_topics 'topic/main.bicep' = [
+  for (topic, index) in (topics ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Namespace-Topic-${index}'
+    params: {
+      name: topic.name
+      namespaceName: namespace.name
+      eventRetentionInDays: topic.?eventRetentionInDays
+      inputSchema: topic.?inputSchema
+      publisherType: topic.?publisherType
+      roleAssignments: topic.?roleAssignments
+      eventSubscriptions: topic.?eventSubscriptions
+    }
   }
-}]
+]
 
-module namespace_clients 'client/main.bicep' = [for (client, index) in (clients ?? []): if (topicSpacesState == 'Enabled') {
-  name: '${uniqueString(deployment().name, location)}-Namespace-Client-${index}'
-  params: {
-    name: client.name
-    namespaceName: namespace.name
-    authenticationName: client.?authenticationName
-    description: client.?description
-    clientCertificateAuthenticationValidationSchema: client.?clientCertificateAuthenticationValidationSchema
-    clientCertificateAuthenticationAllowedThumbprints: client.?clientCertificateAuthenticationAllowedThumbprints
-    attributes: client.?attributes
-    state: client.?state
+module namespace_caCertificates 'ca-certificate/main.bicep' = [
+  for (caCertificate, index) in (caCertificates ?? []): if (topicSpacesState == 'Enabled') {
+    name: '${uniqueString(deployment().name, location)}-Namespace-caCertificate-${index}'
+    params: {
+      name: caCertificate.name
+      namespaceName: namespace.name
+      description: caCertificate.?description
+      encodedCertificate: caCertificate.encodedCertificate
+    }
   }
-}]
+]
 
-module namespace_clientGroups 'client-group/main.bicep' = [for (clientGroup, index) in (clientGroups ?? []): if (topicSpacesState == 'Enabled') {
-  name: '${uniqueString(deployment().name, location)}-Namespace-clientGroup-${index}'
-  params: {
-    name: clientGroup.name
-    namespaceName: namespace.name
-    query: clientGroup.query
-    description: clientGroup.?description
+module namespace_clients 'client/main.bicep' = [
+  for (client, index) in (clients ?? []): if (topicSpacesState == 'Enabled') {
+    name: '${uniqueString(deployment().name, location)}-Namespace-Client-${index}'
+    params: {
+      name: client.name
+      namespaceName: namespace.name
+      authenticationName: client.?authenticationName
+      description: client.?description
+      clientCertificateAuthenticationValidationSchema: client.?clientCertificateAuthenticationValidationSchema
+      clientCertificateAuthenticationAllowedThumbprints: client.?clientCertificateAuthenticationAllowedThumbprints
+      attributes: client.?attributes
+      state: client.?state
+    }
   }
-}]
+]
 
-module namespace_topicSpaces 'topic-space/main.bicep' = [for (topicSpaces, index) in (topicSpaces ?? []): if (topicSpacesState == 'Enabled') {
-  name: '${uniqueString(deployment().name, location)}-Namespace-topicSpace-${index}'
-  params: {
-    name: topicSpaces.name
-    namespaceName: namespace.name
-    description: topicSpaces.?description
-    topicTemplates: topicSpaces.topicTemplates
-    roleAssignments: topicSpaces.?roleAssignments
+module namespace_clientGroups 'client-group/main.bicep' = [
+  for (clientGroup, index) in (clientGroups ?? []): if (topicSpacesState == 'Enabled') {
+    name: '${uniqueString(deployment().name, location)}-Namespace-clientGroup-${index}'
+    params: {
+      name: clientGroup.name
+      namespaceName: namespace.name
+      query: clientGroup.query
+      description: clientGroup.?description
+    }
   }
-}]
+]
 
-module namespace_permissionBindings 'permission-binding/main.bicep' = [for (permissionBinding, index) in (permissionBindings ?? []): if (topicSpacesState == 'Enabled') {
-  name: '${uniqueString(deployment().name, location)}-Namespace-permissionBinding-${index}'
-  params: {
-    name: permissionBinding.name
-    namespaceName: namespace.name
-    description: permissionBinding.?description
-    clientGroupName: permissionBinding.clientGroupName
-    topicSpaceName: permissionBinding.topicSpaceName
-    permission: permissionBinding.permission
+module namespace_topicSpaces 'topic-space/main.bicep' = [
+  for (topicSpaces, index) in (topicSpaces ?? []): if (topicSpacesState == 'Enabled') {
+    name: '${uniqueString(deployment().name, location)}-Namespace-topicSpace-${index}'
+    params: {
+      name: topicSpaces.name
+      namespaceName: namespace.name
+      description: topicSpaces.?description
+      topicTemplates: topicSpaces.topicTemplates
+      roleAssignments: topicSpaces.?roleAssignments
+    }
   }
-  dependsOn: [
-    namespace_clientGroups
-    namespace_topicSpaces
-  ]
-}]
+]
+
+module namespace_permissionBindings 'permission-binding/main.bicep' = [
+  for (permissionBinding, index) in (permissionBindings ?? []): if (topicSpacesState == 'Enabled') {
+    name: '${uniqueString(deployment().name, location)}-Namespace-permissionBinding-${index}'
+    params: {
+      name: permissionBinding.name
+      namespaceName: namespace.name
+      description: permissionBinding.?description
+      clientGroupName: permissionBinding.clientGroupName
+      topicSpaceName: permissionBinding.topicSpaceName
+      permission: permissionBinding.permission
+    }
+    dependsOn: [
+      namespace_clientGroups
+      namespace_topicSpaces
+    ]
+  }
+]
 
 // ============ //
 // Outputs      //
@@ -349,7 +437,9 @@ output resourceGroupName string = resourceGroup().name
 output systemAssignedMIPrincipalId string = namespace.?identity.?principalId ?? ''
 
 @sys.description('The Resources IDs of the EventGrid Namespace Topics.')
-output topicResourceIds array = [for index in range(0, length(topics ?? [])): namespace_topics[index].outputs.resourceId]
+output topicResourceIds array = [
+  for index in range(0, length(topics ?? [])): namespace_topics[index].outputs.resourceId
+]
 
 // ================ //
 // Definitions      //
@@ -400,6 +490,9 @@ type privateEndpointType = {
 
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
+
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
 
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
@@ -463,6 +556,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {

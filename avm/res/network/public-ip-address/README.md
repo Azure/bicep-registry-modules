@@ -18,7 +18,7 @@ This module deploys a Public IP Address.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 
 ## Usage examples
 
@@ -140,9 +140,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
       Role: 'DeploymentValidation'
     }
     zones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -234,9 +234,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     },
     "zones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -306,9 +306,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
       Role: 'DeploymentValidation'
     }
     zones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -400,9 +400,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     },
     "zones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -932,9 +932,17 @@ A list of availability zones denoting the IP allocated for the resource needs to
 - Default:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
   ]
   ```
 

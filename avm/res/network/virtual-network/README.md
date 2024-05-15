@@ -190,6 +190,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        name: 'az-subnet-x-004'
+        natGatewayResourceId: ''
+        networkSecurityGroupResourceId: ''
+        routeTableResourceId: ''
+      }
+      {
+        addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
@@ -318,6 +325,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
           "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        {
+          "addressPrefix": "<addressPrefix>",
+          "name": "az-subnet-x-004",
+          "natGatewayResourceId": "",
+          "networkSecurityGroupResourceId": "",
+          "routeTableResourceId": ""
         },
         {
           "addressPrefix": "<addressPrefix>",

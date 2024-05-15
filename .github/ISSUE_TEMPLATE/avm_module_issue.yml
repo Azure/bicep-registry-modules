@@ -7,11 +7,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for submitting this AVM Module Issue!
+        Thank you for submitting this AVM Module Issue! To help us triage your issue, please provide the below details.
 
-        To help us triage your issue, please provide the below details.
-
-        > **NOTE**: If you'd like to propose a new AVM module, please follow the process described in the [AVM repo](https://aka.ms/AVM/ModuleProposal).
+        > **NOTE**: If you'd like to propose a new AVM module, please file an [AVM Module Proposal](https://aka.ms/AVM/ModuleProposal).
   - type: checkboxes
     id: existing-checks
     attributes:
@@ -26,6 +24,7 @@ body:
       label: Issue Type?
       description: How would you best describe this issue? Is this a...
       options:
+        - ""
         - "Feature Request"
         - "Bug"
         - "Security Bug"
@@ -38,23 +37,29 @@ body:
       label: Module Name
       description: Which existing AVM module is this issue related to?
       options:
-        - "Other, as defined below..."
+        - ""
+        - "avm/ptn/authorization/policy-assignment"
+        - "avm/ptn/authorization/role-assignment"
         # - "avm/ptn/avd-lza/insights"
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
         # - "avm/ptn/avd-lza/session-hosts"
-        # - "avm/ptn/security/security-center"
-        # - "avm/res/aad/domain-service"
+        - "avm/ptn/policy-insights/remediation"
+        - "avm/ptn/security/security-center"
+        - "avm/res/aad/domain-service"
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
         - "avm/res/app-configuration/configuration-store"
         - "avm/res/app/container-app"
+        - "avm/res/app/job"
         - "avm/res/app/managed-environment"
         - "avm/res/automation/automation-account"
         - "avm/res/batch/batch-account"
         - "avm/res/cache/redis"
         - "avm/res/cdn/profile"
         - "avm/res/cognitive-services/account"
+        - "avm/res/communication/communication-service"
+        - "avm/res/communication/email-service"
         - "avm/res/compute/availability-set"
         - "avm/res/compute/disk"
         - "avm/res/compute/disk-encryption-set"
@@ -65,7 +70,7 @@ body:
         - "avm/res/compute/virtual-machine"
         - "avm/res/compute/virtual-machine-scale-set"
         - "avm/res/consumption/budget"
-        # - "avm/res/container-instance/container-group"
+        - "avm/res/container-instance/container-group"
         - "avm/res/container-registry/registry"
         - "avm/res/container-service/managed-cluster"
         - "avm/res/data-factory/factory"
@@ -88,7 +93,7 @@ body:
         - "avm/res/event-grid/topic"
         - "avm/res/event-hub/namespace"
         - "avm/res/health-bot/health-bot"
-        # - "avm/res/healthcare-apis/workspace"
+        - "avm/res/healthcare-apis/workspace"
         - "avm/res/insights/action-group"
         - "avm/res/insights/activity-log-alert"
         - "avm/res/insights/component"
@@ -102,16 +107,16 @@ body:
         - "avm/res/key-vault/vault"
         - "avm/res/kubernetes-configuration/extension"
         - "avm/res/kubernetes-configuration/flux-configuration"
-        # - "avm/res/load-test-service/load-test"
+        - "avm/res/load-test-service/load-test"
         - "avm/res/logic/workflow"
         - "avm/res/machine-learning-services/workspace"
         - "avm/res/maintenance/maintenance-configuration"
         - "avm/res/managed-identity/user-assigned-identity"
-        # - "avm/res/managed-services/registration-definition"
+        - "avm/res/managed-services/registration-definition"
         - "avm/res/management/management-group"
         - "avm/res/net-app/net-app-account"
-        # - "avm/res/network/application-gateway"
-        # - "avm/res/network/application-gateway-web-application-firewall-policy"
+        - "avm/res/network/application-gateway"
+        - "avm/res/network/application-gateway-web-application-firewall-policy"
         - "avm/res/network/application-security-group"
         - "avm/res/network/azure-firewall"
         - "avm/res/network/bastion-host"
@@ -132,14 +137,14 @@ body:
         - "avm/res/network/network-interface"
         - "avm/res/network/network-manager"
         - "avm/res/network/network-security-group"
-        # - "avm/res/network/network-watcher"
+        - "avm/res/network/network-watcher"
         - "avm/res/network/private-dns-zone"
         - "avm/res/network/private-endpoint"
         - "avm/res/network/private-link-service"
         - "avm/res/network/public-ip-address"
         - "avm/res/network/public-ip-prefix"
         - "avm/res/network/route-table"
-        # - "avm/res/network/service-endpoint-policy"
+        - "avm/res/network/service-endpoint-policy"
         - "avm/res/network/trafficmanagerprofile"
         - "avm/res/network/virtual-hub"
         - "avm/res/network/virtual-network"
@@ -153,38 +158,30 @@ body:
         - "avm/res/power-bi-dedicated/capacity"
         - "avm/res/purview/account"
         - "avm/res/recovery-services/vault"
-        # - "avm/res/relay/namespace"
+        - "avm/res/relay/namespace"
         - "avm/res/resource-graph/query"
         - "avm/res/resources/deployment-script"
         - "avm/res/resources/resource-group"
         # - "avm/res/resources/tags"
         - "avm/res/search/search-service"
         - "avm/res/service-bus/namespace"
-        # - "avm/res/service-fabric/cluster"
+        - "avm/res/service-fabric/cluster"
         - "avm/res/signal-r-service/signal-r"
         - "avm/res/signal-r-service/web-pub-sub"
-        # - "avm/res/sql/managed-instance"
+        - "avm/res/sql/instance-pool"
+        - "avm/res/sql/managed-instance"
         - "avm/res/sql/server"
         - "avm/res/storage/storage-account"
         - "avm/res/synapse/private-link-hub"
         - "avm/res/synapse/workspace"
         - "avm/res/virtual-machine-images/image-template"
         - "avm/res/web/connection"
-        # - "avm/res/web/hosting-environment"
+        - "avm/res/web/hosting-environment"
         - "avm/res/web/serverfarm"
         - "avm/res/web/site"
         - "avm/res/web/static-site"
-
     validations:
       required: true
-  - type: input
-    id: module-name-other
-    attributes:
-      label: (Optional) Module Name if not listed above
-      description: Which existing AVM module is this issue related to (if not listed above)?
-      placeholder: avm/res/<resource provider>/<resource name>
-    validations:
-      required: false
   - type: input
     id: module-version
     attributes:

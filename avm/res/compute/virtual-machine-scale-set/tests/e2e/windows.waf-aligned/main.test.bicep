@@ -67,128 +67,133 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    adminUsername: 'localAdminUser'
-    imageReference: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-azure-edition'
-      version: 'latest'
-    }
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      adminUsername: 'localAdminUser'
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition'
+        version: 'latest'
       }
-    }
-    osType: 'Windows'
-    skuName: 'Standard_B12ms'
-    adminPassword: password
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    encryptionAtHost: false // Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets.
-    extensionAntiMalwareConfig: {
-      enabled: true
-      settings: {
-        AntimalwareEnabled: true
-        Exclusions: {
-          Extensions: '.log;.ldf'
-          Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
-          Processes: 'mssence.svc'
-        }
-        RealtimeProtectionEnabled: true
-        ScheduledScanSettings: {
-          day: '7'
-          isEnabled: 'true'
-          scanType: 'Quick'
-          time: '120'
+      osDisk: {
+        createOption: 'fromImage'
+        diskSizeGB: '128'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
         }
       }
-    }
-    extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
+      osType: 'Windows'
+      skuName: 'Standard_B12ms'
+      adminPassword: password
+      diagnosticSettings: [
         {
-          storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-          uri: nestedDependencies.outputs.storageAccountCSEFileUrl
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      protectedSettings: {
-        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
+      encryptionAtHost: false // Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets.
+      extensionAntiMalwareConfig: {
+        enabled: true
+        settings: {
+          AntimalwareEnabled: true
+          Exclusions: {
+            Extensions: '.log;.ldf'
+            Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
+            Processes: 'mssence.svc'
+          }
+          RealtimeProtectionEnabled: true
+          ScheduledScanSettings: {
+            day: '7'
+            isEnabled: 'true'
+            scanType: 'Quick'
+            time: '120'
+          }
+        }
       }
-    }
-    extensionDependencyAgentConfig: {
-      enabled: true
-    }
-    extensionAzureDiskEncryptionConfig: {
-      enabled: true
-      settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KekVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        KeyEncryptionAlgorithm: 'RSA-OAEP'
-        KeyEncryptionKeyURL: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
-        KeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        KeyVaultURL: nestedDependencies.outputs.keyVaultUrl
-        ResizeOSDisk: 'false'
-        VolumeType: 'All'
-      }
-    }
-    extensionDSCConfig: {
-      enabled: true
-    }
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
+      extensionCustomScriptConfig: {
+        enabled: true
+        fileData: [
           {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: nestedDependencies.outputs.subnetResourceId
+            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
+          }
+        ]
+        protectedSettings: {
+          commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
+        }
+      }
+      extensionDependencyAgentConfig: {
+        enabled: true
+      }
+      extensionAzureDiskEncryptionConfig: {
+        enabled: true
+        settings: {
+          EncryptionOperation: 'EnableEncryption'
+          KekVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+          KeyEncryptionAlgorithm: 'RSA-OAEP'
+          KeyEncryptionKeyURL: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
+          KeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+          KeyVaultURL: nestedDependencies.outputs.keyVaultUrl
+          ResizeOSDisk: 'false'
+          VolumeType: 'All'
+        }
+      }
+      extensionDSCConfig: {
+        enabled: true
+      }
+      extensionMonitoringAgentConfig: {
+        enabled: true
+      }
+      extensionNetworkWatcherAgentConfig: {
+        enabled: true
+      }
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig1'
+              properties: {
+                subnet: {
+                  id: nestedDependencies.outputs.subnetResourceId
+                }
+                publicIPAddressConfiguration: {
+                  name: '${namePrefix}-pip-${serviceShort}'
+                }
               }
             }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
-    skuCapacity: 1
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+          ]
+          nicSuffix: '-nic01'
+        }
       ]
-    }
-    upgradePolicyMode: 'Manual'
-    vmNamePrefix: 'vmsswinvm'
-    vmPriority: 'Regular'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      skuCapacity: 1
+      managedIdentities: {
+        systemAssigned: false
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      upgradePolicyMode: 'Manual'
+      vmNamePrefix: 'vmsswinvm'
+      vmPriority: 'Regular'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}]
+]

@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module with a Gremlin Database
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dddagrm'
 
@@ -21,7 +18,8 @@ param serviceShort string = 'dddagrm'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'eastasia'
 
 // ============ //
 // Dependencies //
@@ -63,118 +61,123 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}002'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
-        locationName: nestedDependencies.outputs.pairedRegionName
-      }
-    ]
-    capabilitiesToAdd: [
-      'EnableGremlin'
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    gremlinDatabases: [
-      {
-        graphs: [
-          {
-            indexingPolicy: {
-              automatic: true
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}002'
+      locations: [
+        {
+          failoverPriority: 0
+          isZoneRedundant: false
+          locationName: enforcedLocation
+        }
+        {
+          failoverPriority: 1
+          isZoneRedundant: false
+          locationName: nestedDependencies.outputs.pairedRegionName
+        }
+      ]
+      capabilitiesToAdd: [
+        'EnableGremlin'
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
             }
-            name: 'car_collection'
-            partitionKeyPaths: [
-              '/car_id'
-            ]
-          }
-          {
-            indexingPolicy: {
-              automatic: true
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      gremlinDatabases: [
+        {
+          graphs: [
+            {
+              indexingPolicy: {
+                automatic: true
+              }
+              name: 'car_collection'
+              partitionKeyPaths: [
+                '/car_id'
+              ]
             }
-            name: 'truck_collection'
-            partitionKeyPaths: [
-              '/truck_id'
-            ]
-          }
-        ]
-        name: '${namePrefix}-gdb-${serviceShort}-001'
-        throughput: 10000
-      }
-      {
-        graphs: [
-          {
-            indexingPolicy: {
-              automatic: true
+            {
+              indexingPolicy: {
+                automatic: true
+              }
+              name: 'truck_collection'
+              partitionKeyPaths: [
+                '/truck_id'
+              ]
             }
-            name: 'bike_collection'
-            partitionKeyPaths: [
-              '/bike_id'
-            ]
-          }
-          {
-            indexingPolicy: {
-              automatic: true
+          ]
+          name: '${namePrefix}-gdb-${serviceShort}-001'
+          throughput: 10000
+        }
+        {
+          graphs: [
+            {
+              indexingPolicy: {
+                automatic: true
+              }
+              name: 'bike_collection'
+              partitionKeyPaths: [
+                '/bike_id'
+              ]
             }
-            name: 'bicycle_collection'
-            partitionKeyPaths: [
-              '/bicycle_id'
-            ]
-          }
-        ]
-        name: '${namePrefix}-gdb-${serviceShort}-002'
+            {
+              indexingPolicy: {
+                automatic: true
+              }
+              name: 'bicycle_collection'
+              partitionKeyPaths: [
+                '/bicycle_id'
+              ]
+            }
+          ]
+          name: '${namePrefix}-gdb-${serviceShort}-002'
+        }
+      ]
+      location: enforcedLocation
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      managedIdentities: {
+        systemAssigned: true
       }
-    ]
-    location: enforcedLocation
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]

@@ -48,49 +48,54 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    adminUsername: 'scaleSetAdmin'
-    imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      adminUsername: 'scaleSetAdmin'
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-jammy'
+        sku: '22_04-lts-gen2'
+        version: 'latest'
       }
-    }
-    osType: 'Linux'
-    skuName: 'Standard_B12ms'
-    disablePasswordAuthentication: true
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: nestedDependencies.outputs.subnetResourceId
+      osDisk: {
+        createOption: 'fromImage'
+        diskSizeGB: '128'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+      osType: 'Linux'
+      skuName: 'Standard_B12ms'
+      disablePasswordAuthentication: true
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig1'
+              properties: {
+                subnet: {
+                  id: nestedDependencies.outputs.subnetResourceId
+                }
+                publicIPAddressConfiguration: {
+                  name: '${namePrefix}-pip-${serviceShort}'
+                }
               }
             }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-      }
-    ]
+          ]
+          nicSuffix: '-nic01'
+        }
+      ]
+      publicKeys: [
+        {
+          keyData: nestedDependencies.outputs.SSHKeyPublicKey
+          path: '/home/scaleSetAdmin/.ssh/authorized_keys'
+        }
+      ]
+    }
   }
-}]
+]

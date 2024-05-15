@@ -89,7 +89,7 @@ function Set-AVMModule {
 
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     if (-not $SkipFileAndFolderSetup -and ((($resolvedPath -split '\bavm\b')[1].Trim('\,/') -split '[\/|\\]').Count -gt 2)) {
-        if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", "Setup")) {
+        if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
             Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
         }
     }
@@ -157,7 +157,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
         try {
             $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
-            if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $TelemetryFileContent = $rawResponse.Content -split '\n'
             } else {
                 throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
@@ -179,7 +179,8 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
-                $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+                $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+                $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
                 ###############
                 ##   Build   ##

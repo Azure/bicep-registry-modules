@@ -53,51 +53,43 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    adminUsername: 'scaleSetAdmin'
-    imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: nestedDependencies.outputs.subnetResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      extensionMonitoringAgentConfig: {
+        enabled: true
+      }
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      adminUsername: 'scaleSetAdmin'
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-jammy'
+        sku: '22_04-lts-gen2'
+        version: 'latest'
+      }
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig1'
+              properties: {
+                subnet: {
+                  id: nestedDependencies.outputs.subnetResourceId
+                }
+                publicIPAddressConfiguration: {
+                  name: '${namePrefix}-pip-${serviceShort}'
+                }
               }
             }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-        diskEncryptionSet: {
-          id: nestedDependencies.outputs.diskEncryptionSetResourceId
+          ]
+          nicSuffix: '-nic01'
         }
-      }
-    }
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
+      ]
+      osDisk: {
+        createOption: 'fromImage'
         diskSizeGB: '128'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
@@ -106,15 +98,28 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         }
       }
-    ]
-    osType: 'Linux'
-    skuName: 'Standard_B12ms'
-    disablePasswordAuthentication: true
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-      }
-    ]
+      dataDisks: [
+        {
+          caching: 'ReadOnly'
+          createOption: 'Empty'
+          diskSizeGB: '128'
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+            diskEncryptionSet: {
+              id: nestedDependencies.outputs.diskEncryptionSetResourceId
+            }
+          }
+        }
+      ]
+      osType: 'Linux'
+      skuName: 'Standard_B12ms'
+      disablePasswordAuthentication: true
+      publicKeys: [
+        {
+          keyData: nestedDependencies.outputs.SSHKeyPublicKey
+          path: '/home/scaleSetAdmin/.ssh/authorized_keys'
+        }
+      ]
+    }
   }
-}]
+]

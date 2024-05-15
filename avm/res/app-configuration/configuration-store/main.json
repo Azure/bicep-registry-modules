@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "2210459796702021612"
+      "version": "0.26.170.59819",
+      "templateHash": "5307828183746392063"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -492,16 +492,16 @@
     },
     "disableLocalAuth": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Disables all authentication methods other than AAD authentication."
       }
     },
     "enablePurgeProtection": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Property specifying whether protection against purge is enabled for this configuration store."
+        "description": "Optional. Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier."
       }
     },
     "publicNetworkAccess": {
@@ -535,6 +535,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. All Key / Values to create. Requires local authentication to be enabled."
+      }
+    },
+    "replicaLocations": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. All Replicas to create."
       }
     },
     "diagnosticSettings": {
@@ -779,8 +786,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "16990071481669469313"
+              "version": "0.26.170.59819",
+              "templateHash": "4987655092014889247"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value.",
@@ -862,6 +869,100 @@
                 "description": "The resource group the batch account was deployed into."
               },
               "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "configurationStore"
+      ]
+    },
+    "configurationStore_replicas": {
+      "copy": {
+        "name": "configurationStore_replicas",
+        "count": "[length(coalesce(parameters('replicaLocations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AppConfig-Replicas-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appConfigurationName": {
+            "value": "[parameters('name')]"
+          },
+          "replicaLocation": {
+            "value": "[coalesce(parameters('replicaLocations'), createArray())[copyIndex()]]"
+          },
+          "name": {
+            "value": "[format('{0}replica', coalesce(parameters('replicaLocations'), createArray())[copyIndex()])]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "3867721314598368740"
+            },
+            "name": "App Configuration Replicas",
+            "description": "This module deploys an App Configuration Replica.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the replica."
+              }
+            },
+            "appConfigurationName": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. The name of the parent app configuration store."
+              }
+            },
+            "replicaLocation": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Location of the replica."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores/replicas",
+              "apiVersion": "2023-03-01",
+              "name": "[format('{0}/{1}', parameters('appConfigurationName'), parameters('name'))]",
+              "location": "[parameters('replicaLocation')]"
+            }
+          ],
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the app configuration was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the replica that was deployed."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the replica that was deployed."
+              },
+              "value": "[resourceId('Microsoft.AppConfiguration/configurationStores/replicas', parameters('appConfigurationName'), parameters('name'))]"
             }
           }
         }

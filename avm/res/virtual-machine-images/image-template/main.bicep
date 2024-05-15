@@ -49,47 +49,65 @@ param roleAssignments roleAssignmentType
 @description('Required. The distribution targets where the image output needs to go to.')
 param distributions distributionType[]
 
-@description('''
-Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.
-Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
-''')
+@description('Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.')
 param vmUserAssignedIdentities array = []
 
 @description('Required. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
+@description('Optional. Configuration options and list of validations to be performed on the resulting image.')
+param validationProcess validationProcessType
+
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time.')
+param optimizeVmBoot string?
+
 var identity = {
   type: 'UserAssigned'
-  userAssignedIdentities: reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+  userAssignedIdentities: reduce(
+    map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+    {},
+    (cur, next) => union(cur, next)
+  ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 }
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.virtualmachineimages-imagetemplate.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.virtualmachineimages-imagetemplate.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14' = {
+resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01' = {
   #disable-next-line use-stable-resource-identifiers // Disabling as ImageTemplates are not idempotent and hence always must have new name
   name: '${name}-${baseTime}'
   location: location
@@ -101,68 +119,100 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
       vmSize: vmSize
       osDiskSizeGB: osDiskSizeGB
       userAssignedIdentities: vmUserAssignedIdentities
-      vnetConfig: !empty(subnetResourceId) ? {
-        subnetId: subnetResourceId
-      } : null
+      vnetConfig: !empty(subnetResourceId)
+        ? {
+            subnetId: subnetResourceId
+          }
+        : null
     }
     source: imageSource
     customize: customizationSteps
     stagingResourceGroup: stagingResourceGroup
-    distribute: [for distribution in distributions: union({
-        type: distribution.type
-        artifactTags: distribution.?artifactTags ?? {
-          sourceType: imageSource.type
-          sourcePublisher: imageSource.?publisher
-          sourceOffer: imageSource.?offer
-          sourceSku: imageSource.?sku
-          sourceVersion: imageSource.?version
-          sourceImageId: imageSource.?imageId
-          sourceImageVersionID: imageSource.?imageVersionID
-          creationTime: baseTime
+    distribute: [
+      for distribution in distributions: union(
+        {
+          type: distribution.type
+          artifactTags: distribution.?artifactTags ?? {
+            sourceType: imageSource.type
+            sourcePublisher: imageSource.?publisher
+            sourceOffer: imageSource.?offer
+            sourceSku: imageSource.?sku
+            sourceVersion: imageSource.?version
+            sourceImageId: imageSource.?imageId
+            sourceImageVersionID: imageSource.?imageVersionID
+            creationTime: baseTime
+          }
+        },
+        (distribution.type == 'ManagedImage'
+          ? {
+              runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-${baseTime}-ManagedImage'
+              location: distribution.?location ?? location
+              #disable-next-line use-resource-id-functions // Disabling rule as this is an input parameter that is used inside an array.
+              imageId: distribution.?imageResourceId ?? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/images/${distribution.imageName}-${baseTime}'
+            }
+          : {}),
+        (distribution.type == 'SharedImage'
+          ? {
+              runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId)
+                ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage'
+                : 'SharedImage')
+              galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
+                ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
+                : distribution.sharedImageGalleryImageDefinitionResourceId
+              excludeFromLatest: distribution.?excludeFromLatest ?? false
+              replicationRegions: distribution.?replicationRegions ?? [location]
+              storageAccountType: distribution.?storageAccountType ?? 'Standard_LRS'
+            }
+          : {}),
+        (distribution.type == 'VHD'
+          ? {
+              runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-VHD'
+            }
+          : {})
+      )
+    ]
+    validate: validationProcess
+    optimize: optimizeVmBoot != null
+      ? {
+          vmBoot: {
+            state: optimizeVmBoot
+          }
         }
-      },
-      (distribution.type == 'ManagedImage' ? {
-        runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-${baseTime}-ManagedImage'
-        location: distribution.?location ?? location
-        #disable-next-line use-resource-id-functions // Disabling rule as this is an input parameter that is used inside an array.
-        imageId: distribution.?imageResourceId ?? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/images/${distribution.imageName}-${baseTime}'
-      } : {}),
-      (distribution.type == 'SharedImage' ? {
-        runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId) ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage' : 'SharedImage')
-        galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion) ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}' : distribution.sharedImageGalleryImageDefinitionResourceId
-        excludeFromLatest: distribution.?excludeFromLatest ?? false
-        replicationRegions: distribution.?replicationRegions ?? [ location ]
-        storageAccountType: distribution.?storageAccountType ?? 'Standard_LRS'
-      } : {}),
-      (distribution.type == 'VHD' ? {
-        runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-VHD'
-      } : {})
-    )]
+      : null
   }
 }
 
-resource imageTemplate_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource imageTemplate_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: imageTemplate
   }
-  scope: imageTemplate
-}
 
-resource imageTemplate_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(imageTemplate.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource imageTemplate_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(imageTemplate.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: imageTemplate
   }
-  scope: imageTemplate
-}]
+]
 
 @description('The resource ID of the image template.')
 output resourceId string = imageTemplate.id
@@ -226,7 +276,6 @@ type managedIdentitiesType = {
 type distributionType = sharedImageDistributionType | managedImageDistributionType | unManagedDistributionType
 
 type sharedImageDistributionType = {
-
   @description('Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated.')
   runOutputName: string?
 
@@ -253,7 +302,6 @@ type sharedImageDistributionType = {
 }
 
 type unManagedDistributionType = {
-
   @description('Required. The type of distribution.')
   type: 'VHD'
 
@@ -268,7 +316,6 @@ type unManagedDistributionType = {
 }
 
 type managedImageDistributionType = {
-
   @description('Required. The type of distribution.')
   type: 'ManagedImage'
 
@@ -284,6 +331,47 @@ type managedImageDistributionType = {
   @description('Required. The resource ID of the managed image. Defaults to a compute image with name \'imageName-baseTime\' in the current resource group.')
   imageResourceId: string?
 
-  @description('Conditional. Name of the managed or unmanaged image that will be created..')
+  @description('Conditional. Name of the managed or unmanaged image that will be created.')
   imageName: string
 }
+
+type validationProcessType = {
+  @description('Optional. If validation fails and this field is set to false, output image(s) will not be distributed. This is the default behavior. If validation fails and this field is set to true, output image(s) will still be distributed. Please use this option with caution as it may result in bad images being distributed for use. In either case (true or false), the end to end image run will be reported as having failed in case of a validation failure. [Note: This field has no effect if validation succeeds.].')
+  continueDistributeOnFailure: bool?
+
+  @description('Optional. A list of validators that will be performed on the image. Azure Image Builder supports File, PowerShell and Shell validators.')
+  inVMValidations: {
+    @description('Required. The type of validation.')
+    type: ('PowerShell' | 'Shell' | 'File')
+
+    @description('Optional. Friendly Name to provide context on what this validation step does.')
+    name: string?
+
+    @description('Optional. URI of the PowerShell script to be run for validation. It can be a github link, Azure Storage URI, etc.')
+    scriptUri: string?
+
+    @description('Optional. Array of commands to be run, separated by commas.')
+    inline: string[]?
+
+    @description('Optional. Valid codes that can be returned from the script/inline command, this avoids reported failure of the script/inline command.')
+    validExitCodes: int[]?
+
+    @description('Optional. Value of sha256 checksum of the file, you generate this locally, and then Image Builder will checksum and validate.')
+    sha256Checksum: string?
+
+    @description('Optional. The source URI of the file.')
+    sourceUri: string?
+
+    @description('Optional. Destination of the file.')
+    destination: string?
+
+    @description('Optional. If specified, the PowerShell script will be run with elevated privileges using the Local System user. Can only be true when the runElevated field above is set to true.')
+    runAsSystem: bool?
+
+    @description('Optional. If specified, the PowerShell script will be run with elevated privileges.')
+    runElevated: bool?
+  }[]?
+
+  @description('Optional. If this field is set to true, the image specified in the \'source\' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image.')
+  sourceValidationOnly: bool?
+}?

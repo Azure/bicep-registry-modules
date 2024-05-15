@@ -81,6 +81,20 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
     ]
+    validationProcess: {
+      continueDistributeOnFailure: true
+      sourceValidationOnly: false
+      inVMValidations: [
+        {
+          type: 'Shell'
+          name: 'Validate-Software'
+          inline: [
+            'echo "Software validation successful."'
+          ]
+        }
+      ]
+    }
+    optimizeVmBoot: 'Enabled'
     imageSource: {
       type: 'PlatformImage'
       publisher: 'canonical'
@@ -134,7 +148,10 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        )
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }

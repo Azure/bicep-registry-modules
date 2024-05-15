@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "916737030536129910"
+      "version": "0.26.54.24096",
+      "templateHash": "2215975966866051299"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -144,6 +144,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The location to deploy the private endpoint to."
+            }
+          },
+          "privateLinkServiceConnectionName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private link connection to create."
             }
           },
           "service": {
@@ -304,6 +311,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
             }
           }
         }
@@ -725,8 +739,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "9213187265421923503"
+              "version": "0.26.54.24096",
+              "templateHash": "10579941098853248837"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario.",
@@ -804,8 +818,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "584392949528635994"
+                      "version": "0.26.54.24096",
+                      "templateHash": "16016202718205451628"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -887,8 +901,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.25.53.49325",
-                              "templateHash": "8286726590589779511"
+                              "version": "0.26.54.24096",
+                              "templateHash": "16134780575393361186"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -1096,8 +1110,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "12506498029720805552"
+              "version": "0.26.54.24096",
+              "templateHash": "13701757307300485900"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -1221,8 +1235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "16823125725342753814"
+              "version": "0.26.54.24096",
+              "templateHash": "7323008272687100781"
             },
             "name": "Recovery Services Vault Backup Storage Config",
             "description": "This module deploys a Recovery Service Vault Backup Storage Configuration.",
@@ -1347,8 +1361,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "5887508216739936022"
+              "version": "0.26.54.24096",
+              "templateHash": "16058746935194459972"
             },
             "name": "Recovery Services Vault Protection Container",
             "description": "This module deploys a Recovery Services Vault Protection Container.",
@@ -1486,8 +1500,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "15677187951825533891"
+                      "version": "0.26.54.24096",
+                      "templateHash": "5385249890312845255"
                     },
                     "name": "Recovery Service Vaults Protection Container Protected Item",
                     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -1652,8 +1666,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "3329904805287164035"
+              "version": "0.26.54.24096",
+              "templateHash": "53495924931537880"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy.",
@@ -1745,8 +1759,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "15423985878725052790"
+              "version": "0.26.54.24096",
+              "templateHash": "13689565005288174531"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config.",
@@ -1912,8 +1926,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "15609344101830369541"
+              "version": "0.26.54.24096",
+              "templateHash": "7725737508882142877"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings.",
@@ -2007,7 +2021,8 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-RSV-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-rsv-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2017,8 +2032,8 @@
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -2063,8 +2078,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2429,7 +2444,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2534,8 +2549,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",

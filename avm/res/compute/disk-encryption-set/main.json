@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "2337982856441594532"
+      "version": "0.26.54.24096",
+      "templateHash": "12741671665077521328"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.",
@@ -279,7 +279,7 @@
     },
     "diskEncryptionSet": {
       "type": "Microsoft.Compute/diskEncryptionSets",
-      "apiVersion": "2022-07-02",
+      "apiVersion": "2023-10-02",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -374,8 +374,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "4340767234132084239"
+              "version": "0.26.54.24096",
+              "templateHash": "11328049361610922964"
             }
           },
           "parameters": {
@@ -462,8 +462,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "9781242464769385318"
+                      "version": "0.26.54.24096",
+                      "templateHash": "3020199531226338329"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy.",
@@ -711,14 +711,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('diskEncryptionSet', '2022-07-02', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('diskEncryptionSet', '2023-10-02', 'full'), 'identity'), 'principalId'), '')]"
     },
     "identities": {
       "type": "object",
       "metadata": {
         "description": "The idenities of the disk encryption set."
       },
-      "value": "[reference('diskEncryptionSet', '2022-07-02', 'full').identity]"
+      "value": "[reference('diskEncryptionSet', '2023-10-02', 'full').identity]"
     },
     "keyVaultName": {
       "type": "string",
@@ -732,7 +732,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('diskEncryptionSet', '2022-07-02', 'full').location]"
+      "value": "[reference('diskEncryptionSet', '2023-10-02', 'full').location]"
     }
   }
 }

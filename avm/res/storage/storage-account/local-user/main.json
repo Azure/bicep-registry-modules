@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "17117452291389534361"
+      "version": "0.26.170.59819",
+      "templateHash": "14593329616022153178"
     },
     "name": "Storage Account Local Users",
     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",

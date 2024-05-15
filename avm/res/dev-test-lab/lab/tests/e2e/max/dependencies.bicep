@@ -32,7 +32,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
-    enablePurgeProtection: true // Required for encrption to work
+    enablePurgeProtection: true // Required for encryption to work
     softDeleteRetentionInDays: 7
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
@@ -71,7 +71,10 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: keyVault
   properties: {
     principalId: diskEncryptionSet.identity.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6') // Key Vault Crypto Service Encryption User
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
     principalType: 'ServicePrincipal'
   }
 }

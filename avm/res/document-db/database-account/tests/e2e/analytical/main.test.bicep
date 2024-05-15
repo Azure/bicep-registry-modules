@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module with analytical storage
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dddaanl'
 
@@ -21,7 +18,8 @@ param serviceShort string = 'dddaanl'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'eastasia'
 
 // ============== //
 // General resources
@@ -42,16 +40,9 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     enableAnalyticalStorage: true
     name: '${namePrefix}-analytical'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
     sqlDatabases: [
       {
-        name: 'empty-database'
+        name: 'no-containers-specified'
       }
     ]
   }

@@ -1,7 +1,7 @@
 # Synapse Workspaces `[Microsoft.Synapse/workspaces]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
+> 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -757,6 +757,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`accountUrl`](#parameter-accounturl) | string | The account URL of the data lake storage account. |
 | [`allowedAadTenantIdsForLinking`](#parameter-allowedaadtenantidsforlinking) | array | Allowed AAD Tenant IDs For Linking. |
 | [`azureADOnlyAuthentication`](#parameter-azureadonlyauthentication) | bool | Enable or Disable AzureADOnlyAuthentication on All Workspace sub-resource. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -808,6 +809,14 @@ Login for administrator access to the workspace's SQL pools.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `accountUrl`
+
+The account URL of the data lake storage account.
+
+- Required: No
+- Type: string
+- Default: `[format('https://{0}.dfs.{1}', last(split(parameters('defaultDataLakeStorageAccountResourceId'), '/')), environment().suffixes.storage)]`
 
 ### Parameter: `allowedAadTenantIdsForLinking`
 
@@ -1144,6 +1153,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
+| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1344,6 +1355,20 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -1574,7 +1599,6 @@ Git integration settings.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 
 ## Outputs
@@ -1594,7 +1618,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 
 ## Data Collection
 
