@@ -29,113 +29,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/azure-firewall:<version>`.
 
-- [Issue-1867](#example-1-issue-1867)
-- [Add-PIP](#example-2-add-pip)
-- [Custom-PIP](#example-3-custom-pip)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Hub-commom](#example-5-hub-commom)
-- [Hub-min](#example-6-hub-min)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [Public-IP-Prefix](#example-8-public-ip-prefix)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Add-PIP](#example-1-add-pip)
+- [Custom-PIP](#example-2-custom-pip)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Hub-commom](#example-4-hub-commom)
+- [Hub-min](#example-5-hub-min)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [Public-IP-Prefix](#example-7-public-ip-prefix)
+- [WAF-aligned](#example-8-waf-aligned)
 
-### Example 1: _Issue-1867_
-
-Validating reported bug 1867
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
-  params: {
-    // Required parameters
-    name: 'nafcustom001'
-    // Non-required parameters
-    azureSkuTier: 'Basic'
-    firewallPolicyId: '<firewallPolicyId>'
-    location: '<location>'
-    managementIPAddressObject: {
-      managementIPAllocationMethod: 'Static'
-      managementIPPrefixResourceId: '<managementIPPrefixResourceId>'
-      name: 'managementIP01'
-      skuName: 'Standard'
-      skuTier: 'Regional'
-    }
-    publicIPAddressObject: {
-      name: 'publicIP01'
-      publicIPAllocationMethod: 'Static'
-      publicIPPrefixResourceId: '<publicIPPrefixResourceId>'
-      skuName: 'Standard'
-      skuTier: 'Regional'
-    }
-    virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    zones: []
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nafcustom001"
-    },
-    // Non-required parameters
-    "azureSkuTier": {
-      "value": "Basic"
-    },
-    "firewallPolicyId": {
-      "value": "<firewallPolicyId>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managementIPAddressObject": {
-      "value": {
-        "managementIPAllocationMethod": "Static",
-        "managementIPPrefixResourceId": "<managementIPPrefixResourceId>",
-        "name": "managementIP01",
-        "skuName": "Standard",
-        "skuTier": "Regional"
-      }
-    },
-    "publicIPAddressObject": {
-      "value": {
-        "name": "publicIP01",
-        "publicIPAllocationMethod": "Static",
-        "publicIPPrefixResourceId": "<publicIPPrefixResourceId>",
-        "skuName": "Standard",
-        "skuTier": "Regional"
-      }
-    },
-    "virtualNetworkResourceId": {
-      "value": "<virtualNetworkResourceId>"
-    },
-    "zones": {
-      "value": []
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Add-PIP_
+### Example 1: _Add-PIP_
 
 This instance deploys the module and attaches an existing public IP address.
 
@@ -227,7 +130,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 3: _Custom-PIP_
+### Example 2: _Custom-PIP_
 
 This instance deploys the module and will create a public IP address.
 
@@ -337,7 +240,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -389,7 +292,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 5: _Hub-commom_
+### Example 4: _Hub-commom_
 
 This instance deploys the module a vWAN in a typical hub setting.
 
@@ -457,7 +360,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 6: _Hub-min_
+### Example 5: _Hub-min_
 
 This instance deploys the module a vWAN minimum hub setting.
 
@@ -521,7 +424,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -875,7 +778,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 8: _Public-IP-Prefix_
+### Example 7: _Public-IP-Prefix_
 
 This instance deploys the module and will use a public IP prefix.
 
@@ -967,7 +870,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
