@@ -28,114 +28,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-fabric/cluster:<version>`.
 
-- [Certificate](#example-1-certificate)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Certificate_
-
-This instance deploys the module with a certificate.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    managementEndpoint: 'https://sfccer001.westeurope.cloudapp.azure.com:19080'
-    name: 'sfccer001'
-    nodeTypes: [
-      {
-        applicationPorts: {
-          endPort: 30000
-          startPort: 20000
-        }
-        clientConnectionEndpointPort: 19000
-        durabilityLevel: 'Bronze'
-        ephemeralPorts: {
-          endPort: 65534
-          startPort: 49152
-        }
-        httpGatewayEndpointPort: 19080
-        isPrimary: true
-        name: 'Node01'
-      }
-    ]
-    reliabilityLevel: 'None'
-    // Non-required parameters
-    certificate: {
-      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-      x509StoreName: 'My'
-    }
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "managementEndpoint": {
-      "value": "https://sfccer001.westeurope.cloudapp.azure.com:19080"
-    },
-    "name": {
-      "value": "sfccer001"
-    },
-    "nodeTypes": {
-      "value": [
-        {
-          "applicationPorts": {
-            "endPort": 30000,
-            "startPort": 20000
-          },
-          "clientConnectionEndpointPort": 19000,
-          "durabilityLevel": "Bronze",
-          "ephemeralPorts": {
-            "endPort": 65534,
-            "startPort": 49152
-          },
-          "httpGatewayEndpointPort": 19080,
-          "isPrimary": true,
-          "name": "Node01"
-        }
-      ]
-    },
-    "reliabilityLevel": {
-      "value": "None"
-    },
-    // Non-required parameters
-    "certificate": {
-      "value": {
-        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-        "x509StoreName": "My"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -237,7 +134,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -308,6 +205,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       clientApplication: '<clientApplication>'
       clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
       tenantId: '<tenantId>'
+    }
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      x509StoreName: 'My'
     }
     certificateCommonNames: {
       commonNames: [
@@ -518,6 +419,12 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         "tenantId": "<tenantId>"
       }
     },
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "x509StoreName": "My"
+      }
+    },
     "certificateCommonNames": {
       "value": {
         "commonNames": [
@@ -671,7 +578,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
