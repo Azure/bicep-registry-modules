@@ -381,7 +381,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         {
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
           "name": "simple-hello-world-container",
-          "`probe`s": [
+          "probes": [
             {
               "httpGet": {
                 "httpHeaders": [
