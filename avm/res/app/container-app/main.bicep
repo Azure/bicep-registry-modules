@@ -194,13 +194,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
       secrets: secretList
     }
     template: {
-      containers: [
-        {
-          resources: {
-            cpu: containers[0].resources.cpu
-          }
-        }
-      ]
+      containers: containers
       initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
       revisionSuffix: revisionSuffix
       scale: {
