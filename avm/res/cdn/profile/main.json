@@ -240,7 +240,7 @@
     }
   },
   "resources": {
-    "gbdTelemetry": {
+    "#_namePrefix_#Telemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
