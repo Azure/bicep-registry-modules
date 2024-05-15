@@ -194,7 +194,13 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
       secrets: secretList
     }
     template: {
-      containers: containers
+      containers: [
+        {
+          resources: {
+            cpu: containers[0].resources.cpu
+          }
+        }
+      ]
       initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
       revisionSuffix: revisionSuffix
       scale: {
@@ -320,7 +326,7 @@ type container = {
   probes: containerAppProbe[]?
 
   @description('Required. Container resource requirements.')
-  resources: containerResources
+  resources: object
 
   @description('Optional. Container volume mounts.')
   volumeMounts: volumeMount[]?
@@ -405,14 +411,6 @@ type containerAppProbeTcpSocket = {
 
   @description('Required. Number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.')
   port: int
-}
-
-type containerResources = {
-  @description('Required. Required CPU in cores, e.g. 0.5 To specify a decimal value, use the json() function.')
-  cpu: int
-
-  @description('Required. Required memory, e.g. "250Mb"')
-  memory: string
 }
 
 type volumeMount = {
