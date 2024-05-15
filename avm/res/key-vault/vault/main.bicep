@@ -20,7 +20,7 @@ param accessPolicies accessPoliciesType
 param secrets object?
 
 @description('Optional. All keys to create.')
-param keys array?
+param keys keysType
 
 @description('Optional. Specifies if the vault is enabled for deployment by script or compute.')
 param enableVaultForDeployment bool = true
@@ -151,24 +151,23 @@ var secretList = secrets.?secureList ?? []
 // Dependencies //
 // ============ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.keyvault-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.keyvault-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: name
@@ -203,17 +202,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource keyVault_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: keyVault
+resource keyVault_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: keyVault
+}
 
 resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -244,14 +242,13 @@ resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   }
 ]
 
-module keyVault_accessPolicies 'access-policy/main.bicep' =
-  if (!empty(accessPolicies)) {
-    name: '${uniqueString(deployment().name, location)}-KeyVault-AccessPolicies'
-    params: {
-      keyVaultName: keyVault.name
-      accessPolicies: accessPolicies
-    }
+module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPolicies)) {
+  name: '${uniqueString(deployment().name, location)}-KeyVault-AccessPolicies'
+  params: {
+    keyVaultName: keyVault.name
+    accessPolicies: accessPolicies
   }
+}
 
 module keyVault_secrets 'secret/main.bicep' = [
   for (secret, index) in secretList: {
@@ -615,4 +612,31 @@ type accessPoliciesType = {
       | 'setsas'
       | 'update')[]?
   }
+}[]?
+
+type keysType = {
+  @description('Optional. The name of the key.')
+  name: string?
+  @description('Optional. The name of the key.')
+  keyVaultName: string?
+  @description('Optional. The name of the key.')
+  attributesEnabled: string?
+  @description('Optional. The name of the key.')
+  attributesExp: int?
+  @description('Optional. The name of the key.')
+  attributesNbf: int?
+  @description('Optional. The name of the key.')
+  curveName: string?
+  @description('Optional. The name of the key.')
+  keyOps: string?
+  @description('Optional. The name of the key.')
+  keySize: int?
+  @description('Optional. The name of the key.')
+  kty: string?
+  @description('Optional. The name of the key.')
+  tags: object?
+  @description('Optional. The name of the key.')
+  roleAssignments: roleAssignmentType
+  @description('Optional. The name of the key.')
+  rotationPolicy: object?
 }[]?

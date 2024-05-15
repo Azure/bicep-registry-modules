@@ -157,8 +157,6 @@ Array of role assignments to create.
   - `'Key Vault Crypto Service Encryption User'`
   - `'Key Vault Crypto User'`
   - `'Key Vault Reader'`
-  - `'Key Vault Secrets Officer'`
-  - `'Key Vault Secrets User'`
   - `'Owner'`
   - `'Reader'`
   - `'Role Based Access Control Administrator (Preview)'`

@@ -1240,6 +1240,202 @@ All keys to create.
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributesEnabled`](#parameter-keysattributesenabled) | string | The name of the key. |
+| [`attributesExp`](#parameter-keysattributesexp) | int | The name of the key. |
+| [`attributesNbf`](#parameter-keysattributesnbf) | int | The name of the key. |
+| [`curveName`](#parameter-keyscurvename) | string | The name of the key. |
+| [`keyOps`](#parameter-keyskeyops) | string | The name of the key. |
+| [`keySize`](#parameter-keyskeysize) | int | The name of the key. |
+| [`keyVaultName`](#parameter-keyskeyvaultname) | string | The name of the key. |
+| [`kty`](#parameter-keyskty) | string | The name of the key. |
+| [`name`](#parameter-keysname) | string | The name of the key. |
+| [`roleAssignments`](#parameter-keysroleassignments) | array | The name of the key. |
+| [`rotationPolicy`](#parameter-keysrotationpolicy) | object | The name of the key. |
+| [`tags`](#parameter-keystags) | object | The name of the key. |
+
+### Parameter: `keys.attributesEnabled`
+
+The name of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.attributesExp`
+
+The name of the key.
+
+- Required: No
+- Type: int
+
+### Parameter: `keys.attributesNbf`
+
+The name of the key.
+
+- Required: No
+- Type: int
+
+### Parameter: `keys.curveName`
+
+The name of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.keyOps`
+
+The name of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.keySize`
+
+The name of the key.
+
+- Required: No
+- Type: int
+
+### Parameter: `keys.keyVaultName`
+
+The name of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.kty`
+
+The name of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.name`
+
+The name of the key.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments`
+
+The name of the key.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Key Vault Administrator'`
+  - `'Key Vault Certificates Officer'`
+  - `'Key Vault Contributor'`
+  - `'Key Vault Crypto Officer'`
+  - `'Key Vault Crypto Service Encryption User'`
+  - `'Key Vault Crypto User'`
+  - `'Key Vault Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-keysroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-keysroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-keysroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-keysroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-keysroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-keysroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-keysroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `keys.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keys.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keys.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `keys.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `keys.rotationPolicy`
+
+The name of the key.
+
+- Required: No
+- Type: object
+
+### Parameter: `keys.tags`
+
+The name of the key.
+
+- Required: No
+- Type: object
+
 ### Parameter: `location`
 
 Location for all resources.
