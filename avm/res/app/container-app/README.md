@@ -471,7 +471,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
 | [`ingressTargetPort`](#parameter-ingresstargetport) | int | Target Port in containers for traffic from ingress. |
 | [`ingressTransport`](#parameter-ingresstransport) | string | Ingress transport protocol. |
-| [`stickySessionsAffinity`](#parameter-stickySessionsAffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`initContainersTemplate`](#parameter-initcontainerstemplate) | array | List of specialized containers that run before app containers. |
 | [`ipSecurityRestrictions`](#parameter-ipsecurityrestrictions) | array | Rules to restrict incoming IP address. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -485,6 +484,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
 | [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trafficLabel`](#parameter-trafficlabel) | string | Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes. |
 | [`trafficLatestRevision`](#parameter-trafficlatestrevision) | bool | Indicates that the traffic weight belongs to a latest stable revision. |
@@ -599,19 +599,6 @@ Ingress transport protocol.
     'http'
     'http2'
     'tcp'
-  ]
-  ```
-
-### Parameter: `stickySessionsAffinity`
-
-- Required: No
-- Type: string
-- Default: `'none'`
-- Allowed:
-  ```Bicep
-  [
-    'none'
-    'sticky'
   ]
   ```
 
@@ -847,6 +834,21 @@ The secrets of the Container App.
 - Required: No
 - Type: secureObject
 - Default: `{}`
+
+### Parameter: `stickySessionsAffinity`
+
+Bool indicating if the Container App should enable session affinity.
+
+- Required: No
+- Type: string
+- Default: `'none'`
+- Allowed:
+  ```Bicep
+  [
+    'none'
+    'sticky'
+  ]
+  ```
 
 ### Parameter: `tags`
 
