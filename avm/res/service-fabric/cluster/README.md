@@ -170,6 +170,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     reliabilityLevel: 'None'
     // Non-required parameters
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      x509StoreName: 'My'
+    }
     location: '<location>'
   }
 }
@@ -217,6 +221,12 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       "value": "None"
     },
     // Non-required parameters
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "x509StoreName": "My"
+      }
+    },
     "location": {
       "value": "<location>"
     }
