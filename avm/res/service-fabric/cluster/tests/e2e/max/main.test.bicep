@@ -78,15 +78,6 @@ module testDeployment '../../../main.bicep' = [
         clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
         tenantId: tenant().tenantId
       }
-      certificateCommonNames: {
-        commonNames: [
-          {
-            certificateCommonName: 'certcommon'
-            certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-          }
-        ]
-        x509StoreName: ''
-      }
       clientCertificateCommonNames: [
         {
           certificateCommonName: 'clientcommoncert1'
