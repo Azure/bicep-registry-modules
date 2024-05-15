@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "17304354031548059392"
+      "templateHash": "9726508181741343416"
     },
     "name": "Action Rules",
     "description": "This module deploys an Alert Processing Rule.",
@@ -297,6 +297,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('actionRule', '2021-08-08', 'full').location]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the action group was deployed into."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

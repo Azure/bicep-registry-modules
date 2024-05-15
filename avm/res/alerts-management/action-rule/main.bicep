@@ -130,6 +130,9 @@ output name string = actionRule.name
 @description('The location the resource was deployed into.')
 output location string = actionRule.location
 
+@description('The resource group the action group was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?

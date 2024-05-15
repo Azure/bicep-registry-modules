@@ -754,6 +754,7 @@ Resource tags.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Alert Processing Rule. |
+| `resourceGroupName` | string | The resource group the action group was deployed into. |
 | `resourceId` | string | The resource ID of the Alert Processing Rule. |
 
 ## Cross-referenced modules
