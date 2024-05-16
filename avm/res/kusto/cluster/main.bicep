@@ -341,6 +341,19 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
   }
 ]
 
+// ============ //
+// Outputs      //
+// ============ //
+
+@description('The resource id of the resource.')
+output resourceId string = kustoCluster.id
+
+@description('The name of the resource.')
+output name string = kustoCluster.name
+
+@description('The location the resource was deployed into.')
+output location string = kustoCluster.location
+
 // =============== //
 //   Definitions   //
 // =============== //
