@@ -229,6 +229,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
           startTime: '01:00:00'
         }
       ]
+      timeZone: 'Eastern Standard Time'
     }
     scopes: [
       '<id>'
@@ -407,7 +408,8 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
             "recurrenceType": "Weekly",
             "startTime": "01:00:00"
           }
-        ]
+        ],
+        "timeZone": "Eastern Standard Time"
       }
     },
     "scopes": {
