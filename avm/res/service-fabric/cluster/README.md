@@ -624,16 +624,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         isAdmin: false
       }
     ]
-    clientCertificateThumbprints: [
-      {
-        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        isAdmin: false
-      }
-      {
-        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
-        isAdmin: false
-      }
-    ]
+    clientCertificateThumbprints: []
     diagnosticsStorageAccountConfig: {
       blobEndpoint: '<blobEndpoint>'
       protectedAccountKeyName: 'StorageAccountKey1'
@@ -806,16 +797,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       ]
     },
     "clientCertificateThumbprints": {
-      "value": [
-        {
-          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-          "isAdmin": false
-        },
-        {
-          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
-          "isAdmin": false
-        }
-      ]
+      "value": []
     },
     "diagnosticsStorageAccountConfig": {
       "value": {

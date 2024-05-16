@@ -82,16 +82,7 @@ module testDeployment '../../../main.bicep' = [
           isAdmin: false
         }
       ]
-      clientCertificateThumbprints: [
-        {
-          certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-          isAdmin: false
-        }
-        {
-          certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
-          isAdmin: false
-        }
-      ]
+      clientCertificateThumbprints: []
       diagnosticsStorageAccountConfig: {
         blobEndpoint: 'https://${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}/'
         protectedAccountKeyName: 'StorageAccountKey1'
