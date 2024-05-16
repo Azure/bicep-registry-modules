@@ -309,9 +309,10 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
 module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'amlworkspace'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'amlworkspace'}-${index}'
@@ -324,7 +325,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'amlworkspace'}-${index}'
@@ -447,6 +448,9 @@ type privateEndpointType = {
   @sys.description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @sys.description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
@@ -462,7 +466,8 @@ type privateEndpointType = {
   @sys.description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
+  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
   manualConnectionRequestMessage: string?
 
   @sys.description('Optional. Custom DNS configurations.')
@@ -509,6 +514,9 @@ type privateEndpointType = {
 
   @sys.description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
