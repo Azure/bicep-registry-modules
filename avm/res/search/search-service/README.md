@@ -88,7 +88,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 ### Example 2: _Deploying with a key vault reference to save secrets_
 
-This instance deploys the module saving adminkey secrets in a key vault.
+This instance deploys the module saving admin key secrets in a key vault.
 
 
 <details>
