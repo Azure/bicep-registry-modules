@@ -141,12 +141,12 @@ Identity Provider Type identifier.
 - Allowed:
   ```Bicep
   [
-    'aad'
-    'aadB2C'
     'facebook'
     'google'
     'microsoft'
     'twitter'
+    'aad'
+    'aadB2C'
   ]
   ```
 
