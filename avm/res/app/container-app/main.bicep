@@ -314,7 +314,7 @@ type container = {
   image: string
 
   @description('Optional. Custom container name.')
-  name: string
+  name: string?
 
   @description('Optional. List of probes for the container')
   probes: containerAppProbe[]?
@@ -338,23 +338,25 @@ type environmentVar = {
 }
 
 type containerAppProbe = {
-  @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1. Maximum value is 10.')
+  @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
+  @minValue(1)
+  @maxValue(10)
   failureThreshold: int?
 
   @description('Optional. HTTPGet specifies the http request to perform.')
   httpGet: containerAppProbeHttpGet?
 
-  @description('Optional. Number of seconds after the container has started before liveness probes are initiated. Minimum value is 1. Maximum value is 60')
+  @description('Optional. Number of seconds after the container has started before liveness probes are initiated.')
   @minValue(1)
   @maxValue(60)
   initialDelaySeconds: int?
 
-  @description('Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value is 240.')
+  @description('Optional. How often (in seconds) to perform the probe. Default to 10 seconds.')
   @minValue(1)
   @maxValue(240)
   periodSeconds: int?
 
-  @description('Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1. Maximum value is 10.')
+  @description('Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup.')
   @minValue(1)
   @maxValue(10)
   successThreshold: int?
@@ -365,7 +367,7 @@ type containerAppProbe = {
   @description('Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod\'s terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour)')
   terminationGracePeriodSeconds: int?
 
-  @description('Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 240.')
+  @description('Number of seconds after which the probe times out. Defaults to 1 second.')
   @minValue(1)
   @maxValue(240)
   timeoutSeconds: int?
@@ -403,7 +405,9 @@ type containerAppProbeTcpSocket = {
   @description('Optional. Host name to connect to, defaults to the pod IP.')
   host: string?
 
-  @description('Required. Number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.')
+  @description('Required. Number of the port to access on the container. Name must be an IANA_SVC_NAME.')
+  @minValue(1)
+  @maxValue(65535)
   port: int
 }
 

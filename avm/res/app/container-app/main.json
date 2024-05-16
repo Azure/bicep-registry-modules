@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "4576386881131789247"
+      "templateHash": "14892973546402014365"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -168,6 +168,7 @@
         },
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Custom container name."
           }
@@ -231,8 +232,10 @@
         "failureThreshold": {
           "type": "int",
           "nullable": true,
+          "minValue": 1,
+          "maxValue": 10,
           "metadata": {
-            "description": "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1. Maximum value is 10."
+            "description": "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3."
           }
         },
         "httpGet": {
@@ -248,7 +251,7 @@
           "minValue": 1,
           "maxValue": 60,
           "metadata": {
-            "description": "Optional. Number of seconds after the container has started before liveness probes are initiated. Minimum value is 1. Maximum value is 60"
+            "description": "Optional. Number of seconds after the container has started before liveness probes are initiated."
           }
         },
         "periodSeconds": {
@@ -257,7 +260,7 @@
           "minValue": 1,
           "maxValue": 240,
           "metadata": {
-            "description": "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value is 240."
+            "description": "Optional. How often (in seconds) to perform the probe. Default to 10 seconds."
           }
         },
         "successThreshold": {
@@ -266,7 +269,7 @@
           "minValue": 1,
           "maxValue": 10,
           "metadata": {
-            "description": "Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1. Maximum value is 10."
+            "description": "Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup."
           }
         },
         "tcpSocket": {
@@ -289,7 +292,7 @@
           "minValue": 1,
           "maxValue": 240,
           "metadata": {
-            "description": "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 240."
+            "description": "Number of seconds after which the probe times out. Defaults to 1 second."
           }
         },
         "type": {
@@ -380,8 +383,10 @@
         },
         "port": {
           "type": "int",
+          "minValue": 1,
+          "maxValue": 65535,
           "metadata": {
-            "description": "Required. Number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
+            "description": "Required. Number of the port to access on the container. Name must be an IANA_SVC_NAME."
           }
         }
       }
