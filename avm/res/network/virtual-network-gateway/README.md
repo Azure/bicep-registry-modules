@@ -172,7 +172,15 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     activeActive: true
     allowRemoteVnetTraffic: true
-    asn: 65515
+    bgpParams: {
+      asn: 65515
+      primaryCustomBgpIPs: [
+        '169.254.21.4'
+      ]
+      secondaryCustomBgpIPs: [
+        '169.254.21.5'
+      ]
+    }
     disableIPSecReplayProtection: true
     domainNameLabel: [
       'dm-nvgbgp'
@@ -182,16 +190,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
     location: '<location>'
-    primaryCustomBgpIPs: [
-      '169.254.21.4'
-    ]
     publicIpZones: [
       1
       2
       3
-    ]
-    secondaryCustomBgpIPs: [
-      '169.254.21.5'
     ]
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
@@ -231,8 +233,16 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "allowRemoteVnetTraffic": {
       "value": true
     },
-    "asn": {
-      "value": 65515
+    "bgpParams": {
+      "value": {
+        "asn": 65515,
+        "primaryCustomBgpIPs": [
+          "169.254.21.4"
+        ],
+        "secondaryCustomBgpIPs": [
+          "169.254.21.5"
+        ]
+      }
     },
     "disableIPSecReplayProtection": {
       "value": true
@@ -257,21 +267,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "location": {
       "value": "<location>"
     },
-    "primaryCustomBgpIPs": {
-      "value": [
-        "169.254.21.4"
-      ]
-    },
     "publicIpZones": {
       "value": [
         1,
         2,
         3
-      ]
-    },
-    "secondaryCustomBgpIPs": {
-      "value": [
-        "169.254.21.5"
       ]
     },
     "vpnGatewayGeneration": {
@@ -1139,7 +1139,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`activeGatewayPipName`](#parameter-activegatewaypipname) | string | Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip' suffix will be appended to the gateway's name. |
 | [`allowRemoteVnetTraffic`](#parameter-allowremotevnettraffic) | bool | Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN. |
 | [`allowVirtualWanTraffic`](#parameter-allowvirtualwantraffic) | bool | Configures this gateway to accept traffic from remote Virtual WAN networks. |
-| [`asn`](#parameter-asn) | int | ASN value. |
+| [`bgpParams`](#parameter-bgpparams) | object | BGP Settings |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1155,13 +1155,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`natRules`](#parameter-natrules) | array | NatRules for virtual network gateway. NAT is supported on the the following SKUs: VpnGw2~5, VpnGw2AZ~5AZ and is supported for IPsec/IKE cross-premises connections only. |
-| [`peerWeight`](#parameter-peerweight) | int | The weight added to routes learned from this BGP speaker. |
-| [`primaryCustomBgpIPs`](#parameter-primarycustombgpips) | array | Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled. |
 | [`publicIpDiagnosticSettings`](#parameter-publicipdiagnosticsettings) | array | The diagnostic settings of the Public IP. |
 | [`publicIPPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
 | [`publicIpZones`](#parameter-publicipzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secondaryCustomBgpIPs`](#parameter-secondarycustombgpips) | array | Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnClientAadConfiguration`](#parameter-vpnclientaadconfiguration) | object | Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided. |
 | [`vpnClientAddressPoolPrefix`](#parameter-vpnclientaddresspoolprefix) | string | The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network. |
@@ -1257,13 +1254,57 @@ Configures this gateway to accept traffic from remote Virtual WAN networks.
 - Type: bool
 - Default: `False`
 
-### Parameter: `asn`
+### Parameter: `bgpParams`
 
-ASN value.
+BGP Settings
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asn`](#parameter-bgpparamsasn) | int | The Autonomous System Number value. |
+| [`bgpPeeringAddress`](#parameter-bgpparamsbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. |
+| [`peerWeight`](#parameter-bgpparamspeerweight) | int | The weight added to routes learned from this BGP speaker. |
+| [`primaryCustomBgpIPs`](#parameter-bgpparamsprimarycustombgpips) | array | Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled. |
+| [`secondaryCustomBgpIPs`](#parameter-bgpparamssecondarycustombgpips) | array | Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled. |
+
+### Parameter: `bgpParams.asn`
+
+The Autonomous System Number value.
 
 - Required: No
 - Type: int
-- Default: `65815`
+
+### Parameter: `bgpParams.bgpPeeringAddress`
+
+The BGP peering address and BGP identifier of this BGP speaker.
+
+- Required: No
+- Type: string
+
+### Parameter: `bgpParams.peerWeight`
+
+The weight added to routes learned from this BGP speaker.
+
+- Required: No
+- Type: int
+
+### Parameter: `bgpParams.primaryCustomBgpIPs`
+
+Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled.
+
+- Required: No
+- Type: array
+
+### Parameter: `bgpParams.secondaryCustomBgpIPs`
+
+Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled.
+
+- Required: No
+- Type: array
 
 ### Parameter: `clientRevokedCertThumbprint`
 
@@ -1551,22 +1592,6 @@ NatRules for virtual network gateway. NAT is supported on the the following SKUs
 - Type: array
 - Default: `[]`
 
-### Parameter: `peerWeight`
-
-The weight added to routes learned from this BGP speaker.
-
-- Required: No
-- Type: int
-- Default: `0`
-
-### Parameter: `primaryCustomBgpIPs`
-
-Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `publicIpDiagnosticSettings`
 
 The diagnostic settings of the Public IP.
@@ -1817,14 +1842,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `secondaryCustomBgpIPs`
-
-Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 

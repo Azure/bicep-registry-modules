@@ -59,13 +59,11 @@ module testDeployment '../../../main.bicep' = [
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
       activeActive: true
       enableBgp: true
-      asn: 65515
-      primaryCustomBgpIPs:[
-        '169.254.21.4'
-      ]
-      secondaryCustomBgpIPs:[
-        '169.254.21.5'
-      ]
+      bgpParams: {
+        asn: 65515
+        primaryCustomBgpIPs:['169.254.21.4']
+        secondaryCustomBgpIPs:['169.254.21.5']
+        }
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "8120229627507409218"
+      "version": "0.27.1.19265",
+      "templateHash": "9600766973655460934"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -223,6 +223,55 @@
         }
       },
       "nullable": true
+    },
+    "bgpParamsType": {
+      "type": "object",
+      "properties": {
+        "asn": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Optional. The Autonomous System Number value."
+          }
+        },
+        "bgpPeeringAddress": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The BGP peering address and BGP identifier of this BGP speaker."
+          }
+        },
+        "primaryCustomBgpIPs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled."
+          }
+        },
+        "secondaryCustomBgpIPs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled."
+          }
+        },
+        "peerWeight": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The weight added to routes learned from this BGP speaker."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -352,32 +401,10 @@
         "description": "Optional. Value to specify if BGP is enabled or not."
       }
     },
-    "asn": {
-      "type": "int",
-      "defaultValue": 65815,
+    "bgpParams": {
+      "$ref": "#/definitions/bgpParamsType",
       "metadata": {
-        "description": "Optional. ASN value."
-      }
-    },
-    "primaryCustomBgpIPs": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled."
-      }
-    },
-    "secondaryCustomBgpIPs": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled."
-      }
-    },
-    "peerWeight": {
-      "type": "int",
-      "defaultValue": 0,
-      "metadata": {
-        "description": "Optional. The weight added to routes learned from this BGP speaker."
+        "description": "Optional. BGP Settings"
       }
     },
     "vpnClientAddressPoolPrefix": {
@@ -516,7 +543,7 @@
     "virtualGatewayPipNameVar": "[if(variables('isActiveActiveValid'), createArray(parameters('gatewayPipName'), parameters('activeGatewayPipName')), createArray(parameters('gatewayPipName')))]",
     "vpnTypeVar": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
     "isBgpValid": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('enableBgp'), false())]",
-    "bgpSettings": "[if(variables('isActiveActiveValid'), createObject('asn', parameters('asn'), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', parameters('primaryCustomBgpIPs'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', parameters('secondaryCustomBgpIPs'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))))), 'peerWeight', parameters('peerWeight')), createObject('asn', parameters('asn'), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', parameters('primaryCustomBgpIPs'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))))), 'peerWeight', parameters('peerWeight')))]",
+    "bgpSettings": "[if(variables('isActiveActiveValid'), createObject('asn', coalesce(tryGet(parameters('bgpParams'), 'asn'), 65815), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('bgpParams'), 'primaryCustomBgpIPs'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('bgpParams'), 'secondaryCustomBgpIPs'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))))), 'peerWeight', tryGet(parameters('bgpParams'), 'peerWeight')), createObject('asn', tryGet(parameters('bgpParams'), 'asn'), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('bgpParams'), 'primaryCustomBgpIPs'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))))), 'peerWeight', tryGet(parameters('bgpParams'), 'peerWeight')))]",
     "ipConfiguration": "[if(variables('isActiveActiveValid'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActiveValid'), resourceId('Microsoft.Network/publicIPAddresses', parameters('activeGatewayPipName')), resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName'))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1')))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
     "builtInRoleNames": {
@@ -1291,8 +1318,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17230380050930057698"
+              "version": "0.27.1.19265",
+              "templateHash": "6695982819380361308"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule.",
