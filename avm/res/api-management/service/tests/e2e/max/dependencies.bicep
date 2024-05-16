@@ -44,6 +44,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
           networkSecurityGroup: {
             id: nsg.id
           }
+          routeTable: {
+            id: routeTable.id
+          }
           serviceEndpoints: [
             {
               service: 'Microsoft.Storage'
@@ -55,6 +58,23 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
               service: 'Microsoft.KeyVault'
             }
           ]
+        }
+      }
+    ]
+  }
+}
+
+resource routeTable 'Microsoft.Network/routeTables@2023-11-01' = {
+  name: 'apimRouteTableTest'
+  location: location
+  properties: {
+    disableBgpRoutePropagation: false
+    routes: [
+      {
+        name: 'apimToInternet'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'Internet'
         }
       }
     ]
@@ -158,19 +178,6 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
           access: 'Allow'
           priority: 160
           direction: 'Outbound'
-        }
-      }
-      {
-        name: 'Publish_Diagnostics_Logs_and_Metrics_Resource_Health_and_Application_Insights'
-        properties: {
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          destinationPortRange: '1886'
-          sourceAddressPrefix: 'VirtualNetwork'
-          destinationAddressPrefix: 'AzureMonitor'
-          access: 'Allow'
-          priority: 170
-          direction: 'Inbound'
         }
       }
       {
