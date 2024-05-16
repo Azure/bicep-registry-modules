@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "10554258944393732282"
+      "templateHash": "12963223629809121473"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1270,6 +1270,21 @@
         "description": "Optional. Whether to enable Azure Defender."
       }
     },
+    "enableImageCleaner": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to enable Image Cleaner for Kubernetes."
+      }
+    },
+    "imageCleanerIntervalHours": {
+      "type": "int",
+      "defaultValue": 24,
+      "minValue": 24,
+      "metadata": {
+        "description": "Optional. The interval in hours Image Cleaner will run. The maximum value is three months."
+      }
+    },
     "enablePodSecurityPolicy": {
       "type": "bool",
       "defaultValue": false,
@@ -1665,7 +1680,8 @@
         },
         "securityProfile": {
           "defender": "[if(parameters('enableAzureDefender'), createObject('securityMonitoring', createObject('enabled', parameters('enableAzureDefender')), 'logAnalyticsWorkspaceResourceId', parameters('monitoringWorkspaceId')), null())]",
-          "workloadIdentity": "[if(parameters('enableWorkloadIdentity'), createObject('enabled', parameters('enableWorkloadIdentity')), null())]"
+          "workloadIdentity": "[if(parameters('enableWorkloadIdentity'), createObject('enabled', parameters('enableWorkloadIdentity')), null())]",
+          "imageCleaner": "[if(parameters('enableImageCleaner'), createObject('enabled', parameters('enableImageCleaner'), 'intervalHours', parameters('imageCleanerIntervalHours')), null())]"
         },
         "storageProfile": {
           "blobCSIDriver": {

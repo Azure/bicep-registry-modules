@@ -626,6 +626,11 @@ Describe 'Module tests' -Tag 'Module' {
         $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
+          if ($moduleFolderPath -match '[\/|\\]avm[\/|\\]ptn[\/|\\]') {
+            # Skip UDT interface tests for ptn modules
+            continue
+          }
+
           $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
           $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
           $templateFileContent = $builtTestFileMap[$templateFilePath]
@@ -805,17 +810,17 @@ Describe 'Module tests' -Tag 'Module' {
           return
         }
 
-        $CamelCasingFlag = @()
-        $Variable = $templateFileContent.variables.Keys
+        $incorrectVariables = @()
+        $Variables = $templateFileContent.variables.Keys
 
-        foreach ($Variab in $Variable) {
-          if ($Variab.substring(0, 1) -cnotmatch '[a-z]' -or $Variab -match '-') {
-            $CamelCasingFlag += $false
-          } else {
-            $CamelCasingFlag += $true
+        foreach ($variable in $Variables) {
+          # ^[a-z]+[a-zA-Z]+$ = starts with lower-case letter & may have uppercase letter later
+          # ^\$fxv#[0-9]+$ = starts with [$fxv#] & ends with a number. This function value is created as a variable when using a Bicep function like loadFileAsBase64() or loadFromJson()
+          if ($variable -cnotmatch '^[a-z]+[a-zA-Z]+$|^\$fxv#[0-9]+$' -or $variable -match '-') {
+            $incorrectVariables += $variable
           }
         }
-        $CamelCasingFlag | Should -Not -Contain $false
+        $incorrectVariables | Should -BeNullOrEmpty
       }
     }
 
