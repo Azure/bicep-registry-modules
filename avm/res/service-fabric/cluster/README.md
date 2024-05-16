@@ -612,6 +612,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
       tenantId: '<tenantId>'
     }
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      x509StoreName: 'My'
+    }
     clientCertificateCommonNames: [
       {
         certificateCommonName: 'clientcommoncert1'
@@ -780,6 +784,12 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         "clientApplication": "<clientApplication>",
         "clusterApplication": "cf33fea8-b30f-424f-ab73-c48d99e0b222",
         "tenantId": "<tenantId>"
+      }
+    },
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "x509StoreName": "My"
       }
     },
     "clientCertificateCommonNames": {

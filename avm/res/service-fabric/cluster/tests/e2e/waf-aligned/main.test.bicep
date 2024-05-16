@@ -53,6 +53,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      certificate: {
+        thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        x509StoreName: 'My'
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'Service Fabric'
