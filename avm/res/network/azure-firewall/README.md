@@ -2234,12 +2234,12 @@ Zone numbers e.g. 1,2,3.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `applicationRuleCollections` | array | List of Application Rule Collections. |
+| `applicationRuleCollections` | array | List of Application Rule Collections used by Azure Firewall. |
 | `ipConfAzureFirewallSubnet` | object | The Public IP configuration object for the Azure Firewall Subnet. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Azure Firewall. |
-| `natRuleCollections` | array | Collection of NAT rule collections used by Azure Firewall. |
-| `networkRuleCollections` | array | List of Network Rule Collections. |
+| `natRuleCollections` | array | List of NAT rule collections used by Azure Firewall. |
+| `networkRuleCollections` | array | List of Network Rule Collections used by Azure Firewall. |
 | `privateIp` | string | The private IP of the Azure firewall. |
 | `resourceGroupName` | string | The resource group the Azure firewall was deployed into. |
 | `resourceId` | string | The resource ID of the Azure Firewall. |
