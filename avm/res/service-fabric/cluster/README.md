@@ -210,15 +210,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
       x509StoreName: 'My'
     }
-    certificateCommonNames: {
-      commonNames: [
-        {
-          certificateCommonName: 'certcommon'
-          certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        }
-      ]
-      x509StoreName: ''
-    }
     clientCertificateCommonNames: [
       {
         certificateCommonName: 'clientcommoncert1'
@@ -231,6 +222,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         isAdmin: false
       }
     ]
+    clientCertificateThumbprints: []
     diagnosticsStorageAccountConfig: {
       blobEndpoint: '<blobEndpoint>'
       protectedAccountKeyName: 'StorageAccountKey1'
@@ -415,17 +407,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         "x509StoreName": "My"
       }
     },
-    "certificateCommonNames": {
-      "value": {
-        "commonNames": [
-          {
-            "certificateCommonName": "certcommon",
-            "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
-          }
-        ],
-        "x509StoreName": ""
-      }
-    },
     "clientCertificateCommonNames": {
       "value": [
         {
@@ -439,6 +420,9 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
           "isAdmin": false
         }
       ]
+    },
+    "clientCertificateThumbprints": {
+      "value": []
     },
     "diagnosticsStorageAccountConfig": {
       "value": {
