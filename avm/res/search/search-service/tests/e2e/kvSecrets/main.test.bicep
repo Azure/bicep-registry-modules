@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Deploying with a key vault reference to save secrets'
-metadata description = 'This instance deploys the module saving adminkey secrets in a key vault.'
+metadata description = 'This instance deploys the module saving admin key secrets in a key vault.'
 
 // ========== //
 // Parameters //
