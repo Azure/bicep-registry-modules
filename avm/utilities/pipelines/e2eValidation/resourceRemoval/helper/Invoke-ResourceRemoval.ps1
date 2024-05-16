@@ -195,7 +195,7 @@ function Invoke-ResourceRemoval {
             $subscriptionId =  $subscription.Id
             $subscriptionState = $subscription.State
 
-            $null = Select-AzSubscription -SubscriptionId $subscriptionId
+            $null = Select-AzSubscription -SubscriptionId $subscriptionId -WarningAction SilentlyContinue
 
             if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
                 # Unregister resource providers and features
