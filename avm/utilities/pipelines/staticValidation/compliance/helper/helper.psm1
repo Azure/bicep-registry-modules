@@ -246,8 +246,12 @@ function Resolve-ReadMeParameterList {
       $definition = $TemplateFileContent.definitions[$identifier]
       # $type = $definition['type']
     } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
-      # Array has nested non-primitive type (array/object)
+      # Array has nested non-primitive type (array/object) - and if array, the the UDT itself is declared as the array
       $definition = $parameter
+    } elseif ($parameter.Keys -contains 'items' -and $parameter.items.keys -contains '$ref') {
+      # Array has nested non-primitive type (array) - and the parameter is defined as an array of the UDT
+      $identifier = Split-Path $parameter.items.'$ref' -Leaf
+      $definition = $TemplateFileContent.definitions[$identifier]
     } else {
       $definition = $null
     }
