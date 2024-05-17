@@ -814,7 +814,7 @@ Describe 'Module tests' -Tag 'Module' {
         $Variables = $templateFileContent.variables.Keys
 
         foreach ($variable in $Variables) {
-          # ^[a-z]+[a-zA-Z]+$ = starts with lower-case letter & may have uppercase letter or numbers later
+          # ^[a-z]+[a-zA-Z0-9]+$ = starts with lower-case letter & may have uppercase letter or numbers later
           # ^\$fxv#[0-9]+$ = starts with [$fxv#] & ends with a number. This function value is created as a variable when using a Bicep function like loadFileAsBase64() or loadFromJson()
           if ($variable -cnotmatch '^[a-z]+[a-zA-Z0-9]+$|^\$fxv#[0-9]+$' -or $variable -match '-') {
             $incorrectVariables += $variable
