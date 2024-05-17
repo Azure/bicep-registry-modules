@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "5299175231300175796"
+      "templateHash": "18119107920030966169"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -2280,21 +2280,21 @@
     "applicationRuleCollections": {
       "type": "array",
       "metadata": {
-        "description": "List of Application Rule Collections."
+        "description": "List of Application Rule Collections used by Azure Firewall."
       },
       "value": "[coalesce(parameters('applicationRuleCollections'), createArray())]"
     },
     "networkRuleCollections": {
       "type": "array",
       "metadata": {
-        "description": "List of Network Rule Collections."
+        "description": "List of Network Rule Collections used by Azure Firewall."
       },
       "value": "[coalesce(parameters('networkRuleCollections'), createArray())]"
     },
     "natRuleCollections": {
       "type": "array",
       "metadata": {
-        "description": "Collection of NAT rule collections used by Azure Firewall."
+        "description": "List of NAT rule collections used by Azure Firewall."
       },
       "value": "[coalesce(parameters('natRuleCollections'), createArray())]"
     },
