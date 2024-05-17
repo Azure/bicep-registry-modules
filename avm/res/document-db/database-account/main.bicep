@@ -233,7 +233,7 @@ var virtualNetworkRules = [
   }
 ]
 
-var databaseAccount_properties = union(
+var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
   },
@@ -332,7 +332,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   tags: tags
   identity: identity
   kind: kind
-  properties: databaseAccount_properties
+  properties: databaseAccountProperties
 }
 
 resource databaseAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
