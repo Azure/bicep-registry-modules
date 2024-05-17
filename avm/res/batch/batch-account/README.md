@@ -691,9 +691,9 @@ List of allowed authentication modes for the Batch account that can be used to a
 - Allowed:
   ```Bicep
   [
+    'AAD'
     'SharedKey'
     'TaskAuthenticationToken'
-    'AAD'
   ]
   ```
 

@@ -1478,8 +1478,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "12246294953666077655"
+              "version": "0.26.54.24096",
+              "templateHash": "4284041533987186633"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource.",
@@ -1567,98 +1567,6 @@
                 "description": "The name of the resource group the shared private link resource was created in."
               },
               "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "searchService"
-      ]
-    },
-    "keyVault": {
-      "condition": "[not(equals(parameters('secretsKeyVault'), null()))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "resourceGroup": "[coalesce(tryGet(parameters('secretsKeyVault'), 'resourceGroupName'), resourceGroup().name)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "keyVaultName": {
-            "value": "[parameters('secretsKeyVault').keyVaultName]"
-          },
-          "keySecrets": {
-            "value": [
-              {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryAdminKeySecretName'), 'Primary-Admin-Key')]",
-                "secretValue": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2023-11-01').primaryKey]"
-              },
-              {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryAdminKeySecretName'), 'Secondary-Admin-Key')]",
-                "secretValue": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2023-11-01').secondaryKey]"
-              }
-            ]
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17423703517558214368"
-            }
-          },
-          "definitions": {
-            "keySecret": {
-              "type": "object",
-              "properties": {
-                "secretName": {
-                  "type": "string"
-                },
-                "secretValue": {
-                  "type": "securestring"
-                }
-              }
-            }
-          },
-          "parameters": {
-            "keyVaultName": {
-              "type": "string"
-            },
-            "keySecrets": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/keySecret"
-              }
-            }
-          },
-          "resources": {
-            "kv": {
-              "existing": true,
-              "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
-              "name": "[parameters('keyVaultName')]"
-            },
-            "keySecretsSecrets": {
-              "copy": {
-                "name": "keySecretsSecrets",
-                "count": "[length(parameters('keySecrets'))]"
-              },
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('keySecrets')[copyIndex()].secretName)]",
-              "properties": {
-                "value": "[parameters('keySecrets')[copyIndex()].secretValue]"
-              },
-              "dependsOn": [
-                "kv"
-              ]
             }
           }
         }
