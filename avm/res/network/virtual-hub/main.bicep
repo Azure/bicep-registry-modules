@@ -79,29 +79,26 @@ param lock lockType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
-
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: take(
-      '46d3xbcp.res.network-virtualhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
-      64
-    )
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.res.network-virtualhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
   name: name
@@ -152,17 +149,16 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
   }
 }
 
-resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: virtualHub
+resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: virtualHub
+}
 
 module virtualHub_routeTables 'hub-route-table/main.bicep' = [
   for (routeTable, index) in hubRouteTables: {
@@ -172,7 +168,6 @@ module virtualHub_routeTables 'hub-route-table/main.bicep' = [
       name: routeTable.name
       labels: contains(routeTable, 'labels') ? routeTable.labels : []
       routes: contains(routeTable, 'routes') ? routeTable.routes : []
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -190,7 +185,6 @@ module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/m
       routingConfiguration: contains(virtualNetworkConnection, 'routingConfiguration')
         ? virtualNetworkConnection.routingConfiguration
         : {}
-      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       virtualHub_routeTables
