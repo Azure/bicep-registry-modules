@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2150058177195720553"
+      "version": "0.27.1.19265",
+      "templateHash": "7421243394882467292"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -201,9 +201,6 @@
       }
     }
   },
-  "variables": {
-    "enableReferencedModulesTelemetry": false
-  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -286,10 +283,7 @@
             "value": "[parameters('hubRouteTables')[copyIndex()].name]"
           },
           "labels": "[if(contains(parameters('hubRouteTables')[copyIndex()], 'labels'), createObject('value', parameters('hubRouteTables')[copyIndex()].labels), createObject('value', createArray()))]",
-          "routes": "[if(contains(parameters('hubRouteTables')[copyIndex()], 'routes'), createObject('value', parameters('hubRouteTables')[copyIndex()].routes), createObject('value', createArray()))]",
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "routes": "[if(contains(parameters('hubRouteTables')[copyIndex()], 'routes'), createObject('value', parameters('hubRouteTables')[copyIndex()].routes), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -297,8 +291,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8788910381196616673"
+              "version": "0.27.1.19265",
+              "templateHash": "13312295345359302348"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table.",
@@ -330,36 +324,9 @@
               "metadata": {
                 "description": "Optional. List of all routes."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('46d3xbcp.res.network-virtualhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             {
               "type": "Microsoft.Network/virtualHubs/hubRouteTables",
               "apiVersion": "2022-11-01",
@@ -423,10 +390,7 @@
           "remoteVirtualNetworkId": {
             "value": "[parameters('hubVirtualNetworkConnections')[copyIndex()].remoteVirtualNetworkId]"
           },
-          "routingConfiguration": "[if(contains(parameters('hubVirtualNetworkConnections')[copyIndex()], 'routingConfiguration'), createObject('value', parameters('hubVirtualNetworkConnections')[copyIndex()].routingConfiguration), createObject('value', createObject()))]",
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "routingConfiguration": "[if(contains(parameters('hubVirtualNetworkConnections')[copyIndex()], 'routingConfiguration'), createObject('value', parameters('hubVirtualNetworkConnections')[copyIndex()].routingConfiguration), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -434,8 +398,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "10987823499253979342"
+              "version": "0.27.1.19265",
+              "templateHash": "449308154693946367"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection.",
@@ -473,36 +437,9 @@
               "metadata": {
                 "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('46d3xbcp.res.network-virtualhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             {
               "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
               "apiVersion": "2022-11-01",
