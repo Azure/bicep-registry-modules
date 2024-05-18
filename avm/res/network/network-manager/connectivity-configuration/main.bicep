@@ -54,7 +54,7 @@ resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivi
     deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? string(deleteExistingPeering) : 'false'
     description: description ?? ''
     hubs: connectivityTopology == 'HubAndSpoke' ? hubs : []
-    isGlobal: string(isGlobal) ?? 'false'
+    isGlobal: string(isGlobal)
   }
 }
 
