@@ -68,6 +68,12 @@ module testDeployment '../../../main.bicep' = [
       platformReservedDnsIP: '172.17.17.17'
       infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
       roleAssignments: [
         {
           roleDefinitionIdOrName: 'Owner'
