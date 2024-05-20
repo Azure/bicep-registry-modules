@@ -1240,3 +1240,6 @@ resource appInsightsDashboard 'Microsoft.Portal/dashboards@2020-09-01-preview' =
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: appInsightsName
 }
+
+@description('The resource group the appInsights dashboard was deployed into.')
+output resourceGroupName string = resourceGroup().name

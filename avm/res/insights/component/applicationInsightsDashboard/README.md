@@ -61,8 +61,9 @@ Location for all Resources.
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `resourceGroupName` | string | The resource group the appInsights dashboard was deployed into. |
 
 ## Cross-referenced modules
 

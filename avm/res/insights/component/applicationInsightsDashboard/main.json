@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "4795441832386077737"
+      "templateHash": "17957098990784306055"
     },
     "name": "Application Insights Dashboard",
     "description": "This component deploys an Application Insights Dashboard.",
@@ -1239,5 +1239,14 @@
         ]
       }
     }
-  ]
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the appInsights dashboard was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
 }
