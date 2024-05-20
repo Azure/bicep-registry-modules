@@ -78,7 +78,7 @@ function Get-ResourceIdsAsFormattedObjectList {
                         $allResourceGroupResources = Get-AzResource -ResourceGroupName $resourceGroupName -Name '*'
                     }
                     $expandedResources = $allResourceGroupResources | Where-Object { $_.ResourceId.startswith($resourceId) }
-                    $expandedResources = $expandedResources | Sort-Object -Descending -Property { $_.ResourceId.Split('/').Count }
+                    $expandedResources = $expandedResources | Sort-Object -Culture 'en-US' -Descending -Property { $_.ResourceId.Split('/').Count }
                     foreach ($resource in $expandedResources) {
                         $formattedResources += @{
                             resourceId = $resource.ResourceId
