@@ -36,7 +36,7 @@ Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 $pathsToBuild = [System.Collections.ArrayList]@()
 $pathsToBuild += $moduleFolderPaths | ForEach-Object { Join-Path $_ 'main.bicep' }
 foreach ($moduleFolderPath in $moduleFolderPaths) {
-  if ($testFilePaths = ((Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object)) {
+  if ($testFilePaths = ((Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US')) {
     $pathsToBuild += $testFilePaths
   }
 }
@@ -533,7 +533,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
           # Parameters in the object are formatted like
           # - tags
           # - customerManagedKey.keyVaultResourceId
@@ -560,7 +560,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
           $data = $templateFileParameters.$parameter.metadata.description
           if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
             $incorrectParameters += $parameter
@@ -584,7 +584,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
           $data = $templateFileParameters.$parameter.metadata.description
           switch -regex ($data) {
             '^Conditional. .*' {
@@ -605,7 +605,7 @@ Describe 'Module tests' -Tag 'Module' {
         )
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
           $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
 
           if (-not $isRequired) {
@@ -810,17 +810,17 @@ Describe 'Module tests' -Tag 'Module' {
           return
         }
 
-        $CamelCasingFlag = @()
-        $Variable = $templateFileContent.variables.Keys
+        $incorrectVariables = @()
+        $Variables = $templateFileContent.variables.Keys
 
-        foreach ($Variab in $Variable) {
-          if ($Variab.substring(0, 1) -cnotmatch '[a-z]' -or $Variab -match '-') {
-            $CamelCasingFlag += $false
-          } else {
-            $CamelCasingFlag += $true
+        foreach ($variable in $Variables) {
+          # ^[a-z]+[a-zA-Z]+$ = starts with lower-case letter & may have uppercase letter later
+          # ^\$fxv#[0-9]+$ = starts with [$fxv#] & ends with a number. This function value is created as a variable when using a Bicep function like loadFileAsBase64() or loadFromJson()
+          if ($variable -cnotmatch '^[a-z]+[a-zA-Z]+$|^\$fxv#[0-9]+$' -or $variable -match '-') {
+            $incorrectVariables += $variable
           }
         }
-        $CamelCasingFlag | Should -Not -Contain $false
+        $incorrectVariables | Should -BeNullOrEmpty
       }
     }
 
@@ -1184,12 +1184,12 @@ Describe 'Governance tests' {
 
     # Should be at correct location
     $incorrectLines = @()
-    foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
+    foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object -Culture 'en-US') -SyncWindow 0)) {
       if ($finding.SideIndicator -eq '<=') {
         $incorrectLines += $finding.InputObject
       }
     }
-    $incorrectLines = $incorrectLines | Sort-Object -Unique
+    $incorrectLines = $incorrectLines | Sort-Object -Culture 'en-US' -Unique
 
     $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
   }
@@ -1203,7 +1203,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
     foreach ($moduleFolderPath in $moduleFolderPaths) {
       if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
-        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
+        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
         foreach ($testFilePath in $testFilePaths) {
           $testFileContent = Get-Content $testFilePath
           $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
@@ -1346,7 +1346,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
     $nestedResources = Get-NestedResourceList -TemplateFileContent $templateFileContent | Where-Object {
       $_.type -notin @('Microsoft.Resources/deployments') -and $_
-    } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object Type
+    } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object -Culture 'en-US' -Property 'Type'
 
     foreach ($resource in $nestedResources) {
 
@@ -1449,7 +1449,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
       $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
     }
 
-    $approvedApiVersions = $approvedApiVersions | Sort-Object -Unique -Descending
+    $approvedApiVersions = $approvedApiVersions | Sort-Object -Culture 'en-US' -Unique -Descending
 
     if ($approvedApiVersions -notcontains $TargetApi) {
       # Using a warning now instead of an error, as we don't want to block PRs for this.

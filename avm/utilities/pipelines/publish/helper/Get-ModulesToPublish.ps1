@@ -102,7 +102,7 @@ function Get-TemplateFileToPublish {
 
   $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
     Find-TemplateFile -Path $_ -Verbose
-  } | Sort-Object -Unique -Descending
+  } | Sort-Object -Culture 'en-US' -Unique -Descending
 
   if ($TemplateFilesToPublish.Count -eq 0) {
     Write-Verbose 'No template file found in the modified module.' -Verbose

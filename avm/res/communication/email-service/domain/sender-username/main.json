@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "11776160114645029549"
+    },
+    "name": "Sender Usernames",
+    "description": "This module deploys an Sender",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "emailServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent email service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "domainName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent domain. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the sender username resource to create."
+      }
+    },
+    "username": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. A sender username to be used when sending emails."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "defaultValue": "[parameters('username')]",
+      "metadata": {
+        "description": "Optional. The display name for the senderUsername."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Communication/emailServices/domains/senderUsernames",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}/{2}', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]",
+      "properties": {
+        "username": "[parameters('username')]",
+        "displayName": "[parameters('displayName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the sender username."
+      },
+      "value": "[resourceId('Microsoft.Communication/emailServices/domains/senderUsernames', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the sender username."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the sender username was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
