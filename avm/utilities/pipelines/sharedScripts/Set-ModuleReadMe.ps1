@@ -95,7 +95,7 @@ function Set-ResourceTypesSection {
 
     $RelevantResourceTypeObjects = Get-NestedResourceList $TemplateFileContent | Where-Object {
         $_.type -notin $ResourceTypesToExclude -and $_
-    } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object Type -Culture 'en-US'
+    } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object -Culture 'en-US' -Property 'Type'
 
     $ProgressPreference = 'SilentlyContinue'
     $VerbosePreference = 'SilentlyContinue'
@@ -277,9 +277,9 @@ function Set-DefinitionSection {
         # Filter to relevant items
         if (-not $Properties) {
             # Top-level invocation
-            [array] $categoryParameters = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
+            [array] $categoryParameters = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Culture 'en-US' -Property 'Name'
         } else {
-            $categoryParameters = $Properties.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
+            $categoryParameters = $Properties.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Culture 'en-US' -Property 'Name'
         }
 
         $tableSectionContent += @(
