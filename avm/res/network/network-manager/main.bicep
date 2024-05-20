@@ -126,8 +126,8 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
       appliesToGroups: connectivityConfiguration.?appliesToGroups ?? []
       connectivityTopology: connectivityConfiguration.connectivityTopology
       hubs: connectivityConfiguration.?hubs ?? []
-      deleteExistingPeering: connectivityConfiguration.?deleteExistingPeering
-      isGlobal: connectivityConfiguration.?isGlobal
+      deleteExistingPeering: connectivityConfiguration.?deleteExistingPeering ?? false
+      isGlobal: connectivityConfiguration.?isGlobal ?? false
     }
     dependsOn: networkManager_networkGroups
   }
@@ -293,13 +293,13 @@ type connectivityConfigurationsType = {
     groupConnectivity: ('DirectlyConnected' | 'None')
 
     @sys.description('Optional. Flag if global is supported.')
-    isGlobal: ('True' | 'False')?
+    isGlobal: bool?
 
     @sys.description('Required. Network group Id.')
     networkGroupId: string
 
     @sys.description('Optional. Flag if use hub gateway.')
-    useHubGateway: ('True' | 'False')?
+    useHubGateway: bool?
   }[]
 
   @sys.description('Required. The connectivity topology to apply the configuration to.')
@@ -315,10 +315,10 @@ type connectivityConfigurationsType = {
   }[]?
 
   @sys.description('Optional. Delete existing peering connections.')
-  deleteExistingPeering: ('True' | 'False')?
+  deleteExistingPeering: bool?
 
   @sys.description('Optional. Is global configuration.')
-  isGlobal: ('True' | 'False')?
+  isGlobal: bool?
 }[]?
 
 type securityAdminConfigurationsType = {

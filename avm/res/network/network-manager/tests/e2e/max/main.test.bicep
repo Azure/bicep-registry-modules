@@ -95,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
       }
       networkGroups: [
         {
-          name: 'network-group-spokes'
+          name: 'network-group-spokes-1'
           description: 'network-group-spokes description'
           staticMembers: [
             {
@@ -132,14 +132,14 @@ module testDeployment '../../../main.bicep' = [
               resourceType: 'Microsoft.Network/virtualNetworks'
             }
           ]
-          deleteExistingPeering: 'True'
-          isGlobal: 'True'
+          deleteExistingPeering: true
+          isGlobal: false
           appliesToGroups: [
             {
-              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              useHubGateway: 'False'
+              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-1'
+              useHubGateway: false
               groupConnectivity: 'None'
-              isGlobal: 'False'
+              isGlobal: false
             }
           ]
         }
@@ -147,14 +147,14 @@ module testDeployment '../../../main.bicep' = [
           name: 'MeshConnectivity-1'
           description: 'MeshConnectivity description'
           connectivityTopology: 'Mesh'
-          deleteExistingPeering: 'True'
-          isGlobal: 'True'
+          deleteExistingPeering: true
+          isGlobal: true
           appliesToGroups: [
             {
-              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              useHubGateway: 'False'
-              groupConnectivity: 'None'
-              isGlobal: 'False'
+              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-3'
+              useHubGateway: false
+              groupConnectivity: 'DirectlyConnected'
+              isGlobal: true
             }
           ]
         }
@@ -164,9 +164,12 @@ module testDeployment '../../../main.bicep' = [
           appliesToGroups: [
             {
               networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
+              useHubGateway: false
               groupConnectivity: 'DirectlyConnected'
+              isGlobal: false
             }
           ]
+          isGlobal: false
         }
       ]
       scopeConnections: [
@@ -190,7 +193,7 @@ module testDeployment '../../../main.bicep' = [
               description: 'test-rule-collection-description'
               appliesToGroups: [
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-1'
                 }
               ]
               rules: [
@@ -226,10 +229,10 @@ module testDeployment '../../../main.bicep' = [
               name: 'test-rule-collection-2'
               appliesToGroups: [
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
                 }
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-3'
                 }
               ]
               rules: [

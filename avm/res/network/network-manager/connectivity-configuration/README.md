@@ -38,9 +38,9 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deleteExistingPeering`](#parameter-deleteexistingpeering) | string | Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke". |
+| [`deleteExistingPeering`](#parameter-deleteexistingpeering) | bool | Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke". |
 | [`description`](#parameter-description) | string | A description of the connectivity configuration. |
-| [`isGlobal`](#parameter-isglobal) | string | Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions. |
+| [`isGlobal`](#parameter-isglobal) | bool | Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions. |
 
 ### Parameter: `appliesToGroups`
 
@@ -60,8 +60,8 @@ Network Groups for the configuration. A connectivity configuration must be assoc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isGlobal`](#parameter-appliestogroupsisglobal) | string | Flag if global is supported. |
-| [`useHubGateway`](#parameter-appliestogroupsusehubgateway) | string | Flag if use hub gateway. |
+| [`isGlobal`](#parameter-appliestogroupsisglobal) | bool | Flag if global is supported. |
+| [`useHubGateway`](#parameter-appliestogroupsusehubgateway) | bool | Flag if use hub gateway. |
 
 ### Parameter: `appliesToGroups.groupConnectivity`
 
@@ -89,28 +89,14 @@ Network group Id.
 Flag if global is supported.
 
 - Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
 
 ### Parameter: `appliesToGroups.useHubGateway`
 
 Flag if use hub gateway.
 
 - Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
 
 ### Parameter: `connectivityTopology`
 
@@ -179,15 +165,8 @@ The name of the parent network manager. Required if the template is used in a st
 Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke".
 
 - Required: No
-- Type: string
-- Default: `'False'`
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
+- Default: `False`
 
 ### Parameter: `description`
 
@@ -201,15 +180,8 @@ A description of the connectivity configuration.
 Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions.
 
 - Required: No
-- Type: string
-- Default: `'False'`
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'True'
-  ]
-  ```
+- Type: bool
+- Default: `False`
 
 
 ## Outputs

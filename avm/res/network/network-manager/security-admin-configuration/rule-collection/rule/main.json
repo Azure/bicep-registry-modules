@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "5878565358535105775"
+      "version": "0.27.1.19265",
+      "templateHash": "14501467438771173625"
     },
     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
@@ -124,7 +124,10 @@
       }
     },
     "destinationPortRanges": {
-      "$ref": "#/definitions/destinationPortRangesType",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
@@ -177,7 +180,6 @@
     },
     "sources": {
       "$ref": "#/definitions/sourcesType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
       }

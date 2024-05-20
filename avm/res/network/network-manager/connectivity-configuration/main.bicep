@@ -27,19 +27,11 @@ param connectivityTopology string
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')
 param hubs hubsType
 
-@allowed([
-  'True'
-  'False'
-])
 @sys.description('Optional. Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke".')
-param deleteExistingPeering string = 'False'
+param deleteExistingPeering bool = false
 
-@allowed([
-  'True'
-  'False'
-])
 @sys.description('Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions.')
-param isGlobal string = 'False'
+param isGlobal bool = false
 
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
@@ -49,12 +41,20 @@ resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivi
   name: name
   parent: networkManager
   properties: {
-    appliesToGroups: appliesToGroups
+    appliesToGroups: map(
+      appliesToGroups,
+      (group) => {
+        groupConnectivity: group.groupConnectivity
+        isGlobal: string(group.isGlobal) ?? 'false'
+        networkGroupId: any(group.networkGroupId)
+        useHubGateway: string(group.useHubGateway) ?? 'false'
+      }
+    )
     connectivityTopology: connectivityTopology
-    deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? deleteExistingPeering : 'False'
+    deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? string(deleteExistingPeering) : 'false'
     description: description ?? ''
     hubs: connectivityTopology == 'HubAndSpoke' ? hubs : []
-    isGlobal: isGlobal
+    isGlobal: string(isGlobal)
   }
 }
 
@@ -76,13 +76,13 @@ type appliesToGroupsType = {
   groupConnectivity: ('DirectlyConnected' | 'None')
 
   @sys.description('Optional. Flag if global is supported.')
-  isGlobal: ('True' | 'False')?
+  isGlobal: bool?
 
   @sys.description('Required. Network group Id.')
   networkGroupId: string
 
   @sys.description('Optional. Flag if use hub gateway.')
-  useHubGateway: ('True' | 'False')?
+  useHubGateway: bool?
 }[]
 
 type hubsType = {
