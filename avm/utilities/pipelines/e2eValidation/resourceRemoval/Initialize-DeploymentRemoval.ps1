@@ -134,11 +134,11 @@ function Initialize-DeploymentRemoval {
         if ($PurgeTestResources) {
             # Resources
             $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceIds | Sort-Object -Culture 'en-US' -Unique)
 
             # Resource groups
             $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Culture 'en-US' -Unique)
         }
 
         # Invoke removal
