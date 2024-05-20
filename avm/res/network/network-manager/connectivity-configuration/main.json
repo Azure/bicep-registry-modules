@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "17126075765059117437"
+      "templateHash": "13179068054895956087"
     },
     "name": "Network Manager Connectivity Configurations",
-    "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+    "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -152,7 +152,7 @@
         "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
         "description": "[coalesce(parameters('description'), '')]",
         "hubs": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('hubs'), createArray())]",
-        "isGlobal": "[coalesce(string(parameters('isGlobal')), 'false')]"
+        "isGlobal": "[string(parameters('isGlobal'))]"
       },
       "dependsOn": [
         "networkManager"
