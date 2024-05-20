@@ -657,13 +657,13 @@ function Set-CrossReferencesSection {
     $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
 
     if ($dependencies.Keys -contains 'localPathReferences' -and $dependencies['localPathReferences']) {
-        foreach ($reference in ($dependencies['localPathReferences'] | Sort-Object)) {
+        foreach ($reference in ($dependencies['localPathReferences'] | Sort-Object -Culture 'en-US')) {
             $SectionContent += ("| ``{0}`` | {1} |" -f $reference, 'Local reference')
         }
     }
 
     if ($dependencies.Keys -contains 'remoteReferences' -and $dependencies['remoteReferences']) {
-        foreach ($reference in ($dependencies['remoteReferences'] | Sort-Object)) {
+        foreach ($reference in ($dependencies['remoteReferences'] | Sort-Object -Culture 'en-US')) {
             $SectionContent += ("| ``{0}`` | {1} |" -f $reference, 'Remote reference')
         }
     }
@@ -1283,11 +1283,11 @@ function Set-UsageExamplesSection {
         $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -Replace '-'
     }
 
-    $testFilePaths = (Get-ChildItem -Path $ModuleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
+    $testFilePaths = (Get-ChildItem -Path $ModuleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
 
     $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
         Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $TemplateFileContent.parameters[$_]
-    } | Sort-Object
+    } | Sort-Object -Culture 'en-US'
 
     ############################
     ##   Process test files   ##
