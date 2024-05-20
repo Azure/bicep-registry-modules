@@ -96,9 +96,9 @@ function Get-ReferenceObject {
     }
 
     return @{
-        resourceReferences  = $resultSet.resourceReferences | Sort-Object -Unique
-        remoteReferences    = $resultSet.remoteReferences | Sort-Object -Unique
-        localPathReferences = $resultSet.localPathReferences | Sort-Object -Unique
+        resourceReferences  = $resultSet.resourceReferences | Sort-Object -Culture 'en-US' -Unique
+        remoteReferences    = $resultSet.remoteReferences | Sort-Object -Culture 'en-US' -Unique
+        localPathReferences = $resultSet.localPathReferences | Sort-Object -Culture 'en-US' -Unique
     }
 }
 #endregion
@@ -155,7 +155,7 @@ function Get-CrossReferencedModuleList {
     $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter '*.bicep').FullName | Where-Object {
         # No files inthe [/utilities/tools/] folder and none in the [/tests/] folder
         $_ -notmatch '.*[\\|\/]tools[\\|\/].*|.*[\\|\/]tests[\\|\/].*'
-    } | Sort-Object
+    } | Sort-Object -Culture 'en-US'
     $templateMap = @{}
     foreach ($moduleTemplatePath in $moduleTemplatePaths) {
         $templateMap[$moduleTemplatePath] = Get-Content -Path $moduleTemplatePath
