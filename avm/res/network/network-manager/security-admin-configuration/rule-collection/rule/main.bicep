@@ -61,7 +61,7 @@ param protocol string
 param sourcePortRanges sourcePortRangesType?
 
 @sys.description('Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-param sources sourcesType?
+param sources sourcesType
 
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
