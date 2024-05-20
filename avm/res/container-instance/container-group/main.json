@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16935347611602196545"
+      "version": "0.27.1.19265",
+      "templateHash": "5407376593955341482"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -115,6 +115,7 @@
               },
               "livenessProbe": {
                 "type": "object",
+                "properties": {},
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. The liveness probe."
@@ -203,6 +204,79 @@
                     "metadata": {
                       "description": "Optional. The resource limits of this container instance."
                     }
+                  },
+                  "securityContext": {
+                    "type": "object",
+                    "properties": {
+                      "allowPrivilegeEscalation": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Whether privilege escalation is allowed for the container."
+                        }
+                      },
+                      "capabilities": {
+                        "type": "object",
+                        "properties": {
+                          "add": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The list of capabilities to add."
+                            }
+                          },
+                          "drop": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The list of capabilities to drop."
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The capabilities to add or drop for the container."
+                        }
+                      },
+                      "privileged": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Whether the container is run in privileged mode."
+                        }
+                      },
+                      "runAsGroup": {
+                        "type": "int",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The GID to run the container as."
+                        }
+                      },
+                      "runAsUser": {
+                        "type": "int",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The UID to run the container as."
+                        }
+                      },
+                      "seccompProfile": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The seccomp profile to use for the container."
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The security context of the container instance."
+                    }
                   }
                 },
                 "metadata": {
@@ -262,7 +336,7 @@
                       }
                     },
                     "secureValue": {
-                      "type": "string",
+                      "type": "securestring",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. The value of the secure environment variable."
@@ -289,6 +363,49 @@
           }
         }
       }
+    },
+    "imageRegistryCredentialType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The Docker image registry server without a protocol such as \"http\" and \"https\"."
+            }
+          },
+          "identity": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The identity for the private registry."
+            }
+          },
+          "identityUrl": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The identity URL for the private registry."
+            }
+          },
+          "username": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The username for the private registry."
+            }
+          },
+          "password": {
+            "type": "securestring",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The password for the private registry."
+            }
+          }
+        }
+      },
+      "nullable": true
     },
     "ipAddressPortsType": {
       "type": "array",
@@ -384,8 +501,7 @@
       }
     },
     "imageRegistryCredentials": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/imageRegistryCredentialType",
       "metadata": {
         "description": "Optional. The image registry credentials by which the container group is created from."
       }

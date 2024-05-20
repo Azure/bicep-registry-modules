@@ -51,7 +51,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}-${serviceShort}001'
       location: resourceLocation
-      sku: 'UltraSSD_LRS'
+      sku: 'Premium_LRS'
+      availabilityZone: 2
       diskIOPSReadWrite: 500
       diskMBpsReadWrite: 60
       diskSizeGB: 128

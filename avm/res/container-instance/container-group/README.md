@@ -355,7 +355,16 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         name: 'az-aci-x-001'
         properties: {
           command: []
-          environmentVariables: []
+          environmentVariables: [
+            {
+              name: 'CLIENT_ID'
+              value: 'TestClientId'
+            }
+            {
+              name: 'CLIENT_SECRET'
+              secureValue: 'TestSecret'
+            }
+          ]
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
@@ -447,7 +456,16 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           "name": "az-aci-x-001",
           "properties": {
             "command": [],
-            "environmentVariables": [],
+            "environmentVariables": [
+              {
+                "name": "CLIENT_ID",
+                "value": "TestClientId"
+              },
+              {
+                "name": "CLIENT_SECRET",
+                "secureValue": "TestSecret"
+              }
+            ],
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
@@ -1021,6 +1039,7 @@ The resource requirements of the container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`limits`](#parameter-containerspropertiesresourceslimits) | object | The resource limits of this container instance. |
+| [`securityContext`](#parameter-containerspropertiesresourcessecuritycontext) | object | The security context of the container instance. |
 
 ### Parameter: `containers.properties.resources.requests`
 
@@ -1162,6 +1181,87 @@ The memory limit in GB of this container instance. To specify a decimal value, u
 - Required: No
 - Type: int
 
+### Parameter: `containers.properties.resources.securityContext`
+
+The security context of the container instance.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowPrivilegeEscalation`](#parameter-containerspropertiesresourcessecuritycontextallowprivilegeescalation) | bool | Whether privilege escalation is allowed for the container. |
+| [`capabilities`](#parameter-containerspropertiesresourcessecuritycontextcapabilities) | object | The capabilities to add or drop for the container. |
+| [`privileged`](#parameter-containerspropertiesresourcessecuritycontextprivileged) | bool | Whether the container is run in privileged mode. |
+| [`runAsGroup`](#parameter-containerspropertiesresourcessecuritycontextrunasgroup) | int | The GID to run the container as. |
+| [`runAsUser`](#parameter-containerspropertiesresourcessecuritycontextrunasuser) | int | The UID to run the container as. |
+| [`seccompProfile`](#parameter-containerspropertiesresourcessecuritycontextseccompprofile) | string | The seccomp profile to use for the container. |
+
+### Parameter: `containers.properties.resources.securityContext.allowPrivilegeEscalation`
+
+Whether privilege escalation is allowed for the container.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.properties.resources.securityContext.capabilities`
+
+The capabilities to add or drop for the container.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`add`](#parameter-containerspropertiesresourcessecuritycontextcapabilitiesadd) | array | The list of capabilities to add. |
+| [`drop`](#parameter-containerspropertiesresourcessecuritycontextcapabilitiesdrop) | array | The list of capabilities to drop. |
+
+### Parameter: `containers.properties.resources.securityContext.capabilities.add`
+
+The list of capabilities to add.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.resources.securityContext.capabilities.drop`
+
+The list of capabilities to drop.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.resources.securityContext.privileged`
+
+Whether the container is run in privileged mode.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.properties.resources.securityContext.runAsGroup`
+
+The GID to run the container as.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.resources.securityContext.runAsUser`
+
+The UID to run the container as.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.resources.securityContext.seccompProfile`
+
+The seccomp profile to use for the container.
+
+- Required: No
+- Type: string
+
 ### Parameter: `containers.properties.command`
 
 The command to execute within the container instance.
@@ -1186,7 +1286,7 @@ The environment variables to set in the container instance.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`secureValue`](#parameter-containerspropertiesenvironmentvariablessecurevalue) | string | The value of the secure environment variable. |
+| [`secureValue`](#parameter-containerspropertiesenvironmentvariablessecurevalue) | securestring | The value of the secure environment variable. |
 | [`value`](#parameter-containerspropertiesenvironmentvariablesvalue) | string | The value of the environment variable. |
 
 ### Parameter: `containers.properties.environmentVariables.name`
@@ -1201,7 +1301,7 @@ The name of the environment variable.
 The value of the secure environment variable.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `containers.properties.environmentVariables.value`
 
@@ -1423,6 +1523,56 @@ The image registry credentials by which the container group is created from.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`server`](#parameter-imageregistrycredentialsserver) | string | The Docker image registry server without a protocol such as "http" and "https". |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-imageregistrycredentialsidentity) | string | The identity for the private registry. |
+| [`identityUrl`](#parameter-imageregistrycredentialsidentityurl) | string | The identity URL for the private registry. |
+| [`password`](#parameter-imageregistrycredentialspassword) | securestring | The password for the private registry. |
+| [`username`](#parameter-imageregistrycredentialsusername) | string | The username for the private registry. |
+
+### Parameter: `imageRegistryCredentials.server`
+
+The Docker image registry server without a protocol such as "http" and "https".
+
+- Required: Yes
+- Type: string
+
+### Parameter: `imageRegistryCredentials.identity`
+
+The identity for the private registry.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageRegistryCredentials.identityUrl`
+
+The identity URL for the private registry.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageRegistryCredentials.password`
+
+The password for the private registry.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `imageRegistryCredentials.username`
+
+The username for the private registry.
+
+- Required: No
+- Type: string
 
 ### Parameter: `initContainers`
 
