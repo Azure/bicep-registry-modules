@@ -136,7 +136,7 @@ module testDeployment '../../../main.bicep' = [
           isGlobal: false
           appliesToGroups: [
             {
-              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-1'
               useHubGateway: false
               groupConnectivity: 'None'
               isGlobal: false
@@ -151,7 +151,7 @@ module testDeployment '../../../main.bicep' = [
           isGlobal: true
           appliesToGroups: [
             {
-              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-3'
               useHubGateway: false
               groupConnectivity: 'DirectlyConnected'
               isGlobal: true
@@ -193,7 +193,7 @@ module testDeployment '../../../main.bicep' = [
               description: 'test-rule-collection-description'
               appliesToGroups: [
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-1'
                 }
               ]
               rules: [
@@ -229,10 +229,10 @@ module testDeployment '../../../main.bicep' = [
               name: 'test-rule-collection-2'
               appliesToGroups: [
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
                 }
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-3'
                 }
               ]
               rules: [
