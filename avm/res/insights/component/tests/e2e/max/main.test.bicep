@@ -65,6 +65,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
+    dashboardName: 'dash-${namePrefix}${serviceShort}'
     disableIpMasking: false
     disableLocalAuth: true
     forceCustomerStorageForProfiler: true

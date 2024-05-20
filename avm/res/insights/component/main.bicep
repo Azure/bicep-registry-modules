@@ -15,6 +15,9 @@ param applicationType string = 'web'
 @description('Required. Resource ID of the log analytics workspace which the data will be ingested to. This property is required to create an application with this API version. Applications from older versions will not have this property.')
 param workspaceResourceId string
 
+@description('Optional. Dashboard for an Application Insights instance.')
+param dashboardName string = ''
+
 @description('Optional. Disable IP masking. Default value is set to true.')
 param disableIpMasking bool = true
 
@@ -92,24 +95,23 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.insights-component.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.insights-component.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: name
@@ -129,14 +131,22 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-module linkedStorageAccount 'linkedStorageAccounts/main.bicep' =
-  if (!empty(linkedStorageAccountResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-appInsights-linkedStorageAccount'
-    params: {
-      appInsightsName: appInsights.name
-      storageAccountResourceId: linkedStorageAccountResourceId
-    }
+module linkedStorageAccount 'linkedStorageAccounts/main.bicep' = if (!empty(linkedStorageAccountResourceId)) {
+  name: '${uniqueString(deployment().name, location)}-appInsights-linkedStorageAccount'
+  params: {
+    appInsightsName: appInsights.name
+    storageAccountResourceId: linkedStorageAccountResourceId
   }
+}
+
+module appInsights_dashboard 'applicationInsightsDashboard/main.bicep' = if (!empty(dashboardName)) {
+  name: '${uniqueString(deployment().name, location)}-appInsights-dashboard'
+  params: {
+    name: dashboardName
+    location: location
+    appInsightsName: appInsights.name
+  }
+}
 
 resource appInsights_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {

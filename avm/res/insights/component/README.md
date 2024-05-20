@@ -19,6 +19,7 @@ This component deploys an Application Insights instance.
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
 | `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Portal/dashboards` | [2020-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Portal/2020-09-01-preview/dashboards) |
 
 ## Usage examples
 
@@ -101,6 +102,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     name: 'icmax001'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
+    dashboardName: 'dash-icmax'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -166,6 +168,9 @@ module component 'br/public:avm/res/insights/component:<version>' = {
       "value": "<workspaceResourceId>"
     },
     // Non-required parameters
+    "dashboardName": {
+      "value": "dash-icmax"
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -339,6 +344,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationType`](#parameter-applicationtype) | string | Application type. |
+| [`dashboardName`](#parameter-dashboardname) | string | Dashboard for an Application Insights instance. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIpMasking`](#parameter-disableipmasking) | bool | Disable IP masking. Default value is set to true. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable Non-AAD based Auth. Default value is set to false. |
@@ -382,6 +388,14 @@ Application type.
     'web'
   ]
   ```
+
+### Parameter: `dashboardName`
+
+Dashboard for an Application Insights instance.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
