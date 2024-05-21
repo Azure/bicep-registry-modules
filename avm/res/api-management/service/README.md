@@ -283,7 +283,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkType: 'External'
+    virtualNetworkType: 'Internal'
   }
 }
 ```
@@ -511,7 +511,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     },
     "virtualNetworkType": {
-      "value": "External"
+      "value": "Internal"
     }
   }
 }
