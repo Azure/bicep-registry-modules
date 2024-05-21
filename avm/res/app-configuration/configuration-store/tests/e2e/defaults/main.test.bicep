@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      enablePurgeProtection: false //Only for Testing purposes. Waf Aligned is true
     }
   }
 ]

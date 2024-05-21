@@ -1,0 +1,199 @@
+name: .Platform - Check PSRule
+
+on:
+  workflow_dispatch:
+    inputs:
+      psruleBaseline:
+        type: choice
+        description: "PSRule baseline"
+        required: true
+        default: "Azure.Default"
+        options:
+          - Azure.Default
+          - Azure.Pillar.CostOptimization
+          - Azure.Pillar.OperationalExcellence
+          - Azure.Pillar.PerformanceEfficiency
+          - Azure.Pillar.Reliability
+          - Azure.Pillar.Security
+      skipPassedRulesReport:
+        type: boolean
+        description: "Show only failed rules in job summary"
+        required: true
+        default: true
+  schedule:
+    - cron: "0 12 * * 0" # Weekly Sunday Analysis
+
+env:
+  workflowPath: ".github/workflows/platform.check.psrule.yml"
+  targetPath: "avm/res/"
+  PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
+  PSRuleInputFilePath: "avm/res/PSRule-output.md"
+  psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
+  psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+  ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
+  TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
+
+jobs:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_init_psrule_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set input parameters to output variables
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+
+  ##############
+  #   PSRule   #
+  ##############
+  job_psrule:
+    runs-on: ubuntu-latest
+    name: "PSRule validation"
+    needs:
+      - job_init_psrule_pipeline
+    steps:
+      # [Init] task(s)
+      # ---------------------------
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+
+      # [Token replacement] task(s)
+      # ---------------------------
+      - name: Replace tokens in relevant files
+        uses: azure/powershell@v2
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            # Grouping task logs
+            Write-Output '::group::Replace tokens in relevant files'
+
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+
+            $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{ env.targetPath }}'
+            $psRuleFilterRegex = '${{ env.psRuleFilterRegex }}'
+
+            Write-Verbose ('targetPath [{0}]' -f $targetPath) -Verbose
+
+            # Get target files in target path
+            $targetFileList = @()
+            # Retrieve all relevant test files in targetPath
+            $allTestFiles = (Get-ChildItem -Path $targetPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
+            $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $psRuleFilterRegex }
+            # Add all relevant test files and related module template files as they may contain tokens
+            foreach ($relevantTestFile in $relevantTestFiles) {
+              $targetFileList += $relevantTestFile
+              $targetFileList += (Get-LocallyReferencedFileList -FilePath $relevantTestFile)
+            }
+
+            $targetFileList = $targetFileList | Sort-Object -Unique
+
+            # Construct Token Function Input
+            $ConvertTokensInputs = @{
+              FilePathList = $targetFileList
+              Tokens       = @{}
+            }
+
+            # Add enforced tokens
+            $ConvertTokensInputs.Tokens += @{
+              subscriptionId    = '${{ env.ARM_SUBSCRIPTION_ID }}'
+              managementGroupId = '${{ env.ARM_MGMTGROUP_ID }}'
+            }
+
+            # Add local (source control) tokens
+            $tokenMap = @{}
+            foreach ($token in (Get-ChildItem env: | Where-Object -Property Name -Like "localToken_*")) {
+              $tokenMap += @{ $token.Name.Replace('localToken_','','OrdinalIgnoreCase') = $token.value }
+            }
+            Write-Verbose ('Using local tokens [{0}]' -f ($tokenMap.Keys -join ', ')) -Verbose
+            $ConvertTokensInputs.Tokens += $tokenMap
+
+            # Swap 'namePrefix' token if empty and provided as a GitHub secret
+            if([String]::IsNullOrEmpty($ConvertTokensInputs.Tokens['namePrefix'])){
+              Write-Verbose 'Using [namePrefix] token from GitHub' -Verbose
+              $ConvertTokensInputs.Tokens['namePrefix'] = '${{ env.TOKEN_NAMEPREFIX }}'
+            }
+
+            Write-Verbose "Convert Tokens Input:`n $($ConvertTokensInputs | ConvertTo-Json -Depth 10)" -Verbose
+
+            # Invoke Token Replacement Functionality [For Module]
+            $null = Convert-TokensInFileList @ConvertTokensInputs
+
+            Write-Output '::endgroup::'
+
+      # [PSRule validation] task(s)
+      #-----------------------------
+      - name: Run PSRule analysis
+        uses: microsoft/ps-rule@v2.9.0
+        with:
+          modules: "PSRule.Rules.Azure"
+          prerelease: true
+          baseline: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).psruleBaseline }}"
+          inputPath: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).targetPath }}"
+          outputFormat: Csv
+          outputPath: "${{ env.PSRuleOutputFilePath }}"
+          option: "${{ github.workspace }}/${{ env.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
+          source: "${{ env.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
+          summary: false # Disabling as taken care in customized task
+
+      # [Print to Summary] task(s)
+      #-----------------------------
+      - name: Parse CSV content
+        if: always()
+        uses: azure/powershell@v2
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            # Grouping task logs
+            Write-Output '::group::Parse CSV content'
+
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
+
+            # Populate parameter input
+            $ParameterInput = @{
+              inputFilePath         = '${{ env.PSRuleOutputFilePath }}'
+              outputFilePath        = '${{ env.PSRuleInputFilePath }}'
+              skipPassedRulesReport = [System.Convert]::ToBoolean('${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}')
+            }
+
+            Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
+
+            # Invoke Set PSRule Output Functionality
+            $null = Set-PSRuleGitHubOutput @ParameterInput
+
+            Write-Output '::endgroup::'
+
+      - name: Output to GitHub job summaries
+        if: always()
+        shell: pwsh
+        run: |
+          # Grouping task logs
+          Write-Output '::group::Output to GitHub job summaries'
+
+          $mdPSRuleOutputFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ env.PSRuleInputFilePath }}'
+
+          if (-not (Test-Path $mdPSRuleOutputFilePath)) {
+            Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPSRuleOutputFilePath)
+            return ''
+          } else {
+            Get-Content $mdPSRuleOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+            Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPSRuleOutputFilePath) -Verbose
+          }
+
+          Write-Output '::endgroup::'

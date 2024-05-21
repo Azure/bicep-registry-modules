@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
-      availabilityZone: 0
+      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -78,7 +78,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
-        diskSizeGB: '128'
+        diskSizeGB: 128
         caching: 'ReadWrite'
         managedDisk: {
           storageAccountType: 'Premium_LRS'

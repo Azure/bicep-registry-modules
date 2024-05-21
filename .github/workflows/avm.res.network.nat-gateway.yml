@@ -1,4 +1,4 @@
-name: "avm.res.network.nat-gateways"
+name: "avm.res.network.nat-gateway"
 
 on:
   schedule:
@@ -20,6 +20,10 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main

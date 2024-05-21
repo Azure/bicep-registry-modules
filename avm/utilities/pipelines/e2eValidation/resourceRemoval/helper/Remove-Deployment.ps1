@@ -15,14 +15,20 @@ Optional. The resource group of the resource to remove
 .PARAMETER ManagementGroupId
 Optional. The ID of the management group to fetch deployments from. Relevant for management-group level deployments.
 
-.PARAMETER DeploymentNames
-Optional. The deployment names to use for the removal
+.PARAMETER DeploymentName(s)
+Optional. The name(s) of the deployment(s). Combined with resources provide via the resource Id(s).
+
+.PARAMETER ResourceId(s)
+Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
 .PARAMETER TemplateFilePath
-Mandatory. The path to the deployment file
+Optional. The path to the template used for the deployment(s). Used to determine the level/scope (e.g. subscription). Required if deploymentName(s) are provided.
 
-.PARAMETER RemovalSequence
-Optional. The order of resource types to apply for deletion
+.PARAMETER RemoveFirstSequence
+Optional. The order of resource types to remove before all others
+
+.PARAMETER RemoveLastSequence
+Optional. The order of resource types to remove after all others
 
 .EXAMPLE
 Remove-Deployment -DeploymentNames @('KeyVault-t1','KeyVault-t2') -TemplateFilePath 'C:/main.json'
@@ -39,14 +45,20 @@ function Remove-Deployment {
         [Parameter(Mandatory = $false)]
         [string] $ManagementGroupId,
 
-        [Parameter(Mandatory = $true)]
-        [string[]] $DeploymentNames,
+        [Parameter(Mandatory = $false)]
+        [string[]] $DeploymentNames = @(),
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
+        [string[]] $ResourceIds = @(),
+
+        [Parameter(Mandatory = $false)]
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
-        [string[]] $RemovalSequence = @()
+        [string[]] $RemoveFirstSequence = @(),
+
+        [Parameter(Mandatory = $false)]
+        [string[]] $RemoveLastSequence = @()
     )
 
     begin {
@@ -63,36 +75,39 @@ function Remove-Deployment {
     process {
         $azContext = Get-AzContext
 
-        # Prepare data
-        # ============
-        $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $TemplateFilePath
+        $deployedTargetResources = $ResourceIds
 
-        # Fundamental checks
-        if ($deploymentScope -eq 'resourcegroup' -and -not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
-            Write-Verbose "Resource group [$ResourceGroupName] does not exist (anymore). Skipping removal of its contained resources" -Verbose
-            return
-        }
+        if ($DeploymentNames.Count -gt 0) {
+            # Prepare data
+            # ============
+            $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $TemplateFilePath
 
-        # Fetch deployments
-        # =================
-        $deployedTargetResources = @()
-
-        foreach ($deploymentName in $DeploymentNames) {
-            $deploymentsInputObject = @{
-                Name  = $deploymentName
-                Scope = $deploymentScope
+            # Fundamental checks
+            if ($deploymentScope -eq 'resourcegroup' -and -not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
+                Write-Verbose "Resource group [$ResourceGroupName] does not exist (anymore). Skipping removal of its contained resources" -Verbose
+                return
             }
-            if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
-                $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
-            }
-            if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-                $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
-            }
-            $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
-        }
 
-        if ($deployedTargetResources.Count -eq 0) {
-            throw 'No deployment target resources found.'
+            # Fetch deployments
+            # =================
+
+            foreach ($deploymentName in $DeploymentNames) {
+                $deploymentsInputObject = @{
+                    Name  = $deploymentName
+                    Scope = $deploymentScope
+                }
+                if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+                    $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
+                }
+                if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+                    $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
+                }
+                $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
+            }
+
+            if ($deployedTargetResources.Count -eq 0) {
+                throw 'No deployment target resources found.'
+            }
         }
 
         [array] $deployedTargetResources = $deployedTargetResources | Select-Object -Unique
@@ -101,7 +116,7 @@ function Remove-Deployment {
 
         # Pre-Filter & order items
         # ========================
-        $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
+        $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Culture 'en-US' -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
         Write-Verbose ('Total number of deployment target resources after pre-filtering (duplicates) & ordering items [{0}]' -f $rawTargetResourceIdsToRemove.Count) -Verbose
 
         # Format items
@@ -143,7 +158,12 @@ function Remove-Deployment {
 
         # Order resources
         # ===============
-        [array] $resourcesToRemove = Get-OrderedResourcesList -ResourcesToOrder $resourcesToRemove -Order $RemovalSequence
+        $orderListInputObject = @{
+            ResourcesToOrder    = $resourcesToRemove
+            RemoveFirstSequence = $RemoveFirstSequence
+            RemoveLastSequence  = $RemoveLastSequence
+        }
+        [array] $resourcesToRemove = Get-OrderedResourcesList @orderListInputObject
         Write-Verbose ('Total number of deployments after final ordering of resources [{0}]' -f $resourcesToRemove.Count) -Verbose
 
         # Remove resources

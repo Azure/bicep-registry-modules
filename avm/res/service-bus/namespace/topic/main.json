@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2743713566937430307"
+      "version": "0.26.170.59819",
+      "templateHash": "1083080372138021216"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
@@ -253,16 +253,16 @@
   "parameters": {
     "namespaceName": {
       "type": "string",
-      "minLength": 6,
-      "maxLength": 50,
+      "minLength": 1,
+      "maxLength": 260,
       "metadata": {
         "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
-      "minLength": 6,
-      "maxLength": 50,
+      "minLength": 1,
+      "maxLength": 260,
       "metadata": {
         "description": "Required. Name of the Service Bus Topic."
       }
@@ -488,8 +488,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8469884519860433031"
+              "version": "0.26.170.59819",
+              "templateHash": "2461421453721833613"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -638,8 +638,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "14842378053022621119"
+              "version": "0.26.170.59819",
+              "templateHash": "14488930902207824569"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription.",

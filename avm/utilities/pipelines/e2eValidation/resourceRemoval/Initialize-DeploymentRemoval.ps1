@@ -6,16 +6,22 @@ Remove deployed resources based on their deploymentName(s)
 Remove deployed resources based on their deploymentName(s)
 
 .PARAMETER DeploymentName(s)
-Mandatory. The name(s) of the deployment(s)
+Optional. The name(s) of the deployment(s). Combined with resources provide via the resource Id(s).
+
+.PARAMETER ResourceId(s)
+Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
 .PARAMETER TemplateFilePath
-Mandatory. The path to the template used for the deployment. Used to determine the level/scope (e.g. subscription)
+Optional. The path to the template used for the deployment(s). Used to determine the level/scope (e.g. subscription). Required if deploymentName(s) are provided.
 
 .PARAMETER ResourceGroupName
 Optional. The name of the resource group the deployment was happening in. Relevant for resource-group level deployments.
 
 .PARAMETER ManagementGroupId
 Optional. The ID of the management group to fetch deployments from. Relevant for management-group level deployments.
+
+.PARAMETER PurgeTestResources
+Optional. Specify to fetch and remove all resources in the current context that match the 'dep-' pattern
 
 .EXAMPLE
 Initialize-DeploymentRemoval -DeploymentName 'n-vw-t1-20211204T1812029146Z' -TemplateFilePath "$home/ResourceModules/modules/network/virtual-wan/main.bicep" -resourceGroupName 'test-virtualWan-rg'
@@ -26,21 +32,28 @@ function Initialize-DeploymentRemoval {
 
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [Alias('DeploymentName')]
-        [string[]] $DeploymentNames,
+        [string[]] $DeploymentNames = @(),
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
+        [Alias('ResourceId')]
+        [string[]] $ResourceIds = @(),
+
+        [Parameter(Mandatory = $false)]
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
         [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $false)]
-        [string] $subscriptionId,
+        [string] $SubscriptionId,
 
         [Parameter(Mandatory = $false)]
-        [string] $ManagementGroupId
+        [string] $ManagementGroupId,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $PurgeTestResources
     )
 
     begin {
@@ -57,7 +70,7 @@ function Initialize-DeploymentRemoval {
         }
 
         # The initial sequence is a general order-recommendation
-        $removalSequence = @(
+        $RemoveFirstSequence = @(
             'Microsoft.Authorization/locks',
             'Microsoft.Authorization/roleAssignments',
             'Microsoft.Insights/diagnosticSettings',
@@ -82,14 +95,34 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Resources/resourceGroups'
         )
 
-        Write-Verbose ('Handling resource removal with deployment names [{0}]' -f ($deploymentNames -join ', ')) -Verbose
+        $removeLastSequence = @(
+            'Microsoft.Subscription/aliases'
+        )
+
+        if ($DeploymentNames.Count -gt 0) {
+            Write-Verbose 'Handling resource removal with deployment names' -Verbose
+            foreach ($DeploymentName in $DeploymentNames) {
+                Write-Verbose "- $DeploymentName" -Verbose
+            }
+        }
+        if ($ResourceIds.Count -gt 0) {
+            Write-Verbose 'Handling resource removal with resource Ids' -Verbose
+            foreach ($ResourceId in $ResourceIds) {
+                Write-Verbose "- $ResourceId" -Verbose
+            }
+        }
 
         ### CODE LOCATION: Add custom removal sequence here
         ## Add custom module-specific removal sequence following the example below
         # $moduleName = Split-Path (Split-Path (Split-Path $templateFilePath -Parent) -Parent) -LeafBase
         # switch ($moduleName) {
         #     '<moduleName01>' {                # For example: 'virtualWans', 'automationAccounts'
-        #         $removalSequence += @(
+        #         $RemoveFirstSequence += @(
+        #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
+        #             '<resourceType02>',
+        #             '<resourceType03>'
+        #         )
+        #         $RemoveLastSequence += @(
         #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
         #             '<resourceType02>',
         #             '<resourceType03>'
@@ -98,14 +131,29 @@ function Initialize-DeploymentRemoval {
         #     }
         # }
 
+        if ($PurgeTestResources) {
+            # Resources
+            $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
+            $ResourceIds += ($filteredResourceIds | Sort-Object -Culture 'en-US' -Unique)
+
+            # Resource groups
+            $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
+            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Culture 'en-US' -Unique)
+        }
+
         # Invoke removal
         $inputObject = @{
-            DeploymentNames  = $DeploymentNames
-            TemplateFilePath = $templateFilePath
-            RemovalSequence  = $removalSequence
+            DeploymentNames     = $DeploymentNames
+            ResourceIds         = $ResourceIds
+            TemplateFilePath    = $TemplateFilePath
+            RemoveFirstSequence = $removeFirstSequence
+            RemoveLastSequence  = $removeLastSequence
         }
-        if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
-            $inputObject['resourceGroupName'] = $resourceGroupName
+        if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
+            $inputObject['TemplateFilePath'] = $TemplateFilePath
+        }
+        if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+            $inputObject['ResourceGroupName'] = $ResourceGroupName
         }
         if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
             $inputObject['ManagementGroupId'] = $ManagementGroupId

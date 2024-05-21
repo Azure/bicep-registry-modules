@@ -186,23 +186,26 @@ resource domain_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 ]
 
-module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Domain-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-domain-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
-      privateLinkServiceConnections: [
-        {
-          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
-          properties: {
-            privateLinkServiceId: domain.id
-            groupIds: [
-              privateEndpoint.?service ?? 'domain'
-            ]
-          }
-        }
-      ]
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
+              properties: {
+                privateLinkServiceId: domain.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'domain'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
@@ -217,13 +220,13 @@ module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments
@@ -321,6 +324,9 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
@@ -384,6 +390,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
