@@ -233,7 +233,7 @@ var virtualNetworkRules = [
   }
 ]
 
-var databaseAccount_properties = union(
+var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
   },
@@ -308,24 +308,23 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: name
@@ -333,20 +332,19 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   tags: tags
   identity: identity
   kind: kind
-  properties: databaseAccount_properties
+  properties: databaseAccountProperties
 }
 
-resource databaseAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: databaseAccount
+resource databaseAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: databaseAccount
+}
 
 resource databaseAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -490,49 +488,48 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
   }
 ]
 
-module keyVault 'modules/secrets-key-vault.bicep' =
-  if (secretsKeyVault != null) {
-    name: '${uniqueString(deployment().name, location)}-secrets-kv'
-    scope: resourceGroup(secretsKeyVault.?resourceGroupName ?? resourceGroup().name)
-    params: {
-      keyVaultName: secretsKeyVault!.keyVaultName
+module keyVault 'modules/secrets-key-vault.bicep' = if (secretsKeyVault != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(secretsKeyVault.?resourceGroupName ?? resourceGroup().name)
+  params: {
+    keyVaultName: secretsKeyVault!.keyVaultName
 
-      keySecrets: [
-        {
-          secretName: secretsKeyVault.?primaryWriteKeySecretName ?? 'Primary-Write-Key'
-          secretValue: databaseAccount.listKeys().primaryMasterKey
-        }
-        {
-          secretName: secretsKeyVault.?primaryReadOnlyKeySecretName ?? 'Primary-Readonly-Key'
-          secretValue: databaseAccount.listKeys().primaryReadonlyMasterKey
-        }
-        {
-          secretName: secretsKeyVault.?primaryWriteConnectionStringSecretName ?? 'Primary-Write-ConnectionString'
-          secretValue: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
-        }
-        {
-          secretName: secretsKeyVault.?primaryReadonlyConnectionStringSecretName ?? 'Primary-Readonly-ConnectionString'
-          secretValue: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
-        }
-        {
-          secretName: secretsKeyVault.?secondaryWriteKeySecretName ?? 'Secondary-Write-Key'
-          secretValue: databaseAccount.listKeys().secondaryMasterKey
-        }
-        {
-          secretName: secretsKeyVault.?secondaryReadonlyKeySecretName ?? 'Secondary-Readonly-Key'
-          secretValue: databaseAccount.listKeys().secondaryReadonlyMasterKey
-        }
-        {
-          secretName: secretsKeyVault.?secondaryWriteConnectionStringSecretName ?? 'Secondary-Write-ConnectionString'
-          secretValue: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
-        }
-        {
-          secretName: secretsKeyVault.?secondaryReadonlyConnectionStringSecretName ?? 'Secondary-Readonly-ConnectionString'
-          secretValue: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
-        }
-      ]
-    }
+    keySecrets: [
+      {
+        secretName: secretsKeyVault.?primaryWriteKeySecretName ?? 'Primary-Write-Key'
+        secretValue: databaseAccount.listKeys().primaryMasterKey
+      }
+      {
+        secretName: secretsKeyVault.?primaryReadOnlyKeySecretName ?? 'Primary-Readonly-Key'
+        secretValue: databaseAccount.listKeys().primaryReadonlyMasterKey
+      }
+      {
+        secretName: secretsKeyVault.?primaryWriteConnectionStringSecretName ?? 'Primary-Write-ConnectionString'
+        secretValue: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
+      }
+      {
+        secretName: secretsKeyVault.?primaryReadonlyConnectionStringSecretName ?? 'Primary-Readonly-ConnectionString'
+        secretValue: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
+      }
+      {
+        secretName: secretsKeyVault.?secondaryWriteKeySecretName ?? 'Secondary-Write-Key'
+        secretValue: databaseAccount.listKeys().secondaryMasterKey
+      }
+      {
+        secretName: secretsKeyVault.?secondaryReadonlyKeySecretName ?? 'Secondary-Readonly-Key'
+        secretValue: databaseAccount.listKeys().secondaryReadonlyMasterKey
+      }
+      {
+        secretName: secretsKeyVault.?secondaryWriteConnectionStringSecretName ?? 'Secondary-Write-ConnectionString'
+        secretValue: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
+      }
+      {
+        secretName: secretsKeyVault.?secondaryReadonlyConnectionStringSecretName ?? 'Secondary-Readonly-ConnectionString'
+        secretValue: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
+      }
+    ]
   }
+}
 
 @description('The name of the database account.')
 output name string = databaseAccount.name
@@ -718,7 +715,7 @@ type failoverLocationsType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
   failoverPriority: int
 
-  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region')
+  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.')
   isZoneRedundant: bool?
 
   @description('Required. The name of the region.')
@@ -754,10 +751,10 @@ type sqlDatabaseType = {
 
     @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
     conflictResolutionPolicy: {
-      @description('Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode.')
+      @description('Conditional. The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to \'LastWriterWins\'.')
       conflictResolutionPath: string?
 
-      @description('Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode.')
+      @description('Conditional. The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to \'Custom\'.')
       conflictResolutionProcedure: string?
 
       @description('Required. Indicates the conflict resolution mode.')
@@ -780,7 +777,7 @@ type sqlDatabaseType = {
 
     @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
     uniqueKeyPolicyKeys: {
-      @description('List of paths must be unique for each document in the Azure Cosmos DB service')
+      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service.')
       paths: string[]
     }[]?
   }[]?

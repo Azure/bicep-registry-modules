@@ -12,6 +12,13 @@ param location string = resourceGroup().location
 param ingressExternal bool = true
 
 @allowed([
+  'none'
+  'sticky'
+])
+@description('Optional. Bool indicating if the Container App should enable session affinity.')
+param stickySessionsAffinity string = 'none'
+
+@allowed([
   'auto'
   'http'
   'http2'
@@ -179,6 +186,9 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         external: ingressExternal
         ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
         targetPort: ingressTargetPort
+        stickySessions: {
+          affinity: stickySessionsAffinity
+        }
         traffic: [
           {
             label: trafficLabel
