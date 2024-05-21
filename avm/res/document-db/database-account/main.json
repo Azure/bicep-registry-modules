@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "15590218096236066082"
+      "templateHash": "13227324731926560272"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -534,14 +534,14 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode."
+                      "description": "Conditional. The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'."
                     }
                   },
                   "conflictResolutionProcedure": {
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode."
+                      "description": "Conditional. The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'."
                     }
                   },
                   "mode": {
@@ -605,7 +605,7 @@
                         "type": "string"
                       },
                       "metadata": {
-                        "description": "List of paths must be unique for each document in the Azure Cosmos DB service"
+                        "description": "Required. List of paths must be unique for each document in the Azure Cosmos DB service"
                       }
                     }
                   }
@@ -1250,7 +1250,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "14993962216021395679"
+              "templateHash": "15534269553484112693"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1380,7 +1380,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.27.1.19265",
-                      "templateHash": "6183061195345158504"
+                      "templateHash": "12755071159425783033"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",

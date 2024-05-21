@@ -751,10 +751,10 @@ type sqlDatabaseType = {
 
     @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
     conflictResolutionPolicy: {
-      @description('Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode.')
+      @description('Conditional. The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to \'LastWriterWins\'.')
       conflictResolutionPath: string?
 
-      @description('Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode.')
+      @description('Conditional. The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to \'Custom\'.')
       conflictResolutionProcedure: string?
 
       @description('Required. Indicates the conflict resolution mode.')
@@ -777,7 +777,7 @@ type sqlDatabaseType = {
 
     @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
     uniqueKeyPolicyKeys: {
-      @description('List of paths must be unique for each document in the Azure Cosmos DB service')
+      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service')
       paths: string[]
     }[]?
   }[]?
