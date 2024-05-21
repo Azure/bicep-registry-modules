@@ -98,7 +98,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
             Write-Error "Error message: $($_.Exception.Message)"
             continue
           }
-          $tags = $tagListResponse.tags | Sort-Object
+          $tags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
 
           $properties = [ordered]@{}
           foreach ($tag in $tags) {
@@ -190,7 +190,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
       } else {
         # If the module exists, merge the tags and properties
         $mergedModule = $initialMergeOfJsonFilesData[$module.moduleName]
-        $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object -Unique)
+        $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object -Culture 'en-US' -Unique)
 
         # Merge properties
         foreach ($property in $module.properties.PSObject.Properties) {
@@ -205,7 +205,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $mergedModuleIndexData = $initialMergeOfJsonFilesData.Values
 
     # Sort the modules by their names
-    $sortedMergedModuleIndexData = $mergedModuleIndexData | Sort-Object moduleName
+    $sortedMergedModuleIndexData = $mergedModuleIndexData | Sort-Object -Culture 'en-US' -Property 'moduleName'
 
     Write-Verbose "Convert mergedModuleIndexData variable to JSON and save as 'moduleIndex.json'" -Verbose
     $sortedMergedModuleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath

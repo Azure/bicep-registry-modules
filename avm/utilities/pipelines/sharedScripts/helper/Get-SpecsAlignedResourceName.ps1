@@ -76,7 +76,7 @@ function Get-SpecsAlignedResourceName {
     $rawProviderNamespace, $rawResourceType = $reducedResourceIdentifier -Split '[\/|\\]', 2 # e.g. 'keyvault' & 'vaults/keys'
 
     # Find provider namespace
-    $foundProviderNamespaceMatches = ($specs.Keys | Sort-Object) | Where-Object { $_ -like "Microsoft.$rawProviderNamespace*" }
+    $foundProviderNamespaceMatches = ($specs.Keys | Sort-Object -Culture 'en-US') | Where-Object { $_ -like "Microsoft.$rawProviderNamespace*" }
 
     if (-not $foundProviderNamespaceMatches) {
         $providerNamespace = "Microsoft.$rawProviderNamespace"
@@ -86,7 +86,7 @@ function Get-SpecsAlignedResourceName {
     }
 
     # Find resource type
-    $innerResourceTypes = $specs[$providerNamespace].Keys | Sort-Object
+    $innerResourceTypes = $specs[$providerNamespace].Keys | Sort-Object -Culture 'en-US'
 
     $rawResourceTypeElem = $rawResourceType -split '[\/|\\]'
     $reducedResourceTypeElements = $rawResourceTypeElem | ForEach-Object { Get-ReducedWordString -StringToReduce $_ }
