@@ -70,7 +70,7 @@ function Convert-TokensInFileList {
 
   process {
     # Combine All Input Token Types, Remove Duplicates and Only Select entries with on empty values
-    $FilteredTokens = ($Tokens | Sort-Object -Unique).Clone()
+    $FilteredTokens = ($Tokens | Sort-Object -Culture 'en-US' -Unique).Clone()
     @($FilteredTokens.Keys) | ForEach-Object {
       if ([String]::IsNullOrEmpty($FilteredTokens[$_])) {
         $FilteredTokens.Remove($_)

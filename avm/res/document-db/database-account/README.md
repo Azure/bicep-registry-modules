@@ -2583,6 +2583,40 @@ Default to the location where the account is deployed. Locations enabled for the
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPriority`](#parameter-locationsfailoverpriority) | int | The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. |
+| [`locationName`](#parameter-locationslocationname) | string | The name of the region. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region |
+
+### Parameter: `locations.failoverPriority`
+
+The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `locations.locationName`
+
+The name of the region.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `locations.isZoneRedundant`
+
+Default to true. Flag to indicate whether or not this region is an AvailabilityZone region
+
+- Required: No
+- Type: bool
+
 ### Parameter: `lock`
 
 The lock settings of the service.
@@ -3295,6 +3329,199 @@ SQL Databases configurations.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqldatabasesname) | string | Name of the SQL database . |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
+| [`containers`](#parameter-sqldatabasescontainers) | array | Array of containers to deploy in the SQL database. |
+| [`throughput`](#parameter-sqldatabasesthroughput) | int | Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+
+### Parameter: `sqlDatabases.name`
+
+Name of the SQL database .
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers`
+
+Array of containers to deploy in the SQL database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqldatabasescontainersname) | string | Name of the container. |
+| [`paths`](#parameter-sqldatabasescontainerspaths) | array | List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`analyticalStorageTtl`](#parameter-sqldatabasescontainersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
+| [`conflictResolutionPolicy`](#parameter-sqldatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
+| [`defaultTtl`](#parameter-sqldatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
+| [`indexingPolicy`](#parameter-sqldatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
+| [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
+| [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+| [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+
+### Parameter: `sqlDatabases.containers.name`
+
+Name of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlDatabases.containers.paths`
+
+List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlDatabases.containers.analyticalStorageTtl`
+
+Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy`
+
+The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mode`](#parameter-sqldatabasescontainersconflictresolutionpolicymode) | string | Indicates the conflict resolution mode. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conflictResolutionPath`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionpath) | string | The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'. |
+| [`conflictResolutionProcedure`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionprocedure) | string | The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'. |
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.mode`
+
+Indicates the conflict resolution mode.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Custom'
+    'LastWriterWins'
+  ]
+  ```
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
+
+The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
+
+The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlDatabases.containers.defaultTtl`
+
+Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.indexingPolicy`
+
+Indexing policy of the container.
+
+- Required: No
+- Type: object
+
+### Parameter: `sqlDatabases.containers.kind`
+
+Default to Hash. Indicates the kind of algorithm used for partitioning.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Hash'
+    'MultiHash'
+  ]
+  ```
+
+### Parameter: `sqlDatabases.containers.throughput`
+
+Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
+
+The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service |
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
+
+List of paths must be unique for each document in the Azure Cosmos DB service
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlDatabases.throughput`
+
+Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 
