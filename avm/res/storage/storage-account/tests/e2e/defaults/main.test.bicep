@@ -31,15 +31,22 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+module sa 'br/public:avm/res/storage/storage-account:0.8.3' = {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
     params: {
       name: '${namePrefix}${serviceShort}001'
       allowBlobPublicAccess: false
@@ -50,4 +57,16 @@ module testDeployment '../../../main.bicep' = [
       }
     }
   }
-]
+
+module functionapp 'br/public:avm/res/web/site:0.3.5' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-functionapp'
+  params: {
+    kind: 'functionapp'
+    name: 'functionapp123'
+    serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
+  }
+  dependsOn: [
+    sa
+  ]
+}
