@@ -8,6 +8,9 @@ param additionalLocations array = []
 @description('Required. The name of the API Management service.')
 param name string
 
+@description('Optional. Application Insights Name.')
+param appInsightsName string = ''
+
 @description('Optional. List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10.')
 @maxLength(10)
 param certificates array = []
@@ -35,6 +38,9 @@ param location string = resourceGroup().location
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
+
+@description('Optional. API Management Logger.')
+param loggers loggerType
 
 @description('Optional. Limit control plane API calls to API Management service with version equal to or newer than this value.')
 param minApiVersion string = ''
@@ -178,24 +184,23 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource service 'Microsoft.ApiManagement/service@2021-08-01' = {
   name: name
@@ -379,6 +384,18 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
+module service_loggers 'loggers/main.bicep' = [
+  for (logger, index) in (loggers ?? []): if (!empty(appInsightsName)) {
+    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
+    params: {
+      name: 'app-insights-logger-${index}'
+      apiManagementServiceName: service.name
+      appInsightsName: appInsightsName
+      loggerType: logger.loggerType
+    }
+  }
+]
+
 module service_namedValues 'named-value/main.bicep' = [
   for (namedValue, index) in namedValues: {
     name: '${uniqueString(deployment().name, location)}-Apim-NamedValue-${index}'
@@ -453,17 +470,16 @@ module service_subscriptions 'subscription/main.bicep' = [
   }
 ]
 
-resource service_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: service
+resource service_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: service
+}
 
 resource service_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -540,6 +556,17 @@ type managedIdentitiesType = {
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
 }?
+
+type loggerType = {
+  @description('Required. The logger type for API Management.')
+  loggerType: ('applicationInsights' | 'azureEventHub' | 'azureMonitor')
+
+  @description('Optional. Whether records are buffered in the logger before publishing.')
+  isBuffered: bool?
+
+  @description('Optional. Logger description.')
+  loggerDescription: string?
+}[]?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

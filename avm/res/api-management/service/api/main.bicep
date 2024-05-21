@@ -130,6 +130,8 @@ resource api 'Microsoft.ApiManagement/service/apis@2021-08-01' = {
   }
 }
 
+module diagnostics 'diagnostics/main.bicep'
+
 module policy 'policy/main.bicep' = [
   for (policy, index) in policies ?? []: {
     name: '${deployment().name}-Policy-${index}'
