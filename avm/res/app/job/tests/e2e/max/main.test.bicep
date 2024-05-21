@@ -70,14 +70,12 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      secrets: {
-        secureList: [
-          {
-            name: 'customtest'
-            value: guid(deployment().name)
-          }
-        ]
-      }
+      secrets: [
+        {
+          name: 'customtest'
+          value: guid(deployment().name)
+        }
+      ]
       triggerType: 'Manual'
       manualTriggerConfig: {
         replicaCompletionCount: 1

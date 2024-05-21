@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "3096359783958038878"
+      "version": "0.27.1.19265",
+      "templateHash": "4020172232512991663"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -126,6 +126,81 @@
         }
       },
       "nullable": true
+    },
+    "registryCredentialsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "metadata": {
+              "example": "myregistry.azurecr.io",
+              "description": "Required. The FQDN name of the container registry."
+            }
+          },
+          "identity": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "example": "    user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\n    system-assigned identity: system\n    ",
+              "description": "Optional. The resource ID of the (user) managed identity, which is used to access the Azure Container Registry."
+            }
+          },
+          "username": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The username for the container registry."
+            }
+          },
+          "passwordSecretRef": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. The name of the secret contains the login password. Required if `username` is not null."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "secretsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "identity": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
+            }
+          },
+          "keyVaultUrl": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null."
+            }
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the secret."
+            }
+          },
+          "value": {
+            "type": "securestring",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -162,15 +237,17 @@
       }
     },
     "registries": {
-      "type": "array",
+      "$ref": "#/definitions/registryCredentialsType",
       "nullable": true,
       "metadata": {
+        "example": "[[\n  {\n    \"server\": \"myregistry.azurecr.io\",\n    \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\n  },\n  {\n    \"server\": \"myregistry2.azurecr.io\",\n    \"identity\": \"system\"\n  }\n  ,\n  {\n    \"server\": \"myregistry3.azurecr.io\",\n    \"username\": \"myusername\",\n    \"passwordSecretRef\": \"secret-name\"\n  }\n]",
         "description": "Optional. Collection of private container registry credentials for containers used by the Container app."
       }
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
+        "example": "  {\n    \"systemAssigned\": true,\n    \"userAssignedResourceIds\": [\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\n    ]\n  },\n  {\n    \"systemAssigned\": true\n  }\n  ",
         "description": "Optional. The managed identity definition for this resource."
       }
     },
@@ -236,7 +313,7 @@
       }
     },
     "secrets": {
-      "type": "secureObject",
+      "$ref": "#/definitions/secretsType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The secrets of the Container App."
@@ -269,7 +346,6 @@
     }
   },
   "variables": {
-    "secretList": "[tryGet(parameters('secrets'), 'secureList')]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -318,7 +394,7 @@
           "replicaRetryLimit": "[parameters('replicaRetryLimit')]",
           "replicaTimeout": "[parameters('replicaTimeout')]",
           "registries": "[parameters('registries')]",
-          "secrets": "[variables('secretList')]",
+          "secrets": "[parameters('secrets')]",
           "triggerType": "[parameters('triggerType')]"
         },
         "template": {

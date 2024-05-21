@@ -18,9 +18,40 @@ param lock lockType
 param tags object?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
-param registries array?
+@metadata({
+  example: '''[
+  {
+    "server": "myregistry.azurecr.io",
+    "identity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity"
+  },
+  {
+    "server": "myregistry2.azurecr.io",
+    "identity": "system"
+  }
+  ,
+  {
+    "server": "myregistry3.azurecr.io",
+    "username": "myusername",
+    "passwordSecretRef": "secret-name"
+  }
+]'''
+})
+param registries registryCredentialsType?
 
 @description('Optional. The managed identity definition for this resource.')
+@metadata({
+  example: '''
+  {
+    "systemAssigned": true,
+    "userAssignedResourceIds": [
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity"
+    ]
+  },
+  {
+    "systemAssigned": true
+  }
+  '''
+})
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Array of role assignments to create.')
@@ -51,8 +82,7 @@ param replicaRetryLimit int = 0
 param workloadProfileName string = 'Consumption'
 
 @description('Optional. The secrets of the Container App.')
-@secure()
-param secrets object?
+param secrets secretsType?
 
 @description('Optional. List of volume definitions for the Container App.')
 param volumes array?
@@ -67,8 +97,6 @@ param replicaTimeout int = 1800
 ])
 @description('Required. Trigger type of the job.')
 param triggerType string
-
-var secretList = secrets.?secureList
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -135,7 +163,7 @@ resource job 'Microsoft.App/jobs@2023-05-01' = {
       replicaRetryLimit: replicaRetryLimit
       replicaTimeout: replicaTimeout
       registries: registries
-      secrets: secretList
+      secrets: secrets
       triggerType: triggerType
     }
     template: {
@@ -233,4 +261,40 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type registryCredentialsType = {
+  @description('Required. The FQDN name of the container registry.')
+  @metadata({ example: 'myregistry.azurecr.io' })
+  server: string
+
+  @description('Optional. The resource ID of the (user) managed identity, which is used to access the Azure Container Registry.')
+  @metadata({
+    example: '''
+    user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
+    system-assigned identity: system
+    '''
+  })
+  identity: string?
+
+  @description('Optional. The username for the container registry.')
+  username: string?
+
+  @description('Conditional. The name of the secret contains the login password. Required if `username` is not null.')
+  passwordSecretRef: string?
+}[]?
+
+type secretsType = {
+  @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
+  identity: string?
+
+  @description('Conditional. If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null.')
+  keyVaultUrl: string?
+
+  @description('Optional. The name of the secret.')
+  name: string?
+
+  @description('Conditional. If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null.')
+  @secure()
+  value: string?
 }[]?

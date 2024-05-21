@@ -196,14 +196,12 @@ module job 'br/public:avm/res/app/job:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          name: 'customtest'
-          value: '<value>'
-        }
-      ]
-    }
+    secrets: [
+      {
+        name: 'customtest'
+        value: '<value>'
+      }
+    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -308,14 +306,12 @@ module job 'br/public:avm/res/app/job:<version>' = {
       ]
     },
     "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "name": "customtest",
-            "value": "<value>"
-          }
-        ]
-      }
+      "value": [
+        {
+          "name": "customtest",
+          "value": "<value>"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -497,7 +493,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | [`replicaTimeout`](#parameter-replicatimeout) | int | Maximum number of seconds a replica is allowed to run. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scheduleTriggerConfig`](#parameter-scheduletriggerconfig) | object | Required if TriggerType is Schedule. Configuration of a schedule based job. |
-| [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. |
@@ -646,6 +642,53 @@ Collection of private container registry credentials for containers used by the 
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`server`](#parameter-registriesserver) | string | The FQDN name of the container registry. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`passwordSecretRef`](#parameter-registriespasswordsecretref) | string | The name of the secret contains the login password. Required if `username` is not null. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-registriesidentity) | string | The resource ID of the (user) managed identity, which is used to access the Azure Container Registry. |
+| [`username`](#parameter-registriesusername) | string | The username for the container registry. |
+
+### Parameter: `registries.server`
+
+The FQDN name of the container registry.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `registries.passwordSecretRef`
+
+The name of the secret contains the login password. Required if `username` is not null.
+
+- Required: No
+- Type: string
+
+### Parameter: `registries.identity`
+
+The resource ID of the (user) managed identity, which is used to access the Azure Container Registry.
+
+- Required: No
+- Type: string
+
+### Parameter: `registries.username`
+
+The username for the container registry.
+
+- Required: No
+- Type: string
+
 ### Parameter: `replicaRetryLimit`
 
 The maximum number of times a replica can be retried.
@@ -763,7 +806,49 @@ Required if TriggerType is Schedule. Configuration of a schedule based job.
 The secrets of the Container App.
 
 - Required: No
-- Type: secureObject
+- Type: array
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null. |
+| [`value`](#parameter-secretsvalue) | securestring | If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+
+### Parameter: `secrets.keyVaultUrl`
+
+If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.value`
+
+If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `secrets.identity`
+
+Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 
