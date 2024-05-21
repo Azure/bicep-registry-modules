@@ -715,7 +715,7 @@ type failoverLocationsType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
   failoverPriority: int
 
-  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region')
+  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.')
   isZoneRedundant: bool?
 
   @description('Required. The name of the region.')
@@ -780,7 +780,7 @@ type sqlDatabaseType = {
 
     @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
     uniqueKeyPolicyKeys: {
-      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service')
+      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service.')
       paths: string[]
     }[]?
   }[]?
