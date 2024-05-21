@@ -16,11 +16,10 @@ param location string = resourceGroup().location
 param accessPolicies accessPoliciesType
 
 @description('Optional. All secrets to create.')
-@secure()
-param secrets object?
+param secrets secretsType?
 
 @description('Optional. All keys to create.')
-param keys array?
+param keys keysType?
 
 @description('Optional. Specifies if the vault is enabled for deployment by script or compute.')
 param enableVaultForDeployment bool = true
@@ -145,30 +144,27 @@ var formattedAccessPolicies = [
   }
 ]
 
-var secretList = secrets.?secureList ?? []
-
 // ============ //
 // Dependencies //
 // ============ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.keyvault-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.keyvault-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: name
@@ -203,17 +199,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource keyVault_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: keyVault
+resource keyVault_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: keyVault
+}
 
 resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -244,17 +239,16 @@ resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   }
 ]
 
-module keyVault_accessPolicies 'access-policy/main.bicep' =
-  if (!empty(accessPolicies)) {
-    name: '${uniqueString(deployment().name, location)}-KeyVault-AccessPolicies'
-    params: {
-      keyVaultName: keyVault.name
-      accessPolicies: accessPolicies
-    }
+module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPolicies)) {
+  name: '${uniqueString(deployment().name, location)}-KeyVault-AccessPolicies'
+  params: {
+    keyVaultName: keyVault.name
+    accessPolicies: accessPolicies
   }
+}
 
 module keyVault_secrets 'secret/main.bicep' = [
-  for (secret, index) in secretList: {
+  for (secret, index) in (secrets ?? []): {
     name: '${uniqueString(deployment().name, location)}-KeyVault-Secret-${index}'
     params: {
       name: secret.name
@@ -279,9 +273,10 @@ module keyVault_keys 'key/main.bicep' = [
       attributesEnabled: key.?attributesEnabled
       attributesExp: key.?attributesExp
       attributesNbf: key.?attributesNbf
-      curveName: key.?curveName ?? 'P-256'
+      curveName: (key.?kty != 'RSA' && key.?kty != 'RSA-HSM') ? (key.?curveName ?? 'P-256') : null
       keyOps: key.?keyOps
-      keySize: key.?keySize
+      keySize: (key.?kty == 'RSA' || key.?kty == 'RSA-HSM') ? (key.?keySize ?? 4096) : null
+      releasePolicy: key.?releasePolicy ?? {}
       kty: key.?kty ?? 'EC'
       tags: key.?tags ?? tags
       roleAssignments: key.?roleAssignments
@@ -616,3 +611,104 @@ type accessPoliciesType = {
       | 'update')[]?
   }
 }[]?
+
+type secretsType = {
+  @description('Required. The name of the secret.')
+  name: string
+
+  @description('Optional. Resource tags.')
+  tags: object?
+
+  @description('Optional. Contains attributes of the secret.')
+  attributes: {
+    @description('Optional. Defines whether the secret is enabled or disabled.')
+    enabled: bool?
+
+    @description('Optional. Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    exp: int?
+
+    @description('Optional. If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    nbf: int?
+  }?
+  @description('Optional. The content type of the secret.')
+  contentType: string?
+
+  @description('Required. The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.')
+  @secure()
+  value: string
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+}[]?
+
+type keysType = {
+  @description('Required. The name of the key.')
+  name: string
+
+  @description('Optional. Resource tags.')
+  tags: object?
+
+  @description('Optional. Contains attributes of the key.')
+  attributes: {
+    @description('Optional. Defines whether the key is enabled or disabled.')
+    enabled: bool?
+
+    @description('Optional. Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    exp: int?
+
+    @description('Optional. If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    nbf: int?
+  }?
+  @description('Optional. The elliptic curve name. Only works if "keySize" equals "EC" or "EC-HSM". Default is "P-256".')
+  curveName: ('P-256' | 'P-256K' | 'P-384' | 'P-521')?
+
+  @description('Optional. The allowed operations on this key.')
+  keyOps: ('decrypt' | 'encrypt' | 'import' | 'release' | 'sign' | 'unwrapKey' | 'verify' | 'wrapKey')[]?
+
+  @description('Optional. The key size in bits. Only works if "keySize" equals "RSA" or "RSA-HSM". Default is "4096".')
+  keySize: (2048 | 3072 | 4096)?
+
+  @description('Optional. The type of the key. Default is "EC".')
+  kty: ('EC' | 'EC-HSM' | 'RSA' | 'RSA-HSM')?
+
+  @description('Optional. Key release policy.')
+  releasePolicy: {
+    @description('Optional. Content type and version of key release policy.')
+    contentType: string?
+
+    @description('Optional. Blob encoding the policy rules under which the key can be released.')
+    data: string?
+  }?
+
+  @description('Optional. Key rotation policy.')
+  rotationPolicy: rotationPoliciesType?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+}[]?
+
+type rotationPoliciesType = {
+  @description('Optional. The attributes of key rotation policy.')
+  attributes: {
+    @description('Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".')
+    expiryTime: string?
+  }?
+
+  @description('Optional. The lifetimeActions for key rotation action.')
+  lifetimeActions: {
+    @description('Optional. The action of key rotation policy lifetimeAction.')
+    action: {
+      @description('Optional. The type of action.')
+      type: ('Notify' | 'Rotate')?
+    }?
+
+    @description('Optional. The trigger of key rotation policy lifetimeAction.')
+    trigger: {
+      @description('Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".')
+      timeAfterCreate: string?
+
+      @description('Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".')
+      timeBeforeExpiry: string?
+    }?
+  }[]?
+}?
