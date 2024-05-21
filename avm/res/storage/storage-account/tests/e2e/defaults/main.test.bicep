@@ -45,18 +45,28 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 module sa 'br/public:avm/res/storage/storage-account:0.8.3' = {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-    params: {
-      name: '${namePrefix}${serviceShort}001'
-      allowBlobPublicAccess: false
-      location: resourceLocation
-      networkAcls: {
-        defaultAction: 'Deny'
-        bypass: 'AzureServices'
-      }
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  params: {
+    name: '${namePrefix}${serviceShort}001'
+    allowBlobPublicAccess: false
+    location: resourceLocation
+    networkAcls: {
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
     }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Owner'
+        principalId: functionapp.outputs.systemAssignedMIPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
+  dependsOn: [
+    functionapp
+  ]
+}
 
 module functionapp 'br/public:avm/res/web/site:0.3.5' = {
   scope: resourceGroup
@@ -65,8 +75,8 @@ module functionapp 'br/public:avm/res/web/site:0.3.5' = {
     kind: 'functionapp'
     name: 'functionapp123'
     serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
   }
-  dependsOn: [
-    sa
-  ]
 }
