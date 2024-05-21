@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "13227324731926560272"
+      "templateHash": "8399904898851436683"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -456,7 +456,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region"
+            "description": "Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region."
           }
         },
         "locationName": {
@@ -605,7 +605,7 @@
                         "type": "string"
                       },
                       "metadata": {
-                        "description": "Required. List of paths must be unique for each document in the Azure Cosmos DB service"
+                        "description": "Required. List of paths must be unique for each document in the Azure Cosmos DB service."
                       }
                     }
                   }
