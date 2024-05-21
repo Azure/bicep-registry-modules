@@ -326,7 +326,7 @@ type container = {
   @description('Optional. Custom container name.')
   name: string?
 
-  @description('Optional. List of probes for the container'.)
+  @description('Optional. List of probes for the container.')
   probes: containerAppProbe[]?
 
   @description('Required. Container resource requirements.')

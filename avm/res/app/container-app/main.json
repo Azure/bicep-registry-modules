@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6545722573689550634"
+      "templateHash": "9180046963184653073"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -180,7 +180,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. List of probes for the container"
+            "description": "Optional. List of probes for the container."
           }
         },
         "resources": {
@@ -283,7 +283,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour)"
+            "description": "Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour)."
           }
         },
         "timeoutSeconds": {
@@ -292,7 +292,7 @@
           "minValue": 1,
           "maxValue": 240,
           "metadata": {
-            "description": "Number of seconds after which the probe times out. Defaults to 1 second."
+            "description": "Optional. Number of seconds after which the probe times out. Defaults to 1 second."
           }
         },
         "type": {
@@ -397,7 +397,7 @@
         "mountPath": {
           "type": "string",
           "metadata": {
-            "description": "Path within the container at which the volume should be mounted.Must not contain ':'."
+            "description": "Required. Path within the container at which the volume should be mounted.Must not contain ':'."
           }
         },
         "subPath": {
