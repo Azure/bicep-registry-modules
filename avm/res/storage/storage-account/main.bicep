@@ -69,10 +69,7 @@ param privateEndpoints privateEndpointType
 param managementPolicyRules array?
 
 @description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls networkAclsType = {
-  bypass: 'AzureServices'
-  defaultAction: 'Deny'
-}
+param networkAcls networkAclsType?
 
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
 param requireInfrastructureEncryption bool = true
@@ -393,11 +390,15 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
       ? {
           resourceAccessRules: networkAcls.?resourceAccessRules
           bypass: networkAcls.?bypass
-          defaultAction: networkAcls.?defaultAction
+          defaultAction: networkAcls.?defaultAction ?? 'Deny'
           virtualNetworkRules: networkAcls.?virtualNetworkRules
           ipRules: networkAcls.?ipRules
         }
-      : null
+      : {
+          // New default case that enables the firewall by default
+          bypass: 'AzureServices'
+          defaultAction: 'Deny'
+        }
     allowBlobPublicAccess: allowBlobPublicAccess
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
@@ -461,7 +462,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
     params: {
