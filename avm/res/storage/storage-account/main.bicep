@@ -173,6 +173,9 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. The SAS expiration period. DD.HH:MM:SS.')
 param sasExpirationPeriod string = ''
 
+@description('Optional. The keyType to use with Queue & Table services. `Account` or `Service`.')
+param keyType string?
+
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
 
@@ -347,9 +350,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
             : null
           table: {
             enabled: true
+            keyType: keyType
           }
           queue: {
             enabled: true
+            keyType: keyType
           }
         }
         keyvaultproperties: !empty(customerManagedKey)

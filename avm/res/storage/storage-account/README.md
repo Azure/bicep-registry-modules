@@ -2095,6 +2095,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
+| [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. `Account` or `Service`. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
 | [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
 | [`localUsers`](#parameter-localusers) | array | Local users to deploy for SFTP authentication. |
@@ -2531,6 +2532,13 @@ Enables local users feature, if set to true.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `keyType`
+
+The keyType to use with Queue & Table services. `Account` or `Service`.
+
+- Required: No
+- Type: string
 
 ### Parameter: `kind`
 
