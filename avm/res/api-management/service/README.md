@@ -139,6 +139,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         serviceUrl: 'http://echoapi.cloudapp.net/api'
       }
     ]
+    appInsightsName: '<appInsightsName>'
     authorizationServers: {
       secureList: [
         {
@@ -202,6 +203,13 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    loggers: [
+      {
+        isBuffered: false
+        loggerCatagory: 'applicationInsights'
+        loggerDescription: 'Logger to Azure Application Insights'
+      }
+    ]
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -329,6 +337,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "appInsightsName": {
+      "value": "<appInsightsName>"
+    },
     "authorizationServers": {
       "value": {
         "secureList": [
@@ -405,6 +416,15 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "loggers": {
+      "value": [
+        {
+          "isBuffered": false,
+          "loggerCatagory": "applicationInsights",
+          "loggerDescription": "Logger to Azure Application Insights"
+        }
+      ]
     },
     "managedIdentities": {
       "value": {

@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    appInsightsName: 'dep-${namePrefix}-appinsights-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
@@ -88,6 +89,7 @@ module testDeployment '../../../main.bicep' = [
           serviceUrl: 'http://echoapi.cloudapp.net/api'
         }
       ]
+      appInsightsName: nestedDependencies.outputs.appInsightsName
       authorizationServers: {
         secureList: [
           {
@@ -150,6 +152,13 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      loggers: [
+        {
+          loggerCatagory: 'applicationInsights'
+          isBuffered: false
+          loggerDescription: 'Logger to Azure Application Insights'
+        }
+      ]
       namedValues: [
         {
           displayName: 'apimkey'

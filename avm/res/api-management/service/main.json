@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "10310052190455934884"
+      "templateHash": "12720343246022171258"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -788,7 +788,7 @@
             "value": "[tryGet(parameters('apis')[copyIndex()], 'wsdlSelector')]"
           },
           "loggerName": {
-            "value": "[tryGet(reference(format('service_loggers[{0}]', 0)), 'outputs').name.value]"
+            "value": "app-insights-logger"
           }
         },
         "template": {
@@ -1281,8 +1281,7 @@
       },
       "dependsOn": [
         "service",
-        "service_apiVersionSets",
-        "[format('service_loggers[{0}]', 0)]"
+        "service_apiVersionSets"
       ]
     },
     "service_apiVersionSets": {
@@ -2157,7 +2156,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('app-insights-logger-{0}', copyIndex())]"
+            "value": "app-insights-logger"
           },
           "apiManagementServiceName": {
             "value": "[parameters('name')]"

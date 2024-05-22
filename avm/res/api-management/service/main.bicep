@@ -264,7 +264,7 @@ module service_apis 'api/main.bicep' = [
       type: api.?type
       value: api.?value
       wsdlSelector: api.?wsdlSelector
-      loggerName: service_loggers[0].?outputs.name
+      loggerName: 'app-insights-logger'
     }
     dependsOn: [
       service_apiVersionSets
@@ -389,7 +389,7 @@ module service_loggers 'loggers/main.bicep' = [
   for (logger, index) in (loggers ?? []): if (!empty(appInsightsName)) {
     name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
     params: {
-      name: 'app-insights-logger-${index}'
+      name: 'app-insights-logger'
       apiManagementServiceName: service.name
       appInsightsName: appInsightsName
       loggerType: logger.loggerCatagory
