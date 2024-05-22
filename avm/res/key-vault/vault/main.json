@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "6795174546908413153"
+      "version": "0.26.54.24096",
+      "templateHash": "15417452365743513256"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -896,8 +896,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "13379419349517171769"
+              "version": "0.26.54.24096",
+              "templateHash": "10878813547461142217"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
@@ -1165,8 +1165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "6420465919494344964"
+              "version": "0.26.54.24096",
+              "templateHash": "1877278864243602204"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1454,8 +1454,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "12348300599961129774"
+              "version": "0.26.54.24096",
+              "templateHash": "5903918450419813264"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
