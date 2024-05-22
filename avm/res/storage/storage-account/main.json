@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "3747145148577468723"
+      "templateHash": "8254230526893780963"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -619,7 +619,7 @@
       "$ref": "#/definitions/networkAclsType",
       "nullable": true,
       "metadata": {
-        "description": "Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
+        "description": "Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }
     },
     "requireInfrastructureEncryption": {
@@ -817,8 +817,12 @@
     "keyType": {
       "type": "string",
       "nullable": true,
+      "allowedValues": [
+        "Account",
+        "Service"
+      ],
       "metadata": {
-        "description": "Optional. The keyType to use with Queue & Table services. `Account` or `Service`."
+        "description": "Optional. The keyType to use with Queue & Table services."
       }
     }
   },
