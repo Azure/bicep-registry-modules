@@ -9,6 +9,6 @@ spec:
   condition:
     anyOf:
       - field: 'Sku.name'
-        contains: 'ZRS'
+        contains: 'Standard_ZRS'
       - field: 'Sku.name'
-        contains: 'GRS'
+        contains: 'Standard_GRS'
