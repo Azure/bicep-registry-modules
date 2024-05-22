@@ -95,6 +95,10 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'a4417e6f-fecd-4de8-b567-7b0420556985'
   )
+  'Key Vault Certificate User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'db79e9a7-68ee-4b58-9aeb-b90e7c24fcba'
+  )
   'Key Vault Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f25e0fa2-a7c8-4377-a976-54943a77a395'
