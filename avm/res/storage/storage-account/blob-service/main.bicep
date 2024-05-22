@@ -12,9 +12,9 @@ param automaticSnapshotPolicyEnabled bool = false
 @description('Optional. The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service.')
 param changeFeedEnabled bool = false
 
-@minValue(0)
+@minValue(1)
 @maxValue(146000)
-@description('Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. A "0" value indicates an infinite retention of the change feed.')
+@description('Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed.')
 param changeFeedRetentionInDays int?
 
 @description('Optional. The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled.')
@@ -76,14 +76,18 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
   parent: storageAccount
   properties: {
     automaticSnapshotPolicyEnabled: automaticSnapshotPolicyEnabled
-    changeFeed: changeFeedEnabled ? {
-      enabled: true
-      retentionInDays: changeFeedRetentionInDays
-    } : null
+    changeFeed: changeFeedEnabled
+      ? {
+          enabled: true
+          retentionInDays: changeFeedRetentionInDays
+        }
+      : null
     containerDeleteRetentionPolicy: {
       enabled: containerDeleteRetentionPolicyEnabled
       days: containerDeleteRetentionPolicyDays
-      allowPermanentDelete: containerDeleteRetentionPolicyEnabled == true ? containerDeleteRetentionPolicyAllowPermanentDelete : null
+      allowPermanentDelete: containerDeleteRetentionPolicyEnabled == true
+        ? containerDeleteRetentionPolicyAllowPermanentDelete
+        : null
     }
     cors: {
       corsRules: corsRules
@@ -95,57 +99,69 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
       allowPermanentDelete: deleteRetentionPolicyEnabled && deleteRetentionPolicyAllowPermanentDelete ? true : null
     }
     isVersioningEnabled: isVersioningEnabled
-    lastAccessTimeTrackingPolicy: storageAccount.kind != 'Storage' ? {
-      enable: lastAccessTimeTrackingPolicyEnabled
-      name: lastAccessTimeTrackingPolicyEnabled == true ? 'AccessTimeTracking' : null
-      trackingGranularityInDays: lastAccessTimeTrackingPolicyEnabled == true ? 1 : null
-    } : null
-    restorePolicy: restorePolicyEnabled ? {
-      enabled: true
-      days: restorePolicyDays
-    } : null
+    lastAccessTimeTrackingPolicy: storageAccount.kind != 'Storage'
+      ? {
+          enable: lastAccessTimeTrackingPolicyEnabled
+          name: lastAccessTimeTrackingPolicyEnabled == true ? 'AccessTimeTracking' : null
+          trackingGranularityInDays: lastAccessTimeTrackingPolicyEnabled == true ? 1 : null
+        }
+      : null
+    restorePolicy: restorePolicyEnabled
+      ? {
+          enabled: true
+          days: restorePolicyDays
+        }
+      : null
   }
 }
 
-resource blobServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource blobServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: blobServices
   }
-  scope: blobServices
-}]
+]
 
-module blobServices_container 'container/main.bicep' = [for (container, index) in (containers ?? []): {
-  name: '${deployment().name}-Container-${index}'
-  params: {
-    storageAccountName: storageAccount.name
-    name: container.name
-    defaultEncryptionScope: container.?defaultEncryptionScope
-    denyEncryptionScopeOverride: container.?denyEncryptionScopeOverride
-    enableNfsV3AllSquash: container.?enableNfsV3AllSquash
-    enableNfsV3RootSquash: container.?enableNfsV3RootSquash
-    immutableStorageWithVersioningEnabled: container.?immutableStorageWithVersioningEnabled
-    metadata: container.?metadata
-    publicAccess: container.?publicAccess
-    roleAssignments: container.?roleAssignments
-    immutabilityPolicyProperties: container.?immutabilityPolicyProperties
+module blobServices_container 'container/main.bicep' = [
+  for (container, index) in (containers ?? []): {
+    name: '${deployment().name}-Container-${index}'
+    params: {
+      storageAccountName: storageAccount.name
+      name: container.name
+      defaultEncryptionScope: container.?defaultEncryptionScope
+      denyEncryptionScopeOverride: container.?denyEncryptionScopeOverride
+      enableNfsV3AllSquash: container.?enableNfsV3AllSquash
+      enableNfsV3RootSquash: container.?enableNfsV3RootSquash
+      immutableStorageWithVersioningEnabled: container.?immutableStorageWithVersioningEnabled
+      metadata: container.?metadata
+      publicAccess: container.?publicAccess
+      roleAssignments: container.?roleAssignments
+      immutabilityPolicyProperties: container.?immutabilityPolicyProperties
+    }
   }
-}]
+]
 
 @description('The name of the deployed blob service.')
 output name string = blobServices.name
