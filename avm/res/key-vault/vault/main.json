@@ -1746,11 +1746,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              <<<<<<< HEAD
-              "templateHash": "12348300599961129774"
-              =======
               "templateHash": "8655662111651470037"
-              >>>>>>> 4d86f2348be052522c1dd8c95a5f2b0ff454b05f
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
