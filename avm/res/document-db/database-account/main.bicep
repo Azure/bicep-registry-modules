@@ -772,6 +772,9 @@ type sqlDatabaseType = {
     @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
     kind: ('Hash' | 'MultiHash')?
 
+    @description('Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.')
+    version: (1 | 2)?
+
     @description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
     throughput: int?
 
