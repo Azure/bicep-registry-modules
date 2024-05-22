@@ -26,7 +26,7 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   }
 }
 
-resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2021-12-01-preview' = {
+resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2021-08-01' = {
   name: name
   parent: service::api
   properties: {

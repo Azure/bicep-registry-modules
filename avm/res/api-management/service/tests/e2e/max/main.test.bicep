@@ -40,8 +40,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     appInsightsName: 'dep-${namePrefix}-appinsights-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
+    logAnalyticsName: 'dep-${namePrefix}-loganalytics-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 

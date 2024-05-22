@@ -1,6 +1,16 @@
 @description('Required. The name of the application insights to create.')
 param appInsightsName string
 
+@description('Required. The name of the application insights to create.')
+param logAnalyticsName string
+
+@description('Optional. Application type.')
+@allowed([
+  'web'
+  'other'
+])
+param applicationType string = 'web'
+
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
@@ -16,6 +26,24 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: appInsightsName
   location: location
   kind: 'web'
+  properties: {
+    Application_Type: applicationType
+    WorkspaceResourceId: logAnalytics.id
+  }
+}
+
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: logAnalyticsName
+  location: location
+  properties: any({
+    retentionInDays: 30
+    features: {
+      searchVersion: 1
+    }
+    sku: {
+      name: 'PerGB2018'
+    }
+  })
 }
 
 @description('The name of the created application insights.')
