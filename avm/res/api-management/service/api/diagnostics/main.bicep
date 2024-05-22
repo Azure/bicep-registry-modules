@@ -11,6 +11,9 @@ param apiName string
 @description('Conditional. The name of the logger. Required if the template is used in a standalone deployment.')
 param loggerName string
 
+@description('Optional. The name of the diagnostic.')
+param name string = 'diagnostic'
+
 resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   name: apiManagementServiceName
 
@@ -23,43 +26,19 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   }
 }
 
-resource apiDiagnostics 'Microsoft.ApiManagement/service/apis/diagnostics@2021-12-01-preview' = {
-  name: 'applicationinsights'
+resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2021-12-01-preview' = {
+  name: name
   parent: service::api
   properties: {
-    alwaysLog: 'allErrors'
-    backend: {
-      request: {
-        body: {
-          bytes: 1024
-        }
-      }
-      response: {
-        body: {
-          bytes: 1024
-        }
-      }
-    }
-    frontend: {
-      request: {
-        body: {
-          bytes: 1024
-        }
-      }
-      response: {
-        body: {
-          bytes: 1024
-        }
-      }
-    }
-    httpCorrelationProtocol: 'W3C'
-    logClientIp: true
     loggerId: service::logger.id
-    metrics: true
-    sampling: {
-      percentage: 100
-      samplingType: 'fixed'
-    }
-    verbosity: 'verbose'
   }
 }
+
+@description('The resource ID of the API diagnostic.')
+output resourceId string = diagnostic.id
+
+@description('The name of the API diagnostic.')
+output name string = diagnostic.name
+
+@description('The resource group the API diagnostic was deployed into.')
+output resourceGroupName string = resourceGroup().name

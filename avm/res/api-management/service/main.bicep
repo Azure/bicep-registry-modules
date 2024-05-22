@@ -264,6 +264,7 @@ module service_apis 'api/main.bicep' = [
       type: api.?type
       value: api.?value
       wsdlSelector: api.?wsdlSelector
+      loggerName: service_loggers[0].?outputs.name
     }
     dependsOn: [
       service_apiVersionSets
@@ -391,7 +392,7 @@ module service_loggers 'loggers/main.bicep' = [
       name: 'app-insights-logger-${index}'
       apiManagementServiceName: service.name
       appInsightsName: appInsightsName
-      loggerType: logger.loggerType
+      loggerType: logger.loggerCatagory
     }
   }
 ]
@@ -559,7 +560,7 @@ type managedIdentitiesType = {
 
 type loggerType = {
   @description('Required. The logger type for API Management.')
-  loggerType: ('applicationInsights' | 'azureEventHub' | 'azureMonitor')
+  loggerCatagory: ('applicationInsights' | 'azureEventHub' | 'azureMonitor')
 
   @description('Optional. Whether records are buffered in the logger before publishing.')
   isBuffered: bool?

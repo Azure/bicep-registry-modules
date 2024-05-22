@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.27.1.19265",
+      "templateHash": "89587212960004449"
+    },
+    "name": "API Management Service Loggers",
+    "description": "This module deploys an API Management Service Logger.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number."
+      }
+    },
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "appInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Reference app insights instance."
+      }
+    },
+    "isBuffered": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Whether records are buffered in the logger before publishing. Default is assumed to be true."
+      }
+    },
+    "loggerDescription": {
+      "type": "string",
+      "defaultValue": "Logger to Azure Application Insights",
+      "metadata": {
+        "description": "Optional. Logger description."
+      }
+    },
+    "loggerType": {
+      "type": "string",
+      "allowedValues": [
+        "applicationInsights",
+        "azureEventHub",
+        "azureMonitor"
+      ],
+      "metadata": {
+        "description": "Required. The logger type for API Management."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/loggers",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "credentials": {
+          "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').InstrumentationKey]"
+        },
+        "description": "[parameters('loggerDescription')]",
+        "isBuffered": "[parameters('isBuffered')]",
+        "loggerType": "[parameters('loggerType')]",
+        "resourceId": "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service logger."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service logger."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service API was deployed to."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

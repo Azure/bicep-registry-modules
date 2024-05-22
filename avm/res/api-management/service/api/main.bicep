@@ -63,6 +63,9 @@ param format string = 'openapi'
 @description('Optional. Indicates if API revision is current API revision.')
 param isCurrent bool = true
 
+@description('Optional. The name of the API management service logger.')
+param loggerName string = ''
+
 @description('Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.')
 param path string
 
@@ -130,7 +133,14 @@ resource api 'Microsoft.ApiManagement/service/apis@2021-08-01' = {
   }
 }
 
-module diagnostics 'diagnostics/main.bicep'
+module diagnostic 'diagnostics/main.bicep' = {
+  name: '${deployment().name}-Diagnostic'
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    apiName: api.name
+    loggerName: loggerName
+  }
+}
 
 module policy 'policy/main.bicep' = [
   for (policy, index) in policies ?? []: {

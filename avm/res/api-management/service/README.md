@@ -18,12 +18,14 @@ This module deploys an API Management Service.
 | :-- | :-- |
 | `Microsoft.ApiManagement/service` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service) |
 | `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2021-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-12-01-preview/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
 | `Microsoft.ApiManagement/service/apiVersionSets` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apiVersionSets) |
 | `Microsoft.ApiManagement/service/authorizationServers` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/authorizationServers) |
 | `Microsoft.ApiManagement/service/backends` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/backends) |
 | `Microsoft.ApiManagement/service/caches` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/caches) |
 | `Microsoft.ApiManagement/service/identityProviders` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/identityProviders) |
+| `Microsoft.ApiManagement/service/loggers` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/loggers) |
 | `Microsoft.ApiManagement/service/namedValues` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/namedValues) |
 | `Microsoft.ApiManagement/service/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/policies) |
 | `Microsoft.ApiManagement/service/portalsettings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
@@ -909,6 +911,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`additionalLocations`](#parameter-additionallocations) | array | Additional datacenter locations of the API Management service. |
 | [`apis`](#parameter-apis) | array | APIs. |
 | [`apiVersionSets`](#parameter-apiversionsets) | array | API Version Sets. |
+| [`appInsightsName`](#parameter-appinsightsname) | string | Application Insights Name. |
 | [`authorizationServers`](#parameter-authorizationservers) | secureObject | Authorization servers. |
 | [`backends`](#parameter-backends) | array | Backends. |
 | [`caches`](#parameter-caches) | array | Caches. |
@@ -922,6 +925,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`identityProviders`](#parameter-identityproviders) | array | Identity providers. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`loggers`](#parameter-loggers) | array | API Management Logger. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`minApiVersion`](#parameter-minapiversion) | string | Limit control plane API calls to API Management service with version equal to or newer than this value. |
 | [`namedValues`](#parameter-namedvalues) | array | Named values. |
@@ -984,6 +988,14 @@ API Version Sets.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `appInsightsName`
+
+Application Insights Name.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `authorizationServers`
 
@@ -1251,6 +1263,55 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `loggers`
+
+API Management Logger.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerCatagory`](#parameter-loggersloggercatagory) | string | The logger type for API Management. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isBuffered`](#parameter-loggersisbuffered) | bool | Whether records are buffered in the logger before publishing. |
+| [`loggerDescription`](#parameter-loggersloggerdescription) | string | Logger description. |
+
+### Parameter: `loggers.loggerCatagory`
+
+The logger type for API Management.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'applicationInsights'
+    'azureEventHub'
+    'azureMonitor'
+  ]
+  ```
+
+### Parameter: `loggers.isBuffered`
+
+Whether records are buffered in the logger before publishing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `loggers.loggerDescription`
+
+Logger description.
 
 - Required: No
 - Type: string

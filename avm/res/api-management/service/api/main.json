@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5827467280453778347"
+      "version": "0.27.1.19265",
+      "templateHash": "4135681389062839655"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -127,6 +127,13 @@
         "description": "Optional. Indicates if API revision is current API revision."
       }
     },
+    "loggerName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the API management service logger."
+      }
+    },
     "path": {
       "type": "string",
       "metadata": {
@@ -236,6 +243,105 @@
         "service"
       ]
     },
+    "diagnostic": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Diagnostic', deployment().name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "apiName": {
+            "value": "[parameters('name')]"
+          },
+          "loggerName": {
+            "value": "[parameters('loggerName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.27.1.19265",
+              "templateHash": "9163341679193777481"
+            },
+            "name": "API Management Service APIs Diagnostics",
+            "description": "This module deploys an API Management Service API Diagnostics.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "apiName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+              }
+            },
+            "loggerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the logger. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "diagnostic",
+              "metadata": {
+                "description": "Optional. The name of the diagnostic."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ApiManagement/service/apis/diagnostics",
+              "apiVersion": "2021-12-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
+              "properties": {
+                "loggerId": "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apiManagementServiceName'), parameters('loggerName'))]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API diagnostic."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/apis/diagnostics', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API diagnostic."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API diagnostic was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "api"
+      ]
+    },
     "policy": {
       "copy": {
         "name": "policy",
@@ -267,8 +373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11734266416309377949"
+              "version": "0.27.1.19265",
+              "templateHash": "11047529479323733917"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy.",

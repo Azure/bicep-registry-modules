@@ -15,6 +15,7 @@ This module deploys an API Management Service API.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2021-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-12-01-preview/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
 
 ## Parameters
@@ -47,6 +48,7 @@ This module deploys an API Management Service API.
 | [`authenticationSettings`](#parameter-authenticationsettings) | object | Collection of authentication settings included into this API. |
 | [`format`](#parameter-format) | string | Format of the Content in which the API is getting imported. |
 | [`isCurrent`](#parameter-iscurrent) | bool | Indicates if API revision is current API revision. |
+| [`loggerName`](#parameter-loggername) | string | The name of the API management service logger. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service API. |
 | [`protocols`](#parameter-protocols) | array | Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS. |
 | [`serviceUrl`](#parameter-serviceurl) | string | Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long. |
@@ -181,6 +183,14 @@ Indicates if API revision is current API revision.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `loggerName`
+
+The name of the API management service logger.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `policies`
 
