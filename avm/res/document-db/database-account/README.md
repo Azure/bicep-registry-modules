@@ -2594,7 +2594,7 @@ Default to the location where the account is deployed. Locations enabled for the
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region |
+| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
 
 ### Parameter: `locations.failoverPriority`
 
@@ -2612,7 +2612,7 @@ The name of the region.
 
 ### Parameter: `locations.isZoneRedundant`
 
-Default to true. Flag to indicate whether or not this region is an AvailabilityZone region
+Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
 
 - Required: No
 - Type: bool
@@ -3507,11 +3507,11 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service |
+| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
 
 ### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
 
-List of paths must be unique for each document in the Azure Cosmos DB service
+List of paths must be unique for each document in the Azure Cosmos DB service.
 
 - Required: Yes
 - Type: array

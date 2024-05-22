@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12348300599961129774"
+      "templateHash": "8655662111651470037"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key.",
@@ -170,6 +170,13 @@
         "description": "Optional. The type of the key."
       }
     },
+    "releasePolicy": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key release policy."
+      }
+    },
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
@@ -224,7 +231,8 @@
         "keyOps": "[parameters('keyOps')]",
         "keySize": "[parameters('keySize')]",
         "kty": "[parameters('kty')]",
-        "rotationPolicy": "[parameters('rotationPolicy')]"
+        "rotationPolicy": "[coalesce(parameters('rotationPolicy'), createObject())]",
+        "release_policy": "[coalesce(parameters('releasePolicy'), createObject())]"
       },
       "dependsOn": [
         "keyVault"
