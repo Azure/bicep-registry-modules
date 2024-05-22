@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "11829581770848647649"
+      "version": "0.27.1.19265",
+      "templateHash": "6545722573689550634"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -147,6 +147,17 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Bool indicating if the App exposes an external HTTP endpoint."
+      }
+    },
+    "stickySessionsAffinity": {
+      "type": "string",
+      "defaultValue": "none",
+      "allowedValues": [
+        "none",
+        "sticky"
+      ],
+      "metadata": {
+        "description": "Optional. Bool indicating if the Container App should enable session affinity."
       }
     },
     "ingressTransport": {
@@ -411,6 +422,9 @@
             "external": "[parameters('ingressExternal')]",
             "ipSecurityRestrictions": "[if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null())]",
             "targetPort": "[parameters('ingressTargetPort')]",
+            "stickySessions": {
+              "affinity": "[parameters('stickySessionsAffinity')]"
+            },
             "traffic": [
               {
                 "label": "[parameters('trafficLabel')]",
