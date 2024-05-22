@@ -15,7 +15,7 @@ This module deploys a Container App Job.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/jobs) |
+| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/jobs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -50,7 +50,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'simple-hello-world-container'
         resources: {
-          cpu: '<cpu>'
+          cpuLimit: '<cpuLimit>'
           memory: '0.5Gi'
         }
       }
@@ -87,7 +87,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
           "name": "simple-hello-world-container",
           "resources": {
-            "cpu": "<cpu>",
+            "cpuLimit": "<cpuLimit>",
             "memory": "0.5Gi"
           }
         }
@@ -155,7 +155,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
           }
         ]
         resources: {
-          cpu: '<cpu>'
+          cpuLimit: '<cpuLimit>'
           memory: '0.5Gi'
         }
       }
@@ -247,7 +247,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
             }
           ],
           "resources": {
-            "cpu": "<cpu>",
+            "cpuLimit": "<cpuLimit>",
             "memory": "0.5Gi"
           }
         }
@@ -365,7 +365,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
           }
         ]
         resources: {
-          cpu: '<cpu>'
+          cpuLimit: '<cpuLimit>'
           memory: '0.5Gi'
         }
       }
@@ -424,7 +424,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
             }
           ],
           "resources": {
-            "cpu": "<cpu>",
+            "cpuLimit": "<cpuLimit>",
             "memory": "0.5Gi"
           }
         }
@@ -504,6 +504,373 @@ List of container definitions for the Container App.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`image`](#parameter-containersimage) | string | The image of the container. |
+| [`name`](#parameter-containersname) | string | The name of the container. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`args`](#parameter-containersargs) | array | Container start command arguments. |
+| [`command`](#parameter-containerscommand) | array | The command to run in the container. |
+| [`env`](#parameter-containersenv) | array | The environment variables to set in the container. |
+| [`probes`](#parameter-containersprobes) | array | The probes of the container. |
+| [`resources`](#parameter-containersresources) | object | The resources to allocate to the container. |
+| [`volumeMounts`](#parameter-containersvolumemounts) | array | The volume mounts to attach to the container. |
+
+### Parameter: `containers.image`
+
+The image of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.name`
+
+The name of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.args`
+
+Container start command arguments.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.command`
+
+The command to run in the container.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.env`
+
+The environment variables to set in the container.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containersenvname) | string | The environment variable name. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretRef`](#parameter-containersenvsecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if value is not provided. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-containersenvvalue) | string | The environment variable value. Required if secretRef is not provided. |
+
+### Parameter: `containers.env.name`
+
+The environment variable name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.env.secretRef`
+
+The name of the Container App secret from which to pull the envrionment variable value. Required if value is not provided.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.env.value`
+
+The environment variable value. Required if secretRef is not provided.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes`
+
+The probes of the container.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-containersprobestype) | string | The type of probe. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failureThreshold`](#parameter-containersprobesfailurethreshold) | int | Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. |
+| [`httpGet`](#parameter-containersprobeshttpget) | object | HTTPGet specifies the http request to perform. |
+| [`initialDelaySeconds`](#parameter-containersprobesinitialdelayseconds) | int | Number of seconds after the container has started before liveness probes are initiated. |
+| [`periodSeconds`](#parameter-containersprobesperiodseconds) | int | How often (in seconds) to perform the probe. Default to 10 seconds. |
+| [`successThreshold`](#parameter-containersprobessuccessthreshold) | int | Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. |
+| [`tcpSocket`](#parameter-containersprobestcpsocket) | object | TCPSocket specifies an action involving a TCP port. |
+| [`terminationGracePeriodSeconds`](#parameter-containersprobesterminationgraceperiodseconds) | int | Duration in seconds the pod needs to terminate gracefully upon probe failure. This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. |
+| [`timeoutSeconds`](#parameter-containersprobestimeoutseconds) | int | Number of seconds after which the probe times out. Defaults to 1 second. |
+
+### Parameter: `containers.probes.type`
+
+The type of probe.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Liveness'
+    'Readiness'
+    'Startup'
+  ]
+  ```
+
+### Parameter: `containers.probes.failureThreshold`
+
+Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.httpGet`
+
+HTTPGet specifies the http request to perform.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`path`](#parameter-containersprobeshttpgetpath) | string | Path to access on the HTTP server. |
+| [`port`](#parameter-containersprobeshttpgetport) | int | Name of the port to access on the container. If not specified, the containerPort is used. |
+| [`scheme`](#parameter-containersprobeshttpgetscheme) | string | Scheme to use for connecting to the host. Defaults to HTTP. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`host`](#parameter-containersprobeshttpgethost) | string | Host name to connect to, defaults to the pod IP. |
+| [`httpHeaders`](#parameter-containersprobeshttpgethttpheaders) | array | Custom headers to set in the request. |
+
+### Parameter: `containers.probes.httpGet.path`
+
+Path to access on the HTTP server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes.httpGet.port`
+
+Name of the port to access on the container. If not specified, the containerPort is used.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.probes.httpGet.scheme`
+
+Scheme to use for connecting to the host. Defaults to HTTP.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HTTP'
+    'HTTPS'
+  ]
+  ```
+
+### Parameter: `containers.probes.httpGet.host`
+
+Host name to connect to, defaults to the pod IP.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.probes.httpGet.httpHeaders`
+
+Custom headers to set in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containersprobeshttpgethttpheadersname) | string | The header field name. |
+| [`value`](#parameter-containersprobeshttpgethttpheadersvalue) | string | The header field value. |
+
+### Parameter: `containers.probes.httpGet.httpHeaders.name`
+
+The header field name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes.httpGet.httpHeaders.value`
+
+The header field value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes.initialDelaySeconds`
+
+Number of seconds after the container has started before liveness probes are initiated.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.probes.periodSeconds`
+
+How often (in seconds) to perform the probe. Default to 10 seconds.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.probes.successThreshold`
+
+Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.tcpSocket`
+
+TCPSocket specifies an action involving a TCP port.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-containersprobestcpsocketport) | int | Name of the port to access on the container. If not specified, the containerPort is used. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`host`](#parameter-containersprobestcpsockethost) | string | Host name to connect to, defaults to the pod IP. |
+
+### Parameter: `containers.probes.tcpSocket.port`
+
+Name of the port to access on the container. If not specified, the containerPort is used.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.probes.tcpSocket.host`
+
+Host name to connect to, defaults to the pod IP.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes.terminationGracePeriodSeconds`
+
+Duration in seconds the pod needs to terminate gracefully upon probe failure. This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.timeoutSeconds`
+
+Number of seconds after which the probe times out. Defaults to 1 second.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.resources`
+
+The resources to allocate to the container.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cpuLimit`](#parameter-containersresourcescpulimit) | string | The CPU limit of the container in cores. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`memory`](#parameter-containersresourcesmemory) | string | The required memory. |
+
+### Parameter: `containers.resources.cpuLimit`
+
+The CPU limit of the container in cores.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.resources.memory`
+
+The required memory.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.volumeMounts`
+
+The volume mounts to attach to the container.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountPath`](#parameter-containersvolumemountsmountpath) | string | The path within the container at which the volume should be mounted. Must not contain ':'. |
+| [`volumeName`](#parameter-containersvolumemountsvolumename) | string | This must match the Name of a Volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subPath`](#parameter-containersvolumemountssubpath) | string | Path within the volume from which the container's volume should be mounted. |
+
+### Parameter: `containers.volumeMounts.mountPath`
+
+The path within the container at which the volume should be mounted. Must not contain ':'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.volumeMounts.volumeName`
+
+This must match the Name of a Volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.volumeMounts.subPath`
+
+Path within the volume from which the container's volume should be mounted.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `environmentResourceId`
 
@@ -863,6 +1230,91 @@ List of volume definitions for the Container App.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumesname) | string | The name of the volume. |
+| [`storageType`](#parameter-volumesstoragetype) | string | The container name. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageName`](#parameter-volumesstoragename) | string | The storage account name. Not needed for EmptyDir and Secret. Required if `storageType` is `AzureFile` or `NfsAzureFile`. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountOptions`](#parameter-volumesmountoptions) | string | Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string. |
+| [`secrets`](#parameter-volumessecrets) | array | List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be added to volume. |
+
+### Parameter: `volumes.name`
+
+The name of the volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.storageType`
+
+The container name.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFile'
+    'EmptyDir'
+    'NfsAzureFile'
+    'Secret'
+  ]
+  ```
+
+### Parameter: `volumes.storageName`
+
+The storage account name. Not needed for EmptyDir and Secret. Required if `storageType` is `AzureFile` or `NfsAzureFile`.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.mountOptions`
+
+Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.secrets`
+
+List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be added to volume.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`path`](#parameter-volumessecretspath) | string | Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef. |
+| [`secretRef`](#parameter-volumessecretssecretref) | string | Name of the Container App secret from which to pull the secret value. |
+
+### Parameter: `volumes.secrets.path`
+
+Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.secrets.secretRef`
+
+Name of the Container App secret from which to pull the secret value.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `workloadProfileName`
 

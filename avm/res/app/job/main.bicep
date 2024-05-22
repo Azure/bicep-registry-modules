@@ -61,7 +61,7 @@ param roleAssignments roleAssignmentType
 param enableTelemetry bool = true
 
 @description('Required. List of container definitions for the Container App.')
-param containers array
+param containers containerType
 
 @description('Optional. List of specialized containers that run before app containers.')
 param initContainersTemplate array?
@@ -85,7 +85,7 @@ param workloadProfileName string = 'Consumption'
 param secrets secretsType?
 
 @description('Optional. List of volume definitions for the Container App.')
-param volumes array?
+param volumes volumeType?
 
 @description('Optional. Maximum number of seconds a replica is allowed to run.')
 param replicaTimeout int = 1800
@@ -149,7 +149,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource job 'Microsoft.App/jobs@2023-05-01' = {
+resource job 'Microsoft.App/jobs@2024-03-01' = {
   name: name
   tags: tags
   location: location
@@ -157,6 +157,7 @@ resource job 'Microsoft.App/jobs@2023-05-01' = {
   properties: {
     environmentId: environmentResourceId
     configuration: {
+      triggerType: triggerType
       eventTriggerConfig: triggerType == 'Event' ? eventTriggerConfig : null
       manualTriggerConfig: triggerType == 'Manual' ? manualTriggerConfig : null
       scheduleTriggerConfig: triggerType == 'Schedule' ? scheduleTriggerConfig : null
@@ -164,7 +165,6 @@ resource job 'Microsoft.App/jobs@2023-05-01' = {
       replicaTimeout: replicaTimeout
       registries: registries
       secrets: secrets
-      triggerType: triggerType
     }
     template: {
       containers: containers
@@ -205,6 +205,7 @@ resource automationAccount_roleAssignments 'Microsoft.Authorization/roleAssignme
     scope: job
   }
 ]
+
 @description('The resource ID of the Container App Job.')
 output resourceId string = job.id
 
@@ -298,3 +299,175 @@ type secretsType = {
   @secure()
   value: string?
 }[]?
+
+type secretVolumeItemType = {
+  @description('Required. Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef.')
+  path: string
+
+  @description('Required. Name of the Container App secret from which to pull the secret value.')
+  secretRef: string
+}[]?
+
+type volumeType = {
+  @description('Required. The name of the volume.')
+  name: string
+
+  @description('Optional. Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.')
+  mountOptions: string
+
+  @description('Optional. List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be added to volume.')
+  secrets: secretVolumeItemType
+
+  @description('Conditional. The storage account name. Not needed for EmptyDir and Secret. Required if `storageType` is `AzureFile` or `NfsAzureFile`.')
+  storageName: string
+
+  @description('Required. The container name.')
+  storageType: ('AzureFile' | 'EmptyDir' | 'NfsAzureFile' | 'Secret')
+}[]?
+
+type containerEnvironmentVariablesType = {
+  @description('Required. The environment variable name.')
+  name: string
+
+  @description('Conditional. The name of the Container App secret from which to pull the envrionment variable value. Required if value is not provided.')
+  secretRef: string
+
+  @description('Optional. The environment variable value. Required if secretRef is not provided.')
+  value: string
+}[]?
+
+type containerProbeHttpGetHttpHeadersItem = {
+  @description('Required. The header field name.')
+  name: string
+
+  @description('Required. The header field value.')
+  value: string
+}[]?
+
+type containerProbeHttpGetType = {
+  @description('Optional. Host name to connect to, defaults to the pod IP.')
+  host: string?
+
+  @description('Optional. Custom headers to set in the request.')
+  httpHeaders: containerProbeHttpGetHttpHeadersItem
+
+  @description('Required. Path to access on the HTTP server.')
+  path: string
+
+  @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
+  @minValue(1)
+  @maxValue(65535)
+  port: int
+
+  @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
+  scheme: ('HTTP' | 'HTTPS')?
+}?
+
+type containerProbeTcpSocketType = {
+  @description('Optional. Host name to connect to, defaults to the pod IP.')
+  host: string
+
+  @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
+  @minValue(1)
+  @maxValue(65535)
+  port: int
+}?
+
+type containerProbeType = {
+  @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
+  @minValue(1)
+  @maxValue(10)
+  failureThreshold: int?
+
+  @description('Optional. HTTPGet specifies the http request to perform.')
+  httpGet: containerProbeHttpGetType
+
+  @description('Optional. Number of seconds after the container has started before liveness probes are initiated.')
+  @minValue(1)
+  @maxValue(60)
+  initialDelaySeconds: int
+
+  @description('Optional. How often (in seconds) to perform the probe. Default to 10 seconds.')
+  @minValue(1)
+  @maxValue(60)
+  periodSeconds: int
+
+  @description('Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1.')
+  @minValue(1)
+  @maxValue(10)
+  successThreshold: int?
+
+  @description('Optional. TCPSocket specifies an action involving a TCP port.')
+  tcpSocket: containerProbeTcpSocketType
+
+  @description('Optional. Duration in seconds the pod needs to terminate gracefully upon probe failure. This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate.')
+  @minValue(0)
+  @maxValue(3600)
+  terminationGracePeriodSeconds: int?
+
+  @description('Optional. Number of seconds after which the probe times out. Defaults to 1 second.')
+  @minValue(1)
+  @maxValue(240)
+  timeoutSeconds: int?
+
+  @description('Required. The type of probe.')
+  type: ('Liveness' | 'Readiness' | 'Startup')
+}[]?
+
+type containerResourceType = {
+  @description('Required. The CPU limit of the container in cores.')
+  @metadata({
+    example: '''
+    json('0.25')
+    1
+    '''
+  })
+  cpuLimit: string
+
+  @description('Optional. The required memory.')
+  @metadata({
+    example: '''
+    '250Mb'
+    '1.5Gi'
+    '1500Mi'
+    '''
+  })
+  memory: string
+}?
+
+type containerVolumeMountType = {
+  @description('Required. The path within the container at which the volume should be mounted. Must not contain \':\'.')
+  mountPath: string
+
+  @description('Optional. Path within the volume from which the container\'s volume should be mounted.')
+  subPath: string
+
+  @description('Required. This must match the Name of a Volume.')
+  volumeName: string
+}[]?
+
+type containerType = {
+  @description('Optional. Container start command arguments.')
+  args: string[]?
+
+  @description('Optional. The command to run in the container.')
+  command: string[]?
+
+  @description('Optional. The environment variables to set in the container.')
+  env: containerEnvironmentVariablesType
+
+  @description('Required. The image of the container.')
+  image: string
+
+  @description('Required. The name of the container.')
+  name: string
+
+  @description('Optional. The probes of the container.')
+  probes: containerProbeType
+
+  @description('Optional. The resources to allocate to the container.')
+  resources: containerResourceType
+
+  @description('Optional. The volume mounts to attach to the container.')
+  volumeMounts: containerVolumeMountType
+}[]
