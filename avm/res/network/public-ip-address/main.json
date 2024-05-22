@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "1650798617817777444"
+      "version": "0.27.1.19265",
+      "templateHash": "7382635530474884069"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -155,8 +155,9 @@
               }
             }
           },
+          "nullable": true,
           "metadata": {
-            "description": "Required. The DDoS protection plan associated with the public IP address."
+            "description": "Optional. The DDoS protection plan associated with the public IP address."
           }
         },
         "protectionMode": {
