@@ -500,6 +500,337 @@ List of container definitions for the Container App.
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`image`](#parameter-containersimage) | string | Container image tag. |
+| [`resources`](#parameter-containersresources) | object | Container resource requirements. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`args`](#parameter-containersargs) | array | Container start command arguments. |
+| [`command`](#parameter-containerscommand) | array | Container start command. |
+| [`env`](#parameter-containersenv) | array | Container environment variables. |
+| [`name`](#parameter-containersname) | string | Custom container name. |
+| [`probes`](#parameter-containersprobes) | array | List of probes for the container. |
+| [`volumeMounts`](#parameter-containersvolumemounts) | array | Container volume mounts. |
+
+### Parameter: `containers.image`
+
+Container image tag.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.resources`
+
+Container resource requirements.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `containers.args`
+
+Container start command arguments.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.command`
+
+Container start command.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.env`
+
+Container environment variables.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containersenvname) | string | Environment variable name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretRef`](#parameter-containersenvsecretref) | string | Name of the Container App secret from which to pull the environment variable value. |
+| [`value`](#parameter-containersenvvalue) | string | Non-secret environment variable value. |
+
+### Parameter: `containers.env.name`
+
+Environment variable name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.env.secretRef`
+
+Name of the Container App secret from which to pull the environment variable value.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.env.value`
+
+Non-secret environment variable value.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.name`
+
+Custom container name.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.probes`
+
+List of probes for the container.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failureThreshold`](#parameter-containersprobesfailurethreshold) | int | Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. |
+| [`httpGet`](#parameter-containersprobeshttpget) | object | HTTPGet specifies the http request to perform. |
+| [`initialDelaySeconds`](#parameter-containersprobesinitialdelayseconds) | int | Number of seconds after the container has started before liveness probes are initiated. |
+| [`periodSeconds`](#parameter-containersprobesperiodseconds) | int | How often (in seconds) to perform the probe. Default to 10 seconds. |
+| [`successThreshold`](#parameter-containersprobessuccessthreshold) | int | Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. |
+| [`tcpSocket`](#parameter-containersprobestcpsocket) | object | TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported. |
+| [`terminationGracePeriodSeconds`](#parameter-containersprobesterminationgraceperiodseconds) | int | Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour). |
+| [`timeoutSeconds`](#parameter-containersprobestimeoutseconds) | int | Number of seconds after which the probe times out. Defaults to 1 second. |
+| [`type`](#parameter-containersprobestype) | string | The type of probe. |
+
+### Parameter: `containers.probes.failureThreshold`
+
+Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.httpGet`
+
+HTTPGet specifies the http request to perform.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`path`](#parameter-containersprobeshttpgetpath) | string | Path to access on the HTTP server. |
+| [`port`](#parameter-containersprobeshttpgetport) | int | Name or number of the port to access on the container. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`host`](#parameter-containersprobeshttpgethost) | string | Host name to connect to. Defaults to the pod IP. |
+| [`httpHeaders`](#parameter-containersprobeshttpgethttpheaders) | array | HTTP headers to set in the request. |
+| [`scheme`](#parameter-containersprobeshttpgetscheme) | string | Scheme to use for connecting to the host. Defaults to HTTP. |
+
+### Parameter: `containers.probes.httpGet.path`
+
+Path to access on the HTTP server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes.httpGet.port`
+
+Name or number of the port to access on the container.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.probes.httpGet.host`
+
+Host name to connect to. Defaults to the pod IP.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.probes.httpGet.httpHeaders`
+
+HTTP headers to set in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containersprobeshttpgethttpheadersname) | string | Name of the header. |
+| [`value`](#parameter-containersprobeshttpgethttpheadersvalue) | string | Value of the header. |
+
+### Parameter: `containers.probes.httpGet.httpHeaders.name`
+
+Name of the header.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes.httpGet.httpHeaders.value`
+
+Value of the header.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.probes.httpGet.scheme`
+
+Scheme to use for connecting to the host. Defaults to HTTP.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HTTP'
+    'HTTPS'
+  ]
+  ```
+
+### Parameter: `containers.probes.initialDelaySeconds`
+
+Number of seconds after the container has started before liveness probes are initiated.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.periodSeconds`
+
+How often (in seconds) to perform the probe. Default to 10 seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.successThreshold`
+
+Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.tcpSocket`
+
+TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-containersprobestcpsocketport) | int | Number of the port to access on the container. Name must be an IANA_SVC_NAME. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`host`](#parameter-containersprobestcpsockethost) | string | Host name to connect to, defaults to the pod IP. |
+
+### Parameter: `containers.probes.tcpSocket.port`
+
+Number of the port to access on the container. Name must be an IANA_SVC_NAME.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.probes.tcpSocket.host`
+
+Host name to connect to, defaults to the pod IP.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.probes.terminationGracePeriodSeconds`
+
+Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour).
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.timeoutSeconds`
+
+Number of seconds after which the probe times out. Defaults to 1 second.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.probes.type`
+
+The type of probe.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Liveness'
+    'Readiness'
+    'Startup'
+  ]
+  ```
+
+### Parameter: `containers.volumeMounts`
+
+Container volume mounts.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountPath`](#parameter-containersvolumemountsmountpath) | string | Path within the container at which the volume should be mounted.Must not contain ':'. |
+| [`volumeName`](#parameter-containersvolumemountsvolumename) | string | This must match the Name of a Volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subPath`](#parameter-containersvolumemountssubpath) | string | Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root). |
+
+### Parameter: `containers.volumeMounts.mountPath`
+
+Path within the container at which the volume should be mounted.Must not contain ':'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.volumeMounts.volumeName`
+
+This must match the Name of a Volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.volumeMounts.subPath`
+
+Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+
+- Required: No
+- Type: string
+
 ### Parameter: `environmentId`
 
 Resource ID of environment.
