@@ -68,7 +68,7 @@ param privateEndpoints privateEndpointType
 @description('Optional. The Storage Account ManagementPolicies Rules.')
 param managementPolicyRules array?
 
-@description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+@description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
 
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
@@ -173,7 +173,11 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. The SAS expiration period. DD.HH:MM:SS.')
 param sasExpirationPeriod string = ''
 
-@description('Optional. The keyType to use with Queue & Table services. `Account` or `Service`.')
+@description('Optional. The keyType to use with Queue & Table services.')
+@allowed([
+  'Account'
+  'Service'
+])
 param keyType string?
 
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
