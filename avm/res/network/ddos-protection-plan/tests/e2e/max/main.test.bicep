@@ -20,6 +20,9 @@ param serviceShort string = 'ndppmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation = 'northeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -28,14 +31,14 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -46,10 +49,10 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+    location: enforcedLocation
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
