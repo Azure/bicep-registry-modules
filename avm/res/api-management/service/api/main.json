@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6467711779548013756"
+      "templateHash": "10962316652428655749"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -271,9 +271,9 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "18237222842835430197"
+              "templateHash": "3453638466675249728"
             },
-            "name": "API Management Service APIs Diagnostics",
+            "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
             "owner": "Azure/module-maintainers"
           },
@@ -310,7 +310,7 @@
               "apiVersion": "2021-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
               "properties": {
-                "loggerId": "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apiManagementServiceName'), parameters('loggerName'))]"
+                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apiManagementServiceName'), parameters('loggerName'))]"
               }
             }
           ],

@@ -1,4 +1,4 @@
-metadata name = 'API Management Service APIs Diagnostics'
+metadata name = 'API Management Service APIs Diagnostics.'
 metadata description = 'This module deploys an API Management Service API Diagnostics.'
 metadata owner = 'Azure/module-maintainers'
 
@@ -21,7 +21,7 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
     name: apiName
   }
 
-  resource logger 'apis@2021-08-01' existing = {
+  resource logger 'loggers@2021-08-01' existing = {
     name: loggerName
   }
 }

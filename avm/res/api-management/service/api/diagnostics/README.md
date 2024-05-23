@@ -1,4 +1,4 @@
-# API Management Service APIs Diagnostics `[Microsoft.ApiManagement/service/apis/diagnostics]`
+# API Management Service APIs Diagnostics. `[Microsoft.ApiManagement/service/apis/diagnostics]`
 
 This module deploys an API Management Service API Diagnostics.
 

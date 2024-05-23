@@ -268,7 +268,7 @@ module service_apis 'api/main.bicep' = [
     }
     dependsOn: [
       service_apiVersionSets
-      service_loggers
+      service_logger
     ]
   }
 ]
@@ -386,7 +386,7 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
-module service_loggers 'loggers/main.bicep' = if (!empty(appInsightsName)) {
+module service_logger 'loggers/main.bicep' = if (!empty(appInsightsName)) {
   name: '${uniqueString(deployment().name, location)}-Apim-Logger'
   params: {
     name: logger!.name!
