@@ -203,13 +203,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    loggers: [
-      {
-        isBuffered: false
-        loggerCatagory: 'applicationInsights'
-        loggerDescription: 'Logger to Azure Application Insights'
-      }
-    ]
+    logger: {
+      isBuffered: false
+      loggerCatagory: 'applicationInsights'
+      loggerDescription: 'Logger to Azure Application Insights'
+      name: 'app-insights-logger'
+    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -417,14 +416,13 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "loggers": {
-      "value": [
-        {
-          "isBuffered": false,
-          "loggerCatagory": "applicationInsights",
-          "loggerDescription": "Logger to Azure Application Insights"
-        }
-      ]
+    "logger": {
+      "value": {
+        "isBuffered": false,
+        "loggerCatagory": "applicationInsights",
+        "loggerDescription": "Logger to Azure Application Insights",
+        "name": "app-insights-logger"
+      }
     },
     "managedIdentities": {
       "value": {
@@ -945,7 +943,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`identityProviders`](#parameter-identityproviders) | array | Identity providers. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`loggers`](#parameter-loggers) | array | API Management Logger. |
+| [`logger`](#parameter-logger) | object | API Management Logger. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`minApiVersion`](#parameter-minapiversion) | string | Limit control plane API calls to API Management service with version equal to or newer than this value. |
 | [`namedValues`](#parameter-namedvalues) | array | Named values. |
@@ -1287,27 +1285,28 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `loggers`
+### Parameter: `logger`
 
 API Management Logger.
 
 - Required: No
-- Type: array
+- Type: object
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerCatagory`](#parameter-loggersloggercatagory) | string | The logger type for API Management. |
+| [`loggerCatagory`](#parameter-loggerloggercatagory) | string | The logger type for API Management. |
+| [`name`](#parameter-loggername) | string | The logger name for API Management. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isBuffered`](#parameter-loggersisbuffered) | bool | Whether records are buffered in the logger before publishing. |
-| [`loggerDescription`](#parameter-loggersloggerdescription) | string | Logger description. |
+| [`isBuffered`](#parameter-loggerisbuffered) | bool | Whether records are buffered in the logger before publishing. |
+| [`loggerDescription`](#parameter-loggerloggerdescription) | string | Logger description. |
 
-### Parameter: `loggers.loggerCatagory`
+### Parameter: `logger.loggerCatagory`
 
 The logger type for API Management.
 
@@ -1322,14 +1321,21 @@ The logger type for API Management.
   ]
   ```
 
-### Parameter: `loggers.isBuffered`
+### Parameter: `logger.name`
+
+The logger name for API Management.
+
+- Required: No
+- Type: string
+
+### Parameter: `logger.isBuffered`
 
 Whether records are buffered in the logger before publishing.
 
 - Required: No
 - Type: bool
 
-### Parameter: `loggers.loggerDescription`
+### Parameter: `logger.loggerDescription`
 
 Logger description.
 

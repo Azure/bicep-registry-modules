@@ -159,7 +159,6 @@ module testDeployment '../../../main.bicep' = [
         isBuffered: false
         loggerDescription: 'Logger to Azure Application Insights'
       }
-
       namedValues: [
         {
           displayName: 'apimkey'
