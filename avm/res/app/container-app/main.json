@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6545722573689550634"
+      "templateHash": "9180046963184653073"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -126,6 +126,294 @@
         }
       },
       "nullable": true
+    },
+    "container": {
+      "type": "object",
+      "properties": {
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command arguments."
+          }
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command."
+          }
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/environmentVar"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container environment variables."
+          }
+        },
+        "image": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Container image tag."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom container name."
+          }
+        },
+        "probes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerAppProbe"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of probes for the container."
+          }
+        },
+        "resources": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Container resource requirements."
+          }
+        },
+        "volumeMounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/volumeMount"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container volume mounts."
+          }
+        }
+      }
+    },
+    "environmentVar": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Environment variable name."
+          }
+        },
+        "secretRef": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the Container App secret from which to pull the environment variable value."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Non-secret environment variable value."
+          }
+        }
+      }
+    },
+    "containerAppProbe": {
+      "type": "object",
+      "properties": {
+        "failureThreshold": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 10,
+          "metadata": {
+            "description": "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3."
+          }
+        },
+        "httpGet": {
+          "$ref": "#/definitions/containerAppProbeHttpGet",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. HTTPGet specifies the http request to perform."
+          }
+        },
+        "initialDelaySeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 60,
+          "metadata": {
+            "description": "Optional. Number of seconds after the container has started before liveness probes are initiated."
+          }
+        },
+        "periodSeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 240,
+          "metadata": {
+            "description": "Optional. How often (in seconds) to perform the probe. Default to 10 seconds."
+          }
+        },
+        "successThreshold": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 10,
+          "metadata": {
+            "description": "Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup."
+          }
+        },
+        "tcpSocket": {
+          "$ref": "#/definitions/containerAppProbeTcpSocket",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported."
+          }
+        },
+        "terminationGracePeriodSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour)."
+          }
+        },
+        "timeoutSeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 240,
+          "metadata": {
+            "description": "Optional. Number of seconds after which the probe times out. Defaults to 1 second."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Liveness",
+            "Readiness",
+            "Startup"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of probe."
+          }
+        }
+      }
+    },
+    "containerAppProbeHttpGet": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Host name to connect to. Defaults to the pod IP."
+          }
+        },
+        "httpHeaders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerAppProbeHttpGetHeadersItem"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. HTTP headers to set in the request."
+          }
+        },
+        "path": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Path to access on the HTTP server."
+          }
+        },
+        "port": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Name or number of the port to access on the container."
+          }
+        },
+        "scheme": {
+          "type": "string",
+          "allowedValues": [
+            "HTTP",
+            "HTTPS"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Scheme to use for connecting to the host. Defaults to HTTP."
+          }
+        }
+      }
+    },
+    "containerAppProbeHttpGetHeadersItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the header."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Value of the header."
+          }
+        }
+      }
+    },
+    "containerAppProbeTcpSocket": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Host name to connect to, defaults to the pod IP."
+          }
+        },
+        "port": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 65535,
+          "metadata": {
+            "description": "Required. Number of the port to access on the container. Name must be an IANA_SVC_NAME."
+          }
+        }
+      }
+    },
+    "volumeMount": {
+      "type": "object",
+      "properties": {
+        "mountPath": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Path within the container at which the volume should be mounted.Must not contain ':'."
+          }
+        },
+        "subPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root)."
+          }
+        },
+        "volumeName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. This must match the Name of a Volume."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -329,6 +617,9 @@
     },
     "containers": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/container"
+      },
       "metadata": {
         "description": "Required. List of container definitions for the Container App."
       }
