@@ -264,7 +264,7 @@ module service_apis 'api/main.bicep' = [
       type: api.?type
       value: api.?value
       wsdlSelector: api.?wsdlSelector
-      loggerName: 'app-insights-logger'
+      // loggerName: 'app-insights-logger' TODO
     }
     dependsOn: [
       service_apiVersionSets
