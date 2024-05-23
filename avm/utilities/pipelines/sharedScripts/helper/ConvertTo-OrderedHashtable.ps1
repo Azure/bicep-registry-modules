@@ -63,7 +63,7 @@ function ConvertTo-OrderedHashtable {
         return $JSONObject # E.g. in primitive data types [1,2,3]
     }
 
-    foreach ($currentLevelKey in ($JSONObject.Keys | Sort-Object)) {
+    foreach ($currentLevelKey in ($JSONObject.Keys | Sort-Object -Culture 'en-US')) {
 
         if ($null -eq $JSONObject[$currentLevelKey]) {
             # Handle case in which the value is 'null' and hence has no type
@@ -83,7 +83,7 @@ function ConvertTo-OrderedHashtable {
                 foreach ($array in $arrayElements) {
                     if ($array.Count -gt 1) {
                         # Only sort for arrays with more than one item. Otherwise single-item arrays are casted
-                        $array = $array | Sort-Object
+                        $array = $array | Sort-Object -Culture 'en-US'
                     }
                     $arrayOutput += , (ConvertTo-OrderedHashtable -JSONInputObject ($array | ConvertTo-Json -Depth 99))
                 }
@@ -97,13 +97,13 @@ function ConvertTo-OrderedHashtable {
                 # Case: Primitive data types
                 $primitiveElements = $JSONObject[$currentLevelKey] | Where-Object { $_.GetType().BaseType.Name -notin @('Array', 'Hashtable') } | ConvertTo-Json -Depth 99 | ConvertFrom-Json -AsHashtable -NoEnumerate -Depth 99
                 if ($primitiveElements.Count -gt 1) {
-                    $primitiveElements = $primitiveElements | Sort-Object
+                    $primitiveElements = $primitiveElements | Sort-Object -Culture 'en-US'
                 }
                 $arrayOutput += $primitiveElements
 
                 if ($array.Count -gt 1) {
                     # Only sort for arrays with more than one item. Otherwise single-item arrays are casted
-                    $arrayOutput = $arrayOutput | Sort-Object
+                    $arrayOutput = $arrayOutput | Sort-Object -Culture 'en-US'
                 }
                 $orderedLevel[$currentLevelKey] = $arrayOutput
             }

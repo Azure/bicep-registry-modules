@@ -9,19 +9,15 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sql.managedinstances-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-keyvault.vaults-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sqlmimin'
+param serviceShort string = 'kvvrsa'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -35,17 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
-    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -56,11 +41,44 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: '${namePrefix}${serviceShort}002'
       location: resourceLocation
-      administratorLogin: 'adminUserName'
-      administratorLoginPassword: password
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      // Only for testing purposes
+      enablePurgeProtection: false
+      enableRbacAuthorization: true
+      keys: [
+        {
+          attributes: {
+            exp: 1725109032
+            nbf: 10000
+          }
+          name: 'keyName'
+          kty: 'RSA'
+          rotationPolicy: {
+            attributes: {
+              expiryTime: 'P2Y'
+            }
+            lifetimeActions: [
+              {
+                trigger: {
+                  timeBeforeExpiry: 'P2M'
+                }
+                action: {
+                  type: 'Rotate'
+                }
+              }
+              {
+                trigger: {
+                  timeBeforeExpiry: 'P30D'
+                }
+                action: {
+                  type: 'Notify'
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 ]

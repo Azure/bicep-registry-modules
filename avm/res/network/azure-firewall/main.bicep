@@ -372,13 +372,13 @@ output ipConfAzureFirewallSubnet object = contains(azureFirewall.properties, 'ip
   ? azureFirewall.properties.ipConfigurations[0]
   : {}
 
-@description('List of Application Rule Collections.')
+@description('List of Application Rule Collections used by Azure Firewall.')
 output applicationRuleCollections array = applicationRuleCollections ?? []
 
-@description('List of Network Rule Collections.')
+@description('List of Network Rule Collections used by Azure Firewall.')
 output networkRuleCollections array = networkRuleCollections ?? []
 
-@description('Collection of NAT rule collections used by Azure Firewall.')
+@description('List of NAT rule collections used by Azure Firewall.')
 output natRuleCollections array = natRuleCollections ?? []
 
 @description('The location the resource was deployed into.')
