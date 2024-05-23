@@ -35,6 +35,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+  }
+}
+
 // Diagnostics
 // ===========
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
@@ -148,6 +156,18 @@ module testDeployment '../../../main.bicep' = [
           allowedTenants: [
             'mytenant.onmicrosoft.com'
           ]
+        }
+      ]
+      loggers: [
+        {
+          name: 'logger'
+          loggerType: 'applicationInsights'
+          isBuffered: false
+          description: 'Logger to Azure Application Insights'
+          credentials: {
+            instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
+          }
+          resourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
       namedValues: [

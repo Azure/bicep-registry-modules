@@ -24,6 +24,7 @@ This module deploys an API Management Service.
 | `Microsoft.ApiManagement/service/backends` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/backends) |
 | `Microsoft.ApiManagement/service/caches` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/caches) |
 | `Microsoft.ApiManagement/service/identityProviders` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/identityProviders) |
+| `Microsoft.ApiManagement/service/loggers` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/loggers) |
 | `Microsoft.ApiManagement/service/namedValues` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/namedValues) |
 | `Microsoft.ApiManagement/service/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/policies) |
 | `Microsoft.ApiManagement/service/portalsettings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
@@ -200,6 +201,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    loggers: [
+      {
+        credentials: {
+          instrumentationKey: '<instrumentationKey>'
+        }
+        description: 'Logger to Azure Application Insights'
+        isBuffered: false
+        loggerType: 'applicationInsights'
+        name: 'logger'
+        resourceId: '<resourceId>'
+      }
+    ]
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -403,6 +416,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "loggers": {
+      "value": [
+        {
+          "credentials": {
+            "instrumentationKey": "<instrumentationKey>"
+          },
+          "description": "Logger to Azure Application Insights",
+          "isBuffered": false,
+          "loggerType": "applicationInsights",
+          "name": "logger",
+          "resourceId": "<resourceId>"
+        }
+      ]
     },
     "managedIdentities": {
       "value": {
@@ -614,6 +641,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     location: '<location>'
+    loggers: [
+      {
+        credentials: {
+          instrumentationKey: '<instrumentationKey>'
+        }
+        description: 'Logger to Azure Application Insights'
+        isBuffered: false
+        loggerType: 'applicationInsights'
+        name: 'logger'
+        resourceId: '<resourceId>'
+      }
+    ]
     minApiVersion: '2021-08-01'
     namedValues: [
       {
@@ -807,6 +846,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "loggers": {
+      "value": [
+        {
+          "credentials": {
+            "instrumentationKey": "<instrumentationKey>"
+          },
+          "description": "Logger to Azure Application Insights",
+          "isBuffered": false,
+          "loggerType": "applicationInsights",
+          "name": "logger",
+          "resourceId": "<resourceId>"
+        }
+      ]
+    },
     "minApiVersion": {
       "value": "2021-08-01"
     },
@@ -922,6 +975,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`identityProviders`](#parameter-identityproviders) | array | Identity providers. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`loggers`](#parameter-loggers) | array | Loggers. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`minApiVersion`](#parameter-minapiversion) | string | Limit control plane API calls to API Management service with version equal to or newer than this value. |
 | [`namedValues`](#parameter-namedvalues) | array | Named values. |
@@ -1254,6 +1308,14 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `loggers`
+
+Loggers.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `managedIdentities`
 

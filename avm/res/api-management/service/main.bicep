@@ -116,6 +116,9 @@ param caches array = []
 @description('Optional. Identity providers.')
 param identityProviders array = []
 
+@description('Optional. Loggers.')
+param loggers array = []
+
 @description('Optional. Named values.')
 param namedValues array = []
 
@@ -178,24 +181,23 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource service 'Microsoft.ApiManagement/service@2021-08-01' = {
   name: name
@@ -379,6 +381,21 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
+module service_loggers 'loggers/main.bicep' = [
+  for (logger, index) in loggers: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
+    params: {
+      name: logger.name
+      apiManagementServiceName: service.name
+      credentials: contains(logger, 'credentials') ? logger.credentials : {}
+      isBuffered: contains(logger, 'isBuffered') ? logger.isBuffered : true
+      loggerDescription: contains(logger, 'loggerDescription') ? logger.loggerDescription : ''
+      loggerType: contains(logger, 'loggerType') ? logger.loggerType : 'azureMonitor'
+      targetResourceId: contains(logger, 'targetResourceId') ? logger.targetResourceId : ''
+    }
+  }
+]
+
 module service_namedValues 'named-value/main.bicep' = [
   for (namedValue, index) in namedValues: {
     name: '${uniqueString(deployment().name, location)}-Apim-NamedValue-${index}'
@@ -453,17 +470,16 @@ module service_subscriptions 'subscription/main.bicep' = [
   }
 ]
 
-resource service_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: service
+resource service_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: service
+}
 
 resource service_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

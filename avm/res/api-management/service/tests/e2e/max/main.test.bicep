@@ -146,6 +146,18 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
+      loggers: [
+        {
+          name: 'logger'
+          loggerType: 'applicationInsights'
+          isBuffered: false
+          description: 'Logger to Azure Application Insights'
+          credentials: {
+            instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
+          }
+          resourceId: nestedDependencies.outputs.appInsightsResourceId
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
