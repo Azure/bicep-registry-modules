@@ -1162,6 +1162,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 | [`hubIPAddresses`](#parameter-hubipaddresses) | object | IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied. |
 | [`virtualHubId`](#parameter-virtualhubid) | string | The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty. |
 | [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty. |
+| [`zones`](#parameter-zones) | array | Zone numbers e.g. 1,2,3. Needed to make the resource WAF compliant  |
 
 **Optional parameters**
 
@@ -1184,7 +1185,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the Azure Firewall resource. |
 | [`threatIntelMode`](#parameter-threatintelmode) | string | The operation mode for Threat Intel. |
-| [`zones`](#parameter-zones) | array | Zone numbers e.g. 1,2,3. |
 
 ### Parameter: `name`
 
@@ -1216,6 +1216,21 @@ Shared services Virtual Network resource ID. The virtual network ID containing A
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `zones`
+
+Zone numbers e.g. 1,2,3. Needed to make the resource WAF compliant 
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `additionalPublicIpConfigurations`
 
@@ -2114,21 +2129,6 @@ The operation mode for Threat Intel.
     'Alert'
     'Deny'
     'Off'
-  ]
-  ```
-
-### Parameter: `zones`
-
-Zone numbers e.g. 1,2,3.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
   ]
   ```
 
