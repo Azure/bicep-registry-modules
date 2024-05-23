@@ -15,7 +15,7 @@ This module deploys an App Managed Environment (also known as a Container App En
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/managedEnvironments) |
+| `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -151,6 +151,12 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
@@ -225,6 +231,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "platformReservedCidr": {
@@ -460,6 +474,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
@@ -634,6 +649,34 @@ Logs destination.
 - Type: string
 - Default: `'log-analytics'`
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: array
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -748,6 +791,7 @@ Whether or not this Managed Environment is zone-redundant.
 | `name` | string | The name of the Managed Environment. |
 | `resourceGroupName` | string | The name of the resource group the Managed Environment was deployed into. |
 | `resourceId` | string | The resource ID of the Managed Environment. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
