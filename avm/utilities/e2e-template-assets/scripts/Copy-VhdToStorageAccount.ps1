@@ -63,7 +63,7 @@ begin {
     $VerbosePreference = 'SilentlyContinue'
     $requiredModules = @(
         @{ Name = 'Az.ImageBuilder'; Version = '0.4.0' },
-        @{ Name = 'Az.Storage' }
+        @{ Name = 'Az.Storage'; Version = '6.0.0' }
     )
     foreach ($module in $requiredModules) {
         $installationInput = @{
