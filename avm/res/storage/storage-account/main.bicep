@@ -122,7 +122,7 @@ param allowBlobPublicAccess bool = false
 param minimumTlsVersion string = 'TLS1_2'
 
 @description('Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true.')
-param enableHierarchicalNamespace bool = false
+param enableHierarchicalNamespace bool?
 
 @description('Optional. If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableSftp bool = false
@@ -327,95 +327,97 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
   identity: identity
   tags: tags
-  properties: {
-    allowSharedKeyAccess: allowSharedKeyAccess
-    defaultToOAuthAuthentication: defaultToOAuthAuthentication
-    allowCrossTenantReplication: allowCrossTenantReplication
-    allowedCopyScope: !empty(allowedCopyScope) ? allowedCopyScope : null
-    customDomain: {
-      name: customDomainName
-      useSubDomainName: customDomainUseSubDomainName
-    }
-    dnsEndpointType: !empty(dnsEndpointType) ? dnsEndpointType : null
-    isLocalUserEnabled: isLocalUserEnabled
-    encryption: union(
-      {
-        keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
-        services: {
-          blob: supportsBlobService
-            ? {
-                enabled: true
-              }
-            : null
-          file: supportsFileService
-            ? {
-                enabled: true
-              }
-            : null
-          table: {
-            enabled: true
-            keyType: keyType
-          }
-          queue: {
-            enabled: true
-            keyType: keyType
-          }
-        }
-        keyvaultproperties: !empty(customerManagedKey)
-          ? {
-              keyname: customerManagedKey!.keyName
-              keyvaulturi: cMKKeyVault.properties.vaultUri
-              keyversion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
-                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+  properties: union(
+    {
+      allowSharedKeyAccess: allowSharedKeyAccess
+      defaultToOAuthAuthentication: defaultToOAuthAuthentication
+      allowCrossTenantReplication: allowCrossTenantReplication
+      allowedCopyScope: !empty(allowedCopyScope) ? allowedCopyScope : null
+      customDomain: {
+        name: customDomainName
+        useSubDomainName: customDomainUseSubDomainName
+      }
+      dnsEndpointType: !empty(dnsEndpointType) ? dnsEndpointType : null
+      isLocalUserEnabled: isLocalUserEnabled
+      encryption: union(
+        {
+          keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
+          services: {
+            blob: supportsBlobService
+              ? {
+                  enabled: true
+                }
+              : null
+            file: supportsFileService
+              ? {
+                  enabled: true
+                }
+              : null
+            table: {
+              enabled: true
+              keyType: keyType
             }
-          : null
-        identity: {
-          userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-            ? cMKUserAssignedIdentity.id
-            : null
-        }
-      },
-      (requireInfrastructureEncryption
-        ? {
-            requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
+            queue: {
+              enabled: true
+              keyType: keyType
+            }
           }
-        : {})
-    )
-    accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
-    sasPolicy: !empty(sasExpirationPeriod)
-      ? {
-          expirationAction: 'Log'
-          sasExpirationPeriod: sasExpirationPeriod
-        }
-      : null
-    supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
-    isHnsEnabled: enableHierarchicalNamespace ? enableHierarchicalNamespace : null
-    isSftpEnabled: enableSftp
-    isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
-    largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
-    minimumTlsVersion: minimumTlsVersion
-    networkAcls: !empty(networkAcls)
-      ? {
-          resourceAccessRules: networkAcls.?resourceAccessRules
-          bypass: networkAcls.?bypass
-          defaultAction: networkAcls.?defaultAction ?? 'Deny'
-          virtualNetworkRules: networkAcls.?virtualNetworkRules
-          ipRules: networkAcls.?ipRules
-        }
-      : {
-          // New default case that enables the firewall by default
-          bypass: 'AzureServices'
-          defaultAction: 'Deny'
-        }
-    allowBlobPublicAccess: allowBlobPublicAccess
-    publicNetworkAccess: !empty(publicNetworkAccess)
-      ? any(publicNetworkAccess)
-      : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
-    azureFilesIdentityBasedAuthentication: !empty(azureFilesIdentityBasedAuthentication)
-      ? azureFilesIdentityBasedAuthentication
-      : null
-  }
+          keyvaultproperties: !empty(customerManagedKey)
+            ? {
+                keyname: customerManagedKey!.keyName
+                keyvaulturi: cMKKeyVault.properties.vaultUri
+                keyversion: !empty(customerManagedKey.?keyVersion ?? '')
+                  ? customerManagedKey!.keyVersion
+                  : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+              }
+            : null
+          identity: {
+            userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+              ? cMKUserAssignedIdentity.id
+              : null
+          }
+        },
+        (requireInfrastructureEncryption
+          ? {
+              requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
+            }
+          : {})
+      )
+      accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
+      sasPolicy: !empty(sasExpirationPeriod)
+        ? {
+            expirationAction: 'Log'
+            sasExpirationPeriod: sasExpirationPeriod
+          }
+        : null
+      supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
+      isSftpEnabled: enableSftp
+      isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
+      largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
+      minimumTlsVersion: minimumTlsVersion
+      networkAcls: !empty(networkAcls)
+        ? {
+            resourceAccessRules: networkAcls.?resourceAccessRules
+            bypass: networkAcls.?bypass
+            defaultAction: networkAcls.?defaultAction ?? 'Deny'
+            virtualNetworkRules: networkAcls.?virtualNetworkRules
+            ipRules: networkAcls.?ipRules
+          }
+        : {
+            // New default case that enables the firewall by default
+            bypass: 'AzureServices'
+            defaultAction: 'Deny'
+          }
+      allowBlobPublicAccess: allowBlobPublicAccess
+      publicNetworkAccess: !empty(publicNetworkAccess)
+        ? any(publicNetworkAccess)
+        : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
+      azureFilesIdentityBasedAuthentication: !empty(azureFilesIdentityBasedAuthentication)
+        ? azureFilesIdentityBasedAuthentication
+        : null
+    },
+    enableHierarchicalNamespace != null ? { isHnsEnabled: enableHierarchicalNamespace } : {}
+  )
 }
 
 resource storageAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
