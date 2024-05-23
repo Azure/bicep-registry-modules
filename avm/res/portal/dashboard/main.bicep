@@ -111,6 +111,9 @@ resource dashboard_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
 @description('The resource ID of the dashboard.')
 output resourceId string = dashboard.id
 
+@description('The name of the resource group the dashboard was created in.')
+output resourceGroupName string = resourceGroup().name
+
 @description('The name of the dashboard.')
 output name string = dashboard.name
 

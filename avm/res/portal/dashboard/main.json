@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6131234141288280890"
+      "templateHash": "7555768761961388280"
     },
     "name": "Portal Dashboards",
     "description": "This module deploys a Portal Dashboard.",
@@ -248,6 +248,13 @@
         "description": "The resource ID of the dashboard."
       },
       "value": "[resourceId('Microsoft.Portal/dashboards', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the dashboard was created in."
+      },
+      "value": "[resourceGroup().name]"
     },
     "name": {
       "type": "string",

@@ -891,6 +891,7 @@ Tags of the resource.
 | :-- | :-- | :-- |
 | `location` | string | The location the dashboard was deployed into. |
 | `name` | string | The name of the dashboard. |
+| `resourceGroupName` | string | The name of the resource group the dashboard was created in. |
 | `resourceId` | string | The resource ID of the dashboard. |
 
 ## Cross-referenced modules
