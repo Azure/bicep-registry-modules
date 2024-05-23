@@ -102,7 +102,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
       outputs: {
         telemetry: {
           type: 'String'
-          value: 'For more information, see https://aka.ms/#_namePrefix_#/TelemetryInfo'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
