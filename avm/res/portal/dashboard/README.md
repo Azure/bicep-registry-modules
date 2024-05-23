@@ -15,6 +15,8 @@ This module deploys a Portal Dashboard.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Portal/dashboards` | [2020-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Portal/2020-09-01-preview/dashboards) |
 
 ## Usage examples
@@ -166,6 +168,10 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
       }
     ]
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     metadata: {
       model: {
         filterLocale: {
@@ -197,6 +203,28 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
           }
         }
       }
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
     }
   }
 }
@@ -296,6 +324,12 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "metadata": {
       "value": {
         "model": {
@@ -329,6 +363,32 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
           }
         }
       }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -353,7 +413,128 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
     // Required parameters
     name: 'pdwaf001'
     // Non-required parameters
+    lenses: [
+      {
+        order: 0
+        parts: [
+          {
+            metadata: {
+              inputs: []
+              settings: {
+                content: {
+                  src: 'https://www.youtube.com/watch?v=JbIMrJKW5N0'
+                  subtitle: 'Learn more about AVM'
+                  title: 'Azure Verified Modules (AVM) introduction'
+                }
+              }
+              type: 'Extension/HubsExtension/PartType/VideoPart'
+            }
+            position: {
+              colSpan: 6
+              rowSpan: 4
+              x: 0
+              y: 0
+            }
+          }
+          {
+            metadata: {
+              inputs: []
+              type: 'Extension/Microsoft_AAD_IAM/PartType/UserManagementSummaryPart'
+            }
+            position: {
+              colSpan: 2
+              rowSpan: 2
+              x: 6
+              y: 0
+            }
+          }
+          {
+            metadata: {
+              inputs: []
+              settings: {
+                content: {}
+              }
+              type: 'Extension/HubsExtension/PartType/ClockPart'
+            }
+            position: {
+              colSpan: 2
+              rowSpan: 2
+              x: 8
+              y: 0
+            }
+          }
+          {
+            metadata: {
+              inputs: [
+                {
+                  isOptional: true
+                  name: 'selectedMenuItemId'
+                }
+              ]
+              type: 'Extension/HubsExtension/PartType/GalleryTile'
+            }
+            position: {
+              colSpan: 2
+              rowSpan: 2
+              x: 6
+              y: 2
+            }
+          }
+          {
+            metadata: {
+              inputs: []
+              type: 'Extension/HubsExtension/PartType/HelpAndSupportPart'
+            }
+            position: {
+              colSpan: 2
+              rowSpan: 2
+              x: 8
+              y: 2
+            }
+          }
+        ]
+      }
+    ]
     location: '<location>'
+    metadata: {
+      model: {
+        filterLocale: {
+          value: 'en-us'
+        }
+        filters: {
+          value: {
+            MsPortalFx_TimeRange: {
+              displayCache: {
+                name: 'UTC Time'
+                value: 'Past 24 hours'
+              }
+              filteredPartIds: [
+                'StartboardPart-MonitorChartPart-f6c2e060-fabc-4ce5-b031-45f3296510dd'
+              ]
+              model: {
+                format: 'utc'
+                granularity: 'auto'
+                relative: '24h'
+              }
+            }
+          }
+        }
+        timeRange: {
+          type: 'MsPortalFx.Composition.Configuration.ValueTypes.TimeRange'
+          value: {
+            relative: {
+              duration: 24
+              timeUnit: 1
+            }
+          }
+        }
+      }
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -375,8 +556,135 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
       "value": "pdwaf001"
     },
     // Non-required parameters
+    "lenses": {
+      "value": [
+        {
+          "order": 0,
+          "parts": [
+            {
+              "metadata": {
+                "inputs": [],
+                "settings": {
+                  "content": {
+                    "src": "https://www.youtube.com/watch?v=JbIMrJKW5N0",
+                    "subtitle": "Learn more about AVM",
+                    "title": "Azure Verified Modules (AVM) introduction"
+                  }
+                },
+                "type": "Extension/HubsExtension/PartType/VideoPart"
+              },
+              "position": {
+                "colSpan": 6,
+                "rowSpan": 4,
+                "x": 0,
+                "y": 0
+              }
+            },
+            {
+              "metadata": {
+                "inputs": [],
+                "type": "Extension/Microsoft_AAD_IAM/PartType/UserManagementSummaryPart"
+              },
+              "position": {
+                "colSpan": 2,
+                "rowSpan": 2,
+                "x": 6,
+                "y": 0
+              }
+            },
+            {
+              "metadata": {
+                "inputs": [],
+                "settings": {
+                  "content": {}
+                },
+                "type": "Extension/HubsExtension/PartType/ClockPart"
+              },
+              "position": {
+                "colSpan": 2,
+                "rowSpan": 2,
+                "x": 8,
+                "y": 0
+              }
+            },
+            {
+              "metadata": {
+                "inputs": [
+                  {
+                    "isOptional": true,
+                    "name": "selectedMenuItemId"
+                  }
+                ],
+                "type": "Extension/HubsExtension/PartType/GalleryTile"
+              },
+              "position": {
+                "colSpan": 2,
+                "rowSpan": 2,
+                "x": 6,
+                "y": 2
+              }
+            },
+            {
+              "metadata": {
+                "inputs": [],
+                "type": "Extension/HubsExtension/PartType/HelpAndSupportPart"
+              },
+              "position": {
+                "colSpan": 2,
+                "rowSpan": 2,
+                "x": 8,
+                "y": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "model": {
+          "filterLocale": {
+            "value": "en-us"
+          },
+          "filters": {
+            "value": {
+              "MsPortalFx_TimeRange": {
+                "displayCache": {
+                  "name": "UTC Time",
+                  "value": "Past 24 hours"
+                },
+                "filteredPartIds": [
+                  "StartboardPart-MonitorChartPart-f6c2e060-fabc-4ce5-b031-45f3296510dd"
+                ],
+                "model": {
+                  "format": "utc",
+                  "granularity": "auto",
+                  "relative": "24h"
+                }
+              }
+            }
+          },
+          "timeRange": {
+            "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange",
+            "value": {
+              "relative": {
+                "duration": 24,
+                "timeUnit": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -401,7 +709,9 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lenses`](#parameter-lenses) | array | The dashboard lenses. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`metadata`](#parameter-metadata) | object | The dashboard metadata. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -435,12 +745,137 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `metadata`
 
 The dashboard metadata.
 
 - Required: No
 - Type: object
+
+### Parameter: `roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `tags`
 
