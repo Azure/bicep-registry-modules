@@ -68,11 +68,8 @@ param privateEndpoints privateEndpointType
 @description('Optional. The Storage Account ManagementPolicies Rules.')
 param managementPolicyRules array?
 
-@description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls networkAclsType = {
-  bypass: 'AzureServices'
-  defaultAction: 'Deny'
-}
+@description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+param networkAcls networkAclsType?
 
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
 param requireInfrastructureEncryption bool = true
@@ -176,6 +173,13 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. The SAS expiration period. DD.HH:MM:SS.')
 param sasExpirationPeriod string = ''
 
+@description('Optional. The keyType to use with Queue & Table services.')
+@allowed([
+  'Account'
+  'Service'
+])
+param keyType string?
+
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
 
@@ -276,47 +280,43 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: name
@@ -354,9 +354,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
             : null
           table: {
             enabled: true
+            keyType: keyType
           }
           queue: {
             enabled: true
+            keyType: keyType
           }
         }
         keyvaultproperties: !empty(customerManagedKey)
@@ -397,11 +399,15 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
       ? {
           resourceAccessRules: networkAcls.?resourceAccessRules
           bypass: networkAcls.?bypass
-          defaultAction: networkAcls.?defaultAction
+          defaultAction: networkAcls.?defaultAction ?? 'Deny'
           virtualNetworkRules: networkAcls.?virtualNetworkRules
           ipRules: networkAcls.?ipRules
         }
-      : null
+      : {
+          // New default case that enables the firewall by default
+          bypass: 'AzureServices'
+          defaultAction: 'Deny'
+        }
     allowBlobPublicAccess: allowBlobPublicAccess
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
@@ -434,17 +440,16 @@ resource storageAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-resource storageAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: storageAccount
+resource storageAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: storageAccount
+}
 
 resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -466,7 +471,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
     params: {
@@ -519,17 +524,16 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
 ]
 
 // Lifecycle Policy
-module storageAccount_managementPolicies 'management-policy/main.bicep' =
-  if (!empty(managementPolicyRules ?? [])) {
-    name: '${uniqueString(deployment().name, location)}-Storage-ManagementPolicies'
-    params: {
-      storageAccountName: storageAccount.name
-      rules: managementPolicyRules ?? []
-    }
-    dependsOn: [
-      storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
-    ]
+module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!empty(managementPolicyRules ?? [])) {
+  name: '${uniqueString(deployment().name, location)}-Storage-ManagementPolicies'
+  params: {
+    storageAccountName: storageAccount.name
+    rules: managementPolicyRules ?? []
   }
+  dependsOn: [
+    storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
+  ]
+}
 
 // SFTP user settings
 module storageAccount_localUsers 'local-user/main.bicep' = [
@@ -549,65 +553,61 @@ module storageAccount_localUsers 'local-user/main.bicep' = [
 ]
 
 // Containers
-module storageAccount_blobServices 'blob-service/main.bicep' =
-  if (!empty(blobServices)) {
-    name: '${uniqueString(deployment().name, location)}-Storage-BlobServices'
-    params: {
-      storageAccountName: storageAccount.name
-      containers: blobServices.?containers
-      automaticSnapshotPolicyEnabled: blobServices.?automaticSnapshotPolicyEnabled
-      changeFeedEnabled: blobServices.?changeFeedEnabled
-      changeFeedRetentionInDays: blobServices.?changeFeedRetentionInDays
-      containerDeleteRetentionPolicyEnabled: blobServices.?containerDeleteRetentionPolicyEnabled
-      containerDeleteRetentionPolicyDays: blobServices.?containerDeleteRetentionPolicyDays
-      containerDeleteRetentionPolicyAllowPermanentDelete: blobServices.?containerDeleteRetentionPolicyAllowPermanentDelete
-      corsRules: blobServices.?corsRules
-      defaultServiceVersion: blobServices.?defaultServiceVersion
-      deleteRetentionPolicyAllowPermanentDelete: blobServices.?deleteRetentionPolicyAllowPermanentDelete
-      deleteRetentionPolicyEnabled: blobServices.?deleteRetentionPolicyEnabled
-      deleteRetentionPolicyDays: blobServices.?deleteRetentionPolicyDays
-      isVersioningEnabled: blobServices.?isVersioningEnabled
-      lastAccessTimeTrackingPolicyEnabled: blobServices.?lastAccessTimeTrackingPolicyEnabled
-      restorePolicyEnabled: blobServices.?restorePolicyEnabled
-      restorePolicyDays: blobServices.?restorePolicyDays
-      diagnosticSettings: blobServices.?diagnosticSettings
-    }
+module storageAccount_blobServices 'blob-service/main.bicep' = if (!empty(blobServices)) {
+  name: '${uniqueString(deployment().name, location)}-Storage-BlobServices'
+  params: {
+    storageAccountName: storageAccount.name
+    containers: blobServices.?containers
+    automaticSnapshotPolicyEnabled: blobServices.?automaticSnapshotPolicyEnabled
+    changeFeedEnabled: blobServices.?changeFeedEnabled
+    changeFeedRetentionInDays: blobServices.?changeFeedRetentionInDays
+    containerDeleteRetentionPolicyEnabled: blobServices.?containerDeleteRetentionPolicyEnabled
+    containerDeleteRetentionPolicyDays: blobServices.?containerDeleteRetentionPolicyDays
+    containerDeleteRetentionPolicyAllowPermanentDelete: blobServices.?containerDeleteRetentionPolicyAllowPermanentDelete
+    corsRules: blobServices.?corsRules
+    defaultServiceVersion: blobServices.?defaultServiceVersion
+    deleteRetentionPolicyAllowPermanentDelete: blobServices.?deleteRetentionPolicyAllowPermanentDelete
+    deleteRetentionPolicyEnabled: blobServices.?deleteRetentionPolicyEnabled
+    deleteRetentionPolicyDays: blobServices.?deleteRetentionPolicyDays
+    isVersioningEnabled: blobServices.?isVersioningEnabled
+    lastAccessTimeTrackingPolicyEnabled: blobServices.?lastAccessTimeTrackingPolicyEnabled
+    restorePolicyEnabled: blobServices.?restorePolicyEnabled
+    restorePolicyDays: blobServices.?restorePolicyDays
+    diagnosticSettings: blobServices.?diagnosticSettings
   }
+}
 
 // File Shares
-module storageAccount_fileServices 'file-service/main.bicep' =
-  if (!empty(fileServices)) {
-    name: '${uniqueString(deployment().name, location)}-Storage-FileServices'
-    params: {
-      storageAccountName: storageAccount.name
-      diagnosticSettings: fileServices.?diagnosticSettings
-      protocolSettings: fileServices.?protocolSettings
-      shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
-      shares: fileServices.?shares
-    }
+module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileServices)) {
+  name: '${uniqueString(deployment().name, location)}-Storage-FileServices'
+  params: {
+    storageAccountName: storageAccount.name
+    diagnosticSettings: fileServices.?diagnosticSettings
+    protocolSettings: fileServices.?protocolSettings
+    shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
+    shares: fileServices.?shares
   }
+}
 
 // Queue
-module storageAccount_queueServices 'queue-service/main.bicep' =
-  if (!empty(queueServices)) {
-    name: '${uniqueString(deployment().name, location)}-Storage-QueueServices'
-    params: {
-      storageAccountName: storageAccount.name
-      diagnosticSettings: queueServices.?diagnosticSettings
-      queues: queueServices.?queues
-    }
+module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queueServices)) {
+  name: '${uniqueString(deployment().name, location)}-Storage-QueueServices'
+  params: {
+    storageAccountName: storageAccount.name
+    diagnosticSettings: queueServices.?diagnosticSettings
+    queues: queueServices.?queues
   }
+}
 
 // Table
-module storageAccount_tableServices 'table-service/main.bicep' =
-  if (!empty(tableServices)) {
-    name: '${uniqueString(deployment().name, location)}-Storage-TableServices'
-    params: {
-      storageAccountName: storageAccount.name
-      diagnosticSettings: tableServices.?diagnosticSettings
-      tables: tableServices.?tables
-    }
+module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tableServices)) {
+  name: '${uniqueString(deployment().name, location)}-Storage-TableServices'
+  params: {
+    storageAccountName: storageAccount.name
+    diagnosticSettings: tableServices.?diagnosticSettings
+    tables: tableServices.?tables
   }
+}
 
 @description('The resource ID of the deployed storage account.')
 output resourceId string = storageAccount.id
@@ -682,7 +682,7 @@ type networkAclsType = {
     resourceId: string
   }[]?
 
-  @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
+  @description('Optional. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
   bypass: (
     | 'None'
     | 'AzureServices'
@@ -691,7 +691,7 @@ type networkAclsType = {
     | 'AzureServices, Logging'
     | 'AzureServices, Metrics'
     | 'AzureServices, Logging, Metrics'
-    | 'Logging, Metrics')
+    | 'Logging, Metrics')?
 
   @description('Optional. Sets the virtual network rules.')
   virtualNetworkRules: array?
@@ -699,9 +699,9 @@ type networkAclsType = {
   @description('Optional. Sets the IP ACL rules.')
   ipRules: array?
 
-  @description('Required. Specifies the default action of allow or deny when no other rules match.')
-  defaultAction: ('Allow' | 'Deny')
-}?
+  @description('Optional. Specifies the default action of allow or deny when no other rules match.')
+  defaultAction: ('Allow' | 'Deny')?
+}
 
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')

@@ -99,6 +99,11 @@ module testDeployment '../../../main.bicep' = {
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
+              zones: [
+                1
+                2
+                3
+              ]
               roleAssignments: [
                 {
                   roleDefinitionIdOrName: 'Reader'
@@ -107,11 +112,6 @@ module testDeployment '../../../main.bicep' = {
                 }
               ]
             }
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
             subnetResourceId: nestedDependencies.outputs.subnetResourceId
             diagnosticSettings: [
               {
@@ -129,7 +129,7 @@ module testDeployment '../../../main.bicep' = {
             ]
           }
         ]
-        nicSuffix: '-nic-01'
+        name: 'nic-test-01'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -154,35 +154,38 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     osDisk: {
+      name: 'osdisk01'
       caching: 'ReadOnly'
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
-    availabilityZone: 1
+    zone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
     dataDisks: [
       {
+        name: 'datadisk01'
         caching: 'ReadWrite'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
       }
       {
+        name: 'datadisk02'
         caching: 'ReadWrite'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -190,6 +193,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     enableAutomaticUpdates: true
     patchMode: 'AutomaticByPlatform'
+    rebootSetting: 'IfRequired'
     disablePasswordAuthentication: true
     encryptionAtHost: false
     extensionCustomScriptConfig: {
@@ -211,6 +215,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionDependencyAgentConfig: {
       enabled: true
+      enableAMA: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

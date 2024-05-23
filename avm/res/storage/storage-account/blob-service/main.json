@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "12175020972967228537"
+      "version": "0.27.1.19265",
+      "templateHash": "14376792680036937652"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service.",
@@ -159,10 +159,10 @@
     "changeFeedRetentionInDays": {
       "type": "int",
       "nullable": true,
-      "minValue": 0,
+      "minValue": 1,
       "maxValue": 146000,
       "metadata": {
-        "description": "Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. A \"0\" value indicates an infinite retention of the change feed."
+        "description": "Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed."
       }
     },
     "containerDeleteRetentionPolicyEnabled": {
@@ -403,8 +403,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3297137219061666309"
+              "version": "0.27.1.19265",
+              "templateHash": "7167285049910521671"
             },
             "name": "Storage Account Blob Containers",
             "description": "This module deploys a Storage Account Blob Container.",
@@ -672,8 +672,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "2429139364933838439"
+                      "version": "0.27.1.19265",
+                      "templateHash": "7418870035820197377"
                     },
                     "name": "Storage Account Blob Container Immutability Policies",
                     "description": "This module deploys a Storage Account Blob Container Immutability Policy.",

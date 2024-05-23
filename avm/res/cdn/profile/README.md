@@ -86,8 +86,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     ]
     location: 'global'
-    originResponseTimeoutSeconds: 60
-    origionGroups: [
+    originGroups: [
       {
         loadBalancingSettings: {
           additionalLatencyInMilliseconds: 50
@@ -103,6 +102,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         ]
       }
     ]
+    originResponseTimeoutSeconds: 60
     ruleSets: [
       {
         name: 'deptestcdnpafdruleset'
@@ -183,10 +183,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "location": {
       "value": "global"
     },
-    "originResponseTimeoutSeconds": {
-      "value": 60
-    },
-    "origionGroups": {
+    "originGroups": {
       "value": [
         {
           "loadBalancingSettings": {
@@ -203,6 +200,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           ]
         }
       ]
+    },
+    "originResponseTimeoutSeconds": {
+      "value": 60
     },
     "ruleSets": {
       "value": [
@@ -584,7 +584,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`origionGroups`](#parameter-origiongroups) | array | Array of origin group objects. Required if the afdEndpoints is specified. |
+| [`originGroups`](#parameter-origingroups) | array | Array of origin group objects. Required if the afdEndpoints is specified. |
 
 **Optional parameters**
 
@@ -634,7 +634,7 @@ The pricing tier (defines a CDN provider, feature list and rate) of the CDN prof
   ]
   ```
 
-### Parameter: `origionGroups`
+### Parameter: `originGroups`
 
 Array of origin group objects. Required if the afdEndpoints is specified.
 

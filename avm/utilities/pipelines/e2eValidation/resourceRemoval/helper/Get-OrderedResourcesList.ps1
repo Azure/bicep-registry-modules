@@ -15,11 +15,14 @@ Each item should be in format:
     type        = '...'
 }
 
-.PARAMETER Order
-Optional. The order of resource types to apply for deletion. If order is provided, the list is returned as is
+.PARAMETER RemoveFirstSequence
+Optional. The order of resource types to remove before all others. If no sequence is provided, the list is returned as is
+
+.PARAMETER RemoveLastSequence
+Optional. The order of resource types to remove after all others. If no sequence is provided, the list is returned as is
 
 .EXAMPLE
-Get-OrderedResourcesList -ResourcesToOrder @(@{ name = 'myAccount'; resourceId '(..)/Microsoft.Automation/automationAccounts/myAccount'; type = 'Microsoft.Automation/automationAccounts'}) -Order @('Microsoft.Insights/diagnosticSettings','Microsoft.Automation/automationAccounts')
+Get-OrderedResourcesList -ResourcesToOrder @(@{ name = 'myAccount'; resourceId '(..)/Microsoft.Automation/automationAccounts/myAccount'; type = 'Microsoft.Automation/automationAccounts'}) -RemoveFirstSequence @('Microsoft.Insights/diagnosticSettings','Microsoft.Automation/automationAccounts')
 
 Order the given list of resources which would put the diagnostic settings to the front of the list, then the automation account, then the rest. As only one item exists, the list is returned as is.
 #>
@@ -31,14 +34,25 @@ function Get-OrderedResourcesList {
         [hashtable[]] $ResourcesToOrder,
 
         [Parameter(Mandatory = $false)]
-        [string[]] $Order = @()
+        [string[]] $RemoveFirstSequence = @(),
+
+        [Parameter(Mandatory = $false)]
+        [string[]] $RemoveLastSequence = @()
     )
 
-    # Going from back to front of the list to stack in the correct order
-    for ($orderIndex = ($order.Count - 1); $orderIndex -ge 0; $orderIndex--) {
-        $searchItem = $order[$orderIndex]
+    # Order resources to remove first. Going from back to front of the list to stack in the correct order
+    for ($orderIndex = ($RemoveFirstSequence.Count - 1); $orderIndex -ge 0; $orderIndex--) {
+        $searchItem = $RemoveFirstSequence[$orderIndex]
         if ($elementsContained = $resourcesToOrder | Where-Object { $_.type -eq $searchItem }) {
             $resourcesToOrder = @() + $elementsContained + ($resourcesToOrder | Where-Object { $_.type -ne $searchItem })
+        }
+    }
+
+    # Order resources to remove last. Going from front to back of the list to stack in the correct order
+    for ($orderIndex = 0; $orderIndex -lt $RemoveLastSequence.Count; $orderIndex++) {
+        $searchItem = $RemoveLastSequence[$orderIndex]
+        if ($elementsContained = $resourcesToOrder | Where-Object { $_.type -eq $searchItem }) {
+            $resourcesToOrder = @() + ($resourcesToOrder | Where-Object { $_.type -ne $searchItem }) + $elementsContained
         }
     }
 

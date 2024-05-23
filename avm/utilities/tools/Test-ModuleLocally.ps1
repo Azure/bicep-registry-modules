@@ -216,7 +216,7 @@ function Test-ModuleLocally {
             foreach ($testFilePath in $moduleTestFiles) {
                 $tokenConfiguration.FilePathList += (Get-LocallyReferencedFileList -FilePath $testFilePath)
             }
-            $tokenConfiguration.FilePathList = $tokenConfiguration.FilePathList | Sort-Object -Unique
+            $tokenConfiguration.FilePathList = $tokenConfiguration.FilePathList | Sort-Object -Culture 'en-US' -Unique
 
             # Add other template files as they may contain the 'moduleVersion'
             $tokenConfiguration.FilePathList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }

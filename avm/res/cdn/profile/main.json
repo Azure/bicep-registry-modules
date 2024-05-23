@@ -174,7 +174,7 @@
         "description": "Optional. Array of custom domain objects."
       }
     },
-    "origionGroups": {
+    "originGroups": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
@@ -978,11 +978,11 @@
     "profile_originGroups": {
       "copy": {
         "name": "profile_originGroups",
-        "count": "[length(parameters('origionGroups'))]"
+        "count": "[length(parameters('originGroups'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Profile-OrigionGroup-{1}', uniqueString(deployment().name), copyIndex())]",
+      "name": "[format('{0}-Profile-OriginGroup-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -990,25 +990,25 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('origionGroups')[copyIndex()].name]"
+            "value": "[parameters('originGroups')[copyIndex()].name]"
           },
           "profileName": {
             "value": "[parameters('name')]"
           },
           "loadBalancingSettings": {
-            "value": "[parameters('origionGroups')[copyIndex()].loadBalancingSettings]"
+            "value": "[parameters('originGroups')[copyIndex()].loadBalancingSettings]"
           },
           "healthProbeSettings": {
-            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'healthProbeSettings')]"
+            "value": "[tryGet(parameters('originGroups')[copyIndex()], 'healthProbeSettings')]"
           },
           "sessionAffinityState": {
-            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'sessionAffinityState')]"
+            "value": "[tryGet(parameters('originGroups')[copyIndex()], 'sessionAffinityState')]"
           },
           "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": {
-            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
+            "value": "[tryGet(parameters('originGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
           },
           "origins": {
-            "value": "[parameters('origionGroups')[copyIndex()].origins]"
+            "value": "[parameters('originGroups')[copyIndex()].origins]"
           }
         },
         "template": {
