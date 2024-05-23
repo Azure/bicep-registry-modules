@@ -6,11 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-<<<<<<< HEAD
-      "templateHash": "3647822949037966099"
-=======
-      "templateHash": "2222991004022934698"
->>>>>>> origin/main
+      "templateHash": "9862539386738041698"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -240,7 +236,7 @@
     }
   },
   "resources": {
-    "#_namePrefix_#Telemetry": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -1660,11 +1656,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-<<<<<<< HEAD
               "templateHash": "1139997023996590437"
-=======
-              "templateHash": "3255198433705940781"
->>>>>>> origin/main
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1815,11 +1807,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.26.170.59819",
-<<<<<<< HEAD
                       "templateHash": "5770374289363120600"
-=======
-                      "templateHash": "12469321322924109409"
->>>>>>> origin/main
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
