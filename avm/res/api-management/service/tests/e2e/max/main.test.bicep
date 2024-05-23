@@ -153,14 +153,13 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      loggers: [
-        {
-          name: 'app-insights-logger'
-          loggerCatagory: 'applicationInsights'
-          isBuffered: false
-          loggerDescription: 'Logger to Azure Application Insights'
-        }
-      ]
+      logger: {
+        name: 'app-insights-logger'
+        loggerCatagory: 'applicationInsights'
+        isBuffered: false
+        loggerDescription: 'Logger to Azure Application Insights'
+      }
+
       namedValues: [
         {
           displayName: 'apimkey'
