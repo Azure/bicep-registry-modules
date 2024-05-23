@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "13888331902588628493"
+      "version": "0.27.1.19265",
+      "templateHash": "8363675209548092624"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -210,8 +210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4383879433834970993"
+              "version": "0.27.1.19265",
+              "templateHash": "4122497544653764025"
             }
           },
           "parameters": {
@@ -291,7 +291,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "Write-Output 'Updating settings.json file...'\nWrite-Output \"  Storage account: $env:storageAccountName\"\nWrite-Output \"  Container: $env:containerName\"\n\n$validateScopes = { $_.Length -gt 45 }\n\n# Initialize variables\n$fileName = 'settings.json'\n$filePath = Join-Path -Path . -ChildPath $fileName\n$newScopes = $env:exportScopes.Split('|') | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\n\n# Get storage context\n$storageContext = @{\n  Context   = New-AzStorageContext -StorageAccountName $env:storageAccountName -UseConnectedAccount\n  Container = $env:containerName\n}\n\n# Download existing settings, if they exist\n$blob = Get-AzStorageBlobContent @storageContext -Blob $fileName -Destination $filePath -Force\nif ($blob) {\n  Write-Output 'Existing settings.json file found. Updating...'\n  $text = Get-Content $filePath -Raw\n  Write-Output '---------'\n  Write-Output $text\n  Write-Output '---------'\n  $json = $text | ConvertFrom-Json\n\n  # Rename exportScopes to scopes + convert to object array\n  if ($json.exportScopes) {\n    Write-Output '  Updating exportScopes...'\n    if ($json.exportScopes[0] -is [string]) {\n      Write-Output '    Converting string array to object array...'\n      $json.exportScopes = $json.exportScopes | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\n      if (-not ($json.exportScopes -is [array])) {\n        Write-Output '    Converting single object to object array...'\n        $json.exportScopes = @($json.exportScopes)\n      }\n    }\n\n    Write-Output \"    Renaming to 'scopes'...\"\n    $json | Add-Member -MemberType NoteProperty -Name scopes -Value $json.exportScopes\n    $json.PSObject.Properties.Remove('exportScopes')\n  }\n}\n\n# Set default if not found\nif (!$json) {\n  Write-Output 'No existing settings.json file found. Creating new file...'\n  $json = [ordered]@{\n    '$schema' = 'https://aka.ms/finops/hubs/settings-schema'\n    type      = 'HubInstance'\n    version   = ''\n    learnMore = 'https://aka.ms/finops/hubs'\n    scopes    = @()\n  }\n}\n\n# Updating settings\nWrite-Output \"Updating version to $env:ftkVersion...\"\n$json.version = $env:ftkVersion\nif ($newScopes) {\n  Write-Output \"Merging $($newScopes.Count) scopes...\"\n  $json.scopes = Compare-Object -ReferenceObject $json.scopes -DifferenceObject $newScopes -Property scope -PassThru -IncludeEqual\n\n  # Remove the SideIndicator property from the Compare-Object output\n  $json.scopes | ForEach-Object { $_.PSObject.Properties.Remove('SideIndicator') } | ConvertTo-Json\n\n  if (-not ($json.scopes -is [array])) {\n    $json.scopes = @($json.scopes)\n  }\n  Write-Output \"$($json.scopes.Count) scopes found.\"\n}\n$text = $json | ConvertTo-Json\nWrite-Output '---------'\nWrite-Output $text\nWrite-Output '---------'\n$text | Out-File $filePath\n\n# Upload new/updated settings\nWrite-Output 'Uploading settings.json file...'\nSet-AzStorageBlobContent @storageContext -File $filePath -Force\n"
+            "$fxv#0": "Write-Output 'Updating settings.json file...'\nWrite-Output \"Storage account: $env:storageAccountName\"\nWrite-Output \"Container: $env:containerName\"\n\n$validateScopes = { $_.Length -gt 45 }\n\n# Initialize variables\n$fileName = 'settings.json'\n$filePath = Join-Path -Path . -ChildPath $fileName\n$newScopes = $env:exportScopes.Split('|') | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\n\n# Get storage context\n$storageContext = @{\n  Context   = New-AzStorageContext -StorageAccountName $env:storageAccountName -UseConnectedAccount\n  Container = $env:containerName\n}\n\n# Download existing settings, if they exist\n$blob = Get-AzStorageBlobContent @storageContext -Blob $fileName -Destination $filePath -Force\nif ($blob) {\n  Write-Output 'Existing settings.json file found. Updating...'\n  $text = Get-Content $filePath -Raw\n  Write-Output '---------'\n  Write-Output $text\n  Write-Output '---------'\n  $json = $text | ConvertFrom-Json\n\n  # Rename exportScopes to scopes + convert to object array\n  if ($json.exportScopes) {\n    Write-Output '  Updating exportScopes...'\n    if ($json.exportScopes[0] -is [string]) {\n      Write-Output '    Converting string array to object array...'\n      $json.exportScopes = $json.exportScopes | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\n      if (-not ($json.exportScopes -is [array])) {\n        Write-Output '    Converting single object to object array...'\n        $json.exportScopes = @($json.exportScopes)\n      }\n    }\n\n    Write-Output \"    Renaming to 'scopes'...\"\n    $json | Add-Member -MemberType NoteProperty -Name scopes -Value $json.exportScopes\n    $json.PSObject.Properties.Remove('exportScopes')\n  }\n}\n\n# Set default if not found\nif (!$json) {\n  Write-Output 'No existing settings.json file found. Creating new file...'\n  $json = [ordered]@{\n    '$schema' = 'https://aka.ms/finops/hubs/settings-schema'\n    type      = 'HubInstance'\n    version   = ''\n    learnMore = 'https://aka.ms/finops/hubs'\n    scopes    = @()\n  }\n}\n\n# Updating settings\nWrite-Output \"Updating version to $env:ftkVersion...\"\n$json.version = $env:ftkVersion\nif ($newScopes) {\n  Write-Output \"Merging $($newScopes.Count) scopes...\"\n  $json.scopes = Compare-Object -ReferenceObject $json.scopes -DifferenceObject $newScopes -Property scope -PassThru -IncludeEqual\n\n  # Remove the SideIndicator property from the Compare-Object output\n  $json.scopes | ForEach-Object { $_.PSObject.Properties.Remove('SideIndicator') } | ConvertTo-Json\n\n  if (-not ($json.scopes -is [array])) {\n    $json.scopes = @($json.scopes)\n  }\n  Write-Output \"$($json.scopes.Count) scopes found.\"\n}\n$text = $json | ConvertTo-Json\nWrite-Output '---------'\nWrite-Output $text\nWrite-Output '---------'\n$text | Out-File $filePath\n\n# Upload new/updated settings\nWrite-Output 'Uploading settings.json file...'\nSet-AzStorageBlobContent @storageContext -File $filePath -Force\n"
           },
           "resources": {
             "identity": {
@@ -5614,8 +5614,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "13617090394106970682"
+              "version": "0.27.1.19265",
+              "templateHash": "3536466427550878903"
             }
           },
           "parameters": {
@@ -8386,8 +8386,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "18290965054356591240"
+              "version": "0.27.1.19265",
+              "templateHash": "805240367391579055"
             }
           },
           "parameters": {
