@@ -37,29 +37,9 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '00482a5a-887f-4fb3-b363-3b7fe8e74483'
   )
-  'Key Vault Certificates Officer': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'a4417e6f-fecd-4de8-b567-7b0420556985'
-  )
-  'Key Vault Certificate User': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'db79e9a7-68ee-4b58-9aeb-b90e7c24fcba'
-  )
   'Key Vault Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f25e0fa2-a7c8-4377-a976-54943a77a395'
-  )
-  'Key Vault Crypto Officer': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
-  )
-  'Key Vault Crypto Service Encryption User': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-  )
-  'Key Vault Crypto User': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '12338af0-0e69-4776-bea7-57ae8d297424'
   )
   'Key Vault Reader': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
