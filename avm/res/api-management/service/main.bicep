@@ -40,7 +40,7 @@ param location string = resourceGroup().location
 param lock lockType
 
 @description('Optional. API Management Logger.')
-param loggers loggerType
+param logger loggerType
 
 @description('Optional. Limit control plane API calls to API Management service with version equal to or newer than this value.')
 param minApiVersion string = ''
@@ -264,10 +264,11 @@ module service_apis 'api/main.bicep' = [
       type: api.?type
       value: api.?value
       wsdlSelector: api.?wsdlSelector
-      // loggerName: 'app-insights-logger' TODO
+      loggerName: logger!.name
     }
     dependsOn: [
       service_apiVersionSets
+      service_loggers
     ]
   }
 ]
@@ -385,17 +386,15 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
-module service_loggers 'loggers/main.bicep' = [
-  for (logger, index) in (loggers ?? []): if (!empty(appInsightsName)) {
-    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
-    params: {
-      name: 'app-insights-logger'
-      apiManagementServiceName: service.name
-      appInsightsName: appInsightsName
-      loggerType: logger.loggerCatagory
-    }
+module service_loggers 'loggers/main.bicep' = if (!empty(appInsightsName)) {
+  name: '${uniqueString(deployment().name, location)}-Apim-Logger'
+  params: {
+    name: logger!.name!
+    apiManagementServiceName: service.name
+    appInsightsName: appInsightsName
+    loggerType: logger!.loggerCatagory
   }
-]
+}
 
 module service_namedValues 'named-value/main.bicep' = [
   for (namedValue, index) in namedValues: {
@@ -559,6 +558,9 @@ type managedIdentitiesType = {
 }?
 
 type loggerType = {
+  @description('Required. The logger name for API Management.')
+  name: string?
+
   @description('Required. The logger type for API Management.')
   loggerCatagory: ('applicationInsights' | 'azureEventHub' | 'azureMonitor')
 
@@ -567,7 +569,7 @@ type loggerType = {
 
   @description('Optional. Logger description.')
   loggerDescription: string?
-}[]?
+}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

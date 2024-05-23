@@ -155,6 +155,7 @@ module testDeployment '../../../main.bicep' = [
       }
       loggers: [
         {
+          name: 'app-insights-logger'
           loggerCatagory: 'applicationInsights'
           isBuffered: false
           loggerDescription: 'Logger to Azure Application Insights'
