@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "3647822949037966099"
+      "templateHash": "17450996171898926905"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -236,7 +236,7 @@
     }
   },
   "resources": {
-    "gbdTelemetry": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -250,7 +250,7 @@
           "outputs": {
             "telemetry": {
               "type": "String",
-              "value": "For more information, see https://aka.ms/#_namePrefix_#/TelemetryInfo"
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
             }
           }
         }
