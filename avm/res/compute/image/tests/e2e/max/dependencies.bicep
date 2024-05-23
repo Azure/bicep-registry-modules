@@ -112,7 +112,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     }
   }
   properties: {
-    azPowerShellVersion: '11.5'
+    azPowerShellVersion: '11.5' // Source: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list
     retentionInterval: 'P1D'
     arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Start-ImageTemplate.ps1')
