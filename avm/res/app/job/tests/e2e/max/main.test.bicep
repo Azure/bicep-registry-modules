@@ -76,10 +76,11 @@ module testDeployment '../../../main.bicep' = [
           value: guid(deployment().name)
         }
       ]
-      triggerType: 'Manual'
-      manualTriggerConfig: {
-        replicaCompletionCount: 1
+      triggerType: 'Schedule'
+      scheduleTriggerConfig: {
+        cronExpression: '0 0 * * *'
         parallelism: 1
+        replicaCompletionCount: 1
       }
       containers: [
         {
@@ -88,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
 
           resources: {
             // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
-            cpuLimit: json('0.25')
+            cpu: '0.25'
             memory: '0.5Gi'
           }
           probes: [
@@ -108,6 +109,38 @@ module testDeployment '../../../main.bicep' = [
               periodSeconds: 3
             }
           ]
+          volumeMounts: [
+            {
+              volumeName: '${namePrefix}${serviceShort}emptydir'
+              mountPath: '/mnt/data'
+            }
+          ]
+        }
+        {
+          name: 'second-simple-container'
+          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          env: [
+            {
+              name: 'SOME_ENV_VAR'
+              value: 'some-value'
+            }
+          ]
+          args: [
+            'arg1'
+            'arg2'
+          ]
+          command: [
+            '/bin/bash'
+            '-c'
+            'echo hello'
+            'sleep 100000'
+          ]
+        }
+      ]
+      volumes: [
+        {
+          storageType: 'EmptyDir'
+          name: '${namePrefix}${serviceShort}emptydir'
         }
       ]
       roleAssignments: [

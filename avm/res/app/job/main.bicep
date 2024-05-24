@@ -8,13 +8,21 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Required. Resource ID of environment.')
+@description('Required. Resource ID of Container Apps Environment.')
 param environmentResourceId string
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
 @description('Optional. Tags of the resource.')
+@metadata({
+  example: '''
+  {
+      "key1": "value1",
+      "key2": "value2"
+  }
+  '''
+})
 param tags object?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
@@ -64,13 +72,13 @@ param enableTelemetry bool = true
 param containers containerType
 
 @description('Optional. List of specialized containers that run before app containers.')
-param initContainersTemplate array?
+param initContainersTemplate initContainerType?
 
 @description('Optional. Required if TriggerType is Event. Configuration of an event driven job.')
-param eventTriggerConfig object?
+param eventTriggerConfig jobConfigurationEventTriggerConfigType?
 
 @description('Optional. Required if TriggerType is Schedule. Configuration of a schedule based job.')
-param scheduleTriggerConfig object?
+param scheduleTriggerConfig jobConfigurationScheduleTriggerconfigType?
 
 @description('Optional. Required if TriggerType is Manual. Configuration of a manual job.')
 param manualTriggerConfig object?
@@ -206,6 +214,10 @@ resource automationAccount_roleAssignments 'Microsoft.Authorization/roleAssignme
   }
 ]
 
+// ============ //
+// Outputs      //
+// ============ //
+
 @description('The resource ID of the Container App Job.')
 output resourceId string = job.id
 
@@ -312,14 +324,14 @@ type volumeType = {
   @description('Required. The name of the volume.')
   name: string
 
-  @description('Optional. Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.')
-  mountOptions: string
+  @description('Conditional. Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string. Required if `storageType` is not `EmptyDir`.')
+  mountOptions: string?
 
   @description('Optional. List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be added to volume.')
   secrets: secretVolumeItemType
 
   @description('Conditional. The storage account name. Not needed for EmptyDir and Secret. Required if `storageType` is `AzureFile` or `NfsAzureFile`.')
-  storageName: string
+  storageName: string?
 
   @description('Required. The container name.')
   storageType: ('AzureFile' | 'EmptyDir' | 'NfsAzureFile' | 'Secret')
@@ -329,11 +341,11 @@ type containerEnvironmentVariablesType = {
   @description('Required. The environment variable name.')
   name: string
 
-  @description('Conditional. The name of the Container App secret from which to pull the envrionment variable value. Required if value is not provided.')
-  secretRef: string
+  @description('Conditional. The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.')
+  secretRef: string?
 
-  @description('Optional. The environment variable value. Required if secretRef is not provided.')
-  value: string
+  @description('Conditional. The environment variable value. Required if `secretRef` is null.')
+  value: string?
 }[]?
 
 type containerProbeHttpGetHttpHeadersItem = {
@@ -422,7 +434,7 @@ type containerResourceType = {
     1
     '''
   })
-  cpuLimit: string
+  cpu: string
 
   @description('Optional. The required memory.')
   @metadata({
@@ -440,11 +452,112 @@ type containerVolumeMountType = {
   mountPath: string
 
   @description('Optional. Path within the volume from which the container\'s volume should be mounted.')
-  subPath: string
+  subPath: string?
 
   @description('Required. This must match the Name of a Volume.')
   volumeName: string
 }[]?
+
+type jobConfigurationScheduleTriggerconfigType = {
+  @description('Required. Cron formatted repeating schedule ("* * * * *") of a Cron Job.')
+  cronExpression: string
+
+  @description('Required. Number of parallel replicas of a job that can run at a given time.')
+  parallelism: int
+
+  @description('Optional. Number of successful completions of a job that are necessary to consider the job complete.')
+  replicaCompletionCount: int
+}
+
+type jobConfigurationEventTriggerConfigType = {
+  @description('Required. Number of parallel replicas of a job that can run at a given time.')
+  parallelism: int
+
+  @description('Optional. Minimum number of successful replica completions before overall job completion.')
+  replicaCompletionCount: int
+
+  @description('Required. Scaling configurations for event driven jobs.')
+  scale: jobScaleType
+}
+
+type jobScaleType = {
+  @description('Optional. Maximum number of job executions that are created for a trigger, default 100.')
+  maxExecutions: int?
+
+  @description('Optional. Minimum number of job executions that are created for a trigger, default 0.')
+  minExecutions: int?
+
+  @description('Optional. Interval to check each event source in seconds. Defaults to 30s.')
+  pollingInterval: int?
+
+  @description('Optional. Scaling rules for the job.')
+  rules: jobScaleRuleType
+}
+
+type jobScaleRuleType = {
+  @description('Required. Authentication secrets for the scale rule.')
+  auth: scaleRuleAuthType
+
+  @description('Optional. Metadata properties to describe the scale rule.')
+  @metadata({
+    example: '''
+    {
+      "// for type azure-queue
+      {
+        queueName: 'default'
+        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+      }"
+    }
+    '''
+  })
+  'metadata': object
+
+  @description('Required. The name of the scale rule.')
+  name: string
+
+  @description('Optional. The type of the rule.')
+  @metadata({
+    example: '''
+    {
+      "azure-servicebus"
+      "azure-queue"
+      "redis"
+    }
+    '''
+  })
+  'type': string
+}[]
+
+type scaleRuleAuthType = {
+  @description('Required. Name of the secret from which to pull the auth params.')
+  secretRef: string
+
+  @description('Required. Trigger Parameter that uses the secret.')
+  triggerParameter: string
+}[]?
+
+type initContainerType = {
+  @description('Optional. Container start command arguments.')
+  args: string[]
+
+  @description('Optional. Container start command.')
+  command: string[]
+
+  @description('Optional. The environment variables to set in the container.')
+  env: containerEnvironmentVariablesType
+
+  @description('Required. The image of the container.')
+  image: string
+
+  @description('Required. The name of the container.')
+  name: string
+
+  @description('Required. Container resource requirements.')
+  resources: containerResourceType
+
+  @description('Optional. The volume mounts to attach to the container.')
+  volumeMounts: containerVolumeMountType
+}[]
 
 type containerType = {
   @description('Optional. Container start command arguments.')

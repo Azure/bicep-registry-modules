@@ -50,7 +50,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'simple-hello-world-container'
         resources: {
-          cpuLimit: '<cpuLimit>'
+          cpu: '0.25'
           memory: '0.5Gi'
         }
       }
@@ -87,7 +87,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
           "name": "simple-hello-world-container",
           "resources": {
-            "cpuLimit": "<cpuLimit>",
+            "cpu": "0.25",
             "memory": "0.5Gi"
           }
         }
@@ -155,14 +155,40 @@ module job 'br/public:avm/res/app/job:<version>' = {
           }
         ]
         resources: {
-          cpuLimit: '<cpuLimit>'
+          cpu: '0.25'
           memory: '0.5Gi'
         }
+        volumeMounts: [
+          {
+            mountPath: '/mnt/data'
+            volumeName: 'ajmaxemptydir'
+          }
+        ]
+      }
+      {
+        args: [
+          'arg1'
+          'arg2'
+        ]
+        command: [
+          '-c'
+          '/bin/bash'
+          'echo hello'
+          'sleep 100000'
+        ]
+        env: [
+          {
+            name: 'SOME_ENV_VAR'
+            value: 'some-value'
+          }
+        ]
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'second-simple-container'
       }
     ]
     environmentResourceId: '<environmentResourceId>'
     name: 'ajmax001'
-    triggerType: 'Manual'
+    triggerType: 'Schedule'
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -174,10 +200,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
-    }
-    manualTriggerConfig: {
-      parallelism: 1
-      replicaCompletionCount: 1
     }
     roleAssignments: [
       {
@@ -196,9 +218,269 @@ module job 'br/public:avm/res/app/job:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    scheduleTriggerConfig: {
+      cronExpression: '0 0 * * *'
+      parallelism: 1
+      replicaCompletionCount: 1
+    }
     secrets: [
       {
         name: 'customtest'
+        value: '<value>'
+      }
+    ]
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
+    }
+    volumes: [
+      {
+        name: 'ajmaxemptydir'
+        storageType: 'EmptyDir'
+      }
+    ]
+    workloadProfileName: '<workloadProfileName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containers": {
+      "value": [
+        {
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "simple-hello-world-container",
+          "probes": [
+            {
+              "httpGet": {
+                "httpHeaders": [
+                  {
+                    "name": "Custom-Header",
+                    "value": "Awesome"
+                  }
+                ],
+                "path": "/health",
+                "port": 8080
+              },
+              "initialDelaySeconds": 3,
+              "periodSeconds": 3,
+              "type": "Liveness"
+            }
+          ],
+          "resources": {
+            "cpu": "0.25",
+            "memory": "0.5Gi"
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/mnt/data",
+              "volumeName": "ajmaxemptydir"
+            }
+          ]
+        },
+        {
+          "args": [
+            "arg1",
+            "arg2"
+          ],
+          "command": [
+            "-c",
+            "/bin/bash",
+            "echo hello",
+            "sleep 100000"
+          ],
+          "env": [
+            {
+              "name": "SOME_ENV_VAR",
+              "value": "some-value"
+            }
+          ],
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "second-simple-container"
+        }
+      ]
+    },
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
+    },
+    "name": {
+      "value": "ajmax001"
+    },
+    "triggerType": {
+      "value": "Schedule"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "scheduleTriggerConfig": {
+      "value": {
+        "cronExpression": "0 0 * * *",
+        "parallelism": 1,
+        "replicaCompletionCount": 1
+      }
+    },
+    "secrets": {
+      "value": [
+        {
+          "name": "customtest",
+          "value": "<value>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
+      }
+    },
+    "volumes": {
+      "value": [
+        {
+          "name": "ajmaxemptydir",
+          "storageType": "EmptyDir"
+        }
+      ]
+    },
+    "workloadProfileName": {
+      "value": "<workloadProfileName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module job 'br/public:avm/res/app/job:<version>' = {
+  name: 'jobDeployment'
+  params: {
+    // Required parameters
+    containers: [
+      {
+        env: [
+          {
+            name: 'AZURE_STORAGE_QUEUE_NAME'
+            value: '<value>'
+          }
+          {
+            name: 'AZURE_STORAGE_CONNECTION_STRING'
+            secretRef: 'connection-string'
+          }
+        ]
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'simple-hello-world-container'
+        probes: [
+          {
+            httpGet: {
+              httpHeaders: [
+                {
+                  name: 'Custom-Header'
+                  value: 'Awesome'
+                }
+              ]
+              path: '/health'
+              port: 8080
+            }
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            type: 'Liveness'
+          }
+        ]
+        resources: {
+          cpu: '0.25'
+          memory: '0.5Gi'
+        }
+      }
+    ]
+    environmentResourceId: '<environmentResourceId>'
+    name: 'ajwaf001'
+    triggerType: 'Event'
+    // Non-required parameters
+    eventTriggerConfig: {
+      parallelism: 1
+      replicaCompletionCount: 1
+      scale: {
+        maxExecutions: 1
+        minExecutions: 1
+        pollingInterval: 55
+        rules: [
+          {
+            auth: [
+              {
+                secretRef: 'connectionString'
+                triggerParameter: 'connection'
+              }
+            ]
+            metadata: {
+              queueName: '<queueName>'
+              storageAccountResourceId: '<storageAccountResourceId>'
+            }
+            name: 'queue'
+            type: 'azure-queue'
+          }
+        ]
+      }
+    }
+    location: '<location>'
+    secrets: [
+      {
+        name: 'connection-string'
         value: '<value>'
       }
     ]
@@ -227,6 +509,16 @@ module job 'br/public:avm/res/app/job:<version>' = {
     "containers": {
       "value": [
         {
+          "env": [
+            {
+              "name": "AZURE_STORAGE_QUEUE_NAME",
+              "value": "<value>"
+            },
+            {
+              "name": "AZURE_STORAGE_CONNECTION_STRING",
+              "secretRef": "connection-string"
+            }
+          ],
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
           "name": "simple-hello-world-container",
           "probes": [
@@ -247,184 +539,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
             }
           ],
           "resources": {
-            "cpuLimit": "<cpuLimit>",
-            "memory": "0.5Gi"
-          }
-        }
-      ]
-    },
-    "environmentResourceId": {
-      "value": "<environmentResourceId>"
-    },
-    "name": {
-      "value": "ajmax001"
-    },
-    "triggerType": {
-      "value": "Manual"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "manualTriggerConfig": {
-      "value": {
-        "parallelism": 1,
-        "replicaCompletionCount": 1
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "secrets": {
-      "value": [
-        {
-          "name": "customtest",
-          "value": "<value>"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Env": "test",
-        "hidden-title": "This is visible in the resource name"
-      }
-    },
-    "workloadProfileName": {
-      "value": "<workloadProfileName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module job 'br/public:avm/res/app/job:<version>' = {
-  name: 'jobDeployment'
-  params: {
-    // Required parameters
-    containers: [
-      {
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-        name: 'simple-hello-world-container'
-        probes: [
-          {
-            httpGet: {
-              httpHeaders: [
-                {
-                  name: 'Custom-Header'
-                  value: 'Awesome'
-                }
-              ]
-              path: '/health'
-              port: 8080
-            }
-            initialDelaySeconds: 3
-            periodSeconds: 3
-            type: 'Liveness'
-          }
-        ]
-        resources: {
-          cpuLimit: '<cpuLimit>'
-          memory: '0.5Gi'
-        }
-      }
-    ]
-    environmentResourceId: '<environmentResourceId>'
-    name: 'ajwaf001'
-    triggerType: 'Manual'
-    // Non-required parameters
-    location: '<location>'
-    manualTriggerConfig: {
-      parallelism: 1
-      replicaCompletionCount: 1
-    }
-    tags: {
-      Env: 'test'
-      'hidden-title': 'This is visible in the resource name'
-    }
-    workloadProfileName: '<workloadProfileName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "containers": {
-      "value": [
-        {
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-          "name": "simple-hello-world-container",
-          "probes": [
-            {
-              "httpGet": {
-                "httpHeaders": [
-                  {
-                    "name": "Custom-Header",
-                    "value": "Awesome"
-                  }
-                ],
-                "path": "/health",
-                "port": 8080
-              },
-              "initialDelaySeconds": 3,
-              "periodSeconds": 3,
-              "type": "Liveness"
-            }
-          ],
-          "resources": {
-            "cpuLimit": "<cpuLimit>",
+            "cpu": "0.25",
             "memory": "0.5Gi"
           }
         }
@@ -437,17 +552,46 @@ module job 'br/public:avm/res/app/job:<version>' = {
       "value": "ajwaf001"
     },
     "triggerType": {
-      "value": "Manual"
+      "value": "Event"
     },
     // Non-required parameters
+    "eventTriggerConfig": {
+      "value": {
+        "parallelism": 1,
+        "replicaCompletionCount": 1,
+        "scale": {
+          "maxExecutions": 1,
+          "minExecutions": 1,
+          "pollingInterval": 55,
+          "rules": [
+            {
+              "auth": [
+                {
+                  "secretRef": "connectionString",
+                  "triggerParameter": "connection"
+                }
+              ],
+              "metadata": {
+                "queueName": "<queueName>",
+                "storageAccountResourceId": "<storageAccountResourceId>"
+              },
+              "name": "queue",
+              "type": "azure-queue"
+            }
+          ]
+        }
+      }
+    },
     "location": {
       "value": "<location>"
     },
-    "manualTriggerConfig": {
-      "value": {
-        "parallelism": 1,
-        "replicaCompletionCount": 1
-      }
+    "secrets": {
+      "value": [
+        {
+          "name": "connection-string",
+          "value": "<value>"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -473,7 +617,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containers`](#parameter-containers) | array | List of container definitions for the Container App. |
-| [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of environment. |
+| [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of Container Apps Environment. |
 | [`name`](#parameter-name) | string | Name of the Container App. |
 | [`triggerType`](#parameter-triggertype) | string | Trigger type of the job. |
 
@@ -568,13 +712,8 @@ The environment variables to set in the container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`secretRef`](#parameter-containersenvsecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if value is not provided. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`value`](#parameter-containersenvvalue) | string | The environment variable value. Required if secretRef is not provided. |
+| [`secretRef`](#parameter-containersenvsecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null. |
+| [`value`](#parameter-containersenvvalue) | string | The environment variable value. Required if `secretRef` is null. |
 
 ### Parameter: `containers.env.name`
 
@@ -585,16 +724,16 @@ The environment variable name.
 
 ### Parameter: `containers.env.secretRef`
 
-The name of the Container App secret from which to pull the envrionment variable value. Required if value is not provided.
+The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `containers.env.value`
 
-The environment variable value. Required if secretRef is not provided.
+The environment variable value. Required if `secretRef` is null.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `containers.probes`
@@ -809,7 +948,7 @@ The resources to allocate to the container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cpuLimit`](#parameter-containersresourcescpulimit) | string | The CPU limit of the container in cores. |
+| [`cpu`](#parameter-containersresourcescpu) | string | The CPU limit of the container in cores. |
 
 **Optional parameters**
 
@@ -817,7 +956,7 @@ The resources to allocate to the container.
 | :-- | :-- | :-- |
 | [`memory`](#parameter-containersresourcesmemory) | string | The required memory. |
 
-### Parameter: `containers.resources.cpuLimit`
+### Parameter: `containers.resources.cpu`
 
 The CPU limit of the container in cores.
 
@@ -869,12 +1008,12 @@ This must match the Name of a Volume.
 
 Path within the volume from which the container's volume should be mounted.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `environmentResourceId`
 
-Resource ID of environment.
+Resource ID of Container Apps Environment.
 
 - Required: Yes
 - Type: string
@@ -916,12 +1055,306 @@ Required if TriggerType is Event. Configuration of an event driven job.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`parallelism`](#parameter-eventtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. |
+| [`scale`](#parameter-eventtriggerconfigscale) | object | Scaling configurations for event driven jobs. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`replicaCompletionCount`](#parameter-eventtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. |
+
+### Parameter: `eventTriggerConfig.parallelism`
+
+Number of parallel replicas of a job that can run at a given time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `eventTriggerConfig.scale`
+
+Scaling configurations for event driven jobs.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxExecutions`](#parameter-eventtriggerconfigscalemaxexecutions) | int | Maximum number of job executions that are created for a trigger, default 100. |
+| [`minExecutions`](#parameter-eventtriggerconfigscaleminexecutions) | int | Minimum number of job executions that are created for a trigger, default 0. |
+| [`pollingInterval`](#parameter-eventtriggerconfigscalepollinginterval) | int | Interval to check each event source in seconds. Defaults to 30s. |
+| [`rules`](#parameter-eventtriggerconfigscalerules) | array | Scaling rules for the job. |
+
+### Parameter: `eventTriggerConfig.scale.maxExecutions`
+
+Maximum number of job executions that are created for a trigger, default 100.
+
+- Required: No
+- Type: int
+
+### Parameter: `eventTriggerConfig.scale.minExecutions`
+
+Minimum number of job executions that are created for a trigger, default 0.
+
+- Required: No
+- Type: int
+
+### Parameter: `eventTriggerConfig.scale.pollingInterval`
+
+Interval to check each event source in seconds. Defaults to 30s.
+
+- Required: No
+- Type: int
+
+### Parameter: `eventTriggerConfig.scale.rules`
+
+Scaling rules for the job.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`auth`](#parameter-eventtriggerconfigscalerulesauth) | array | Authentication secrets for the scale rule. |
+| [`name`](#parameter-eventtriggerconfigscalerulesname) | string | The name of the scale rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-eventtriggerconfigscalerulesmetadata) | object | Metadata properties to describe the scale rule. |
+| [`type`](#parameter-eventtriggerconfigscalerulestype) | string | The type of the rule. |
+
+### Parameter: `eventTriggerConfig.scale.rules.auth`
+
+Authentication secrets for the scale rule.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretRef`](#parameter-eventtriggerconfigscalerulesauthsecretref) | string | Name of the secret from which to pull the auth params. |
+| [`triggerParameter`](#parameter-eventtriggerconfigscalerulesauthtriggerparameter) | string | Trigger Parameter that uses the secret. |
+
+### Parameter: `eventTriggerConfig.scale.rules.auth.secretRef`
+
+Name of the secret from which to pull the auth params.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventTriggerConfig.scale.rules.auth.triggerParameter`
+
+Trigger Parameter that uses the secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventTriggerConfig.scale.rules.name`
+
+The name of the scale rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventTriggerConfig.scale.rules.metadata`
+
+Metadata properties to describe the scale rule.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `eventTriggerConfig.scale.rules.type`
+
+The type of the rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventTriggerConfig.replicaCompletionCount`
+
+Minimum number of successful replica completions before overall job completion.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `initContainersTemplate`
 
 List of specialized containers that run before app containers.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`image`](#parameter-initcontainerstemplateimage) | string | The image of the container. |
+| [`name`](#parameter-initcontainerstemplatename) | string | The name of the container. |
+| [`resources`](#parameter-initcontainerstemplateresources) | object | Container resource requirements. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`args`](#parameter-initcontainerstemplateargs) | array | Container start command arguments. |
+| [`command`](#parameter-initcontainerstemplatecommand) | array | Container start command. |
+| [`env`](#parameter-initcontainerstemplateenv) | array | The environment variables to set in the container. |
+| [`volumeMounts`](#parameter-initcontainerstemplatevolumemounts) | array | The volume mounts to attach to the container. |
+
+### Parameter: `initContainersTemplate.image`
+
+The image of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `initContainersTemplate.name`
+
+The name of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `initContainersTemplate.resources`
+
+Container resource requirements.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cpu`](#parameter-initcontainerstemplateresourcescpu) | string | The CPU limit of the container in cores. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`memory`](#parameter-initcontainerstemplateresourcesmemory) | string | The required memory. |
+
+### Parameter: `initContainersTemplate.resources.cpu`
+
+The CPU limit of the container in cores.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `initContainersTemplate.resources.memory`
+
+The required memory.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `initContainersTemplate.args`
+
+Container start command arguments.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `initContainersTemplate.command`
+
+Container start command.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `initContainersTemplate.env`
+
+The environment variables to set in the container.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-initcontainerstemplateenvname) | string | The environment variable name. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretRef`](#parameter-initcontainerstemplateenvsecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null. |
+| [`value`](#parameter-initcontainerstemplateenvvalue) | string | The environment variable value. Required if `secretRef` is null. |
+
+### Parameter: `initContainersTemplate.env.name`
+
+The environment variable name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `initContainersTemplate.env.secretRef`
+
+The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.
+
+- Required: No
+- Type: string
+
+### Parameter: `initContainersTemplate.env.value`
+
+The environment variable value. Required if `secretRef` is null.
+
+- Required: No
+- Type: string
+
+### Parameter: `initContainersTemplate.volumeMounts`
+
+The volume mounts to attach to the container.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountPath`](#parameter-initcontainerstemplatevolumemountsmountpath) | string | The path within the container at which the volume should be mounted. Must not contain ':'. |
+| [`volumeName`](#parameter-initcontainerstemplatevolumemountsvolumename) | string | This must match the Name of a Volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subPath`](#parameter-initcontainerstemplatevolumemountssubpath) | string | Path within the volume from which the container's volume should be mounted. |
+
+### Parameter: `initContainersTemplate.volumeMounts.mountPath`
+
+The path within the container at which the volume should be mounted. Must not contain ':'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `initContainersTemplate.volumeMounts.volumeName`
+
+This must match the Name of a Volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `initContainersTemplate.volumeMounts.subPath`
+
+Path within the volume from which the container's volume should be mounted.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -1168,6 +1601,40 @@ Required if TriggerType is Schedule. Configuration of a schedule based job.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cronExpression`](#parameter-scheduletriggerconfigcronexpression) | string | Cron formatted repeating schedule ("* * * * *") of a Cron Job. |
+| [`parallelism`](#parameter-scheduletriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`replicaCompletionCount`](#parameter-scheduletriggerconfigreplicacompletioncount) | int | Number of successful completions of a job that are necessary to consider the job complete. |
+
+### Parameter: `scheduleTriggerConfig.cronExpression`
+
+Cron formatted repeating schedule ("* * * * *") of a Cron Job.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scheduleTriggerConfig.parallelism`
+
+Number of parallel replicas of a job that can run at a given time.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scheduleTriggerConfig.replicaCompletionCount`
+
+Number of successful completions of a job that are necessary to consider the job complete.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `secrets`
 
 The secrets of the Container App.
@@ -1242,13 +1709,13 @@ List of volume definitions for the Container App.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`mountOptions`](#parameter-volumesmountoptions) | string | Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string. Required if `storageType` is not `EmptyDir`. |
 | [`storageName`](#parameter-volumesstoragename) | string | The storage account name. Not needed for EmptyDir and Secret. Required if `storageType` is `AzureFile` or `NfsAzureFile`. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`mountOptions`](#parameter-volumesmountoptions) | string | Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string. |
 | [`secrets`](#parameter-volumessecrets) | array | List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be added to volume. |
 
 ### Parameter: `volumes.name`
@@ -1274,18 +1741,18 @@ The container name.
   ]
   ```
 
+### Parameter: `volumes.mountOptions`
+
+Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string. Required if `storageType` is not `EmptyDir`.
+
+- Required: No
+- Type: string
+
 ### Parameter: `volumes.storageName`
 
 The storage account name. Not needed for EmptyDir and Secret. Required if `storageType` is `AzureFile` or `NfsAzureFile`.
 
-- Required: Yes
-- Type: string
-
-### Parameter: `volumes.mountOptions`
-
-Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.
-
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `volumes.secrets`

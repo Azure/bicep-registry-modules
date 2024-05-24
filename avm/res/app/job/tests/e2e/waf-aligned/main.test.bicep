@@ -60,18 +60,44 @@ module testDeployment '../../../main.bicep' = [
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       workloadProfileName: serviceShort
       location: resourceLocation
-      triggerType: 'Manual'
-      manualTriggerConfig: {
-        replicaCompletionCount: 1
+      triggerType: 'Event'
+      eventTriggerConfig: {
         parallelism: 1
+        replicaCompletionCount: 1
+        scale: {
+          minExecutions: 1
+          maxExecutions: 1
+          pollingInterval: 55
+          rules: [
+            {
+              name: 'queue'
+              type: 'azure-queue'
+              metadata: {
+                queueName: nestedDependencies.outputs.storageQueueName
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+              auth: [
+                {
+                  secretRef: 'connectionString'
+                  triggerParameter: 'connection'
+                }
+              ]
+            }
+          ]
+        }
       }
+      secrets: [
+        {
+          name: 'connection-string'
+          value: nestedDependencies.outputs.storageAccountKey
+        }
+      ]
       containers: [
         {
           name: 'simple-hello-world-container'
           image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
           resources: {
-            // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
-            cpuLimit: json('0.25')
+            cpu: '0.25'
             memory: '0.5Gi'
           }
           probes: [
@@ -89,6 +115,16 @@ module testDeployment '../../../main.bicep' = [
               }
               initialDelaySeconds: 3
               periodSeconds: 3
+            }
+          ]
+          env: [
+            {
+              name: 'AZURE_STORAGE_QUEUE_NAME'
+              value: nestedDependencies.outputs.storageQueueName
+            }
+            {
+              name: 'AZURE_STORAGE_CONNECTION_STRING'
+              secretRef: 'connection-string'
             }
           ]
         }

@@ -30,6 +30,20 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
   location: location
 }
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
+  name: uniqueString('${managedEnvironmentName}storage')
+  location: location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_LRS'
+  }
+}
+
+resource storageQueue 'Microsoft.Storage/storageAccounts/queueServices@2023-04-01' = {
+  name: 'default'
+  parent: storageAccount
+}
+
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
 
@@ -38,3 +52,12 @@ output managedEnvironmentResourceId string = managedEnvironment.id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The resource ID of the storage account created.')
+output storageAccountResourceId string = storageAccount.id
+
+@description('The primary key of the storage account created.')
+output storageAccountKey string = storageAccount.listKeys().keys[0].value
+
+@description('The name of the storage queue created.')
+output storageQueueName string = storageQueue.name
