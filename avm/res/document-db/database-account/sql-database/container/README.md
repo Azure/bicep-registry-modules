@@ -46,6 +46,7 @@ This module deploys a SQL Database Container in a CosmosDB Account.
 | [`tags`](#parameter-tags) | object | Tags of the SQL Database resource. |
 | [`throughput`](#parameter-throughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
 | [`uniqueKeyPolicyKeys`](#parameter-uniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`version`](#parameter-version) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
 ### Parameter: `name`
 
@@ -126,7 +127,6 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
   [
     'Hash'
     'MultiHash'
-    'Range'
   ]
   ```
 
@@ -152,6 +152,21 @@ The unique key policy configuration containing a list of unique keys that enforc
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `version`
+
+Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
+
+- Required: No
+- Type: int
+- Default: `1`
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+  ]
+  ```
 
 
 ## Outputs
