@@ -144,26 +144,25 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource server 'Microsoft.Sql/servers@2022-05-01-preview' = {
+resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
   location: location
   name: name
   tags: tags
@@ -191,17 +190,16 @@ resource server 'Microsoft.Sql/servers@2022-05-01-preview' = {
   }
 }
 
-resource server_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: server
+resource server_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: server
+}
 
 resource server_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -403,36 +401,35 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
   }
 ]
 
-module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' =
-  if (!empty(vulnerabilityAssessmentsObj)) {
-    name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
-    params: {
-      serverName: server.name
-      name: vulnerabilityAssessmentsObj.name
-      recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
-        ? vulnerabilityAssessmentsObj.recurringScansEmails
-        : []
-      recurringScansEmailSubscriptionAdmins: contains(
-          vulnerabilityAssessmentsObj,
-          'recurringScansEmailSubscriptionAdmins'
-        )
-        ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
-        : false
-      recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
-        ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
-        : false
-      storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-      useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
-        ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
-        : false
-      createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
-        ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
-        : true
-    }
-    dependsOn: [
-      server_securityAlertPolicies
-    ]
+module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessmentsObj)) {
+  name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
+  params: {
+    serverName: server.name
+    name: vulnerabilityAssessmentsObj.name
+    recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
+      ? vulnerabilityAssessmentsObj.recurringScansEmails
+      : []
+    recurringScansEmailSubscriptionAdmins: contains(
+        vulnerabilityAssessmentsObj,
+        'recurringScansEmailSubscriptionAdmins'
+      )
+      ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
+      : false
+    recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
+      ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
+      : false
+    storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
+    useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
+      ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
+      : false
+    createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
+      ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
+      : true
   }
+  dependsOn: [
+    server_securityAlertPolicies
+  ]
+}
 
 module server_keys 'key/main.bicep' = [
   for (key, index) in keys: {
@@ -446,23 +443,22 @@ module server_keys 'key/main.bicep' = [
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' =
-  if (!empty(encryptionProtectorObj)) {
-    name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
-    params: {
-      sqlServerName: server.name
-      serverKeyName: encryptionProtectorObj.serverKeyName
-      serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
-        ? encryptionProtectorObj.serverKeyType
-        : 'ServiceManaged'
-      autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
-        ? encryptionProtectorObj.autoRotationEnabled
-        : true
-    }
-    dependsOn: [
-      server_keys
-    ]
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtectorObj)) {
+  name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
+  params: {
+    sqlServerName: server.name
+    serverKeyName: encryptionProtectorObj.serverKeyName
+    serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
+      ? encryptionProtectorObj.serverKeyType
+      : 'ServiceManaged'
+    autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
+      ? encryptionProtectorObj.autoRotationEnabled
+      : true
   }
+  dependsOn: [
+    server_keys
+  ]
+}
 
 @description('The name of the deployed SQL server.')
 output name string = server.name

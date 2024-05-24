@@ -22,7 +22,7 @@ resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
   }
 }
 
-resource backupShortTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2022-05-01-preview' = {
+resource backupShortTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2023-08-01-preview' = {
   name: 'default'
   parent: server::database
   properties: {
