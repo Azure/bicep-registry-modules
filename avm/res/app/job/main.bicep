@@ -90,6 +90,24 @@ param replicaRetryLimit int = 0
 param workloadProfileName string = 'Consumption'
 
 @description('Optional. The secrets of the Container App.')
+@metadata({
+  examle: '''
+{
+  "name": "mysecret"
+  "identity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity",
+  "keyVaultUrl": "https://myvault.vault.azure.net/secrets/mysecret",
+},
+{
+  "name": "mysecret"
+  "identity": "system",
+  "keyVaultUrl": "https://myvault.vault.azure.net/secrets/mysecret",
+},
+{
+  "name": "mysecret",
+  "value": "mysecretvalue"
+}
+'''
+})
 param secrets secretsType?
 
 @description('Optional. List of volume definitions for the Container App.')
@@ -301,13 +319,16 @@ type secretsType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
 
-  @description('Conditional. If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null.')
+  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  @metadata({
+    example: 'https://myvault.vault.azure.net/secrets/mysecret'
+  })
   keyVaultUrl: string?
 
   @description('Optional. The name of the secret.')
   name: string?
 
-  @description('Conditional. If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null.')
+  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
   @secure()
   value: string?
 }[]?
@@ -430,8 +451,8 @@ type containerResourceType = {
   @description('Required. The CPU limit of the container in cores.')
   @metadata({
     example: '''
-    json('0.25')
-    1
+    '0.25'
+    '1'
     '''
   })
   cpu: string
