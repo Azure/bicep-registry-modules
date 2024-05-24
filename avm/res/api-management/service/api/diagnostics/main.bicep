@@ -12,7 +12,7 @@ param apiName string
 param loggerName string
 
 @description('Optional. The name of the diagnostic.')
-param name string = 'diagnostic'
+param name string = 'applicationinsights'
 
 resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   name: apiManagementServiceName

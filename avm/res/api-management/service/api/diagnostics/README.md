@@ -59,7 +59,7 @@ The name of the diagnostic.
 
 - Required: No
 - Type: string
-- Default: `'diagnostic'`
+- Default: `'applicationinsights'`
 
 
 ## Outputs

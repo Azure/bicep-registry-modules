@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "10124068086171041595"
+      "templateHash": "5408902901509568823"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -792,7 +792,7 @@
             "value": "[tryGet(parameters('apis')[copyIndex()], 'wsdlSelector')]"
           },
           "loggerName": {
-            "value": "[parameters('logger').name]"
+            "value": "[tryGet(parameters('logger'), 'name')]"
           }
         },
         "template": {
@@ -803,7 +803,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "10962316652428655749"
+              "templateHash": "5602826551952575533"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -1068,7 +1068,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.27.1.19265",
-                      "templateHash": "3453638466675249728"
+                      "templateHash": "10925376937034861426"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics.",
@@ -1095,7 +1095,7 @@
                     },
                     "name": {
                       "type": "string",
-                      "defaultValue": "diagnostic",
+                      "defaultValue": "applicationinsights",
                       "metadata": {
                         "description": "Optional. The name of the diagnostic."
                       }

@@ -264,7 +264,7 @@ module service_apis 'api/main.bicep' = [
       type: api.?type
       value: api.?value
       wsdlSelector: api.?wsdlSelector
-      loggerName: logger!.name
+      loggerName: logger.?name
     }
     dependsOn: [
       service_apiVersionSets
