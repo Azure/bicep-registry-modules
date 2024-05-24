@@ -2,6 +2,12 @@ metadata name = 'Container App Jobs'
 metadata description = 'This module deploys a Container App Job.'
 metadata owner = 'Azure/module-maintainers'
 
+// TODO
+// - string to decimal with "json()" for containerResourceType, cpuLimit as of https://learn.microsoft.com/en-us/azure/templates/microsoft.app/jobs?pivots=deployment-language-bicep#containerresources
+//
+// Breaking Changes
+// - secretList
+
 @description('Required. Name of the Container App.')
 param name string
 
@@ -81,7 +87,7 @@ param eventTriggerConfig jobConfigurationEventTriggerConfigType?
 param scheduleTriggerConfig jobConfigurationScheduleTriggerconfigType?
 
 @description('Optional. Required if TriggerType is Manual. Configuration of a manual job.')
-param manualTriggerConfig object?
+param manualTriggerConfig jobConfigurationManualTriggerConfigType?
 
 @description('Optional. The maximum number of times a replica can be retried.')
 param replicaRetryLimit int = 0
@@ -457,6 +463,15 @@ type containerVolumeMountType = {
   @description('Required. This must match the Name of a Volume.')
   volumeName: string
 }[]?
+
+type jobConfigurationManualTriggerConfigType = {
+  // Properties replicaCompletionCount and parallelism would be set to 1 by default
+  @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
+  parallelism: int?
+
+  @description('Required. Minimum number of successful replica completions before overall job completion.')
+  replicaCompletionCount: int
+}
 
 type jobConfigurationScheduleTriggerconfigType = {
   @description('Required. Cron formatted repeating schedule ("* * * * *") of a Cron Job.')

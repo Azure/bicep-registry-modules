@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "631912494860187168"
+      "templateHash": "2628753229273482722"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -516,6 +516,24 @@
       },
       "nullable": true
     },
+    "jobConfigurationManualTriggerConfigType": {
+      "type": "object",
+      "properties": {
+        "parallelism": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1."
+          }
+        },
+        "replicaCompletionCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Minimum number of successful replica completions before overall job completion."
+          }
+        }
+      }
+    },
     "jobConfigurationScheduleTriggerconfigType": {
       "type": "object",
       "properties": {
@@ -860,7 +878,7 @@
       }
     },
     "manualTriggerConfig": {
-      "type": "object",
+      "$ref": "#/definitions/jobConfigurationManualTriggerConfigType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Required if TriggerType is Manual. Configuration of a manual job."

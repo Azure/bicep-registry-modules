@@ -61,7 +61,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
     // Non-required parameters
     location: '<location>'
     manualTriggerConfig: {
-      parallelism: 1
       replicaCompletionCount: 1
     }
   }
@@ -108,7 +107,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
     },
     "manualTriggerConfig": {
       "value": {
-        "parallelism": 1,
         "replicaCompletionCount": 1
       }
     }
@@ -1434,6 +1432,32 @@ Required if TriggerType is Manual. Configuration of a manual job.
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`replicaCompletionCount`](#parameter-manualtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`parallelism`](#parameter-manualtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
+
+### Parameter: `manualTriggerConfig.replicaCompletionCount`
+
+Minimum number of successful replica completions before overall job completion.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `manualTriggerConfig.parallelism`
+
+Number of parallel replicas of a job that can run at a given time. Defaults to 1.
+
+- Required: No
+- Type: int
 
 ### Parameter: `registries`
 

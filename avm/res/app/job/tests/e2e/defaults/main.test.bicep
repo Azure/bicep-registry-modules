@@ -56,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
       triggerType: 'Manual'
       manualTriggerConfig: {
         replicaCompletionCount: 1
-        parallelism: 1
       }
       containers: [
         {
