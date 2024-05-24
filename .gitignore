@@ -4,5 +4,3 @@ moduleIndex.json
 last-moduleIndex.json
 generated-moduleIndex.json
 .DS_Store
-act.secrets
-act.env
