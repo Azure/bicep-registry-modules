@@ -2,12 +2,6 @@ metadata name = 'Container App Jobs'
 metadata description = 'This module deploys a Container App Job.'
 metadata owner = 'Azure/module-maintainers'
 
-// TODO
-// - string to decimal with "json()" for containerResourceType, cpuLimit as of https://learn.microsoft.com/en-us/azure/templates/microsoft.app/jobs?pivots=deployment-language-bicep#containerresources
-//
-// Breaking Changes
-// - secretList
-
 @description('Required. Name of the Container App.')
 param name string
 
