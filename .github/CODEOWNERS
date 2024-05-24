@@ -5,6 +5,7 @@
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -145,11 +146,4 @@
 /avm/res/web/serverfarm/ @Azure/avm-res-web-serverfarm-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/web/site/ @Azure/avm-res-web-site-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/web/static-site/ @Azure/avm-res-web-staticsite-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/insights/ @Azure/avm-ptn-avd-lza-insights-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-core-team-technical-bicep
-/avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-core-team-technical-bicep
-/avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/security/security-center/ @Azure/avm-ptn-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 *avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep

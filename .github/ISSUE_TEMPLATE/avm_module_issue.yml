@@ -44,6 +44,7 @@ body:
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
         # - "avm/ptn/avd-lza/session-hosts"
+        - "avm/ptn/finops-toolkit/finops-hub"
         - "avm/ptn/network/hub-networking"
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/security/security-center"
