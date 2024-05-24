@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "2628753229273482722"
+      "templateHash": "16143234107381767540"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -181,7 +181,8 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Conditional. If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null."
+              "example": "    https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\r\n    ",
+              "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
             }
           },
           "name": {
@@ -195,7 +196,7 @@
             "type": "securestring",
             "nullable": true,
             "metadata": {
-              "description": "Conditional. If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null."
+              "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
             }
           }
         }
@@ -474,7 +475,7 @@
         "cpu": {
           "type": "string",
           "metadata": {
-            "example": "    json('0.25')\r\n    1\r\n    ",
+            "example": "    '0.25'\r\n    '1'\r\n    ",
             "description": "Required. The CPU limit of the container in cores."
           }
         },
@@ -902,6 +903,7 @@
       "$ref": "#/definitions/secretsType",
       "nullable": true,
       "metadata": {
+        "examle": "{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"system\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\",\r\n  \"value\": \"mysecretvalue\"\r\n}\r\n",
         "description": "Optional. The secrets of the Container App."
       }
     },

@@ -95,12 +95,12 @@ param workloadProfileName string = 'Consumption'
 {
   "name": "mysecret"
   "identity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity",
-  "keyVaultUrl": "https://myvault.vault.azure.net/secrets/mysecret",
+  "keyVaultUrl": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
 },
 {
   "name": "mysecret"
   "identity": "system",
-  "keyVaultUrl": "https://myvault.vault.azure.net/secrets/mysecret",
+  "keyVaultUrl": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
 },
 {
   "name": "mysecret",
@@ -321,7 +321,9 @@ type secretsType = {
 
   @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
   @metadata({
-    example: 'https://myvault.vault.azure.net/secrets/mysecret'
+    example: '''
+    https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret
+    '''
   })
   keyVaultUrl: string?
 

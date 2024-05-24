@@ -1670,8 +1670,8 @@ The secrets of the Container App.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null. |
-| [`value`](#parameter-secretsvalue) | securestring | If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null. |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
 
 **Optional parameters**
 
@@ -1682,14 +1682,14 @@ The secrets of the Container App.
 
 ### Parameter: `secrets.keyVaultUrl`
 
-If an identity is used, the resource ID of a user-managed identity or System for a system-assigned managed identity to authenticate with Azure Key Vault. Required if `identity` is not null.
+Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secrets.value`
 
-If name is used to specify a username, this value holds the secret for that username. Required if `name` is not null.
+The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
 
 - Required: No
 - Type: securestring
