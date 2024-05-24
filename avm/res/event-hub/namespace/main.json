@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5884251970985873966"
+      "version": "0.27.1.19265",
+      "templateHash": "17155929804559949638"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace.",
@@ -724,7 +724,7 @@
     },
     "eventHubNamespace": {
       "type": "Microsoft.EventHub/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -854,8 +854,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15327912662565121564"
+              "version": "0.27.1.19265",
+              "templateHash": "8813943813948617548"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule.",
@@ -951,8 +951,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11732013494690054024"
+              "version": "0.27.1.19265",
+              "templateHash": "14979139814432874856"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
@@ -1067,8 +1067,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "14538170733088329405"
+              "version": "0.27.1.19265",
+              "templateHash": "4976741061595991628"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub.",
@@ -1478,8 +1478,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "7757490711276971084"
+                      "version": "0.27.1.19265",
+                      "templateHash": "5847658940513938806"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
@@ -1582,8 +1582,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "15301134976738274567"
+                      "version": "0.27.1.19265",
+                      "templateHash": "11948548202226583623"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
@@ -1718,8 +1718,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3984181780336367181"
+              "version": "0.27.1.19265",
+              "templateHash": "10618868316670404260"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set.",
@@ -2527,14 +2527,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('eventHubNamespace', '2022-10-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('eventHubNamespace', '2024-01-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('eventHubNamespace', '2022-10-01-preview', 'full').location]"
+      "value": "[reference('eventHubNamespace', '2024-01-01', 'full').location]"
     },
     "eventHubResourceIds": {
       "type": "array",
