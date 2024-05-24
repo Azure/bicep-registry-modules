@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     location: resourceLocation
     publicNetworkAccess: 'SecuredByPerimeter'
     skuName: 'Premium'
