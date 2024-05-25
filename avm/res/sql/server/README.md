@@ -42,15 +42,18 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/server:<version>`.
 
-- [Admin](#example-1-admin)
+- [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
-- [Defaults](#example-3-defaults)
-- [Max](#example-4-max)
-- [Secondary](#example-5-secondary)
-- [Vulnassm](#example-6-vulnassm)
-- [Waf-Aligned](#example-7-waf-aligned)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [With a secondary database](#example-5-with-a-secondary-database)
+- [With vulnerability assessment](#example-6-with-vulnerability-assessment)
+- [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Admin_
+### Example 1: _With an administrator_
+
+This instance deploys the module with a Microsoft Entra ID identity as SQL administrator.
+
 
 <details>
 
@@ -123,15 +126,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   name: 'serverDeployment'
   params: {
     // Required parameters
+    name: 'ssaud001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
     auditSettings: {
       isManagedIdentityInUse: true
       state: 'Enabled'
       storageAccountResourceId: '<storageAccountResourceId>'
     }
-    name: 'ssaud001'
-    // Non-required parameters
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: '<administratorLoginPassword>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -153,13 +156,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "auditSettings": {
-      "value": {
-        "isManagedIdentityInUse": true,
-        "state": "Enabled",
-        "storageAccountResourceId": "<storageAccountResourceId>"
-      }
-    },
     "name": {
       "value": "ssaud001"
     },
@@ -169,6 +165,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "auditSettings": {
+      "value": {
+        "isManagedIdentityInUse": true,
+        "state": "Enabled",
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
     },
     "location": {
       "value": "<location>"
@@ -185,7 +188,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 3: _Defaults_
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -238,7 +244,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 4: _Max_
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -579,7 +588,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 5: _Secondary_
+### Example 5: _With a secondary database_
+
+This instance deploys the module with a secondary database.
+
 
 <details>
 
@@ -666,7 +678,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 6: _Vulnassm_
+### Example 6: _With vulnerability assessment_
+
+This instance deploys the module with a vulnerability assessment.
+
 
 <details>
 
@@ -791,7 +806,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 7: _Waf-Aligned_
+### Example 7: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -1151,7 +1169,7 @@ The resource ID of a user assigned identity to be used by default. Required if "
 
 The audit settings configuration.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
