@@ -37,6 +37,30 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
   sku: {
     name: 'Standard_LRS'
   }
+  properties: {
+    allowSharedKeyAccess: true
+    allowBlobPublicAccess: false
+    minimumTlsVersion: 'TLS1_2'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+  }
+  tags: {
+    'hidden-title': 'This is visible in the resource name'
+    Env: 'test'
+  }
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-04-01' = {
+  name: 'default'
+  parent: storageAccount
+  properties: {
+    containerDeleteRetentionPolicy: {
+      enabled: true
+      days: 1
+    }
+  }
 }
 
 resource storageQueue 'Microsoft.Storage/storageAccounts/queueServices@2023-04-01' = {

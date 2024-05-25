@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16143234107381767540"
+      "templateHash": "15383756313588669248"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -143,7 +143,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "example": "    user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\r\n    system-assigned identity: system\r\n    ",
+              "example": "    user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\n    system-assigned identity: system\n    ",
               "description": "Optional. The resource ID of the (user) managed identity, which is used to access the Azure Container Registry."
             }
           },
@@ -181,7 +181,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "example": "    https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\r\n    ",
+              "example": "    https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\n    ",
               "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
             }
           },
@@ -475,14 +475,14 @@
         "cpu": {
           "type": "string",
           "metadata": {
-            "example": "    '0.25'\r\n    '1'\r\n    ",
+            "example": "    '0.25'\n    '1'\n    ",
             "description": "Required. The CPU limit of the container in cores."
           }
         },
         "memory": {
           "type": "string",
           "metadata": {
-            "example": "    '250Mb'\r\n    '1.5Gi'\r\n    '1500Mi'\r\n    ",
+            "example": "    '250Mb'\n    '1.5Gi'\n    '1500Mi'\n    ",
             "description": "Optional. The required memory."
           }
         }
@@ -627,7 +627,7 @@
           "metadata": {
             "type": "object",
             "metadata": {
-              "example": "    {\r\n      \"// for type azure-queue\r\n      {\r\n        queueName: 'default'\r\n        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'\r\n      }\"\r\n    }\r\n    ",
+              "example": "    {\n      \"// for type azure-queue\n      {\n        queueName: 'default'\n        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'\n      }\"\n    }\n    ",
               "description": "Optional. Metadata properties to describe the scale rule."
             }
           },
@@ -640,7 +640,7 @@
           "type": {
             "type": "string",
             "metadata": {
-              "example": "    {\r\n      \"azure-servicebus\"\r\n      \"azure-queue\"\r\n      \"redis\"\r\n    }\r\n    ",
+              "example": "    {\n      \"azure-servicebus\"\n      \"azure-queue\"\n      \"redis\"\n    }\n    ",
               "description": "Optional. The type of the rule."
             }
           }
@@ -819,7 +819,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\r\n      \"key1\": \"value1\",\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
+        "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
@@ -827,14 +827,14 @@
       "$ref": "#/definitions/registryCredentialsType",
       "nullable": true,
       "metadata": {
-        "example": "[[\r\n  {\r\n    \"server\": \"myregistry.azurecr.io\",\r\n    \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\r\n  },\r\n  {\r\n    \"server\": \"myregistry2.azurecr.io\",\r\n    \"identity\": \"system\"\r\n  }\r\n  ,\r\n  {\r\n    \"server\": \"myregistry3.azurecr.io\",\r\n    \"username\": \"myusername\",\r\n    \"passwordSecretRef\": \"secret-name\"\r\n  }\r\n]",
+        "example": "[[\n  {\n    \"server\": \"myregistry.azurecr.io\",\n    \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\n  },\n  {\n    \"server\": \"myregistry2.azurecr.io\",\n    \"identity\": \"system\"\n  }\n  ,\n  {\n    \"server\": \"myregistry3.azurecr.io\",\n    \"username\": \"myusername\",\n    \"passwordSecretRef\": \"secret-name\"\n  }\n]",
         "description": "Optional. Collection of private container registry credentials for containers used by the Container app."
       }
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
-        "example": "  {\r\n    \"systemAssigned\": true,\r\n    \"userAssignedResourceIds\": [\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\r\n    ]\r\n  },\r\n  {\r\n    \"systemAssigned\": true\r\n  }\r\n  ",
+        "example": "  {\n    \"systemAssigned\": true,\n    \"userAssignedResourceIds\": [\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\n    ]\n  },\n  {\n    \"systemAssigned\": true\n  }\n  ",
         "description": "Optional. The managed identity definition for this resource."
       }
     },
@@ -903,7 +903,7 @@
       "$ref": "#/definitions/secretsType",
       "nullable": true,
       "metadata": {
-        "examle": "{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"system\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\",\r\n  \"value\": \"mysecretvalue\"\r\n}\r\n",
+        "examle": "{\n  \"name\": \"mysecret\"\n  \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\",\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\n},\n{\n  \"name\": \"mysecret\"\n  \"identity\": \"system\",\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\n},\n{\n  \"name\": \"mysecret\",\n  \"value\": \"mysecretvalue\"\n}\n",
         "description": "Optional. The secrets of the Container App."
       }
     },
