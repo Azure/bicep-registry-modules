@@ -102,6 +102,9 @@ param encryptionProtectorObj object = {}
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj object = {}
 
+@description('Optional. The audit settings configuration.')
+param auditSettings auditSettingsType?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -460,6 +463,27 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty
   ]
 }
 
+module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
+  name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
+  params: {
+    serverName: server.name
+    name: auditSettings.?name ?? 'default'
+    state: auditSettings.?state ?? 'Disabled'
+    auditActionsAndGroups: auditSettings.?auditActionsAndGroups ?? [
+      'BATCH_COMPLETED_GROUP'
+      'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
+      'FAILED_DATABASE_AUTHENTICATION_GROUP'
+    ]
+    isAzureMonitorTargetEnabled: auditSettings.?isAzureMonitorTargetEnabled ?? false
+    isDevopsAuditEnabled: auditSettings.?isDevopsAuditEnabled ?? false
+    isManagedIdentityInUse: auditSettings.?isManagedIdentityInUse ?? false
+    isStorageSecondaryKeyInUse: auditSettings.?isStorageSecondaryKeyInUse ?? false
+    queueDelayMs: auditSettings.?queueDelayMs ?? 1000
+    retentionDays: auditSettings.?retentionDays ?? 90
+    storageAccountResourceId: auditSettings.?storageAccountResourceId
+  }
+}
+
 @description('The name of the deployed SQL server.')
 output name string = server.name
 
@@ -595,3 +619,35 @@ type privateEndpointType = {
   @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
   resourceGroupName: string?
 }[]?
+
+type auditSettingsType = {
+  @description('Optional. Specifies the name of the audit settings.')
+  name: string?
+
+  @description('Optional. Specifies the Actions-Groups and Actions to audit.')
+  auditActionsAndGroups: string[]?
+
+  @description('Optional. Specifies whether audit events are sent to Azure Monitor.')
+  isAzureMonitorTargetEnabled: bool?
+
+  @description('Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor.')
+  isDevopsAuditEnabled: bool?
+
+  @description('Optional. Specifies whether Managed Identity is used to access blob storage.')
+  isManagedIdentityInUse: bool?
+
+  @description('Optional. Specifies whether storageAccountAccessKey value is the storage\'s secondary key.')
+  isStorageSecondaryKeyInUse: bool?
+
+  @description('Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed.')
+  queueDelayMs: int?
+
+  @description('Optional. Specifies the number of days to keep in the audit logs in the storage account.')
+  retentionDays: int?
+
+  @description('Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
+  state: 'Enabled' | 'Disabled'
+
+  @description('Optional. Specifies the identifier key of the auditing storage account.')
+  storageAccountResourceId: string?
+}
