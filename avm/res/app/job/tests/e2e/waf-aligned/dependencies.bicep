@@ -56,7 +56,7 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-04-01'
   name: 'default'
   parent: storageAccount
   properties: {
-    containerDeleteRetentionPolicy: {
+    deleteRetentionPolicy: {
       enabled: true
       days: 1
     }
