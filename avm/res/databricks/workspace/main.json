@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "8925128185589273318"
+      "version": "0.26.170.59819",
+      "templateHash": "7425369674344103053"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -1538,6 +1538,20 @@
         "description": "The resource ID of the DBFS storage account."
       },
       "value": "[resourceId(last(split(reference('workspace').managedResourceGroupId, '/')), 'microsoft.storage/storageAccounts', reference('workspace').parameters.storageAccountName.value)]"
+    },
+    "workspaceUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The workspace URL which is of the format 'adb-{workspaceId}.{random}.azuredatabricks.net'."
+      },
+      "value": "[reference('workspace').workspaceUrl]"
+    },
+    "workspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The unique identifier of the databricks workspace in databricks control plane."
+      },
+      "value": "[reference('workspace').workspaceId]"
     },
     "privateEndpoints": {
       "type": "array",
