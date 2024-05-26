@@ -108,7 +108,7 @@ param workloadProfileName string = 'Consumption'
 }
 {
   name: 'connection-string'
-  value: listKeys(storageAccountResourceId, '2023-04-01').keys[0].value
+  value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value
 }
 '''
 })

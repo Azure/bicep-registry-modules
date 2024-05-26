@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16281007886628635350"
+      "templateHash": "7074093305874664983"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -905,7 +905,7 @@
       "$ref": "#/definitions/secretsType",
       "nullable": true,
       "metadata": {
-        "examle": "{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"system\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\",\r\n  \"value\": \"mysecretvalue\"\r\n}\r\n{\r\n  name: 'connection-string'\r\n  value: listKeys(storageAccountResourceId, '2023-04-01').keys[0].value\r\n}\r\n",
+        "examle": "{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"system\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\",\r\n  \"value\": \"mysecretvalue\"\r\n}\r\n{\r\n  name: 'connection-string'\r\n  value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\r\n}\r\n",
         "description": "Optional. The secrets of the Container App."
       }
     },
