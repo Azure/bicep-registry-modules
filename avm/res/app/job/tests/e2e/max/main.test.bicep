@@ -20,6 +20,10 @@ param serviceShort string = 'ajmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// needed for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
+var storageAccountName = uniqueString('dep-${namePrefix}-menv-${serviceShort}storage')
+var storageAccountId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
+
 // =========== //
 // Deployments //
 // =========== //
@@ -70,27 +74,45 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      secrets: [
-        {
-          name: 'customtest'
-          value: guid(deployment().name)
-        }
-      ]
-      triggerType: 'Schedule'
-      scheduleTriggerConfig: {
-        cronExpression: '0 0 * * *'
+      triggerType: 'Event'
+      eventTriggerConfig: {
         parallelism: 1
         replicaCompletionCount: 1
+        scale: {
+          minExecutions: 1
+          maxExecutions: 1
+          pollingInterval: 55
+          rules: [
+            {
+              name: 'queue'
+              type: 'azure-queue'
+              metadata: {
+                queueName: nestedDependencies.outputs.storageQueueName
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+              auth: [
+                {
+                  secretRef: 'connectionString'
+                  triggerParameter: 'connection'
+                }
+              ]
+            }
+          ]
+        }
       }
+      secrets: [
+        {
+          name: 'connection-string'
+          value: listKeys(storageAccountId, '2023-04-01').keys[0].value
+        }
+      ]
       containers: [
         {
           name: 'simple-hello-world-container'
           image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-
           resources: {
-            // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
-            cpu: '0.25'
-            memory: '0.5Gi'
+            cpu: '1.25'
+            memory: '1.5Gi'
           }
           probes: [
             {
@@ -107,6 +129,16 @@ module testDeployment '../../../main.bicep' = [
               }
               initialDelaySeconds: 3
               periodSeconds: 3
+            }
+          ]
+          env: [
+            {
+              name: 'AZURE_STORAGE_QUEUE_NAME'
+              value: nestedDependencies.outputs.storageQueueName
+            }
+            {
+              name: 'AZURE_STORAGE_CONNECTION_STRING'
+              secretRef: 'connection-string'
             }
           ]
           volumeMounts: [

@@ -30,6 +30,53 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
   location: location
 }
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
+  name: uniqueString('${managedEnvironmentName}storage')
+  location: location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_LRS'
+  }
+  properties: {
+    allowSharedKeyAccess: true
+    allowBlobPublicAccess: false
+    minimumTlsVersion: 'TLS1_2'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+  }
+  tags: {
+    'hidden-title': 'This is visible in the resource name'
+    Env: 'test'
+  }
+}
+
+// resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-04-01' = {
+//   name: 'default'
+//   parent: storageAccount
+//   properties: {
+//     deleteRetentionPolicy: {
+//       enabled: true
+//       days: 1
+//     }
+//     containerDeleteRetentionPolicy: {
+//       enabled: true
+//       days: 1
+//     }
+//   }
+// }
+
+resource storageQueueService 'Microsoft.Storage/storageAccounts/queueServices@2023-04-01' = {
+  name: 'default'
+  parent: storageAccount
+}
+
+resource storageQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2023-04-01' = {
+  name: 'jobs-queue'
+  parent: storageQueueService
+}
+
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
 
@@ -38,3 +85,12 @@ output managedEnvironmentResourceId string = managedEnvironment.id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The name of the storage account created.')
+output storageAccountName string = storageAccount.name
+
+@description('The name of the storage queue created.')
+output storageQueueName string = storageQueue.name
+
+@description('The resource ID of the storage account created.')
+output storageAccountResourceId string = storageAccount.id

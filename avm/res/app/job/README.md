@@ -133,6 +133,16 @@ module job 'br/public:avm/res/app/job:<version>' = {
     // Required parameters
     containers: [
       {
+        env: [
+          {
+            name: 'AZURE_STORAGE_QUEUE_NAME'
+            value: '<value>'
+          }
+          {
+            name: 'AZURE_STORAGE_CONNECTION_STRING'
+            secretRef: 'connection-string'
+          }
+        ]
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'simple-hello-world-container'
         probes: [
@@ -153,8 +163,8 @@ module job 'br/public:avm/res/app/job:<version>' = {
           }
         ]
         resources: {
-          cpu: '0.25'
-          memory: '0.5Gi'
+          cpu: '1.25'
+          memory: '1.5Gi'
         }
         volumeMounts: [
           {
@@ -186,268 +196,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
     ]
     environmentResourceId: '<environmentResourceId>'
     name: 'ajmax001'
-    triggerType: 'Schedule'
-    // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    scheduleTriggerConfig: {
-      cronExpression: '0 0 * * *'
-      parallelism: 1
-      replicaCompletionCount: 1
-    }
-    secrets: [
-      {
-        name: 'customtest'
-        value: '<value>'
-      }
-    ]
-    tags: {
-      Env: 'test'
-      'hidden-title': 'This is visible in the resource name'
-    }
-    volumes: [
-      {
-        name: 'ajmaxemptydir'
-        storageType: 'EmptyDir'
-      }
-    ]
-    workloadProfileName: '<workloadProfileName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "containers": {
-      "value": [
-        {
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-          "name": "simple-hello-world-container",
-          "probes": [
-            {
-              "httpGet": {
-                "httpHeaders": [
-                  {
-                    "name": "Custom-Header",
-                    "value": "Awesome"
-                  }
-                ],
-                "path": "/health",
-                "port": 8080
-              },
-              "initialDelaySeconds": 3,
-              "periodSeconds": 3,
-              "type": "Liveness"
-            }
-          ],
-          "resources": {
-            "cpu": "0.25",
-            "memory": "0.5Gi"
-          },
-          "volumeMounts": [
-            {
-              "mountPath": "/mnt/data",
-              "volumeName": "ajmaxemptydir"
-            }
-          ]
-        },
-        {
-          "args": [
-            "arg1",
-            "arg2"
-          ],
-          "command": [
-            "-c",
-            "/bin/bash",
-            "echo hello",
-            "sleep 100000"
-          ],
-          "env": [
-            {
-              "name": "SOME_ENV_VAR",
-              "value": "some-value"
-            }
-          ],
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-          "name": "second-simple-container"
-        }
-      ]
-    },
-    "environmentResourceId": {
-      "value": "<environmentResourceId>"
-    },
-    "name": {
-      "value": "ajmax001"
-    },
-    "triggerType": {
-      "value": "Schedule"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "scheduleTriggerConfig": {
-      "value": {
-        "cronExpression": "0 0 * * *",
-        "parallelism": 1,
-        "replicaCompletionCount": 1
-      }
-    },
-    "secrets": {
-      "value": [
-        {
-          "name": "customtest",
-          "value": "<value>"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Env": "test",
-        "hidden-title": "This is visible in the resource name"
-      }
-    },
-    "volumes": {
-      "value": [
-        {
-          "name": "ajmaxemptydir",
-          "storageType": "EmptyDir"
-        }
-      ]
-    },
-    "workloadProfileName": {
-      "value": "<workloadProfileName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module job 'br/public:avm/res/app/job:<version>' = {
-  name: 'jobDeployment'
-  params: {
-    // Required parameters
-    containers: [
-      {
-        env: [
-          {
-            name: 'AZURE_STORAGE_QUEUE_NAME'
-            value: '<value>'
-          }
-          {
-            name: 'AZURE_STORAGE_CONNECTION_STRING'
-            secretRef: 'connection-string'
-          }
-        ]
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-        name: 'simple-hello-world-container'
-        probes: [
-          {
-            httpGet: {
-              httpHeaders: [
-                {
-                  name: 'Custom-Header'
-                  value: 'Awesome'
-                }
-              ]
-              path: '/health'
-              port: 8080
-            }
-            initialDelaySeconds: 3
-            periodSeconds: 3
-            type: 'Liveness'
-          }
-        ]
-        resources: {
-          cpu: '0.25'
-          memory: '0.5Gi'
-        }
-      }
-    ]
-    environmentResourceId: '<environmentResourceId>'
-    name: 'ajwaf001'
     triggerType: 'Event'
     // Non-required parameters
     eventTriggerConfig: {
@@ -476,6 +224,33 @@ module job 'br/public:avm/res/app/job:<version>' = {
       }
     }
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
     secrets: [
       {
         name: 'connection-string'
@@ -486,6 +261,12 @@ module job 'br/public:avm/res/app/job:<version>' = {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
     }
+    volumes: [
+      {
+        name: 'ajmaxemptydir'
+        storageType: 'EmptyDir'
+      }
+    ]
     workloadProfileName: '<workloadProfileName>'
   }
 }
@@ -537,9 +318,35 @@ module job 'br/public:avm/res/app/job:<version>' = {
             }
           ],
           "resources": {
-            "cpu": "0.25",
-            "memory": "0.5Gi"
-          }
+            "cpu": "1.25",
+            "memory": "1.5Gi"
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/mnt/data",
+              "volumeName": "ajmaxemptydir"
+            }
+          ]
+        },
+        {
+          "args": [
+            "arg1",
+            "arg2"
+          ],
+          "command": [
+            "-c",
+            "/bin/bash",
+            "echo hello",
+            "sleep 100000"
+          ],
+          "env": [
+            {
+              "name": "SOME_ENV_VAR",
+              "value": "some-value"
+            }
+          ],
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "second-simple-container"
         }
       ]
     },
@@ -547,7 +354,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
       "value": "<environmentResourceId>"
     },
     "name": {
-      "value": "ajwaf001"
+      "value": "ajmax001"
     },
     "triggerType": {
       "value": "Event"
@@ -583,6 +390,39 @@ module job 'br/public:avm/res/app/job:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
     "secrets": {
       "value": [
         {
@@ -590,6 +430,152 @@ module job 'br/public:avm/res/app/job:<version>' = {
           "value": "<value>"
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
+      }
+    },
+    "volumes": {
+      "value": [
+        {
+          "name": "ajmaxemptydir",
+          "storageType": "EmptyDir"
+        }
+      ]
+    },
+    "workloadProfileName": {
+      "value": "<workloadProfileName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module job 'br/public:avm/res/app/job:<version>' = {
+  name: 'jobDeployment'
+  params: {
+    // Required parameters
+    containers: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'simple-hello-world-container'
+        probes: [
+          {
+            httpGet: {
+              httpHeaders: [
+                {
+                  name: 'Custom-Header'
+                  value: 'Awesome'
+                }
+              ]
+              path: '/health'
+              port: 8080
+            }
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            type: 'Liveness'
+          }
+        ]
+        resources: {
+          cpu: '0.25'
+          memory: '0.5Gi'
+        }
+      }
+    ]
+    environmentResourceId: '<environmentResourceId>'
+    name: 'ajwaf001'
+    triggerType: 'Schedule'
+    // Non-required parameters
+    location: '<location>'
+    scheduleTriggerConfig: {
+      cronExpression: '0 0 * * *'
+      parallelism: 1
+      replicaCompletionCount: 1
+    }
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
+    }
+    workloadProfileName: '<workloadProfileName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containers": {
+      "value": [
+        {
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "simple-hello-world-container",
+          "probes": [
+            {
+              "httpGet": {
+                "httpHeaders": [
+                  {
+                    "name": "Custom-Header",
+                    "value": "Awesome"
+                  }
+                ],
+                "path": "/health",
+                "port": 8080
+              },
+              "initialDelaySeconds": 3,
+              "periodSeconds": 3,
+              "type": "Liveness"
+            }
+          ],
+          "resources": {
+            "cpu": "0.25",
+            "memory": "0.5Gi"
+          }
+        }
+      ]
+    },
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
+    },
+    "name": {
+      "value": "ajwaf001"
+    },
+    "triggerType": {
+      "value": "Schedule"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "scheduleTriggerConfig": {
+      "value": {
+        "cronExpression": "0 0 * * *",
+        "parallelism": 1,
+        "replicaCompletionCount": 1
+      }
     },
     "tags": {
       "value": {

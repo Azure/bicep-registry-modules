@@ -60,38 +60,12 @@ module testDeployment '../../../main.bicep' = [
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       workloadProfileName: serviceShort
       location: resourceLocation
-      triggerType: 'Event'
-      eventTriggerConfig: {
+      triggerType: 'Schedule'
+      scheduleTriggerConfig: {
+        cronExpression: '0 0 * * *'
         parallelism: 1
         replicaCompletionCount: 1
-        scale: {
-          minExecutions: 1
-          maxExecutions: 1
-          pollingInterval: 55
-          rules: [
-            {
-              name: 'queue'
-              type: 'azure-queue'
-              metadata: {
-                queueName: nestedDependencies.outputs.storageQueueName
-                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-              }
-              auth: [
-                {
-                  secretRef: 'connectionString'
-                  triggerParameter: 'connection'
-                }
-              ]
-            }
-          ]
-        }
       }
-      secrets: [
-        {
-          name: 'connection-string'
-          value: nestedDependencies.outputs.storageAccountKey
-        }
-      ]
       containers: [
         {
           name: 'simple-hello-world-container'
@@ -115,16 +89,6 @@ module testDeployment '../../../main.bicep' = [
               }
               initialDelaySeconds: 3
               periodSeconds: 3
-            }
-          ]
-          env: [
-            {
-              name: 'AZURE_STORAGE_QUEUE_NAME'
-              value: nestedDependencies.outputs.storageQueueName
-            }
-            {
-              name: 'AZURE_STORAGE_CONNECTION_STRING'
-              secretRef: 'connection-string'
             }
           ]
         }

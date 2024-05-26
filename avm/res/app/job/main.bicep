@@ -106,6 +106,10 @@ param workloadProfileName string = 'Consumption'
   "name": "mysecret",
   "value": "mysecretvalue"
 }
+{
+  name: 'connection-string'
+  value: listKeys(storageAccountResourceId, '2023-04-01').keys[0].value
+}
 '''
 })
 param secrets secretsType?
@@ -523,6 +527,23 @@ type jobScaleType = {
   pollingInterval: int?
 
   @description('Optional. Scaling rules for the job.')
+  @metadata({
+    example: '''
+    // for type azure-queue
+    {
+      name: 'myrule'
+      type: 'azure-queue'
+      metadata: {
+        queueName: 'default'
+        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+      }
+      auth: {
+        secretRef: 'mysecret'
+        triggerParameter: 'queueName'
+      }
+    }
+    '''
+  })
   rules: jobScaleRuleType
 }
 
@@ -576,6 +597,20 @@ type initContainerType = {
   command: string[]
 
   @description('Optional. The environment variables to set in the container.')
+  @metadata({
+    example: '''
+    [
+      {
+        name: 'AZURE_STORAGE_QUEUE_NAME'
+        value: '<storage-queue-name>'
+      }
+      {
+        name: 'AZURE_STORAGE_CONNECTION_STRING'
+        secretRef: 'connection-string'
+      }
+    ]
+    '''
+  })
   env: containerEnvironmentVariablesType
 
   @description('Required. The image of the container.')
