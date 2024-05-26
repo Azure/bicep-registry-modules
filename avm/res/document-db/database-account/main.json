@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "9794166259717067711"
+      "version": "0.27.1.19265",
+      "templateHash": "5516885052191994610"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -456,7 +456,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region"
+            "description": "Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region."
           }
         },
         "locationName": {
@@ -534,14 +534,14 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode."
+                      "description": "Conditional. The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'."
                     }
                   },
                   "conflictResolutionProcedure": {
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode."
+                      "description": "Conditional. The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'."
                     }
                   },
                   "mode": {
@@ -587,6 +587,17 @@
                   "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
                 }
               },
+              "version": {
+                "type": "int",
+                "allowedValues": [
+                  1,
+                  2
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
+                }
+              },
               "throughput": {
                 "type": "int",
                 "nullable": true,
@@ -605,7 +616,7 @@
                         "type": "string"
                       },
                       "metadata": {
-                        "description": "List of paths must be unique for each document in the Azure Cosmos DB service"
+                        "description": "Required. List of paths must be unique for each document in the Azure Cosmos DB service."
                       }
                     }
                   }
@@ -1090,7 +1101,7 @@
     ],
     "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
     "backupPolicy": "[if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('type', parameters('backupPolicyType'), 'continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject('type', parameters('backupPolicyType'), 'periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))))]",
-    "databaseAccount_properties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType')), if(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'AzureServices'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Enabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'backupPolicy', variables('backupPolicy'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(not(empty(parameters('sqlDatabases'))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
+    "databaseAccountProperties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType')), if(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'AzureServices'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Enabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'backupPolicy', variables('backupPolicy'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(not(empty(parameters('sqlDatabases'))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
@@ -1133,7 +1144,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "kind": "[variables('kind')]",
-      "properties": "[variables('databaseAccount_properties')]"
+      "properties": "[variables('databaseAccountProperties')]"
     },
     "databaseAccount_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1249,8 +1260,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3826907101153138616"
+              "version": "0.27.1.19265",
+              "templateHash": "8319829662998768775"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1364,6 +1375,9 @@
                   "kind": {
                     "value": "[tryGet(parameters('containers')[copyIndex()], 'kind')]"
                   },
+                  "version": {
+                    "value": "[tryGet(parameters('containers')[copyIndex()], 'version')]"
+                  },
                   "paths": {
                     "value": "[tryGet(parameters('containers')[copyIndex()], 'paths')]"
                   },
@@ -1379,8 +1393,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "11250469246171251281"
+                      "version": "0.27.1.19265",
+                      "templateHash": "3824205620211058652"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1480,11 +1494,21 @@
                       "defaultValue": "Hash",
                       "allowedValues": [
                         "Hash",
-                        "MultiHash",
-                        "Range"
+                        "MultiHash"
                       ],
                       "metadata": {
                         "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+                      }
+                    },
+                    "version": {
+                      "type": "int",
+                      "defaultValue": 1,
+                      "allowedValues": [
+                        1,
+                        2
+                      ],
+                      "metadata": {
+                        "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
                       }
                     }
                   },
@@ -1496,7 +1520,7 @@
                         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
                       }
                     ],
-                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, 1)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
                   },
                   "resources": {
                     "databaseAccount::sqlDatabase": {
@@ -1622,8 +1646,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "7706794569430424680"
+              "version": "0.27.1.19265",
+              "templateHash": "1527748615955553712"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -1725,8 +1749,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "1989910090472113779"
+                      "version": "0.27.1.19265",
+                      "templateHash": "6235322895830297683"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -1881,8 +1905,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "13414524346849431368"
+              "version": "0.27.1.19265",
+              "templateHash": "6889435067791947905"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -1985,8 +2009,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "2823004405398378621"
+                      "version": "0.27.1.19265",
+                      "templateHash": "3987394297554402770"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
@@ -2848,8 +2872,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3376784638805058420"
+              "version": "0.27.1.19265",
+              "templateHash": "17423703517558214368"
             }
           },
           "definitions": {
