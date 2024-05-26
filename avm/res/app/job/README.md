@@ -615,13 +615,13 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`manualTriggerConfig`](#parameter-manualtriggerconfig) | object | Required if TriggerType is Manual. Configuration of a manual job. |
+| [`manualTriggerConfig`](#parameter-manualtriggerconfig) | object | Required if TriggerType is Manual. Configuration of a manually triggered job. |
 | [`registries`](#parameter-registries) | array | Collection of private container registry credentials for containers used by the Container app. |
 | [`replicaRetryLimit`](#parameter-replicaretrylimit) | int | The maximum number of times a replica can be retried. |
 | [`replicaTimeout`](#parameter-replicatimeout) | int | Maximum number of seconds a replica is allowed to run. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scheduleTriggerConfig`](#parameter-scheduletriggerconfig) | object | Required if TriggerType is Schedule. Configuration of a schedule based job. |
-| [`secrets`](#parameter-secrets) | array | The secrets configured for the Container App. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. |
@@ -1414,7 +1414,7 @@ The resource ID(s) to assign to the resource.
 
 ### Parameter: `manualTriggerConfig`
 
-Required if TriggerType is Manual. Configuration of a manual job.
+Required if TriggerType is Manual. Configuration of a manually triggered job.
 
 - Required: No
 - Type: object
@@ -1647,7 +1647,7 @@ Number of successful completions of a job that are necessary to consider the job
 
 ### Parameter: `secrets`
 
-The secrets configured for the Container App.
+The secrets of the Container App.
 
 - Required: No
 - Type: array

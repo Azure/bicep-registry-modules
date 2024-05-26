@@ -80,7 +80,7 @@ param eventTriggerConfig jobConfigurationEventTriggerConfigType?
 @description('Optional. Required if TriggerType is Schedule. Configuration of a schedule based job.')
 param scheduleTriggerConfig jobConfigurationScheduleTriggerconfigType?
 
-@description('Optional. Required if TriggerType is Manual. Configuration of a manual job.')
+@description('Optional. Required if TriggerType is Manual. Configuration of a manually triggered job.')
 param manualTriggerConfig jobConfigurationManualTriggerConfigType?
 
 @description('Optional. The maximum number of times a replica can be retried.')
@@ -89,7 +89,7 @@ param replicaRetryLimit int = 0
 @description('Optional. The name of the workload profile to use.')
 param workloadProfileName string = 'Consumption'
 
-@description('Optional. The secrets configured for the Container App.')
+@description('Optional. The secrets of the Container App.')
 @metadata({
   examle: '''
 {
