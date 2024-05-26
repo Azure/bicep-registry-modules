@@ -66,7 +66,7 @@ function Initialize-DeploymentRemoval {
 
         if (-not [String]::IsNullOrEmpty($subscriptionId)) {
             Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
-            $null = Set-AzContext -Subscription $subscriptionId
+            $null = Set-AzContext -Subscription $subscriptionId -Verbose
         }
 
         # The initial sequence is a general order-recommendation

@@ -48,7 +48,7 @@ function Clear-SubscriptionDeploymentHistory {
 
     # Setting context explicitely in case the principal has permissions on multiple
     Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
-    $null = Set-AzContext -Subscription $subscriptionId
+    $null = Set-AzContext -Subscription $subscriptionId -Verbose
 
     $getInputObject = @{
         Method  = 'GET'

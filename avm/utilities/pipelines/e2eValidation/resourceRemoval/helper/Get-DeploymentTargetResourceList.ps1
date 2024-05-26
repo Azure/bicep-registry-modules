@@ -88,6 +88,13 @@ function Get-DeploymentTargetResourceListInner {
         }
     }
 
+    $time = (Get-Date).ToString('yyyy-MM-dd HH:mm')
+    Write-Host '-----------------------------------' -ForegroundColor 'Green'
+    Write-Host "[$time] Searched for [$name] in scope [$scope] an RG (if any) [$ResourceGroupName]" -ForegroundColor 'Cyan'
+    Write-Host "[$time] Found" -ForegroundColor 'Blue'
+    $deploymentTargets | ForEach-Object { Write-Host "[$time] - $_" -ForegroundColor 'Yellow' }
+    Write-Host '-----------------------------------' -ForegroundColor 'Green'
+
     ###########################
     # Manage nested resources #
     ###########################
@@ -107,7 +114,7 @@ function Get-DeploymentTargetResourceListInner {
             if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
                 $subscriptionId = $Matches[1]
                 if ($currentContext.Subscription.Id -ne $subscriptionId) {
-                    $null = Set-AzContext -Subscription $subscriptionId
+                    $null = Set-AzContext -Subscription $subscriptionId -Verbose
                 }
             }
             Write-Verbose ('Found [resource group] deployment [{0}]' -f $deployment)
@@ -119,7 +126,7 @@ function Get-DeploymentTargetResourceListInner {
             if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
                 $subscriptionId = $Matches[1]
                 if ($currentContext.Subscription.Id -ne $subscriptionId) {
-                    $null = Set-AzContext -Subscription $subscriptionId
+                    $null = Set-AzContext -Subscription $subscriptionId -Verbose
                 }
             }
             Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)

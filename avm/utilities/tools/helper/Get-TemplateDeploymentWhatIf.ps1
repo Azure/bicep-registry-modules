@@ -138,7 +138,7 @@ function Get-TemplateDeploymentWhatIf {
             'resourceGroup' {
                 if (-not [String]::IsNullOrEmpty($SubscriptionId)) {
                     Write-Verbose ('Setting context to subscription [{0}]' -f $SubscriptionId)
-                    $null = Set-AzContext -Subscription $SubscriptionId
+                    $null = Set-AzContext -Subscription $SubscriptionId -Verbose
                 }
                 if (-not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
                     $resourceGroupLocation = $AdditionalParameters.resourceLocation ?? $DeploymentMetadataLocation
@@ -154,7 +154,7 @@ function Get-TemplateDeploymentWhatIf {
             'subscription' {
                 if (-not [String]::IsNullOrEmpty($SubscriptionId)) {
                     Write-Verbose ('Setting context to subscription [{0}]' -f $SubscriptionId)
-                    $null = Set-AzContext -Subscription $SubscriptionId
+                    $null = Set-AzContext -Subscription $SubscriptionId -Verbose
                 }
                 if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'WhatIf')) {
                     $res = New-AzDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -WhatIf
