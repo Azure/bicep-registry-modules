@@ -89,7 +89,7 @@ param replicaRetryLimit int = 0
 @description('Optional. The name of the workload profile to use.')
 param workloadProfileName string = 'Consumption'
 
-@description('Optional. The secrets of the Container App.')
+@description('Optional. The secrets configured for the Container App.')
 @metadata({
   examle: '''
 {

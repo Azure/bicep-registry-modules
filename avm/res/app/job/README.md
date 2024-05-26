@@ -621,7 +621,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | [`replicaTimeout`](#parameter-replicatimeout) | int | Maximum number of seconds a replica is allowed to run. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scheduleTriggerConfig`](#parameter-scheduletriggerconfig) | object | Required if TriggerType is Schedule. Configuration of a schedule based job. |
-| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
+| [`secrets`](#parameter-secrets) | array | The secrets configured for the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. |
@@ -1647,7 +1647,7 @@ Number of successful completions of a job that are necessary to consider the job
 
 ### Parameter: `secrets`
 
-The secrets of the Container App.
+The secrets configured for the Container App.
 
 - Required: No
 - Type: array
