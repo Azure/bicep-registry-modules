@@ -70,7 +70,7 @@ output name string = dbw.outputs.name
 output location string = dbw.outputs.location
 
 @description('The name of the managed resource group.')
-output managedResourceGroupName string = dbw.outputs.managedResourceGroupName
+output resourceGroupName string = dbw.outputs.resourceGroupName
 
 // ================ //
 // Definitions      //
