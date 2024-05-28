@@ -41,7 +41,13 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Using `deployments` in parameter set_
 
-This instance deploys the module with the AI model deployment feature.
+This instance deploys the module with the AI model deployment feature.'
+
+Note, this test is temporarily disabled as it needs to be enabled on the subscription.
+As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
+You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
+And register here: https://aka.ms/oai/access
+
 
 
 <details>
@@ -938,11 +944,6 @@ Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to deter
   [
     'AIServices'
     'AnomalyDetector'
-    'Bing.Autosuggest.v7'
-    'Bing.CustomSearch'
-    'Bing.EntitySearch'
-    'Bing.Search.v7'
-    'Bing.SpellCheck.v7'
     'CognitiveServices'
     'ComputerVision'
     'ContentModerator'

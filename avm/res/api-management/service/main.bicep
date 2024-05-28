@@ -61,6 +61,8 @@ param roleAssignments roleAssignmentType
   'Basic'
   'Standard'
   'Premium'
+  'StandardV2'
+  'BasicV2'
 ])
 param sku string = 'Developer'
 

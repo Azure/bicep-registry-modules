@@ -1,7 +1,14 @@
 targetScope = 'subscription'
 
 metadata name = 'Using `deployments` in parameter set'
-metadata description = 'This instance deploys the module with the AI model deployment feature.'
+metadata description = '''
+This instance deploys the module with the AI model deployment feature.'
+
+Note, this test is temporarily disabled as it needs to be enabled on the subscription.
+As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
+You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
+And register here: https://aka.ms/oai/access
+'''
 
 // ========== //
 // Parameters //
@@ -36,7 +43,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // ============== //
 
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for iteration in ['init', 'idem']: if (true == false) {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-ai'
     params: {

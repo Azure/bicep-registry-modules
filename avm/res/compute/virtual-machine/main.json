@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13812487090890990585"
+      "templateHash": "16790973878425743878"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -451,6 +451,8 @@
       "type": "string",
       "defaultValue": "",
       "allowedValues": [
+        "RHEL_BYOS",
+        "SLES_BYOS",
         "Windows_Client",
         "Windows_Server",
         ""
@@ -498,6 +500,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Resource ID of a proximity placement group."
+      }
+    },
+    "virtualMachineScaleSetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of a virtual machine scale set, where the VM should be added."
       }
     },
     "availabilitySetResourceId": {
@@ -1015,6 +1024,7 @@
         },
         "availabilitySet": "[if(not(empty(parameters('availabilitySetResourceId'))), createObject('id', parameters('availabilitySetResourceId')), null())]",
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
+        "virtualMachineScaleSet": "[if(not(empty(parameters('virtualMachineScaleSetResourceId'))), createObject('id', parameters('virtualMachineScaleSetResourceId')), null())]",
         "priority": "[parameters('priority')]",
         "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
         "billingProfile": "[if(and(not(empty(parameters('priority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', json(parameters('maxPriceForLowPriorityVm'))), null())]",
@@ -1049,10 +1059,10 @@
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
         "taskType": "ComputeVmShutdownTask",
         "dailyRecurrence": {
-          "time": "[if(contains(parameters('autoShutdownConfig'), 'time'), parameters('autoShutdownConfig').time, '19:00')]"
+          "time": "[if(contains(parameters('autoShutdownConfig'), 'time'), parameters('autoShutdownConfig').dailyRecurrenceTime, '19:00')]"
         },
         "timeZoneId": "[if(contains(parameters('autoShutdownConfig'), 'timeZone'), parameters('autoShutdownConfig').timeZone, 'UTC')]",
-        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
+        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
       },
       "dependsOn": [
         "vm"
@@ -1170,7 +1180,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "1849400803354837318"
+              "templateHash": "15955967529014054327"
             }
           },
           "definitions": {
@@ -1480,6 +1490,15 @@
                   },
                   "lock": {
                     "value": "[parameters('lock')]"
+                  },
+                  "idleTimeoutInMinutes": {
+                    "value": "[tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'idleTimeoutInMinutes')]"
+                  },
+                  "ddosSettings": {
+                    "value": "[tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'ddosSettings')]"
+                  },
+                  "dnsSettings": {
+                    "value": "[tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'dnsSettings')]"
                   },
                   "publicIPAddressVersion": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressVersion'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAddressVersion), createObject('value', 'IPv4'))]",
                   "publicIPAllocationMethod": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAllocationMethod'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAllocationMethod), createObject('value', 'Static'))]",
@@ -2699,6 +2718,9 @@
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAadJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAadJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": "[if(contains(parameters('extensionAadJoinConfig'), 'settings'), createObject('value', parameters('extensionAadJoinConfig').settings), createObject('value', createObject()))]",
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'supressFailures'), false())]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'tags'), parameters('tags'))]"
           }
@@ -2899,6 +2921,9 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDomainJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
             "value": "[parameters('extensionDomainJoinConfig').settings]"
+          },
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'supressFailures'), false())]"
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'tags'), parameters('tags'))]"
@@ -3106,6 +3131,9 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAntiMalwareConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
             "value": "[parameters('extensionAntiMalwareConfig').settings]"
+          },
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'supressFailures'), false())]"
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'tags'), parameters('tags'))]"
@@ -3316,6 +3344,9 @@
               "GCS_AUTO_CONFIG": "[if(equals(parameters('osType'), 'Linux'), true(), null())]"
             }
           },
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'supressFailures'), false())]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'tags'), parameters('tags'))]"
           },
@@ -3524,6 +3555,9 @@
               "enableAMA": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAMA'), parameters('extensionDependencyAgentConfig').enableAMA, true())]"
             }
           },
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'supressFailures'), false())]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'tags'), parameters('tags'))]"
           }
@@ -3721,6 +3755,9 @@
           "typeHandlerVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').typeHandlerVersion), createObject('value', '1.4'))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'supressFailures'), false())]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'tags'), parameters('tags'))]"
           }
@@ -3921,6 +3958,9 @@
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDSCConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDSCConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": "[if(contains(parameters('extensionDSCConfig'), 'settings'), createObject('value', parameters('extensionDSCConfig').settings), createObject('value', createObject()))]",
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'supressFailures'), false())]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'tags'), parameters('tags'))]"
           },
@@ -4128,6 +4168,9 @@
               ]
             }
           },
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'supressFailures'), false())]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'tags'), parameters('tags'))]"
           },
@@ -4330,7 +4373,10 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "forceUpdateTag": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').forceUpdateTag), createObject('value', '1.0'))]",
           "settings": {
-            "value": "[parameters('extensionAzureDiskEncryptionConfig').settings]"
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'settings'), createObject())]"
+          },
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'supressFailures'), false())]"
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'tags'), parameters('tags'))]"
@@ -4531,6 +4577,9 @@
           "typeHandlerVersion": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'typeHandlerVersion'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').typeHandlerVersion), createObject('value', '1.4'))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').enableAutomaticUpgrade), createObject('value', false()))]",
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'supressFailures'), false())]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'tags'), parameters('tags'))]"
           }
@@ -4738,7 +4787,8 @@
                 "hostPoolName": "[parameters('extensionHostPoolRegistration').hostPoolName]",
                 "registrationInfoToken": "[parameters('extensionHostPoolRegistration').registrationInfoToken]",
                 "aadJoin": true
-              }
+              },
+              "supressFailures": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'supressFailures'), false())]"
             }
           },
           "tags": {
@@ -4938,6 +4988,9 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionGuestConfigurationExtension').enableAutomaticUpgrade), createObject('value', true()))]",
           "forceUpdateTag": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'forceUpdateTag'), createObject('value', parameters('extensionGuestConfigurationExtension').forceUpdateTag), createObject('value', '1.0'))]",
           "settings": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'settings'), createObject('value', parameters('extensionGuestConfigurationExtension').settings), createObject('value', createObject()))]",
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'supressFailures'), false())]"
+          },
           "protectedSettings": {
             "value": "[parameters('extensionGuestConfigurationExtensionProtectedSettings')]"
           },
