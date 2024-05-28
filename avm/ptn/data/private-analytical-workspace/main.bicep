@@ -69,6 +69,9 @@ output name string = dbw.outputs.name
 @description('The location the resource was deployed into.')
 output location string = dbw.outputs.location
 
+@description('The name of the managed resource group.')
+output managedResourceGroupName string = dbw.outputs.managedResourceGroupName
+
 // ================ //
 // Definitions      //
 // ================ //

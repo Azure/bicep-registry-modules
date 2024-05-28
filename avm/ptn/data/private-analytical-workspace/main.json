@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "365921584976257523"
+      "templateHash": "11591233083230840510"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -1665,6 +1665,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.location.value]"
+    },
+    "managedResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the managed resource group."
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.managedResourceGroupName.value]"
     }
   }
 }
