@@ -69,6 +69,7 @@ runs:
     - name: Azure Login
       uses: azure/login@v2
       with:
+        auth-type: IDENTITY
         client-id: ${{ env.AZURE_CLIENT_ID }}
         tenant-id: ${{ env.ARM_TENANT_ID }}
         subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
