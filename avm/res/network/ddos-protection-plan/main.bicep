@@ -54,7 +54,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource ddosProtectionPlan 'Microsoft.Network/ddosProtectionPlans@2023-04-01' = {
+resource ddosProtectionPlan 'Microsoft.Network/ddosProtectionPlans@2023-11-01' = {
   name: name
   location: location
   tags: tags
