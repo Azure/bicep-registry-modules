@@ -26,7 +26,7 @@ on:
         required: false
   push:
     branches:
-      - main
+      - private-analytical-workspace
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
