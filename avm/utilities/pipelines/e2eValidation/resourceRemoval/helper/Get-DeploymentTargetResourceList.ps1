@@ -58,6 +58,7 @@ function Get-DeploymentTargetResourceListInner {
     )
 
     $resultSet = [System.Collections.ArrayList]@()
+    $currentContext = Get-AzContext
 
     ##############################################
     # Get all deployment children based on scope #
@@ -65,24 +66,24 @@ function Get-DeploymentTargetResourceListInner {
     switch ($Scope) {
         'resourcegroup' {
             if (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue') {
-                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null }
+                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
-                [array]$resultSet = $resultSet | Where-Object { $_ -notmatch "/resourceGroups/$resourceGroupName/" }
+                [array]$resultSet = $resultSet | Where-Object { $_ -notmatch "\/resourceGroups\/$resourceGroupName\/" }
             }
             break
         }
         'subscription' {
-            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'managementgroup' {
-            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'tenant' {
-            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
     }
@@ -90,7 +91,7 @@ function Get-DeploymentTargetResourceListInner {
     ###########################
     # Manage nested resources #
     ###########################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '/deployments/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/deployments\/' } )) {
         Write-Verbose ('Found deployed resource [{0}]' -f $deployment)
         [array]$resultSet += $deployment
     }
@@ -98,17 +99,29 @@ function Get-DeploymentTargetResourceListInner {
     #############################
     # Manage nested deployments #
     #############################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '/deployments/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/deployments\/' } )) {
         $name = Split-Path $deployment -Leaf
         if ($deployment -match '/resourceGroups/') {
             # Resource Group Level Child Deployments #
             ##########################################
+            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                $subscriptionId = $Matches[1]
+                if ($currentContext.Subscription.Id -ne $subscriptionId) {
+                    $null = Set-AzContext -Subscription $subscriptionId
+                }
+            }
             Write-Verbose ('Found [resource group] deployment [{0}]' -f $deployment)
             $resourceGroupName = $deployment.split('/resourceGroups/')[1].Split('/')[0]
             [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'resourcegroup' -ResourceGroupName $ResourceGroupName
         } elseif ($deployment -match '/subscriptions/') {
             # Subscription Level Child Deployments #
             ########################################
+            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                $subscriptionId = $Matches[1]
+                if ($currentContext.Subscription.Id -ne $subscriptionId) {
+                    $null = Set-AzContext -Subscription $subscriptionId
+                }
+            }
             Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
             [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription'
         } elseif ($deployment -match '/managementgroups/') {
@@ -124,7 +137,7 @@ function Get-DeploymentTargetResourceListInner {
         }
     }
 
-    return $resultSet
+    return $resultSet | Select-Object -Unique
 }
 #endregion
 
