@@ -42,7 +42,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 // Create hub virtual networks
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.6' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nvn'
     params: {
@@ -67,19 +67,19 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [
 ]
 
 // Create hub virtual network peerings
-resource hubVirtualNetworkPeer_remote 'Microsoft.Network/virtualNetworks@2023-09-01' existing = [
+resource hubVirtualNetworkPeer_remote 'Microsoft.Network/virtualNetworks@2023-11-01' existing = [
   for (peer, index) in flatten(hubVirtualNetworkPeerings): {
     name: peer.remoteVirtualNetworkName
   }
 ]
 
-resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2023-09-01' existing = [
+resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2023-11-01' existing = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enablePeering) {
     name: hub.key
   }
 ]
 
-resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-09-01' = [
+resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
     name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${hubVirtualNetworkPeer_remote[index].name}'
     properties: {
@@ -113,7 +113,7 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [
 ]
 
 // Create hub virtual network route table route
-resource hubRoute 'Microsoft.Network/routeTables/routes@2023-09-01' = [
+resource hubRoute 'Microsoft.Network/routeTables/routes@2023-11-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
     name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${hubVirtualNetworkPeer_remote[index].name}-route'
     properties: {
@@ -128,7 +128,7 @@ resource hubRoute 'Microsoft.Network/routeTables/routes@2023-09-01' = [
 // Create Bastion host if enabled
 // AzureBastionSubnet is required to deploy Bastion service. This subnet must exist in the parsubnets array if you enable Bastion Service.
 // There is a minimum subnet requirement of /27 prefix.
-module hubBastion 'br/public:avm/res/network/bastion-host:0.2.0' = [
+module hubBastion 'br/public:avm/res/network/bastion-host:0.2.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nbh'
     params: {
@@ -154,7 +154,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.2.0' = [
 
 // Create Azure Firewall if enabled
 // AzureFirewallSubnet is required to deploy Azure Firewall service. This subnet must exist in the subnets array if you enable Azure Firewall.
-module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.1.1' = [
+module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.3.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
@@ -189,7 +189,7 @@ module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.1.1' = [
 ]
 
 @batchSize(1)
-resource hubAzureFirewallSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing = [
+resource hubAzureFirewallSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' existing = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${hub.key}/AzureFirewallSubnet'
   }

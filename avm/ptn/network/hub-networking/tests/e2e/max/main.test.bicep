@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
             natRuleCollections: []
             networkRuleCollections: []
             publicIPAddressObject: {
-              name: 'hub1PublicIp'
+              name: 'hub1-waf-pip'
             }
             publicIPResourceID: ''
             roleAssignments: []
@@ -182,16 +182,16 @@ module testDeployment '../../../main.bicep' = [
             natRuleCollections: []
             networkRuleCollections: []
             publicIPAddressObject: {
-              name: 'hub2PublicIp'
+              name: 'hub2-waf-pip'
             }
             publicIPResourceID: ''
             roleAssignments: []
             tags: {}
             threatIntelMode: 'Alert'
             zones: [
-              '1'
-              '2'
-              '3'
+              1
+              2
+              3
             ]
           }
           bastionHost: {

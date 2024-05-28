@@ -20,13 +20,13 @@ This module is designed to simplify the creation of multi-region hub networks in
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/azureFirewalls` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/azureFirewalls) |
 | `Microsoft.Network/bastionHosts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/bastionHosts) |
-| `Microsoft.Network/publicIPAddresses` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
-| `Microsoft.Network/routeTables/routes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/routeTables/routes) |
+| `Microsoft.Network/routeTables/routes` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/routeTables/routes) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
 
 ## Usage examples
@@ -112,7 +112,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           natRuleCollections: []
           networkRuleCollections: []
           publicIPAddressObject: {
-            name: 'hub1PublicIp'
+            name: 'hub1-waf-pip'
           }
           publicIPResourceID: ''
           roleAssignments: []
@@ -216,7 +216,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           natRuleCollections: []
           networkRuleCollections: []
           publicIPAddressObject: {
-            name: 'hub2PublicIp'
+            name: 'hub2-waf-pip'
           }
           publicIPResourceID: ''
           roleAssignments: []
@@ -224,9 +224,9 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           threatIntelMode: 'Alert'
           virtualHub: ''
           zones: [
-            '1'
-            '2'
-            '3'
+            1
+            2
+            3
           ]
         }
         bastionHost: {
@@ -328,7 +328,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "natRuleCollections": [],
             "networkRuleCollections": [],
             "publicIPAddressObject": {
-              "name": "hub1PublicIp"
+              "name": "hub1-waf-pip"
             },
             "publicIPResourceID": "",
             "roleAssignments": [],
@@ -432,7 +432,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "natRuleCollections": [],
             "networkRuleCollections": [],
             "publicIPAddressObject": {
-              "name": "hub2PublicIp"
+              "name": "hub2-waf-pip"
             },
             "publicIPResourceID": "",
             "roleAssignments": [],
@@ -440,9 +440,9 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "threatIntelMode": "Alert",
             "virtualHub": "",
             "zones": [
-              "1",
-              "2",
-              "3"
+              1,
+              2,
+              3
             ]
           },
           "bastionHost": {
@@ -1756,10 +1756,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/azure-firewall:0.1.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.2.0` | Remote reference |
+| `br/public:avm/res/network/azure-firewall:0.3.0` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.2.1` | Remote reference |
 | `br/public:avm/res/network/route-table:0.2.2` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.1.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.1.6` | Remote reference |
 
 ## Data Collection
 
