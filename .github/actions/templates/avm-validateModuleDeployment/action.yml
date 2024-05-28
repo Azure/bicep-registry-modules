@@ -19,7 +19,6 @@
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
 ##   | subscriptionId             | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
-##   | clientId                   | false    | ''      | The clientId to deploy with                           | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
 ##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
 ##   | customLocation             | false    |         | Custom location overwrite, if needed                  | 'WestEurope'                                                               |
@@ -43,14 +42,8 @@ inputs:
   subscriptionId:
     description: "The subscription ID to deploy to"
     required: false
-  tenantId:
-    description: "The tenant ID to deploy to"
-    required: false
   managementGroupId:
     description: "The management group ID to deploy to"
-    required: false
-  clientId:
-    description: "The service principal client ID or user-assigned managed identity client ID"
     required: false
   customTokens:
     description: 'Additional parameter file token pairs in json format. e.g. {"tokenName":"tokenValue"}'
@@ -69,9 +62,10 @@ runs:
     - name: Azure Login
       uses: azure/login@v2
       with:
+        # creds: ${{ env.AZURE_CREDENTIALS }}
         client-id: ${{ env.AZURE_CLIENT_ID }}
         tenant-id: ${{ env.ARM_TENANT_ID }}
-        subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+        subscription-id: ${{ env.ARM_SUBSCRIPTION_ID
         enable-AzPSSession: true
 
     # [Set Deployment Location] task(s)
@@ -144,7 +138,6 @@ runs:
           $ConvertTokensInputs.Tokens += @{
             subscriptionId    = '${{ inputs.subscriptionId }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
-            clientId          = '${{ inputs.clientId }}'
             tenantId          = '${{ env.ARM_TENANT_ID }}'
           }
 
