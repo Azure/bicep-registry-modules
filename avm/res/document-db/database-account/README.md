@@ -1742,6 +1742,14 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               'myPartitionKey1'
             ]
           }
+          {
+            kind: 'Hash'
+            name: 'container-005'
+            paths: [
+              'myPartitionKey1'
+            ]
+            version: 2
+          }
         ]
         name: 'all-partition-key-types'
       }
@@ -2020,6 +2028,14 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "paths": [
                 "myPartitionKey1"
               ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-005",
+              "paths": [
+                "myPartitionKey1"
+              ],
+              "version": 2
             }
           ],
           "name": "all-partition-key-types"
@@ -2594,7 +2610,7 @@ Default to the location where the account is deployed. Locations enabled for the
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region |
+| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
 
 ### Parameter: `locations.failoverPriority`
 
@@ -2612,7 +2628,7 @@ The name of the region.
 
 ### Parameter: `locations.isZoneRedundant`
 
-Default to true. Flag to indicate whether or not this region is an AvailabilityZone region
+Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
 
 - Required: No
 - Type: bool
@@ -3384,6 +3400,7 @@ Array of containers to deploy in the SQL database.
 | [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
 | [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
 | [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
 ### Parameter: `sqlDatabases.containers.name`
 
@@ -3507,14 +3524,28 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service |
+| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
 
 ### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
 
-List of paths must be unique for each document in the Azure Cosmos DB service
+List of paths must be unique for each document in the Azure Cosmos DB service.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `sqlDatabases.containers.version`
+
+Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
+
+- Required: No
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+  ]
+  ```
 
 ### Parameter: `sqlDatabases.throughput`
 
