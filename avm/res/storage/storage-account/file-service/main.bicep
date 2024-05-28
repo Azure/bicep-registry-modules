@@ -26,11 +26,11 @@ param shares array?
 
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
   name: storageAccountName
 }
 
-resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2021-09-01' = {
+resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' = {
   name: name
   parent: storageAccount
   properties: {
@@ -39,42 +39,50 @@ resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2021-09-01
   }
 }
 
-resource fileServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource fileServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: fileServices
   }
-  scope: fileServices
-}]
+]
 
-module fileServices_shares 'share/main.bicep' = [for (share, index) in (shares ?? []): {
-  name: '${deployment().name}-shares-${index}'
-  params: {
-    storageAccountName: storageAccount.name
-    fileServicesName: fileServices.name
-    name: share.name
-    accessTier: share.?accessTier ?? defaultShareAccessTier
-    enabledProtocols: share.?enabledProtocols
-    rootSquash: share.?rootSquash
-    shareQuota: share.?shareQuota
-    roleAssignments: share.?roleAssignments
+module fileServices_shares 'share/main.bicep' = [
+  for (share, index) in (shares ?? []): {
+    name: '${deployment().name}-shares-${index}'
+    params: {
+      storageAccountName: storageAccount.name
+      fileServicesName: fileServices.name
+      name: share.name
+      accessTier: share.?accessTier ?? defaultShareAccessTier
+      enabledProtocols: share.?enabledProtocols
+      rootSquash: share.?rootSquash
+      shareQuota: share.?shareQuota
+      roleAssignments: share.?roleAssignments
+    }
   }
-}]
+]
 
 @description('The name of the deployed file share service.')
 output name string = fileServices.name
