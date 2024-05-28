@@ -55,6 +55,15 @@ inputs:
   customLocation:
     description: "Custom location overwrite, if needed"
     required: false
+  client-id:
+    description: "The application ID used to deployment"
+    required: false
+  subscription-id:
+    description: "The subscription ID to deploy to"
+    required: false
+  tenant-id:
+    description: "The tenant ID to deploy to"
+    required: false
 
 runs:
   using: "composite"
