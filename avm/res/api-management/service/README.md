@@ -18,6 +18,7 @@ This module deploys an API Management Service.
 | :-- | :-- |
 | `Microsoft.ApiManagement/service` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service) |
 | `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
 | `Microsoft.ApiManagement/service/apiVersionSets` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apiVersionSets) |
 | `Microsoft.ApiManagement/service/authorizationServers` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/authorizationServers) |
@@ -122,6 +123,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
+    apiDiagnostics: [
+      {
+        apiName: 'echo-api'
+        loggerName: 'logger'
+      }
+    ]
     apis: [
       {
         apiVersionSet: {
@@ -322,6 +329,14 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
+    "apiDiagnostics": {
+      "value": [
+        {
+          "apiName": "echo-api",
+          "loggerName": "logger"
+        }
+      ]
+    },
     "apis": {
       "value": [
         {
@@ -960,6 +975,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalLocations`](#parameter-additionallocations) | array | Additional datacenter locations of the API Management service. |
+| [`apiDiagnostics`](#parameter-apidiagnostics) | array | API Diagnostics. |
 | [`apis`](#parameter-apis) | array | APIs. |
 | [`apiVersionSets`](#parameter-apiversionsets) | array | API Version Sets. |
 | [`authorizationServers`](#parameter-authorizationservers) | secureObject | Authorization servers. |
@@ -1018,6 +1034,14 @@ The name of the owner of the service.
 ### Parameter: `additionalLocations`
 
 Additional datacenter locations of the API Management service.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `apiDiagnostics`
+
+API Diagnostics.
 
 - Required: No
 - Type: array

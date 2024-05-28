@@ -1,0 +1,153 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.27.1.19265",
+      "templateHash": "7895336074633098203"
+    },
+    "name": "API Management Service APIs Diagnostics.",
+    "description": "This module deploys an API Management Service API Diagnostics.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent API Management service."
+      }
+    },
+    "apiName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent API."
+      }
+    },
+    "loggerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the logger."
+      }
+    },
+    "diagnosticName": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The name of the diagnostic."
+      }
+    },
+    "alwaysLog": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. Specifies for what type of messages sampling settings should not apply."
+      }
+    },
+    "backend": {
+      "type": "object",
+      "metadata": {
+        "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
+      }
+    },
+    "frontend": {
+      "type": "object",
+      "metadata": {
+        "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
+      }
+    },
+    "httpCorrelationProtocol": {
+      "type": "string",
+      "allowedValues": [
+        "Legacy",
+        "None",
+        "W3C"
+      ],
+      "metadata": {
+        "description": "Optional. Sets correlation protocol to use for Application Insights diagnostics."
+      }
+    },
+    "logClientIp": {
+      "type": "bool",
+      "metadata": {
+        "description": "Optional. Log the ClientIP. Default is false."
+      }
+    },
+    "metrics": {
+      "type": "bool",
+      "metadata": {
+        "description": "Conditional. Emit custom metrics via emit-metric policy. Applicable only to Application Insights diagnostic settings."
+      }
+    },
+    "operationNameFormat": {
+      "type": "string",
+      "allowedValues": [
+        "Name",
+        "URI"
+      ],
+      "metadata": {
+        "description": "Optional. The format of the Operation Name for Application Insights telemetries. Default is Name."
+      }
+    },
+    "samplingPercentage": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. Rate of sampling for fixed-rate sampling."
+      }
+    },
+    "verbosity": {
+      "type": "string",
+      "allowedValues": [
+        "error",
+        "information",
+        "verbose"
+      ],
+      "metadata": {
+        "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/apis/diagnostics",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('diagnosticName'))]",
+      "properties": {
+        "alwaysLog": "[if(not(empty(parameters('alwaysLog'))), parameters('alwaysLog'), 'allErrors')]",
+        "backend": "[parameters('backend')]",
+        "frontend": "[parameters('frontend')]",
+        "httpCorrelationProtocol": "[parameters('httpCorrelationProtocol')]",
+        "logClientIp": "[parameters('logClientIp')]",
+        "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apiManagementServiceName'), parameters('loggerName'))]",
+        "metrics": "[parameters('metrics')]",
+        "operationNameFormat": "[parameters('operationNameFormat')]",
+        "sampling": {
+          "percentage": "[parameters('samplingPercentage')]",
+          "samplingType": "fixed"
+        },
+        "verbosity": "[parameters('verbosity')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API diagnostic."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/apis/diagnostics', parameters('apiManagementServiceName'), parameters('apiName'), parameters('diagnosticName'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API diagnostic."
+      },
+      "value": "[parameters('diagnosticName')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API diagnostic was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
