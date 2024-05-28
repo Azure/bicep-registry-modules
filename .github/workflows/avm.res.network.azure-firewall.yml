@@ -49,7 +49,6 @@ jobs:
   ###########################
   job_initialize_pipeline:
     runs-on: ubuntu-latest
-    environment: "Production"
     name: "Initialize pipeline"
     steps:
       - name: "Checkout"
