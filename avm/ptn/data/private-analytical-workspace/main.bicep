@@ -60,14 +60,14 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = {
 
 // Add your outputs here
 
-// @description('The resource ID of the resource.')
-// output resourceId string = dbw.outputs.resourceId
+@description('The resource ID of the resource.')
+output resourceId string = dbw.outputs.resourceId
 
-// @description('The name of the resource.')
-// output name string = <Resource>.name
+@description('The name of the resource.')
+output name string = dbw.outputs.name
 
-// @description('The location the resource was deployed into.')
-// output location string = <Resource>.location
+@description('The location the resource was deployed into.')
+output location string = dbw.outputs.location
 
 // ================ //
 // Definitions      //
