@@ -629,7 +629,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 | [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'. |
-| [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. |
+| [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`replications`](#parameter-replications) | array | All replications to create. |
 | [`retentionPolicyDays`](#parameter-retentionpolicydays) | int | The number of days to retain an untagged manifest after which it gets purged. |
 | [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
@@ -637,7 +637,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 | [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
 | [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. |
+| [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
 | [`zoneRedundancy`](#parameter-zoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
 
@@ -1396,7 +1396,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 ### Parameter: `quarantinePolicyStatus`
 
-The value that indicates whether the quarantine policy is enabled or not.
+The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'.
 
 - Required: No
 - Type: string
@@ -1560,7 +1560,7 @@ Tags of the resource.
 
 ### Parameter: `trustPolicyStatus`
 
-The value that indicates whether the trust policy is enabled or not.
+The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'.
 
 - Required: No
 - Type: string
