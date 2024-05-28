@@ -71,9 +71,9 @@ runs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ env.AZURE_CLIENT_ID }}
-        tenant-id: ${{ env.ARM_TENANT_ID}}
-        subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+        client-id: ${{ secret.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secret.ARM_TENANT_ID}}
+        subscription-id: ${{ secret.ARM_SUBSCRIPTION_ID }}
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
