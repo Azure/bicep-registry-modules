@@ -40,6 +40,8 @@ The function requires Azure PowerShell Storage Module (Az.Storage) to be install
 #>
 
 function Invoke-AvmJsonModuleIndexGeneration {
+
+  [CmdletBinding()]
   param (
     [Parameter(Mandatory = $false)]
     [string] $storageAccountName = 'biceplivedatasaprod',
@@ -62,31 +64,6 @@ function Invoke-AvmJsonModuleIndexGeneration {
     [Parameter(Mandatory = $false)]
     [switch] $doNotMergeWithLastModuleIndexJsonFileVersion
   )
-
-  ## Download the current published moduleIndex.json from the storage account if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
-  if (-not $doNotMergeWithLastModuleIndexJsonFileVersion) {
-    try {
-      $lastModuleIndexJsonFilePath = $prefixForLastModuleIndexJsonFile + $moduleIndexJsonFilePath
-
-      Write-Verbose "Attempting to get last version of the moduleIndex.json from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName and save to file: $lastModuleIndexJsonFilePath ..." -Verbose
-
-      $storageContext = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
-
-      Get-AzStorageBlobContent -Blob $storageBlobName -Container $storageAccountContainer -Context $storageContext -Destination $lastModuleIndexJsonFilePath -Force | Out-Null
-    } catch {
-      Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)" -ErrorAction Stop
-    }
-
-    ## Check if the last version of the moduleIndex.json (last-moduleIndex.json) file exists and is not empty
-
-    if (Test-Path $lastModuleIndexJsonFilePath) {
-      $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
-      if ($null -eq $lastModuleIndexJsonFileContent) {
-        Write-Error "The last version of the moduleIndex.json file (last-moduleIndex.json) exists but is empty. File: $lastModuleIndexJsonFilePath" -ErrorAction Stop
-      }
-      Write-Verbose 'The last version of the moduleIndex.json file (last-moduleIndex.json) exists and is not empty. Proceeding...' -Verbose
-    }
-  }
 
   ## Generate the new moduleIndex.json file based off the modules in the repository
 
@@ -121,7 +98,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
             Write-Error "Error message: $($_.Exception.Message)"
             continue
           }
-          $tags = $tagListResponse.tags | Sort-Object
+          $tags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
 
           $properties = [ordered]@{}
           foreach ($tag in $tags) {
@@ -167,9 +144,31 @@ function Invoke-AvmJsonModuleIndexGeneration {
   Write-Verbose "Convert moduleIndexData variable to JSON and save as 'generated-moduleIndex.json'" -Verbose
   $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $currentGeneratedModuleIndexJsonFilePath
 
-  ## Merge the new moduleIndex.json file with the previous version if the $doNotMergeWithLastModuleIndexJsonFileVersion is not specified
-
+  ## Download the current published moduleIndex.json from the storage account if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
   if (-not $doNotMergeWithLastModuleIndexJsonFileVersion) {
+    try {
+      $lastModuleIndexJsonFilePath = $prefixForLastModuleIndexJsonFile + $moduleIndexJsonFilePath
+
+      Write-Verbose "Attempting to get last version of the moduleIndex.json from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName and save to file: $lastModuleIndexJsonFilePath ..." -Verbose
+
+      $storageContext = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount
+
+      Get-AzStorageBlobContent -Blob $storageBlobName -Container $storageAccountContainer -Context $storageContext -Destination $lastModuleIndexJsonFilePath -Force | Out-Null
+    } catch {
+      Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)" -ErrorAction 'Stop'
+    }
+
+    ## Check if the last version of the moduleIndex.json (last-moduleIndex.json) file exists and is not empty
+
+    if (Test-Path $lastModuleIndexJsonFilePath) {
+      $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
+      if ($null -eq $lastModuleIndexJsonFileContent) {
+        Write-Error "The last version of the moduleIndex.json file (last-moduleIndex.json) exists but is empty. File: $lastModuleIndexJsonFilePath" -ErrorAction 'Stop'
+      }
+      Write-Verbose 'The last version of the moduleIndex.json file (last-moduleIndex.json) exists and is not empty. Proceeding...' -Verbose
+    }
+
+    ## Merge the new moduleIndex.json file with the previous version if the $doNotMergeWithLastModuleIndexJsonFileVersion is not specified
     Write-Verbose "Merging 'generated-moduleIndex.json' (new) file with 'last-moduleIndex.json' (previous) file..." -Verbose
 
     $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
@@ -191,7 +190,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
       } else {
         # If the module exists, merge the tags and properties
         $mergedModule = $initialMergeOfJsonFilesData[$module.moduleName]
-        $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object -Unique)
+        $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object -Culture 'en-US' -Unique)
 
         # Merge properties
         foreach ($property in $module.properties.PSObject.Properties) {
@@ -206,7 +205,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $mergedModuleIndexData = $initialMergeOfJsonFilesData.Values
 
     # Sort the modules by their names
-    $sortedMergedModuleIndexData = $mergedModuleIndexData | Sort-Object moduleName
+    $sortedMergedModuleIndexData = $mergedModuleIndexData | Sort-Object -Culture 'en-US' -Property 'moduleName'
 
     Write-Verbose "Convert mergedModuleIndexData variable to JSON and save as 'moduleIndex.json'" -Verbose
     $sortedMergedModuleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath

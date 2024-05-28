@@ -1,0 +1,99 @@
+name: .Platform - Publish tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The git tag of the module to publish. For example: [avm/res/key-vault/vault/1.0.0]"
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  job_publish_module_with_tag:
+    runs-on: ubuntu-latest
+    name: "Publish module with tag"
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: "${{ secrets.PUBLISH_CLIENT_ID }}"
+          tenant-id: "${{ secrets.PUBLISH_TENANT_ID }}"
+          subscription-id: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+
+      # Adding a step to explicitly install the latest Bicep CLI because there is
+      # always a delay in updating Bicep CLI in the job runner environments.
+      - name: Install the latest Bicep CLI
+        shell: bash
+        run: |
+          curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+          chmod +x ./bicep
+          sudo mv ./bicep /usr/local/bin/bicep
+          bicep --version
+
+      - name: "Publish tagged module to public bicep registry"
+        id: publish_tag
+        uses: azure/powershell@v2
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            # Grouping task logs
+            Write-Output '::group::Publish tagged module to public bicep registry'
+
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Publish-ModuleFromTagToPBR.ps1')
+
+            $functionInput = @{
+              ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
+              PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+              RepoRoot             = $env:GITHUB_WORKSPACE
+            }
+
+            Write-Verbose 'Invoke function with' -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            if($publishOutputs = Publish-ModuleFromTagToPBR @functionInput -Verbose) {
+              $publishOutputs.Keys | Foreach-Object {
+                Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
+                Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+              }
+            }
+
+            Write-Output '::endgroup::'
+
+      - name: "Validate publish"
+        uses: azure/powershell@v2
+        if: ${{ steps.publish_tag.outputs.version != '' && steps.publish_tag.outputs.publishedModuleName != '' }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            # Grouping task logs
+            Write-Output '::group::Validate publish'
+
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+
+            $functionInput = @{
+              Version             = "${{ steps.publish_tag.outputs.version }}"
+              PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
+              GitTagName          = "${{ steps.publish_tag.outputs.gitTagName }}"
+
+            }
+
+            Write-Verbose "Invoke function with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            Confirm-ModuleIsPublished @functionInput
+
+            Write-Output '::endgroup::'

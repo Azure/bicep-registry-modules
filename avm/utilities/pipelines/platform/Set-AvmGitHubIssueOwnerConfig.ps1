@@ -18,7 +18,7 @@ Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-reg
 Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
-Will be triggered by the workflow avm.platform.set-avm-github-issue-owner-config.yml
+Will be triggered by the workflow platform.set-avm-github-issue-owner-config.yml
 #>
 function Set-AvmGitHubIssueOwnerConfig {
   [CmdletBinding(SupportsShouldProcess)]
@@ -60,7 +60,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
     }
     # orphaned module
-    elseif ($module.ModuleStatus -eq 'Module Orphaned :eyes:') {
+    elseif ($module.ModuleStatus -eq 'Orphaned :eyes:') {
       $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -74,7 +74,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
-> A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+> A member of the @Azure/$($module.ModuleOwnersGHTeam) or @Azure/$($module.ModuleContributorsGHTeam) team will review it soon!
 "@
     }
 
@@ -91,7 +91,7 @@ function Set-AvmGitHubIssueOwnerConfig {
       gh issue comment $issue.url --body $reply --repo $Repo
     }
 
-    if (($module.ModuleStatus -ne 'Module Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+    if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
       if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
         # assign owner
         $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
