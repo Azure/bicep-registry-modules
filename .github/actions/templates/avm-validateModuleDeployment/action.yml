@@ -62,7 +62,6 @@ runs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        environment: Production
         client-id: ${{ env.AZURE_CLIENT_ID }}
         tenant-id: ${{ env.AZURE_TENANT_ID }}
         subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
