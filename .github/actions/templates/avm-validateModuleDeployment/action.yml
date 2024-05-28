@@ -39,6 +39,9 @@ inputs:
   deploymentMetadataLocation:
     description: "The location to store the deployment metadata"
     required: true
+  client-id:
+    description: "The client ID to deploy with"
+    required: false
   subscriptionId:
     description: "The subscription ID to deploy to"
     required: false
