@@ -70,7 +70,6 @@ function Get-DeploymentTargetResourceListInner {
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
-                ##[array]$resultSet = $resultSet | Where-Object { $_ -notmatch "\/resourceGroups\/$resourceGroupName\/" }
                 return $resultSet | Where-Object { $_ -notmatch "\/resourceGroups\/$resourceGroupName\/" } | Select-Object -Unique
             }
             break
@@ -88,13 +87,6 @@ function Get-DeploymentTargetResourceListInner {
             break
         }
     }
-
-    $time = (Get-Date).ToString('yyyy-MM-dd HH:mm')
-    Write-Host '-----------------------------------' -ForegroundColor 'Green'
-    Write-Host "[$time] Searched for [$name] in scope [$scope] an RG (if any) [$ResourceGroupName]" -ForegroundColor 'Cyan'
-    Write-Host "[$time] Found" -ForegroundColor 'Blue'
-    $deploymentTargets | ForEach-Object { Write-Host "[$time] - $_" -ForegroundColor 'Yellow' }
-    Write-Host '-----------------------------------' -ForegroundColor 'Green'
 
     ###########################
     # Manage nested resources #
@@ -115,7 +107,7 @@ function Get-DeploymentTargetResourceListInner {
             if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
                 $subscriptionId = $Matches[1]
                 if ($currentContext.Subscription.Id -ne $subscriptionId) {
-                    $null = Set-AzContext -Subscription $subscriptionId -Verbose
+                    $null = Set-AzContext -Subscription $subscriptionId
                 }
             }
             Write-Verbose ('Found [resource group] deployment [{0}]' -f $deployment)
@@ -127,7 +119,7 @@ function Get-DeploymentTargetResourceListInner {
             if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
                 $subscriptionId = $Matches[1]
                 if ($currentContext.Subscription.Id -ne $subscriptionId) {
-                    $null = Set-AzContext -Subscription $subscriptionId -Verbose
+                    $null = Set-AzContext -Subscription $subscriptionId
                 }
             }
             Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
