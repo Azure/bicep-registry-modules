@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16352282272601645623"
+      "templateHash": "365921584976257523"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -1643,5 +1643,28 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the resource."
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource."
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.name.value]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.location.value]"
+    }
+  }
 }
