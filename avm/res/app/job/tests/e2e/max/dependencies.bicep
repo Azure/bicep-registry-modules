@@ -50,31 +50,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
     'hidden-title': 'This is visible in the resource name'
     Env: 'test'
   }
-}
 
-// resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-04-01' = {
-//   name: 'default'
-//   parent: storageAccount
-//   properties: {
-//     deleteRetentionPolicy: {
-//       enabled: true
-//       days: 1
-//     }
-//     containerDeleteRetentionPolicy: {
-//       enabled: true
-//       days: 1
-//     }
-//   }
-// }
+  resource storageQueueService 'queueServices@2023-04-01' = {
+    name: 'default'
 
-resource storageQueueService 'Microsoft.Storage/storageAccounts/queueServices@2023-04-01' = {
-  name: 'default'
-  parent: storageAccount
-}
-
-resource storageQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2023-04-01' = {
-  name: 'jobs-queue'
-  parent: storageQueueService
+    resource storageQueue 'queues@2023-04-01' = {
+      name: 'jobs-queue'
+    }
+  }
 }
 
 @description('The resource ID of the created Managed Identity.')
