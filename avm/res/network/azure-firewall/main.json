@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "5863832859685640352"
+      "templateHash": "5560647087488405143"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -781,7 +781,7 @@
         3
       ],
       "metadata": {
-        "description": "Conditional. Zone numbers e.g. 1,2,3. Required if the resource needs to be WAF compliant "
+        "description": "Conditional. Zone numbers e.g. 1,2,3. Required if the resource needs to be WAF compliant."
       }
     },
     "diagnosticSettings": {
