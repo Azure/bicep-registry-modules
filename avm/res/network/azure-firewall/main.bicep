@@ -59,7 +59,7 @@ param virtualHubId string = ''
 @description('Optional. The operation mode for Threat Intel.')
 param threatIntelMode string = 'Deny'
 
-@description('Conditional. Zone numbers e.g. 1,2,3. Needed to make the resource WAF compliant ')
+@description('Conditional. Zone numbers e.g. 1,2,3. Required if the resource needs to be WAF compliant ')
 param zones array = [
   1
   2
