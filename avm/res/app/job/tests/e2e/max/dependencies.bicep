@@ -73,7 +73,7 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 output storageAccountName string = storageAccount.name
 
 @description('The name of the storage queue created.')
-output storageQueueName string = storageQueue.name
+output storageQueueName string = storageAccount::storageQueueService::storageQueue.name
 
 @description('The resource ID of the storage account created.')
 output storageAccountResourceId string = storageAccount.id
