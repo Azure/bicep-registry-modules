@@ -46,6 +46,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      x509StoreName: 'My'
+    }
     managementEndpoint: 'https://sfcmin001.westeurope.cloudapp.azure.com:19080'
     name: 'sfcmin001'
     nodeTypes: [
@@ -67,10 +71,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     reliabilityLevel: 'None'
     // Non-required parameters
-    certificate: {
-      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-      x509StoreName: 'My'
-    }
     location: '<location>'
   }
 }
@@ -89,6 +89,12 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "x509StoreName": "My"
+      }
+    },
     "managementEndpoint": {
       "value": "https://sfcmin001.westeurope.cloudapp.azure.com:19080"
     },
@@ -118,12 +124,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       "value": "None"
     },
     // Non-required parameters
-    "certificate": {
-      "value": {
-        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-        "x509StoreName": "My"
-      }
-    },
     "location": {
       "value": "<location>"
     }
@@ -148,6 +148,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      x509StoreName: 'My'
+    }
     managementEndpoint: 'https://sfcmax001.westeurope.cloudapp.azure.com:19080'
     name: 'sfcmax001'
     nodeTypes: [
@@ -205,10 +209,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       clientApplication: '<clientApplication>'
       clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
       tenantId: '<tenantId>'
-    }
-    certificate: {
-      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-      x509StoreName: 'My'
     }
     clientCertificateCommonNames: [
       {
@@ -329,6 +329,12 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "x509StoreName": "My"
+      }
+    },
     "managementEndpoint": {
       "value": "https://sfcmax001.westeurope.cloudapp.azure.com:19080"
     },
@@ -399,12 +405,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         "clientApplication": "<clientApplication>",
         "clusterApplication": "cf33fea8-b30f-424f-ab73-c48d99e0b222",
         "tenantId": "<tenantId>"
-      }
-    },
-    "certificate": {
-      "value": {
-        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-        "x509StoreName": "My"
       }
     },
     "clientCertificateCommonNames": {
@@ -554,6 +554,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      x509StoreName: 'My'
+    }
     managementEndpoint: 'https://sfcwaf001.westeurope.cloudapp.azure.com:19080'
     name: 'sfcwaf001'
     nodeTypes: [
@@ -611,10 +615,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       clientApplication: '<clientApplication>'
       clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
       tenantId: '<tenantId>'
-    }
-    certificate: {
-      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-      x509StoreName: 'My'
     }
     clientCertificateCommonNames: [
       {
@@ -714,6 +714,12 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "x509StoreName": "My"
+      }
+    },
     "managementEndpoint": {
       "value": "https://sfcwaf001.westeurope.cloudapp.azure.com:19080"
     },
@@ -784,12 +790,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         "clientApplication": "<clientApplication>",
         "clusterApplication": "cf33fea8-b30f-424f-ab73-c48d99e0b222",
         "tenantId": "<tenantId>"
-      }
-    },
-    "certificate": {
-      "value": {
-        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-        "x509StoreName": "My"
       }
     },
     "clientCertificateCommonNames": {
@@ -907,6 +907,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`certificate`](#parameter-certificate) | object | Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location. |
 | [`managementEndpoint`](#parameter-managementendpoint) | string | The http management endpoint of the cluster. |
 | [`name`](#parameter-name) | string | Name of the Service Fabric cluster. |
 | [`nodeTypes`](#parameter-nodetypes) | array | The list of node types in the cluster. |
@@ -919,7 +920,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 | [`addOnFeatures`](#parameter-addonfeatures) | array | The list of add-on features to enable in the cluster. |
 | [`applicationTypes`](#parameter-applicationtypes) | array | Array of Service Fabric cluster application types. |
 | [`azureActiveDirectory`](#parameter-azureactivedirectory) | object | The settings to enable AAD authentication on the cluster. |
-| [`certificate`](#parameter-certificate) | object | Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location. |
 | [`certificateCommonNames`](#parameter-certificatecommonnames) | object | Describes a list of server certificates referenced by common name that are used to secure the cluster. |
 | [`clientCertificateCommonNames`](#parameter-clientcertificatecommonnames) | array | The list of client certificates referenced by common name that are allowed to manage the cluster. |
 | [`clientCertificateThumbprints`](#parameter-clientcertificatethumbprints) | array | The list of client certificates referenced by thumbprint that are allowed to manage the cluster. |
@@ -946,6 +946,13 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 | [`vmImage`](#parameter-vmimage) | string | The VM image VMSS has been configured with. Generic names such as Windows or Linux can be used. |
 | [`vmssZonalUpgradeMode`](#parameter-vmsszonalupgrademode) | string | This property defines the upgrade mode for the virtual machine scale set, it is mandatory if a node type with multiple Availability Zones is added. |
 | [`waveUpgradePaused`](#parameter-waveupgradepaused) | bool | Boolean to pause automatic runtime version upgrades to the cluster. |
+
+### Parameter: `certificate`
+
+Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `managementEndpoint`
 
@@ -1013,14 +1020,6 @@ Array of Service Fabric cluster application types.
 ### Parameter: `azureActiveDirectory`
 
 The settings to enable AAD authentication on the cluster.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `certificate`
-
-Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location.
 
 - Required: No
 - Type: object

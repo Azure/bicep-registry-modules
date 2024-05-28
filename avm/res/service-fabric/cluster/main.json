@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16368655823655876542"
+      "templateHash": "7164960142189551703"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -161,9 +161,8 @@
     },
     "certificate": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
-        "description": "Optional. Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location."
+        "description": "Required. Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location."
       }
     },
     "certificateCommonNames": {
