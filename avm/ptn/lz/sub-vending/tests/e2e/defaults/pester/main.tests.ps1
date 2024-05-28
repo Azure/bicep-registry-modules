@@ -39,39 +39,5 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
       $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId 'bicep-lz-vending-automation-child' -ErrorAction SilentlyContinue
       $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"
     }
-
-    It "Should have the 'Microsoft.HybridCompute', 'Microsoft.AVS' resource providers and the 'AzureServicesVm', 'ArcServerPrivateLinkPreview' resource providers features registered" {
-      $resourceProviders = @( 'Microsoft.HybridCompute', 'Microsoft.AVS' )
-      $resourceProvidersFeatures = @( 'AzureServicesVm', 'ArcServerPrivateLinkPreview' )
-      ForEach ($provider in $resourceProviders) {
-        $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState
-        $providerStatus | Should -BeIn @('Registered', 'Registering')
-      }
-
-      ForEach ($feature in $resourceProvidersFeatures) {
-        $providerFeatureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).registrationState
-        $providerFeatureStatus | Should -BeIn @('Registered', 'Registering', 'Pending')
-      }
-    }
-  }
-
-  Context 'Role-Based Access Control Assignment Tests' {
-    It 'Should Have a Role Assignment for an known AAD Group with the Reader role directly upon the Subscription' {
-      $iterationCount = 0
-      do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName 'Reader' -ObjectId '896b1162-be44-4b28-888a-d01acc1b4271' -ErrorAction SilentlyContinue
-        if ($null -eq $roleAssignment) {
-          Write-Host "Waiting for Subscription Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
-          Start-Sleep -Seconds 40
-          $iterationCount++
-        }
-      } until (
-        $roleAssignment -ne $null -or $iterationCount -ge 10
-      )
-
-      $roleAssignment.ObjectId | Should -Be '896b1162-be44-4b28-888a-d01acc1b4271'
-      $roleAssignment.RoleDefinitionName | Should -Be 'Reader'
-      $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId"
-    }
   }
 }

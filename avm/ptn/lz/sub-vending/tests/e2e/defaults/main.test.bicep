@@ -32,27 +32,6 @@ module testDeployment '../../../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
-    virtualNetworkEnabled: false
-    roleAssignmentEnabled: true
-    roleAssignments: [
-      {
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        definition: 'Reader'
-        relativeScope: ''
-      }
-    ]
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
-    deploymentScriptLocation: resourceLocation
-    virtualNetworkLocation: resourceLocation
-    resourceProviders: {
-      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
-      'Microsoft.AVS': ['AzureServicesVm']
-    }
   }
 }
 

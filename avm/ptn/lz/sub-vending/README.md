@@ -72,29 +72,6 @@ This instance deploys the module with the minimum set of required parameters.
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
-    deploymentScriptLocation: '<deploymentScriptLocation>'
-    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
-    deploymentScriptName: 'ds-ssamin'
-    deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
-    deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
-    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
-    deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
-    resourceProviders: {
-      'Microsoft.AVS': [
-        'AzureServicesVm'
-      ]
-      'Microsoft.HybridCompute': [
-        'ArcServerPrivateLinkPreview'
-      ]
-    }
-    roleAssignmentEnabled: true
-    roleAssignments: [
-      {
-        definition: 'Reader'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        relativeScope: ''
-      }
-    ]
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
     subscriptionBillingScope: '<subscriptionBillingScope>'
@@ -106,8 +83,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       serviceShort: '<serviceShort>'
     }
     subscriptionWorkload: 'Production'
-    virtualNetworkEnabled: false
-    virtualNetworkLocation: '<virtualNetworkLocation>'
   }
 }
 ```
@@ -124,49 +99,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "deploymentScriptLocation": {
-      "value": "<deploymentScriptLocation>"
-    },
-    "deploymentScriptManagedIdentityName": {
-      "value": "<deploymentScriptManagedIdentityName>"
-    },
-    "deploymentScriptName": {
-      "value": "ds-ssamin"
-    },
-    "deploymentScriptNetworkSecurityGroupName": {
-      "value": "<deploymentScriptNetworkSecurityGroupName>"
-    },
-    "deploymentScriptResourceGroupName": {
-      "value": "<deploymentScriptResourceGroupName>"
-    },
-    "deploymentScriptStorageAccountName": {
-      "value": "<deploymentScriptStorageAccountName>"
-    },
-    "deploymentScriptVirtualNetworkName": {
-      "value": "<deploymentScriptVirtualNetworkName>"
-    },
-    "resourceProviders": {
-      "value": {
-        "Microsoft.AVS": [
-          "AzureServicesVm"
-        ],
-        "Microsoft.HybridCompute": [
-          "ArcServerPrivateLinkPreview"
-        ]
-      }
-    },
-    "roleAssignmentEnabled": {
-      "value": true
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "definition": "Reader",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
-          "relativeScope": ""
-        }
-      ]
-    },
     "subscriptionAliasEnabled": {
       "value": true
     },
@@ -193,12 +125,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "subscriptionWorkload": {
       "value": "Production"
-    },
-    "virtualNetworkEnabled": {
-      "value": false
-    },
-    "virtualNetworkLocation": {
-      "value": "<virtualNetworkLocation>"
     }
   }
 }
