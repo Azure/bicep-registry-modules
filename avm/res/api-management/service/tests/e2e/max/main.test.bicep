@@ -120,6 +120,12 @@ module testDeployment '../../../main.bicep' = [
           useFromLocation: 'westeurope'
         }
       ]
+      apiDiagnostics: [
+        {
+          loggerName: 'logger'
+          apiName: 'echo-api'
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'

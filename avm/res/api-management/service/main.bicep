@@ -113,6 +113,9 @@ param backends array = []
 @description('Optional. Caches.')
 param caches array = []
 
+@description('Optional. API Diagnostics.')
+param apiDiagnostics array = []
+
 @description('Optional. Identity providers.')
 param identityProviders array = []
 
@@ -240,8 +243,8 @@ module service_apis 'api/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       displayName: api.displayName
-      name: api.name
-      path: api.path
+      apiName: api.name
+      apiPath: api.path
       apiDescription: api.?apiDescription
       apiRevision: api.?apiRevision
       apiRevisionDescription: api.?apiRevisionDescription
@@ -354,6 +357,33 @@ module service_caches 'cache/main.bicep' = [
       resourceId: cache.?resourceId
       useFromLocation: cache.useFromLocation
     }
+  }
+]
+
+module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
+  for (apidiagnostic, index) in apiDiagnostics: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
+    params: {
+      apiManagementServiceName: service.name
+      diagnosticName: contains(apidiagnostic, 'diagnosticName')
+        ? apidiagnostic.diagnosticName
+        : '${service.name}-diagnostics-${index}'
+      apiName: apidiagnostic.apiName
+      loggerName: apidiagnostic.loggerName
+      alwaysLog: apidiagnostic.?alwaysLog
+      backend: apidiagnostic.?backend
+      frontend: apidiagnostic.?frontend
+      httpCorrelationProtocol: apidiagnostic.?httpCorrelationProtocol
+      logClientIp: apidiagnostic.?logClientIp
+      metrics: apidiagnostic.?metrics
+      operationNameFormat: apidiagnostic.?operationNameFormat
+      samplingPercentage: apidiagnostic.?samplingPercentage
+      verbosity: apidiagnostic.?verbosity
+    }
+    dependsOn: [
+      service_apis
+      service_loggers
+    ]
   }
 ]
 
