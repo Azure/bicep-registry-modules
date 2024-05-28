@@ -1,5 +1,5 @@
-metadata name = 'Key Vaults'
-metadata description = 'This module deploys a subscription to accelerate deployment of landing zones.'
+metadata name = 'Sub-vending'
+metadata description = 'This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).'
 metadata owner = 'Azure/module-maintainers'
 metadata details = '''These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)
 

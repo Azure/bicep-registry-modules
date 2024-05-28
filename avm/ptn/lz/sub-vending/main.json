@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "9074787295319590595"
+      "templateHash": "687475331884849209"
     },
-    "name": "Key Vaults",
-    "description": "This module deploys a subscription to accelerate deployment of landing zones.",
+    "name": "Sub-vending",
+    "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
     "owner": "Azure/module-maintainers",
     "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
   },
