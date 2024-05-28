@@ -63,7 +63,7 @@ function Install-CustomModule {
                 $alreadyInstalled = $alreadyInstalled | Where-Object { $_.Version -eq $Module.Version }
             } else {
                 # Get latest in case of multiple
-                $alreadyInstalled = ($alreadyInstalled | Sort-Object -Property Version -Descending)[0]
+                $alreadyInstalled = ($alreadyInstalled | Sort-Object -Culture 'en-US' -Property 'Version' -Descending)[0]
             }
             Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
             continue
