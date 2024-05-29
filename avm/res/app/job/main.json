@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "9286781880121776744"
+      "templateHash": "8541625448981111944"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -517,7 +517,7 @@
       },
       "nullable": true
     },
-    "jobConfigurationManualTriggerConfigType": {
+    "manualTriggerConfigType": {
       "type": "object",
       "properties": {
         "parallelism": {
@@ -535,7 +535,7 @@
         }
       }
     },
-    "jobConfigurationScheduleTriggerconfigType": {
+    "scheduleTriggerconfigType": {
       "type": "object",
       "properties": {
         "cronExpression": {
@@ -558,7 +558,7 @@
         }
       }
     },
-    "jobConfigurationEventTriggerConfigType": {
+    "eventTriggerConfigType": {
       "type": "object",
       "properties": {
         "parallelism": {
@@ -867,21 +867,21 @@
       }
     },
     "eventTriggerConfig": {
-      "$ref": "#/definitions/jobConfigurationEventTriggerConfigType",
+      "$ref": "#/definitions/eventTriggerConfigType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Required if TriggerType is Event. Configuration of an event driven job."
       }
     },
     "scheduleTriggerConfig": {
-      "$ref": "#/definitions/jobConfigurationScheduleTriggerconfigType",
+      "$ref": "#/definitions/scheduleTriggerconfigType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Required if TriggerType is Schedule. Configuration of a schedule based job."
       }
     },
     "manualTriggerConfig": {
-      "$ref": "#/definitions/jobConfigurationManualTriggerConfigType",
+      "$ref": "#/definitions/manualTriggerConfigType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Required if TriggerType is Manual. Configuration of a manually triggered job."

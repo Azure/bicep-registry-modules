@@ -75,13 +75,13 @@ param containers containerType
 param initContainersTemplate initContainerType?
 
 @description('Optional. Required if TriggerType is Event. Configuration of an event driven job.')
-param eventTriggerConfig jobConfigurationEventTriggerConfigType?
+param eventTriggerConfig eventTriggerConfigType?
 
 @description('Optional. Required if TriggerType is Schedule. Configuration of a schedule based job.')
-param scheduleTriggerConfig jobConfigurationScheduleTriggerconfigType?
+param scheduleTriggerConfig scheduleTriggerconfigType?
 
 @description('Optional. Required if TriggerType is Manual. Configuration of a manually triggered job.')
-param manualTriggerConfig jobConfigurationManualTriggerConfigType?
+param manualTriggerConfig manualTriggerConfigType?
 
 @description('Optional. The maximum number of times a replica can be retried.')
 param replicaRetryLimit int = 0
@@ -485,7 +485,7 @@ type containerVolumeMountType = {
   volumeName: string
 }[]?
 
-type jobConfigurationManualTriggerConfigType = {
+type manualTriggerConfigType = {
   // Properties replicaCompletionCount and parallelism would be set to 1 by default
   @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
   parallelism: int?
@@ -494,7 +494,7 @@ type jobConfigurationManualTriggerConfigType = {
   replicaCompletionCount: int
 }
 
-type jobConfigurationScheduleTriggerconfigType = {
+type scheduleTriggerconfigType = {
   @description('Required. Cron formatted repeating schedule ("* * * * *") of a Cron Job.')
   cronExpression: string
 
@@ -505,7 +505,7 @@ type jobConfigurationScheduleTriggerconfigType = {
   replicaCompletionCount: int
 }
 
-type jobConfigurationEventTriggerConfigType = {
+type eventTriggerConfigType = {
   @description('Required. Number of parallel replicas of a job that can run at a given time.')
   parallelism: int
 
