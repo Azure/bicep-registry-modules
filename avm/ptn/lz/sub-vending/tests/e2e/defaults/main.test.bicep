@@ -32,6 +32,7 @@ module testDeployment '../../../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    resourceProviders: {}
   }
 }
 

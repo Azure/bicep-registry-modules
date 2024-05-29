@@ -72,6 +72,7 @@ This instance deploys the module with the minimum set of required parameters.
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
+    resourceProviders: {}
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
     subscriptionBillingScope: '<subscriptionBillingScope>'
@@ -99,6 +100,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "resourceProviders": {
+      "value": {}
+    },
     "subscriptionAliasEnabled": {
       "value": true
     },
