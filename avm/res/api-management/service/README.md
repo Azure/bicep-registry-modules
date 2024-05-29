@@ -67,6 +67,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
+    sku: 'Premium'
+    skuCount: 2
+    zones: [
+      '1'
+      '2'
+    ]
   }
 }
 ```
@@ -96,6 +102,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "sku": {
+      "value": "Premium"
+    },
+    "skuCount": {
+      "value": 2
+    },
+    "zones": {
+      "value": [
+        "1",
+        "2"
+      ]
     }
   }
 }
@@ -272,6 +290,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    sku: 'Premium'
+    skuCount: 2
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
@@ -283,6 +303,10 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zones: [
+      '1'
+      '2'
+    ]
   }
 }
 ```
@@ -488,6 +512,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "sku": {
+      "value": "Premium"
+    },
+    "skuCount": {
+      "value": 2
+    },
     "subscriptions": {
       "value": [
         {
@@ -502,6 +532,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zones": {
+      "value": [
+        "1",
+        "2"
+      ]
     }
   }
 }
@@ -727,6 +763,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
       }
     ]
+    sku: 'Premium'
+    skuCount: 2
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
@@ -738,6 +776,10 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zones: [
+      '1'
+      '2'
+    ]
   }
 }
 ```
@@ -930,6 +972,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "sku": {
+      "value": "Premium"
+    },
+    "skuCount": {
+      "value": 2
+    },
     "subscriptions": {
       "value": [
         {
@@ -944,6 +992,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zones": {
+      "value": [
+        "1",
+        "2"
+      ]
     }
   }
 }
