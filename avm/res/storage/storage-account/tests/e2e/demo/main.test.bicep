@@ -1,16 +1,16 @@
-param storageAccountName string = uniqueString('stg', resourceGroup(). id)
+param storageAccountName string = uniqueString('stg', resourceGroup().id)
 param location string = resourceGroup().location
 param skuName string = 'Standard_LRS'
 param managedIdentityName string = 'mi-${uniqueString(resourceGroup().id)}'
 
-// Use Bicep resources
+/////////////////// Use Bicep resources to build dependant resources for demo, using native to not hide anything :)
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource stgBlobDataContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
+resource stgBlobDataContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing= {
   name: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
   scope: tenant()
 }
@@ -20,15 +20,40 @@ resource blobPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   location: 'global'
 }
 
-resource dnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'dnsZoneLink'
-  parent: blobPrivateDNSZone
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
+  name: 'vnet-eag-demo-avm-bicep'
+  location: location
   properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.99.0.0/16'
+      ]
+    }
+    subnets: [
+      {
+        name: 'snet-pep'
+        properties: {
+          addressPrefix: '10.99.255.0/24'
+          privateEndpointNetworkPolicies: 'Enabled'
+        }
+      }
+    ]
+  }
+}
+
+resource dnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: blobPrivateDNSZone
+  name: 'dnsZoneLink'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
     virtualNetwork: {
-      id: resourceId('Microsoft.Network/virtualNetworks', 'vnet')
+      id: virtualNetwork.id
     }
   }
 }
+
+/////////////////// DIY Approach ///////////////////
 
 resource stg 'Microsoft.Storage/storageAccounts@2023-04-01' = {
   name: storageAccountName
@@ -53,7 +78,7 @@ resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   location: location
   properties: {
     subnet: {
-      id: resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet', 'default')
+      id: virtualNetwork.properties.subnets[0].id
     }
     privateLinkServiceConnections: [
       {
@@ -69,12 +94,27 @@ resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   }
 }
 
-// Use AVM module
+resource blobPrivateEndpointZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
+  parent: blobPrivateEndpoint
+  name: 'zoneGroup'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'zoneConfig'
+        properties: {
+          privateDnsZoneId: blobPrivateDNSZone.id
+        }
+      }
+    ]
+  }
+}
 
-module avmStg 'br/public:avm/res/storage/storage-account:0.8.3' = {
+/////////////////// Using AVM module ///////////////////
+
+module avmStg 'br/public:avm/res/storage/storage-account:0.9.0' = {
   name: '${storageAccountName}-deployment'
   params: {
-    name: storageAccountName
+    name: 'avm${storageAccountName}'
     location: location
     skuName: skuName
     kind: 'StorageV2'
@@ -87,7 +127,11 @@ module avmStg 'br/public:avm/res/storage/storage-account:0.8.3' = {
     privateEndpoints: [
       {
         service: 'blob'
-        subnetResourceId: ''
+        subnetResourceId: virtualNetwork.properties.subnets[0].id
+        privateDnsZoneGroupName: 'zoneGroup'
+        privateDnsZoneResourceIds: [
+          blobPrivateDNSZone.id
+        ]
       }
     ]
   }
