@@ -105,7 +105,9 @@ param highAvailability string = 'Disabled'
   'Create'
   'Default'
   'PointInTimeRestore'
-  'Update'
+  'Update',
+  'GeoRestore',
+  'Replica'
 ])
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
