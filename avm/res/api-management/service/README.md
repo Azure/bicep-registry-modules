@@ -66,6 +66,16 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
+    additionalLocations: [
+      {
+        disableGateway: false
+        location: 'westus'
+        sku: {
+          capacity: 1
+          name: 'Premium'
+        }
+      }
+    ]
     location: '<location>'
     sku: 'Premium'
     skuCount: 2
@@ -100,6 +110,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
+    "additionalLocations": {
+      "value": [
+        {
+          "disableGateway": false,
+          "location": "westus",
+          "sku": {
+            "capacity": 1,
+            "name": "Premium"
+          }
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -140,6 +162,16 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
+    additionalLocations: [
+      {
+        disableGateway: false
+        location: 'westus'
+        sku: {
+          capacity: 1
+          name: 'Premium'
+        }
+      }
+    ]
     apis: [
       {
         apiVersionSet: {
@@ -334,6 +366,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
+    "additionalLocations": {
+      "value": [
+        {
+          "disableGateway": false,
+          "location": "westus",
+          "sku": {
+            "capacity": 1,
+            "name": "Premium"
+          }
+        }
+      ]
+    },
     "apis": {
       "value": [
         {
@@ -624,6 +668,16 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
+    additionalLocations: [
+      {
+        disableGateway: false
+        location: 'westus'
+        sku: {
+          capacity: 1
+          name: 'Premium'
+        }
+      }
+    ]
     apis: [
       {
         apiVersionSet: {
@@ -807,6 +861,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
+    "additionalLocations": {
+      "value": [
+        {
+          "disableGateway": false,
+          "location": "westus",
+          "sku": {
+            "capacity": 1,
+            "name": "Premium"
+          }
+        }
+      ]
+    },
     "apis": {
       "value": [
         {
