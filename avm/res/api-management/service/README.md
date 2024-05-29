@@ -127,6 +127,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         apiName: 'echo-api'
         loggerName: 'logger'
+        metrics: true
       }
     ]
     apis: [
@@ -333,7 +334,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "apiName": "echo-api",
-          "loggerName": "logger"
+          "loggerName": "logger",
+          "metrics": true
         }
       ]
     },
