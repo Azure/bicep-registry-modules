@@ -74,6 +74,9 @@ param serverVersion string = '4.2'
 param sqlDatabases sqlDatabaseType[] = []
 
 @description('Optional. SQL Role Definitions configurations.')
+param sqlRoleAssignmentsPrincipalIds array = []
+
+@description('Optional. SQL Role Definitions configurations.')
 param sqlRoleDefinitions sqlRoleDefinitionsType
 
 @description('Optional. MongoDB Databases configurations.')
@@ -411,7 +414,7 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
   }
 ]
 
-module databaseAccount_sqlRoleDefinitions 'sql-role-definitions/main.bicep' = [
+module databaseAccount_sqlRoleDefinitions 'sql-role/main.bicep' = [
   for sqlRoleDefinition in (sqlRoleDefinitions ?? []): {
     name: '${uniqueString(deployment().name, location)}-sqlrd-${sqlRoleDefinition.name}'
     params: {
@@ -420,6 +423,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definitions/main.bicep' = [
       dataActions: sqlRoleDefinition.dataActions
       roleName: sqlRoleDefinition.roleName
       roleType: sqlRoleDefinition.roleType
+      principalIds: sqlRoleAssignmentsPrincipalIds
     }
   }
 ]
@@ -561,6 +565,9 @@ output systemAssignedMIPrincipalId string = databaseAccount.?identity.?principal
 
 @description('The location the resource was deployed into.')
 output location string = databaseAccount.location
+
+@description('The endpoint of the database account.')
+output endpoint string = databaseAccount.properties.documentEndpoint
 
 // =============== //
 //   Definitions   //
