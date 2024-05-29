@@ -124,6 +124,7 @@ module testDeployment '../../../main.bicep' = [
         {
           loggerName: 'logger'
           apiName: 'echo-api'
+          metrics: true
         }
       ]
       diagnosticSettings: [
