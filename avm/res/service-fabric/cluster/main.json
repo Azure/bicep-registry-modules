@@ -6,13 +6,48 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "7164960142189551703"
+      "templateHash": "18636055962102008"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "certificateType": {
+      "type": "object",
+      "properties": {
+        "thumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The thumbprint of the primary certificate."
+          }
+        },
+        "thumbprintSecondary": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The thumbprint of the secondary certificate."
+          }
+        },
+        "x509StoreName": {
+          "type": "string",
+          "allowedValues": [
+            "AddressBook",
+            "AuthRoot",
+            "CertificateAuthority",
+            "Disallowed",
+            "My",
+            "Root",
+            "TrustedPeople",
+            "TrustedPublisher"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local certificate store location."
+          }
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -160,9 +195,9 @@
       }
     },
     "certificate": {
-      "type": "object",
+      "$ref": "#/definitions/certificateType",
       "metadata": {
-        "description": "Required. Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location."
+        "description": "Required. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client."
       }
     },
     "certificateCommonNames": {
@@ -467,7 +502,11 @@
           "maxUnusedVersionsToKeep": "[parameters('maxUnusedVersionsToKeep')]"
         },
         "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', if(contains(parameters('azureActiveDirectory'), 'clientApplication'), parameters('azureActiveDirectory').clientApplication, null()), 'clusterApplication', if(contains(parameters('azureActiveDirectory'), 'clusterApplication'), parameters('azureActiveDirectory').clusterApplication, null()), 'tenantId', if(contains(parameters('azureActiveDirectory'), 'tenantId'), parameters('azureActiveDirectory').tenantId, null())), null())]",
-        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', if(contains(parameters('certificate'), 'thumbprint'), parameters('certificate').thumbprint, null()), 'thumbprintSecondary', if(contains(parameters('certificate'), 'thumbprintSecondary'), parameters('certificate').thumbprintSecondary, null()), 'x509StoreName', if(contains(parameters('certificate'), 'x509StoreName'), parameters('certificate').x509StoreName, null())), null())]",
+        "certificate": {
+          "thumbprint": "[parameters('certificate').thumbprint]",
+          "thumbprintSecondary": "[coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null())]",
+          "x509StoreName": "[coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())]"
+        },
         "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', if(contains(parameters('certificateCommonNames'), 'commonNames'), parameters('certificateCommonNames').commonNames, null()), 'x509StoreName', if(contains(parameters('certificateCommonNames'), 'certificateCommonNamesx509StoreName'), parameters('certificateCommonNames').certificateCommonNamesx509StoreName, null())), null())]",
         "clientCertificateCommonNames": "[if(not(empty(parameters('clientCertificateCommonNames'))), variables('clientCertificateCommonNamesVar'), null())]",
         "clientCertificateThumbprints": "[if(not(empty(parameters('clientCertificateThumbprints'))), variables('clientCertificateThumbprintsVar'), null())]",

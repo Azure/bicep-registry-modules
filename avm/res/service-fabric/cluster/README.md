@@ -48,7 +48,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     // Required parameters
     certificate: {
       thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-      x509StoreName: 'My'
     }
     managementEndpoint: 'https://sfcmin001.westeurope.cloudapp.azure.com:19080'
     name: 'sfcmin001'
@@ -91,8 +90,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     // Required parameters
     "certificate": {
       "value": {
-        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-        "x509StoreName": "My"
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
       }
     },
     "managementEndpoint": {
@@ -907,7 +905,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`certificate`](#parameter-certificate) | object | Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location. |
+| [`certificate`](#parameter-certificate) | object | The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. |
 | [`managementEndpoint`](#parameter-managementendpoint) | string | The http management endpoint of the cluster. |
 | [`name`](#parameter-name) | string | Name of the Service Fabric cluster. |
 | [`nodeTypes`](#parameter-nodetypes) | array | The list of node types in the cluster. |
@@ -949,10 +947,57 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 ### Parameter: `certificate`
 
-Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location.
+The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client.
 
 - Required: Yes
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`thumbprint`](#parameter-certificatethumbprint) | string | The thumbprint of the primary certificate. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`thumbprintSecondary`](#parameter-certificatethumbprintsecondary) | string | The thumbprint of the secondary certificate. |
+| [`x509StoreName`](#parameter-certificatex509storename) | string | The local certificate store location. |
+
+### Parameter: `certificate.thumbprint`
+
+The thumbprint of the primary certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificate.thumbprintSecondary`
+
+The thumbprint of the secondary certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.x509StoreName`
+
+The local certificate store location.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AddressBook'
+    'AuthRoot'
+    'CertificateAuthority'
+    'Disallowed'
+    'My'
+    'Root'
+    'TrustedPeople'
+    'TrustedPublisher'
+  ]
+  ```
 
 ### Parameter: `managementEndpoint`
 

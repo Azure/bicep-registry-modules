@@ -29,8 +29,8 @@ param maxUnusedVersionsToKeep int = 3
 @description('Optional. The settings to enable AAD authentication on the cluster.')
 param azureActiveDirectory object = {}
 
-@description('Required. Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location.')
-param certificate object
+@description('Required. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client.')
+param certificate certificateType
 
 @description('Optional. Describes a list of server certificates referenced by common name that are used to secure the cluster.')
 param certificateCommonNames object = {}
@@ -301,13 +301,11 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
           tenantId: contains(azureActiveDirectory, 'tenantId') ? azureActiveDirectory.tenantId : null
         }
       : null
-    certificate: !empty(certificate)
-      ? {
-          thumbprint: contains(certificate, 'thumbprint') ? certificate.thumbprint : null
-          thumbprintSecondary: contains(certificate, 'thumbprintSecondary') ? certificate.thumbprintSecondary : null
-          x509StoreName: contains(certificate, 'x509StoreName') ? certificate.x509StoreName : null
-        }
-      : null
+    certificate: {
+      thumbprint: certificate.thumbprint
+      thumbprintSecondary: certificate.?thumbprintSecondary ?? null
+      x509StoreName: certificate.?x509StoreName ?? null
+    }
     certificateCommonNames: !empty(certificateCommonNames)
       ? {
           commonNames: contains(certificateCommonNames, 'commonNames') ? certificateCommonNames.commonNames : null
@@ -444,6 +442,25 @@ output location string = serviceFabricCluster.location
 // =============== //
 //   Definitions   //
 // =============== //
+
+type certificateType = {
+  @description('Required. The thumbprint of the primary certificate.')
+  thumbprint: string
+
+  @description('Optional. The thumbprint of the secondary certificate.')
+  thumbprintSecondary: string?
+
+  @description('Optional. The local certificate store location.')
+  x509StoreName: (
+    | 'AddressBook'
+    | 'AuthRoot'
+    | 'CertificateAuthority'
+    | 'Disallowed'
+    | 'My'
+    | 'Root'
+    | 'TrustedPeople'
+    | 'TrustedPublisher')?
+}
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

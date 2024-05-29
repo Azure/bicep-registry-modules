@@ -47,7 +47,6 @@ module testDeployment '../../../main.bicep' = [
       reliabilityLevel: 'None'
       certificate: {
         thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        x509StoreName: 'My'
       }
       nodeTypes: [
         {
