@@ -86,9 +86,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' = {
       kty: 'RSA'
     }
   }
-  dependsOn: [
-    managedIdentity
-  ]
 }
 
 resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {

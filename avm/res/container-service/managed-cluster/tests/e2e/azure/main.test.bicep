@@ -62,6 +62,9 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: resourceLocation
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }
 
 // ============== //
