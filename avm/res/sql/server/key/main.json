@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5370214401001222813"
+      "version": "0.26.170.59819",
+      "templateHash": "15606064728997597420"
     },
     "name": "Azure SQL Server Keys",
     "description": "This module deploys an Azure SQL Server Key.",
@@ -53,12 +53,12 @@
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2023-08-01-preview",
       "name": "[parameters('serverName')]"
     },
     "key": {
       "type": "Microsoft.Sql/servers/keys",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2023-08-01-preview",
       "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
       "properties": {
         "serverKeyType": "[parameters('serverKeyType')]",

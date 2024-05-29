@@ -481,7 +481,7 @@ The value is to enable Kerberos requests that use RC4 encryption.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -593,7 +593,7 @@ The value is to enable clients making request using NTLM v1.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -778,7 +778,7 @@ The value is to enable clients making request using TLSv1.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [

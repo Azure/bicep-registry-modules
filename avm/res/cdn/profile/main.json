@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "2222991004022934698"
+      "templateHash": "17450996171898926905"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -129,7 +129,6 @@
         "StandardPlus_AvgBandWidth_ChinaCdn",
         "StandardPlus_ChinaCdn",
         "Standard_955BandWidth_ChinaCdn",
-        "Standard_Akamai",
         "Standard_AvgBandWidth_ChinaCdn",
         "Standard_AzureFrontDoor",
         "Standard_ChinaCdn",
@@ -1657,7 +1656,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "3255198433705940781"
+              "templateHash": "1139997023996590437"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1769,8 +1768,8 @@
                   "cacheConfiguration": {
                     "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'cacheConfiguration')]"
                   },
-                  "customDomainName": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'customDomainName')]"
+                  "customDomainNames": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'customDomainNames')]"
                   },
                   "enabledState": {
                     "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'enabledState')]"
@@ -1808,7 +1807,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.26.170.59819",
-                      "templateHash": "12469321322924109409"
+                      "templateHash": "5770374289363120600"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -1840,11 +1839,14 @@
                         "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
                       }
                     },
-                    "customDomainName": {
-                      "type": "string",
+                    "customDomainNames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
+                        "description": "Optional. The names of the custom domains. The custom domains must be defined in the profile customDomains array."
                       }
                     },
                     "forwardingProtocol": {
@@ -1941,12 +1943,15 @@
                         "profile"
                       ]
                     },
-                    "profile::customDomain": {
-                      "condition": "[not(empty(parameters('customDomainName')))]",
+                    "profile::customDomains": {
+                      "copy": {
+                        "name": "customDomains",
+                        "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
+                      },
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/customDomains",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainName'), ''))]",
+                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
                       "dependsOn": [
                         "profile"
                       ]
@@ -1986,6 +1991,13 @@
                       "properties": {
                         "copy": [
                           {
+                            "name": "customDomains",
+                            "count": "[length(range(0, length(coalesce(parameters('customDomainNames'), createArray()))))]",
+                            "input": {
+                              "id": "[resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[range(0, length(coalesce(parameters('customDomainNames'), createArray())))[copyIndex('customDomains')]])]"
+                            }
+                          },
+                          {
                             "name": "ruleSets",
                             "count": "[length(parameters('ruleSets'))]",
                             "input": {
@@ -1994,7 +2006,6 @@
                           }
                         ],
                         "cacheConfiguration": "[parameters('cacheConfiguration')]",
-                        "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainName'), '')))), createArray())]",
                         "enabledState": "[parameters('enabledState')]",
                         "forwardingProtocol": "[parameters('forwardingProtocol')]",
                         "httpsRedirect": "[parameters('httpsRedirect')]",
