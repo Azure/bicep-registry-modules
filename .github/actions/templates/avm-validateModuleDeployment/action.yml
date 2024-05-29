@@ -138,7 +138,7 @@ runs:
           $ConvertTokensInputs.Tokens += @{
             subscriptionId    = '${{ inputs.subscriptionId }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
-            tenantId          = '${{ env.ARM_TENANT_ID }}'
+            tenantId          = '${{ env.AZURE_TENANT_ID }}'
           }
 
           # Add local (source control) tokens
