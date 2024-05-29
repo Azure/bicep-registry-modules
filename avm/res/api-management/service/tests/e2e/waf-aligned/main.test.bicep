@@ -65,7 +65,17 @@ module testDeployment '../../../main.bicep' = [
       publisherName: '${namePrefix}-az-amorg-x-001'
       sku: 'Premium'
       skuCount: 2
-      zones: ['1','2']
+      zones: ['1', '2']
+      additionalLocations: [
+        {
+          location: 'westus'
+          sku: {
+            name: 'Premium'
+            capacity: 1
+          }
+          disableGateway: false
+        }
+      ]
       customProperties: {
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
