@@ -626,8 +626,6 @@ var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
   ? 'No Subscription ID Provided'
   : existingSubscriptionId
 
-var cuaPid = '10d75183-0090-47b2-9c1b-48e3a4a36786'
-
 // Deployment name variables
 // LIMITS: Tenant = 64, Management Group = 64, Subscription = 64, Resource Group = 64
 var deploymentNames = {
@@ -639,20 +637,6 @@ var deploymentNames = {
     'lz-vend-sub-res-create-${subscriptionAliasName}-${uniqueString(subscriptionAliasName, subscriptionDisplayName, subscriptionBillingScope, subscriptionWorkload, existingSubscriptionId, deployment().name)}',
     64
   )
-}
-
-// RESOURCES & MODULES
-resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
-  name: 'pid-${cuaPid}-${uniqueString(deployment().name, virtualNetworkLocation)}'
-  location: virtualNetworkLocation
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "687475331884849209"
+      "templateHash": "18034172972038485844"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -463,28 +463,12 @@
   },
   "variables": {
     "existingSubscriptionIDEmptyCheck": "[if(empty(parameters('existingSubscriptionId')), 'No Subscription ID Provided', parameters('existingSubscriptionId'))]",
-    "cuaPid": "10d75183-0090-47b2-9c1b-48e3a4a36786",
     "deploymentNames": {
       "createSubscription": "[take(format('lz-vend-sub-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), deployment().name)), 64)]",
       "createSubscriptionResources": "[take(format('lz-vend-sub-res-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), parameters('existingSubscriptionId'), deployment().name)), 64)]"
     }
   },
   "resources": [
-    {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-{0}-{1}', variables('cuaPid'), uniqueString(deployment().name, parameters('virtualNetworkLocation')))]",
-      "location": "[parameters('virtualNetworkLocation')]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
