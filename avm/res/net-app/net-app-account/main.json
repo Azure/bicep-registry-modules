@@ -127,6 +127,13 @@
         "description": "Required. The name of the NetApp account."
       }
     },
+    "aesEncryption": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable AES encryption on the SMB Server."
+      }
+    },
     "domainName": {
       "type": "string",
       "defaultValue": "",
@@ -188,6 +195,41 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
+    "keyName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the key to use for encryption."
+      }
+    },
+    "keySource": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the key to use for encryption."
+      }
+    },
+    "keyVaultResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource ID of the key vault to use for encryption."
+      }
+    },
+    "keyVaultUri": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The URI of the key vault to use for encryption."
+      }
+    },
+    "ldapSigning": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether or not the LDAP traffic needs to be signed."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -224,7 +266,16 @@
         "domain": "[if(not(empty(parameters('domainName'))), parameters('domainName'), null())]",
         "dns": "[if(not(empty(parameters('domainName'))), parameters('dnsServers'), null())]",
         "smbServerName": "[if(not(empty(parameters('domainName'))), parameters('smbServerNamePrefix'), null())]",
-        "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]"
+        "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]",
+        "aesEncryption": "[if(not(empty(parameters('aesEncryption))), parameters('aesEncryption), false)]",
+        "ldapSigning": "[if(not(empty(parameters('ldapSigning))), parameters('ldapSigning), false)]"
+      }
+    ],
+    "encryptionProperties": [
+      {
+        "keyName": "[if(not(empty(parameters('keyName'))), parameters('keyName'), null())]",
+        "keyVaultResourceId": "[if(not(empty(parameters('keyVaultResourceId'))), parameters('keyVaultResourceId'), null())]",
+        "keyVaultUri": "[if(not(empty(parameters('keyVaultUri'))), parameters('keyVaultUri'), null())]"
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",

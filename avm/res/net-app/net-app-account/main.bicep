@@ -5,6 +5,9 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the NetApp account.')
 param name string
 
+@description('Optional. Enable AES encryption on the SMB Server.')
+param aesEncryption bool = false
+
 @description('Optional. Fully Qualified Active Directory DNS Domain Name (e.g. \'contoso.com\').')
 param domainName string = ''
 
@@ -33,6 +36,21 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@description('Optional. The key name to use for encryption.')
+param keyName string
+
+@description('Optional. The key source Microsoft.Keyvault for CMK or Microsoft Managed Key (default).')
+param keySource string
+
+@description('Optional. The key vault resource ID to use for encryption.')
+param keyVaultResourceId string
+
+@description('Optional. The key vault URI to use for encryption.')
+param keyVaultUri string
+
+@description('Optional. Specifies whether or not the LDAP traffic needs to be signed.')
+param ldapSigning bool = false
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -47,14 +65,28 @@ param enableTelemetry bool = true
 
 var activeDirectoryConnectionProperties = [
   {
+    aesEncryption: !empty(domainName) ? aesEncryption : false
     username: !empty(domainName) ? domainJoinUser : null
     password: !empty(domainName) ? domainJoinPassword : null
     domain: !empty(domainName) ? domainName : null
     dns: !empty(domainName) ? dnsServers : null
+    ldapSigning: !empty(domainName) ? ldapSigning : false
     smbServerName: !empty(domainName) ? smbServerNamePrefix : null
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
   }
 ]
+
+var encryptionProperties = {
+  identity: {
+    userAssignedIdentity: !empty(managedIdentities) ? managedIdentities.userAssignedResourceIds[0] : null
+  }
+  keySource: !empty(keySource) ? 'Microsoft.KeyVault' : 'Microsoft.NetApp'
+  keyVaultProperties: {
+    keyName: !empty(keySource) ? keyName : null
+    keyVaultResourceId: !empty(keySource) ? keyVaultResourceId : null
+    keyVaultUri: !empty(keySource) ? keyVaultUri : null
+  }
+}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -83,24 +115,23 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' = {
   name: name
@@ -109,20 +140,20 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' = {
   location: location
   properties: {
     activeDirectories: !empty(domainName) ? activeDirectoryConnectionProperties : null
+    encryption: !empty(managedIdentities) ? encryptionProperties : null
   }
 }
 
-resource netAppAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: netAppAccount
+resource netAppAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: netAppAccount
+}
 
 resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {

@@ -645,19 +645,26 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aesEncryption`](#parameter-aesEncryption) | bool | Enable AES encryption on the SMB Server. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
 | [`dnsServers`](#parameter-dnsservers) | string | Required if domainName is specified. Comma separated list of DNS server IP addresses (IPv4 only) required for the Active Directory (AD) domain join and SMB authentication operations to succeed. |
 | [`domainJoinOU`](#parameter-domainjoinou) | string | Used only if domainName is specified. LDAP Path for the Organization Unit (OU) where SMB Server machine accounts will be created (i.e. 'OU=SecondLevel,OU=FirstLevel'). |
 | [`domainJoinPassword`](#parameter-domainjoinpassword) | securestring | Required if domainName is specified. Password of the user specified in domainJoinUser parameter. |
 | [`domainJoinUser`](#parameter-domainjoinuser) | string | Required if domainName is specified. Username of Active Directory domain administrator, with permissions to create SMB server machine account in the AD domain. |
 | [`domainName`](#parameter-domainname) | string | Fully Qualified Active Directory DNS Domain Name (e.g. 'contoso.com'). |
+| [`keyName`](#parameter-keyName) | string | The key name to use for encryption. |
+| [`keySource`](#parameter-keySource) | string | The key source Microsoft.Keyvault for CMK or Microsoft Managed Key (default). |
+| [`keyVaultResourceId`](#parameter-keyVaultResourceId) | string | The keyvault resource Id to use for encryption. |
+| [`keyVaultUri`](#parameter-keyVaultUri) | string | The keyvault URI to use for encryption. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ldapSigning`](#parameter-ldapSigning) | bool | Specifies whether or not the LDAP traffic needs to be signed. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`smbServerNamePrefix`](#parameter-smbservernameprefix) | string | Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
+`
 
 ### Parameter: `name`
 
@@ -665,6 +672,14 @@ The name of the NetApp account.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `aesEncryption`
+
+Enable AES encryption on the SMB Server.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `capacityPools`
 
@@ -721,6 +736,46 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `keyName`
+
+The key name to use for encryption
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `keySource`
+
+The key source Microsoft.Keyvault for CMK or Microsoft Managed Key (default)
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `keyVaultResourceId`
+
+The keyvault resource Id to use for encryption
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `keyVaultUri`
+
+The keyvault URI to use for encryption
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `ldapSigning`
+
+Specifies whether or not the LDAP traffic needs to be signed.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `location`
 
