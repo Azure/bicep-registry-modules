@@ -645,7 +645,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         ]
         osDiskSizeGB: 0
         osType: 'Linux'
-        serviceCidr: ''
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -774,7 +773,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
-          "serviceCidr": "",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         }
@@ -919,7 +917,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         ]
         osDiskSizeGB: 0
         osType: 'Linux'
-        serviceCidr: ''
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -1019,7 +1016,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
-          "serviceCidr": "",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -1139,7 +1135,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         ]
         osDiskSizeGB: 0
         osType: 'Linux'
-        serviceCidr: ''
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -1280,7 +1275,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
-          "serviceCidr": "",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
