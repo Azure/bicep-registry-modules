@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "12963223629809121473"
+      "version": "0.27.1.19265",
+      "templateHash": "17411881610203398197"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -224,10 +224,8 @@
           "scaleDownMode": {
             "type": "string",
             "allowedValues": [
-              "Delete",
-              "DeleteRequeue",
-              "Pause",
-              "Requeue"
+              "Deallocate",
+              "Delete"
             ],
             "nullable": true,
             "metadata": {
@@ -1424,25 +1422,11 @@
         "description": "Optional. Whether the metric state of the kubenetes cluster is enabled."
       }
     },
-    "enableAzureMonitorProfileLogs": {
+    "enableAutoInstrumentation": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled."
-      }
-    },
-    "enableAppMonitoring": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Indicates if Application Monitoring of the kubenetes cluster is enabled."
-      }
-    },
-    "enableWindowsHostLogs": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Whether the Windows Log Collection for Azure Monitor Container Insights Logs Addon is enabled."
+        "description": "Optional. Indicates if Application Monitoring Auto Instrumentation is enabled or not."
       }
     },
     "enableContainerInsights": {
@@ -1452,11 +1436,53 @@
         "description": "Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled."
       }
     },
-    "enableAppMonitoringOpenTelemetryMetrics": {
+    "disableCustomMetrics": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
+        "description": "Optional. Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false."
+      }
+    },
+    "disablePrometheusMetricsScraping": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false."
+      }
+    },
+    "syslogPort": {
+      "type": "int",
+      "defaultValue": 28330,
+      "metadata": {
+        "description": "Optional. The syslog host port. If not specified, the default port is 28330."
+      }
+    },
+    "enableAppMonitoringOpenTelemetryMetrics": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
         "description": "Optional. Indicates if Application Monitoring Open Telemetry Metrics is enabled."
+      }
+    },
+    "appMonitoringOpenTelemetryMetricsPort": {
+      "type": "int",
+      "defaultValue": 28333,
+      "metadata": {
+        "description": "Optional. The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333."
+      }
+    },
+    "enableAppMonitoringOpenTelemetryLogs": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Indicates if Application Monitoring Open Telemetry Logs is enabled."
+      }
+    },
+    "appMonitoringOpenTelemetryLogsPort": {
+      "type": "int",
+      "defaultValue": 28331,
+      "metadata": {
+        "description": "Optional. The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331."
       }
     },
     "metricLabelsAllowlist": {
@@ -1543,7 +1569,7 @@
     },
     "managedCluster": {
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2023-07-02-preview",
+      "apiVersion": "2024-03-02-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1669,8 +1695,9 @@
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
         "azureMonitorProfile": {
-          "logs": "[if(parameters('enableAzureMonitorProfileLogs'), createObject('appMonitoring', createObject('enabled', parameters('enableAppMonitoring')), 'containerInsights', createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'windowsHostLogs', createObject('enabled', parameters('enableWindowsHostLogs')))), null())]",
-          "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'appMonitoringOpenTelemetryMetrics', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryMetrics')), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
+          "appMonitoring": "[if(parameters('enableAutoInstrumentation'), createObject('autoInstrumentation', createObject('enabled', parameters('enableAutoInstrumentation')), 'openTelemetryMetrics', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryMetrics'), 'port', parameters('appMonitoringOpenTelemetryMetricsPort')), 'openTelemetryLogs', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryLogs'), 'port', parameters('appMonitoringOpenTelemetryLogsPort'))), null())]",
+          "containerInsights": "[if(parameters('enableContainerInsights'), createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'disableCustomMetrics', parameters('disableCustomMetrics'), 'disablePrometheusMetricsScraping', parameters('disablePrometheusMetricsScraping'), 'syslogPort', parameters('syslogPort')), null())]",
+          "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
         },
         "podIdentityProfile": {
           "allowNetworkPluginKubenet": "[parameters('podIdentityProfileAllowNetworkPluginKubenet')]",
@@ -1930,8 +1957,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4264461851737541966"
+              "version": "0.27.1.19265",
+              "templateHash": "12711860488823195141"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2789,7 +2816,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('managedCluster', '2023-07-02-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('managedCluster', '2024-03-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "kubeletIdentityClientId": {
       "type": "string",
@@ -2845,7 +2872,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedCluster', '2023-07-02-preview', 'full').location]"
+      "value": "[reference('managedCluster', '2024-03-02-preview', 'full').location]"
     },
     "oidcIssuerUrl": {
       "type": "string",

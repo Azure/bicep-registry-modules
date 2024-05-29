@@ -17,7 +17,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerService/managedClusters` | [2023-07-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-07-02-preview/managedClusters) |
+| `Microsoft.ContainerService/managedClusters` | [2024-03-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-03-02-preview/managedClusters) |
 | `Microsoft.ContainerService/managedClusters/agentPools` | [2023-07-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-07-02-preview/managedClusters/agentPools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
@@ -1456,6 +1456,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
+| [`appMonitoringOpenTelemetryLogsPort`](#parameter-appmonitoringopentelemetrylogsport) | int | The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331. |
+| [`appMonitoringOpenTelemetryMetricsPort`](#parameter-appmonitoringopentelemetrymetricsport) | int | The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | string | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
@@ -1481,16 +1483,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`disableCustomMetrics`](#parameter-disablecustommetrics) | bool | Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
+| [`disablePrometheusMetricsScraping`](#parameter-disableprometheusmetricsscraping) | bool | Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableRunCommand`](#parameter-disableruncommand) | bool | Whether to disable run command for the cluster or not. |
 | [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided. |
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
-| [`enableAppMonitoring`](#parameter-enableappmonitoring) | bool | Indicates if Application Monitoring of the kubenetes cluster is enabled. |
+| [`enableAppMonitoringOpenTelemetryLogs`](#parameter-enableappmonitoringopentelemetrylogs) | bool | Indicates if Application Monitoring Open Telemetry Logs is enabled. |
 | [`enableAppMonitoringOpenTelemetryMetrics`](#parameter-enableappmonitoringopentelemetrymetrics) | bool | Indicates if Application Monitoring Open Telemetry Metrics is enabled. |
+| [`enableAutoInstrumentation`](#parameter-enableautoinstrumentation) | bool | Indicates if Application Monitoring Auto Instrumentation is enabled or not. |
 | [`enableAzureDefender`](#parameter-enableazuredefender) | bool | Whether to enable Azure Defender. |
-| [`enableAzureMonitorProfileLogs`](#parameter-enableazuremonitorprofilelogs) | bool | Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled. |
 | [`enableAzureMonitorProfileMetrics`](#parameter-enableazuremonitorprofilemetrics) | bool | Whether the metric state of the kubenetes cluster is enabled. |
 | [`enableContainerInsights`](#parameter-enablecontainerinsights) | bool | Indicates if Azure Monitor Container Insights Logs Addon is enabled. |
 | [`enableDnsZoneContributorRoleAssignment`](#parameter-enablednszonecontributorroleassignment) | bool | Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided. |
@@ -1507,7 +1511,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`enableStorageProfileFileCSIDriver`](#parameter-enablestorageprofilefilecsidriver) | bool | Whether the AzureFile CSI Driver for the storage profile is enabled. |
 | [`enableStorageProfileSnapshotController`](#parameter-enablestorageprofilesnapshotcontroller) | bool | Whether the snapshot controller for the storage profile is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableWindowsHostLogs`](#parameter-enablewindowshostlogs) | bool | Whether the Windows Log Collection for Azure Monitor Container Insights Logs Addon is enabled. |
 | [`enableWorkloadIdentity`](#parameter-enableworkloadidentity) | bool | Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled. |
 | [`fluxExtension`](#parameter-fluxextension) | object | Settings and configurations for the flux extension. |
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
@@ -1546,6 +1549,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
+| [`syslogPort`](#parameter-syslogport) | int | The syslog host port. If not specified, the default port is 28330. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 
@@ -1921,10 +1925,8 @@ The scale down mode of the agent pool.
 - Allowed:
   ```Bicep
   [
+    'Deallocate'
     'Delete'
-    'DeleteRequeue'
-    'Pause'
-    'Requeue'
   ]
   ```
 
@@ -2012,6 +2014,22 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `appMonitoringOpenTelemetryLogsPort`
+
+The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331.
+
+- Required: No
+- Type: int
+- Default: `28331`
+
+### Parameter: `appMonitoringOpenTelemetryMetricsPort`
+
+The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333.
+
+- Required: No
+- Type: int
+- Default: `28333`
 
 ### Parameter: `authorizedIPRanges`
 
@@ -2445,9 +2463,25 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `disableCustomMetrics`
+
+Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `disableLocalAccounts`
 
 If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `disablePrometheusMetricsScraping`
+
+Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false.
 
 - Required: No
 - Type: bool
@@ -2490,17 +2524,25 @@ Specifies the resource ID of connected DNS zone. It will be ignored if `webAppli
 - Required: No
 - Type: string
 
-### Parameter: `enableAppMonitoring`
+### Parameter: `enableAppMonitoringOpenTelemetryLogs`
 
-Indicates if Application Monitoring of the kubenetes cluster is enabled.
+Indicates if Application Monitoring Open Telemetry Logs is enabled.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableAppMonitoringOpenTelemetryMetrics`
 
 Indicates if Application Monitoring Open Telemetry Metrics is enabled.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableAutoInstrumentation`
+
+Indicates if Application Monitoring Auto Instrumentation is enabled or not.
 
 - Required: No
 - Type: bool
@@ -2509,14 +2551,6 @@ Indicates if Application Monitoring Open Telemetry Metrics is enabled.
 ### Parameter: `enableAzureDefender`
 
 Whether to enable Azure Defender.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enableAzureMonitorProfileLogs`
-
-Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled.
 
 - Required: No
 - Type: bool
@@ -2656,14 +2690,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `enableWindowsHostLogs`
-
-Whether the Windows Log Collection for Azure Monitor Container Insights Logs Addon is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableWorkloadIdentity`
 
@@ -3235,6 +3261,14 @@ The support plan for the Managed Cluster.
     'KubernetesOfficial'
   ]
   ```
+
+### Parameter: `syslogPort`
+
+The syslog host port. If not specified, the default port is 28330.
+
+- Required: No
+- Type: int
+- Default: `28330`
 
 ### Parameter: `tags`
 
