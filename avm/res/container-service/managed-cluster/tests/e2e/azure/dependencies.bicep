@@ -36,15 +36,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         addressPrefix
       ]
     }
-    subnets: map(
-      range(0, 3),
-      i => {
-        name: 'subnet-${i}'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, i)
-        }
+    subnets: map(range(0, 3), i => {
+      name: 'subnet-${i}'
+      properties: {
+        addressPrefix: cidrSubnet(addressPrefix, 24, i)
       }
-    )
+    })
   }
 }
 
@@ -89,6 +86,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' = {
       kty: 'RSA'
     }
   }
+  dependsOn: [
+    managedIdentity
+  ]
 }
 
 resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
