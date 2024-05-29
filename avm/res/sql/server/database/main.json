@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "17545579739827867089"
+      "version": "0.26.170.59819",
+      "templateHash": "9047850898488176836"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -382,12 +382,12 @@
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2023-08-01-preview",
       "name": "[parameters('serverName')]"
     },
     "database": {
       "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2023-08-01-preview",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -483,8 +483,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11085405057722780022"
+              "version": "0.26.170.59819",
+              "templateHash": "9575484808117369324"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -521,7 +521,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
                 "diffBackupIntervalInHours": "[parameters('diffBackupIntervalInHours')]",
@@ -585,8 +585,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "13590495271621282724"
+              "version": "0.26.170.59819",
+              "templateHash": "2987912129930549113"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -637,7 +637,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
                 "monthlyRetention": "[parameters('monthlyRetention')]",
@@ -704,7 +704,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2022-05-01-preview', 'full').location]"
+      "value": "[reference('database', '2023-08-01-preview', 'full').location]"
     }
   }
 }
