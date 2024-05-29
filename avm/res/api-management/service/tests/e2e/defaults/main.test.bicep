@@ -45,6 +45,12 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      sku: 'Premium'
+      skuCount: 2
+      zones: [
+        '1',
+        '2'
+      ]
     }
   }
 ]
