@@ -14,7 +14,7 @@ This module deploys an Azure SQL Server Key.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/keys` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2022-05-01-preview/servers/keys) |
+| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/keys) |
 
 ## Parameters
 
