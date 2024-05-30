@@ -21,7 +21,7 @@ resource blobPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
-  name: 'vnet-eag-demo-avm-bicep'
+  name: 'vnet'
   location: location
   properties: {
     addressSpace: {
@@ -37,28 +37,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
           privateEndpointNetworkPolicies: 'Enabled'
       }
     }
-    ]
-  }
-}
-
-resource dnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'dnsZoneLink'
-  parent: blobPrivateDNSZone
-  location: 'global'
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.99.0.0/16'
-      ]
-    }
-    subnets: [
-      {
-        name: 'snet-pep'
-        properties: {
-          addressPrefix: '10.99.255.0/24'
-          privateEndpointNetworkPolicies: 'Enabled'
-        }
-      }
     ]
   }
 }
@@ -96,7 +74,7 @@ resource stgBlobDataContributorRoleAssignment 'Microsoft.Authorization/roleAssig
 }
 
 resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
-  name: 'blobPrivateEndpoint'
+  name: 'eag-pe'
   location: location
   properties: {
     subnet: {
@@ -119,7 +97,7 @@ resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
 // Deploy using AVM Module
 
 module avmStg 'br/public:avm/res/storage/storage-account:0.9.0' = {
-  name: '${storageAccountName}-deployment'
+  name: 'deployment-123'
   params: {
     name: 'avm${storageAccountName}'
     location: location
