@@ -18,6 +18,7 @@ This module deploys a Cognitive Service.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -30,14 +31,107 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [As Speech Service](#example-3-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using `deployments` in parameter set](#example-1-using-deployments-in-parameter-set)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [As Speech Service](#example-4-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using `deployments` in parameter set_
+
+This instance deploys the module with the AI model deployment feature.'
+
+Note, this test is temporarily disabled as it needs to be enabled on the subscription.
+As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
+You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
+And register here: https://aka.ms/oai/access
+
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csad002'
+    // Non-required parameters
+    customSubDomainName: 'xcsadai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-35-turbo'
+          version: '0301'
+        }
+        name: 'gpt-35-turbo'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csad002"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-35-turbo",
+            "version": "0301"
+          },
+          "name": "gpt-35-turbo",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -89,7 +183,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -377,7 +471,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 3: _As Speech Service_
+### Example 4: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -491,7 +585,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -573,7 +667,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -661,7 +755,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -820,6 +914,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 | [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
 | [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
@@ -955,6 +1050,110 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+
+### Parameter: `deployments`
+
+Array of deployments about cognitive service accounts to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`model`](#parameter-deploymentsmodel) | object | Properties of Cognitive Services account deployment model. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-deploymentsname) | string | Specify the name of cognitive service account deployment. |
+| [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of RAI policy. |
+| [`sku`](#parameter-deploymentssku) | object | The resource model definition representing SKU. |
+
+### Parameter: `deployments.model`
+
+Properties of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-deploymentsmodelformat) | string | The format of Cognitive Services account deployment model. |
+| [`name`](#parameter-deploymentsmodelname) | string | The name of Cognitive Services account deployment model. |
+| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. |
+
+### Parameter: `deployments.model.format`
+
+The format of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.model.name`
+
+The name of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.model.version`
+
+The version of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.name`
+
+Specify the name of cognitive service account deployment.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.raiPolicyName`
+
+The name of RAI policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.sku`
+
+The resource model definition representing SKU.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-deploymentsskuname) | string | The name of the resource model definition representing SKU. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
+
+### Parameter: `deployments.sku.name`
+
+The name of the resource model definition representing SKU.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.sku.capacity`
+
+The capacity of the resource model definition representing SKU.
+
+- Required: No
+- Type: int
 
 ### Parameter: `diagnosticSettings`
 
@@ -1241,6 +1440,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
@@ -1436,6 +1636,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 

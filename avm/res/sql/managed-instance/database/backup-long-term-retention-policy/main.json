@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "2315344113299493188"
+    },
+    "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
+    "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Long Term Retention backup policy. For example \"default\"."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent managed instance database. Required if the template is used in a standalone deployment."
+      }
+    },
+    "managedInstanceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent managed instance. Required if the template is used in a standalone deployment."
+      }
+    },
+    "weekOfYear": {
+      "type": "int",
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Optional. The week of year to take the yearly backup in an ISO 8601 format."
+      }
+    },
+    "weeklyRetention": {
+      "type": "string",
+      "defaultValue": "P1M",
+      "metadata": {
+        "description": "Optional. The weekly retention policy for an LTR backup in an ISO 8601 format."
+      }
+    },
+    "monthlyRetention": {
+      "type": "string",
+      "defaultValue": "P1Y",
+      "metadata": {
+        "description": "Optional. The monthly retention policy for an LTR backup in an ISO 8601 format."
+      }
+    },
+    "yearlyRetention": {
+      "type": "string",
+      "defaultValue": "P5Y",
+      "metadata": {
+        "description": "Optional. The yearly retention policy for an LTR backup in an ISO 8601 format."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
+      "properties": {
+        "monthlyRetention": "[parameters('monthlyRetention')]",
+        "weeklyRetention": "[parameters('weeklyRetention')]",
+        "weekOfYear": "[parameters('weekOfYear')]",
+        "yearlyRetention": "[parameters('yearlyRetention')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed database backup long-term retention policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed database backup long-term retention policy."
+      },
+      "value": "[resourceId('Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed database backup long-term retention policy."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
