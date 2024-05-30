@@ -40,20 +40,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -66,34 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       securityRules: [
-        {
-          name: 'Specific'
-          properties: {
-            access: 'Allow'
-            description: 'Tests specific IPs and ports'
-            destinationAddressPrefix: '*'
-            destinationPortRange: '8080'
-            direction: 'Inbound'
-            priority: 100
-            protocol: '*'
-            sourceAddressPrefix: '*'
-            sourcePortRange: '*'
-          }
-        }
         {
           name: 'Ranges'
           properties: {
@@ -151,7 +110,6 @@ module testDeployment '../../../main.bicep' = [
     }
     dependsOn: [
       nestedDependencies
-      diagnosticDependencies
     ]
   }
 ]

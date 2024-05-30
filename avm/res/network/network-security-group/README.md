@@ -353,35 +353,8 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     // Required parameters
     name: 'nnsgwaf001'
     // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     securityRules: [
-      {
-        name: 'Specific'
-        properties: {
-          access: 'Allow'
-          description: 'Tests specific IPs and ports'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '8080'
-          direction: 'Inbound'
-          priority: 100
-          protocol: '*'
-          sourceAddressPrefix: '*'
-          sourcePortRange: '*'
-        }
-      }
       {
         name: 'Ranges'
         properties: {
@@ -457,42 +430,11 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
       "value": "nnsgwaf001"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "securityRules": {
       "value": [
-        {
-          "name": "Specific",
-          "properties": {
-            "access": "Allow",
-            "description": "Tests specific IPs and ports",
-            "destinationAddressPrefix": "*",
-            "destinationPortRange": "8080",
-            "direction": "Inbound",
-            "priority": 100,
-            "protocol": "*",
-            "sourceAddressPrefix": "*",
-            "sourcePortRange": "*"
-          }
-        },
         {
           "name": "Ranges",
           "properties": {
