@@ -247,7 +247,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
       privateDnsZoneArmResourceId: privateDnsZoneArmResourceId
     } : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
-    sourceServerResourceId: createMode == 'PointInTimeRestore' ? sourceServerResourceId : null
+    sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica') ? sourceServerResourceId : null
     storage: {
       storageSizeGB: storageSizeGB
     }
