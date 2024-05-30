@@ -1,6 +1,6 @@
 Param(
-[string]$subscriptionId,
-[string]$resourceProviders
+  [string]$subscriptionId,
+  [string]$resourceProviders
 )
 
 $ErrorActionPreference = 'SilentlyContinue'
@@ -21,7 +21,7 @@ if ($providers.Count -gt 0) {
   foreach ($provider in $providers.keys) {
     try {
       # Registering resource providers
-      $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -eq $provider).registrationState
+      $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState
       # Check if the providered is registered
       if ($providerStatus -eq 'NotRegistered') {
         Write-Output "`n Registering the '$provider' provider"
