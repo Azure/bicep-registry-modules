@@ -80,8 +80,11 @@ module testDeployment '../../../main.bicep' = [
       enableRbacAuthorization: true
       keys: [
         {
-          attributesExp: 1725109032
-          attributesNbf: 10000
+          attributes: {
+            enabled: true
+            exp: 1702648632
+            nbf: 10000
+          }
           name: 'keyName'
           rotationPolicy: {
             attributes: {
@@ -128,8 +131,11 @@ module testDeployment '../../../main.bicep' = [
       ]
       secrets: [
         {
-          attributesExp: 1702648632
-          attributesNbf: 10000
+          attributes: {
+            enabled: true
+            exp: 1702648632
+            nbf: 10000
+          }
           contentType: 'Something'
           name: 'secretName'
           value: 'secretValue'

@@ -431,6 +431,12 @@ output storageAccountId string = resourceId(
   workspace.properties.parameters.storageAccountName.value
 )
 
+@description('The workspace URL which is of the format \'adb-{workspaceId}.{random}.azuredatabricks.net\'.')
+output workspaceUrl string = workspace.properties.workspaceUrl
+
+@description('The unique identifier of the databricks workspace in databricks control plane.')
+output workspaceId string = workspace.properties.workspaceId
+
 @description('The private endpoints for the Databricks Workspace.')
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
