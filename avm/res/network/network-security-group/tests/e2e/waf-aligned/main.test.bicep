@@ -56,17 +56,16 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'deny-hop-outbound'
           properties: {
-            protocol: '*'
-            sourcePortRange: '*'
+            priority: 200
+            access: 'Deny'
+            protocol: 'Tcp'
+            direction: 'Outbound'
+            sourceAddressPrefix: 'VirtualNetwork'
+            destinationAddressPrefix: '*'
             destinationPortRanges: [
               '3389'
               '22'
             ]
-            access: 'Deny'
-            priority: 100
-            direction: 'Outbound'
-            sourceAddressPrefix: 'VirtualNetwork'
-            destinationAddressPrefix: '*'
           }
         }
         {

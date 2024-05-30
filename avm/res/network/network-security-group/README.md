@@ -365,10 +365,9 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
             '3389'
           ]
           direction: 'Outbound'
-          priority: 100
-          protocol: '*'
+          priority: 200
+          protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
-          sourcePortRange: '*'
         }
       }
       {
@@ -461,10 +460,9 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
               "3389"
             ],
             "direction": "Outbound",
-            "priority": 100,
-            "protocol": "*",
-            "sourceAddressPrefix": "VirtualNetwork",
-            "sourcePortRange": "*"
+            "priority": 200,
+            "protocol": "Tcp",
+            "sourceAddressPrefix": "VirtualNetwork"
           }
         },
         {
