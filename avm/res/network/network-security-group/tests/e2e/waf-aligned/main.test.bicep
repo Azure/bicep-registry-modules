@@ -54,6 +54,22 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       securityRules: [
         {
+          name: 'deny-hop-outbound'
+          properties: {
+            protocol: '*'
+            sourcePortRange: '*'
+            destinationPortRanges: [
+              '3389'
+              '22'
+            ]
+            access: 'Deny'
+            priority: 100
+            direction: 'Outbound'
+            sourceAddressPrefix: 'VirtualNetwork'
+            destinationAddressPrefix: '*'
+          }
+        }
+        {
           name: 'Ranges'
           properties: {
             access: 'Allow'

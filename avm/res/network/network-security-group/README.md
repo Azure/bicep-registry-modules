@@ -356,6 +356,22 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     location: '<location>'
     securityRules: [
       {
+        name: 'deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          destinationAddressPrefix: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
+          direction: 'Outbound'
+          priority: 100
+          protocol: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+        }
+      }
+      {
         name: 'Ranges'
         properties: {
           access: 'Allow'
@@ -435,6 +451,22 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     },
     "securityRules": {
       "value": [
+        {
+          "name": "deny-hop-outbound",
+          "properties": {
+            "access": "Deny",
+            "destinationAddressPrefix": "*",
+            "destinationPortRanges": [
+              "22",
+              "3389"
+            ],
+            "direction": "Outbound",
+            "priority": 100,
+            "protocol": "*",
+            "sourceAddressPrefix": "VirtualNetwork",
+            "sourcePortRange": "*"
+          }
+        },
         {
           "name": "Ranges",
           "properties": {
