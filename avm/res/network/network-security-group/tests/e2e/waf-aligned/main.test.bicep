@@ -31,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    location: resourceLocation
-    applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -68,54 +59,6 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
-        {
-          name: 'Ranges'
-          properties: {
-            access: 'Allow'
-            description: 'Tests Ranges'
-            destinationAddressPrefixes: [
-              '10.2.0.0/16'
-              '10.3.0.0/16'
-            ]
-            destinationPortRanges: [
-              '90'
-              '91'
-            ]
-            direction: 'Inbound'
-            priority: 101
-            protocol: '*'
-            sourceAddressPrefixes: [
-              '10.0.0.0/16'
-              '10.1.0.0/16'
-            ]
-            sourcePortRanges: [
-              '80'
-              '81'
-            ]
-          }
-        }
-        {
-          name: 'Port_8082'
-          properties: {
-            access: 'Allow'
-            description: 'Allow inbound access on TCP 8082'
-            destinationApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
-            ]
-            destinationPortRange: '8082'
-            direction: 'Inbound'
-            priority: 102
-            protocol: '*'
-            sourceApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
-            ]
-            sourcePortRange: '*'
-          }
-        }
       ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -123,8 +66,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

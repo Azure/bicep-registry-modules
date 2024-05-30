@@ -370,54 +370,6 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
           sourceAddressPrefix: 'VirtualNetwork'
         }
       }
-      {
-        name: 'Ranges'
-        properties: {
-          access: 'Allow'
-          description: 'Tests Ranges'
-          destinationAddressPrefixes: [
-            '10.2.0.0/16'
-            '10.3.0.0/16'
-          ]
-          destinationPortRanges: [
-            '90'
-            '91'
-          ]
-          direction: 'Inbound'
-          priority: 101
-          protocol: '*'
-          sourceAddressPrefixes: [
-            '10.0.0.0/16'
-            '10.1.0.0/16'
-          ]
-          sourcePortRanges: [
-            '80'
-            '81'
-          ]
-        }
-      }
-      {
-        name: 'Port_8082'
-        properties: {
-          access: 'Allow'
-          description: 'Allow inbound access on TCP 8082'
-          destinationApplicationSecurityGroups: [
-            {
-              id: '<id>'
-            }
-          ]
-          destinationPortRange: '8082'
-          direction: 'Inbound'
-          priority: 102
-          protocol: '*'
-          sourceApplicationSecurityGroups: [
-            {
-              id: '<id>'
-            }
-          ]
-          sourcePortRange: '*'
-        }
-      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -463,54 +415,6 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
             "priority": 200,
             "protocol": "Tcp",
             "sourceAddressPrefix": "VirtualNetwork"
-          }
-        },
-        {
-          "name": "Ranges",
-          "properties": {
-            "access": "Allow",
-            "description": "Tests Ranges",
-            "destinationAddressPrefixes": [
-              "10.2.0.0/16",
-              "10.3.0.0/16"
-            ],
-            "destinationPortRanges": [
-              "90",
-              "91"
-            ],
-            "direction": "Inbound",
-            "priority": 101,
-            "protocol": "*",
-            "sourceAddressPrefixes": [
-              "10.0.0.0/16",
-              "10.1.0.0/16"
-            ],
-            "sourcePortRanges": [
-              "80",
-              "81"
-            ]
-          }
-        },
-        {
-          "name": "Port_8082",
-          "properties": {
-            "access": "Allow",
-            "description": "Allow inbound access on TCP 8082",
-            "destinationApplicationSecurityGroups": [
-              {
-                "id": "<id>"
-              }
-            ],
-            "destinationPortRange": "8082",
-            "direction": "Inbound",
-            "priority": 102,
-            "protocol": "*",
-            "sourceApplicationSecurityGroups": [
-              {
-                "id": "<id>"
-              }
-            ],
-            "sourcePortRange": "*"
           }
         }
       ]
