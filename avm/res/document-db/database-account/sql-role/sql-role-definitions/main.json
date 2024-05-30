@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "18369095964835951510"
+      "templateHash": "5653485584159511775"
     },
     "name": "DocumentDB Database Account SQL Role Definitions.",
     "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -16,12 +16,6 @@
       "type": "string",
       "metadata": {
         "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
-      }
-    },
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Name of the SQL database."
       }
     },
     "dataActions": {
@@ -58,7 +52,7 @@
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
       "apiVersion": "2023-04-15",
-      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]",
       "properties": {
         "assignableScopes": [
           "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
@@ -79,14 +73,14 @@
       "metadata": {
         "description": "The name of the SQL database."
       },
-      "value": "[parameters('name')]"
+      "value": "[guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the SQL database."
       },
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
     },
     "resourceGroupName": {
       "type": "string",

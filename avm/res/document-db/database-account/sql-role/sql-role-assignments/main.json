@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6069082031505086341"
+      "templateHash": "12924779272926798782"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
-    "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
+    "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -21,20 +21,20 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the SQL database."
+        "description": "Required. Name of the SQL Role Assignment."
       }
     },
     "principalId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. Name of the SQL database."
+        "description": "Required. Id needs to be granted."
       }
     },
     "roleDefinitionId": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the SQL database."
+        "description": "Required. Id of the SQL Role Definition."
       }
     }
   },

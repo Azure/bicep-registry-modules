@@ -1,17 +1,17 @@
 metadata name = 'DocumentDB Database Account SQL Role Assignments.'
-metadata description = 'This module deploys a SQL Role Definision in a CosmosDB Account.'
+metadata description = 'This module deploys a SQL Role Assignment in a CosmosDB Account.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
 
-@description('Required. Name of the SQL database.')
+@description('Required. Name of the SQL Role Assignment.')
 param name string
 
-@description('Required. Name of the SQL database.')
+@description('Required. Id needs to be granted.')
 param principalId string = ''
 
-@description('Required. Name of the SQL database.')
+@description('Required. Id of the SQL Role Definition.')
 param roleDefinitionId string
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {

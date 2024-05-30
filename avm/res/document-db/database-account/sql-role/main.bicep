@@ -1,11 +1,11 @@
-metadata name = 'DocumentDB Database Account SQL Role Definitions.'
-metadata description = 'This module deploys a SQL Role Definision in a CosmosDB Account.'
+metadata name = 'DocumentDB Database Account SQL Role.'
+metadata description = 'This module deploys SQL Role Definision and Assignment in a CosmosDB Account.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
 
-@description('Required. Name of the SQL database.')
+@description('Required. Name of the SQL Role.')
 param name string
 
 @description('Optional. An array of data actions that are allowed.')
@@ -33,9 +33,8 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 }
 
 module sqlRoleDefinition 'sql-role-definitions/main.bicep' = {
-  name: 'sql-role-definition'
+  name: 'sql-role-definition-${uniqueString(name)}'
   params: {
-    name: name
     databaseAccountName: databaseAccount.name
     dataActions: dataActions
     roleName: roleName

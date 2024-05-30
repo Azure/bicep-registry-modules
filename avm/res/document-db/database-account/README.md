@@ -1511,7 +1511,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     sqlRoleDefinitions: [
       {
-        name: 'cosmos-sql-role-definition-test'
+        name: 'cosmos-sql-role-test'
       }
     ]
   }
@@ -1546,7 +1546,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "sqlRoleDefinitions": {
       "value": [
         {
-          "name": "cosmos-sql-role-definition-test"
+          "name": "cosmos-sql-role-test"
         }
       ]
     }

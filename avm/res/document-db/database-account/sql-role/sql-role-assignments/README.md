@@ -1,6 +1,6 @@
 # DocumentDB Database Account SQL Role Assignments. `[Microsoft.DocumentDB/databaseaccount/sqlrole/sqlroleassignments]`
 
-This module deploys a SQL Role Definision in a CosmosDB Account.
+This module deploys a SQL Role Assignment in a CosmosDB Account.
 
 ## Navigation
 
@@ -22,9 +22,9 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the SQL database. |
-| [`principalId`](#parameter-principalid) | string | Name of the SQL database. |
-| [`roleDefinitionId`](#parameter-roledefinitionid) | string | Name of the SQL database. |
+| [`name`](#parameter-name) | string | Name of the SQL Role Assignment. |
+| [`principalId`](#parameter-principalid) | string | Id needs to be granted. |
+| [`roleDefinitionId`](#parameter-roledefinitionid) | string | Id of the SQL Role Definition. |
 
 **Conditional parameters**
 
@@ -34,14 +34,14 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 
 ### Parameter: `name`
 
-Name of the SQL database.
+Name of the SQL Role Assignment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `principalId`
 
-Name of the SQL database.
+Id needs to be granted.
 
 - Required: No
 - Type: string
@@ -49,7 +49,7 @@ Name of the SQL database.
 
 ### Parameter: `roleDefinitionId`
 
-Name of the SQL database.
+Id of the SQL Role Definition.
 
 - Required: Yes
 - Type: string

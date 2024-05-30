@@ -5,9 +5,6 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
 
-@description('Required. Name of the SQL database.')
-param name string
-
 @description('Optional. An array of data actions that are allowed.')
 param dataActions array = [
   'Microsoft.DocumentDB/databaseAccounts/readMetadata'
@@ -31,7 +28,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
 resource sqlRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2023-04-15' = {
   parent: databaseAccount
-  name: name
+  name: guid(databaseAccount.id, databaseAccountName, 'sql-role')
   properties: {
     assignableScopes: [
       databaseAccount.id

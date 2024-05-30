@@ -18,12 +18,6 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the SQL database. |
-
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -37,13 +31,6 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 | [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. |
 | [`roleName`](#parameter-rolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
 | [`roleType`](#parameter-roletype) | string | Indicates whether the Role Definition was built-in or user created. |
-
-### Parameter: `name`
-
-Name of the SQL database.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `databaseAccountName`
 

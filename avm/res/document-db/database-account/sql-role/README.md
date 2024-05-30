@@ -1,6 +1,6 @@
-# DocumentDB Database Account SQL Role Definitions. `[Microsoft.DocumentDB/databaseAccounts]`
+# DocumentDB Database Account SQL Role. `[Microsoft.DocumentDB/databaseAccounts]`
 
-This module deploys a SQL Role Definision in a CosmosDB Account.
+This module deploys SQL Role Definision and Assignment in a CosmosDB Account.
 
 ## Navigation
 
@@ -23,7 +23,7 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the SQL database. |
+| [`name`](#parameter-name) | string | Name of the SQL Role. |
 
 **Conditional parameters**
 
@@ -42,7 +42,7 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 
 ### Parameter: `name`
 
-Name of the SQL database.
+Name of the SQL Role.
 
 - Required: Yes
 - Type: string

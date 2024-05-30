@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = {
       nestedDependencies.outputs.identityPrincipalId
     ]
     sqlRoleDefinitions: [
-      { name: 'cosmos-sql-role-definition-test' }
+      { name: 'cosmos-sql-role-test' }
     ]
   }
 }
