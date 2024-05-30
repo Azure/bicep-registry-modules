@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "4907172083712371426"
+      "templateHash": "3911239041572011237"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -308,7 +308,7 @@
             "gatewayLoadBalancer": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'gatewayLoadBalancer'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].gatewayLoadBalancer))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].gatewayLoadBalancer), null())]",
             "publicIPPrefix": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'publicIPPrefix'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPPrefix))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPPrefix), null())]"
           },
-          "zones": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'subnetId'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].subnetId))), createArray('1', '2', '3'), null())]"
+          "zones": "[if(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'zones'), map(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].zones, lambda('zone', string(lambdaVariables('zone')))), if(not(empty(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'subnetResourceId'))), createArray('1', '2', '3'), null()))]"
         }
       },
       {

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+metadata name = 'Using external load balancer parameter'
+metadata description = 'This instance deploys the module with an externally facing load balancer.'
 
 // ========== //
 // Parameters //
