@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "8521311190050318538"
+      "templateHash": "10898985203211710462"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1685,13 +1685,13 @@
             "value": "[parameters('name')]"
           },
           "dataActions": {
-            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].dataActions]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'dataActions')]"
           },
           "roleName": {
-            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].roleName]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'roleName')]"
           },
           "roleType": {
-            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].roleType]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'roleType')]"
           },
           "principalIds": {
             "value": "[parameters('sqlRoleAssignmentsPrincipalIds')]"

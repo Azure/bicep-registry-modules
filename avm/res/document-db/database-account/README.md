@@ -49,8 +49,9 @@ The following section provides usage examples for the module, which were used to
 - [Deploying multiple regions](#example-8-deploying-multiple-regions)
 - [Plain](#example-9-plain)
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
-- [SQL Database](#example-11-sql-database)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-11-deploying-with-a-key-vault-reference-to-save-secrets)
+- [SQL Database](#example-12-sql-database)
+- [WAF-aligned](#example-13-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -1488,7 +1489,75 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 11: _SQL Database_
+### Example 11: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'role-ref'
+    // Non-required parameters
+    location: '<location>'
+    sqlRoleAssignmentsPrincipalIds: [
+      '<identityPrincipalId>'
+    ]
+    sqlRoleDefinitions: [
+      {
+        name: 'cosmos-sql-role-definition-test'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "role-ref"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sqlRoleAssignmentsPrincipalIds": {
+      "value": [
+        "<identityPrincipalId>"
+      ]
+    },
+    "sqlRoleDefinitions": {
+      "value": [
+        {
+          "name": "cosmos-sql-role-definition-test"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 12: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -2058,7 +2127,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

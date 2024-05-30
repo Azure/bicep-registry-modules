@@ -420,9 +420,9 @@ module databaseAccount_sqlRoleDefinitions 'sql-role/main.bicep' = [
     params: {
       name: sqlRoleDefinition.name
       databaseAccountName: databaseAccount.name
-      dataActions: sqlRoleDefinition.dataActions
-      roleName: sqlRoleDefinition.roleName
-      roleType: sqlRoleDefinition.roleType
+      dataActions: sqlRoleDefinition.?dataActions
+      roleName: sqlRoleDefinition.?roleName
+      roleType: sqlRoleDefinition.?roleType
       principalIds: sqlRoleAssignmentsPrincipalIds
     }
   }
