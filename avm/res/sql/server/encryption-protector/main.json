@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15754842645553898915"
+      "version": "0.26.170.59819",
+      "templateHash": "1697387406841688657"
     },
     "name": "Azure SQL Server Encryption Protector",
     "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -46,7 +46,7 @@
   "resources": [
     {
       "type": "Microsoft.Sql/servers/encryptionProtector",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2023-08-01-preview",
       "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
       "properties": {
         "serverKeyType": "[parameters('serverKeyType')]",
