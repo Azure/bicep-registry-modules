@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
         commonNames: [
           {
             certificateCommonName: 'certcommon'
-            certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+            certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC117'
           }
         ]
         x509StoreName: ''
