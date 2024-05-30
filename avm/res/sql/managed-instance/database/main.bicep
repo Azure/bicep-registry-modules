@@ -83,18 +83,23 @@ resource database 'Microsoft.Sql/managedInstances/databases@2023-08-01-preview' 
     restorableDroppedDatabaseId: empty(restorableDroppedDatabaseId) ? null : restorableDroppedDatabaseId
     storageContainerSasToken: empty(storageContainerSasToken) ? null : storageContainerSasToken
     recoverableDatabaseId: empty(recoverableDatabaseId) ? null : recoverableDatabaseId
-    longTermRetentionBackupResourceId: empty(longTermRetentionBackupResourceId) ? null : longTermRetentionBackupResourceId
+    longTermRetentionBackupResourceId: empty(longTermRetentionBackupResourceId)
+      ? null
+      : longTermRetentionBackupResourceId
   }
 }
 
-resource database_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource database_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: database
   }
-  scope: database
-}
 
 resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -105,7 +110,7 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' } ]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -118,28 +123,40 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   }
 ]
 
-module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = if (!empty(backupShortTermRetentionPoliciesObj)) {
-  name: '${deployment().name}-BackupShortTRetPol'
-  params: {
-    managedInstanceName: managedInstanceName
-    databaseName: last(split(database.name, '/'))!
-    name: backupShortTermRetentionPoliciesObj.name
-    retentionDays: contains(backupShortTermRetentionPoliciesObj, 'retentionDays') ? backupShortTermRetentionPoliciesObj.retentionDays : 35
+module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' =
+  if (!empty(backupShortTermRetentionPoliciesObj)) {
+    name: '${deployment().name}-BackupShortTRetPol'
+    params: {
+      managedInstanceName: managedInstanceName
+      databaseName: last(split(database.name, '/'))!
+      name: backupShortTermRetentionPoliciesObj.name
+      retentionDays: contains(backupShortTermRetentionPoliciesObj, 'retentionDays')
+        ? backupShortTermRetentionPoliciesObj.retentionDays
+        : 35
+    }
   }
-}
 
-module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' = if (!empty(backupLongTermRetentionPoliciesObj)) {
-  name: '${deployment().name}-BackupLongTRetPol'
-  params: {
-    managedInstanceName: managedInstanceName
-    databaseName: last(split(database.name, '/'))!
-    name: backupLongTermRetentionPoliciesObj.name
-    weekOfYear: contains(backupLongTermRetentionPoliciesObj, 'weekOfYear') ? backupLongTermRetentionPoliciesObj.weekOfYear : 5
-    weeklyRetention: contains(backupLongTermRetentionPoliciesObj, 'weeklyRetention') ? backupLongTermRetentionPoliciesObj.weeklyRetention : 'P1M'
-    monthlyRetention: contains(backupLongTermRetentionPoliciesObj, 'monthlyRetention') ? backupLongTermRetentionPoliciesObj.monthlyRetention : 'P1Y'
-    yearlyRetention: contains(backupLongTermRetentionPoliciesObj, 'yearlyRetention') ? backupLongTermRetentionPoliciesObj.yearlyRetention : 'P5Y'
+module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' =
+  if (!empty(backupLongTermRetentionPoliciesObj)) {
+    name: '${deployment().name}-BackupLongTRetPol'
+    params: {
+      managedInstanceName: managedInstanceName
+      databaseName: last(split(database.name, '/'))!
+      name: backupLongTermRetentionPoliciesObj.name
+      weekOfYear: contains(backupLongTermRetentionPoliciesObj, 'weekOfYear')
+        ? backupLongTermRetentionPoliciesObj.weekOfYear
+        : 5
+      weeklyRetention: contains(backupLongTermRetentionPoliciesObj, 'weeklyRetention')
+        ? backupLongTermRetentionPoliciesObj.weeklyRetention
+        : 'P1M'
+      monthlyRetention: contains(backupLongTermRetentionPoliciesObj, 'monthlyRetention')
+        ? backupLongTermRetentionPoliciesObj.monthlyRetention
+        : 'P1Y'
+      yearlyRetention: contains(backupLongTermRetentionPoliciesObj, 'yearlyRetention')
+        ? backupLongTermRetentionPoliciesObj.yearlyRetention
+        : 'P5Y'
+    }
   }
-}
 
 @description('The name of the deployed database.')
 output name string = database.name

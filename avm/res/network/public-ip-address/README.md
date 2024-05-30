@@ -459,14 +459,32 @@ The DDoS protection plan configuration associated with the public IP address.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ddosProtectionPlan`](#parameter-ddossettingsddosprotectionplan) | object | The DDoS protection plan associated with the public IP address. |
 | [`protectionMode`](#parameter-ddossettingsprotectionmode) | string | The DDoS protection policy customizations. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ddosProtectionPlan`](#parameter-ddossettingsddosprotectionplan) | object | The DDoS protection plan associated with the public IP address. |
+
+### Parameter: `ddosSettings.protectionMode`
+
+The DDoS protection policy customizations.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `ddosSettings.ddosProtectionPlan`
 
 The DDoS protection plan associated with the public IP address.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
@@ -481,19 +499,6 @@ The resource ID of the DDOS protection plan associated with the public IP addres
 
 - Required: Yes
 - Type: string
-
-### Parameter: `ddosSettings.protectionMode`
-
-The DDoS protection policy customizations.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
