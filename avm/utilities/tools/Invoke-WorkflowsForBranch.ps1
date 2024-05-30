@@ -285,6 +285,6 @@ function Invoke-WorkflowsForBranch {
     if ($gitHubWorkflowBadges.Count -gt 0) {
         Write-Verbose 'GitHub Workflow Badges' -Verbose
         Write-Verbose '======================' -Verbose
-        Write-Verbose ($gitHubWorkflowBadges | Sort-Object | Out-String) -Verbose
+        Write-Verbose ($gitHubWorkflowBadges | Sort-Object -Culture 'en-US' | Out-String) -Verbose
     }
 }
