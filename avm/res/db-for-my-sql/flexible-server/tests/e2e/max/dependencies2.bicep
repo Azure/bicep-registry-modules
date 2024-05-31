@@ -21,7 +21,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -39,7 +39,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -65,7 +65,7 @@ resource geoBackupManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentit
   location: geoBackupLocation
 }
 
-resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: geoBackupKeyVaultName
   location: geoBackupLocation
   properties: {
@@ -83,7 +83,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
