@@ -90,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
       credentials: [
         {
           name: 'Credential01'
-          description: 'Description od Credential01'
+          credentialDescription: 'Description od Credential01'
           userName: 'userName01'
           password: password
         }

@@ -182,7 +182,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     // Non-required parameters
     credentials: [
       {
-        description: 'Description od Credential01'
+        credentialDescription: 'Description od Credential01'
         name: 'Credential01'
         password: '<password>'
         userName: 'userName01'
@@ -418,7 +418,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "credentials": {
       "value": [
         {
-          "description": "Description od Credential01",
+          "credentialDescription": "Description od Credential01",
           "name": "Credential01",
           "password": "<password>",
           "userName": "userName01"
