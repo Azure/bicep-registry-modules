@@ -18,8 +18,8 @@ This module deploys a Network security Group (NSG).
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/networkSecurityGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkSecurityGroups) |
-| `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkSecurityGroups/securityRules) |
+| `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
+| `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups/securityRules) |
 
 ## Usage examples
 
@@ -368,6 +368,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
           priority: 200
           protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
         }
       }
     ]
@@ -414,7 +415,8 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
             "direction": "Outbound",
             "priority": 200,
             "protocol": "Tcp",
-            "sourceAddressPrefix": "VirtualNetwork"
+            "sourceAddressPrefix": "VirtualNetwork",
+            "sourcePortRange": "*"
           }
         }
       ]

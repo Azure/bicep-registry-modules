@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [
             protocol: 'Tcp'
             direction: 'Outbound'
             sourceAddressPrefix: 'VirtualNetwork'
+            sourcePortRange: '*'
             destinationAddressPrefix: '*'
             destinationPortRanges: [
               '3389'
