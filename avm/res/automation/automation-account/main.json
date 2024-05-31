@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16689134642419270748"
+      "templateHash": "13231345024750272499"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -834,7 +834,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "17789362420050479463"
+              "templateHash": "4564237414720877917"
             },
             "name": "Automation Account Credentials",
             "description": "This module deploys Azure Automation Account Credentials.",
@@ -884,7 +884,30 @@
                 "description": "[parameters('credentialDescription')]"
               }
             }
-          ]
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the credential associated to the automation account."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed credential."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/credentials', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed credential."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
         }
       },
       "dependsOn": [

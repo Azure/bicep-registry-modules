@@ -31,3 +31,12 @@ resource credential 'Microsoft.Automation/automationAccounts/credentials@2023-11
     description: credentialDescription
   }
 }
+
+@description('The name of the credential associated to the automation account.')
+output name string = credential.name
+
+@description('The resource ID of the deployed credential.')
+output resourceId string = credential.id
+
+@description('The resource group of the deployed credential.')
+output resourceGroupName string = resourceGroup().name

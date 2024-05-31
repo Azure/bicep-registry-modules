@@ -77,8 +77,11 @@ Description of the credential.
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `name` | string | The name of the credential associated to the automation account. |
+| `resourceGroupName` | string | The resource group of the deployed credential. |
+| `resourceId` | string | The resource ID of the deployed credential. |
 
 ## Cross-referenced modules
 
