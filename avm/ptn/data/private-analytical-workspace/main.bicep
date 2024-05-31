@@ -20,6 +20,12 @@ param enableTelemetry bool = true
 @description('Optional. You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you.')
 param logAnalyticsWorkspaceResourceId string = ''
 
+var moduleCfg = ({
+  logAnalyticsWorkspaceResourceId: !empty(logAnalyticsWorkspaceResourceId)
+    ? logAnalyticsWorkspaceResourceId
+    : law.outputs.resourceId
+})
+
 // ============== //
 // Resources      //
 // ============== //
@@ -49,7 +55,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
-module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = {
+module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
   name: '${name}-law'
   params: {
     // Required parameters
@@ -61,7 +67,6 @@ module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = {
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
-    roleAssignments: []
     skuName: 'PerGB2018'
     tags: tags
   }

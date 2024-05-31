@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "5985806565932370466"
+      "templateHash": "4046797282833374035"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -103,6 +103,7 @@
       }
     },
     "law": {
+      "condition": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-law', parameters('name'))]",
@@ -132,9 +133,6 @@
           },
           "lock": {
             "value": "[parameters('lock')]"
-          },
-          "roleAssignments": {
-            "value": []
           },
           "skuName": {
             "value": "PerGB2018"
