@@ -49,6 +49,24 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
+module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = {
+  name: '${name}-law'
+  params: {
+    // Required parameters
+    name: '${name}-law'
+    // Non-required parameters
+    dailyQuotaGb: -1
+    dataRetention: 365
+    diagnosticSettings: []
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    roleAssignments: []
+    skuName: 'PerGB2018'
+    tags: tags
+  }
+}
+
 module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = {
   name: '${name}'
   params: {
