@@ -1,21 +1,49 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "986067933490972357"
+      "templateHash": "2538755058641359535"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
     "owner": "Azure/module-maintainers"
   },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the resource to create."
+        "description": "Required. Name of the private analytical workspace solution and its components. Used to ensure unique resource names."
       }
     },
     "location": {
@@ -25,16 +53,36 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you."
+      }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -54,7 +102,7 @@
         }
       }
     },
-    {
+    "dbw": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}', parameters('name'))]",
@@ -1643,35 +1691,35 @@
         }
       }
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the resource."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+      "value": "[reference('dbw').outputs.resourceId.value]"
     },
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the resource."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.name.value]"
+      "value": "[reference('dbw').outputs.name.value]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.location.value]"
+      "value": "[reference('dbw').outputs.location.value]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "The name of the managed resource group."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}', parameters('name'))), '2022-09-01').outputs.resourceGroupName.value]"
+      "value": "[reference('dbw').outputs.resourceGroupName.value]"
     }
   }
 }
