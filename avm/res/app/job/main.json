@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "10741822894899201312"
+      "templateHash": "4449515809975455125"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -58,8 +58,7 @@
             "description": "Optional. Specify the type of lock."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "roleAssignmentType": {
       "type": "array",
@@ -127,7 +126,7 @@
       },
       "nullable": true
     },
-    "registryCredentialsType": {
+    "registryType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -143,7 +142,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "example": "    user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\n    system-assigned identity: system\n    ",
+              "example": "    user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\r\n    system-assigned identity: system\r\n    ",
               "description": "Optional. The resource ID of the (user) managed identity, which is used to access the Azure Container Registry."
             }
           },
@@ -165,7 +164,7 @@
       },
       "nullable": true
     },
-    "secretsType": {
+    "secretType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -181,7 +180,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "example": "    https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\n    ",
+              "example": "    https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\r\n    ",
               "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
             }
           },
@@ -197,27 +196,6 @@
             "nullable": true,
             "metadata": {
               "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "secretVolumeItemType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "path": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef."
-            }
-          },
-          "secretRef": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the Container App secret from which to pull the secret value."
             }
           }
         }
@@ -243,7 +221,25 @@
             }
           },
           "secrets": {
-            "$ref": "#/definitions/secretVolumeItemType",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef."
+                  }
+                },
+                "secretRef": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the Container App secret from which to pull the secret value."
+                  }
+                }
+              }
+            },
+            "nullable": true,
             "metadata": {
               "description": "Optional. List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be added to volume."
             }
@@ -321,70 +317,6 @@
       },
       "nullable": true
     },
-    "containerProbeHttpGetType": {
-      "type": "object",
-      "properties": {
-        "host": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Host name to connect to, defaults to the pod IP."
-          }
-        },
-        "httpHeaders": {
-          "$ref": "#/definitions/containerProbeHttpGetHttpHeadersItem",
-          "metadata": {
-            "description": "Optional. Custom headers to set in the request."
-          }
-        },
-        "path": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Path to access on the HTTP server."
-          }
-        },
-        "port": {
-          "type": "int",
-          "minValue": 1,
-          "maxValue": 65535,
-          "metadata": {
-            "description": "Required. Name of the port to access on the container. If not specified, the containerPort is used."
-          }
-        },
-        "scheme": {
-          "type": "string",
-          "allowedValues": [
-            "HTTP",
-            "HTTPS"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Required. Scheme to use for connecting to the host. Defaults to HTTP."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "containerProbeTcpSocketType": {
-      "type": "object",
-      "properties": {
-        "host": {
-          "type": "string",
-          "metadata": {
-            "description": "Optional. Host name to connect to, defaults to the pod IP."
-          }
-        },
-        "port": {
-          "type": "int",
-          "minValue": 1,
-          "maxValue": 65535,
-          "metadata": {
-            "description": "Required. Name of the port to access on the container. If not specified, the containerPort is used."
-          }
-        }
-      },
-      "nullable": true
-    },
     "containerProbeType": {
       "type": "array",
       "items": {
@@ -400,25 +332,86 @@
             }
           },
           "httpGet": {
-            "$ref": "#/definitions/containerProbeHttpGetType",
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Host name to connect to, defaults to the pod IP."
+                }
+              },
+              "httpHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The header field name."
+                      }
+                    },
+                    "value": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The header field value."
+                      }
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Custom headers to set in the request."
+                }
+              },
+              "path": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Path to access on the HTTP server."
+                }
+              },
+              "port": {
+                "type": "int",
+                "minValue": 1,
+                "maxValue": 65535,
+                "metadata": {
+                  "description": "Required. Name of the port to access on the container. If not specified, the containerPort is used."
+                }
+              },
+              "scheme": {
+                "type": "string",
+                "allowedValues": [
+                  "HTTP",
+                  "HTTPS"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Required. Scheme to use for connecting to the host. Defaults to HTTP."
+                }
+              }
+            },
+            "nullable": true,
             "metadata": {
               "description": "Optional. HTTPGet specifies the http request to perform."
             }
           },
           "initialDelaySeconds": {
             "type": "int",
+            "nullable": true,
             "minValue": 1,
             "maxValue": 60,
             "metadata": {
-              "description": "Optional. Number of seconds after the container has started before liveness probes are initiated."
+              "description": "Optional. Number of seconds after the container has started before liveness probes are initiated. Defaults to 0 seconds."
             }
           },
           "periodSeconds": {
             "type": "int",
+            "nullable": true,
             "minValue": 1,
             "maxValue": 60,
             "metadata": {
-              "description": "Optional. How often (in seconds) to perform the probe. Default to 10 seconds."
+              "description": "Optional. How often (in seconds) to perform the probe. Defaults to 10 seconds."
             }
           },
           "successThreshold": {
@@ -431,7 +424,24 @@
             }
           },
           "tcpSocket": {
-            "$ref": "#/definitions/containerProbeTcpSocketType",
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "metadata": {
+                  "description": "Optional. Host name to connect to, defaults to the pod IP."
+                }
+              },
+              "port": {
+                "type": "int",
+                "minValue": 1,
+                "maxValue": 65535,
+                "metadata": {
+                  "description": "Required. Name of the port to access on the container. If not specified, the containerPort is used."
+                }
+              }
+            },
+            "nullable": true,
             "metadata": {
               "description": "Optional. TCPSocket specifies an action involving a TCP port."
             }
@@ -475,14 +485,14 @@
         "cpu": {
           "type": "string",
           "metadata": {
-            "example": "    '0.25'\n    '1'\n    ",
+            "example": "    '0.25'\r\n    '1'\r\n    ",
             "description": "Required. The CPU limit of the container in cores."
           }
         },
         "memory": {
           "type": "string",
           "metadata": {
-            "example": "    '250Mb'\n    '1.5Gi'\n    '1500Mi'\n    ",
+            "example": "    '250Mb'\r\n    '1.5Gi'\r\n    '1500Mi'\r\n    ",
             "description": "Optional. The required memory."
           }
         }
@@ -529,8 +539,9 @@
         },
         "replicaCompletionCount": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Minimum number of successful replica completions before overall job completion."
+            "description": "Optional. Minimum number of successful replica completions before overall job completion. Defaults to 1."
           }
         }
       }
@@ -541,19 +552,22 @@
         "cronExpression": {
           "type": "string",
           "metadata": {
-            "description": "Required. Cron formatted repeating schedule (\"* * * * *\") of a Cron Job."
+            "example": "    '* * * * *' // Every minute, every hour, every day\r\n    '0 0 * * *' // at 00:00 UTC every day\r\n    ",
+            "description": "Required. Cron formatted repeating schedule (\"* * * * *\") of a Cron Job. It supports the standard [cron](https://en.wikipedia.org/wiki/Cron) expression syntax."
           }
         },
         "parallelism": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Number of parallel replicas of a job that can run at a given time."
+            "description": "Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1."
           }
         },
         "replicaCompletionCount": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Optional. Number of successful completions of a job that are necessary to consider the job complete."
+            "description": "Optional. Number of successful completions of a job that are necessary to consider the job complete. Must be equal or or less than the parallelism. Defaults to 1."
           }
         }
       }
@@ -563,14 +577,16 @@
       "properties": {
         "parallelism": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Number of parallel replicas of a job that can run at a given time."
+            "description": "Required. Number of parallel replicas of a job that can run at a given time. Defaults to 1."
           }
         },
         "replicaCompletionCount": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Optional. Minimum number of successful replica completions before overall job completion."
+            "description": "Optional. Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1."
           }
         },
         "scale": {
@@ -606,68 +622,62 @@
           }
         },
         "rules": {
-          "$ref": "#/definitions/jobScaleRuleType",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "auth": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "secretRef": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the secret from which to pull the auth params."
+                      }
+                    },
+                    "triggerParameter": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Trigger Parameter that uses the secret."
+                      }
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Required. Authentication secrets for the scale rule."
+                }
+              },
+              "metadata": {
+                "type": "object",
+                "metadata": {
+                  "example": "    {\r\n      \"// for type azure-queue\r\n      {\r\n        queueName: 'default'\r\n        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'\r\n      }\"\r\n    }\r\n    ",
+                  "description": "Optional. Metadata properties to describe the scale rule."
+                }
+              },
+              "name": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The name of the scale rule."
+                }
+              },
+              "type": {
+                "type": "string",
+                "metadata": {
+                  "example": "    {\r\n      \"azure-servicebus\"\r\n      \"azure-queue\"\r\n      \"redis\"\r\n    }\r\n    ",
+                  "description": "Optional. The type of the rule."
+                }
+              }
+            }
+          },
           "metadata": {
-            "example": "    // for type azure-queue\n    {\n      name: 'myrule'\n      type: 'azure-queue'\n      metadata: {\n        queueName: 'default'\n        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'\n      }\n      auth: {\n        secretRef: 'mysecret'\n        triggerParameter: 'queueName'\n      }\n    }\n    ",
+            "example": "    // for type azure-queue\r\n    {\r\n      name: 'myrule'\r\n      type: 'azure-queue'\r\n      metadata: {\r\n        queueName: 'default'\r\n        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'\r\n      }\r\n      auth: {\r\n        secretRef: 'mysecret'\r\n        triggerParameter: 'queueName'\r\n      }\r\n    }\r\n    ",
             "description": "Optional. Scaling rules for the job."
           }
         }
       }
-    },
-    "jobScaleRuleType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "auth": {
-            "$ref": "#/definitions/scaleRuleAuthType",
-            "metadata": {
-              "description": "Required. Authentication secrets for the scale rule."
-            }
-          },
-          "metadata": {
-            "type": "object",
-            "metadata": {
-              "example": "    {\n      \"// for type azure-queue\n      {\n        queueName: 'default'\n        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'\n      }\"\n    }\n    ",
-              "description": "Optional. Metadata properties to describe the scale rule."
-            }
-          },
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the scale rule."
-            }
-          },
-          "type": {
-            "type": "string",
-            "metadata": {
-              "example": "    {\n      \"azure-servicebus\"\n      \"azure-queue\"\n      \"redis\"\n    }\n    ",
-              "description": "Optional. The type of the rule."
-            }
-          }
-        }
-      }
-    },
-    "scaleRuleAuthType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "secretRef": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the secret from which to pull the auth params."
-            }
-          },
-          "triggerParameter": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Trigger Parameter that uses the secret."
-            }
-          }
-        }
-      },
-      "nullable": true
     },
     "initContainerType": {
       "type": "array",
@@ -695,7 +705,7 @@
           "env": {
             "$ref": "#/definitions/containerEnvironmentVariablesType",
             "metadata": {
-              "example": "    [\n      {\n        name: 'AZURE_STORAGE_QUEUE_NAME'\n        value: '<storage-queue-name>'\n      }\n      {\n        name: 'AZURE_STORAGE_CONNECTION_STRING'\n        secretRef: 'connection-string'\n      }\n    ]\n    ",
+              "example": "    [\r\n      {\r\n        name: 'AZURE_STORAGE_QUEUE_NAME'\r\n        value: '<storage-queue-name>'\r\n      }\r\n      {\r\n        name: 'AZURE_STORAGE_CONNECTION_STRING'\r\n        secretRef: 'connection-string'\r\n      }\r\n    ]\r\n    ",
               "description": "Optional. The environment variables to set in the container."
             }
           },
@@ -802,7 +812,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for all Resources."
+        "description": "Optional. Location for all Resources. Defaults to the location of the Resource Group."
       }
     },
     "environmentResourceId": {
@@ -813,6 +823,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -821,22 +832,22 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
+        "example": "  {\r\n      \"key1\": \"value1\",\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
     "registries": {
-      "$ref": "#/definitions/registryCredentialsType",
+      "$ref": "#/definitions/registryType",
       "nullable": true,
       "metadata": {
-        "example": "[[\n  {\n    \"server\": \"myregistry.azurecr.io\",\n    \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\n  },\n  {\n    \"server\": \"myregistry2.azurecr.io\",\n    \"identity\": \"system\"\n  }\n  ,\n  {\n    \"server\": \"myregistry3.azurecr.io\",\n    \"username\": \"myusername\",\n    \"passwordSecretRef\": \"secret-name\"\n  }\n]",
+        "example": "[[\r\n  {\r\n    \"server\": \"myregistry.azurecr.io\",\r\n    \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\r\n  },\r\n  {\r\n    \"server\": \"myregistry2.azurecr.io\",\r\n    \"identity\": \"system\"\r\n  }\r\n  ,\r\n  {\r\n    \"server\": \"myregistry3.azurecr.io\",\r\n    \"username\": \"myusername\",\r\n    \"passwordSecretRef\": \"secret-name\"\r\n  }\r\n]",
         "description": "Optional. Collection of private container registry credentials for containers used by the Container app."
       }
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
-        "example": "  {\n    \"systemAssigned\": true,\n    \"userAssignedResourceIds\": [\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\n    ]\n  },\n  {\n    \"systemAssigned\": true\n  }\n  ",
+        "example": "  {\r\n    \"systemAssigned\": true,\r\n    \"userAssignedResourceIds\": [\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\"\r\n    ]\r\n  },\r\n  {\r\n    \"systemAssigned\": true\r\n  }\r\n  ",
         "description": "Optional. The managed identity definition for this resource."
       }
     },
@@ -859,7 +870,7 @@
         "description": "Required. List of container definitions for the Container App."
       }
     },
-    "initContainersTemplate": {
+    "initContainers": {
       "$ref": "#/definitions/initContainerType",
       "nullable": true,
       "metadata": {
@@ -870,21 +881,21 @@
       "$ref": "#/definitions/eventTriggerConfigType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Required if TriggerType is Event. Configuration of an event driven job."
+        "description": "Conditional. Configuration of an event driven job. Required if `TriggerType` is `Event`."
       }
     },
     "scheduleTriggerConfig": {
       "$ref": "#/definitions/scheduleTriggerconfigType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Required if TriggerType is Schedule. Configuration of a schedule based job."
+        "description": "Conditional. Configuration of a schedule based job. Required if `TriggerType` is `Schedule`."
       }
     },
     "manualTriggerConfig": {
       "$ref": "#/definitions/manualTriggerConfigType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Required if TriggerType is Manual. Configuration of a manually triggered job."
+        "description": "Conditional. Configuration of a manually triggered job. Required if `TriggerType` is `Manual`."
       }
     },
     "replicaRetryLimit": {
@@ -902,10 +913,10 @@
       }
     },
     "secrets": {
-      "$ref": "#/definitions/secretsType",
+      "$ref": "#/definitions/secretType",
       "nullable": true,
       "metadata": {
-        "example": "{\n  \"name\": \"mysecret\"\n  \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\",\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\n},\n{\n  \"name\": \"mysecret\"\n  \"identity\": \"system\",\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\n},\n{\n  \"name\": \"mysecret\",\n  \"value\": \"mysecretvalue\"\n}\n{\n  name: 'connection-string'\n  value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n}\n",
+        "example": "{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\"\r\n  \"identity\": \"system\",\r\n  \"keyVaultUrl\": \"https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret\",\r\n},\r\n{\r\n  \"name\": \"mysecret\",\r\n  \"value\": \"mysecretvalue\"\r\n}\r\n{\r\n  name: 'connection-string'\r\n  value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\r\n}\r\n",
         "description": "Optional. The secrets of the Container App."
       }
     },
@@ -989,7 +1000,7 @@
         },
         "template": {
           "containers": "[parameters('containers')]",
-          "initContainers": "[parameters('initContainersTemplate')]",
+          "initContainers": "[parameters('initContainers')]",
           "volumes": "[parameters('volumes')]"
         },
         "workloadProfileName": "[parameters('workloadProfileName')]"
@@ -1068,7 +1079,7 @@
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
-        "example": "'00000000-0000-0000-0000-000000000000'\n  ''",
+        "example": "'00000000-0000-0000-0000-000000000000'\r\n  ''",
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[coalesce(tryGet(tryGet(reference('job', '2024-03-01', 'full'), 'identity'), 'principalId'), '')]"

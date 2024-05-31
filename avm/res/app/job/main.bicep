@@ -5,14 +5,14 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the Container App.')
 param name string
 
-@description('Optional. Location for all Resources.')
+@description('Optional. Location for all Resources. Defaults to the location of the Resource Group.')
 param location string = resourceGroup().location
 
 @description('Required. Resource ID of Container Apps Environment.')
 param environmentResourceId string
 
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags of the resource.')
 @metadata({
@@ -44,7 +44,7 @@ param tags object?
   }
 ]'''
 })
-param registries registryCredentialsType?
+param registries registryType?
 
 @description('Optional. The managed identity definition for this resource.')
 @metadata({
@@ -72,15 +72,15 @@ param enableTelemetry bool = true
 param containers containerType
 
 @description('Optional. List of specialized containers that run before app containers.')
-param initContainersTemplate initContainerType?
+param initContainers initContainerType?
 
-@description('Optional. Required if TriggerType is Event. Configuration of an event driven job.')
+@description('Conditional. Configuration of an event driven job. Required if `TriggerType` is `Event`.')
 param eventTriggerConfig eventTriggerConfigType?
 
-@description('Optional. Required if TriggerType is Schedule. Configuration of a schedule based job.')
+@description('Conditional. Configuration of a schedule based job. Required if `TriggerType` is `Schedule`.')
 param scheduleTriggerConfig scheduleTriggerconfigType?
 
-@description('Optional. Required if TriggerType is Manual. Configuration of a manually triggered job.')
+@description('Conditional. Configuration of a manually triggered job. Required if `TriggerType` is `Manual`.')
 param manualTriggerConfig manualTriggerConfigType?
 
 @description('Optional. The maximum number of times a replica can be retried.')
@@ -112,7 +112,7 @@ param workloadProfileName string = 'Consumption'
 }
 '''
 })
-param secrets secretsType?
+param secrets secretType?
 
 @description('Optional. List of volume definitions for the Container App.')
 param volumes volumeType?
@@ -198,7 +198,7 @@ resource job 'Microsoft.App/jobs@2024-03-01' = {
     }
     template: {
       containers: containers
-      initContainers: initContainersTemplate
+      initContainers: initContainers
       volumes: volumes
     }
     workloadProfileName: workloadProfileName
@@ -289,7 +289,7 @@ type lockType = {
 
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+}
 
 type roleAssignmentType = {
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
@@ -314,7 +314,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-type registryCredentialsType = {
+type registryType = {
   @description('Required. The FQDN name of the container registry.')
   @metadata({ example: 'myregistry.azurecr.io' })
   server: string
@@ -335,7 +335,7 @@ type registryCredentialsType = {
   passwordSecretRef: string?
 }[]?
 
-type secretsType = {
+type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
 
@@ -355,14 +355,6 @@ type secretsType = {
   value: string?
 }[]?
 
-type secretVolumeItemType = {
-  @description('Required. Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef.')
-  path: string
-
-  @description('Required. Name of the Container App secret from which to pull the secret value.')
-  secretRef: string
-}[]?
-
 type volumeType = {
   @description('Required. The name of the volume.')
   name: string
@@ -371,7 +363,13 @@ type volumeType = {
   mountOptions: string?
 
   @description('Optional. List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be added to volume.')
-  secrets: secretVolumeItemType
+  secrets: {
+    @description('Required. Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef.')
+    path: string
+
+    @description('Required. Name of the Container App secret from which to pull the secret value.')
+    secretRef: string
+  }[]?
 
   @description('Conditional. The storage account name. Not needed for EmptyDir and Secret. Required if `storageType` is `AzureFile` or `NfsAzureFile`.')
   storageName: string?
@@ -399,35 +397,6 @@ type containerProbeHttpGetHttpHeadersItem = {
   value: string
 }[]?
 
-type containerProbeHttpGetType = {
-  @description('Optional. Host name to connect to, defaults to the pod IP.')
-  host: string?
-
-  @description('Optional. Custom headers to set in the request.')
-  httpHeaders: containerProbeHttpGetHttpHeadersItem
-
-  @description('Required. Path to access on the HTTP server.')
-  path: string
-
-  @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
-  @minValue(1)
-  @maxValue(65535)
-  port: int
-
-  @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
-  scheme: ('HTTP' | 'HTTPS')?
-}?
-
-type containerProbeTcpSocketType = {
-  @description('Optional. Host name to connect to, defaults to the pod IP.')
-  host: string
-
-  @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
-  @minValue(1)
-  @maxValue(65535)
-  port: int
-}?
-
 type containerProbeType = {
   @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
   @minValue(1)
@@ -435,17 +404,40 @@ type containerProbeType = {
   failureThreshold: int?
 
   @description('Optional. HTTPGet specifies the http request to perform.')
-  httpGet: containerProbeHttpGetType
+  httpGet: {
+    @description('Optional. Host name to connect to, defaults to the pod IP.')
+    host: string?
 
-  @description('Optional. Number of seconds after the container has started before liveness probes are initiated.')
+    @description('Optional. Custom headers to set in the request.')
+    httpHeaders: {
+      @description('Required. The header field name.')
+      name: string
+
+      @description('Required. The header field value.')
+      value: string
+    }[]?
+
+    @description('Required. Path to access on the HTTP server.')
+    path: string
+
+    @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
+    @minValue(1)
+    @maxValue(65535)
+    port: int
+
+    @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
+    scheme: ('HTTP' | 'HTTPS')?
+  }?
+
+  @description('Optional. Number of seconds after the container has started before liveness probes are initiated. Defaults to 0 seconds.')
   @minValue(1)
   @maxValue(60)
-  initialDelaySeconds: int
+  initialDelaySeconds: int?
 
-  @description('Optional. How often (in seconds) to perform the probe. Default to 10 seconds.')
+  @description('Optional. How often (in seconds) to perform the probe. Defaults to 10 seconds.')
   @minValue(1)
   @maxValue(60)
-  periodSeconds: int
+  periodSeconds: int?
 
   @description('Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1.')
   @minValue(1)
@@ -453,7 +445,15 @@ type containerProbeType = {
   successThreshold: int?
 
   @description('Optional. TCPSocket specifies an action involving a TCP port.')
-  tcpSocket: containerProbeTcpSocketType
+  tcpSocket: {
+    @description('Optional. Host name to connect to, defaults to the pod IP.')
+    host: string
+
+    @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
+    @minValue(1)
+    @maxValue(65535)
+    port: int
+  }?
 
   @description('Optional. Duration in seconds the pod needs to terminate gracefully upon probe failure. This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate.')
   @minValue(0)
@@ -502,31 +502,36 @@ type containerVolumeMountType = {
 }[]?
 
 type manualTriggerConfigType = {
-  // Properties replicaCompletionCount and parallelism would be set to 1 by default
   @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
   parallelism: int?
 
-  @description('Required. Minimum number of successful replica completions before overall job completion.')
-  replicaCompletionCount: int
+  @description('Optional. Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1.')
+  replicaCompletionCount: int?
 }
 
 type scheduleTriggerconfigType = {
-  @description('Required. Cron formatted repeating schedule ("* * * * *") of a Cron Job.')
+  @description('Required. Cron formatted repeating schedule ("* * * * *") of a Cron Job. It supports the standard [cron](https://en.wikipedia.org/wiki/Cron) expression syntax.')
+  @metadata({
+    example: '''
+    '* * * * *' // Every minute, every hour, every day
+    '0 0 * * *' // at 00:00 UTC every day
+    '''
+  })
   cronExpression: string
 
-  @description('Required. Number of parallel replicas of a job that can run at a given time.')
-  parallelism: int
+  @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
+  parallelism: int?
 
-  @description('Optional. Number of successful completions of a job that are necessary to consider the job complete.')
-  replicaCompletionCount: int
+  @description('Optional. Number of successful completions of a job that are necessary to consider the job complete. Must be equal or or less than the parallelism. Defaults to 1.')
+  replicaCompletionCount: int?
 }
 
 type eventTriggerConfigType = {
-  @description('Required. Number of parallel replicas of a job that can run at a given time.')
-  parallelism: int
+  @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
+  parallelism: int?
 
-  @description('Optional. Minimum number of successful replica completions before overall job completion.')
-  replicaCompletionCount: int
+  @description('Optional. Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1.')
+  replicaCompletionCount: int?
 
   @description('Required. Scaling configurations for event driven jobs.')
   scale: jobScaleType
@@ -560,16 +565,19 @@ type jobScaleType = {
     }
     '''
   })
-  rules: jobScaleRuleType
-}
+  rules: {
+    @description('Required. Authentication secrets for the scale rule.')
+    auth: {
+      @description('Required. Name of the secret from which to pull the auth params.')
+      secretRef: string
 
-type jobScaleRuleType = {
-  @description('Required. Authentication secrets for the scale rule.')
-  auth: scaleRuleAuthType
+      @description('Required. Trigger Parameter that uses the secret.')
+      triggerParameter: string
+    }[]?
 
-  @description('Optional. Metadata properties to describe the scale rule.')
-  @metadata({
-    example: '''
+    @description('Optional. Metadata properties to describe the scale rule.')
+    @metadata({
+      example: '''
     {
       "// for type azure-queue
       {
@@ -578,32 +586,25 @@ type jobScaleRuleType = {
       }"
     }
     '''
-  })
-  'metadata': object
+    })
+    'metadata': object
 
-  @description('Required. The name of the scale rule.')
-  name: string
+    @description('Required. The name of the scale rule.')
+    name: string
 
-  @description('Optional. The type of the rule.')
-  @metadata({
-    example: '''
+    @description('Optional. The type of the rule.')
+    @metadata({
+      example: '''
     {
       "azure-servicebus"
       "azure-queue"
       "redis"
     }
     '''
-  })
-  'type': string
-}[]
-
-type scaleRuleAuthType = {
-  @description('Required. Name of the secret from which to pull the auth params.')
-  secretRef: string
-
-  @description('Required. Trigger Parameter that uses the secret.')
-  triggerParameter: string
-}[]?
+    })
+    'type': string
+  }[]
+}
 
 type initContainerType = {
   @description('Optional. Container start command arguments.')

@@ -63,8 +63,6 @@ module testDeployment '../../../main.bicep' = [
       triggerType: 'Schedule'
       scheduleTriggerConfig: {
         cronExpression: '0 0 * * *'
-        parallelism: 1
-        replicaCompletionCount: 1
       }
       containers: [
         {

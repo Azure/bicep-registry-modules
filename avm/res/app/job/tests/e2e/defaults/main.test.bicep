@@ -54,9 +54,7 @@ module testDeployment '../../../main.bicep' = [
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       location: resourceLocation
       triggerType: 'Manual'
-      manualTriggerConfig: {
-        replicaCompletionCount: 1
-      }
+      manualTriggerConfig: {}
       containers: [
         {
           name: 'simple-hello-world-container'

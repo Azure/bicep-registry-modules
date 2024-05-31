@@ -60,9 +60,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
     triggerType: 'Manual'
     // Non-required parameters
     location: '<location>'
-    manualTriggerConfig: {
-      replicaCompletionCount: 1
-    }
+    manualTriggerConfig: {}
   }
 }
 ```
@@ -106,9 +104,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
       "value": "<location>"
     },
     "manualTriggerConfig": {
-      "value": {
-        "replicaCompletionCount": 1
-      }
+      "value": {}
     }
   }
 }
@@ -503,8 +499,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
     location: '<location>'
     scheduleTriggerConfig: {
       cronExpression: '0 0 * * *'
-      parallelism: 1
-      replicaCompletionCount: 1
     }
     tags: {
       Env: 'test'
@@ -572,9 +566,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
     },
     "scheduleTriggerConfig": {
       "value": {
-        "cronExpression": "0 0 * * *",
-        "parallelism": 1,
-        "replicaCompletionCount": 1
+        "cronExpression": "0 0 * * *"
       }
     },
     "tags": {
@@ -605,22 +597,27 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | [`name`](#parameter-name) | string | Name of the Container App. |
 | [`triggerType`](#parameter-triggertype) | string | Trigger type of the job. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventTriggerConfig`](#parameter-eventtriggerconfig) | object | Configuration of an event driven job. Required if `TriggerType` is `Event`. |
+| [`manualTriggerConfig`](#parameter-manualtriggerconfig) | object | Configuration of a manually triggered job. Required if `TriggerType` is `Manual`. |
+| [`scheduleTriggerConfig`](#parameter-scheduletriggerconfig) | object | Configuration of a schedule based job. Required if `TriggerType` is `Schedule`. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`eventTriggerConfig`](#parameter-eventtriggerconfig) | object | Required if TriggerType is Event. Configuration of an event driven job. |
-| [`initContainersTemplate`](#parameter-initcontainerstemplate) | array | List of specialized containers that run before app containers. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`initContainers`](#parameter-initcontainers) | array | List of specialized containers that run before app containers. |
+| [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the Resource Group. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`manualTriggerConfig`](#parameter-manualtriggerconfig) | object | Required if TriggerType is Manual. Configuration of a manually triggered job. |
 | [`registries`](#parameter-registries) | array | Collection of private container registry credentials for containers used by the Container app. |
 | [`replicaRetryLimit`](#parameter-replicaretrylimit) | int | The maximum number of times a replica can be retried. |
 | [`replicaTimeout`](#parameter-replicatimeout) | int | Maximum number of seconds a replica is allowed to run. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`scheduleTriggerConfig`](#parameter-scheduletriggerconfig) | object | Required if TriggerType is Schedule. Configuration of a schedule based job. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
@@ -739,8 +736,8 @@ The probes of the container.
 | :-- | :-- | :-- |
 | [`failureThreshold`](#parameter-containersprobesfailurethreshold) | int | Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. |
 | [`httpGet`](#parameter-containersprobeshttpget) | object | HTTPGet specifies the http request to perform. |
-| [`initialDelaySeconds`](#parameter-containersprobesinitialdelayseconds) | int | Number of seconds after the container has started before liveness probes are initiated. |
-| [`periodSeconds`](#parameter-containersprobesperiodseconds) | int | How often (in seconds) to perform the probe. Default to 10 seconds. |
+| [`initialDelaySeconds`](#parameter-containersprobesinitialdelayseconds) | int | Number of seconds after the container has started before liveness probes are initiated. Defaults to 0 seconds. |
+| [`periodSeconds`](#parameter-containersprobesperiodseconds) | int | How often (in seconds) to perform the probe. Defaults to 10 seconds. |
 | [`successThreshold`](#parameter-containersprobessuccessthreshold) | int | Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. |
 | [`tcpSocket`](#parameter-containersprobestcpsocket) | object | TCPSocket specifies an action involving a TCP port. |
 | [`terminationGracePeriodSeconds`](#parameter-containersprobesterminationgraceperiodseconds) | int | Duration in seconds the pod needs to terminate gracefully upon probe failure. This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. |
@@ -855,16 +852,16 @@ The header field value.
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 
-Number of seconds after the container has started before liveness probes are initiated.
+Number of seconds after the container has started before liveness probes are initiated. Defaults to 0 seconds.
 
-- Required: Yes
+- Required: No
 - Type: int
 
 ### Parameter: `containers.probes.periodSeconds`
 
-How often (in seconds) to perform the probe. Default to 10 seconds.
+How often (in seconds) to perform the probe. Defaults to 10 seconds.
 
-- Required: Yes
+- Required: No
 - Type: int
 
 ### Parameter: `containers.probes.successThreshold`
@@ -1024,17 +1021,9 @@ Trigger type of the job.
   ]
   ```
 
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `eventTriggerConfig`
 
-Required if TriggerType is Event. Configuration of an event driven job.
+Configuration of an event driven job. Required if `TriggerType` is `Event`.
 
 - Required: No
 - Type: object
@@ -1043,20 +1032,20 @@ Required if TriggerType is Event. Configuration of an event driven job.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`parallelism`](#parameter-eventtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. |
+| [`parallelism`](#parameter-eventtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
 | [`scale`](#parameter-eventtriggerconfigscale) | object | Scaling configurations for event driven jobs. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`replicaCompletionCount`](#parameter-eventtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. |
+| [`replicaCompletionCount`](#parameter-eventtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1. |
 
 ### Parameter: `eventTriggerConfig.parallelism`
 
-Number of parallel replicas of a job that can run at a given time.
+Number of parallel replicas of a job that can run at a given time. Defaults to 1.
 
-- Required: Yes
+- Required: No
 - Type: int
 
 ### Parameter: `eventTriggerConfig.scale`
@@ -1168,12 +1157,89 @@ The type of the rule.
 
 ### Parameter: `eventTriggerConfig.replicaCompletionCount`
 
-Minimum number of successful replica completions before overall job completion.
+Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1.
 
-- Required: Yes
+- Required: No
 - Type: int
 
-### Parameter: `initContainersTemplate`
+### Parameter: `manualTriggerConfig`
+
+Configuration of a manually triggered job. Required if `TriggerType` is `Manual`.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`parallelism`](#parameter-manualtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
+| [`replicaCompletionCount`](#parameter-manualtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. Defaults to 1. |
+
+### Parameter: `manualTriggerConfig.parallelism`
+
+Number of parallel replicas of a job that can run at a given time. Defaults to 1.
+
+- Required: No
+- Type: int
+
+### Parameter: `manualTriggerConfig.replicaCompletionCount`
+
+Minimum number of successful replica completions before overall job completion. Defaults to 1.
+
+- Required: No
+- Type: int
+
+### Parameter: `scheduleTriggerConfig`
+
+Configuration of a schedule based job. Required if `TriggerType` is `Schedule`.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cronExpression`](#parameter-scheduletriggerconfigcronexpression) | string | Cron formatted repeating schedule ("* * * * *") of a Cron Job. It supports the standard [cron](https://en.wikipedia.org/wiki/Cron) expression syntax. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`parallelism`](#parameter-scheduletriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
+| [`replicaCompletionCount`](#parameter-scheduletriggerconfigreplicacompletioncount) | int | Number of successful completions of a job that are necessary to consider the job complete. Must be equal or or less than the parallelism. Defaults to 1. |
+
+### Parameter: `scheduleTriggerConfig.cronExpression`
+
+Cron formatted repeating schedule ("* * * * *") of a Cron Job. It supports the standard [cron](https://en.wikipedia.org/wiki/Cron) expression syntax.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scheduleTriggerConfig.parallelism`
+
+Number of parallel replicas of a job that can run at a given time. Defaults to 1.
+
+- Required: No
+- Type: int
+
+### Parameter: `scheduleTriggerConfig.replicaCompletionCount`
+
+Number of successful completions of a job that are necessary to consider the job complete. Must be equal or or less than the parallelism. Defaults to 1.
+
+- Required: No
+- Type: int
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `initContainers`
 
 List of specialized containers that run before app containers.
 
@@ -1184,34 +1250,34 @@ List of specialized containers that run before app containers.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`image`](#parameter-initcontainerstemplateimage) | string | The image of the container. |
-| [`name`](#parameter-initcontainerstemplatename) | string | The name of the container. |
-| [`resources`](#parameter-initcontainerstemplateresources) | object | Container resource requirements. |
+| [`image`](#parameter-initcontainersimage) | string | The image of the container. |
+| [`name`](#parameter-initcontainersname) | string | The name of the container. |
+| [`resources`](#parameter-initcontainersresources) | object | Container resource requirements. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`args`](#parameter-initcontainerstemplateargs) | array | Container start command arguments. |
-| [`command`](#parameter-initcontainerstemplatecommand) | array | Container start command. |
-| [`env`](#parameter-initcontainerstemplateenv) | array | The environment variables to set in the container. |
-| [`volumeMounts`](#parameter-initcontainerstemplatevolumemounts) | array | The volume mounts to attach to the container. |
+| [`args`](#parameter-initcontainersargs) | array | Container start command arguments. |
+| [`command`](#parameter-initcontainerscommand) | array | Container start command. |
+| [`env`](#parameter-initcontainersenv) | array | The environment variables to set in the container. |
+| [`volumeMounts`](#parameter-initcontainersvolumemounts) | array | The volume mounts to attach to the container. |
 
-### Parameter: `initContainersTemplate.image`
+### Parameter: `initContainers.image`
 
 The image of the container.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `initContainersTemplate.name`
+### Parameter: `initContainers.name`
 
 The name of the container.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `initContainersTemplate.resources`
+### Parameter: `initContainers.resources`
 
 Container resource requirements.
 
@@ -1222,43 +1288,43 @@ Container resource requirements.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cpu`](#parameter-initcontainerstemplateresourcescpu) | string | The CPU limit of the container in cores. |
+| [`cpu`](#parameter-initcontainersresourcescpu) | string | The CPU limit of the container in cores. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`memory`](#parameter-initcontainerstemplateresourcesmemory) | string | The required memory. |
+| [`memory`](#parameter-initcontainersresourcesmemory) | string | The required memory. |
 
-### Parameter: `initContainersTemplate.resources.cpu`
+### Parameter: `initContainers.resources.cpu`
 
 The CPU limit of the container in cores.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `initContainersTemplate.resources.memory`
+### Parameter: `initContainers.resources.memory`
 
 The required memory.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `initContainersTemplate.args`
+### Parameter: `initContainers.args`
 
 Container start command arguments.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `initContainersTemplate.command`
+### Parameter: `initContainers.command`
 
 Container start command.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `initContainersTemplate.env`
+### Parameter: `initContainers.env`
 
 The environment variables to set in the container.
 
@@ -1269,37 +1335,37 @@ The environment variables to set in the container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-initcontainerstemplateenvname) | string | The environment variable name. |
+| [`name`](#parameter-initcontainersenvname) | string | The environment variable name. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`secretRef`](#parameter-initcontainerstemplateenvsecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null. |
-| [`value`](#parameter-initcontainerstemplateenvvalue) | string | The environment variable value. Required if `secretRef` is null. |
+| [`secretRef`](#parameter-initcontainersenvsecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null. |
+| [`value`](#parameter-initcontainersenvvalue) | string | The environment variable value. Required if `secretRef` is null. |
 
-### Parameter: `initContainersTemplate.env.name`
+### Parameter: `initContainers.env.name`
 
 The environment variable name.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `initContainersTemplate.env.secretRef`
+### Parameter: `initContainers.env.secretRef`
 
 The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.
 
 - Required: No
 - Type: string
 
-### Parameter: `initContainersTemplate.env.value`
+### Parameter: `initContainers.env.value`
 
 The environment variable value. Required if `secretRef` is null.
 
 - Required: No
 - Type: string
 
-### Parameter: `initContainersTemplate.volumeMounts`
+### Parameter: `initContainers.volumeMounts`
 
 The volume mounts to attach to the container.
 
@@ -1310,30 +1376,30 @@ The volume mounts to attach to the container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`mountPath`](#parameter-initcontainerstemplatevolumemountsmountpath) | string | The path within the container at which the volume should be mounted. Must not contain ':'. |
-| [`volumeName`](#parameter-initcontainerstemplatevolumemountsvolumename) | string | This must match the Name of a Volume. |
+| [`mountPath`](#parameter-initcontainersvolumemountsmountpath) | string | The path within the container at which the volume should be mounted. Must not contain ':'. |
+| [`volumeName`](#parameter-initcontainersvolumemountsvolumename) | string | This must match the Name of a Volume. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`subPath`](#parameter-initcontainerstemplatevolumemountssubpath) | string | Path within the volume from which the container's volume should be mounted. |
+| [`subPath`](#parameter-initcontainersvolumemountssubpath) | string | Path within the volume from which the container's volume should be mounted. |
 
-### Parameter: `initContainersTemplate.volumeMounts.mountPath`
+### Parameter: `initContainers.volumeMounts.mountPath`
 
 The path within the container at which the volume should be mounted. Must not contain ':'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `initContainersTemplate.volumeMounts.volumeName`
+### Parameter: `initContainers.volumeMounts.volumeName`
 
 This must match the Name of a Volume.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `initContainersTemplate.volumeMounts.subPath`
+### Parameter: `initContainers.volumeMounts.subPath`
 
 Path within the volume from which the container's volume should be mounted.
 
@@ -1342,7 +1408,7 @@ Path within the volume from which the container's volume should be mounted.
 
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all Resources. Defaults to the location of the Resource Group.
 
 - Required: No
 - Type: string
@@ -1411,39 +1477,6 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
-
-### Parameter: `manualTriggerConfig`
-
-Required if TriggerType is Manual. Configuration of a manually triggered job.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`replicaCompletionCount`](#parameter-manualtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`parallelism`](#parameter-manualtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
-
-### Parameter: `manualTriggerConfig.replicaCompletionCount`
-
-Minimum number of successful replica completions before overall job completion.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `manualTriggerConfig.parallelism`
-
-Number of parallel replicas of a job that can run at a given time. Defaults to 1.
-
-- Required: No
-- Type: int
 
 ### Parameter: `registries`
 
@@ -1603,47 +1636,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `scheduleTriggerConfig`
-
-Required if TriggerType is Schedule. Configuration of a schedule based job.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`cronExpression`](#parameter-scheduletriggerconfigcronexpression) | string | Cron formatted repeating schedule ("* * * * *") of a Cron Job. |
-| [`parallelism`](#parameter-scheduletriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`replicaCompletionCount`](#parameter-scheduletriggerconfigreplicacompletioncount) | int | Number of successful completions of a job that are necessary to consider the job complete. |
-
-### Parameter: `scheduleTriggerConfig.cronExpression`
-
-Cron formatted repeating schedule ("* * * * *") of a Cron Job.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `scheduleTriggerConfig.parallelism`
-
-Number of parallel replicas of a job that can run at a given time.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `scheduleTriggerConfig.replicaCompletionCount`
-
-Number of successful completions of a job that are necessary to consider the job complete.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `secrets`
 
