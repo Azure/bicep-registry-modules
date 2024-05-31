@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "8541625448981111944"
+      "templateHash": "10741822894899201312"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -1036,6 +1036,7 @@
     "resourceId": {
       "type": "string",
       "metadata": {
+        "example": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.App/jobs/myJob",
         "description": "The resource ID of the Container App Job."
       },
       "value": "[resourceId('Microsoft.App/jobs', parameters('name'))]"
@@ -1043,6 +1044,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
+        "example": "myResourceGroup",
         "description": "The name of the resource group the Container App Job was deployed into."
       },
       "value": "[resourceGroup().name]"
@@ -1050,6 +1052,7 @@
     "name": {
       "type": "string",
       "metadata": {
+        "example": "myJob",
         "description": "The name of the Container App Job."
       },
       "value": "[parameters('name')]"
@@ -1057,6 +1060,7 @@
     "location": {
       "type": "string",
       "metadata": {
+        "example": "Germany West Central",
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('job', '2024-03-01', 'full').location]"
@@ -1064,6 +1068,7 @@
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
+        "example": "'00000000-0000-0000-0000-000000000000'\n  ''",
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[coalesce(tryGet(tryGet(reference('job', '2024-03-01', 'full'), 'identity'), 'principalId'), '')]"

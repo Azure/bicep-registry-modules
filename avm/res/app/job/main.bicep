@@ -241,18 +241,34 @@ resource automationAccount_roleAssignments 'Microsoft.Authorization/roleAssignme
 // ============ //
 
 @description('The resource ID of the Container App Job.')
+@metadata({
+  example: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.App/jobs/myJob'
+})
 output resourceId string = job.id
 
 @description('The name of the resource group the Container App Job was deployed into.')
+@metadata({
+  example: 'myResourceGroup'
+})
 output resourceGroupName string = resourceGroup().name
 
 @description('The name of the Container App Job.')
+@metadata({
+  example: 'myJob'
+})
 output name string = job.name
 
 @description('The location the resource was deployed into.')
+@metadata({
+  example: 'Germany West Central'
+})
 output location string = job.location
 
 @description('The principal ID of the system assigned identity.')
+@metadata({
+  example: ''''00000000-0000-0000-0000-000000000000'
+  '''''
+})
 output systemAssignedMIPrincipalId string = job.?identity.?principalId ?? ''
 
 // =============== //
