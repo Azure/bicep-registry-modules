@@ -136,7 +136,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the resource to create. |
+| [`name`](#parameter-name) | string | Name of the private analytical workspace solution and its components. Used to ensure unique resource names. |
 
 **Optional parameters**
 
@@ -144,10 +144,13 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
-Name of the resource to create.
+Name of the private analytical workspace solution and its components. Used to ensure unique resource names.
 
 - Required: Yes
 - Type: string
@@ -167,6 +170,57 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `logAnalyticsWorkspaceResourceId`
+
+You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 
 ## Outputs

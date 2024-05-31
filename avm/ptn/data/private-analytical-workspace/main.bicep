@@ -2,18 +2,23 @@ metadata name = 'private-analytical-workspace'
 metadata description = 'Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the resource to create.')
+@description('Required. Name of the private analytical workspace solution and its components. Used to ensure unique resource names.')
 param name string
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. The lock settings of the service.')
+param lock lockType
+
+@description('Optional. Tags of the resource.')
+param tags object?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-//
-// Add your parameters here
-//
+@description('Optional. You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you.')
+param logAnalyticsWorkspaceResourceId string = ''
 
 // ============== //
 // Resources      //
@@ -78,3 +83,11 @@ output resourceGroupName string = dbw.outputs.resourceGroupName
 //
 // Add your User-defined-types here, if any
 //
+
+type lockType = {
+  @description('Optional. Specify the name of lock.')
+  name: string?
+
+  @description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
