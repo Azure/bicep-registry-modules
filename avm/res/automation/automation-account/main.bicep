@@ -18,6 +18,9 @@ param skuName string = 'Basic'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
+@description('Optional. List of credentials to be created in the automation account.')
+param credentials array = []
+
 @description('Optional. List of modules to be created in the automation account.')
 param modules array = []
 
@@ -119,47 +122,43 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.automation-automationaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.automation-automationaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' = {
   name: name
@@ -193,6 +192,19 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
     disableLocalAuth: disableLocalAuth
   }
 }
+
+module automationAccount_credentials 'credential/main.bicep' = [
+  for (credential, index) in (credentials ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credential-${index}'
+    params: {
+      name: credential.name
+      credentialDescription: credential.credentialDescription
+      automationAccountName: automationAccount.name
+      userName: credential.userName
+      password: credential.password
+    }
+  }
+]
 
 module automationAccount_modules 'module/main.bicep' = [
   for (module, index) in modules: {
@@ -273,26 +285,25 @@ module automationAccount_variables 'variable/main.bicep' = [
   }
 ]
 
-module automationAccount_linkedService '../../operational-insights/workspace/linked-service/main.bicep' =
-  if (!empty(linkedWorkspaceResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
-    params: {
-      name: 'automation'
-      logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
-      resourceId: automationAccount.id
-      tags: tags
-    }
-    // This is to support linked services to law in different subscription and resource group than the automation account.
-    // The current scope is used by default if no linked service is intended to be created.
-    scope: resourceGroup(
-      (!empty(linkedWorkspaceResourceId)
-        ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '//'), '/')[2])
-        : subscription().subscriptionId),
-      !empty(linkedWorkspaceResourceId)
-        ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '////'), '/')[4])
-        : resourceGroup().name
-    )
+module automationAccount_linkedService '../../operational-insights/workspace/linked-service/main.bicep' = if (!empty(linkedWorkspaceResourceId)) {
+  name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
+  params: {
+    name: 'automation'
+    logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
+    resourceId: automationAccount.id
+    tags: tags
   }
+  // This is to support linked services to law in different subscription and resource group than the automation account.
+  // The current scope is used by default if no linked service is intended to be created.
+  scope: resourceGroup(
+    (!empty(linkedWorkspaceResourceId)
+      ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '//'), '/')[2])
+      : subscription().subscriptionId),
+    !empty(linkedWorkspaceResourceId)
+      ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '////'), '/')[4])
+      : resourceGroup().name
+  )
+}
 
 module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.1.0' = [
   for (gallerySolution, index) in gallerySolutions: if (!empty(linkedWorkspaceResourceId)) {
@@ -405,17 +416,16 @@ module automationAccount_softwareUpdateConfigurations 'software-update-configura
   }
 ]
 
-resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: automationAccount
+resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: automationAccount
+}
 
 resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

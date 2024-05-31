@@ -18,6 +18,7 @@ This module deploys an Azure Automation Account.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automation/automationAccounts` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts) |
+| `Microsoft.Automation/automationAccounts/credentials` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials) |
 | `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
 | `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
 | `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
@@ -179,6 +180,14 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     // Required parameters
     name: 'aamax001'
     // Non-required parameters
+    credentials: [
+      {
+        description: 'Description od Credential01'
+        name: 'Credential01'
+        password: '<password>'
+        userName: 'userName01'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -406,6 +415,16 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       "value": "aamax001"
     },
     // Non-required parameters
+    "credentials": {
+      "value": [
+        {
+          "description": "Description od Credential01",
+          "name": "Credential01",
+          "password": "<password>",
+          "userName": "userName01"
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1090,6 +1109,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`credentials`](#parameter-credentials) | array | List of credentials to be created in the automation account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable local authentication profile used within the resource. |
@@ -1117,6 +1137,14 @@ Name of the Automation Account.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `credentials`
+
+List of credentials to be created in the automation account.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
