@@ -36,7 +36,7 @@ param certificate certificateType
 param certificateCommonNames certificateCommonNamesType
 
 @description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster.')
-param clientCertificateCommonNames array = []
+param clientCertificateCommonNames clientCertificateCommonNameType
 
 @description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster.')
 param clientCertificateThumbprints array = []
@@ -135,14 +135,10 @@ param applicationTypes array = []
 param enableTelemetry bool = true
 
 var clientCertificateCommonNamesVar = [
-  for clientCertificateCommonName in clientCertificateCommonNames: {
-    certificateCommonName: contains(clientCertificateCommonName, 'certificateCommonName')
-      ? clientCertificateCommonName.certificateCommonName
-      : null
-    certificateIssuerThumbprint: contains(clientCertificateCommonName, 'certificateIssuerThumbprint')
-      ? clientCertificateCommonName.certificateIssuerThumbprint
-      : null
-    isAdmin: contains(clientCertificateCommonName, 'isAdmin') ? clientCertificateCommonName.isAdmin : false
+  for (clientCertificateCommonName, index) in (clientCertificateCommonNames ?? []): {
+    certificateCommonName: clientCertificateCommonName.certificateCommonName
+    certificateIssuerThumbprint: clientCertificateCommonName.certificateIssuerThumbprint
+    isAdmin: clientCertificateCommonName.isAdmin
   }
 ]
 
@@ -314,7 +310,7 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
           x509StoreName: certificateCommonNames.?x509StoreName ?? null
         }
       : null
-    clientCertificateCommonNames: !empty(clientCertificateCommonNames) ? clientCertificateCommonNamesVar : null
+    clientCertificateCommonNames: clientCertificateCommonNamesVar
     clientCertificateThumbprints: !empty(clientCertificateThumbprints) ? clientCertificateThumbprintsVar : null
     clusterCodeVersion: clusterCodeVersion
     diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig)
@@ -485,6 +481,17 @@ type serverCertificateCommonNameType = {
   @description('Required. The issuer thumbprint of the server certificate.')
   certificateIssuerThumbprint: string
 }[]
+
+type clientCertificateCommonNameType = {
+  @description('Required. The common name of the client certificate.')
+  certificateCommonName: string
+
+  @description('Required. The issuer thumbprint of the client certificate.')
+  certificateIssuerThumbprint: string
+
+  @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
+  isAdmin: bool
+}[]?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

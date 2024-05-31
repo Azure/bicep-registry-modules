@@ -1158,7 +1158,35 @@ The list of client certificates referenced by common name that are allowed to ma
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateCommonName`](#parameter-clientcertificatecommonnamescertificatecommonname) | string | The common name of the client certificate. |
+| [`certificateIssuerThumbprint`](#parameter-clientcertificatecommonnamescertificateissuerthumbprint) | string | The issuer thumbprint of the client certificate. |
+| [`isAdmin`](#parameter-clientcertificatecommonnamesisadmin) | bool | Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster. |
+
+### Parameter: `clientCertificateCommonNames.certificateCommonName`
+
+The common name of the client certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientCertificateCommonNames.certificateIssuerThumbprint`
+
+The issuer thumbprint of the client certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientCertificateCommonNames.isAdmin`
+
+Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `clientCertificateThumbprints`
 

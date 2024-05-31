@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16626770369796972452"
+      "templateHash": "14645980679660823747"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -97,6 +97,33 @@
           }
         }
       }
+    },
+    "clientCertificateCommonNameType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "certificateCommonName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The common name of the client certificate."
+            }
+          },
+          "certificateIssuerThumbprint": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The issuer thumbprint of the client certificate."
+            }
+          },
+          "isAdmin": {
+            "type": "bool",
+            "metadata": {
+              "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
+            }
+          }
+        }
+      },
+      "nullable": true
     },
     "lockType": {
       "type": "object",
@@ -257,8 +284,7 @@
       }
     },
     "clientCertificateCommonNames": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/clientCertificateCommonNameType",
       "metadata": {
         "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster."
       }
@@ -456,11 +482,11 @@
     "copy": [
       {
         "name": "clientCertificateCommonNamesVar",
-        "count": "[length(parameters('clientCertificateCommonNames'))]",
+        "count": "[length(coalesce(parameters('clientCertificateCommonNames'), createArray()))]",
         "input": {
-          "certificateCommonName": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'certificateCommonName'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].certificateCommonName, null())]",
-          "certificateIssuerThumbprint": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'certificateIssuerThumbprint'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].certificateIssuerThumbprint, null())]",
-          "isAdmin": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'isAdmin'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].isAdmin, false())]"
+          "certificateCommonName": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].certificateCommonName]",
+          "certificateIssuerThumbprint": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].certificateIssuerThumbprint]",
+          "isAdmin": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].isAdmin]"
         }
       },
       {
@@ -553,7 +579,7 @@
         "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', if(contains(parameters('azureActiveDirectory'), 'clientApplication'), parameters('azureActiveDirectory').clientApplication, null()), 'clusterApplication', if(contains(parameters('azureActiveDirectory'), 'clusterApplication'), parameters('azureActiveDirectory').clusterApplication, null()), 'tenantId', if(contains(parameters('azureActiveDirectory'), 'tenantId'), parameters('azureActiveDirectory').tenantId, null())), null())]",
         "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null()), 'x509StoreName', coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())), null())]",
         "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', coalesce(tryGet(parameters('certificateCommonNames'), 'commonNames'), createArray()), 'x509StoreName', coalesce(tryGet(parameters('certificateCommonNames'), 'x509StoreName'), null())), null())]",
-        "clientCertificateCommonNames": "[if(not(empty(parameters('clientCertificateCommonNames'))), variables('clientCertificateCommonNamesVar'), null())]",
+        "clientCertificateCommonNames": "[variables('clientCertificateCommonNamesVar')]",
         "clientCertificateThumbprints": "[if(not(empty(parameters('clientCertificateThumbprints'))), variables('clientCertificateThumbprintsVar'), null())]",
         "clusterCodeVersion": "[parameters('clusterCodeVersion')]",
         "diagnosticsStorageAccountConfig": "[if(not(empty(parameters('diagnosticsStorageAccountConfig'))), createObject('blobEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'blobEndpoint'), parameters('diagnosticsStorageAccountConfig').blobEndpoint, null()), 'protectedAccountKeyName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName, null()), 'protectedAccountKeyName2', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName2'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName2, null()), 'queueEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'queueEndpoint'), parameters('diagnosticsStorageAccountConfig').queueEndpoint, null()), 'storageAccountName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'storageAccountName'), parameters('diagnosticsStorageAccountConfig').storageAccountName, null()), 'tableEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'tableEndpoint'), parameters('diagnosticsStorageAccountConfig').tableEndpoint, null())), null())]",
