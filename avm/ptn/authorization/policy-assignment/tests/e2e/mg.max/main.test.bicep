@@ -15,7 +15,7 @@ param resourceLocation string = deployment().location
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@sys.description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
+@description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
 param subscriptionId string = '#_subscriptionId_#'
 
 // ============== //
@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     roleDefinitionIds: [
-      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'  // Contributor role
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role
     ]
     overrides: [
       {
