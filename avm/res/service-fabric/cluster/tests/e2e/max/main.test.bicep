@@ -53,10 +53,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      certificate: {
-        thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        x509StoreName: 'My'
-      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -82,7 +78,7 @@ module testDeployment '../../../main.bicep' = [
         commonNames: [
           {
             certificateCommonName: 'certcommon'
-            certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC117'
+            certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
           }
         ]
         x509StoreName: ''

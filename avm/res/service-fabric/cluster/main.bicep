@@ -29,7 +29,7 @@ param maxUnusedVersionsToKeep int = 3
 @description('Optional. The settings to enable AAD authentication on the cluster.')
 param azureActiveDirectory object = {}
 
-@description('Required. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client.')
+@description('Optional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client.')
 param certificate certificateType
 
 @description('Optional. Describes a list of server certificates referenced by common name that are used to secure the cluster.')
@@ -301,11 +301,13 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
           tenantId: contains(azureActiveDirectory, 'tenantId') ? azureActiveDirectory.tenantId : null
         }
       : null
-    certificate: {
-      thumbprint: certificate.thumbprint
-      thumbprintSecondary: certificate.?thumbprintSecondary ?? null
-      x509StoreName: certificate.?x509StoreName ?? null
-    }
+    certificate: !empty(certificate)
+      ? {
+          thumbprint: certificate.?thumbprint ?? ''
+          thumbprintSecondary: certificate.?thumbprintSecondary ?? null
+          x509StoreName: certificate.?x509StoreName ?? null
+        }
+      : null
     certificateCommonNames: !empty(certificateCommonNames)
       ? {
           commonNames: contains(certificateCommonNames, 'commonNames') ? certificateCommonNames.commonNames : null
@@ -460,7 +462,7 @@ type certificateType = {
     | 'Root'
     | 'TrustedPeople'
     | 'TrustedPublisher')?
-}
+}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

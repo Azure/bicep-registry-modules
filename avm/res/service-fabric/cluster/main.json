@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "18636055962102008"
+      "templateHash": "8953936713615051520"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -46,7 +46,8 @@
             "description": "Optional. The local certificate store location."
           }
         }
-      }
+      },
+      "nullable": true
     },
     "lockType": {
       "type": "object",
@@ -197,7 +198,7 @@
     "certificate": {
       "$ref": "#/definitions/certificateType",
       "metadata": {
-        "description": "Required. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client."
+        "description": "Optional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client."
       }
     },
     "certificateCommonNames": {
@@ -502,11 +503,7 @@
           "maxUnusedVersionsToKeep": "[parameters('maxUnusedVersionsToKeep')]"
         },
         "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', if(contains(parameters('azureActiveDirectory'), 'clientApplication'), parameters('azureActiveDirectory').clientApplication, null()), 'clusterApplication', if(contains(parameters('azureActiveDirectory'), 'clusterApplication'), parameters('azureActiveDirectory').clusterApplication, null()), 'tenantId', if(contains(parameters('azureActiveDirectory'), 'tenantId'), parameters('azureActiveDirectory').tenantId, null())), null())]",
-        "certificate": {
-          "thumbprint": "[parameters('certificate').thumbprint]",
-          "thumbprintSecondary": "[coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null())]",
-          "x509StoreName": "[coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())]"
-        },
+        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null()), 'x509StoreName', coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())), null())]",
         "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', if(contains(parameters('certificateCommonNames'), 'commonNames'), parameters('certificateCommonNames').commonNames, null()), 'x509StoreName', if(contains(parameters('certificateCommonNames'), 'certificateCommonNamesx509StoreName'), parameters('certificateCommonNames').certificateCommonNamesx509StoreName, null())), null())]",
         "clientCertificateCommonNames": "[if(not(empty(parameters('clientCertificateCommonNames'))), variables('clientCertificateCommonNamesVar'), null())]",
         "clientCertificateThumbprints": "[if(not(empty(parameters('clientCertificateThumbprints'))), variables('clientCertificateThumbprintsVar'), null())]",
