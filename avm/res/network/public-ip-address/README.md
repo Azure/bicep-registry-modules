@@ -18,7 +18,7 @@ This module deploys a Public IP Address.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 
 ## Usage examples
 
@@ -459,14 +459,32 @@ The DDoS protection plan configuration associated with the public IP address.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ddosProtectionPlan`](#parameter-ddossettingsddosprotectionplan) | object | The DDoS protection plan associated with the public IP address. |
 | [`protectionMode`](#parameter-ddossettingsprotectionmode) | string | The DDoS protection policy customizations. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ddosProtectionPlan`](#parameter-ddossettingsddosprotectionplan) | object | The DDoS protection plan associated with the public IP address. |
+
+### Parameter: `ddosSettings.protectionMode`
+
+The DDoS protection policy customizations.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `ddosSettings.ddosProtectionPlan`
 
 The DDoS protection plan associated with the public IP address.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
@@ -481,19 +499,6 @@ The resource ID of the DDOS protection plan associated with the public IP addres
 
 - Required: Yes
 - Type: string
-
-### Parameter: `ddosSettings.protectionMode`
-
-The DDoS protection policy customizations.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
