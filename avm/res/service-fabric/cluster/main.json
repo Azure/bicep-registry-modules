@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "14645980679660823747"
+      "templateHash": "16398694168437365170"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -113,6 +113,27 @@
             "type": "string",
             "metadata": {
               "description": "Required. The issuer thumbprint of the client certificate."
+            }
+          },
+          "isAdmin": {
+            "type": "bool",
+            "metadata": {
+              "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "clientCertificateThumbprintType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "certificateThumbprint": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The thumbprint of the client certificate."
             }
           },
           "isAdmin": {
@@ -290,8 +311,7 @@
       }
     },
     "clientCertificateThumbprints": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/clientCertificateThumbprintType",
       "metadata": {
         "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster."
       }
@@ -491,10 +511,10 @@
       },
       {
         "name": "clientCertificateThumbprintsVar",
-        "count": "[length(parameters('clientCertificateThumbprints'))]",
+        "count": "[length(coalesce(parameters('clientCertificateThumbprints'), createArray()))]",
         "input": {
-          "certificateThumbprint": "[if(contains(parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')], 'certificateThumbprint'), parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')].certificateThumbprint, null())]",
-          "isAdmin": "[if(contains(parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')], 'isAdmin'), parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')].isAdmin, false())]"
+          "certificateThumbprint": "[coalesce(parameters('clientCertificateThumbprints'), createArray())[copyIndex('clientCertificateThumbprintsVar')].certificateThumbprint]",
+          "isAdmin": "[coalesce(parameters('clientCertificateThumbprints'), createArray())[copyIndex('clientCertificateThumbprintsVar')].isAdmin]"
         }
       },
       {
@@ -580,7 +600,7 @@
         "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null()), 'x509StoreName', coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())), null())]",
         "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', coalesce(tryGet(parameters('certificateCommonNames'), 'commonNames'), createArray()), 'x509StoreName', coalesce(tryGet(parameters('certificateCommonNames'), 'x509StoreName'), null())), null())]",
         "clientCertificateCommonNames": "[variables('clientCertificateCommonNamesVar')]",
-        "clientCertificateThumbprints": "[if(not(empty(parameters('clientCertificateThumbprints'))), variables('clientCertificateThumbprintsVar'), null())]",
+        "clientCertificateThumbprints": "[variables('clientCertificateThumbprintsVar')]",
         "clusterCodeVersion": "[parameters('clusterCodeVersion')]",
         "diagnosticsStorageAccountConfig": "[if(not(empty(parameters('diagnosticsStorageAccountConfig'))), createObject('blobEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'blobEndpoint'), parameters('diagnosticsStorageAccountConfig').blobEndpoint, null()), 'protectedAccountKeyName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName, null()), 'protectedAccountKeyName2', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName2'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName2, null()), 'queueEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'queueEndpoint'), parameters('diagnosticsStorageAccountConfig').queueEndpoint, null()), 'storageAccountName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'storageAccountName'), parameters('diagnosticsStorageAccountConfig').storageAccountName, null()), 'tableEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'tableEndpoint'), parameters('diagnosticsStorageAccountConfig').tableEndpoint, null())), null())]",
         "eventStoreServiceEnabled": "[parameters('eventStoreServiceEnabled')]",

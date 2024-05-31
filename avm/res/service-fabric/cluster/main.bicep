@@ -39,7 +39,7 @@ param certificateCommonNames certificateCommonNamesType
 param clientCertificateCommonNames clientCertificateCommonNameType
 
 @description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster.')
-param clientCertificateThumbprints array = []
+param clientCertificateThumbprints clientCertificateThumbprintType
 
 @description('Optional. The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions.')
 param clusterCodeVersion string?
@@ -143,11 +143,9 @@ var clientCertificateCommonNamesVar = [
 ]
 
 var clientCertificateThumbprintsVar = [
-  for clientCertificateThumbprint in clientCertificateThumbprints: {
-    certificateThumbprint: contains(clientCertificateThumbprint, 'certificateThumbprint')
-      ? clientCertificateThumbprint.certificateThumbprint
-      : null
-    isAdmin: contains(clientCertificateThumbprint, 'isAdmin') ? clientCertificateThumbprint.isAdmin : false
+  for (clientCertificateThumbprint, index) in (clientCertificateThumbprints ?? []): {
+    certificateThumbprint: clientCertificateThumbprint.certificateThumbprint
+    isAdmin: clientCertificateThumbprint.isAdmin
   }
 ]
 
@@ -311,7 +309,7 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
         }
       : null
     clientCertificateCommonNames: clientCertificateCommonNamesVar
-    clientCertificateThumbprints: !empty(clientCertificateThumbprints) ? clientCertificateThumbprintsVar : null
+    clientCertificateThumbprints: clientCertificateThumbprintsVar
     clusterCodeVersion: clusterCodeVersion
     diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig)
       ? {
@@ -488,6 +486,14 @@ type clientCertificateCommonNameType = {
 
   @description('Required. The issuer thumbprint of the client certificate.')
   certificateIssuerThumbprint: string
+
+  @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
+  isAdmin: bool
+}[]?
+
+type clientCertificateThumbprintType = {
+  @description('Required. The thumbprint of the client certificate.')
+  certificateThumbprint: string
 
   @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
   isAdmin: bool

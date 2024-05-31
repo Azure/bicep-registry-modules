@@ -225,7 +225,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         isAdmin: false
       }
     ]
-    clientCertificateThumbprints: []
     diagnosticsStorageAccountConfig: {
       blobEndpoint: '<blobEndpoint>'
       protectedAccountKeyName: 'StorageAccountKey1'
@@ -428,9 +427,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
           "isAdmin": false
         }
       ]
-    },
-    "clientCertificateThumbprints": {
-      "value": []
     },
     "diagnosticsStorageAccountConfig": {
       "value": {
@@ -636,7 +632,16 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         isAdmin: false
       }
     ]
-    clientCertificateThumbprints: []
+    clientCertificateThumbprints: [
+      {
+        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        isAdmin: false
+      }
+      {
+        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
+        isAdmin: false
+      }
+    ]
     diagnosticsStorageAccountConfig: {
       blobEndpoint: '<blobEndpoint>'
       protectedAccountKeyName: 'StorageAccountKey1'
@@ -815,7 +820,16 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       ]
     },
     "clientCertificateThumbprints": {
-      "value": []
+      "value": [
+        {
+          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+          "isAdmin": false
+        },
+        {
+          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
+          "isAdmin": false
+        }
+      ]
     },
     "diagnosticsStorageAccountConfig": {
       "value": {
@@ -1194,7 +1208,27 @@ The list of client certificates referenced by thumbprint that are allowed to man
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateThumbprint`](#parameter-clientcertificatethumbprintscertificatethumbprint) | string | The thumbprint of the client certificate. |
+| [`isAdmin`](#parameter-clientcertificatethumbprintsisadmin) | bool | Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster. |
+
+### Parameter: `clientCertificateThumbprints.certificateThumbprint`
+
+The thumbprint of the client certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientCertificateThumbprints.isAdmin`
+
+Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `clusterCodeVersion`
 
