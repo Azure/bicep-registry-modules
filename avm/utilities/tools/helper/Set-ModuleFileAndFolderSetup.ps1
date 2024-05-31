@@ -47,7 +47,7 @@ function Set-ModuleFileAndFolderSetup {
 
   if ([String]::IsNullOrEmpty($CurrentLevelFolderPath)) {
     # Extract resource type identifier
-    $resourceTypeIdentifier = ($FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # Extracts 'network\virtualnetwork'
+    $resourceTypeIdentifier = ($FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # <provider>\<resourceType>
 
     # Split resource type identifier into components
     $providerNamespace, $resourceType, $childResourceType = $resourceTypeIdentifier -split '[\/|\\]', 3
