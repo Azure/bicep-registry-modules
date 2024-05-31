@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "13383229625942226709"
+      "templateHash": "16626770369796972452"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -48,6 +48,55 @@
         }
       },
       "nullable": true
+    },
+    "certificateCommonNamesType": {
+      "type": "object",
+      "properties": {
+        "commonNames": {
+          "$ref": "#/definitions/serverCertificateCommonNameType",
+          "metadata": {
+            "description": "Required. The list of server certificates referenced by common name that are used to secure the cluster."
+          }
+        },
+        "x509StoreName": {
+          "type": "string",
+          "allowedValues": [
+            "AddressBook",
+            "AuthRoot",
+            "CertificateAuthority",
+            "Disallowed",
+            "My",
+            "Root",
+            "TrustedPeople",
+            "TrustedPublisher"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local certificate store location."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "serverCertificateCommonNameType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "certificateCommonName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The common name of the server certificate."
+            }
+          },
+          "certificateIssuerThumbprint": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The issuer thumbprint of the server certificate."
+            }
+          }
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -202,8 +251,7 @@
       }
     },
     "certificateCommonNames": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/certificateCommonNamesType",
       "metadata": {
         "description": "Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used."
       }
@@ -504,7 +552,7 @@
         },
         "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', if(contains(parameters('azureActiveDirectory'), 'clientApplication'), parameters('azureActiveDirectory').clientApplication, null()), 'clusterApplication', if(contains(parameters('azureActiveDirectory'), 'clusterApplication'), parameters('azureActiveDirectory').clusterApplication, null()), 'tenantId', if(contains(parameters('azureActiveDirectory'), 'tenantId'), parameters('azureActiveDirectory').tenantId, null())), null())]",
         "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null()), 'x509StoreName', coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())), null())]",
-        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', if(contains(parameters('certificateCommonNames'), 'commonNames'), parameters('certificateCommonNames').commonNames, null()), 'x509StoreName', if(contains(parameters('certificateCommonNames'), 'certificateCommonNamesx509StoreName'), parameters('certificateCommonNames').certificateCommonNamesx509StoreName, null())), null())]",
+        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', coalesce(tryGet(parameters('certificateCommonNames'), 'commonNames'), createArray()), 'x509StoreName', coalesce(tryGet(parameters('certificateCommonNames'), 'x509StoreName'), null())), null())]",
         "clientCertificateCommonNames": "[if(not(empty(parameters('clientCertificateCommonNames'))), variables('clientCertificateCommonNamesVar'), null())]",
         "clientCertificateThumbprints": "[if(not(empty(parameters('clientCertificateThumbprints'))), variables('clientCertificateThumbprintsVar'), null())]",
         "clusterCodeVersion": "[parameters('clusterCodeVersion')]",

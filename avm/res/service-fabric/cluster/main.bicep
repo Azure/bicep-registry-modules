@@ -33,7 +33,7 @@ param azureActiveDirectory object = {}
 param certificate certificateType
 
 @description('Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.')
-param certificateCommonNames object = {}
+param certificateCommonNames certificateCommonNamesType
 
 @description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster.')
 param clientCertificateCommonNames array = []
@@ -310,10 +310,8 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
       : null
     certificateCommonNames: !empty(certificateCommonNames)
       ? {
-          commonNames: contains(certificateCommonNames, 'commonNames') ? certificateCommonNames.commonNames : null
-          x509StoreName: contains(certificateCommonNames, 'certificateCommonNamesx509StoreName')
-            ? certificateCommonNames.certificateCommonNamesx509StoreName
-            : null
+          commonNames: certificateCommonNames.?commonNames ?? []
+          x509StoreName: certificateCommonNames.?x509StoreName ?? null
         }
       : null
     clientCertificateCommonNames: !empty(clientCertificateCommonNames) ? clientCertificateCommonNamesVar : null
@@ -463,6 +461,30 @@ type certificateType = {
     | 'TrustedPeople'
     | 'TrustedPublisher')?
 }?
+
+type certificateCommonNamesType = {
+  @description('Required. The list of server certificates referenced by common name that are used to secure the cluster.')
+  commonNames: serverCertificateCommonNameType
+
+  @description('Optional. The local certificate store location.')
+  x509StoreName: (
+    | 'AddressBook'
+    | 'AuthRoot'
+    | 'CertificateAuthority'
+    | 'Disallowed'
+    | 'My'
+    | 'Root'
+    | 'TrustedPeople'
+    | 'TrustedPublisher')?
+}?
+
+type serverCertificateCommonNameType = {
+  @description('Required. The common name of the server certificate.')
+  certificateCommonName: string
+
+  @description('Required. The issuer thumbprint of the server certificate.')
+  certificateIssuerThumbprint: string
+}[]
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

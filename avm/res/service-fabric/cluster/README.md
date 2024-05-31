@@ -67,18 +67,9 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     reliabilityLevel: 'None'
     // Non-required parameters
-    clientCertificateCommonNames: [
-      {
-        certificateCommonName: 'clientcommoncert1'
-        certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        isAdmin: false
-      }
-      {
-        certificateCommonName: 'clientcommoncert2'
-        certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
-        isAdmin: false
-      }
-    ]
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    }
     location: '<location>'
   }
 }
@@ -126,19 +117,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       "value": "None"
     },
     // Non-required parameters
-    "clientCertificateCommonNames": {
-      "value": [
-        {
-          "certificateCommonName": "clientcommoncert1",
-          "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-          "isAdmin": false
-        },
-        {
-          "certificateCommonName": "clientcommoncert2",
-          "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
-          "isAdmin": false
-        }
-      ]
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
+      }
     },
     "location": {
       "value": "<location>"
@@ -229,7 +211,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
           certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
         }
       ]
-      x509StoreName: ''
+      x509StoreName: 'My'
     }
     clientCertificateCommonNames: [
       {
@@ -430,7 +412,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
             "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
           }
         ],
-        "x509StoreName": ""
+        "x509StoreName": "My"
       }
     },
     "clientCertificateCommonNames": {
@@ -1076,7 +1058,66 @@ Describes a list of server certificates referenced by common name that are used 
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`commonNames`](#parameter-certificatecommonnamescommonnames) | array | The list of server certificates referenced by common name that are used to secure the cluster. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`x509StoreName`](#parameter-certificatecommonnamesx509storename) | string | The local certificate store location. |
+
+### Parameter: `certificateCommonNames.commonNames`
+
+The list of server certificates referenced by common name that are used to secure the cluster.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateCommonName`](#parameter-certificatecommonnamescommonnamescertificatecommonname) | string | The common name of the server certificate. |
+| [`certificateIssuerThumbprint`](#parameter-certificatecommonnamescommonnamescertificateissuerthumbprint) | string | The issuer thumbprint of the server certificate. |
+
+### Parameter: `certificateCommonNames.commonNames.certificateCommonName`
+
+The common name of the server certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificateCommonNames.commonNames.certificateIssuerThumbprint`
+
+The issuer thumbprint of the server certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificateCommonNames.x509StoreName`
+
+The local certificate store location.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AddressBook'
+    'AuthRoot'
+    'CertificateAuthority'
+    'Disallowed'
+    'My'
+    'Root'
+    'TrustedPeople'
+    'TrustedPublisher'
+  ]
+  ```
 
 ### Parameter: `addOnFeatures`
 
