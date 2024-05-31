@@ -1032,21 +1032,14 @@ Configuration of an event driven job. Required if `TriggerType` is `Event`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`parallelism`](#parameter-eventtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
 | [`scale`](#parameter-eventtriggerconfigscale) | object | Scaling configurations for event driven jobs. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`parallelism`](#parameter-eventtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
 | [`replicaCompletionCount`](#parameter-eventtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1. |
-
-### Parameter: `eventTriggerConfig.parallelism`
-
-Number of parallel replicas of a job that can run at a given time. Defaults to 1.
-
-- Required: No
-- Type: int
 
 ### Parameter: `eventTriggerConfig.scale`
 
@@ -1155,6 +1148,13 @@ The type of the rule.
 - Required: Yes
 - Type: string
 
+### Parameter: `eventTriggerConfig.parallelism`
+
+Number of parallel replicas of a job that can run at a given time. Defaults to 1.
+
+- Required: No
+- Type: int
+
 ### Parameter: `eventTriggerConfig.replicaCompletionCount`
 
 Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1.
@@ -1174,7 +1174,7 @@ Configuration of a manually triggered job. Required if `TriggerType` is `Manual`
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`parallelism`](#parameter-manualtriggerconfigparallelism) | int | Number of parallel replicas of a job that can run at a given time. Defaults to 1. |
-| [`replicaCompletionCount`](#parameter-manualtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. Defaults to 1. |
+| [`replicaCompletionCount`](#parameter-manualtriggerconfigreplicacompletioncount) | int | Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1. |
 
 ### Parameter: `manualTriggerConfig.parallelism`
 
@@ -1185,7 +1185,7 @@ Number of parallel replicas of a job that can run at a given time. Defaults to 1
 
 ### Parameter: `manualTriggerConfig.replicaCompletionCount`
 
-Minimum number of successful replica completions before overall job completion. Defaults to 1.
+Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1.
 
 - Required: No
 - Type: int

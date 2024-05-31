@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "4449515809975455125"
+      "templateHash": "14122537526903680941"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -541,7 +541,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Minimum number of successful replica completions before overall job completion. Defaults to 1."
+            "description": "Optional. Minimum number of successful replica completions before overall job completion. Must be equal or or less than the parallelism. Defaults to 1."
           }
         }
       }
@@ -579,7 +579,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Required. Number of parallel replicas of a job that can run at a given time. Defaults to 1."
+            "description": "Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1."
           }
         },
         "replicaCompletionCount": {
