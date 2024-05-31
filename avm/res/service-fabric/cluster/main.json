@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "8953936713615051520"
+      "templateHash": "13383229625942226709"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -198,14 +198,14 @@
     "certificate": {
       "$ref": "#/definitions/certificateType",
       "metadata": {
-        "description": "Optional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client."
+        "description": "Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used."
       }
     },
     "certificateCommonNames": {
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Describes a list of server certificates referenced by common name that are used to secure the cluster."
+        "description": "Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used."
       }
     },
     "clientCertificateCommonNames": {

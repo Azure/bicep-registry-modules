@@ -29,10 +29,10 @@ param maxUnusedVersionsToKeep int = 3
 @description('Optional. The settings to enable AAD authentication on the cluster.')
 param azureActiveDirectory object = {}
 
-@description('Optional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client.')
+@description('Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used.')
 param certificate certificateType
 
-@description('Optional. Describes a list of server certificates referenced by common name that are used to secure the cluster.')
+@description('Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.')
 param certificateCommonNames object = {}
 
 @description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster.')

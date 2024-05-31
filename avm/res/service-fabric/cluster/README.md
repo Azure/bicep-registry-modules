@@ -67,9 +67,18 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     reliabilityLevel: 'None'
     // Non-required parameters
-    certificate: {
-      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-    }
+    clientCertificateCommonNames: [
+      {
+        certificateCommonName: 'clientcommoncert1'
+        certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        isAdmin: false
+      }
+      {
+        certificateCommonName: 'clientcommoncert2'
+        certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
+        isAdmin: false
+      }
+    ]
     location: '<location>'
   }
 }
@@ -117,10 +126,19 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       "value": "None"
     },
     // Non-required parameters
-    "certificate": {
-      "value": {
-        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
-      }
+    "clientCertificateCommonNames": {
+      "value": [
+        {
+          "certificateCommonName": "clientcommoncert1",
+          "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+          "isAdmin": false
+        },
+        {
+          "certificateCommonName": "clientcommoncert2",
+          "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
+          "isAdmin": false
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -920,6 +938,13 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 | [`nodeTypes`](#parameter-nodetypes) | array | The list of node types in the cluster. |
 | [`reliabilityLevel`](#parameter-reliabilitylevel) | string | The reliability level sets the replica set size of system services. Learn about ReliabilityLevel (https://learn.microsoft.com/en-us/azure/service-fabric/service-fabric-cluster-capacity). - None - Run the System services with a target replica set count of 1. This should only be used for test clusters. - Bronze - Run the System services with a target replica set count of 3. This should only be used for test clusters. - Silver - Run the System services with a target replica set count of 5. - Gold - Run the System services with a target replica set count of 7. - Platinum - Run the System services with a target replica set count of 9. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificate`](#parameter-certificate) | object | The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used. |
+| [`certificateCommonNames`](#parameter-certificatecommonnames) | object | Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -927,8 +952,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 | [`addOnFeatures`](#parameter-addonfeatures) | array | The list of add-on features to enable in the cluster. |
 | [`applicationTypes`](#parameter-applicationtypes) | array | Array of Service Fabric cluster application types. |
 | [`azureActiveDirectory`](#parameter-azureactivedirectory) | object | The settings to enable AAD authentication on the cluster. |
-| [`certificate`](#parameter-certificate) | object | The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. |
-| [`certificateCommonNames`](#parameter-certificatecommonnames) | object | Describes a list of server certificates referenced by common name that are used to secure the cluster. |
 | [`clientCertificateCommonNames`](#parameter-clientcertificatecommonnames) | array | The list of client certificates referenced by common name that are allowed to manage the cluster. |
 | [`clientCertificateThumbprints`](#parameter-clientcertificatethumbprints) | array | The list of client certificates referenced by thumbprint that are allowed to manage the cluster. |
 | [`clusterCodeVersion`](#parameter-clustercodeversion) | string | The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions. |
@@ -993,42 +1016,9 @@ The reliability level sets the replica set size of system services. Learn about 
   ]
   ```
 
-### Parameter: `addOnFeatures`
-
-The list of add-on features to enable in the cluster.
-
-- Required: No
-- Type: array
-- Default: `[]`
-- Allowed:
-  ```Bicep
-  [
-    'BackupRestoreService'
-    'DnsService'
-    'RepairManager'
-    'ResourceMonitorService'
-  ]
-  ```
-
-### Parameter: `applicationTypes`
-
-Array of Service Fabric cluster application types.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `azureActiveDirectory`
-
-The settings to enable AAD authentication on the cluster.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
 ### Parameter: `certificate`
 
-The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client.
+The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used.
 
 - Required: No
 - Type: object
@@ -1082,7 +1072,40 @@ The local certificate store location.
 
 ### Parameter: `certificateCommonNames`
 
-Describes a list of server certificates referenced by common name that are used to secure the cluster.
+Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `addOnFeatures`
+
+The list of add-on features to enable in the cluster.
+
+- Required: No
+- Type: array
+- Default: `[]`
+- Allowed:
+  ```Bicep
+  [
+    'BackupRestoreService'
+    'DnsService'
+    'RepairManager'
+    'ResourceMonitorService'
+  ]
+  ```
+
+### Parameter: `applicationTypes`
+
+Array of Service Fabric cluster application types.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `azureActiveDirectory`
+
+The settings to enable AAD authentication on the cluster.
 
 - Required: No
 - Type: object
