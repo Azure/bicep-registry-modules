@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "7285009334035421293"
+      "version": "0.26.170.59819",
+      "templateHash": "11361059479876065514"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -323,6 +323,87 @@
         }
       },
       "nullable": true
+    },
+    "auditSettingsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the name of the audit settings."
+          }
+        },
+        "auditActionsAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the Actions-Groups and Actions to audit."
+          }
+        },
+        "isAzureMonitorTargetEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
+          }
+        },
+        "isDevopsAuditEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor."
+          }
+        },
+        "isManagedIdentityInUse": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether Managed Identity is used to access blob storage."
+          }
+        },
+        "isStorageSecondaryKeyInUse": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether storageAccountAccessKey value is the storage's secondary key."
+          }
+        },
+        "queueDelayMs": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed."
+          }
+        },
+        "retentionDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the number of days to keep in the audit logs in the storage account."
+          }
+        },
+        "state": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the identifier key of the auditing storage account."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -496,6 +577,13 @@
       "metadata": {
         "description": "Optional. The vulnerability assessment configuration."
       }
+    },
+    "auditSettings": {
+      "$ref": "#/definitions/auditSettingsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The audit settings configuration."
+      }
     }
   },
   "variables": {
@@ -539,7 +627,7 @@
     },
     "server": {
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2023-08-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -655,8 +743,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17545579739827867089"
+              "version": "0.26.170.59819",
+              "templateHash": "9047850898488176836"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1032,12 +1120,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[parameters('serverName')]"
             },
             "database": {
               "type": "Microsoft.Sql/servers/databases",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1133,8 +1221,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "11085405057722780022"
+                      "version": "0.26.170.59819",
+                      "templateHash": "9575484808117369324"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -1171,7 +1259,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-                      "apiVersion": "2022-05-01-preview",
+                      "apiVersion": "2023-08-01-preview",
                       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
                       "properties": {
                         "diffBackupIntervalInHours": "[parameters('diffBackupIntervalInHours')]",
@@ -1235,8 +1323,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "13590495271621282724"
+                      "version": "0.26.170.59819",
+                      "templateHash": "2987912129930549113"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -1287,7 +1375,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-                      "apiVersion": "2022-05-01-preview",
+                      "apiVersion": "2023-08-01-preview",
                       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
                       "properties": {
                         "monthlyRetention": "[parameters('monthlyRetention')]",
@@ -1354,7 +1442,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('database', '2022-05-01-preview', 'full').location]"
+              "value": "[reference('database', '2023-08-01-preview', 'full').location]"
             }
           }
         }
@@ -1413,8 +1501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "16839451417800355426"
+              "version": "0.26.170.59819",
+              "templateHash": "15196319884030535606"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1533,12 +1621,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[parameters('serverName')]"
             },
             "elasticPool": {
               "type": "Microsoft.Sql/servers/elasticPools",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1591,7 +1679,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('elasticPool', '2022-05-01-preview', 'full').location]"
+              "value": "[reference('elasticPool', '2023-08-01-preview', 'full').location]"
             }
           }
         }
@@ -2291,8 +2379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11554996903169567204"
+              "version": "0.26.170.59819",
+              "templateHash": "132145509526286180"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule.",
@@ -2329,7 +2417,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/firewallRules",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -2397,8 +2485,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "16468636891412424894"
+              "version": "0.26.170.59819",
+              "templateHash": "2185771993667613187"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
@@ -2434,7 +2522,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/virtualNetworkRules",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "ignoreMissingVnetServiceEndpoint": "[parameters('ignoreMissingVnetServiceEndpoint')]",
@@ -2505,8 +2593,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4552154846289317547"
+              "version": "0.26.170.59819",
+              "templateHash": "6297565278342171224"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -2582,7 +2670,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/securityAlertPolicies",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "disabledAlerts": "[parameters('disabledAlerts')]",
@@ -2656,8 +2744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "5720200901996028671"
+              "version": "0.26.170.59819",
+              "templateHash": "16935926611669912972"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
@@ -2721,7 +2809,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
@@ -2750,7 +2838,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference(resourceId('Microsoft.Sql/servers', parameters('serverName')), '2022-05-01-preview', 'full').identity.principalId]"
+                    "value": "[reference(resourceId('Microsoft.Sql/servers', parameters('serverName')), '2023-08-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -2759,8 +2847,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "13552747005956537738"
+                      "version": "0.26.170.59819",
+                      "templateHash": "14931947659838606269"
                     }
                   },
                   "parameters": {
@@ -2848,8 +2936,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "5370214401001222813"
+              "version": "0.26.170.59819",
+              "templateHash": "15606064728997597420"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -2896,12 +2984,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[parameters('serverName')]"
             },
             "key": {
               "type": "Microsoft.Sql/servers/keys",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -2967,8 +3055,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15754842645553898915"
+              "version": "0.26.170.59819",
+              "templateHash": "1697387406841688657"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -3009,7 +3097,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/encryptionProtector",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -3047,6 +3135,258 @@
         "server",
         "server_keys"
       ]
+    },
+    "server_audit_settings": {
+      "condition": "[not(empty(parameters('auditSettings')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Sql-AuditSettings', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serverName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'name'), 'default')]"
+          },
+          "state": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'state'), 'Disabled')]"
+          },
+          "auditActionsAndGroups": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'auditActionsAndGroups'), createArray('BATCH_COMPLETED_GROUP', 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP', 'FAILED_DATABASE_AUTHENTICATION_GROUP'))]"
+          },
+          "isAzureMonitorTargetEnabled": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isAzureMonitorTargetEnabled'), false())]"
+          },
+          "isDevopsAuditEnabled": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isDevopsAuditEnabled'), false())]"
+          },
+          "isManagedIdentityInUse": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isManagedIdentityInUse'), false())]"
+          },
+          "isStorageSecondaryKeyInUse": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isStorageSecondaryKeyInUse'), false())]"
+          },
+          "queueDelayMs": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'queueDelayMs'), 1000)]"
+          },
+          "retentionDays": {
+            "value": "[coalesce(tryGet(parameters('auditSettings'), 'retentionDays'), 90)]"
+          },
+          "storageAccountResourceId": {
+            "value": "[tryGet(parameters('auditSettings'), 'storageAccountResourceId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "5227498596204234250"
+            },
+            "name": "Azure SQL Server Audit Settings",
+            "description": "This module deploys an Azure SQL Server Audit Settings.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the audit settings."
+              }
+            },
+            "serverName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The Name of SQL Server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "state": {
+              "type": "string",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Required. The resource group of the SQL Server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "auditActionsAndGroups": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the Actions-Groups and Actions to audit."
+              }
+            },
+            "isAzureMonitorTargetEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
+              }
+            },
+            "isDevopsAuditEnabled": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor."
+              }
+            },
+            "isManagedIdentityInUse": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether Managed Identity is used to access blob storage."
+              }
+            },
+            "isStorageSecondaryKeyInUse": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies whether storageAccountAccessKey value is the storage's secondary key."
+              }
+            },
+            "queueDelayMs": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed."
+              }
+            },
+            "retentionDays": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the number of days to keep in the audit logs in the storage account."
+              }
+            },
+            "storageAccountResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. A blob storage to hold the auditing storage account."
+              }
+            }
+          },
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "auditSettings": {
+              "type": "Microsoft.Sql/servers/auditingSettings",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
+              "properties": {
+                "state": "[parameters('state')]",
+                "auditActionsAndGroups": "[parameters('auditActionsAndGroups')]",
+                "isAzureMonitorTargetEnabled": "[parameters('isAzureMonitorTargetEnabled')]",
+                "isDevopsAuditEnabled": "[parameters('isDevopsAuditEnabled')]",
+                "isManagedIdentityInUse": "[parameters('isManagedIdentityInUse')]",
+                "isStorageSecondaryKeyInUse": "[parameters('isStorageSecondaryKeyInUse')]",
+                "queueDelayMs": "[parameters('queueDelayMs')]",
+                "retentionDays": "[parameters('retentionDays')]",
+                "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
+                "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
+                "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
+              },
+              "dependsOn": [
+                "server"
+              ]
+            },
+            "storageAccount_sbdc_rbac": {
+              "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-stau-rbac', parameters('serverName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "storageAccountName": {
+                    "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+                  },
+                  "managedInstanceIdentityPrincipalId": {
+                    "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.26.170.59819",
+                      "templateHash": "14931947659838606269"
+                    }
+                  },
+                  "parameters": {
+                    "storageAccountName": {
+                      "type": "string"
+                    },
+                    "managedInstanceIdentityPrincipalId": {
+                      "type": "string"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+                      "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedInstanceIdentityPrincipalId')))]",
+                      "properties": {
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                        "principalId": "[parameters('managedInstanceIdentityPrincipalId')]",
+                        "principalType": "ServicePrincipal"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "server"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed audit settings."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed audit settings."
+              },
+              "value": "[resourceId('Microsoft.Sql/servers/auditingSettings', parameters('serverName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed audit settings."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "server"
+      ]
     }
   },
   "outputs": {
@@ -3076,14 +3416,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('server', '2022-05-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('server', '2023-08-01-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('server', '2022-05-01-preview', 'full').location]"
+      "value": "[reference('server', '2023-08-01-preview', 'full').location]"
     }
   }
 }
