@@ -26,10 +26,13 @@ param keyVaultResourceId string = ''
 @description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations.')
 param networkAcls object?
 
-var moduleCfg = ({
+var lawCfg = ({
   logAnalyticsWorkspaceResourceId: empty(logAnalyticsWorkspaceResourceId)
     ? law.outputs.resourceId
     : logAnalyticsWorkspaceResourceId
+})
+
+var kvCfg = ({
   keyVaultResourceId: empty(keyVaultResourceId) ? kv.outputs.resourceId : keyVaultResourceId
 })
 
@@ -76,6 +79,7 @@ module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(
     lock: lock
     skuName: 'PerGB2018'
     tags: tags
+    // TODO - Network Isolation PL, networkAcls
   }
 }
 
@@ -86,11 +90,31 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
     name: '${name}-kv'
     // Non-required parameters
     //createMode: '' // TODO
-    diagnosticSettings: [] // TODO
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'audit'
+          }
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: lawCfg.logAnalyticsWorkspaceResourceId
+      }
+    ]
     enablePurgeProtection: false // TODO
     enableRbacAuthorization: true
     enableSoftDelete: false // TODO
     enableTelemetry: enableTelemetry
+    enableVaultForDeployment: true
+    enableVaultForTemplateDeployment: false
     enableVaultForDiskEncryption: true
     location: location
     lock: lock
@@ -101,6 +125,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
     sku: 'premium'
     //softDeleteRetentionInDays: // TODO
     tags: tags
+    // TODO - Network Isolation PL, networkAcls, RBAC for user
   }
 }
 

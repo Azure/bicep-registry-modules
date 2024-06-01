@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "4390433891507731267"
+      "templateHash": "4673370338179822570"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -2084,7 +2084,25 @@
             "value": "[format('{0}-kv', parameters('name'))]"
           },
           "diagnosticSettings": {
-            "value": []
+            "value": [
+              {
+                "name": "customSetting",
+                "metricCategories": [
+                  {
+                    "category": "AllMetrics"
+                  }
+                ],
+                "logCategoriesAndGroups": [
+                  {
+                    "categoryGroup": "audit"
+                  },
+                  {
+                    "categoryGroup": "allLogs"
+                  }
+                ],
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('law').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+              }
+            ]
           },
           "enablePurgeProtection": {
             "value": false
@@ -2097,6 +2115,12 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "enableVaultForDeployment": {
+            "value": true
+          },
+          "enableVaultForTemplateDeployment": {
+            "value": false
           },
           "enableVaultForDiskEncryption": {
             "value": true
@@ -4847,7 +4871,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "law"
+      ]
     },
     "dbw": {
       "condition": false,
