@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "4673370338179822570"
+      "templateHash": "6545905449609643716"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -37,6 +37,25 @@
         }
       },
       "nullable": true
+    },
+    "networkAclsType": {
+      "type": "object",
+      "properties": {
+        "virtualNetworkRules": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Sets the virtual network rules."
+          }
+        },
+        "ipRules": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Sets the IP ACL rules."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -88,10 +107,10 @@
       }
     },
     "networkAcls": {
-      "type": "object",
+      "$ref": "#/definitions/networkAclsType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations."
+        "description": "Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }
     }
   },
@@ -2117,13 +2136,13 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "enableVaultForDeployment": {
-            "value": true
+            "value": false
           },
           "enableVaultForTemplateDeployment": {
             "value": false
           },
           "enableVaultForDiskEncryption": {
-            "value": true
+            "value": false
           },
           "location": {
             "value": "[parameters('location')]"
@@ -2131,6 +2150,7 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
+          "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray()))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')))]",
           "sku": {
             "value": "premium"
           },

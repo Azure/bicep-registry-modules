@@ -23,8 +23,8 @@ param logAnalyticsWorkspaceResourceId string = ''
 @description('Optional. You can specify an existing Key Vault if you have one. If not, this module will create a new one for you.')
 param keyVaultResourceId string = ''
 
-@description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations.')
-param networkAcls object?
+@description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+param networkAcls networkAclsType?
 
 var lawCfg = ({
   logAnalyticsWorkspaceResourceId: empty(logAnalyticsWorkspaceResourceId)
@@ -113,12 +113,24 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
     enableRbacAuthorization: true
     enableSoftDelete: false // TODO
     enableTelemetry: enableTelemetry
-    enableVaultForDeployment: true
+    enableVaultForDeployment: false
     enableVaultForTemplateDeployment: false
-    enableVaultForDiskEncryption: true
+    enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
     location: location
     lock: lock
-    //networkAcls: []
+    networkAcls: !empty(networkAcls)
+      ? {
+          bypass: 'None'
+          defaultAction: 'Deny'
+          virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
+          ipRules: networkAcls.?ipRules ?? []
+        }
+      : {
+          // New default case that enables the firewall by default
+          bypass: 'None'
+          defaultAction: 'Deny'
+        }
+
     //privateEndpoints: []
     //publicNetworkAccess: false
     //roleAssignments: []
@@ -171,3 +183,11 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type networkAclsType = {
+  @description('Optional. Sets the virtual network rules.')
+  virtualNetworkRules: array?
+
+  @description('Optional. Sets the IP ACL rules.')
+  ipRules: array?
+}
