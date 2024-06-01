@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16026664093766865790"
+      "templateHash": "4390433891507731267"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -4853,7 +4853,7 @@
       "condition": false,
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}', parameters('name'))]",
+      "name": "[format('{0}-adb', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4861,7 +4861,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}', parameters('name'))]"
+            "value": "[format('{0}-adb', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6446,28 +6446,28 @@
       "metadata": {
         "description": "The resource ID of the resource."
       },
-      "value": "[reference('dbw').outputs.resourceId.value]"
+      "value": "[reference('law').outputs.resourceId.value]"
     },
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the resource."
       },
-      "value": "[reference('dbw').outputs.name.value]"
+      "value": "[reference('law').outputs.name.value]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('dbw').outputs.location.value]"
+      "value": "[reference('law').outputs.location.value]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "The name of the managed resource group."
       },
-      "value": "[reference('dbw').outputs.resourceGroupName.value]"
+      "value": "[reference('law').outputs.resourceGroupName.value]"
     }
   }
 }

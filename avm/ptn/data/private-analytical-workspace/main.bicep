@@ -105,10 +105,10 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
 }
 
 module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (false /*!!! TODO !!!*/) {
-  name: '${name}'
+  name: '${name}-adb'
   params: {
     // Required parameters
-    name: '${name}'
+    name: '${name}-adb'
     // Non-required parameters
     location: location
   }
@@ -121,16 +121,16 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (false /*!!! TODO
 // Add your outputs here
 
 @description('The resource ID of the resource.')
-output resourceId string = dbw.outputs.resourceId
+output resourceId string = law.outputs.resourceId // TODO
 
 @description('The name of the resource.')
-output name string = dbw.outputs.name
+output name string = law.outputs.name // TODO
 
 @description('The location the resource was deployed into.')
-output location string = dbw.outputs.location
+output location string = law.outputs.location // TODO
 
 @description('The name of the managed resource group.')
-output resourceGroupName string = dbw.outputs.resourceGroupName
+output resourceGroupName string = law.outputs.resourceGroupName // TODO
 
 // ================ //
 // Definitions      //
