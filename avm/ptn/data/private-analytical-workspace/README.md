@@ -19,6 +19,10 @@ Using this pattern module, you can combine Azure services that frequently help w
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Databricks/workspaces` | [2023-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2023-02-01/workspaces) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
+| `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
+| `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
@@ -152,9 +156,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | You can specify an existing Key Vault if you have one. If not, this module will create a new one for you. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you. |
+| [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -171,6 +177,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `keyVaultResourceId`
+
+You can specify an existing Key Vault if you have one. If not, this module will create a new one for you.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
@@ -224,6 +238,13 @@ You can specify an existing Log Analytics Workspace if you have one. If not, thi
 - Type: string
 - Default: `''`
 
+### Parameter: `networkAcls`
+
+Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations.
+
+- Required: No
+- Type: object
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -248,6 +269,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/databricks/workspace:0.4.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.6.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.3.0` | Remote reference |
 
 ## Data Collection

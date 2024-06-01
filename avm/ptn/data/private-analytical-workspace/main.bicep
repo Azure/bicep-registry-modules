@@ -20,10 +20,17 @@ param enableTelemetry bool = true
 @description('Optional. You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you.')
 param logAnalyticsWorkspaceResourceId string = ''
 
+@description('Optional. You can specify an existing Key Vault if you have one. If not, this module will create a new one for you.')
+param keyVaultResourceId string = ''
+
+@description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations.')
+param networkAcls object?
+
 var moduleCfg = ({
-  logAnalyticsWorkspaceResourceId: !empty(logAnalyticsWorkspaceResourceId)
-    ? logAnalyticsWorkspaceResourceId
-    : law.outputs.resourceId
+  logAnalyticsWorkspaceResourceId: empty(logAnalyticsWorkspaceResourceId)
+    ? law.outputs.resourceId
+    : logAnalyticsWorkspaceResourceId
+  keyVaultResourceId: empty(keyVaultResourceId) ? kv.outputs.resourceId : keyVaultResourceId
 })
 
 // ============== //
@@ -61,9 +68,9 @@ module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(
     // Required parameters
     name: '${name}-law'
     // Non-required parameters
-    dailyQuotaGb: -1
-    dataRetention: 365
-    diagnosticSettings: []
+    dailyQuotaGb: -1 // TODO
+    dataRetention: 365 // TODO
+    diagnosticSettings: [] // TODO
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
@@ -72,7 +79,32 @@ module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = {
+module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResourceId)) {
+  name: '${name}-kv'
+  params: {
+    // Required parameters
+    name: '${name}-kv'
+    // Non-required parameters
+    //createMode: '' // TODO
+    diagnosticSettings: [] // TODO
+    enablePurgeProtection: false // TODO
+    enableRbacAuthorization: true
+    enableSoftDelete: false // TODO
+    enableTelemetry: enableTelemetry
+    enableVaultForDiskEncryption: true
+    location: location
+    lock: lock
+    //networkAcls: []
+    //privateEndpoints: []
+    //publicNetworkAccess: false
+    //roleAssignments: []
+    sku: 'premium'
+    //softDeleteRetentionInDays: // TODO
+    tags: tags
+  }
+}
+
+module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (false /*!!! TODO !!!*/) {
   name: '${name}'
   params: {
     // Required parameters
