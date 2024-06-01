@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "13179068054895956087"
+      "templateHash": "2756544330949607993"
     },
     "name": "Network Manager Connectivity Configurations",
-    "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+    "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -35,10 +35,10 @@
               "description": "Optional. Flag if global is supported."
             }
           },
-          "networkGroupId": {
+          "networkGroupResourceId": {
             "type": "string",
             "metadata": {
-              "description": "Required. Network group Id."
+              "description": "Required. Resource Id of the network group."
             }
           },
           "useHubGateway": {
@@ -147,7 +147,7 @@
       "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
+        "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
         "connectivityTopology": "[parameters('connectivityTopology')]",
         "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
         "description": "[coalesce(parameters('description'), '')]",

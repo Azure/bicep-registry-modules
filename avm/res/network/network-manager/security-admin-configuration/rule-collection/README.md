@@ -52,9 +52,9 @@ List of network groups for configuration. An admin rule collection must be assoc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`networkGroupId`](#parameter-appliestogroupsnetworkgroupid) | string | The resource ID of the network group. |
+| [`networkGroupResourceId`](#parameter-appliestogroupsnetworkgroupresourceid) | string | The resource ID of the network group. |
 
-### Parameter: `appliesToGroups.networkGroupId`
+### Parameter: `appliesToGroups.networkGroupResourceId`
 
 The resource ID of the network group.
 

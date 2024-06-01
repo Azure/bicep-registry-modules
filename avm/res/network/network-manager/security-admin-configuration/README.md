@@ -109,9 +109,9 @@ List of network groups for configuration. An admin rule collection must be assoc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`networkGroupId`](#parameter-rulecollectionsappliestogroupsnetworkgroupid) | string | The resource ID of the network group. |
+| [`networkGroupResourceId`](#parameter-rulecollectionsappliestogroupsnetworkgroupresourceid) | string | The resource ID of the network group. |
 
-### Parameter: `ruleCollections.appliesToGroups.networkGroupId`
+### Parameter: `ruleCollections.appliesToGroups.networkGroupResourceId`
 
 The resource ID of the network group.
 

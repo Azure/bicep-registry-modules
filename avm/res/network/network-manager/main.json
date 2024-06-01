@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "17114861619325170554"
+      "templateHash": "7194247781912576602"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -256,10 +256,10 @@
                     "description": "Optional. Flag if global is supported."
                   }
                 },
-                "networkGroupId": {
+                "networkGroupResourceId": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. Network group Id."
+                    "description": "Required. Resource Id of the network group."
                   }
                 },
                 "useHubGateway": {
@@ -382,7 +382,7 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "networkGroupId": {
+                      "networkGroupResourceId": {
                         "type": "string",
                         "metadata": {
                           "description": "Required. The resource ID of the network group."
@@ -1013,10 +1013,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "13179068054895956087"
+              "templateHash": "2756544330949607993"
             },
             "name": "Network Manager Connectivity Configurations",
-            "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+            "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1042,10 +1042,10 @@
                       "description": "Optional. Flag if global is supported."
                     }
                   },
-                  "networkGroupId": {
+                  "networkGroupResourceId": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Network group Id."
+                      "description": "Required. Resource Id of the network group."
                     }
                   },
                   "useHubGateway": {
@@ -1154,7 +1154,7 @@
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
+                "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
                 "connectivityTopology": "[parameters('connectivityTopology')]",
                 "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
                 "description": "[coalesce(parameters('description'), '')]",
@@ -1363,7 +1363,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "16094958191851056272"
+              "templateHash": "11015814946289049349"
             },
             "name": "Network Manager Security Admin Configurations",
             "description": "This module deploys an Network Manager Security Admin Configuration.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
@@ -1401,7 +1401,7 @@
                     "items": {
                       "type": "object",
                       "properties": {
-                        "networkGroupId": {
+                        "networkGroupResourceId": {
                           "type": "string",
                           "metadata": {
                             "description": "Required. The resource ID of the network group."
@@ -1657,7 +1657,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.27.1.19265",
-                      "templateHash": "15704579218423690643"
+                      "templateHash": "4261286839823300724"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
@@ -1669,7 +1669,7 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "networkGroupId": {
+                          "networkGroupResourceId": {
                             "type": "string",
                             "metadata": {
                               "description": "Required. The resource ID of the network group."
@@ -1883,7 +1883,7 @@
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
                       "properties": {
                         "description": "[coalesce(parameters('description'), '')]",
-                        "appliesToGroups": "[parameters('appliesToGroups')]"
+                        "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]"
                       },
                       "dependsOn": [
                         "networkManager::securityAdminConfiguration"
@@ -1951,10 +1951,10 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.27.1.19265",
-                              "templateHash": "2374527947264251409"
+                              "templateHash": "17880704693619791217"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
                             "owner": "Azure/module-maintainers"
                           },
                           "definitions": {

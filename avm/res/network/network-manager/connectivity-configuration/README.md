@@ -54,7 +54,7 @@ Network Groups for the configuration. A connectivity configuration must be assoc
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`groupConnectivity`](#parameter-appliestogroupsgroupconnectivity) | string | Group connectivity type. |
-| [`networkGroupId`](#parameter-appliestogroupsnetworkgroupid) | string | Network group Id. |
+| [`networkGroupResourceId`](#parameter-appliestogroupsnetworkgroupresourceid) | string | Resource Id of the network group. |
 
 **Optional parameters**
 
@@ -77,9 +77,9 @@ Group connectivity type.
   ]
   ```
 
-### Parameter: `appliesToGroups.networkGroupId`
+### Parameter: `appliesToGroups.networkGroupResourceId`
 
-Network group Id.
+Resource Id of the network group.
 
 - Required: Yes
 - Type: string

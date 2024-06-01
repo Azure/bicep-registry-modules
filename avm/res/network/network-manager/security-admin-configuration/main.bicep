@@ -72,7 +72,7 @@ type ruleCollectionType = {
   @sys.description('Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group.')
   appliesToGroups: {
     @sys.description('Required. The resource ID of the network group.')
-    networkGroupId: string
+    networkGroupResourceId: string
   }[]
 
   @sys.description('Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.')

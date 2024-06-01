@@ -36,7 +36,9 @@ resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigur
   parent: networkManager::securityAdminConfiguration
   properties: {
     description: description ?? ''
-    appliesToGroups: appliesToGroups
+    appliesToGroups: map(appliesToGroups, (group) => {
+      networkGroupId: any(group.networkGroupResourceId)
+    })
   }
 }
 
@@ -76,7 +78,7 @@ output resourceGroupName string = resourceGroup().name
 
 type appliesToGroupsType = {
   @sys.description('Required. The resource ID of the network group.')
-  networkGroupId: string
+  networkGroupResourceId: string
 }[]
 
 type rulesType = {

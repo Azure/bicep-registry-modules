@@ -138,7 +138,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           {
             groupConnectivity: 'None'
             isGlobal: false
-            networkGroupId: '<networkGroupId>'
+            networkGroupResourceId: '<networkGroupResourceId>'
             useHubGateway: false
           }
         ]
@@ -159,7 +159,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           {
             groupConnectivity: 'DirectlyConnected'
             isGlobal: true
-            networkGroupId: '<networkGroupId>'
+            networkGroupResourceId: '<networkGroupResourceId>'
             useHubGateway: false
           }
         ]
@@ -174,7 +174,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           {
             groupConnectivity: 'DirectlyConnected'
             isGlobal: false
-            networkGroupId: '<networkGroupId>'
+            networkGroupResourceId: '<networkGroupResourceId>'
             useHubGateway: false
           }
         ]
@@ -252,7 +252,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           {
             appliesToGroups: [
               {
-                networkGroupId: '<networkGroupId>'
+                networkGroupResourceId: '<networkGroupResourceId>'
               }
             ]
             description: 'test-rule-collection-description'
@@ -289,10 +289,10 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           {
             appliesToGroups: [
               {
-                networkGroupId: '<networkGroupId>'
+                networkGroupResourceId: '<networkGroupResourceId>'
               }
               {
-                networkGroupId: '<networkGroupId>'
+                networkGroupResourceId: '<networkGroupResourceId>'
               }
             ]
             name: 'test-rule-collection-2'
@@ -393,7 +393,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             {
               "groupConnectivity": "None",
               "isGlobal": false,
-              "networkGroupId": "<networkGroupId>",
+              "networkGroupResourceId": "<networkGroupResourceId>",
               "useHubGateway": false
             }
           ],
@@ -414,7 +414,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             {
               "groupConnectivity": "DirectlyConnected",
               "isGlobal": true,
-              "networkGroupId": "<networkGroupId>",
+              "networkGroupResourceId": "<networkGroupResourceId>",
               "useHubGateway": false
             }
           ],
@@ -429,7 +429,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             {
               "groupConnectivity": "DirectlyConnected",
               "isGlobal": false,
-              "networkGroupId": "<networkGroupId>",
+              "networkGroupResourceId": "<networkGroupResourceId>",
               "useHubGateway": false
             }
           ],
@@ -519,7 +519,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             {
               "appliesToGroups": [
                 {
-                  "networkGroupId": "<networkGroupId>"
+                  "networkGroupResourceId": "<networkGroupResourceId>"
                 }
               ],
               "description": "test-rule-collection-description",
@@ -556,10 +556,10 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             {
               "appliesToGroups": [
                 {
-                  "networkGroupId": "<networkGroupId>"
+                  "networkGroupResourceId": "<networkGroupResourceId>"
                 },
                 {
-                  "networkGroupId": "<networkGroupId>"
+                  "networkGroupResourceId": "<networkGroupResourceId>"
                 }
               ],
               "name": "test-rule-collection-2",
@@ -887,7 +887,7 @@ Network Groups for the configuration. A connectivity configuration must be assoc
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`groupConnectivity`](#parameter-connectivityconfigurationsappliestogroupsgroupconnectivity) | string | Group connectivity type. |
-| [`networkGroupId`](#parameter-connectivityconfigurationsappliestogroupsnetworkgroupid) | string | Network group Id. |
+| [`networkGroupResourceId`](#parameter-connectivityconfigurationsappliestogroupsnetworkgroupresourceid) | string | Resource Id of the network group. |
 
 **Optional parameters**
 
@@ -910,9 +910,9 @@ Group connectivity type.
   ]
   ```
 
-### Parameter: `connectivityConfigurations.appliesToGroups.networkGroupId`
+### Parameter: `connectivityConfigurations.appliesToGroups.networkGroupResourceId`
 
-Network group Id.
+Resource Id of the network group.
 
 - Required: Yes
 - Type: string
@@ -1287,9 +1287,9 @@ List of network groups for configuration. An admin rule collection must be assoc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`networkGroupId`](#parameter-securityadminconfigurationsrulecollectionsappliestogroupsnetworkgroupid) | string | The resource ID of the network group. |
+| [`networkGroupResourceId`](#parameter-securityadminconfigurationsrulecollectionsappliestogroupsnetworkgroupresourceid) | string | The resource ID of the network group. |
 
-### Parameter: `securityAdminConfigurations.ruleCollections.appliesToGroups.networkGroupId`
+### Parameter: `securityAdminConfigurations.ruleCollections.appliesToGroups.networkGroupResourceId`
 
 The resource ID of the network group.
 

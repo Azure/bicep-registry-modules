@@ -41,15 +41,12 @@ resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivi
   name: name
   parent: networkManager
   properties: {
-    appliesToGroups: map(
-      appliesToGroups,
-      (group) => {
-        groupConnectivity: group.groupConnectivity
-        isGlobal: string(group.isGlobal) ?? 'false'
-        networkGroupId: any(group.networkGroupId)
-        useHubGateway: string(group.useHubGateway) ?? 'false'
-      }
-    )
+    appliesToGroups: map(appliesToGroups, (group) => {
+      groupConnectivity: group.groupConnectivity
+      isGlobal: string(group.isGlobal) ?? 'false'
+      networkGroupId: any(group.networkGroupResourceId)
+      useHubGateway: string(group.useHubGateway) ?? 'false'
+    })
     connectivityTopology: connectivityTopology
     deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? string(deleteExistingPeering) : 'false'
     description: description ?? ''
@@ -78,8 +75,8 @@ type appliesToGroupsType = {
   @sys.description('Optional. Flag if global is supported.')
   isGlobal: bool?
 
-  @sys.description('Required. Network group Id.')
-  networkGroupId: string
+  @sys.description('Required. Resource Id of the network group.')
+  networkGroupResourceId: string
 
   @sys.description('Optional. Flag if use hub gateway.')
   useHubGateway: bool?
