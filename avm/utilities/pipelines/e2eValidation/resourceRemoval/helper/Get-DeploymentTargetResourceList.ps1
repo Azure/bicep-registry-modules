@@ -188,6 +188,7 @@ function Get-DeploymentTargetResourceList {
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $true)]
+        [Alias('Names', 'DeploymentName', 'DeploymentNames')]
         [string] $Name,
 
         [Parameter(Mandatory = $true)]
@@ -207,6 +208,8 @@ function Get-DeploymentTargetResourceList {
     )
 
     $searchRetryCount = 1
+    $targetResources = @()
+
     do {
         $innerInputObject = @{
             Name        = $name
@@ -219,6 +222,8 @@ function Get-DeploymentTargetResourceList {
         if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
             $innerInputObject['ManagementGroupId'] = $ManagementGroupId
         }
+        # TODO: Find a way to search for all deployment names in the same loop, waiting just once for the 40 minutes if any of the deployment names did not yet yield results
+        # - If a deployment name was found, it should not be resolved anymore to avoid duplications
         [array]$targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
         if ($targetResources) {
             break
