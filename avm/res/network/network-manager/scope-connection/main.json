@@ -1,14 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "8767540456657043434"
+      "version": "0.27.1.19265",
+      "templateHash": "13509671695440625631"
     },
     "name": "Network Manager Scope Connections",
-    "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
+    "description": "This module deploys a Network Manager Scope Connection.\r\nCreate a cross-tenant connection to manage a resource from another tenant.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -27,7 +28,7 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the scope connection."
@@ -46,18 +47,27 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "networkManager": {
+      "existing": true,
+      "type": "Microsoft.Network/networkManagers",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('networkManagerName')]"
+    },
+    "scopeConnection": {
       "type": "Microsoft.Network/networkManagers/scopeConnections",
       "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "description": "[parameters('description')]",
+        "description": "[coalesce(parameters('description'), '')]",
         "resourceId": "[parameters('resourceId')]",
         "tenantId": "[parameters('tenantId')]"
-      }
+      },
+      "dependsOn": [
+        "networkManager"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
