@@ -122,12 +122,12 @@ module dnsZone_A 'a/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-ARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: aRecord.base.name
+      name: aRecord.name
       aRecords: aRecord.?aRecords
-      metadata: aRecord.base.?metadata
-      ttl: aRecord.base.?ttl ?? 3600
+      metadata: aRecord.?metadata
+      ttl: aRecord.?ttl ?? 3600
       targetResourceId: aRecord.?targetResourceId
-      roleAssignments: aRecord.base.?roleAssignments
+      roleAssignments: aRecord.?roleAssignments
     }
   }
 ]
@@ -137,12 +137,12 @@ module dnsZone_AAAA 'aaaa/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-AAAARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: aaaaRecord.base.name
+      name: aaaaRecord.name
       aaaaRecords: aaaaRecord.?aaaaRecords
-      metadata: aaaaRecord.base.?metadata
-      ttl: aaaaRecord.base.?ttl ?? 3600
+      metadata: aaaaRecord.?metadata
+      ttl: aaaaRecord.?ttl ?? 3600
       targetResourceId: aaaaRecord.?targetResourceId
-      roleAssignments: aaaaRecord.base.?roleAssignments
+      roleAssignments: aaaaRecord.?roleAssignments
     }
   }
 ]
@@ -152,12 +152,12 @@ module dnsZone_CNAME 'cname/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-CNAMERecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: cnameRecord.base.name
+      name: cnameRecord.name
       cnameRecord: cnameRecord.?cnameRecord
-      metadata: cnameRecord.base.?metadata
-      ttl: cnameRecord.base.?ttl ?? 3600
+      metadata: cnameRecord.?metadata
+      ttl: cnameRecord.?ttl ?? 3600
       targetResourceId: cnameRecord.?targetResourceId
-      roleAssignments: cnameRecord.base.?roleAssignments
+      roleAssignments: cnameRecord.?roleAssignments
     }
   }
 ]
@@ -167,11 +167,11 @@ module dnsZone_CAA 'caa/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-CAARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: caaRecord.base.name
-      metadata: caaRecord.base.?metadata
+      name: caaRecord.name
+      metadata: caaRecord.?metadata
       caaRecords: caaRecord.?caaRecords
-      ttl: caaRecord.base.?ttl ?? 3600
-      roleAssignments: caaRecord.base.?roleAssignments
+      ttl: caaRecord.?ttl ?? 3600
+      roleAssignments: caaRecord.?roleAssignments
     }
   }
 ]
@@ -181,11 +181,11 @@ module dnsZone_MX 'mx/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-MXRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: mxRecord.base.name
-      metadata: mxRecord.base.?metadata
+      name: mxRecord.name
+      metadata: mxRecord.?metadata
       mxRecords: mxRecord.?mxRecords
-      ttl: mxRecord.base.?ttl ?? 3600
-      roleAssignments: mxRecord.base.?roleAssignments
+      ttl: mxRecord.?ttl ?? 3600
+      roleAssignments: mxRecord.?roleAssignments
     }
   }
 ]
@@ -195,11 +195,11 @@ module dnsZone_NS 'ns/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-NSRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: nsRecord.base.name
-      metadata: nsRecord.base.?metadata
+      name: nsRecord.name
+      metadata: nsRecord.?metadata
       nsRecords: nsRecord.?nsRecords
-      ttl: nsRecord.base.?ttl ?? 3600
-      roleAssignments: nsRecord.base.?roleAssignments
+      ttl: nsRecord.?ttl ?? 3600
+      roleAssignments: nsRecord.?roleAssignments
     }
   }
 ]
@@ -209,11 +209,11 @@ module dnsZone_PTR 'ptr/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-PTRRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: ptrRecord.base.name
-      metadata: ptrRecord.base.?metadata
+      name: ptrRecord.name
+      metadata: ptrRecord.?metadata
       ptrRecords: ptrRecord.?ptrRecords
-      ttl: ptrRecord.base.?ttl ?? 3600
-      roleAssignments: ptrRecord.base.?roleAssignments
+      ttl: ptrRecord.?ttl ?? 3600
+      roleAssignments: ptrRecord.?roleAssignments
     }
   }
 ]
@@ -223,11 +223,11 @@ module dnsZone_SOA 'soa/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-SOARecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: soaRecord.base.name
-      metadata: soaRecord.base.?metadata
+      name: soaRecord.name
+      metadata: soaRecord.?metadata
       soaRecord: soaRecord.?soaRecord
-      ttl: soaRecord.base.?ttl ?? 3600
-      roleAssignments: soaRecord.base.?roleAssignments
+      ttl: soaRecord.?ttl ?? 3600
+      roleAssignments: soaRecord.?roleAssignments
     }
   }
 ]
@@ -237,11 +237,11 @@ module dnsZone_SRV 'srv/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-SRVRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: srvRecord.base.name
-      metadata: srvRecord.base.?metadata
+      name: srvRecord.name
+      metadata: srvRecord.?metadata
       srvRecords: srvRecord.?srvRecords
-      ttl: srvRecord.base.?ttl ?? 3600
-      roleAssignments: srvRecord.base.?roleAssignments
+      ttl: srvRecord.?ttl ?? 3600
+      roleAssignments: srvRecord.?roleAssignments
     }
   }
 ]
@@ -251,11 +251,11 @@ module dnsZone_TXT 'txt/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-dnsZone-TXTRecord-${index}'
     params: {
       dnsZoneName: dnsZone.name
-      name: txtRecord.base.name
-      metadata: txtRecord.base.?metadata
+      name: txtRecord.name
+      metadata: txtRecord.?metadata
       txtRecords: txtRecord.?txtRecords
-      ttl: txtRecord.base.?ttl ?? 3600
-      roleAssignments: txtRecord.base.?roleAssignments
+      ttl: txtRecord.?ttl ?? 3600
+      roleAssignments: txtRecord.?roleAssignments
     }
   }
 ]
@@ -338,7 +338,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-type zoneBaseType = {
+type aType = {
   @description('Required. The name of the record.')
   name: string
 
@@ -350,11 +350,6 @@ type zoneBaseType = {
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType
-}
-
-type aType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
 
   @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
   targetResourceId: string?
@@ -367,8 +362,17 @@ type aType = {
 }[]?
 
 type aaaaType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
   targetResourceId: string?
@@ -381,8 +385,17 @@ type aaaaType = {
 }[]?
 
 type cnameType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
   targetResourceId: string?
@@ -395,8 +408,17 @@ type cnameType = {
 }[]?
 
 type caaType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. The list of CAA records in the record set.')
   caaRecords: {
@@ -414,8 +436,17 @@ type caaType = {
 }[]?
 
 type mxType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. The list of MX records in the record set.')
   mxRecords: {
@@ -428,8 +459,17 @@ type mxType = {
 }[]?
 
 type nsType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. The list of NS records in the record set.')
   nsRecords: {
@@ -439,8 +479,17 @@ type nsType = {
 }[]?
 
 type ptrType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. The list of PTR records in the record set.')
   ptrRecords: {
@@ -450,8 +499,17 @@ type ptrType = {
 }[]?
 
 type soaType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. The SOA record in the record set.')
   soaRecord: {
@@ -479,8 +537,17 @@ type soaType = {
 }[]?
 
 type srvType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. The list of SRV records in the record set.')
   srvRecords: {
@@ -499,8 +566,17 @@ type srvType = {
 }[]?
 
 type txtType = {
-  @description('Required. The base properties of the record.')
-  base: zoneBaseType
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
 
   @description('Optional. The list of TXT records in the record set.')
   txtRecords: {

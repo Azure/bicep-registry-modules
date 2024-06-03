@@ -55,30 +55,29 @@ module testDeployment '../../../main.bicep' = [
       location: 'global'
       a: [
         {
-          base: {
-            name: 'A_10.240.4.4'
-            ttl: 3600
-            roleAssignments: [
-              {
-                roleDefinitionIdOrName: 'Owner'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: subscriptionResourceId(
-                  'Microsoft.Authorization/roleDefinitions',
-                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-                )
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-            ]
-          }
+          name: 'A_10.240.4.4'
+          ttl: 3600
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+
           aRecords: [
             {
               ipv4Address: '10.240.4.4'
@@ -88,10 +87,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       aaaa: [
         {
-          base: {
-            name: 'AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334'
-            ttl: 3600
-          }
+          name: 'AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334'
+          ttl: 3600
           aaaaRecords: [
             {
               ipv6Address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
@@ -101,30 +98,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       cname: [
         {
-          base: {
-            name: 'CNAME_test'
-            ttl: 3600
-            roleAssignments: [
-              {
-                roleDefinitionIdOrName: 'Owner'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: subscriptionResourceId(
-                  'Microsoft.Authorization/roleDefinitions',
-                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-                )
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-            ]
-          }
+          name: 'CNAME_test'
+          ttl: 3600
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           cnameRecord: {
             cname: 'test'
           }
@@ -136,30 +131,28 @@ module testDeployment '../../../main.bicep' = [
       }
       mx: [
         {
-          base: {
-            name: 'MX_contoso'
-            ttl: 3600
-            roleAssignments: [
-              {
-                roleDefinitionIdOrName: 'Owner'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: subscriptionResourceId(
-                  'Microsoft.Authorization/roleDefinitions',
-                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-                )
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-            ]
-          }
+          name: 'MX_contoso'
+          ttl: 3600
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           mxRecords: [
             {
               exchange: 'contoso.com'
@@ -170,30 +163,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       ptr: [
         {
-          base: {
-            name: 'PTR_contoso'
-            ttl: 3600
-            roleAssignments: [
-              {
-                roleDefinitionIdOrName: 'Owner'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: subscriptionResourceId(
-                  'Microsoft.Authorization/roleDefinitions',
-                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-                )
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-            ]
-          }
+          name: 'PTR_contoso'
+          ttl: 3600
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           ptrRecords: [
             {
               ptrdname: 'contoso.com'
@@ -223,30 +214,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       soa: [
         {
-          base: {
-            name: '@'
-            ttl: 3600
-            roleAssignments: [
-              {
-                roleDefinitionIdOrName: 'Owner'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: subscriptionResourceId(
-                  'Microsoft.Authorization/roleDefinitions',
-                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-                )
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-            ]
-          }
+          name: '@'
+          ttl: 3600
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           soaRecord: {
             email: 'azureprivatedns-host.microsoft.com'
             expireTime: 2419200
@@ -260,30 +249,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       srv: [
         {
-          base: {
-            name: 'SRV_contoso'
-            ttl: 3600
-            roleAssignments: [
-              {
-                roleDefinitionIdOrName: 'Owner'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: subscriptionResourceId(
-                  'Microsoft.Authorization/roleDefinitions',
-                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-                )
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-            ]
-          }
+          name: 'SRV_contoso'
+          ttl: 3600
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           srvRecords: [
             {
               port: 9332
@@ -296,30 +283,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       txt: [
         {
-          base: {
-            name: 'TXT_test'
-            ttl: 3600
-            roleAssignments: [
-              {
-                roleDefinitionIdOrName: 'Owner'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-              {
-                roleDefinitionIdOrName: subscriptionResourceId(
-                  'Microsoft.Authorization/roleDefinitions',
-                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-                )
-                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-                principalType: 'ServicePrincipal'
-              }
-            ]
-          }
+          name: 'TXT_test'
+          ttl: 3600
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           txtRecords: [
             {
               value: [
