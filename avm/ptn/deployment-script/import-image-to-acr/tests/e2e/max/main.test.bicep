@@ -31,7 +31,7 @@ module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     virtualNetworkName: '${uniqueString(resourceGroupName, resourceLocation)}-vnet'
-    acrName: '${uniqueString(resourceGroupName, resourceLocation)}-acr'
+    acrName: uniqueString(resourceGroupName, resourceLocation, 'acr')
     storageAccountName: '${uniqueString(resourceGroupName, resourceLocation)}sa'
     managedIdentityName: '${uniqueString(resourceGroupName, resourceLocation)}-mi'
   }
