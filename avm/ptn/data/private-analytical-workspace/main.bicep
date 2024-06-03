@@ -73,7 +73,7 @@ module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(
     // Non-required parameters
     dailyQuotaGb: -1 // TODO
     dataRetention: 365 // TODO
-    diagnosticSettings: [] // TODO
+    diagnosticSettings: []
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
@@ -133,7 +133,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
 
     //privateEndpoints: []
     //publicNetworkAccess: false
-    //roleAssignments: []
+    //roleAssignments: // TODO
     sku: 'premium'
     //softDeleteRetentionInDays: // TODO
     tags: tags
