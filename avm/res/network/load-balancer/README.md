@@ -35,7 +35,7 @@ The following section provides usage examples for the module, which were used to
 - [Using external load balancer parameter](#example-2-using-external-load-balancer-parameter)
 - [Using internal load balancer parameter](#example-3-using-internal-load-balancer-parameter)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using internal load balancer parameter](#example-5-using-internal-load-balancer-parameter)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -943,7 +943,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using internal load balancer parameter_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module with the minimum set of required parameters to deploy a WAF alligned internal load balancer.
 

@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Using internal load balancer parameter'
+metadata name = 'WAF-aligned'
 metadata description = 'This instance deploys the module with the minimum set of required parameters to deploy a WAF alligned internal load balancer.'
 
 // ========== //
