@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "6545905449609643716"
+      "templateHash": "14791258600269760647"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -135,11 +135,11 @@
         }
       }
     },
-    "law": {
+    "log": {
       "condition": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-law', parameters('name'))]",
+      "name": "[format('{0}-log', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -147,7 +147,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-law', parameters('name'))]"
+            "value": "[format('{0}-log', parameters('name'))]"
           },
           "dailyQuotaGb": {
             "value": -1
@@ -2119,7 +2119,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('law').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
               }
             ]
           },
@@ -4893,14 +4893,14 @@
         }
       },
       "dependsOn": [
-        "law"
+        "log"
       ]
     },
     "dbw": {
       "condition": false,
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-adb', parameters('name'))]",
+      "name": "[format('{0}-dbw', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4908,7 +4908,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-adb', parameters('name'))]"
+            "value": "[format('{0}-dbw', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6493,28 +6493,28 @@
       "metadata": {
         "description": "The resource ID of the resource."
       },
-      "value": "[reference('law').outputs.resourceId.value]"
+      "value": "[reference('log').outputs.resourceId.value]"
     },
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the resource."
       },
-      "value": "[reference('law').outputs.name.value]"
+      "value": "[reference('log').outputs.name.value]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('law').outputs.location.value]"
+      "value": "[reference('log').outputs.location.value]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "The name of the managed resource group."
       },
-      "value": "[reference('law').outputs.resourceGroupName.value]"
+      "value": "[reference('log').outputs.resourceGroupName.value]"
     }
   }
 }

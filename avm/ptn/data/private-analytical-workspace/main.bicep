@@ -26,9 +26,9 @@ param keyVaultResourceId string = ''
 @description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
 
-var lawCfg = ({
+var logCfg = ({
   logAnalyticsWorkspaceResourceId: empty(logAnalyticsWorkspaceResourceId)
-    ? law.outputs.resourceId
+    ? log.outputs.resourceId
     : logAnalyticsWorkspaceResourceId
 })
 
@@ -65,11 +65,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
-module law 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
-  name: '${name}-law'
+module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
+  name: '${name}-log'
   params: {
     // Required parameters
-    name: '${name}-law'
+    name: '${name}-log'
     // Non-required parameters
     dailyQuotaGb: -1 // TODO
     dataRetention: 365 // TODO
@@ -106,7 +106,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
             categoryGroup: 'allLogs'
           }
         ]
-        workspaceResourceId: lawCfg.logAnalyticsWorkspaceResourceId
+        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
       }
     ]
     enablePurgeProtection: false // TODO
@@ -142,10 +142,10 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
 }
 
 module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (false /*!!! TODO !!!*/) {
-  name: '${name}-adb'
+  name: '${name}-dbw'
   params: {
     // Required parameters
-    name: '${name}-adb'
+    name: '${name}-dbw'
     // Non-required parameters
     location: location
   }
@@ -158,16 +158,16 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (false /*!!! TODO
 // Add your outputs here
 
 @description('The resource ID of the resource.')
-output resourceId string = law.outputs.resourceId // TODO
+output resourceId string = log.outputs.resourceId // TODO
 
 @description('The name of the resource.')
-output name string = law.outputs.name // TODO
+output name string = log.outputs.name // TODO
 
 @description('The location the resource was deployed into.')
-output location string = law.outputs.location // TODO
+output location string = log.outputs.location // TODO
 
 @description('The name of the managed resource group.')
-output resourceGroupName string = law.outputs.resourceGroupName // TODO
+output resourceGroupName string = log.outputs.resourceGroupName // TODO
 
 // ================ //
 // Definitions      //
