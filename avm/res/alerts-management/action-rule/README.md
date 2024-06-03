@@ -214,23 +214,6 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    schedule: {
-      effectiveFrom: '2025-01-01T00:00:01'
-      effectiveUntil: '2025-12-31T23:59:59'
-      recurrences: [
-        {
-          daysOfWeek: [
-            'Friday'
-            'Monday'
-            'Wednesday'
-          ]
-          endTime: '05:00:00'
-          recurrenceType: 'Weekly'
-          startTime: '01:00:00'
-        }
-      ]
-      timeZone: 'Eastern Standard Time'
-    }
     scopes: [
       '<id>'
     ]
@@ -392,25 +375,6 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
-    },
-    "schedule": {
-      "value": {
-        "effectiveFrom": "2025-01-01T00:00:01",
-        "effectiveUntil": "2025-12-31T23:59:59",
-        "recurrences": [
-          {
-            "daysOfWeek": [
-              "Friday",
-              "Monday",
-              "Wednesday"
-            ],
-            "endTime": "05:00:00",
-            "recurrenceType": "Weekly",
-            "startTime": "01:00:00"
-          }
-        ],
-        "timeZone": "Eastern Standard Time"
-      }
     },
     "scopes": {
       "value": [

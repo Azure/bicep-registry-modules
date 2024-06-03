@@ -149,23 +149,6 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      schedule: {
-        effectiveFrom: '2025-01-01T00:00:01'
-        effectiveUntil: '2025-12-31T23:59:59'
-        timeZone: 'Eastern Standard Time'
-        recurrences: [
-          {
-            daysOfWeek: [
-              'Monday'
-              'Wednesday'
-              'Friday'
-            ]
-            recurrenceType: 'Weekly'
-            startTime: '01:00:00'
-            endTime: '05:00:00'
-          }
-        ]
-      }
       actions: [
         {
           actionGroupIds: [
