@@ -6,7 +6,7 @@
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/resource-role-assignment/ @Azure/avm-ptn-authorization-resourceroleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
-/avm/ptn/deployment-script/import-image-to-acr/ @Azure/avm-ptn-deployment-script-import-image-to-acr-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/deployment-script/import-image-to-acr/ @Azure/avm-ptn-deploymentscript-importimagetoacr-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/insights/ @Azure/avm-ptn-avd-lza-insights-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-core-team-technical-bicep

@@ -27,11 +27,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/deployment-script/import-image-to-acr:<version>`.
 
-- [Defaults](#example-1-defaults)
+- [min](#example-1-min)
 - [max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [waf-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _min_
+
+This instance deployes the module with default parameters.
+
 
 <details>
 
@@ -46,7 +49,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     images: [
       'mcr.microsoft.com/azuredocs/aks-helloworld:latest'
     ]
-    name: 'dsiitadef001'
+    name: 'dsiitamin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -75,7 +78,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       ]
     },
     "name": {
-      "value": "dsiitadef001"
+      "value": "dsiitamin001"
     },
     // Non-required parameters
     "location": {
@@ -107,7 +110,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       'mcr.microsoft.com/azuredocs/aks-helloworld:latest'
       'mcr.microsoft.com/azuredocs/aks-helloworld:v2'
     ]
-    name: 'dsiitadef001'
+    name: 'dsiitamax001'
     // Non-required parameters
     cleanupPreference: 'OnSuccess'
     location: '<location>'
@@ -141,7 +144,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       ]
     },
     "name": {
-      "value": "dsiitadef001"
+      "value": "dsiitamax001"
     },
     // Non-required parameters
     "cleanupPreference": {
@@ -166,7 +169,10 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _waf-aligned_
+
+This instance deployes the module in a WAF-aligned way.
+
 
 <details>
 
@@ -230,7 +236,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`acrName`](#parameter-acrname) | string | The name of the Azure Container Registry |
+| [`acrName`](#parameter-acrname) | string | The name of the Azure Container Registry. |
 | [`images`](#parameter-images) | array | An array of fully qualified images names to import. |
 | [`name`](#parameter-name) | string | The name of the deployment script resource. |
 
@@ -238,9 +244,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingManagedIdentityResourceGroupName`](#parameter-existingmanagedidentityresourcegroupname) | string | For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Optional if `useExistingManagedIdentity` is `true`. Defaults to the current resource group. |
-| [`existingManagedIdentitySubId`](#parameter-existingmanagedidentitysubid) | string | For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Optional if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription. |
-| [`managedIdentityName`](#parameter-managedidentityname) | string | Name of the Managed Identity resource to create. Optional if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`. |
+| [`existingManagedIdentityResourceGroupName`](#parameter-existingmanagedidentityresourcegroupname) | string | For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group. |
+| [`existingManagedIdentitySubId`](#parameter-existingmanagedidentitysubid) | string | For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Required if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription. |
+| [`managedIdentityName`](#parameter-managedidentityname) | string | Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`. |
 
 **Optional parameters**
 
@@ -260,7 +266,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 ### Parameter: `acrName`
 
-The name of the Azure Container Registry
+The name of the Azure Container Registry.
 
 - Required: Yes
 - Type: string
@@ -281,7 +287,7 @@ The name of the deployment script resource.
 
 ### Parameter: `existingManagedIdentityResourceGroupName`
 
-For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Optional if `useExistingManagedIdentity` is `true`. Defaults to the current resource group.
+For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group.
 
 - Required: No
 - Type: string
@@ -289,7 +295,7 @@ For an existing Managed Identity, the Resource Group it is located in. Default i
 
 ### Parameter: `existingManagedIdentitySubId`
 
-For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Optional if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription.
+For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Required if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription.
 
 - Required: No
 - Type: string
@@ -297,7 +303,7 @@ For an existing Managed Identity, the Subscription Id it is located in. Default 
 
 ### Parameter: `managedIdentityName`
 
-Name of the Managed Identity resource to create. Optional if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`.
+Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`.
 
 - Required: No
 - Type: string
@@ -404,7 +410,8 @@ Does the Managed Identity already exists, or should be created. Default is true.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `importedImages` | array | An array of the imported images |
+| `importedImages` | array | An array of the imported images. |
+| `resourceGroupName` | string | The resource group the deployment script was deployed into. |
 
 ## Cross-referenced modules
 

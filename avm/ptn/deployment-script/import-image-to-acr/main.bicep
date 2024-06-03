@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the deployment script resource.')
 param name string
 
-@description('Required. The name of the Azure Container Registry')
+@description('Required. The name of the Azure Container Registry.')
 param acrName string
 
 @description('Optional. Location for all Resources.')
@@ -20,13 +20,13 @@ param rbacRoleNeeded string = 'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contribut
 @description('Optional. Does the Managed Identity already exists, or should be created. Default is true.')
 param useExistingManagedIdentity bool = true
 
-@description('Conditional. Name of the Managed Identity resource to create. Optional if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`.')
+@description('Conditional. Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`.')
 param managedIdentityName string = 'id-ContainerRegistryImport'
 
-@description('Conditional. For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Optional if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription.')
+@description('Conditional. For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Required if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription.')
 param existingManagedIdentitySubId string = subscription().subscriptionId
 
-@description('Conditional. For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Optional if `useExistingManagedIdentity` is `true`. Defaults to the current resource group.')
+@description('Conditional. For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group.')
 param existingManagedIdentityResourceGroupName string = resourceGroup().name
 
 @description('Required. An array of fully qualified images names to import.')
@@ -208,9 +208,10 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = 
 // Outputs      //
 // ============ //
 
-// Add your outputs here
+@description('The resource group the deployment script was deployed into.')
+output resourceGroupName string = resourceGroup().name
 
-@description('An array of the imported images')
+@description('An array of the imported images.')
 output importedImages importedImageType[] = [
   for image in images: {
     originalImage: image
@@ -221,9 +222,6 @@ output importedImages importedImageType[] = [
 // ================ //
 // Definitions      //
 // ================ //
-//
-// Add your User-defined-types here, if any
-//
 
 type importedImageType = {
   originalImage: string

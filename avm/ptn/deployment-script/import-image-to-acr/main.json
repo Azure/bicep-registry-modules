@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "2115664161025555411"
+      "templateHash": "7004349873703725768"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -35,7 +35,7 @@
     "acrName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the Azure Container Registry"
+        "description": "Required. The name of the Azure Container Registry."
       }
     },
     "location": {
@@ -70,21 +70,21 @@
       "type": "string",
       "defaultValue": "id-ContainerRegistryImport",
       "metadata": {
-        "description": "Conditional. Name of the Managed Identity resource to create. Optional if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`."
+        "description": "Conditional. Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`."
       }
     },
     "existingManagedIdentitySubId": {
       "type": "string",
       "defaultValue": "[subscription().subscriptionId]",
       "metadata": {
-        "description": "Conditional. For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Optional if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription."
+        "description": "Conditional. For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Required if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription."
       }
     },
     "existingManagedIdentityResourceGroupName": {
       "type": "string",
       "defaultValue": "[resourceGroup().name]",
       "metadata": {
-        "description": "Conditional. For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Optional if `useExistingManagedIdentity` is `true`. Defaults to the current resource group."
+        "description": "Conditional. For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group."
       }
     },
     "images": {
@@ -275,13 +275,20 @@
     }
   },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the deployment script was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "importedImages": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/importedImageType"
       },
       "metadata": {
-        "description": "An array of the imported images"
+        "description": "An array of the imported images."
       },
       "copy": {
         "count": "[length(parameters('images'))]",
