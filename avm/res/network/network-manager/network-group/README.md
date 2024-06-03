@@ -59,7 +59,6 @@ A description of the network group.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `staticMembers`
 
@@ -67,7 +66,27 @@ Static Members to create for the network group. Contains virtual networks to add
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-staticmembersname) | string | The name of the static member. |
+| [`resourceId`](#parameter-staticmembersresourceid) | string | Resource ID of the virtual network. |
+
+### Parameter: `staticMembers.name`
+
+The name of the static member.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `staticMembers.resourceId`
+
+Resource ID of the virtual network.
+
+- Required: Yes
+- Type: string
 
 
 ## Outputs
