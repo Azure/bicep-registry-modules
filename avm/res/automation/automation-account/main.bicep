@@ -197,7 +197,7 @@ module automationAccount_credentials 'credential/main.bicep' = [
   for (credential, index) in (credentials ?? []): {
     name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credential-${index}'
     params: {
-      name: credential.name
+      credentialName: credential.credentialName
       credentialDescription: credential.credentialDescription
       automationAccountName: automationAccount.name
       userName: credential.userName

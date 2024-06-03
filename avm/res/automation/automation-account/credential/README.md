@@ -22,7 +22,7 @@ This module deploys Azure Automation Account Credentials.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Automation Account module. |
+| [`credentialName`](#parameter-credentialname) | string | Name of the Automation Account credential. |
 | [`password`](#parameter-password) | securestring | Password of the credential. |
 | [`userName`](#parameter-username) | string | The user name associated to the credential. |
 
@@ -38,9 +38,9 @@ This module deploys Azure Automation Account Credentials.
 | :-- | :-- | :-- |
 | [`credentialDescription`](#parameter-credentialdescription) | string | Description of the credential. |
 
-### Parameter: `name`
+### Parameter: `credentialName`
 
-Name of the Automation Account module.
+Name of the Automation Account credential.
 
 - Required: Yes
 - Type: string
