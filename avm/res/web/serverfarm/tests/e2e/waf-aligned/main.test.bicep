@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-web.serverfarms-${serviceSho
 param serviceShort string = 'wsfwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'fs'
+param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
 var enforcedLocation = 'eastus'
