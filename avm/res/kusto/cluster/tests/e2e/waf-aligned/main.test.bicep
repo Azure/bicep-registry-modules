@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShor
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'akcmin'
+param serviceShort string = 'akcwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
