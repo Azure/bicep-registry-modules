@@ -363,7 +363,7 @@ output location string = kustoCluster.location
 // =============== //
 
 type acceptedAudienceType = {
-  @description('GUID or valid URL representing an accepted audience.')
+  @description('Optional. GUID or valid URL representing an accepted audience.')
   value: string
 }?
 
