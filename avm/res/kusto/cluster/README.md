@@ -1320,6 +1320,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the resource. |
+| `resourceGroupName` | string | The resource group the resource was deployed into. |
 | `resourceId` | string | The resource id of the resource. |
 
 ## Cross-referenced modules

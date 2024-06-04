@@ -349,6 +349,9 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
 // Outputs      //
 // ============ //
 
+@description('The resource group the resource was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
 @description('The resource id of the resource.')
 output resourceId string = kustoCluster.id
 
