@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-web.serverfarms-${serviceSho
 param serviceShort string = 'wsfwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'fs'
 
 #disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
 var enforcedLocation = 'eastus'
@@ -56,8 +56,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       skuName: 'P1v3'
-      skuCapacity: 3
-      zoneRedundant: true
+      skuCapacity: 1
+      zoneRedundant: false // This should be set to true for production deployments
       kind: 'App'
       lock: {
         name: 'lock'
