@@ -3,16 +3,12 @@ param location string = resourceGroup().location
 
 param acrName string
 
-module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: acrName
-  params: {
-    name: acrName
-    location: location
-    acrSku: 'Standard'
-    acrAdminUserEnabled: false
-    networkRuleBypassOptions: 'AzureServices'
-    networkRuleSetDefaultAction: 'Deny'
+  location: location
+  sku: {
+    name: 'Standard'
   }
 }
 
-output acrName string = acr.outputs.name
+output acrName string = acr.name

@@ -47,7 +47,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     // Required parameters
     acrName: '<acrName>'
     images: [
-      'mcr.microsoft.com/azuredocs/aks-helloworld:latest'
+      'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     ]
     name: 'dsiitamin001'
     // Non-required parameters
@@ -74,7 +74,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     "images": {
       "value": [
-        "mcr.microsoft.com/azuredocs/aks-helloworld:latest"
+        "mcr.microsoft.com/k8se/quickstart-jobs:latest"
       ]
     },
     "name": {
@@ -252,17 +252,17 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cleanupPreference`](#parameter-cleanuppreference) | string | When the script resource is cleaned up. Default is OnExpiration. |
+| [`cleanupPreference`](#parameter-cleanuppreference) | string | When the script resource is cleaned up. Default is OnExpiration and the cleanup time is after 1h. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`forceUpdateTag`](#parameter-forceupdatetag) | string | How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time. |
 | [`initialScriptDelay`](#parameter-initialscriptdelay) | int | A delay in seconds before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate. Default is 30s. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The image will be overwritten if it already exists in the ACR with the same tag. Default is false. |
-| [`rbacRoleNeeded`](#parameter-rbacroleneeded) | string | Azure RoleId that are required for the DeploymentScript resource to import images. Default is Contributor, which is needed to import into an ACR. |
+| [`rbacRoleNeeded`](#parameter-rbacroleneeded) | string | Azure RoleId that are required for the DeploymentScript resource to import images. Default is AcrPush, which is needed to import into an ACR. |
 | [`retryMax`](#parameter-retrymax) | int | The maximum number of retries for the script import operation. Default is 3. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script. |
 | [`subnetId`](#parameter-subnetid) | string | The subnet id to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script. |
-| [`useExistingManagedIdentity`](#parameter-useexistingmanagedidentity) | bool | Does the Managed Identity already exists, or should be created. Default is true. |
+| [`useExistingManagedIdentity`](#parameter-useexistingmanagedidentity) | bool | Does the Managed Identity already exists, or should be created. Default is false. |
 
 ### Parameter: `acrName`
 
@@ -311,7 +311,7 @@ Name of the Managed Identity resource to create. Required if `useExistingManaged
 
 ### Parameter: `cleanupPreference`
 
-When the script resource is cleaned up. Default is OnExpiration.
+When the script resource is cleaned up. Default is OnExpiration and the cleanup time is after 1h.
 
 - Required: No
 - Type: string
@@ -367,7 +367,7 @@ The image will be overwritten if it already exists in the ACR with the same tag.
 
 ### Parameter: `rbacRoleNeeded`
 
-Azure RoleId that are required for the DeploymentScript resource to import images. Default is Contributor, which is needed to import into an ACR.
+Azure RoleId that are required for the DeploymentScript resource to import images. Default is AcrPush, which is needed to import into an ACR.
 
 - Required: No
 - Type: string
@@ -399,11 +399,11 @@ The subnet id to use for the deployment script. An existing subnet is needed, if
 
 ### Parameter: `useExistingManagedIdentity`
 
-Does the Managed Identity already exists, or should be created. Default is true.
+Does the Managed Identity already exists, or should be created. Default is false.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 
 ## Outputs

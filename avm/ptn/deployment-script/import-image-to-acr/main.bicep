@@ -5,20 +5,28 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the deployment script resource.')
 param name string
 
-@description('Required. The name of the Azure Container Registry.')
-param acrName string
-
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+// ============ //
+// Parameters   //
+// ============ //
+
+@description('Required. The name of the Azure Container Registry.')
+param acrName string
 
 @description('Optional. How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time.')
 param forceUpdateTag string = utcNow()
 
-@description('Optional. Azure RoleId that are required for the DeploymentScript resource to import images. Default is Contributor, which is needed to import into an ACR.')
+@description('Optional. Azure RoleId that are required for the DeploymentScript resource to import images. Default is AcrPush, which is needed to import into an ACR.')
+// param rbacRoleNeeded string = '8311e382-0749-4cb8-b61a-304f252e45ec' // AcrPush
 param rbacRoleNeeded string = 'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
 
-@description('Optional. Does the Managed Identity already exists, or should be created. Default is true.')
-param useExistingManagedIdentity bool = true
+@description('Optional. Does the Managed Identity already exists, or should be created. Default is false.')
+param useExistingManagedIdentity bool = false
 
 @description('Conditional. Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`.')
 param managedIdentityName string = 'id-ContainerRegistryImport'
@@ -33,7 +41,7 @@ param existingManagedIdentityResourceGroupName string = resourceGroup().name
 @metadata({
   example: [
     'mcr.microsoft.com/azuredocs/aks-helloworld:latest'
-    'mcr.microsoft.com/azuredocs/aks-helloworld:v2'
+    'mcr.microsoft.com/k8se/quickstart-jobs:latest'
   ]
 })
 param images string[]
@@ -52,7 +60,7 @@ param retryMax int = 3
   'OnExpiration'
   'Always'
 ])
-@description('Optional. When the script resource is cleaned up. Default is OnExpiration.')
+@description('Optional. When the script resource is cleaned up. Default is OnExpiration and the cleanup time is after 1h.')
 param cleanupPreference string = 'OnExpiration'
 
 @description('Optional. The name of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script.')
@@ -61,8 +69,27 @@ param storageAccountName string = ''
 @description('Optional. The subnet id to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script.')
 param subnetId string = ''
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
+// the following settings are only needed if the deployment script is using PrivateLink
+// they must only be added if they contain values. Conditional values for the properties does not work and ARM throws an error
+var storageSettings = !empty(storageAccountName)
+  ? {
+      storageAccountSettings: {
+        storageAccountName: storageAccountName
+      }
+    }
+  : {}
+var networkSettings = !empty(subnetId)
+  ? {
+      containerSettings: {
+        // an existing subnet is needed, if PrivateLink is going to be used
+        subnetIds: [
+          {
+            id: subnetId
+          }
+        ]
+      }
+    }
+  : {}
 
 // ============== //
 // Resources      //
@@ -90,10 +117,6 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: acrName
 }
 
-//
-// Add your resources here
-//
-
 resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!useExistingManagedIdentity) {
   name: managedIdentityName
   location: location
@@ -118,7 +141,7 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if 
 
 resource createImportImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = [
   for image in images: {
-    name: 'ACR-Import-${name}-${last(split(replace(image,':',''),'/'))}'
+    name: 'ACR-Import-${name}-${last(split(replace(image,':','-'),'/'))}'
     location: location
     identity: {
       type: 'UserAssigned'
@@ -128,79 +151,65 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = 
     }
     kind: 'AzureCLI'
     dependsOn: [rbac]
-    properties: {
-      forceUpdateTag: forceUpdateTag
-      azCliVersion: '2.52.0'
-      timeout: 'PT30M'
-      retentionInterval: 'PT1H' // cleanup after 1h
-      storageAccountSettings: (storageAccountName != '')
-        ? {
-            storageAccountName: storageAccountName
+    properties: union(
+      {
+        forceUpdateTag: forceUpdateTag
+        azCliVersion: '2.59.0'
+        timeout: 'PT30M' // set timeout to 30m
+        retentionInterval: 'PT1H' // cleanup after 1h
+        environmentVariables: [
+          {
+            name: 'acrName'
+            value: acrName
           }
-        : {}
-      containerSettings: (subnetId != '')
-        ? {
-            // an existing subnet is needed, if PrivateLink is going to be used
-            subnetIds: [
-              {
-                id: subnetId
-              }
-            ]
+          {
+            name: 'imageName'
+            value: image
           }
-        : {}
-      environmentVariables: [
-        {
-          name: 'acrName'
-          value: acrName
-        }
-        {
-          name: 'imageName'
-          value: image
-        }
-        {
-          name: 'overwriteExistingImage'
-          value: toLower(string(overwriteExistingImage))
-        }
-        {
-          name: 'initialDelay'
-          value: '${string(initialScriptDelay)}s'
-        }
-        {
-          name: 'retryMax'
-          value: string(retryMax)
-        }
-        {
-          name: 'retrySleep'
-          value: '5s'
-        }
-      ]
-      scriptContent: '''
-      #!/bin/bash
-      set -e
+          {
+            name: 'overwriteExistingImage'
+            value: toLower(string(overwriteExistingImage))
+          }
+          {
+            name: 'initialDelay'
+            value: '${string(initialScriptDelay)}s'
+          }
+          {
+            name: 'retryMax'
+            value: string(retryMax)
+          }
+          {
+            name: 'retrySleep'
+            value: '5s'
+          }
+        ]
+        scriptContent: '''#!/bin/bash
+set -e
 
-      echo "Waiting on RBAC replication ($initialDelay)"
-      sleep $initialDelay
+echo "Waiting on RBAC replication ($initialDelay)"
+sleep $initialDelay
 
-      #Retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)
-      retryLoopCount=0
-      until [ $retryLoopCount -ge $retryMax ]
-      do
-        echo "Importing Image: $imageName into ACR: $acrName"
-        if [ overwriteExistingImage == 'true' ]; then
-          az acr import -n $acrName --source $imageName --force \
-            && break
-        else
-          az acr import -n $acrName --source $imageName \
-            && break
-        fi
+# retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)
+retryLoopCount=0
+until [ $retryLoopCount -ge $retryMax ]
+do
+  echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName"
+  if [ overwriteExistingImage == 'true' ]; then
+    az acr import -n $acrName --source $imageName --force
+  else
+    az acr import -n $acrName --source $imageName
+  fi
 
-        sleep $retrySleep
-        retryLoopCount=$((retryLoopCount+1))
-      done
+  sleep $retrySleep
+  retryLoopCount=$((retryLoopCount+1))
+done
 
-    '''
-      cleanupPreference: cleanupPreference
-    }
+echo "done"'''
+        cleanupPreference: cleanupPreference
+      },
+      storageSettings,
+      networkSettings
+    )
   }
 ]
 

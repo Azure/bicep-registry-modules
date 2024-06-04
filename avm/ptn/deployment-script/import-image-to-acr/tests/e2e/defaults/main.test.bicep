@@ -27,7 +27,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 module dependencies 'dependencies.bicep' = {
-  name: 'dependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
   scope: resourceGroup
   params: {
     acrName: uniqueString(resourceGroupName, resourceLocation, 'acr')
@@ -51,11 +51,11 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       acrName: dependencies.outputs.acrName
-      images: ['mcr.microsoft.com/azuredocs/aks-helloworld:latest']
+      images: ['mcr.microsoft.com/k8se/quickstart-jobs:latest']
+      overwriteExistingImage: true // needs true, as the idem deployment would fail if the image already exists
     }
   }
 ]
