@@ -375,9 +375,6 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
 
-@description('Optional. Indicates if Application Monitoring Auto Instrumentation is enabled or not.')
-param enableAutoInstrumentation bool = false
-
 @description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
 param enableContainerInsights bool = false
 
@@ -389,18 +386,6 @@ param disablePrometheusMetricsScraping bool = false
 
 @description('Optional. The syslog host port. If not specified, the default port is 28330.')
 param syslogPort int = 28330
-
-@description('Optional. Indicates if Application Monitoring Open Telemetry Metrics is enabled.')
-param enableAppMonitoringOpenTelemetryMetrics bool = true
-
-@description('Optional. The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333.')
-param appMonitoringOpenTelemetryMetricsPort int = 28333
-
-@description('Optional. Indicates if Application Monitoring Open Telemetry Logs is enabled.')
-param enableAppMonitoringOpenTelemetryLogs bool = true
-
-@description('Optional. The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331.')
-param appMonitoringOpenTelemetryLogsPort int = 28331
 
 @description('Optional. A comma-separated list of kubernetes cluster metrics labels.')
 param metricLabelsAllowlist string = ''
@@ -703,21 +688,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       privateDNSZone: privateDNSZone
     }
     azureMonitorProfile: {
-      appMonitoring: enableAutoInstrumentation
-        ? {
-            autoInstrumentation: {
-              enabled: enableAutoInstrumentation
-            }
-            openTelemetryMetrics: {
-              enabled: enableAppMonitoringOpenTelemetryMetrics
-              port: appMonitoringOpenTelemetryMetricsPort
-            }
-            openTelemetryLogs: {
-              enabled: enableAppMonitoringOpenTelemetryLogs
-              port: appMonitoringOpenTelemetryLogsPort
-            }
-          }
-        : null
       containerInsights: enableContainerInsights
         ? {
             enabled: enableContainerInsights

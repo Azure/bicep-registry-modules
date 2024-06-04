@@ -1448,8 +1448,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
-| [`appMonitoringOpenTelemetryLogsPort`](#parameter-appmonitoringopentelemetrylogsport) | int | The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331. |
-| [`appMonitoringOpenTelemetryMetricsPort`](#parameter-appmonitoringopentelemetrymetricsport) | int | The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | string | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
@@ -1483,9 +1481,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
-| [`enableAppMonitoringOpenTelemetryLogs`](#parameter-enableappmonitoringopentelemetrylogs) | bool | Indicates if Application Monitoring Open Telemetry Logs is enabled. |
-| [`enableAppMonitoringOpenTelemetryMetrics`](#parameter-enableappmonitoringopentelemetrymetrics) | bool | Indicates if Application Monitoring Open Telemetry Metrics is enabled. |
-| [`enableAutoInstrumentation`](#parameter-enableautoinstrumentation) | bool | Indicates if Application Monitoring Auto Instrumentation is enabled or not. |
 | [`enableAzureDefender`](#parameter-enableazuredefender) | bool | Whether to enable Azure Defender. |
 | [`enableAzureMonitorProfileMetrics`](#parameter-enableazuremonitorprofilemetrics) | bool | Whether the metric state of the kubenetes cluster is enabled. |
 | [`enableContainerInsights`](#parameter-enablecontainerinsights) | bool | Indicates if Azure Monitor Container Insights Logs Addon is enabled. |
@@ -2007,22 +2002,6 @@ The workload runtime of the agent pool.
 - Required: No
 - Type: string
 
-### Parameter: `appMonitoringOpenTelemetryLogsPort`
-
-The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331.
-
-- Required: No
-- Type: int
-- Default: `28331`
-
-### Parameter: `appMonitoringOpenTelemetryMetricsPort`
-
-The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333.
-
-- Required: No
-- Type: int
-- Default: `28333`
-
 ### Parameter: `authorizedIPRanges`
 
 IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.
@@ -2515,30 +2494,6 @@ Specifies the resource ID of connected DNS zone. It will be ignored if `webAppli
 
 - Required: No
 - Type: string
-
-### Parameter: `enableAppMonitoringOpenTelemetryLogs`
-
-Indicates if Application Monitoring Open Telemetry Logs is enabled.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableAppMonitoringOpenTelemetryMetrics`
-
-Indicates if Application Monitoring Open Telemetry Metrics is enabled.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableAutoInstrumentation`
-
-Indicates if Application Monitoring Auto Instrumentation is enabled or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableAzureDefender`
 

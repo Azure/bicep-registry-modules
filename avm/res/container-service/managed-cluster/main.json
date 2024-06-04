@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "17411881610203398197"
+      "templateHash": "4351729607500307549"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1422,13 +1422,6 @@
         "description": "Optional. Whether the metric state of the kubenetes cluster is enabled."
       }
     },
-    "enableAutoInstrumentation": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Indicates if Application Monitoring Auto Instrumentation is enabled or not."
-      }
-    },
     "enableContainerInsights": {
       "type": "bool",
       "defaultValue": false,
@@ -1455,34 +1448,6 @@
       "defaultValue": 28330,
       "metadata": {
         "description": "Optional. The syslog host port. If not specified, the default port is 28330."
-      }
-    },
-    "enableAppMonitoringOpenTelemetryMetrics": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Indicates if Application Monitoring Open Telemetry Metrics is enabled."
-      }
-    },
-    "appMonitoringOpenTelemetryMetricsPort": {
-      "type": "int",
-      "defaultValue": 28333,
-      "metadata": {
-        "description": "Optional. The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333."
-      }
-    },
-    "enableAppMonitoringOpenTelemetryLogs": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Indicates if Application Monitoring Open Telemetry Logs is enabled."
-      }
-    },
-    "appMonitoringOpenTelemetryLogsPort": {
-      "type": "int",
-      "defaultValue": 28331,
-      "metadata": {
-        "description": "Optional. The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331."
       }
     },
     "metricLabelsAllowlist": {
@@ -1695,7 +1660,6 @@
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
         "azureMonitorProfile": {
-          "appMonitoring": "[if(parameters('enableAutoInstrumentation'), createObject('autoInstrumentation', createObject('enabled', parameters('enableAutoInstrumentation')), 'openTelemetryMetrics', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryMetrics'), 'port', parameters('appMonitoringOpenTelemetryMetricsPort')), 'openTelemetryLogs', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryLogs'), 'port', parameters('appMonitoringOpenTelemetryLogsPort'))), null())]",
           "containerInsights": "[if(parameters('enableContainerInsights'), createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'disableCustomMetrics', parameters('disableCustomMetrics'), 'disablePrometheusMetricsScraping', parameters('disablePrometheusMetricsScraping'), 'syslogPort', parameters('syslogPort')), null())]",
           "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
         },
