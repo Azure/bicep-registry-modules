@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5675009765675721781"
+      "version": "0.27.1.19265",
+      "templateHash": "17252857850318600622"
     },
     "name": "Network Security Group (NSG) Security Rules",
     "description": "This module deploys a Network Security Group (NSG) Security Rule.",
@@ -147,7 +147,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('networkSecurityGroupName'), parameters('name'))]",
       "properties": {
         "access": "[parameters('access')]",
