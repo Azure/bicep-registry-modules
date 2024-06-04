@@ -137,13 +137,13 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         appliesToGroups: [
           {
             groupConnectivity: 'None'
-            isGlobal: 'False'
-            networkGroupId: '<networkGroupId>'
-            useHubGateway: 'False'
+            isGlobal: false
+            networkGroupResourceId: '<networkGroupResourceId>'
+            useHubGateway: false
           }
         ]
         connectivityTopology: 'HubAndSpoke'
-        deleteExistingPeering: 'True'
+        deleteExistingPeering: true
         description: 'hubSpokeConnectivity description'
         hubs: [
           {
@@ -151,23 +151,36 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             resourceType: 'Microsoft.Network/virtualNetworks'
           }
         ]
-        isGlobal: 'True'
+        isGlobal: false
         name: 'hubSpokeConnectivity'
       }
       {
         appliesToGroups: [
           {
-            groupConnectivity: 'None'
-            isGlobal: 'False'
-            networkGroupId: '<networkGroupId>'
-            useHubGateway: 'False'
+            groupConnectivity: 'DirectlyConnected'
+            isGlobal: true
+            networkGroupResourceId: '<networkGroupResourceId>'
+            useHubGateway: false
           }
         ]
         connectivityTopology: 'Mesh'
-        deleteExistingPeering: 'True'
+        deleteExistingPeering: true
         description: 'MeshConnectivity description'
-        isGlobal: 'True'
-        name: 'MeshConnectivity'
+        isGlobal: true
+        name: 'MeshConnectivity-1'
+      }
+      {
+        appliesToGroups: [
+          {
+            groupConnectivity: 'DirectlyConnected'
+            isGlobal: false
+            networkGroupResourceId: '<networkGroupResourceId>'
+            useHubGateway: false
+          }
+        ]
+        connectivityTopology: 'Mesh'
+        isGlobal: false
+        name: 'MeshConnectivity-2'
       }
     ]
     location: '<location>'
@@ -178,7 +191,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     networkGroups: [
       {
         description: 'network-group-spokes description'
-        name: 'network-group-spokes'
+        name: 'network-group-spokes-1'
         staticMembers: [
           {
             name: 'virtualNetworkSpoke1'
@@ -189,6 +202,18 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             resourceId: '<resourceId>'
           }
         ]
+      }
+      {
+        name: 'network-group-spokes-2'
+        staticMembers: [
+          {
+            name: 'virtualNetworkSpoke3'
+            resourceId: '<resourceId>'
+          }
+        ]
+      }
+      {
+        name: 'network-group-spokes-3'
       }
     ]
     roleAssignments: [
@@ -213,7 +238,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         description: 'description of the scope connection'
         name: 'scope-connection-test'
         resourceId: '<resourceId>'
-        tenantid: '<tenantid>'
+        tenantId: '<tenantId>'
       }
     ]
     securityAdminConfigurations: [
@@ -222,12 +247,12 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           'AllowRulesOnly'
         ]
         description: 'description of the security admin config'
-        name: 'test-security-admin-config'
+        name: 'test-security-admin-config-1'
         ruleCollections: [
           {
             appliesToGroups: [
               {
-                networkGroupId: '<networkGroupId>'
+                networkGroupResourceId: '<networkGroupResourceId>'
               }
             ]
             description: 'test-rule-collection-description'
@@ -264,15 +289,16 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           {
             appliesToGroups: [
               {
-                networkGroupId: '<networkGroupId>'
+                networkGroupResourceId: '<networkGroupResourceId>'
+              }
+              {
+                networkGroupResourceId: '<networkGroupResourceId>'
               }
             ]
-            description: 'test-rule-collection-description'
             name: 'test-rule-collection-2'
             rules: [
               {
                 access: 'Allow'
-                description: 'test-inbound-allow-rule-3-description'
                 destinationPortRanges: [
                   '442-445'
                   '80'
@@ -366,13 +392,13 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           "appliesToGroups": [
             {
               "groupConnectivity": "None",
-              "isGlobal": "False",
-              "networkGroupId": "<networkGroupId>",
-              "useHubGateway": "False"
+              "isGlobal": false,
+              "networkGroupResourceId": "<networkGroupResourceId>",
+              "useHubGateway": false
             }
           ],
           "connectivityTopology": "HubAndSpoke",
-          "deleteExistingPeering": "True",
+          "deleteExistingPeering": true,
           "description": "hubSpokeConnectivity description",
           "hubs": [
             {
@@ -380,23 +406,36 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
               "resourceType": "Microsoft.Network/virtualNetworks"
             }
           ],
-          "isGlobal": "True",
+          "isGlobal": false,
           "name": "hubSpokeConnectivity"
         },
         {
           "appliesToGroups": [
             {
-              "groupConnectivity": "None",
-              "isGlobal": "False",
-              "networkGroupId": "<networkGroupId>",
-              "useHubGateway": "False"
+              "groupConnectivity": "DirectlyConnected",
+              "isGlobal": true,
+              "networkGroupResourceId": "<networkGroupResourceId>",
+              "useHubGateway": false
             }
           ],
           "connectivityTopology": "Mesh",
-          "deleteExistingPeering": "True",
+          "deleteExistingPeering": true,
           "description": "MeshConnectivity description",
-          "isGlobal": "True",
-          "name": "MeshConnectivity"
+          "isGlobal": true,
+          "name": "MeshConnectivity-1"
+        },
+        {
+          "appliesToGroups": [
+            {
+              "groupConnectivity": "DirectlyConnected",
+              "isGlobal": false,
+              "networkGroupResourceId": "<networkGroupResourceId>",
+              "useHubGateway": false
+            }
+          ],
+          "connectivityTopology": "Mesh",
+          "isGlobal": false,
+          "name": "MeshConnectivity-2"
         }
       ]
     },
@@ -413,7 +452,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       "value": [
         {
           "description": "network-group-spokes description",
-          "name": "network-group-spokes",
+          "name": "network-group-spokes-1",
           "staticMembers": [
             {
               "name": "virtualNetworkSpoke1",
@@ -424,6 +463,18 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
               "resourceId": "<resourceId>"
             }
           ]
+        },
+        {
+          "name": "network-group-spokes-2",
+          "staticMembers": [
+            {
+              "name": "virtualNetworkSpoke3",
+              "resourceId": "<resourceId>"
+            }
+          ]
+        },
+        {
+          "name": "network-group-spokes-3"
         }
       ]
     },
@@ -452,7 +503,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           "description": "description of the scope connection",
           "name": "scope-connection-test",
           "resourceId": "<resourceId>",
-          "tenantid": "<tenantid>"
+          "tenantId": "<tenantId>"
         }
       ]
     },
@@ -463,12 +514,12 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             "AllowRulesOnly"
           ],
           "description": "description of the security admin config",
-          "name": "test-security-admin-config",
+          "name": "test-security-admin-config-1",
           "ruleCollections": [
             {
               "appliesToGroups": [
                 {
-                  "networkGroupId": "<networkGroupId>"
+                  "networkGroupResourceId": "<networkGroupResourceId>"
                 }
               ],
               "description": "test-rule-collection-description",
@@ -505,15 +556,16 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             {
               "appliesToGroups": [
                 {
-                  "networkGroupId": "<networkGroupId>"
+                  "networkGroupResourceId": "<networkGroupResourceId>"
+                },
+                {
+                  "networkGroupResourceId": "<networkGroupResourceId>"
                 }
               ],
-              "description": "test-rule-collection-description",
               "name": "test-rule-collection-2",
               "rules": [
                 {
                   "access": "Allow",
-                  "description": "test-inbound-allow-rule-3-description",
                   "destinationPortRanges": [
                     "442-445",
                     "80"
@@ -666,7 +718,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Network Manager. |
 | [`networkManagerScopeAccesses`](#parameter-networkmanagerscopeaccesses) | array | Scope Access. String array containing any of "Connectivity", "SecurityAdmin". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. |
-| [`networkManagerScopes`](#parameter-networkmanagerscopes) | object | Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. |
+| [`networkManagerScopes`](#parameter-networkmanagerscopes) | object | Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription. |
 
 **Conditional parameters**
 
@@ -701,13 +753,41 @@ Scope Access. String array containing any of "Connectivity", "SecurityAdmin". Th
 
 - Required: Yes
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Connectivity'
+    'SecurityAdmin'
+  ]
+  ```
 
 ### Parameter: `networkManagerScopes`
 
-Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment.
+Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription.
 
 - Required: Yes
 - Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managementGroups`](#parameter-networkmanagerscopesmanagementgroups) | array |  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'. |
+| [`subscriptions`](#parameter-networkmanagerscopessubscriptions) | array | List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'. |
+
+### Parameter: `networkManagerScopes.managementGroups`
+
+ List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkManagerScopes.subscriptions`
+
+List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'.
+
+- Required: No
+- Type: array
 
 ### Parameter: `networkGroups`
 
@@ -715,7 +795,61 @@ Network Groups and static members to create for the network manager. Required if
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-networkgroupsname) | string | The name of the network group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-networkgroupsdescription) | string | A description of the network group. |
+| [`staticMembers`](#parameter-networkgroupsstaticmembers) | array | Static Members to create for the network group. Contains virtual networks to add to the network group. |
+
+### Parameter: `networkGroups.name`
+
+The name of the network group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkGroups.description`
+
+A description of the network group.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkGroups.staticMembers`
+
+Static Members to create for the network group. Contains virtual networks to add to the network group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-networkgroupsstaticmembersname) | string | The name of the static member. |
+| [`resourceId`](#parameter-networkgroupsstaticmembersresourceid) | string | Resource ID of the virtual network. |
+
+### Parameter: `networkGroups.staticMembers.name`
+
+The name of the static member.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkGroups.staticMembers.resourceId`
+
+Resource ID of the virtual network.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `connectivityConfigurations`
 
@@ -723,7 +857,155 @@ Connectivity Configurations to create for the network manager. Network manager m
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appliesToGroups`](#parameter-connectivityconfigurationsappliestogroups) | array | Network Groups for the configuration. A connectivity configuration must be associated to at least one network group. |
+| [`connectivityTopology`](#parameter-connectivityconfigurationsconnectivitytopology) | string | The connectivity topology to apply the configuration to. |
+| [`name`](#parameter-connectivityconfigurationsname) | string | The name of the connectivity configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deleteExistingPeering`](#parameter-connectivityconfigurationsdeleteexistingpeering) | bool | Delete existing peering connections. |
+| [`description`](#parameter-connectivityconfigurationsdescription) | string | A description of the connectivity configuration. |
+| [`hubs`](#parameter-connectivityconfigurationshubs) | array | The hubs to apply the configuration to. |
+| [`isGlobal`](#parameter-connectivityconfigurationsisglobal) | bool | Is global configuration. |
+
+### Parameter: `connectivityConfigurations.appliesToGroups`
+
+Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupConnectivity`](#parameter-connectivityconfigurationsappliestogroupsgroupconnectivity) | string | Group connectivity type. |
+| [`networkGroupResourceId`](#parameter-connectivityconfigurationsappliestogroupsnetworkgroupresourceid) | string | Resource Id of the network group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isGlobal`](#parameter-connectivityconfigurationsappliestogroupsisglobal) | bool | Flag if global is supported. |
+| [`useHubGateway`](#parameter-connectivityconfigurationsappliestogroupsusehubgateway) | bool | Flag if use hub gateway. |
+
+### Parameter: `connectivityConfigurations.appliesToGroups.groupConnectivity`
+
+Group connectivity type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DirectlyConnected'
+    'None'
+  ]
+  ```
+
+### Parameter: `connectivityConfigurations.appliesToGroups.networkGroupResourceId`
+
+Resource Id of the network group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectivityConfigurations.appliesToGroups.isGlobal`
+
+Flag if global is supported.
+
+- Required: No
+- Type: bool
+
+### Parameter: `connectivityConfigurations.appliesToGroups.useHubGateway`
+
+Flag if use hub gateway.
+
+- Required: No
+- Type: bool
+
+### Parameter: `connectivityConfigurations.connectivityTopology`
+
+The connectivity topology to apply the configuration to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HubAndSpoke'
+    'Mesh'
+  ]
+  ```
+
+### Parameter: `connectivityConfigurations.name`
+
+The name of the connectivity configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectivityConfigurations.deleteExistingPeering`
+
+Delete existing peering connections.
+
+- Required: No
+- Type: bool
+
+### Parameter: `connectivityConfigurations.description`
+
+A description of the connectivity configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `connectivityConfigurations.hubs`
+
+The hubs to apply the configuration to.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-connectivityconfigurationshubsresourceid) | string | Resource Id of the hub. |
+| [`resourceType`](#parameter-connectivityconfigurationshubsresourcetype) | string | Resource type of the hub. |
+
+### Parameter: `connectivityConfigurations.hubs.resourceId`
+
+Resource Id of the hub.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectivityConfigurations.hubs.resourceType`
+
+Resource type of the hub.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Microsoft.Network/virtualNetworks'
+  ]
+  ```
+
+### Parameter: `connectivityConfigurations.isGlobal`
+
+Is global configuration.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `description`
 
@@ -880,7 +1162,48 @@ Scope Connections to create for the network manager. Allows network manager to m
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-scopeconnectionsname) | string | The name of the scope connection. |
+| [`resourceId`](#parameter-scopeconnectionsresourceid) | string | Enter the subscription or management group resource ID that you want to add to this network manager's scope. |
+| [`tenantId`](#parameter-scopeconnectionstenantid) | string | Tenant ID of the subscription or management group that you want to manage. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-scopeconnectionsdescription) | string | A description of the scope connection. |
+
+### Parameter: `scopeConnections.name`
+
+The name of the scope connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scopeConnections.resourceId`
+
+Enter the subscription or management group resource ID that you want to add to this network manager's scope.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scopeConnections.tenantId`
+
+Tenant ID of the subscription or management group that you want to manage.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scopeConnections.description`
+
+A description of the scope connection.
+
+- Required: No
+- Type: string
 
 ### Parameter: `securityAdminConfigurations`
 
@@ -888,7 +1211,283 @@ Security Admin Configurations, Rule Collections and Rules to create for the netw
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applyOnNetworkIntentPolicyBasedServices`](#parameter-securityadminconfigurationsapplyonnetworkintentpolicybasedservices) | array | Apply on network intent policy based services. |
+| [`name`](#parameter-securityadminconfigurationsname) | string | The name of the security admin configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-securityadminconfigurationsdescription) | string | A description of the security admin configuration. |
+| [`ruleCollections`](#parameter-securityadminconfigurationsrulecollections) | array | Rule collections to create for the security admin configuration. |
+
+### Parameter: `securityAdminConfigurations.applyOnNetworkIntentPolicyBasedServices`
+
+Apply on network intent policy based services.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'All'
+    'AllowRulesOnly'
+    'None'
+  ]
+  ```
+
+### Parameter: `securityAdminConfigurations.name`
+
+The name of the security admin configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAdminConfigurations.description`
+
+A description of the security admin configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections`
+
+Rule collections to create for the security admin configuration.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appliesToGroups`](#parameter-securityadminconfigurationsrulecollectionsappliestogroups) | array | List of network groups for configuration. An admin rule collection must be associated to at least one network group. |
+| [`name`](#parameter-securityadminconfigurationsrulecollectionsname) | string | The name of the admin rule collection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-securityadminconfigurationsrulecollectionsdescription) | string | A description of the admin rule collection. |
+| [`rules`](#parameter-securityadminconfigurationsrulecollectionsrules) | array | List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail. |
+
+### Parameter: `securityAdminConfigurations.ruleCollections.appliesToGroups`
+
+List of network groups for configuration. An admin rule collection must be associated to at least one network group.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`networkGroupResourceId`](#parameter-securityadminconfigurationsrulecollectionsappliestogroupsnetworkgroupresourceid) | string | The resource ID of the network group. |
+
+### Parameter: `securityAdminConfigurations.ruleCollections.appliesToGroups.networkGroupResourceId`
+
+The resource ID of the network group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections.name`
+
+The name of the admin rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections.description`
+
+A description of the admin rule collection.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules`
+
+List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-securityadminconfigurationsrulecollectionsrulesaccess) | string | Indicates the access allowed for this particular rule. "Allow" means traffic matching this rule will be allowed. "Deny" means traffic matching this rule will be blocked. "AlwaysAllow" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs. |
+| [`direction`](#parameter-securityadminconfigurationsrulecollectionsrulesdirection) | string | Indicates if the traffic matched against the rule in inbound or outbound. |
+| [`name`](#parameter-securityadminconfigurationsrulecollectionsrulesname) | string | The name of the rule. |
+| [`priority`](#parameter-securityadminconfigurationsrulecollectionsrulespriority) | int | The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-securityadminconfigurationsrulecollectionsrulesprotocol) | string | Network protocol this rule applies to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-securityadminconfigurationsrulecollectionsrulesdescription) | string | A description of the rule. |
+| [`destinationPortRanges`](#parameter-securityadminconfigurationsrulecollectionsrulesdestinationportranges) | array | List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535. |
+| [`destinations`](#parameter-securityadminconfigurationsrulecollectionsrulesdestinations) | array | The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted. |
+| [`sourcePortRanges`](#parameter-securityadminconfigurationsrulecollectionsrulessourceportranges) | array | List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535. |
+| [`sources`](#parameter-securityadminconfigurationsrulecollectionsrulessources) | array | The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted. |
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.access`
+
+Indicates the access allowed for this particular rule. "Allow" means traffic matching this rule will be allowed. "Deny" means traffic matching this rule will be blocked. "AlwaysAllow" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'AlwaysAllow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.direction`
+
+Indicates if the traffic matched against the rule in inbound or outbound.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Inbound'
+    'Outbound'
+  ]
+  ```
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.name`
+
+The name of the rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.priority`
+
+The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Ah'
+    'Any'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.description`
+
+A description of the rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinationPortRanges`
+
+List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinations`
+
+The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-securityadminconfigurationsrulecollectionsrulesdestinationsaddressprefix) | string | Address prefix. |
+| [`addressPrefixType`](#parameter-securityadminconfigurationsrulecollectionsrulesdestinationsaddressprefixtype) | string | Address prefix type. |
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinations.addressPrefix`
+
+Address prefix.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinations.addressPrefixType`
+
+Address prefix type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPPrefix'
+    'ServiceTag'
+  ]
+  ```
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.sourcePortRanges`
+
+List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.sources`
+
+The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-securityadminconfigurationsrulecollectionsrulessourcesaddressprefix) | string | Address prefix. |
+| [`addressPrefixType`](#parameter-securityadminconfigurationsrulecollectionsrulessourcesaddressprefixtype) | string | Address prefix type. |
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.sources.addressPrefix`
+
+Address prefix.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityAdminConfigurations.ruleCollections.rules.sources.addressPrefixType`
+
+Address prefix type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPPrefix'
+    'ServiceTag'
+  ]
+  ```
 
 ### Parameter: `tags`
 
