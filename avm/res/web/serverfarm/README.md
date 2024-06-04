@@ -259,7 +259,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfwaf001'
-    skuCapacity: 1
+    skuCapacity: 2
     skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
@@ -309,7 +309,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "wsfwaf001"
     },
     "skuCapacity": {
-      "value": 1
+      "value": 2
     },
     "skuName": {
       "value": "P1v3"
