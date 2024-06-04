@@ -39,18 +39,6 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. The key name to use for encryption.')
-param keyName string
-
-@description('Optional. The key source Microsoft.Keyvault for CMK or Microsoft Managed Key (default).')
-param keySource string
-
-@description('Optional. The key vault resource ID to use for encryption.')
-param keyVaultResourceId string
-
-@description('Optional. The key vault URI to use for encryption.')
-param keyVaultUri string
-
 @description('Optional. Specifies whether or not the LDAP traffic needs to be signed.')
 param ldapSigning bool = false
 
@@ -78,18 +66,6 @@ var activeDirectoryConnectionProperties = [
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
   }
 ]
-
-var encryptionProperties = {
-  identity: {
-    userAssignedIdentity: !empty(managedIdentities) ? managedIdentities.userAssignedResourceIds[0] : null
-  }
-  keySource: !empty(keySource) ? 'Microsoft.KeyVault' : 'Microsoft.NetApp'
-  keyVaultProperties: {
-    keyName: !empty(keySource) ? keyName : null
-    keyVaultResourceId: !empty(keySource) ? keyVaultResourceId : null
-    keyVaultUri: !empty(keySource) ? keyVaultUri : null
-  }
-}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -156,14 +132,28 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' = {
   name: name
   tags: tags
   identity: identity
   location: location
   properties: {
     activeDirectories: !empty(domainName) ? activeDirectoryConnectionProperties : null
-    encryption: !empty(managedIdentities) ? encryptionProperties : null
+    encryption: !empty(customerManagedKey)
+      ? {
+          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? {
+                userAssignedIdentity: cMKUserAssignedIdentity.id
+              }
+            : null
+          keySource: 'Microsoft.KeyVault'
+          keyVaultProperties: {
+            keyName: customerManagedKey!.keyName
+            keyVaultResourceId: cMKKeyVault.id
+            keyVaultUri: cMKKeyVault.properties.vaultUri
+          }
+        }
+      : null
   }
 }
 
