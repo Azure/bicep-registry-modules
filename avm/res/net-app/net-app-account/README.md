@@ -17,9 +17,9 @@ This module deploys an Azure NetApp File.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2022-11-01/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2022-11-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2022-11-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/capacityPools/volumes) |
 
 ## Usage examples
 
@@ -645,26 +645,22 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aesEncryption`](#parameter-aesEncryption) | bool | Enable AES encryption on the SMB Server. |
+| [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`dnsServers`](#parameter-dnsservers) | string | Required if domainName is specified. Comma separated list of DNS server IP addresses (IPv4 only) required for the Active Directory (AD) domain join and SMB authentication operations to succeed. |
 | [`domainJoinOU`](#parameter-domainjoinou) | string | Used only if domainName is specified. LDAP Path for the Organization Unit (OU) where SMB Server machine accounts will be created (i.e. 'OU=SecondLevel,OU=FirstLevel'). |
 | [`domainJoinPassword`](#parameter-domainjoinpassword) | securestring | Required if domainName is specified. Password of the user specified in domainJoinUser parameter. |
 | [`domainJoinUser`](#parameter-domainjoinuser) | string | Required if domainName is specified. Username of Active Directory domain administrator, with permissions to create SMB server machine account in the AD domain. |
 | [`domainName`](#parameter-domainname) | string | Fully Qualified Active Directory DNS Domain Name (e.g. 'contoso.com'). |
-| [`keyName`](#parameter-keyName) | string | The key name to use for encryption. |
-| [`keySource`](#parameter-keySource) | string | The key source Microsoft.Keyvault for CMK or Microsoft Managed Key (default). |
-| [`keyVaultResourceId`](#parameter-keyVaultResourceId) | string | The keyvault resource Id to use for encryption. |
-| [`keyVaultUri`](#parameter-keyVaultUri) | string | The keyvault URI to use for encryption. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ldapSigning`](#parameter-ldapSigning) | bool | Specifies whether or not the LDAP traffic needs to be signed. |
+| [`ldapSigning`](#parameter-ldapsigning) | bool | Specifies whether or not the LDAP traffic needs to be signed. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`smbServerNamePrefix`](#parameter-smbservernameprefix) | string | Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
-`
 
 ### Parameter: `name`
 
@@ -688,6 +684,55 @@ Capacity pools to create.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
 
 ### Parameter: `dnsServers`
 
@@ -736,38 +781,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `keyName`
-
-The key name to use for encryption
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `keySource`
-
-The key source Microsoft.Keyvault for CMK or Microsoft Managed Key (default)
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `keyVaultResourceId`
-
-The keyvault resource Id to use for encryption
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `keyVaultUri`
-
-The keyvault URI to use for encryption
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `ldapSigning`
 
