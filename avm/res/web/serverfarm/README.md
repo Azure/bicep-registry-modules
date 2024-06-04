@@ -259,7 +259,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfwaf001'
-    skuCapacity: 3
+    skuCapacity: 1
     skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
@@ -287,7 +287,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: true
+    zoneRedundant: false
   }
 }
 ```
@@ -309,7 +309,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "wsfwaf001"
     },
     "skuCapacity": {
-      "value": 3
+      "value": 1
     },
     "skuName": {
       "value": "P1v3"
@@ -351,7 +351,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     "zoneRedundant": {
-      "value": true
+      "value": false
     }
   }
 }

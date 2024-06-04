@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       skuName: 'P1v3'
       skuCapacity: 1
-      zoneRedundant: false // This should be set to true for production deployments
+      zoneRedundant: false
       kind: 'App'
       lock: {
         name: 'lock'
