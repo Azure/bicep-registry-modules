@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "9874039006464739121"
+      "templateHash": "13347475209557594968"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -1845,6 +1845,13 @@
     }
   },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the resource was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "resourceId": {
       "type": "string",
       "metadata": {
