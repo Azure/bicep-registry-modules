@@ -98,7 +98,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   name: 'redisDeployment'
   params: {
     // Required parameters
-    name: 'crmin001'
+    name: 'crentrid001'
     // Non-required parameters
     location: '<location>'
     redisConfiguration: {
@@ -122,7 +122,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crmin001"
+      "value": "crentrid001"
     },
     // Non-required parameters
     "location": {
