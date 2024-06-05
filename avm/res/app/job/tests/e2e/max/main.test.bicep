@@ -43,6 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     workloadProfileName: serviceShort
+    storageAccountName: storageAccountName
   }
 }
 
@@ -88,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
               type: 'azure-queue'
               metadata: {
                 queueName: nestedDependencies.outputs.storageQueueName
-                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+                storageAccountResourceId: storageAccountId
               }
               auth: [
                 {

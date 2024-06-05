@@ -10,6 +10,9 @@ param managedIdentityName string
 @description('Required. The name of the workload profile to create.')
 param workloadProfileName string
 
+@description('Required. The name of the storage account to create.')
+param storageAccountName string
+
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
   name: managedEnvironmentName
   location: location
@@ -31,7 +34,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
-  name: uniqueString('${managedEnvironmentName}storage')
+  name: storageAccountName
   location: location
   kind: 'StorageV2'
   sku: {
@@ -74,6 +77,3 @@ output storageAccountName string = storageAccount.name
 
 @description('The name of the storage queue created.')
 output storageQueueName string = storageAccount::storageQueueService::storageQueue.name
-
-@description('The resource ID of the storage account created.')
-output storageAccountResourceId string = storageAccount.id
