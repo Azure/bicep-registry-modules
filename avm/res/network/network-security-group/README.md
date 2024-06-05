@@ -18,8 +18,8 @@ This module deploys a Network security Group (NSG).
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/networkSecurityGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkSecurityGroups) |
-| `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkSecurityGroups/securityRules) |
+| `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
+| `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups/securityRules) |
 
 ## Usage examples
 
@@ -353,80 +353,21 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     // Required parameters
     name: 'nnsgwaf001'
     // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     securityRules: [
       {
-        name: 'Specific'
+        name: 'deny-hop-outbound'
         properties: {
-          access: 'Allow'
-          description: 'Tests specific IPs and ports'
+          access: 'Deny'
           destinationAddressPrefix: '*'
-          destinationPortRange: '8080'
-          direction: 'Inbound'
-          priority: 100
-          protocol: '*'
-          sourceAddressPrefix: '*'
-          sourcePortRange: '*'
-        }
-      }
-      {
-        name: 'Ranges'
-        properties: {
-          access: 'Allow'
-          description: 'Tests Ranges'
-          destinationAddressPrefixes: [
-            '10.2.0.0/16'
-            '10.3.0.0/16'
-          ]
           destinationPortRanges: [
-            '90'
-            '91'
+            '22'
+            '3389'
           ]
-          direction: 'Inbound'
-          priority: 101
-          protocol: '*'
-          sourceAddressPrefixes: [
-            '10.0.0.0/16'
-            '10.1.0.0/16'
-          ]
-          sourcePortRanges: [
-            '80'
-            '81'
-          ]
-        }
-      }
-      {
-        name: 'Port_8082'
-        properties: {
-          access: 'Allow'
-          description: 'Allow inbound access on TCP 8082'
-          destinationApplicationSecurityGroups: [
-            {
-              id: '<id>'
-            }
-          ]
-          destinationPortRange: '8082'
-          direction: 'Inbound'
-          priority: 102
-          protocol: '*'
-          sourceApplicationSecurityGroups: [
-            {
-              id: '<id>'
-            }
-          ]
+          direction: 'Outbound'
+          priority: 200
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
         }
       }
@@ -457,87 +398,24 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
       "value": "nnsgwaf001"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "securityRules": {
       "value": [
         {
-          "name": "Specific",
+          "name": "deny-hop-outbound",
           "properties": {
-            "access": "Allow",
-            "description": "Tests specific IPs and ports",
+            "access": "Deny",
             "destinationAddressPrefix": "*",
-            "destinationPortRange": "8080",
-            "direction": "Inbound",
-            "priority": 100,
-            "protocol": "*",
-            "sourceAddressPrefix": "*",
-            "sourcePortRange": "*"
-          }
-        },
-        {
-          "name": "Ranges",
-          "properties": {
-            "access": "Allow",
-            "description": "Tests Ranges",
-            "destinationAddressPrefixes": [
-              "10.2.0.0/16",
-              "10.3.0.0/16"
-            ],
             "destinationPortRanges": [
-              "90",
-              "91"
+              "22",
+              "3389"
             ],
-            "direction": "Inbound",
-            "priority": 101,
-            "protocol": "*",
-            "sourceAddressPrefixes": [
-              "10.0.0.0/16",
-              "10.1.0.0/16"
-            ],
-            "sourcePortRanges": [
-              "80",
-              "81"
-            ]
-          }
-        },
-        {
-          "name": "Port_8082",
-          "properties": {
-            "access": "Allow",
-            "description": "Allow inbound access on TCP 8082",
-            "destinationApplicationSecurityGroups": [
-              {
-                "id": "<id>"
-              }
-            ],
-            "destinationPortRange": "8082",
-            "direction": "Inbound",
-            "priority": 102,
-            "protocol": "*",
-            "sourceApplicationSecurityGroups": [
-              {
-                "id": "<id>"
-              }
-            ],
+            "direction": "Outbound",
+            "priority": 200,
+            "protocol": "Tcp",
+            "sourceAddressPrefix": "VirtualNetwork",
             "sourcePortRange": "*"
           }
         }
