@@ -69,7 +69,7 @@ resource CNAME 'Microsoft.Network/dnsZones/CNAME@2018-05-01' = {
   name: name
   parent: dnsZone
   properties: {
-    CNAMERecord: !empty(cnameRecord) ? cnameRecord : null
+    CNAMERecord: cnameRecord
     metadata: metadata
     TTL: ttl
     targetResource: !empty(targetResourceId)
