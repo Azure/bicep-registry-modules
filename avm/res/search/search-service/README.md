@@ -129,6 +129,9 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     networkRuleSet: {
       ipRules: [
@@ -231,6 +234,9 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": true
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "networkRuleSet": {
@@ -889,6 +895,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -896,6 +903,13 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `networkRuleSet`
 
