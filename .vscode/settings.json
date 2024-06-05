@@ -3,6 +3,7 @@
   "editor.bracketPairColorization.enabled": true,
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "onFocusChange",
+  "files.eol": "\n",
   "git.autofetch": true,
   "githubPullRequests.pullBranch": "always",
   "powershell.codeFormatting.autoCorrectAliases": true,

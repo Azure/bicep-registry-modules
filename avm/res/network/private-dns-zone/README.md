@@ -275,7 +275,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           minimumTtl: 10
           refreshTime: 3600
           retryTime: 300
-          serialNumber: '1'
+          serialNumber: 1
         }
         ttl: 3600
       }
@@ -561,7 +561,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             "minimumTtl": 10,
             "refreshTime": 3600,
             "retryTime": 300,
-            "serialNumber": "1"
+            "serialNumber": 1
           },
           "ttl": 3600
         }
@@ -766,6 +766,151 @@ Array of A records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-aname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aRecords`](#parameter-aarecords) | array | The list of A records in the record set. |
+| [`metadata`](#parameter-ametadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-aroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-attl) | int | The TTL of the record. |
+
+### Parameter: `a.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `a.aRecords`
+
+The list of A records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv4Address`](#parameter-aarecordsipv4address) | string | The IPv4 address of this A record. |
+
+### Parameter: `a.aRecords.ipv4Address`
+
+The IPv4 address of this A record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `a.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `a.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-aroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-aroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-aroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-aroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-aroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-aroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-aroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `a.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `a.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `a.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `a.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `a.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `a.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `a.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `a.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
 ### Parameter: `aaaa`
 
 Array of AAAA records.
@@ -773,12 +918,302 @@ Array of AAAA records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-aaaaname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aaaaRecords`](#parameter-aaaaaaaarecords) | array | The list of AAAA records in the record set. |
+| [`metadata`](#parameter-aaaametadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-aaaaroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-aaaattl) | int | The TTL of the record. |
+
+### Parameter: `aaaa.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aaaa.aaaaRecords`
+
+The list of AAAA records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv6Address`](#parameter-aaaaaaaarecordsipv6address) | string | The IPv6 address of this AAAA record. |
+
+### Parameter: `aaaa.aaaaRecords.ipv6Address`
+
+The IPv6 address of this AAAA record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aaaa.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `aaaa.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-aaaaroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-aaaaroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-aaaaroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-aaaaroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-aaaaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-aaaaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-aaaaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `aaaa.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aaaa.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aaaa.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `aaaa.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `aaaa.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
 ### Parameter: `cname`
 
 Array of CNAME records.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cnamename) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cnameRecord`](#parameter-cnamecnamerecord) | object | The CNAME record in the record set. |
+| [`metadata`](#parameter-cnamemetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-cnameroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-cnamettl) | int | The TTL of the record. |
+
+### Parameter: `cname.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cname.cnameRecord`
+
+The CNAME record in the record set.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cname`](#parameter-cnamecnamerecordcname) | string | The canonical name of the CNAME record. |
+
+### Parameter: `cname.cnameRecord.cname`
+
+The canonical name of the CNAME record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cname.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `cname.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-cnameroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-cnameroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-cnameroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-cnameroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-cnameroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-cnameroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-cnameroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `cname.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cname.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cname.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `cname.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `cname.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
 
 ### Parameter: `enableTelemetry`
 
@@ -839,12 +1274,310 @@ Array of MX records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-mxname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-mxmetadata) | object | The metadata of the record. |
+| [`mxRecords`](#parameter-mxmxrecords) | array | The list of MX records in the record set. |
+| [`roleAssignments`](#parameter-mxroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-mxttl) | int | The TTL of the record. |
+
+### Parameter: `mx.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `mx.mxRecords`
+
+The list of MX records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exchange`](#parameter-mxmxrecordsexchange) | string | The domain name of the mail host for this MX record. |
+| [`preference`](#parameter-mxmxrecordspreference) | int | The preference value for this MX record. |
+
+### Parameter: `mx.mxRecords.exchange`
+
+The domain name of the mail host for this MX record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.mxRecords.preference`
+
+The preference value for this MX record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `mx.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-mxroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-mxroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-mxroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-mxroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-mxroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-mxroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-mxroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `mx.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mx.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `mx.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `mx.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
 ### Parameter: `ptr`
 
 Array of PTR records.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-ptrname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-ptrmetadata) | object | The metadata of the record. |
+| [`ptrRecords`](#parameter-ptrptrrecords) | array | The list of PTR records in the record set. |
+| [`roleAssignments`](#parameter-ptrroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-ptrttl) | int | The TTL of the record. |
+
+### Parameter: `ptr.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ptr.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `ptr.ptrRecords`
+
+The list of PTR records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ptrdname`](#parameter-ptrptrrecordsptrdname) | string | The PTR target domain name for this PTR record. |
+
+### Parameter: `ptr.ptrRecords.ptrdname`
+
+The PTR target domain name for this PTR record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ptr.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-ptrroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-ptrroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-ptrroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-ptrroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-ptrroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-ptrroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-ptrroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `ptr.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ptr.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ptr.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `ptr.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `ptr.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `ptr.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `ptr.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `ptr.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
 
 ### Parameter: `roleAssignments`
 
@@ -942,12 +1675,374 @@ Array of SOA records.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-soaname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-soametadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-soaroleassignments) | array | Array of role assignments to create. |
+| [`soaRecord`](#parameter-soasoarecord) | object | The SOA record in the record set. |
+| [`ttl`](#parameter-soattl) | int | The TTL of the record. |
+
+### Parameter: `soa.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `soa.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-soaroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-soaroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-soaroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-soaroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-soaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-soaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-soaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `soa.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `soa.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `soa.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `soa.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `soa.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `soa.soaRecord`
+
+The SOA record in the record set.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`email`](#parameter-soasoarecordemail) | string | The email contact for this SOA record. |
+| [`expireTime`](#parameter-soasoarecordexpiretime) | int | The expire time for this SOA record. |
+| [`host`](#parameter-soasoarecordhost) | string | The domain name of the authoritative name server for this SOA record. |
+| [`minimumTtl`](#parameter-soasoarecordminimumttl) | int | The minimum value for this SOA record. By convention this is used to determine the negative caching duration. |
+| [`refreshTime`](#parameter-soasoarecordrefreshtime) | int | The refresh value for this SOA record. |
+| [`retryTime`](#parameter-soasoarecordretrytime) | int | The retry time for this SOA record. |
+| [`serialNumber`](#parameter-soasoarecordserialnumber) | int | The serial number for this SOA record. |
+
+### Parameter: `soa.soaRecord.email`
+
+The email contact for this SOA record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.soaRecord.expireTime`
+
+The expire time for this SOA record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.host`
+
+The domain name of the authoritative name server for this SOA record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `soa.soaRecord.minimumTtl`
+
+The minimum value for this SOA record. By convention this is used to determine the negative caching duration.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.refreshTime`
+
+The refresh value for this SOA record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.retryTime`
+
+The retry time for this SOA record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.soaRecord.serialNumber`
+
+The serial number for this SOA record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `soa.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
 ### Parameter: `srv`
 
 Array of SRV records.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-srvname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-srvmetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-srvroleassignments) | array | Array of role assignments to create. |
+| [`srvRecords`](#parameter-srvsrvrecords) | array | The list of SRV records in the record set. |
+| [`ttl`](#parameter-srvttl) | int | The TTL of the record. |
+
+### Parameter: `srv.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `srv.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-srvroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-srvroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-srvroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-srvroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-srvroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-srvroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-srvroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `srv.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `srv.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `srv.srvRecords`
+
+The list of SRV records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-srvsrvrecordsport) | int | The port value for this SRV record. |
+| [`priority`](#parameter-srvsrvrecordspriority) | int | The priority value for this SRV record. |
+| [`target`](#parameter-srvsrvrecordstarget) | string | The target domain name for this SRV record. |
+| [`weight`](#parameter-srvsrvrecordsweight) | int | The weight value for this SRV record. |
+
+### Parameter: `srv.srvRecords.port`
+
+The port value for this SRV record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `srv.srvRecords.priority`
+
+The priority value for this SRV record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `srv.srvRecords.target`
+
+The target domain name for this SRV record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `srv.srvRecords.weight`
+
+The weight value for this SRV record.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `srv.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 
@@ -961,6 +2056,151 @@ Tags of the resource.
 Array of TXT records.
 
 - Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-txtname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-txtmetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-txtroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-txtttl) | int | The TTL of the record. |
+| [`txtRecords`](#parameter-txttxtrecords) | array | The list of TXT records in the record set. |
+
+### Parameter: `txt.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `txt.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `txt.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-txtroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-txtroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-txtroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-txtroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-txtroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-txtroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-txtroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `txt.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `txt.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `txt.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `txt.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `txt.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `txt.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `txt.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `txt.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `txt.txtRecords`
+
+The list of TXT records in the record set.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-txttxtrecordsvalue) | array | The text value of this TXT record. |
+
+### Parameter: `txt.txtRecords.value`
+
+The text value of this TXT record.
+
+- Required: Yes
 - Type: array
 
 ### Parameter: `virtualNetworkLinks`
