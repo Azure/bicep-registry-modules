@@ -25,6 +25,9 @@ Using this pattern module, you can combine Azure services that frequently help w
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
@@ -155,6 +158,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableDatabricks`](#parameter-enabledatabricks) | bool | Enable/Disable Azure Databricks service in the solution. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | You can specify an existing Key Vault if you have one. If not, this module will create a new one for you. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -162,6 +166,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you. |
 | [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`vNetResourceId`](#parameter-vnetresourceid) | string | You may provide a Virtual Network resource ID that already exists in the given region if you have a suitable VNET there. Otherwise, this module will make a new one for you. |
 
 ### Parameter: `name`
 
@@ -169,6 +174,14 @@ Name of the private analytical workspace solution and its components. Used to en
 
 - Required: Yes
 - Type: string
+
+### Parameter: `enableDatabricks`
+
+Enable/Disable Azure Databricks service in the solution.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -273,6 +286,14 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `vNetResourceId`
+
+You may provide a Virtual Network resource ID that already exists in the given region if you have a suitable VNET there. Otherwise, this module will make a new one for you.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 
 ## Outputs
 
@@ -291,6 +312,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/databricks/workspace:0.4.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.1.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.3.0` | Remote reference |
 
 ## Data Collection
