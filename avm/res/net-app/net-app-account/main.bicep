@@ -8,6 +8,9 @@ param name string
 @description('Optional. Enable AES encryption on the SMB Server.')
 param aesEncryption bool = false
 
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyType
+
 @description('Optional. Fully Qualified Active Directory DNS Domain Name (e.g. \'contoso.com\').')
 param domainName string = ''
 
@@ -36,18 +39,6 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. The key name to use for encryption.')
-param keyName string
-
-@description('Optional. The key source Microsoft.Keyvault for CMK or Microsoft Managed Key (default).')
-param keySource string
-
-@description('Optional. The key vault resource ID to use for encryption.')
-param keyVaultResourceId string
-
-@description('Optional. The key vault URI to use for encryption.')
-param keyVaultUri string
-
 @description('Optional. Specifies whether or not the LDAP traffic needs to be signed.')
 param ldapSigning bool = false
 
@@ -75,18 +66,6 @@ var activeDirectoryConnectionProperties = [
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
   }
 ]
-
-var encryptionProperties = {
-  identity: {
-    userAssignedIdentity: !empty(managedIdentities) ? managedIdentities.userAssignedResourceIds[0] : null
-  }
-  keySource: !empty(keySource) ? 'Microsoft.KeyVault' : 'Microsoft.NetApp'
-  keyVaultProperties: {
-    keyName: !empty(keySource) ? keyName : null
-    keyVaultResourceId: !empty(keySource) ? keyVaultResourceId : null
-    keyVaultUri: !empty(keySource) ? keyVaultUri : null
-  }
-}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -133,14 +112,48 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' = {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
+
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' = {
   name: name
   tags: tags
   identity: identity
   location: location
   properties: {
     activeDirectories: !empty(domainName) ? activeDirectoryConnectionProperties : null
-    encryption: !empty(managedIdentities) ? encryptionProperties : null
+    encryption: !empty(customerManagedKey)
+      ? {
+          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? {
+                userAssignedIdentity: cMKUserAssignedIdentity.id
+              }
+            : null
+          keySource: 'Microsoft.KeyVault'
+          keyVaultProperties: {
+            keyName: customerManagedKey!.keyName
+            keyVaultResourceId: cMKKeyVault.id
+            keyVaultUri: cMKKeyVault.properties.vaultUri
+          }
+        }
+      : null
   }
 }
 
@@ -245,3 +258,17 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type customerManagedKeyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+
+  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
+  keyVersion: string?
+
+  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
+  userAssignedIdentityResourceId: string?
+}?
