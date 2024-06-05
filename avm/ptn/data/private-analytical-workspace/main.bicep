@@ -40,18 +40,30 @@ var logCfg = ({
     : logAnalyticsWorkspaceResourceId
 })
 
-var dbwSubnets = [
-  // Subnets for service typically in the /22 chunk
-  // DBW - 192.168.228.0/22
+var privateLinkSubnet = [
   {
-    addressPrefix: '192.168.228.0/23'
-    name: 'dbw-control-plane'
-  }
-  {
-    addressPrefix: '192.168.228.0/23'
-    name: 'dbw-data-plane'
+    addressPrefix: '192.168.224.0/24'
+    name: 'paw-private-link'
   }
 ]
+
+var subnets = concat(
+  privateLinkSubnet,
+  // Subnets for service typically in the /22 chunk
+  enableDatabricks
+    ? [
+        // DBW - 192.168.228.0/22
+        {
+          addressPrefix: '192.168.228.0/23'
+          name: 'paw-dbw-control-plane'
+        }
+        {
+          addressPrefix: '192.168.228.0/23'
+          name: 'paw-dbw-data-plane'
+        }
+      ]
+    : []
+)
 
 // ============== //
 // Resources      //
@@ -158,7 +170,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (false /*!!! TODO !!!*/) {
+module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks) {
   name: '${name}-dbw'
   params: {
     // Required parameters
@@ -226,14 +238,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (empty(vNetRe
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
-    subnets: [
-      for subnet in dbwSubnets: enableDatabricks
-        ? {
-            addressPrefix: subnet.addressPrefix
-            name: subnet.name
-          }
-        : null
-    ]
+    subnets: subnets
     tags: tags
   }
 }

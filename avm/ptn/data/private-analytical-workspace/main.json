@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "302819675461018252"
+      "templateHash": "4243528715551678797"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -130,16 +130,13 @@
   },
   "variables": {
     "diagnosticSettingsName": "paw-diagnostic-settings",
-    "dbwSubnets": [
+    "privateLinkSubnet": [
       {
-        "addressPrefix": "192.168.228.0/23",
-        "name": "dbw-control-plane"
-      },
-      {
-        "addressPrefix": "192.168.228.0/23",
-        "name": "dbw-data-plane"
+        "addressPrefix": "192.168.224.0/24",
+        "name": "paw-private-link"
       }
-    ]
+    ],
+    "subnets": "[concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('addressPrefix', '192.168.228.0/23', 'name', 'paw-dbw-control-plane'), createObject('addressPrefix', '192.168.228.0/23', 'name', 'paw-dbw-data-plane')), createArray()))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -4924,7 +4921,7 @@
       ]
     },
     "dbw": {
-      "condition": false,
+      "condition": "[parameters('enableDatabricks')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-dbw', parameters('name'))]",
@@ -6633,13 +6630,7 @@
             "value": "[parameters('lock')]"
           },
           "subnets": {
-            "copy": [
-              {
-                "name": "value",
-                "count": "[length(variables('dbwSubnets'))]",
-                "input": "[if(parameters('enableDatabricks'), createObject('addressPrefix', variables('dbwSubnets')[copyIndex('value')].addressPrefix, 'name', variables('dbwSubnets')[copyIndex('value')].name), null())]"
-              }
-            ]
+            "value": "[variables('subnets')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
