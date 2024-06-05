@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       acrName: dependencies.outputs.acrName
       images: ['mcr.microsoft.com/k8se/quickstart-jobs:latest']
-      overwriteExistingImage: true // needs true, as the idem deployment would fail if the image already exists
+      overwriteExistingImage: true
     }
   }
 ]

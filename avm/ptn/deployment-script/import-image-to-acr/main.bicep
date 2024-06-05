@@ -69,6 +69,17 @@ param storageAccountName string = ''
 @description('Optional. The subnet id to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script.')
 param subnetId string = ''
 
+@description('Optional. Tags of the resource.')
+@metadata({
+  example: '''
+  {
+      "key1": "value1"
+      "key2": "value2"
+  }
+  '''
+})
+param tags object?
+
 // the following settings are only needed if the deployment script is using PrivateLink
 // they must only be added if they contain values. Conditional values for the properties does not work and ARM throws an error
 var storageSettings = !empty(storageAccountName)
@@ -78,7 +89,7 @@ var storageSettings = !empty(storageAccountName)
       }
     }
   : {}
-var networkSettings = !empty(subnetId)
+var containerSettings = !empty(subnetId)
   ? {
       containerSettings: {
         // an existing subnet is needed, if PrivateLink is going to be used
@@ -87,6 +98,7 @@ var networkSettings = !empty(subnetId)
             id: subnetId
           }
         ]
+        containerGroupName: '${resourceGroup().name}-infrastructure'
       }
     }
   : {}
@@ -120,6 +132,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
 resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!useExistingManagedIdentity) {
   name: managedIdentityName
   location: location
+  tags: tags
 }
 
 resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (useExistingManagedIdentity) {
@@ -143,6 +156,7 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = 
   for image in images: {
     name: 'ACR-Import-${name}-${last(split(replace(image,':','-'),'/'))}'
     location: location
+    tags: tags
     identity: {
       type: 'UserAssigned'
       userAssignedIdentities: {
@@ -194,7 +208,7 @@ retryLoopCount=0
 until [ $retryLoopCount -ge $retryMax ]
 do
   echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName"
-  if [ overwriteExistingImage == 'true' ]; then
+  if [ $overwriteExistingImage = 'true' ]; then
     az acr import -n $acrName --source $imageName --force
   else
     az acr import -n $acrName --source $imageName
@@ -208,7 +222,7 @@ echo "done"'''
         cleanupPreference: cleanupPreference
       },
       storageSettings,
-      networkSettings
+      containerSettings
     )
   }
 ]

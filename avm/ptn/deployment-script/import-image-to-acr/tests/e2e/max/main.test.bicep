@@ -20,7 +20,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'dsiitamax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'xrhy'
 
 // ============ //
 // Dependencies //
@@ -52,19 +52,24 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    dependsOn: [
-      dependencies
-    ]
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Env: 'test'
+      }
       acrName: dependencies.outputs.acrName
       location: resourceLocation
-      images: ['mcr.microsoft.com/azuredocs/aks-helloworld:latest', 'mcr.microsoft.com/azuredocs/aks-helloworld:v2']
-      cleanupPreference: 'OnSuccess'
+      images: ['mcr.microsoft.com/k8se/quickstart-jobs:latest']
+      cleanupPreference: 'OnExpiration'
       useExistingManagedIdentity: true
       managedIdentityName: dependencies.outputs.managedIdentityName
+      existingManagedIdentityResourceGroupName: resourceGroupName
+      existingManagedIdentitySubId: subscription().subscriptionId
       overwriteExistingImage: true
+      storageAccountName: dependencies.outputs.storageAccountName
+      subnetId: dependencies.outputs.deploymentscriptSubnetResourceId
     }
   }
 ]

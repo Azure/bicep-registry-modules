@@ -52,6 +52,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     name: 'dsiitamin001'
     // Non-required parameters
     location: '<location>'
+    overwriteExistingImage: true
   }
 }
 ```
@@ -83,6 +84,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "overwriteExistingImage": {
+      "value": true
     }
   }
 }
@@ -107,15 +111,22 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     // Required parameters
     acrName: '<acrName>'
     images: [
-      'mcr.microsoft.com/azuredocs/aks-helloworld:latest'
-      'mcr.microsoft.com/azuredocs/aks-helloworld:v2'
+      'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     ]
     name: 'dsiitamax001'
     // Non-required parameters
-    cleanupPreference: 'OnSuccess'
+    cleanupPreference: 'OnExpiration'
+    existingManagedIdentityResourceGroupName: '<existingManagedIdentityResourceGroupName>'
+    existingManagedIdentitySubId: '<existingManagedIdentitySubId>'
     location: '<location>'
     managedIdentityName: '<managedIdentityName>'
     overwriteExistingImage: true
+    storageAccountName: '<storageAccountName>'
+    subnetId: '<subnetId>'
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
+    }
     useExistingManagedIdentity: true
   }
 }
@@ -139,8 +150,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     "images": {
       "value": [
-        "mcr.microsoft.com/azuredocs/aks-helloworld:latest",
-        "mcr.microsoft.com/azuredocs/aks-helloworld:v2"
+        "mcr.microsoft.com/k8se/quickstart-jobs:latest"
       ]
     },
     "name": {
@@ -148,7 +158,13 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     // Non-required parameters
     "cleanupPreference": {
-      "value": "OnSuccess"
+      "value": "OnExpiration"
+    },
+    "existingManagedIdentityResourceGroupName": {
+      "value": "<existingManagedIdentityResourceGroupName>"
+    },
+    "existingManagedIdentitySubId": {
+      "value": "<existingManagedIdentitySubId>"
     },
     "location": {
       "value": "<location>"
@@ -158,6 +174,18 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     "overwriteExistingImage": {
       "value": true
+    },
+    "storageAccountName": {
+      "value": "<storageAccountName>"
+    },
+    "subnetId": {
+      "value": "<subnetId>"
+    },
+    "tags": {
+      "value": {
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
+      }
     },
     "useExistingManagedIdentity": {
       "value": true
@@ -262,6 +290,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 | [`retryMax`](#parameter-retrymax) | int | The maximum number of retries for the script import operation. Default is 3. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script. |
 | [`subnetId`](#parameter-subnetid) | string | The subnet id to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useExistingManagedIdentity`](#parameter-useexistingmanagedidentity) | bool | Does the Managed Identity already exists, or should be created. Default is false. |
 
 ### Parameter: `acrName`
@@ -396,6 +425,13 @@ The subnet id to use for the deployment script. An existing subnet is needed, if
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `useExistingManagedIdentity`
 
