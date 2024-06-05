@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "14791258600269760647"
+      "templateHash": "16800843069168967040"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -113,6 +113,9 @@
         "description": "Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }
     }
+  },
+  "variables": {
+    "diagnosticSettingsName": "paw-diagnostic-settings"
   },
   "resources": {
     "avmTelemetry": {
@@ -2105,7 +2108,7 @@
           "diagnosticSettings": {
             "value": [
               {
-                "name": "customSetting",
+                "name": "[variables('diagnosticSettingsName')]",
                 "metricCategories": [
                   {
                     "category": "AllMetrics"
@@ -4910,8 +4913,75 @@
           "name": {
             "value": "[format('{0}-dbw', parameters('name'))]"
           },
+          "customPrivateSubnetName": {
+            "value": null
+          },
+          "customPublicSubnetName": {
+            "value": null
+          },
+          "customVirtualNetworkResourceId": {
+            "value": null
+          },
+          "diagnosticSettings": {
+            "value": [
+              {
+                "name": "[variables('diagnosticSettingsName')]",
+                "logCategoriesAndGroups": [
+                  {
+                    "categoryGroup": "allLogs"
+                  }
+                ],
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+              }
+            ]
+          },
+          "disablePublicIp": {
+            "value": true
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
+          "managedResourceGroupResourceId": {
+            "value": null
+          },
+          "prepareEncryption": {
+            "value": true
+          },
+          "privateEndpoints": {
+            "value": []
+          },
+          "publicIpName": {
+            "value": null
+          },
+          "publicNetworkAccess": {
+            "value": null
+          },
+          "requiredNsgRules": {
+            "value": null
+          },
+          "roleAssignments": {
+            "value": []
+          },
+          "skuName": {
+            "value": "premium"
+          },
+          "storageAccountName": {
+            "value": null
+          },
+          "storageAccountSkuName": {
+            "value": null
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "vnetAddressPrefix": {
+            "value": null
           }
         },
         "template": {
@@ -6484,7 +6554,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "log"
+      ]
     }
   },
   "outputs": {

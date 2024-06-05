@@ -26,6 +26,8 @@ param keyVaultResourceId string = ''
 @description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
 
+var diagnosticSettingsName = 'paw-diagnostic-settings'
+
 var logCfg = ({
   logAnalyticsWorkspaceResourceId: empty(logAnalyticsWorkspaceResourceId)
     ? log.outputs.resourceId
@@ -92,7 +94,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
     //createMode: '' // TODO
     diagnosticSettings: [
       {
-        name: 'customSetting'
+        name: diagnosticSettingsName
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -147,7 +149,36 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (false /*!!! TODO
     // Required parameters
     name: '${name}-dbw'
     // Non-required parameters
+    customPrivateSubnetName: null // TODO
+    customPublicSubnetName: null // TODO
+    customVirtualNetworkResourceId: null // TODO
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+      }
+    ]
+    disablePublicIp: true // TODO
+    enableTelemetry: enableTelemetry
     location: location
+    lock: lock
+    managedResourceGroupResourceId: null // TODO
+    prepareEncryption: true // TODO
+    privateEndpoints: [] // TODO
+    publicIpName: null // TODO
+    publicNetworkAccess: null // TODO
+    requiredNsgRules: null // TODO
+    roleAssignments: [] // TODO
+    skuName: 'premium'
+    storageAccountName: null // TODO
+    storageAccountSkuName: null // TODO
+    tags: tags
+    vnetAddressPrefix: null // TODO
   }
 }
 
