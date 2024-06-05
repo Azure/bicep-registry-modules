@@ -20,9 +20,8 @@ param serviceShort string = 'ajmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// needed for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
+// needed for the storage account itself and for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
 var storageAccountName = uniqueString('dep-${namePrefix}-menv-${serviceShort}storage')
-var storageAccountId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}'
 
 // =========== //
 // Deployments //
@@ -89,7 +88,7 @@ module testDeployment '../../../main.bicep' = [
               type: 'azure-queue'
               metadata: {
                 queueName: nestedDependencies.outputs.storageQueueName
-                storageAccountResourceId: storageAccountId
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
               }
               auth: [
                 {
@@ -104,7 +103,11 @@ module testDeployment '../../../main.bicep' = [
       secrets: [
         {
           name: 'connection-string'
-          value: listKeys(storageAccountId, '2023-04-01').keys[0].value
+          // needed for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
+          value: listKeys(
+            '${resourceGroup.id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}',
+            '2023-04-01'
+          ).keys[0].value
         }
       ]
       containers: [
