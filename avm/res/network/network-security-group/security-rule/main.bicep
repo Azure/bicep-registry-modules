@@ -74,7 +74,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
   name: networkSecurityGroupName
 }
 
-resource securityRule 'Microsoft.Network/networkSecurityGroups/securityRules@2023-04-01' = {
+resource securityRule 'Microsoft.Network/networkSecurityGroups/securityRules@2023-11-01' = {
   name: name
   parent: networkSecurityGroup
   properties: {

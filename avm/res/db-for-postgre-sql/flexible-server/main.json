@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13621373926800305772"
+      "version": "0.26.170.59819",
+      "templateHash": "43938432995769188"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -756,8 +756,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "9123565269712158909"
+              "version": "0.26.170.59819",
+              "templateHash": "12256776332622303948"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -864,8 +864,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4295272529604037098"
+              "version": "0.26.170.59819",
+              "templateHash": "12309357869547394167"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
@@ -969,8 +969,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15593908401685608166"
+              "version": "0.26.170.59819",
+              "templateHash": "4808844582468160626"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1079,8 +1079,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4962117704341008645"
+              "version": "0.26.170.59819",
+              "templateHash": "17302939650459446486"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
@@ -1195,6 +1195,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('flexibleServer', '2022-12-01', 'full').location]"
+    },
+    "fqdn": {
+      "type": "string",
+      "metadata": {
+        "description": "The FQDN of the PostgreSQL Flexible server."
+      },
+      "value": "[reference('flexibleServer').fullyQualifiedDomainName]"
     }
   }
 }

@@ -4,11 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6637396315337813947"
+      "version": "0.27.1.19265",
+      "templateHash": "15788464740461325450"
     },
     "name": "Network Manager Network Group Static Members",
-    "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+    "description": "This module deploys a Network Manager Network Group Static Member.\r\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
