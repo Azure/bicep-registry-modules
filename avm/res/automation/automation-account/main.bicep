@@ -18,8 +18,9 @@ param skuName string = 'Basic'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
+import { credentialType } from 'credential/main.bicep'
 @description('Optional. List of credentials to be created in the automation account.')
-param credentials array = []
+param credentials credentialType
 
 @description('Optional. List of modules to be created in the automation account.')
 param modules array = []
@@ -193,18 +194,13 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
   }
 }
 
-module automationAccount_credentials 'credential/main.bicep' = [
-  for (credential, index) in (credentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credential-${index}'
-    params: {
-      credentialName: credential.credentialName
-      credentialDescription: credential.credentialDescription
-      automationAccountName: automationAccount.name
-      userName: credential.userName
-      password: credential.password
-    }
+module automationAccount_credentials 'credential/main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credentials'
+  params: {
+    automationAccountName: automationAccount.name
+    credentials: credentials
   }
-]
+}
 
 module automationAccount_modules 'module/main.bicep' = [
   for (module, index) in modules: {
