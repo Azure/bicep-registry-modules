@@ -205,9 +205,9 @@ until [ $retryLoopCount -ge $retryMax ]
 do
   echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName\n"
   if [ $overwriteExistingImage = 'true' ]; then
-    az acr import -n $acrName --source $imageName --force
+    az acr import -n $acrName --source $imageName --force && break
   else
-    az acr import -n $acrName --source $imageName
+    az acr import -n $acrName --source $imageName && break
   fi
 
   sleep $retrySleep

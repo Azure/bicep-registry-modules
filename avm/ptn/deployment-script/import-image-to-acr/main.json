@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "814008718474299309"
+      "templateHash": "16264732445572231050"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -158,7 +158,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\r\n      \"key1\": \"value1\"\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
+        "example": "  {\n      \"key1\": \"value1\"\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
       }
     }
@@ -250,7 +250,7 @@
         }
       },
       "kind": "AzureCLI",
-      "properties": "[union(createObject('forceUpdateTag', parameters('forceUpdateTag'), 'azCliVersion', '2.59.0', 'timeout', 'PT30M', 'retentionInterval', 'PT1H', 'environmentVariables', createArray(createObject('name', 'acrName', 'value', parameters('acrName')), createObject('name', 'imageName', 'value', parameters('image')), createObject('name', 'overwriteExistingImage', 'value', toLower(string(parameters('overwriteExistingImage')))), createObject('name', 'initialDelay', 'value', format('{0}s', string(parameters('initialScriptDelay')))), createObject('name', 'retryMax', 'value', string(parameters('retryMax'))), createObject('name', 'retrySleep', 'value', '5s')), 'scriptContent', '#!/bin/bash\r\nset -e\r\n\r\necho \"Waiting on RBAC replication ($initialDelay)\\n\"\r\nsleep $initialDelay\r\n\r\n# retry loop to catch errors (usually RBAC delays, but ''Error copying blobs'' is also not unheard of)\r\nretryLoopCount=0\r\nuntil [ $retryLoopCount -ge $retryMax ]\r\ndo\r\n  echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\r\n  if [ $overwriteExistingImage = ''true'' ]; then\r\n    az acr import -n $acrName --source $imageName --force\r\n  else\r\n    az acr import -n $acrName --source $imageName\r\n  fi\r\n\r\n  sleep $retrySleep\r\n  retryLoopCount=$((retryLoopCount+1))\r\ndone\r\n\r\necho \"done\\n\"', 'cleanupPreference', parameters('cleanupPreference')), variables('storageSettings'), variables('containerSettings'))]",
+      "properties": "[union(createObject('forceUpdateTag', parameters('forceUpdateTag'), 'azCliVersion', '2.59.0', 'timeout', 'PT30M', 'retentionInterval', 'PT1H', 'environmentVariables', createArray(createObject('name', 'acrName', 'value', parameters('acrName')), createObject('name', 'imageName', 'value', parameters('image')), createObject('name', 'overwriteExistingImage', 'value', toLower(string(parameters('overwriteExistingImage')))), createObject('name', 'initialDelay', 'value', format('{0}s', string(parameters('initialScriptDelay')))), createObject('name', 'retryMax', 'value', string(parameters('retryMax'))), createObject('name', 'retrySleep', 'value', '5s')), 'scriptContent', '#!/bin/bash\nset -e\n\necho \"Waiting on RBAC replication ($initialDelay)\\n\"\nsleep $initialDelay\n\n# retry loop to catch errors (usually RBAC delays, but ''Error copying blobs'' is also not unheard of)\nretryLoopCount=0\nuntil [ $retryLoopCount -ge $retryMax ]\ndo\n  echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n  if [ $overwriteExistingImage = ''true'' ]; then\n    az acr import -n $acrName --source $imageName --force && break\n  else\n    az acr import -n $acrName --source $imageName && break\n  fi\n\n  sleep $retrySleep\n  retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"done\\n\"', 'cleanupPreference', parameters('cleanupPreference')), variables('storageSettings'), variables('containerSettings'))]",
       "dependsOn": [
         "existingManagedIdentity",
         "newManagedIdentity",
