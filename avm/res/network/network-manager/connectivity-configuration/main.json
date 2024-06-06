@@ -1,15 +1,80 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "3569964888966454016"
+      "version": "0.27.1.19265",
+      "templateHash": "2756544330949607993"
     },
     "name": "Network Manager Connectivity Configurations",
-    "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+    "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "appliesToGroupsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "groupConnectivity": {
+            "type": "string",
+            "allowedValues": [
+              "DirectlyConnected",
+              "None"
+            ],
+            "metadata": {
+              "description": "Required. Group connectivity type."
+            }
+          },
+          "isGlobal": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Flag if global is supported."
+            }
+          },
+          "networkGroupResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Resource Id of the network group."
+            }
+          },
+          "useHubGateway": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Flag if use hub gateway."
+            }
+          }
+        }
+      }
+    },
+    "hubsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "resourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Resource Id of the hub."
+            }
+          },
+          "resourceType": {
+            "type": "string",
+            "allowedValues": [
+              "Microsoft.Network/virtualNetworks"
+            ],
+            "metadata": {
+              "description": "Required. Resource type of the hub."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
   },
   "parameters": {
     "networkManagerName": {
@@ -27,17 +92,16 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the connectivity configuration."
       }
     },
     "appliesToGroups": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/appliesToGroupsType",
       "metadata": {
-        "description": "Required. Network Groups for the configuration."
+        "description": "Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group."
       }
     },
     "connectivityTopology": {
@@ -51,50 +115,50 @@
       }
     },
     "hubs": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/hubsType",
       "metadata": {
         "description": "Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type \"HubAndSpoke\"."
       }
     },
     "deleteExistingPeering": {
-      "type": "string",
-      "defaultValue": "False",
-      "allowedValues": [
-        "True",
-        "False"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Flag if need to remove current existing peerings. If set to \"True\", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type \"HubAndSpoke\"."
       }
     },
     "isGlobal": {
-      "type": "string",
-      "defaultValue": "False",
-      "allowedValues": [
-        "True",
-        "False"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to \"True\", a global mesh enables connectivity across regions."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "networkManager": {
+      "existing": true,
+      "type": "Microsoft.Network/networkManagers",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('networkManagerName')]"
+    },
+    "connectivityConfiguration": {
       "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
       "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "appliesToGroups": "[parameters('appliesToGroups')]",
+        "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
         "connectivityTopology": "[parameters('connectivityTopology')]",
-        "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('deleteExistingPeering'), 'False')]",
-        "description": "[parameters('description')]",
+        "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
+        "description": "[coalesce(parameters('description'), '')]",
         "hubs": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('hubs'), createArray())]",
-        "isGlobal": "[parameters('isGlobal')]"
-      }
+        "isGlobal": "[string(parameters('isGlobal'))]"
+      },
+      "dependsOn": [
+        "networkManager"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
