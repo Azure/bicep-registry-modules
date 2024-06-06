@@ -56,7 +56,7 @@ param virtualNetworkAddressSpace array = []
 param virtualNetworkDnsServers array = []
 
 @sys.description('The resoruce ID of an existing DDoS Network Protection Plan that you wish to link to this virtual network.')
-param virtualNetworkDdosPlanId string = ''
+param virtualNetworkDdosPlanResourceId string = ''
 
 @sys.description('Whether to enable peering/connection with the supplied hub virtual network or virtual hub.')
 param virtualNetworkPeeringEnabled bool = false
@@ -113,74 +113,6 @@ param virtualNetworkDeploymentScriptAddressPrefix string = ''
 
 @sys.description('''
 An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
-
-- Type: `{}` Object
-- Default value: `{
-  'Microsoft.ApiManagement'             : []
-    'Microsoft.AppPlatform'             : []
-    'Microsoft.Authorization'           : []
-    'Microsoft.Automation'              : []
-    'Microsoft.AVS'                     : []
-    'Microsoft.Blueprint'               : []
-    'Microsoft.BotService'              : []
-    'Microsoft.Cache'                   : []
-    'Microsoft.Cdn'                     : []
-    'Microsoft.CognitiveServices'       : []
-    'Microsoft.Compute'                 : []
-    'Microsoft.ContainerInstance'       : []
-    'Microsoft.ContainerRegistry'       : []
-    'Microsoft.ContainerService'        : []
-    'Microsoft.CostManagement'          : []
-    'Microsoft.CustomProviders'         : []
-    'Microsoft.Databricks'              : []
-    'Microsoft.DataLakeAnalytics'       : []
-    'Microsoft.DataLakeStore'           : []
-    'Microsoft.DataMigration'           : []
-    'Microsoft.DataProtection'          : []
-    'Microsoft.DBforMariaDB'            : []
-    'Microsoft.DBforMySQL'              : []
-    'Microsoft.DBforPostgreSQL'         : []
-    'Microsoft.DesktopVirtualization'   : []
-    'Microsoft.Devices'                 : []
-    'Microsoft.DevTestLab'              : []
-    'Microsoft.DocumentDB'              : []
-    'Microsoft.EventGrid'               : []
-    'Microsoft.EventHub'                : []
-    'Microsoft.HDInsight'               : []
-    'Microsoft.HealthcareApis'          : []
-    'Microsoft.GuestConfiguration'      : []
-    'Microsoft.KeyVault'                : []
-    'Microsoft.Kusto'                   : []
-    'microsoft.insights'                : []
-    'Microsoft.Logic'                   : []
-    'Microsoft.MachineLearningServices' : []
-    'Microsoft.Maintenance'             : []
-    'Microsoft.ManagedIdentity'         : []
-    'Microsoft.ManagedServices'         : []
-    'Microsoft.Management'              : []
-    'Microsoft.Maps'                    : []
-    'Microsoft.MarketplaceOrdering'     : []
-    'Microsoft.Media'                   : []
-    'Microsoft.MixedReality'            : []
-    'Microsoft.Network'                 : []
-    'Microsoft.NotificationHubs'        : []
-    'Microsoft.OperationalInsights'     : []
-    'Microsoft.OperationsManagement'    : []
-    'Microsoft.PolicyInsights'          : []
-    'Microsoft.PowerBIDedicated'        : []
-    'Microsoft.Relay'                   : []
-    'Microsoft.RecoveryServices'        : []
-    'Microsoft.Resources'               : []
-    'Microsoft.Search'                  : []
-    'Microsoft.Security'                : []
-    'Microsoft.SecurityInsights'        : []
-    'Microsoft.ServiceBus'              : []
-    'Microsoft.ServiceFabric'           : []
-    'Microsoft.Sql'                     : []
-    'Microsoft.Storage'                 : []
-    'Microsoft.StreamAnalytics'         : []
-    'Microsoft.TimeSeriesInsights'      : []
-    'Microsoft.Web'                     : []
 }`''')
 param resourceProviders object = {
   'Microsoft.ApiManagement': []
@@ -441,7 +373,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (virt
     location: virtualNetworkLocation
     addressPrefixes: virtualNetworkAddressSpace
     dnsServers: virtualNetworkDnsServers
-    ddosProtectionPlanResourceId: virtualNetworkDdosPlanId
+    ddosProtectionPlanResourceId: virtualNetworkDdosPlanResourceId
     peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
       ? [
           {
@@ -488,7 +420,7 @@ module createLzVirtualWanConnection '../../modules/Microsoft.Network/virtualHubs
   }
 }
 
-module createLzRoleAssignmentsSub '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = [
+module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = [
   for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -503,7 +435,7 @@ module createLzRoleAssignmentsSub '../../modules/Microsoft.Authorization/roleAss
   }
 ]
 
-module createLzRoleAssignmentsRsgsSelf '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = [
+module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = [
   for assignment in roleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupSelf)) {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -522,7 +454,7 @@ module createLzRoleAssignmentsRsgsSelf '../../modules/Microsoft.Authorization/ro
   }
 ]
 
-module createLzRoleAssignmentsRsgsNotSelf '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = [
+module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = [
   for assignment in roleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupNotSelf)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -561,7 +493,7 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-module createRoleAssignmentsDeploymentScript '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
@@ -571,7 +503,7 @@ module createRoleAssignmentsDeploymentScript '../../modules/Microsoft.Authorizat
   }
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount '../../modules/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation
