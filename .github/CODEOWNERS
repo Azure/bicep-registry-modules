@@ -6,10 +6,6 @@
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/resource-role-assignment/ @Azure/avm-ptn-authorization-resourceroleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/insights/ @Azure/avm-ptn-avd-lza-insights-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/finops-toolkit/finops-hub/ @Azure/avm-ptn-finopstoolkit-finopshub-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
