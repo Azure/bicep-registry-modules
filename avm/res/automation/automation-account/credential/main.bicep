@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param automationAccountName string
 
 @description('Required. The credential definition.')
-param credentials credentialType
+param credentials credentialType = []
 
 var credentialsCount = length(credentials)
 
@@ -55,4 +55,4 @@ type credentialType = {
 
   @description('Optional. Description of the credential.')
   description: string?
-}[]?
+}[]

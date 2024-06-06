@@ -36,6 +36,7 @@ The credential definition.
 
 - Required: No
 - Type: array
+- Default: `[]`
 
 **Required parameters**
 
