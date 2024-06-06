@@ -31,7 +31,7 @@ param subscriptionDisplayName string = ''
 
 The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.
 
-> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
+> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
 param subscriptionAliasName string = ''
 
@@ -39,7 +39,7 @@ param subscriptionAliasName string = ''
 
 A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.
 
-> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
+> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
 param subscriptionBillingScope string = ''
 
@@ -49,7 +49,7 @@ param subscriptionBillingScope string = ''
 ])
 @description('''Optional. The workload type can be either `Production` or `DevTest` and is case sensitive.
 
-> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
+> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
 param subscriptionWorkload string = 'Production'
 
@@ -200,7 +200,7 @@ Each object must contain the following `keys`:
     - e.g. `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 - `relativeScope` = 2 options can be provided for input value:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
-    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group
+    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
 ''')
 param roleAssignments array = []
 
