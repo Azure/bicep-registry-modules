@@ -20,6 +20,9 @@ param serviceShort string = 'ajmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// needed for the storage account itself and for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
+var storageAccountName = uniqueString('dep-${namePrefix}-menv-${serviceShort}storage')
+
 // =========== //
 // Deployments //
 // =========== //
@@ -39,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     workloadProfileName: serviceShort
+    storageAccountName: storageAccountName
   }
 }
 
@@ -70,27 +74,49 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      secrets: {
-        secureList: [
-          {
-            name: 'customtest'
-            value: guid(deployment().name)
-          }
-        ]
-      }
-      triggerType: 'Manual'
-      manualTriggerConfig: {
-        replicaCompletionCount: 1
+      triggerType: 'Event'
+      eventTriggerConfig: {
         parallelism: 1
+        replicaCompletionCount: 1
+        scale: {
+          minExecutions: 1
+          maxExecutions: 1
+          pollingInterval: 55
+          rules: [
+            {
+              name: 'queue'
+              type: 'azure-queue'
+              metadata: {
+                queueName: nestedDependencies.outputs.storageQueueName
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+              auth: [
+                {
+                  secretRef: 'connectionString'
+                  triggerParameter: 'connection'
+                }
+              ]
+            }
+          ]
+        }
       }
+      secrets: [
+        {
+          name: 'connection-string'
+          // needed for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
+          value: listKeys(
+            '${resourceGroup.id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}',
+            '2023-04-01'
+          ).keys[0].value
+        }
+      ]
       containers: [
         {
           name: 'simple-hello-world-container'
           image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
           resources: {
-            // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
-            cpu: json('0.25')
-            memory: '0.5Gi'
+            cpu: '1.25'
+            memory: '1.5Gi'
           }
           probes: [
             {
@@ -109,6 +135,48 @@ module testDeployment '../../../main.bicep' = [
               periodSeconds: 3
             }
           ]
+          env: [
+            {
+              name: 'AZURE_STORAGE_QUEUE_NAME'
+              value: nestedDependencies.outputs.storageQueueName
+            }
+            {
+              name: 'AZURE_STORAGE_CONNECTION_STRING'
+              secretRef: 'connection-string'
+            }
+          ]
+          volumeMounts: [
+            {
+              volumeName: '${namePrefix}${serviceShort}emptydir'
+              mountPath: '/mnt/data'
+            }
+          ]
+        }
+        {
+          name: 'second-simple-container'
+          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          env: [
+            {
+              name: 'SOME_ENV_VAR'
+              value: 'some-value'
+            }
+          ]
+          args: [
+            'arg1'
+            'arg2'
+          ]
+          command: [
+            '/bin/bash'
+            '-c'
+            'echo hello'
+            'sleep 100000'
+          ]
+        }
+      ]
+      volumes: [
+        {
+          storageType: 'EmptyDir'
+          name: '${namePrefix}${serviceShort}emptydir'
         }
       ]
       roleAssignments: [
