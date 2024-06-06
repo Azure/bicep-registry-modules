@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "11424387222619939437"
+      "version": "0.27.1.19265",
+      "templateHash": "5141716518010159201"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -674,7 +674,7 @@
       },
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2023-11-01",
       "name": "[flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName]"
     },
     "hubVirtualNetworkPeer_local": {
@@ -685,7 +685,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enablePeering]",
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2023-11-01",
       "name": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
     },
     "hubVirtualNetworkPeering": {
@@ -694,7 +694,7 @@
         "count": "[length(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray()))]"
       },
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}-to-{2}', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
         "allowForwardedTraffic": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].allowForwardedTraffic, false())]",
@@ -719,7 +719,7 @@
         "count": "[length(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray()))]"
       },
       "type": "Microsoft.Network/routeTables/routes",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}-to-{2}-route', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
         "addressPrefix": "[reference(format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())).addressSpace.addressPrefixes[0]]",
@@ -745,7 +745,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/AzureFirewallSubnet', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
     },
     "hubVirtualNetwork": {
@@ -812,8 +812,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "16201617947579685823"
+              "version": "0.26.170.59819",
+              "templateHash": "18408205474040416108"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network (vNet).",
@@ -939,14 +939,21 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -957,14 +964,21 @@
                         "category": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -1022,7 +1036,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The Virtual Network (vNet) Name."
+                "description": "Required. The name of the Virtual Network (vNet)."
               }
             },
             "location": {
@@ -1126,12 +1140,6 @@
             }
           },
           "variables": {
-            "dnsServersVar": {
-              "dnsServers": "[array(parameters('dnsServers'))]"
-            },
-            "ddosProtectionPlan": {
-              "id": "[parameters('ddosProtectionPlanResourceId')]"
-            },
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -1146,7 +1154,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.1.6', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1181,11 +1189,11 @@
                         "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations'), parameters('subnets')[copyIndex('subnets')].applicationGatewayIPConfigurations, createArray())]",
                         "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
                         "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
-                        "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
-                        "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
+                        "natGateway": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].natGatewayResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
+                        "networkSecurityGroup": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
                         "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
                         "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
-                        "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
+                        "routeTable": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].routeTableResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
                         "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints'), parameters('subnets')[copyIndex('subnets')].serviceEndpoints, createArray())]",
                         "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex('subnets')].serviceEndpointPolicies, createArray())]"
                       }
@@ -1195,8 +1203,8 @@
                 "addressSpace": {
                   "addressPrefixes": "[parameters('addressPrefixes')]"
                 },
-                "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), variables('ddosProtectionPlan'), null())]",
-                "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), variables('dnsServersVar'), null())]",
+                "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
+                "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
                 "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
                 "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
                 "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]"
@@ -1226,12 +1234,30 @@
               "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                 "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -1264,7 +1290,9 @@
             "virtualNetwork_subnets": {
               "copy": {
                 "name": "virtualNetwork_subnets",
-                "count": "[length(parameters('subnets'))]"
+                "count": "[length(parameters('subnets'))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1304,8 +1332,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "279998742971122360"
+                      "version": "0.26.170.59819",
+                      "templateHash": "17306638026226376877"
                     },
                     "name": "Virtual Network Subnets",
                     "description": "This module deploys a Virtual Network Subnet.",
@@ -1630,8 +1658,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "853734530125813320"
+                      "version": "0.26.170.59819",
+                      "templateHash": "17624189975510507274"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering.",
@@ -1775,8 +1803,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "853734530125813320"
+                      "version": "0.26.170.59819",
+                      "templateHash": "17624189975510507274"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering.",
@@ -2370,7 +2398,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "11345858363641612683"
+              "templateHash": "13476650126267644156"
             },
             "name": "Bastion Hosts",
             "description": "This module deploys a Bastion Host.",
@@ -2700,7 +2728,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2824,16 +2852,30 @@
                   "diagnosticSettings": {
                     "value": "[tryGet(parameters('publicIPAddressObject'), 'diagnosticSettings')]"
                   },
-                  "publicIPAddressVersion": "[if(contains(parameters('publicIPAddressObject'), 'publicIPAddressVersion'), createObject('value', parameters('publicIPAddressObject').publicIPAddressVersion), createObject('value', 'IPv4'))]",
-                  "publicIPAllocationMethod": "[if(contains(parameters('publicIPAddressObject'), 'publicIPAllocationMethod'), createObject('value', parameters('publicIPAddressObject').publicIPAllocationMethod), createObject('value', 'Static'))]",
-                  "publicIpPrefixResourceId": "[if(contains(parameters('publicIPAddressObject'), 'publicIPPrefixResourceId'), createObject('value', parameters('publicIPAddressObject').publicIPPrefixResourceId), createObject('value', ''))]",
-                  "roleAssignments": "[if(contains(parameters('publicIPAddressObject'), 'roleAssignments'), createObject('value', parameters('publicIPAddressObject').roleAssignments), createObject('value', createArray()))]",
-                  "skuName": "[if(contains(parameters('publicIPAddressObject'), 'skuName'), createObject('value', parameters('publicIPAddressObject').skuName), createObject('value', 'Standard'))]",
-                  "skuTier": "[if(contains(parameters('publicIPAddressObject'), 'skuTier'), createObject('value', parameters('publicIPAddressObject').skuTier), createObject('value', 'Regional'))]",
+                  "publicIPAddressVersion": {
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion')]"
+                  },
+                  "publicIPAllocationMethod": {
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAllocationMethod')]"
+                  },
+                  "publicIpPrefixResourceId": {
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPPrefixResourceId')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'roleAssignments')]"
+                  },
+                  "skuName": {
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'skuName')]"
+                  },
+                  "skuTier": {
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'skuTier')]"
+                  },
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
                   },
-                  "zones": "[if(contains(parameters('publicIPAddressObject'), 'zones'), createObject('value', parameters('publicIPAddressObject').zones), createObject('value', createArray()))]"
+                  "zones": {
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'zones')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2842,8 +2884,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "3488076626994379707"
+                      "version": "0.26.54.24096",
+                      "templateHash": "4718335757080871925"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address.",
@@ -2892,7 +2934,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -2986,11 +3028,14 @@
                           "type": "object",
                           "properties": {
                             "id": {
-                              "type": "string"
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
+                              }
                             }
                           },
                           "metadata": {
-                            "description": "Required. The DDoS protection plan ID associated with the public IP address."
+                            "description": "Required. The DDoS protection plan associated with the public IP address."
                           }
                         },
                         "protectionMode": {
@@ -3034,12 +3079,19 @@
                                   "metadata": {
                                     "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                             }
                           },
                           "metricCategories": {
@@ -3052,12 +3104,19 @@
                                   "metadata": {
                                     "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                             }
                           },
                           "logAnalyticsDestinationType": {
@@ -3138,7 +3197,19 @@
                     },
                     "zones": {
                       "type": "array",
-                      "nullable": true,
+                      "items": {
+                        "type": "int"
+                      },
+                      "defaultValue": [
+                        1,
+                        2,
+                        3
+                      ],
+                      "allowedValues": [
+                        1,
+                        2,
+                        3
+                      ],
                       "metadata": {
                         "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
                       }
@@ -3256,7 +3327,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3274,7 +3345,7 @@
                     },
                     "publicIpAddress": {
                       "type": "Microsoft.Network/publicIPAddresses",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-09-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -3282,7 +3353,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[parameters('zones')]",
+                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -3290,7 +3361,7 @@
                         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                         "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                        "ipTags": []
+                        "ipTags": null
                       }
                     },
                     "publicIpAddress_lock": {
@@ -3339,12 +3410,30 @@
                       "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
                       "properties": {
+                        "copy": [
+                          {
+                            "name": "metrics",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "input": {
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "timeGrain": null
+                            }
+                          },
+                          {
+                            "name": "logs",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "input": {
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                            }
+                          }
+                        ],
                         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                         "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                        "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())))]",
                         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
                       },
@@ -3380,14 +3469,14 @@
                       "metadata": {
                         "description": "The public IP address of the public IP address resource."
                       },
-                      "value": "[if(contains(reference('publicIpAddress'), 'ipAddress'), reference('publicIpAddress').ipAddress, '')]"
+                      "value": "[coalesce(tryGet(reference('publicIpAddress'), 'ipAddress'), '')]"
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('publicIpAddress', '2023-04-01', 'full').location]"
+                      "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
                     }
                   }
                 }
@@ -3526,8 +3615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "13362909468545687533"
+              "version": "0.27.1.19265",
+              "templateHash": "3160151450128323123"
             },
             "name": "Azure Firewalls",
             "description": "This module deploys an Azure Firewall.",
@@ -3744,6 +3833,440 @@
                 }
               },
               "nullable": true
+            },
+            "natRuleCollectionType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the NAT rule collection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Dnat",
+                              "Snat"
+                            ],
+                            "metadata": {
+                              "description": "Required. The type of action."
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "description": "Required. The action type of a NAT rule collection."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 100,
+                        "maxValue": 65000,
+                        "metadata": {
+                          "description": "Required. Priority of the NAT rule collection."
+                        }
+                      },
+                      "rules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Name of the NAT rule."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Description of the rule."
+                              }
+                            },
+                            "protocols": {
+                              "type": "array",
+                              "allowedValues": [
+                                "Any",
+                                "ICMP",
+                                "TCP",
+                                "UDP"
+                              ],
+                              "metadata": {
+                                "description": "Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule."
+                              }
+                            },
+                            "destinationAddresses": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags."
+                              }
+                            },
+                            "destinationPorts": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of destination ports."
+                              }
+                            },
+                            "sourceAddresses": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of source IP addresses for this rule."
+                              }
+                            },
+                            "sourceIpGroups": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of source IpGroups for this rule."
+                              }
+                            },
+                            "translatedAddress": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The translated address for this NAT rule."
+                              }
+                            },
+                            "translatedFqdn": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The translated FQDN for this NAT rule."
+                              }
+                            },
+                            "translatedPort": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The translated port for this NAT rule."
+                              }
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "description": "Required. Collection of rules used by a NAT rule collection."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of the azure firewall NAT rule collection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "applicationRuleCollectionType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the application rule collection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Allow",
+                              "Deny"
+                            ],
+                            "metadata": {
+                              "description": "Required. The type of action."
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "description": "Required. The action type of a rule collection."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 100,
+                        "maxValue": 65000,
+                        "metadata": {
+                          "description": "Required. Priority of the application rule collection."
+                        }
+                      },
+                      "rules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Name of the application rule."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Description of the rule."
+                              }
+                            },
+                            "protocols": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "port": {
+                                    "type": "int",
+                                    "nullable": true,
+                                    "maxValue": 64000,
+                                    "metadata": {
+                                      "description": "Optional. Port number for the protocol."
+                                    }
+                                  },
+                                  "protocolType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "Http",
+                                      "Https",
+                                      "Mssql"
+                                    ],
+                                    "metadata": {
+                                      "description": "Required. Protocol type."
+                                    }
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "Required. Array of ApplicationRuleProtocols."
+                              }
+                            },
+                            "fqdnTags": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of FQDN Tags for this rule."
+                              }
+                            },
+                            "targetFqdns": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of FQDNs for this rule."
+                              }
+                            },
+                            "sourceAddresses": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of source IP addresses for this rule."
+                              }
+                            },
+                            "sourceIpGroups": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of source IpGroups for this rule."
+                              }
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "description": "Required. Collection of rules used by a application rule collection."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of the azure firewall application rule collection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "networkRuleCollectionType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the network rule collection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Allow",
+                              "Deny"
+                            ],
+                            "metadata": {
+                              "description": "Required. The type of action."
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "description": "Required. The action type of a rule collection."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 100,
+                        "maxValue": 65000,
+                        "metadata": {
+                          "description": "Required. Priority of the network rule collection."
+                        }
+                      },
+                      "rules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Name of the network rule."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Description of the rule."
+                              }
+                            },
+                            "protocols": {
+                              "type": "array",
+                              "allowedValues": [
+                                "Any",
+                                "ICMP",
+                                "TCP",
+                                "UDP"
+                              ],
+                              "metadata": {
+                                "description": "Required. Array of AzureFirewallNetworkRuleProtocols."
+                              }
+                            },
+                            "destinationAddresses": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of destination IP addresses."
+                              }
+                            },
+                            "destinationFqdns": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of destination FQDNs."
+                              }
+                            },
+                            "destinationIpGroups": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of destination IP groups for this rule."
+                              }
+                            },
+                            "destinationPorts": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of destination ports."
+                              }
+                            },
+                            "sourceAddresses": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of source IP addresses for this rule."
+                              }
+                            },
+                            "sourceIpGroups": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of source IpGroups for this rule."
+                              }
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "description": "Required. Collection of rules used by a network rule collection."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of the azure firewall network rule collection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
             }
           },
           "parameters": {
@@ -3810,22 +4333,19 @@
               }
             },
             "applicationRuleCollections": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/applicationRuleCollectionType",
               "metadata": {
                 "description": "Optional. Collection of application rule collections used by Azure Firewall."
               }
             },
             "networkRuleCollections": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/networkRuleCollectionType",
               "metadata": {
                 "description": "Optional. Collection of network rule collections used by Azure Firewall."
               }
             },
             "natRuleCollections": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/natRuleCollectionType",
               "metadata": {
                 "description": "Optional. Collection of NAT rule collections used by Azure Firewall."
               }
@@ -3866,9 +4386,9 @@
             "zones": {
               "type": "array",
               "defaultValue": [
-                "1",
-                "2",
-                "3"
+                1,
+                2,
+                3
               ],
               "metadata": {
                 "description": "Optional. Zone numbers e.g. 1,2,3."
@@ -3943,7 +4463,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3966,7 +4486,7 @@
               "location": "[parameters('location')]",
               "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
               "tags": "[parameters('tags')]",
-              "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('managementIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value))), createObject()))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', parameters('applicationRuleCollections'), 'natRuleCollections', parameters('natRuleCollections'), 'networkRuleCollections', parameters('networkRuleCollections')), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
+              "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('managementIPResourceID'))), not(empty(parameters('managementIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value))), createObject()))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
               "dependsOn": [
                 "managementIPAddress",
                 "publicIPAddress"
@@ -4094,8 +4614,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "3488076626994379707"
+                      "version": "0.26.54.24096",
+                      "templateHash": "4718335757080871925"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address.",
@@ -4144,7 +4664,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -4238,11 +4758,14 @@
                           "type": "object",
                           "properties": {
                             "id": {
-                              "type": "string"
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
+                              }
                             }
                           },
                           "metadata": {
-                            "description": "Required. The DDoS protection plan ID associated with the public IP address."
+                            "description": "Required. The DDoS protection plan associated with the public IP address."
                           }
                         },
                         "protectionMode": {
@@ -4286,12 +4809,19 @@
                                   "metadata": {
                                     "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                             }
                           },
                           "metricCategories": {
@@ -4304,12 +4834,19 @@
                                   "metadata": {
                                     "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                             }
                           },
                           "logAnalyticsDestinationType": {
@@ -4390,7 +4927,19 @@
                     },
                     "zones": {
                       "type": "array",
-                      "nullable": true,
+                      "items": {
+                        "type": "int"
+                      },
+                      "defaultValue": [
+                        1,
+                        2,
+                        3
+                      ],
+                      "allowedValues": [
+                        1,
+                        2,
+                        3
+                      ],
                       "metadata": {
                         "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
                       }
@@ -4508,7 +5057,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4526,7 +5075,7 @@
                     },
                     "publicIpAddress": {
                       "type": "Microsoft.Network/publicIPAddresses",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-09-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -4534,7 +5083,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[parameters('zones')]",
+                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -4542,7 +5091,7 @@
                         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                         "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                        "ipTags": []
+                        "ipTags": null
                       }
                     },
                     "publicIpAddress_lock": {
@@ -4591,12 +5140,30 @@
                       "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
                       "properties": {
+                        "copy": [
+                          {
+                            "name": "metrics",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "input": {
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "timeGrain": null
+                            }
+                          },
+                          {
+                            "name": "logs",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "input": {
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                            }
+                          }
+                        ],
                         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                         "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                        "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())))]",
                         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
                       },
@@ -4632,14 +5199,14 @@
                       "metadata": {
                         "description": "The public IP address of the public IP address resource."
                       },
-                      "value": "[if(contains(reference('publicIpAddress'), 'ipAddress'), reference('publicIpAddress').ipAddress, '')]"
+                      "value": "[coalesce(tryGet(reference('publicIpAddress'), 'ipAddress'), '')]"
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('publicIpAddress', '2023-04-01', 'full').location]"
+                      "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
                     }
                   }
                 }
@@ -4657,8 +5224,8 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": "[if(contains(parameters('managementIPAddressObject'), 'name'), if(not(empty(parameters('managementIPAddressObject').name)), createObject('value', parameters('managementIPAddressObject').name), createObject('value', format('{0}-mip', parameters('name')))), createObject('value', format('{0}-mip', parameters('name'))))]",
-                  "publicIpPrefixResourceId": "[if(contains(parameters('managementIPAddressObject'), 'managementIPPrefixResourceId'), if(not(empty(parameters('managementIPAddressObject').publicIPPrefixResourceId)), createObject('value', parameters('managementIPAddressObject').publicIPPrefixResourceId), createObject('value', '')), createObject('value', ''))]",
-                  "publicIPAllocationMethod": "[if(contains(parameters('managementIPAddressObject'), 'managementIPAllocationMethod'), if(not(empty(parameters('managementIPAddressObject').publicIPAllocationMethod)), createObject('value', parameters('managementIPAddressObject').publicIPAllocationMethod), createObject('value', 'Static')), createObject('value', 'Static'))]",
+                  "publicIpPrefixResourceId": "[if(contains(parameters('managementIPAddressObject'), 'managementIPPrefixResourceId'), if(not(empty(parameters('managementIPAddressObject').managementIPPrefixResourceId)), createObject('value', parameters('managementIPAddressObject').managementIPPrefixResourceId), createObject('value', '')), createObject('value', ''))]",
+                  "publicIPAllocationMethod": "[if(contains(parameters('managementIPAddressObject'), 'managementIPAllocationMethod'), if(not(empty(parameters('managementIPAddressObject').managementIPAllocationMethod)), createObject('value', parameters('managementIPAddressObject').managementIPAllocationMethod), createObject('value', 'Static')), createObject('value', 'Static'))]",
                   "skuName": "[if(contains(parameters('managementIPAddressObject'), 'skuName'), if(not(empty(parameters('managementIPAddressObject').skuName)), createObject('value', parameters('managementIPAddressObject').skuName), createObject('value', 'Standard')), createObject('value', 'Standard'))]",
                   "skuTier": "[if(contains(parameters('managementIPAddressObject'), 'skuTier'), if(not(empty(parameters('managementIPAddressObject').skuTier)), createObject('value', parameters('managementIPAddressObject').skuTier), createObject('value', 'Regional')), createObject('value', 'Regional'))]",
                   "roleAssignments": "[if(contains(parameters('managementIPAddressObject'), 'roleAssignments'), if(not(empty(parameters('managementIPAddressObject').roleAssignments)), createObject('value', parameters('managementIPAddressObject').roleAssignments), createObject('value', createArray())), createObject('value', createArray()))]",
@@ -4685,8 +5252,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "3488076626994379707"
+                      "version": "0.26.54.24096",
+                      "templateHash": "4718335757080871925"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address.",
@@ -4735,7 +5302,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -4829,11 +5396,14 @@
                           "type": "object",
                           "properties": {
                             "id": {
-                              "type": "string"
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
+                              }
                             }
                           },
                           "metadata": {
-                            "description": "Required. The DDoS protection plan ID associated with the public IP address."
+                            "description": "Required. The DDoS protection plan associated with the public IP address."
                           }
                         },
                         "protectionMode": {
@@ -4877,12 +5447,19 @@
                                   "metadata": {
                                     "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                             }
                           },
                           "metricCategories": {
@@ -4895,12 +5472,19 @@
                                   "metadata": {
                                     "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
                                   }
+                                },
+                                "enabled": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                  }
                                 }
                               }
                             },
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                             }
                           },
                           "logAnalyticsDestinationType": {
@@ -4981,7 +5565,19 @@
                     },
                     "zones": {
                       "type": "array",
-                      "nullable": true,
+                      "items": {
+                        "type": "int"
+                      },
+                      "defaultValue": [
+                        1,
+                        2,
+                        3
+                      ],
+                      "allowedValues": [
+                        1,
+                        2,
+                        3
+                      ],
                       "metadata": {
                         "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
                       }
@@ -5099,7 +5695,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5117,7 +5713,7 @@
                     },
                     "publicIpAddress": {
                       "type": "Microsoft.Network/publicIPAddresses",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-09-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -5125,7 +5721,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[parameters('zones')]",
+                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -5133,7 +5729,7 @@
                         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                         "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                        "ipTags": []
+                        "ipTags": null
                       }
                     },
                     "publicIpAddress_lock": {
@@ -5182,12 +5778,30 @@
                       "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
                       "properties": {
+                        "copy": [
+                          {
+                            "name": "metrics",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "input": {
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "timeGrain": null
+                            }
+                          },
+                          {
+                            "name": "logs",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "input": {
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                            }
+                          }
+                        ],
                         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                         "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                        "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())))]",
                         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
                       },
@@ -5223,14 +5837,14 @@
                       "metadata": {
                         "description": "The public IP address of the public IP address resource."
                       },
-                      "value": "[if(contains(reference('publicIpAddress'), 'ipAddress'), reference('publicIpAddress').ipAddress, '')]"
+                      "value": "[coalesce(tryGet(reference('publicIpAddress'), 'ipAddress'), '')]"
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('publicIpAddress', '2023-04-01', 'full').location]"
+                      "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
                     }
                   }
                 }
@@ -5276,23 +5890,23 @@
             "applicationRuleCollections": {
               "type": "array",
               "metadata": {
-                "description": "List of Application Rule Collections."
+                "description": "List of Application Rule Collections used by Azure Firewall."
               },
-              "value": "[parameters('applicationRuleCollections')]"
+              "value": "[coalesce(parameters('applicationRuleCollections'), createArray())]"
             },
             "networkRuleCollections": {
               "type": "array",
               "metadata": {
-                "description": "List of Network Rule Collections."
+                "description": "List of Network Rule Collections used by Azure Firewall."
               },
-              "value": "[parameters('networkRuleCollections')]"
+              "value": "[coalesce(parameters('networkRuleCollections'), createArray())]"
             },
             "natRuleCollections": {
               "type": "array",
               "metadata": {
-                "description": "Collection of NAT rule collections used by Azure Firewall."
+                "description": "List of NAT rule collections used by Azure Firewall."
               },
-              "value": "[parameters('natRuleCollections')]"
+              "value": "[coalesce(parameters('natRuleCollections'), createArray())]"
             },
             "location": {
               "type": "string",
@@ -5345,8 +5959,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "11036384263600395953"
+              "version": "0.27.1.19265",
+              "templateHash": "986085789636729411"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -5547,12 +6161,12 @@
             "virtualNetwork": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworks",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2023-11-01",
               "name": "[parameters('virtualNetworkName')]"
             },
             "subnet": {
               "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
               "properties": {
                 "addressPrefix": "[parameters('addressPrefix')]",
