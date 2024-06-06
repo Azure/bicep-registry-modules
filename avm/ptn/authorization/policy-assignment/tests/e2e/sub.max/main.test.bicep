@@ -19,7 +19,7 @@ param resourceLocation string = deployment().location
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@sys.description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
+@description('Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment.')
 param subscriptionId string = '#_subscriptionId_#'
 
 // ============ //
@@ -28,7 +28,7 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' ={
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
@@ -37,14 +37,16 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' ={
   }
 }
 
-module nestedDependencies 'interim.dependencies.bicep' = {
-  scope: subscription('${subscriptionId}')
+module nestedDependencies 'dependencies.bicep' = {
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    resourceGroupName: resourceGroupName
     location: resourceLocation
   }
+  dependsOn: [
+    resourceGroup
+  ]
 }
 
 // ============== //

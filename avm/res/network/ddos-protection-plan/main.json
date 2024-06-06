@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "1494680317385040277"
+      "version": "0.27.1.19265",
+      "templateHash": "9223344798772148175"
     },
     "name": "DDoS Protection Plans",
     "description": "This module deploys a DDoS Protection Plan.",
@@ -179,7 +179,7 @@
     },
     "ddosProtectionPlan": {
       "type": "Microsoft.Network/ddosProtectionPlans",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -249,7 +249,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('ddosProtectionPlan', '2023-04-01', 'full').location]"
+      "value": "[reference('ddosProtectionPlan', '2023-11-01', 'full').location]"
     }
   }
 }
