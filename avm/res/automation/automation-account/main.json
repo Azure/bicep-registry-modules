@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14354624772859127610"
+      "templateHash": "9416731271431531841"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -860,7 +860,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "15683541027715525564"
+              "templateHash": "1869474498579120220"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential.",
@@ -956,7 +956,7 @@
                 "count": "[length(range(0, variables('credentialsCount')))]",
                 "input": {
                   "name": "[parameters('credentials')[range(0, variables('credentialsCount'))[copyIndex()]].name]",
-                  "id": "[resourceId('Microsoft.Automation/automationAccounts/credentials', parameters('automationAccountName'), parameters('credentials')[range(0, variables('credentialsCount'))[copyIndex()]].name)]"
+                  "resourceId": "[resourceId('Microsoft.Automation/automationAccounts/credentials', parameters('automationAccountName'), parameters('credentials')[range(0, variables('credentialsCount'))[copyIndex()]].name)]"
                 }
               }
             },

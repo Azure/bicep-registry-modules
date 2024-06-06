@@ -30,7 +30,7 @@ resource automationAccount_credential 'Microsoft.Automation/automationAccounts/c
 output credentialInfo array = [
   for i in range(0, credentialsCount): {
     name: automationAccount_credential[i].name
-    id: automationAccount_credential[i].id
+    resourceId: automationAccount_credential[i].id
   }
 ]
 
