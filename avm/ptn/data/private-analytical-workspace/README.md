@@ -23,6 +23,16 @@ Using this pattern module, you can combine Azure services that frequently help w
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
+| `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
+| `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
+| `Microsoft.Network/privateDnsZones/CNAME` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME) |
+| `Microsoft.Network/privateDnsZones/MX` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX) |
+| `Microsoft.Network/privateDnsZones/PTR` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR) |
+| `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
+| `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
+| `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
@@ -62,10 +72,7 @@ This instance deploys the module with the minimum set of required parameters.
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
-    // Required parameters
     name: 'dpawmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -82,13 +89,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dpawmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -165,8 +167,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you. |
 | [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
+| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | If you already have an existing subnet resource ID in the region that is suitable for private endpoint, you can optionally provide it here. Otherwise, this module will create a new subnet for you. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`vNetResourceId`](#parameter-vnetresourceid) | string | You may provide a Virtual Network resource ID that already exists in the given region if you have a suitable VNET there. Otherwise, this module will make a new one for you. |
 
 ### Parameter: `name`
 
@@ -279,20 +281,20 @@ Sets the virtual network rules.
 - Required: No
 - Type: array
 
+### Parameter: `privateEndpointSubnetResourceId`
+
+If you already have an existing subnet resource ID in the region that is suitable for private endpoint, you can optionally provide it here. Otherwise, this module will create a new subnet for you.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `tags`
 
 Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `vNetResourceId`
-
-You may provide a Virtual Network resource ID that already exists in the given region if you have a suitable VNET there. Otherwise, this module will make a new one for you.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 
 ## Outputs
@@ -312,6 +314,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/databricks/workspace:0.4.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.1.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.3.0` | Remote reference |
 

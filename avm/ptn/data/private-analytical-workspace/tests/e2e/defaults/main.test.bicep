@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
     }
   }
 ]

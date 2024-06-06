@@ -20,8 +20,8 @@ param enableTelemetry bool = true
 @description('Optional. Enable/Disable Azure Databricks service in the solution.')
 param enableDatabricks bool = false
 
-@description('Optional. You may provide a Virtual Network resource ID that already exists in the given region if you have a suitable VNET there. Otherwise, this module will make a new one for you.')
-param vNetResourceId string = ''
+@description('Optional. If you already have an existing subnet resource ID in the region that is suitable for private endpoint, you can optionally provide it here. Otherwise, this module will create a new subnet for you.')
+param privateEndpointSubnetResourceId string = ''
 
 @description('Optional. You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you.')
 param logAnalyticsWorkspaceResourceId string = ''
@@ -32,7 +32,15 @@ param keyVaultResourceId string = ''
 @description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
 
-var diagnosticSettingsName = 'paw-diagnostic-settings'
+var diagnosticSettingsName = '${name}-diagnostic-settings'
+
+var existingVNET = !empty(privateEndpointSubnetResourceId)
+
+var cfg = ({
+  privateEndpointSubnetResourceId: empty(privateEndpointSubnetResourceId)
+    ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available and zero index
+    : privateEndpointSubnetResourceId
+})
 
 var logCfg = ({
   logAnalyticsWorkspaceResourceId: empty(logAnalyticsWorkspaceResourceId)
@@ -43,7 +51,7 @@ var logCfg = ({
 var privateLinkSubnet = [
   {
     addressPrefix: '192.168.224.0/24'
-    name: 'paw-private-link'
+    name: '${name}-private-link'
   }
 ]
 
@@ -55,11 +63,11 @@ var subnets = concat(
         // DBW - 192.168.228.0/22
         {
           addressPrefix: '192.168.228.0/23'
-          name: 'paw-dbw-control-plane'
+          name: '${name}-dbw-control-plane'
         }
         {
           addressPrefix: '192.168.228.0/23'
-          name: 'paw-dbw-data-plane'
+          name: '${name}-dbw-data-plane'
         }
       ]
     : []
@@ -94,6 +102,40 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
+module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!existingVNET) {
+  name: '${name}-vnet'
+  params: {
+    // Required parameters
+    addressPrefixes: [
+      '192.168.224.0/19'
+    ]
+    name: '${name}-vnet'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+      }
+    ]
+    dnsServers: []
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    subnets: subnets
+    tags: tags
+  }
+}
+
 module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
   name: '${name}-log'
   params: {
@@ -108,7 +150,6 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(
     lock: lock
     skuName: 'PerGB2018'
     tags: tags
-    // TODO - Network Isolation PL, networkAcls
   }
 }
 
@@ -160,13 +201,43 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
           defaultAction: 'Deny'
         }
 
-    //privateEndpoints: []
-    //publicNetworkAccess: false
+    privateEndpoints: existingVNET
+      ? []
+      : [
+          {
+            name: '${name}-kv-pep'
+            location: location
+            privateDnsZoneResourceIds: [dnsZoneKv.outputs.resourceId]
+            tags: tags
+            subnetResourceId: cfg.privateEndpointSubnetResourceId
+            enableTelemetry: enableTelemetry
+            lock: lock
+          }
+        ]
+    //publicNetworkAccess: existingVNET ? 'Disabled' : 'Enabled' // TODO - When existingVNET + ACL
     //roleAssignments: // TODO
     sku: 'premium'
     //softDeleteRetentionInDays: // TODO
     tags: tags
-    // TODO - Network Isolation PL, networkAcls, RBAC for user
+  }
+}
+
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (!existingVNET) {
+  name: 'privatelink.vaultcore.azure.net'
+  params: {
+    // Required parameters
+    name: 'privatelink.vaultcore.azure.net'
+    // Non-required parameters
+    enableTelemetry: enableTelemetry
+    location: 'global'
+    lock: lock
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: true
+        virtualNetworkResourceId: vnet.outputs.resourceId
+      }
+    ]
   }
 }
 
@@ -206,40 +277,6 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     storageAccountSkuName: null // TODO
     tags: tags
     vnetAddressPrefix: null // TODO
-  }
-}
-
-module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (empty(vNetResourceId)) {
-  name: '${name}-vnet'
-  params: {
-    // Required parameters
-    addressPrefixes: [
-      '192.168.224.0/19'
-    ]
-    name: '${name}-vnet'
-    // Non-required parameters
-    diagnosticSettings: [
-      {
-        name: diagnosticSettingsName
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    dnsServers: []
-    enableTelemetry: enableTelemetry
-    location: location
-    lock: lock
-    subnets: subnets
-    tags: tags
   }
 }
 
