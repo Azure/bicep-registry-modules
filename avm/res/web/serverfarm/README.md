@@ -246,7 +246,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. Note - whilst this test is WAF aligned, zoneRedundant is set to false to avoid temporary AVM environment challenges. It is highly recommended that users of this module set the property value to true.
 
 
 <details>
