@@ -40,4 +40,4 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
 }
 
 output managedIdentityName string = identity.outputs.name
-output acrName string = acr.name
+output acrName string = acr.outputs.name
