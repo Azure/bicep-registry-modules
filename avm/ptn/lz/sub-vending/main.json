@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15127176528121533160"
+      "templateHash": "8632953701829388835"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -25,7 +25,7 @@
       "defaultValue": "",
       "maxLength": 63,
       "metadata": {
-        "description": "Optional. The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\n\n> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n"
+        "description": "Optional. The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\n\n> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.\n"
       }
     },
     "subscriptionAliasName": {
@@ -59,7 +59,7 @@
       "defaultValue": "",
       "maxLength": 36,
       "metadata": {
-        "description": "Optional. The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n"
+        "description": "Optional. The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)**."
       }
     },
     "subscriptionOwnerId": {
@@ -67,7 +67,7 @@
       "defaultValue": "",
       "maxLength": 36,
       "metadata": {
-        "description": "Optional. The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n"
+        "description": "Optional. The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)**."
       }
     },
     "existingSubscriptionId": {
@@ -75,7 +75,7 @@
       "defaultValue": "",
       "maxLength": 36,
       "metadata": {
-        "description": "Optional. An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.\n"
+        "description": "Optional. An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`."
       }
     },
     "subscriptionManagementGroupAssociationEnabled": {
@@ -154,7 +154,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`\n"
+        "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`."
       }
     },
     "virtualNetworkDnsServers": {

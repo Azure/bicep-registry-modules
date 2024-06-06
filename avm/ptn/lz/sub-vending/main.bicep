@@ -22,7 +22,7 @@ The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). T
 
 > The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.
 
-> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
+> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
 param subscriptionDisplayName string = ''
 
@@ -56,20 +56,17 @@ param subscriptionWorkload string = 'Production'
 @maxLength(36)
 @description('''Optional. The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.
 
-> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**
-''')
+> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)**.''')
 param subscriptionTenantId string = ''
 
 @maxLength(36)
 @description('''Optional. The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.
 
-> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**
-''')
+> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)**.''')
 param subscriptionOwnerId string = ''
 
 @maxLength(36)
-@description('''Optional. An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.
-''')
+@description('''Optional. An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.''')
 param existingSubscriptionId string = ''
 
 // Subscription Resources Wrapper Parameters
@@ -133,8 +130,7 @@ param virtualNetworkName string = ''
 ''')
 param virtualNetworkTags object = {}
 
-@description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`
-''')
+@description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
 param virtualNetworkAddressSpace array = []
 
 @description('''Optional. The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.
