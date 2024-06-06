@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5002208532845077862"
+      "templateHash": "15026957711791230458"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -836,6 +836,7 @@
       ]
     },
     "automationAccount_credentials": {
+      "condition": "[not(empty(parameters('credentials')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-AutomationAccount-Credentials', uniqueString(deployment().name, parameters('location')))]",

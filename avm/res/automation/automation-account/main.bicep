@@ -194,7 +194,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
   }
 }
 
-module automationAccount_credentials 'credential/main.bicep' = {
+module automationAccount_credentials 'credential/main.bicep' = if (!empty(credentials)) {
   name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credentials'
   params: {
     automationAccountName: automationAccount.name
