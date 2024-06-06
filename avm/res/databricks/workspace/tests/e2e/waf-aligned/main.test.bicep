@@ -34,7 +34,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-// NOTE: The below dependencies deploy a role assignment with a tenant-specific application's object ID
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -48,9 +47,10 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    databricksApplicationObjectId: '711330f9-cfad-4b10-a462-d82faa92027d' // Tenant-specific 'AzureDatabricks' Enterprise Application Object Id
+    keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
 }
 
