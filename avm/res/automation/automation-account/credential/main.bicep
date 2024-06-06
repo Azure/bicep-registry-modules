@@ -8,8 +8,6 @@ param automationAccountName string
 @description('Required. The credential definition.')
 param credentials credentialType
 
-var credentialsCount = length(credentials)
-
 resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
   name: automationAccountName
 }
@@ -26,17 +24,11 @@ resource automationAccount_credential 'Microsoft.Automation/automationAccounts/c
   }
 ]
 
+@description('The id of the credential associated to the automation account.')
+output resourceId string = automationAccount_credential[0].id
+
 @description('The name of the credential associated to the automation account.')
-output resourceId array = [
-  for i in range(0, credentialsCount): {
-    resourceId: automationAccount_credential[i].id
-  }
-]
-output name array = [
-  for i in range(0, credentialsCount): {
-    name: automationAccount_credential[i].name
-  }
-]
+output name string = automationAccount_credential[0].name
 
 @description('The resource group of the deployed credential.')
 output resourceGroupName string = resourceGroup().name
