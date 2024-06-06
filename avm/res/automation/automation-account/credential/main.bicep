@@ -27,10 +27,14 @@ resource automationAccount_credential 'Microsoft.Automation/automationAccounts/c
 ]
 
 @description('The name of the credential associated to the automation account.')
-output credentialInfo array = [
+output resourceId array = [
+  for i in range(0, credentialsCount): {
+    resourceId: automationAccount_credential[i].id
+  }
+]
+output name array = [
   for i in range(0, credentialsCount): {
     name: automationAccount_credential[i].name
-    resourceId: automationAccount_credential[i].id
   }
 ]
 

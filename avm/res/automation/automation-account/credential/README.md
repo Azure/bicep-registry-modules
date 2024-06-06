@@ -91,8 +91,9 @@ The name of the parent Automation Account. Required if the template is used in a
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `credentialInfo` | array | The name of the credential associated to the automation account. |
+| `name` | array |  |
 | `resourceGroupName` | string | The resource group of the deployed credential. |
+| `resourceId` | array | The name of the credential associated to the automation account. |
 
 ## Cross-referenced modules
 
