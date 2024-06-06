@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       acrName: dependencies.outputs.acrName
-      images: ['mcr.microsoft.com/k8se/quickstart-jobs:latest']
+      image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       overwriteExistingImage: true
     }
   }

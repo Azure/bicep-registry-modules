@@ -20,7 +20,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'dsiitamax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'xrhy'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -61,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
       }
       acrName: dependencies.outputs.acrName
       location: resourceLocation
-      images: ['mcr.microsoft.com/k8se/quickstart-jobs:latest']
+      image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       cleanupPreference: 'OnExpiration'
       useExistingManagedIdentity: true
       managedIdentityName: dependencies.outputs.managedIdentityName

@@ -31,6 +31,7 @@ module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     acrName: uniqueString(resourceGroupName, resourceLocation, 'acr')
+    managedIdentityName: '${uniqueString(resourceGroupName, resourceLocation)}-mi'
   }
 }
 
@@ -51,11 +52,15 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       acrName: dependencies.outputs.acrName
-      images: ['mcr.microsoft.com/azuredocs/aks-helloworld:latest']
+      image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+      overwriteExistingImage: true
+      useExistingManagedIdentity: true
+      managedIdentityName: dependencies.outputs.managedIdentityName
+      existingManagedIdentityResourceGroupName: resourceGroupName
+      existingManagedIdentitySubId: subscription().subscriptionId
     }
   }
 ]

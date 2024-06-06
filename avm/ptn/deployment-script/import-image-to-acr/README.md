@@ -9,6 +9,7 @@ This modules deployes an image to an Azure Container Registry.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -46,9 +47,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
   params: {
     // Required parameters
     acrName: '<acrName>'
-    images: [
-      'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    ]
+    image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     name: 'dsiitamin001'
     // Non-required parameters
     location: '<location>'
@@ -73,10 +72,8 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "acrName": {
       "value": "<acrName>"
     },
-    "images": {
-      "value": [
-        "mcr.microsoft.com/k8se/quickstart-jobs:latest"
-      ]
+    "image": {
+      "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
     },
     "name": {
       "value": "dsiitamin001"
@@ -110,9 +107,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
   params: {
     // Required parameters
     acrName: '<acrName>'
-    images: [
-      'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    ]
+    image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     name: 'dsiitamax001'
     // Non-required parameters
     cleanupPreference: 'OnExpiration'
@@ -148,10 +143,8 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "acrName": {
       "value": "<acrName>"
     },
-    "images": {
-      "value": [
-        "mcr.microsoft.com/k8se/quickstart-jobs:latest"
-      ]
+    "image": {
+      "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
     },
     "name": {
       "value": "dsiitamax001"
@@ -212,12 +205,15 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
   params: {
     // Required parameters
     acrName: '<acrName>'
-    images: [
-      'mcr.microsoft.com/azuredocs/aks-helloworld:latest'
-    ]
+    image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     name: 'dsiitawaf001'
     // Non-required parameters
+    existingManagedIdentityResourceGroupName: '<existingManagedIdentityResourceGroupName>'
+    existingManagedIdentitySubId: '<existingManagedIdentitySubId>'
     location: '<location>'
+    managedIdentityName: '<managedIdentityName>'
+    overwriteExistingImage: true
+    useExistingManagedIdentity: true
   }
 }
 ```
@@ -238,17 +234,30 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "acrName": {
       "value": "<acrName>"
     },
-    "images": {
-      "value": [
-        "mcr.microsoft.com/azuredocs/aks-helloworld:latest"
-      ]
+    "image": {
+      "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
     },
     "name": {
       "value": "dsiitawaf001"
     },
     // Non-required parameters
+    "existingManagedIdentityResourceGroupName": {
+      "value": "<existingManagedIdentityResourceGroupName>"
+    },
+    "existingManagedIdentitySubId": {
+      "value": "<existingManagedIdentitySubId>"
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentityName": {
+      "value": "<managedIdentityName>"
+    },
+    "overwriteExistingImage": {
+      "value": true
+    },
+    "useExistingManagedIdentity": {
+      "value": true
     }
   }
 }
@@ -265,7 +274,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`acrName`](#parameter-acrname) | string | The name of the Azure Container Registry. |
-| [`images`](#parameter-images) | array | An array of fully qualified images names to import. |
+| [`image`](#parameter-image) | string | A fully qualified image name to import. |
 | [`name`](#parameter-name) | string | The name of the deployment script resource. |
 
 **Conditional parameters**
@@ -300,12 +309,12 @@ The name of the Azure Container Registry.
 - Required: Yes
 - Type: string
 
-### Parameter: `images`
+### Parameter: `image`
 
-An array of fully qualified images names to import.
+A fully qualified image name to import.
 
 - Required: Yes
-- Type: array
+- Type: string
 
 ### Parameter: `name`
 
@@ -446,12 +455,26 @@ Does the Managed Identity already exists, or should be created. Default is false
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `importedImages` | array | An array of the imported images. |
+| `deploymentScriptOutput` | array | The script output of each image import. |
+| `importedImage` |  | An array of the imported images. |
 | `resourceGroupName` | string | The resource group the deployment script was deployed into. |
 
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+The deployment script service will need and provision a Storage Account as well as a Container Instance to execute the provided script. *The deployment script resource is available only in the regions where Azure Container Instances is available.*
+
+> The service cleans up these resources after the deployment script finishes. You incur charges for these resources until they're removed.
+
+Using a Container Registry that is not available via public network access is possible as well. In this case a subnet needs to be passed to the module. A working configuration is in the max examples for this module.
+
+Links:
+
+- [Access a private virtual network from a Bicep deployment script](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)
+- [Run Bicep deployment script privately over a private endpoint](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet-private-endpoint)
 
 ## Data Collection
 

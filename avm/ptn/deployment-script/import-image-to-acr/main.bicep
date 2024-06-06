@@ -37,14 +37,11 @@ param existingManagedIdentitySubId string = subscription().subscriptionId
 @description('Conditional. For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group.')
 param existingManagedIdentityResourceGroupName string = resourceGroup().name
 
-@description('Required. An array of fully qualified images names to import.')
+@description('Required. A fully qualified image name to import.')
 @metadata({
-  example: [
-    'mcr.microsoft.com/azuredocs/aks-helloworld:latest'
-    'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-  ]
+  example: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
 })
-param images string[]
+param image string
 
 @description('Optional. The image will be overwritten if it already exists in the ACR with the same tag. Default is false.')
 param overwriteExistingImage bool = false
@@ -152,62 +149,61 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if 
   }
 }
 
-resource createImportImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = [
-  for image in images: {
-    name: 'ACR-Import-${name}-${last(split(replace(image,':','-'),'/'))}'
-    location: location
-    tags: tags
-    identity: {
-      type: 'UserAssigned'
-      userAssignedIdentities: {
-        '${useExistingManagedIdentity ? existingManagedIdentity.id : newManagedIdentity.id}': {}
-      }
+resource importImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'ACR-Import-${name}-${last(split(replace(image,':','-'),'/'))}'
+  location: location
+  tags: tags
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${useExistingManagedIdentity ? existingManagedIdentity.id : newManagedIdentity.id}': {}
     }
-    kind: 'AzureCLI'
-    dependsOn: [rbac]
-    properties: union(
-      {
-        forceUpdateTag: forceUpdateTag
-        azCliVersion: '2.59.0'
-        timeout: 'PT30M' // set timeout to 30m
-        retentionInterval: 'PT1H' // cleanup after 1h
-        environmentVariables: [
-          {
-            name: 'acrName'
-            value: acrName
-          }
-          {
-            name: 'imageName'
-            value: image
-          }
-          {
-            name: 'overwriteExistingImage'
-            value: toLower(string(overwriteExistingImage))
-          }
-          {
-            name: 'initialDelay'
-            value: '${string(initialScriptDelay)}s'
-          }
-          {
-            name: 'retryMax'
-            value: string(retryMax)
-          }
-          {
-            name: 'retrySleep'
-            value: '5s'
-          }
-        ]
-        scriptContent: '''#!/bin/bash
+  }
+  kind: 'AzureCLI'
+  dependsOn: [rbac]
+  properties: union(
+    {
+      forceUpdateTag: forceUpdateTag
+      azCliVersion: '2.59.0'
+      timeout: 'PT30M' // set timeout to 30m
+      retentionInterval: 'PT1H' // cleanup after 1h
+      environmentVariables: [
+        {
+          name: 'acrName'
+          value: acrName
+        }
+        {
+          name: 'imageName'
+          value: image
+        }
+        {
+          name: 'overwriteExistingImage'
+          value: toLower(string(overwriteExistingImage))
+        }
+        {
+          name: 'initialDelay'
+          value: '${string(initialScriptDelay)}s'
+        }
+        {
+          name: 'retryMax'
+          value: string(retryMax)
+        }
+        {
+          name: 'retrySleep'
+          value: '5s'
+        }
+      ]
+      scriptContent: '''#!/bin/bash
 set -e
 
-echo "Waiting on RBAC replication ($initialDelay)"
+echo "Waiting on RBAC replication ($initialDelay)\n"
 sleep $initialDelay
 
 # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)
 retryLoopCount=0
 until [ $retryLoopCount -ge $retryMax ]
 do
-  echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName"
+  echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName\n"
   if [ $overwriteExistingImage = 'true' ]; then
     az acr import -n $acrName --source $imageName --force
   else
@@ -218,14 +214,17 @@ do
   retryLoopCount=$((retryLoopCount+1))
 done
 
-echo "done"'''
-        cleanupPreference: cleanupPreference
-      },
-      storageSettings,
-      containerSettings
-    )
+echo "done\n"'''
+      cleanupPreference: cleanupPreference
+    },
+    storageSettings,
+    containerSettings
+  )
+
+  resource logs 'logs' existing = {
+    name: 'default'
   }
-]
+}
 
 // ============ //
 // Outputs      //
@@ -234,19 +233,23 @@ echo "done"'''
 @description('The resource group the deployment script was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The script output of each image import.')
+output deploymentScriptOutput string[] = split(importImage::logs.properties.log, '\n')
+
 @description('An array of the imported images.')
-output importedImages importedImageType[] = [
-  for image in images: {
-    originalImage: image
-    acrHostedImage: '${acr.properties.loginServer}${string(skip(image, indexOf(image,'/')))}'
-  }
-]
+output importedImage importedImageType = {
+  originalImage: image
+  acrHostedImage: '${acr.properties.loginServer}${string(skip(image, indexOf(image,'/')))}'
+}
 
 // ================ //
 // Definitions      //
 // ================ //
 
 type importedImageType = {
+  @description('The original image name.')
   originalImage: string
+
+  @description('The image name in the Azure Container Registry.')
   acrHostedImage: string
 }
