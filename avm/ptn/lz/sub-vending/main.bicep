@@ -39,8 +39,6 @@ param subscriptionAliasName string = ''
 
 A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.
 
-> See below [example in parameter file](#parameter-file) for an example
-
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
 ''')
 param subscriptionBillingScope string = ''
@@ -82,8 +80,6 @@ param subscriptionManagementGroupAssociationEnabled bool = true
 @description('''Optional. The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).
 
 **IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.
-
-> See below [example in parameter file](#parameter-file) for an example
 ''')
 param subscriptionManagementGroupId string = ''
 

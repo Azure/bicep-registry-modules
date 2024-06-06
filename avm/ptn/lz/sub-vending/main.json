@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17622842313253160393"
+      "templateHash": "4788034508689634248"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -40,7 +40,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\n\n> See below [example in parameter file](#parameter-file) for an example\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n"
+        "description": "Optional. The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n"
       }
     },
     "subscriptionWorkload": {
@@ -89,7 +89,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).\n\n**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.\n\n> See below [example in parameter file](#parameter-file) for an example\n"
+        "description": "Optional. The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).\n\n**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.\n"
       }
     },
     "subscriptionTags": {
