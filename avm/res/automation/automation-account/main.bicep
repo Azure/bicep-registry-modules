@@ -20,7 +20,7 @@ param customerManagedKey customerManagedKeyType
 
 import { credentialType } from 'credential/main.bicep'
 @description('Optional. List of credentials to be created in the automation account.')
-param credentials credentialType
+param credentials credentialType = []
 
 @description('Optional. List of modules to be created in the automation account.')
 param modules array = []

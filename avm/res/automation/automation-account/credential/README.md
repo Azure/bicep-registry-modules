@@ -34,9 +34,8 @@ This module deploys Azure Automation Account Credential.
 
 The credential definition.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 

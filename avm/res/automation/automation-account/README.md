@@ -1154,6 +1154,7 @@ List of credentials to be created in the automation account.
 
 - Required: No
 - Type: array
+- Default: `[]`
 
 **Required parameters**
 
