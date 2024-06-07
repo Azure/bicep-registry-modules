@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "14101478347297794504"
+      "templateHash": "5539318521773948669"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -1176,7 +1176,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "15955967529014054327"
+              "templateHash": "12338399616860515189"
             }
           },
           "definitions": {
@@ -1475,9 +1475,7 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "name": {
-                    "value": "[format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIpNameSuffix)]"
-                  },
+                  "name": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'name'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.name), createObject('value', format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIpNameSuffix)))]",
                   "diagnosticSettings": {
                     "value": "[tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings')]"
                   },
@@ -2133,7 +2131,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('ipConfigurations'))]",
-                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), resourceId('Microsoft.Network/publicIPAddresses', format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIpNameSuffix)), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerBackendAddressPools, null()), 'applicationSecurityGroups', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), parameters('ipConfigurations')[copyIndex('value')].applicationSecurityGroups, null()), 'applicationGatewayBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].applicationGatewayBackendAddressPools, null()), 'gatewayLoadBalancer', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), parameters('ipConfigurations')[copyIndex('value')].gatewayLoadBalancer, null()), 'loadBalancerInboundNatRules', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerInboundNatRules, null()), 'privateIPAddressVersion', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), parameters('ipConfigurations')[copyIndex('value')].privateIPAddressVersion, null()), 'virtualNetworkTaps', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), parameters('ipConfigurations')[copyIndex('value')].virtualNetworkTaps, null()))]"
+                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), resourceId('Microsoft.Network/publicIPAddresses', if(contains(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'name'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.name, format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIpNameSuffix))), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerBackendAddressPools, null()), 'applicationSecurityGroups', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), parameters('ipConfigurations')[copyIndex('value')].applicationSecurityGroups, null()), 'applicationGatewayBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].applicationGatewayBackendAddressPools, null()), 'gatewayLoadBalancer', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), parameters('ipConfigurations')[copyIndex('value')].gatewayLoadBalancer, null()), 'loadBalancerInboundNatRules', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerInboundNatRules, null()), 'privateIPAddressVersion', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), parameters('ipConfigurations')[copyIndex('value')].privateIPAddressVersion, null()), 'virtualNetworkTaps', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), parameters('ipConfigurations')[copyIndex('value')].virtualNetworkTaps, null()))]"
                       }
                     ]
                   },
