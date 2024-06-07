@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "5539318521773948669"
+      "templateHash": "17567087777779116317"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -964,7 +964,9 @@
                 "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
                 "managedDisk": {
                   "storageAccountType": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.storageAccountType]",
-                  "diskEncryptionSet": "[coalesce(tryGet(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'managedDisk'), 'diskEncryptionSet'), null())]"
+                  "diskEncryptionSet": {
+                    "id": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')]"
+                  }
                 }
               }
             }
