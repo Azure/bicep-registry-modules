@@ -4239,7 +4239,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.2.4` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.4.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
 
 ## Notes
 
