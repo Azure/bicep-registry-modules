@@ -103,6 +103,9 @@ param virtualMachineScaleSetResourceId string = ''
 @description('Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set.')
 param availabilitySetResourceId string = ''
 
+@description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
+param galleryApplications array = []
+
 @description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
 @allowed([
   0
@@ -560,6 +563,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           : null
       }
     }
+    applicationProfile: !empty(galleryApplications)
+      ? {
+          galleryApplications: galleryApplications
+        }
+      : null
     availabilitySet: !empty(availabilitySetResourceId)
       ? {
           id: availabilitySetResourceId

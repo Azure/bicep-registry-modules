@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "17567087777779116317"
+      "templateHash": "5211612620188730164"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -512,6 +512,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set."
+      }
+    },
+    "galleryApplications": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies the gallery applications that should be made available to the VM/VMSS."
       }
     },
     "zone": {
@@ -1020,6 +1027,7 @@
             "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
           }
         },
+        "applicationProfile": "[if(not(empty(parameters('galleryApplications'))), createObject('galleryApplications', parameters('galleryApplications')), null())]",
         "availabilitySet": "[if(not(empty(parameters('availabilitySetResourceId'))), createObject('id', parameters('availabilitySetResourceId')), null())]",
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
         "virtualMachineScaleSet": "[if(not(empty(parameters('virtualMachineScaleSetResourceId'))), createObject('id', parameters('virtualMachineScaleSetResourceId')), null())]",

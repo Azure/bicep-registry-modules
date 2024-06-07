@@ -3132,6 +3132,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`galleryApplications`](#parameter-galleryapplications) | array | Specifies the gallery applications that should be made available to the VM/VMSS. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -3839,6 +3840,14 @@ The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least c
       enabled: false
   }
   ```
+
+### Parameter: `galleryApplications`
+
+Specifies the gallery applications that should be made available to the VM/VMSS.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `guestConfiguration`
 
