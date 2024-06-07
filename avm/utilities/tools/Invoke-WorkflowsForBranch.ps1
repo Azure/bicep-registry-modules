@@ -84,7 +84,8 @@ function Invoke-GitHubWorkflow {
         $requestInputObject = @(
             '--method', 'POST',
             '-H', 'Accept: application/vnd.github+json',
-            '-H', 'X-GitHub-Api-Version: 2022-11-28'
+            '-H', 'X-GitHub-Api-Version: 2022-11-28',
+            '-f', "ref=$TargetBranch",
             $triggerUrl
         )
         # Adding inputs
@@ -121,6 +122,9 @@ Mandatory. The repository's organization.
 .PARAMETER RepositoryName
 Mandatory. The name of the repository to fetch the workflows from.
 
+.PARAMETER IncludeDisabled
+Optional. Set if you want to also include disabled workflows in the result.
+
 .PARAMETER Filter
 Optional. A regex filter to apply when fetching the workflows. By default we fetch all module workflows (avm.res.*).
 
@@ -141,6 +145,9 @@ function Get-GitHubModuleWorkflowList {
 
         [Parameter(Mandatory = $true)]
         [string] $RepositoryName,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludeDisabled,
 
         [Parameter(Mandatory = $false)]
         [string] $Filter = 'avm\.(?:res|ptn)'
@@ -176,7 +183,10 @@ function Get-GitHubModuleWorkflowList {
             Write-Error "Request failed. Reponse: [$response]"
         }
 
-        $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url') | Where-Object { (Split-Path $_.path -Leaf) -match $Filter }
+        $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url', 'state') | Where-Object {
+            (Split-Path $_.path -Leaf) -match $Filter -and
+            $IncludeDisabled ? $true : $_.state -eq 'active'
+        }
 
         $expectedPages = [math]::ceiling($response.total_count / 100)
         $page++
