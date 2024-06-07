@@ -1119,7 +1119,6 @@ type osDiskType = {
   name: string?
 
   @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  @maxValue(1023)
   diskSizeGB: int
 
   @description('Optional. Specifies how the virtual machine should be created.')
@@ -1156,7 +1155,6 @@ type dataDisksType = {
   lun: int?
 
   @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  @maxValue(1023)
   diskSizeGB: int
 
   @description('Optional. Specifies how the virtual machine should be created.')

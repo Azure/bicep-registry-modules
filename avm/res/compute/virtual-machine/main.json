@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "2917885899375280094"
+      "templateHash": "14101478347297794504"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -139,7 +139,6 @@
         },
         "diskSizeGB": {
           "type": "int",
-          "maxValue": 1023,
           "metadata": {
             "description": "Required. Specifies the size of an empty data disk in gigabytes."
           }
@@ -232,7 +231,6 @@
           },
           "diskSizeGB": {
             "type": "int",
-            "maxValue": 1023,
             "metadata": {
               "description": "Required. Specifies the size of an empty data disk in gigabytes."
             }
