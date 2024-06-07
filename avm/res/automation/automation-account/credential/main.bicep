@@ -24,11 +24,13 @@ resource automationAccount_credential 'Microsoft.Automation/automationAccounts/c
   }
 ]
 
-@description('The id of the credential associated to the automation account.')
-output resourceId string = automationAccount_credential[0].id
+@description('The resource IDs of the credentials associated to the automation account.')
+#disable-next-line outputs-should-not-contain-secrets // Does not return the secret, but just the ID
+output resourceId array = [for index in range(0, length(credentials)): automationAccount_credential[index].id]
 
-@description('The name of the credential associated to the automation account.')
-output name string = automationAccount_credential[0].name
+@description('The names of the credentials associated to the automation account.')
+#disable-next-line outputs-should-not-contain-secrets // Does not return the secret, but just the name
+output name array = [for index in range(0, length(credentials)): automationAccount_credential[index].name]
 
 @description('The resource group of the deployed credential.')
 output resourceGroupName string = resourceGroup().name
