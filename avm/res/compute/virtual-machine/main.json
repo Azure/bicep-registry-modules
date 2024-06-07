@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "16790973878425743878"
+      "templateHash": "2917885899375280094"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -577,10 +577,8 @@
       }
     },
     "extensionDomainJoinConfig": {
-      "type": "object",
-      "defaultValue": {
-        "enabled": false
-      },
+      "type": "secureObject",
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The configuration for the [Domain Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
@@ -2891,7 +2889,7 @@
       ]
     },
     "vm_domainJoinExtension": {
-      "condition": "[parameters('extensionDomainJoinConfig').enabled]",
+      "condition": "[and(contains(parameters('extensionDomainJoinConfig'), 'enabled'), parameters('extensionDomainJoinConfig').enabled)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-VM-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
