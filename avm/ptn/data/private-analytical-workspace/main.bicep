@@ -32,7 +32,10 @@ param keyVaultResourceId string = ''
 @description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
 
+// Constants
 var diagnosticSettingsName = '${name}-diagnostic-settings'
+var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
+var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
 
 var existingVNET = !empty(privateEndpointSubnetResourceId)
 
@@ -223,10 +226,10 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
 }
 
 module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (!existingVNET) {
-  name: 'privatelink.vaultcore.azure.net'
+  name: privateDnsZoneNameKv
   params: {
     // Required parameters
-    name: 'privatelink.vaultcore.azure.net'
+    name: privateDnsZoneNameKv
     // Non-required parameters
     enableTelemetry: enableTelemetry
     location: 'global'
@@ -277,6 +280,25 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     storageAccountSkuName: null // TODO
     tags: tags
     vnetAddressPrefix: null // TODO
+  }
+}
+
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if ((!existingVNET) && enableDatabricks) {
+  name: privateDnsZoneNameDbw
+  params: {
+    // Required parameters
+    name: privateDnsZoneNameDbw
+    // Non-required parameters
+    enableTelemetry: enableTelemetry
+    location: 'global'
+    lock: lock
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: true
+        virtualNetworkResourceId: vnet.outputs.resourceId
+      }
+    ]
   }
 }
 
