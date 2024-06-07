@@ -47,7 +47,7 @@ type credentialType = {
   @description('Required. The user name associated to the credential.')
   userName: string
 
-  @description('Optional. Password of the credential.')
+  @description('Required. Password of the credential.')
   @secure()
   password: string
 

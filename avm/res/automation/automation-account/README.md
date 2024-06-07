@@ -1161,6 +1161,7 @@ List of credentials to be created in the automation account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-credentialsname) | string | Name of the Automation Account credential. |
+| [`password`](#parameter-credentialspassword) | securestring | Password of the credential. |
 | [`userName`](#parameter-credentialsusername) | string | The user name associated to the credential. |
 
 **Optional parameters**
@@ -1168,7 +1169,6 @@ List of credentials to be created in the automation account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-credentialsdescription) | string | Description of the credential. |
-| [`password`](#parameter-credentialspassword) | securestring | Password of the credential. |
 
 ### Parameter: `credentials.name`
 
@@ -1176,6 +1176,13 @@ Name of the Automation Account credential.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `credentials.password`
+
+Password of the credential.
+
+- Required: Yes
+- Type: securestring
 
 ### Parameter: `credentials.userName`
 
@@ -1190,13 +1197,6 @@ Description of the credential.
 
 - Required: No
 - Type: string
-
-### Parameter: `credentials.password`
-
-Password of the credential.
-
-- Required: Yes
-- Type: securestring
 
 ### Parameter: `customerManagedKey`
 
