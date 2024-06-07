@@ -49,6 +49,7 @@ body:
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/security/security-center"
         - "avm/res/aad/domain-service"
+        - "avm/res/alerts-management/action-rule"
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
         - "avm/res/app-configuration/configuration-store"
