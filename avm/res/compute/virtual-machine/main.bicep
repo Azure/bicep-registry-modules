@@ -517,7 +517,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           caching: dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             storageAccountType: dataDisk.managedDisk.storageAccountType
-            diskEncryptionSet: dataDisk.?managedDisk.?diskEncryptionSet ?? null
+            diskEncryptionSet: {
+              id: dataDisk.managedDisk.?diskEncryptionSetResourceId
+            }
           }
         }
       ]
