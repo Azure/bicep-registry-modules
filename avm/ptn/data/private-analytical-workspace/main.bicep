@@ -32,10 +32,15 @@ param keyVaultResourceId string = ''
 @description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
 
+@description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.') // TODO
+param databricks databricksType?
+
 // Constants
 var diagnosticSettingsName = '${name}-diagnostic-settings'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
+var dbwSubnetNameControlPlane = '${name}-dbw-control-plane'
+var dbwSubnetNameDataPlane = '${name}-dbw-data-plane'
 
 var existingVNET = !empty(privateEndpointSubnetResourceId)
 
@@ -66,11 +71,11 @@ var subnets = concat(
         // DBW - 192.168.228.0/22
         {
           addressPrefix: '192.168.228.0/23'
-          name: '${name}-dbw-control-plane'
+          name: dbwSubnetNameControlPlane
         }
         {
           addressPrefix: '192.168.228.0/23'
-          name: '${name}-dbw-data-plane'
+          name: dbwSubnetNameDataPlane
         }
       ]
     : []
@@ -250,9 +255,15 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     // Required parameters
     name: '${name}-dbw'
     // Non-required parameters
-    customPrivateSubnetName: null // TODO
-    customPublicSubnetName: null // TODO
-    customVirtualNetworkResourceId: null // TODO
+    customPrivateSubnetName: existingVNET
+      ? databricks.?dbwSubnetNameControlPlane // TODO validace
+      : filter(subnets, item => item.productPrice == dbwSubnetNameControlPlane)[0] // TODO
+    customPublicSubnetName: existingVNET
+      ? databricks.?dbwSubnetNameDataPlane // TODO validace
+      : filter(subnets, item => item.productPrice == dbwSubnetNameDataPlane)[0] // TODO
+    customVirtualNetworkResourceId: existingVNET
+      ? split(databricks.?dbwSubnetNameControlPlane, '/subnets/')[0]
+      : vnet.outputs.resourceId // TODO
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -279,7 +290,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     storageAccountName: null // TODO
     storageAccountSkuName: null // TODO
     tags: tags
-    vnetAddressPrefix: null // TODO
+    vnetAddressPrefix: null // VNET will be always provided (either as param or VNET cration module)
   }
 }
 
@@ -341,4 +352,11 @@ type networkAclsType = {
 
   @description('Optional. Sets the IP ACL rules.')
   ipRules: array?
+}
+
+type databricksType = {
+  @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
+  dbwSubnetNameControlPlane: string?
+  @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
+  dbwSubnetNameDataPlane: string?
 }

@@ -160,6 +160,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`databricks`](#parameter-databricks) | object | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
 | [`enableDatabricks`](#parameter-enabledatabricks) | bool | Enable/Disable Azure Databricks service in the solution. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | You can specify an existing Key Vault if you have one. If not, this module will create a new one for you. |
@@ -175,6 +176,34 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 Name of the private analytical workspace solution and its components. Used to ensure unique resource names.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `databricks`
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dbwSubnetNameControlPlane`](#parameter-databricksdbwsubnetnamecontrolplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`dbwSubnetNameDataPlane`](#parameter-databricksdbwsubnetnamedataplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+
+### Parameter: `databricks.dbwSubnetNameControlPlane`
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+
+- Required: No
+- Type: string
+
+### Parameter: `databricks.dbwSubnetNameDataPlane`
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+
+- Required: No
 - Type: string
 
 ### Parameter: `enableDatabricks`

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "14897673997662070508"
+      "templateHash": "1444483390193927514"
     },
     "name": "private-analytical-workspace",
     "description": "Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.",
@@ -53,6 +53,25 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Sets the IP ACL rules."
+          }
+        }
+      }
+    },
+    "databricksType": {
+      "type": "object",
+      "properties": {
+        "dbwSubnetNameControlPlane": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
+          }
+        },
+        "dbwSubnetNameDataPlane": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
           }
         }
       }
@@ -126,12 +145,21 @@
       "metadata": {
         "description": "Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }
+    },
+    "databricks": {
+      "$ref": "#/definitions/databricksType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
+      }
     }
   },
   "variables": {
     "diagnosticSettingsName": "[format('{0}-diagnostic-settings', parameters('name'))]",
     "privateDnsZoneNameKv": "privatelink.vaultcore.azure.net",
     "privateDnsZoneNameDbw": "privatelink.azuredatabricks.net",
+    "dbwSubnetNameControlPlane": "[format('{0}-dbw-control-plane', parameters('name'))]",
+    "dbwSubnetNameDataPlane": "[format('{0}-dbw-data-plane', parameters('name'))]",
     "existingVNET": "[not(empty(parameters('privateEndpointSubnetResourceId')))]",
     "privateLinkSubnet": [
       {
@@ -139,7 +167,7 @@
         "name": "[format('{0}-private-link', parameters('name'))]"
       }
     ],
-    "subnets": "[concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('addressPrefix', '192.168.228.0/23', 'name', format('{0}-dbw-control-plane', parameters('name'))), createObject('addressPrefix', '192.168.228.0/23', 'name', format('{0}-dbw-data-plane', parameters('name')))), createArray()))]"
+    "subnets": "[concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('addressPrefix', '192.168.228.0/23', 'name', variables('dbwSubnetNameControlPlane')), createObject('addressPrefix', '192.168.228.0/23', 'name', variables('dbwSubnetNameDataPlane'))), createArray()))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -9023,15 +9051,9 @@
           "name": {
             "value": "[format('{0}-dbw', parameters('name'))]"
           },
-          "customPrivateSubnetName": {
-            "value": null
-          },
-          "customPublicSubnetName": {
-            "value": null
-          },
-          "customVirtualNetworkResourceId": {
-            "value": null
-          },
+          "customPrivateSubnetName": "[if(variables('existingVNET'), createObject('value', tryGet(parameters('databricks'), 'dbwSubnetNameControlPlane')), createObject('value', filter(variables('subnets'), lambda('item', equals(lambdaVariables('item').productPrice, variables('dbwSubnetNameControlPlane'))))[0]))]",
+          "customPublicSubnetName": "[if(variables('existingVNET'), createObject('value', tryGet(parameters('databricks'), 'dbwSubnetNameDataPlane')), createObject('value', filter(variables('subnets'), lambda('item', equals(lambdaVariables('item').productPrice, variables('dbwSubnetNameDataPlane'))))[0]))]",
+          "customVirtualNetworkResourceId": "[if(variables('existingVNET'), createObject('value', split(tryGet(parameters('databricks'), 'dbwSubnetNameControlPlane'), '/subnets/')[0]), createObject('value', reference('vnet').outputs.resourceId.value))]",
           "diagnosticSettings": {
             "value": [
               {
@@ -10666,7 +10688,8 @@
         }
       },
       "dependsOn": [
-        "log"
+        "log",
+        "vnet"
       ]
     },
     "dnsZoneDbw": {
