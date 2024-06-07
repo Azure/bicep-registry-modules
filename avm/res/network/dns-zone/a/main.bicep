@@ -68,7 +68,7 @@ resource A 'Microsoft.Network/dnsZones/A@2018-05-01' = {
   name: name
   parent: dnsZone
   properties: {
-    ARecords: !empty(aRecords) ? aRecords : null
+    ARecords: aRecords
     metadata: metadata
     TTL: ttl
     targetResource: !empty(targetResourceId)
