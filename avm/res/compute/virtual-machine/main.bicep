@@ -307,10 +307,12 @@ var linuxConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
-        automaticByPlatformSettings: {
-          bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
-          rebootSetting: rebootSetting
-        }
+        automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
+          ? {
+              bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+              rebootSetting: rebootSetting
+            }
+          : null
       }
     : null
 }
