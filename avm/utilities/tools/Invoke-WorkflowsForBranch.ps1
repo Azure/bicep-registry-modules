@@ -8,7 +8,7 @@ Invoke a given GitHub workflow
 Invoke a given GitHub workflow
 
 .PARAMETER PersonalAccessToken
-Mandatory. The GitHub PAT to leverage when interacting with the GitHub API.
+Optional. The PAT to use to interact with either GitHub / Azure DevOps. If not provided, the script will use the GitHub CLI to authenticate.
 
 .PARAMETER RepositoryOwner
 Mandatory. The repository's organization.
@@ -34,7 +34,7 @@ function Invoke-GitHubWorkflow {
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string] $PersonalAccessToken,
 
         [Parameter(Mandatory = $true)]
@@ -53,23 +53,48 @@ function Invoke-GitHubWorkflow {
         [string] $TargetBranch = 'main'
     )
 
-    $requestInputObject = @{
-        Method  = 'POST'
-        Uri     = "https://api.github.com/repos/$RepositoryOwner/$RepositoryName/actions/workflows/$WorkflowFileName/dispatches"
-        Headers = @{
-            Authorization = "Bearer $PersonalAccessToken"
+    $triggerUrl = "/repos/$RepositoryOwner/$RepositoryName/actions/workflows/$WorkflowFileName/dispatches"
+    if ($PersonalAccessToken) {
+        # Using PAT
+        $requestInputObject = @{
+            Method  = 'POST'
+            Uri     = "https://api.github.com$triggerUrl"
+            Headers = @{
+                Authorization = "Bearer $PersonalAccessToken"
+            }
+            Body    = @{
+                ref    = $TargetBranch
+                inputs = $WorkflowInputs
+            } | ConvertTo-Json
         }
-        Body    = @{
-            ref    = $TargetBranch
-            inputs = $WorkflowInputs
-        } | ConvertTo-Json
-    }
-    if ($PSCmdlet.ShouldProcess("GitHub workflow [$WorkflowFileName] for branch [$TargetBranch]", 'Invoke')) {
-        try {
-            $response = Invoke-RestMethod @requestInputObject -Verbose:$false
-        } catch {
-            Write-Error ("Request failed for [$WorkflowFileName]. Response: [{0}]" -f $_.ErrorDetails)
-            return $false
+        if ($PSCmdlet.ShouldProcess("GitHub workflow [$WorkflowFileName] for branch [$TargetBranch]", 'Invoke')) {
+            try {
+                $response = Invoke-RestMethod @requestInputObject -Verbose:$false
+            } catch {
+                Write-Error ("Request failed for [$WorkflowFileName]. Response: [{0}]" -f $_.ErrorDetails)
+                return $false
+            }
+            if ($response) {
+                Write-Error "Request failed. Response: [$response]"
+                return $false
+            }
+        }
+    } else {
+        # Using GH API instead o
+        $requestInputObject = @(
+            '--method', 'POST',
+            '-H', 'Accept: application/vnd.github+json',
+            '-H', 'X-GitHub-Api-Version: 2022-11-28'
+            $triggerUrl
+        )
+        # Adding inputs
+        foreach ($key in $WorkflowInputs.Keys) {
+            $requestInputObject += @(
+                '-f', ('inputs[{0}]={1}' -f $key, $WorkflowInputs[$key])
+            )
+        }
+        if ($PSCmdlet.ShouldProcess("GitHub workflow [$WorkflowFileName] for branch [$TargetBranch]", 'Invoke')) {
+            $response = (gh api @requestInputObject | ConvertFrom-Json)
         }
         if ($response) {
             Write-Error "Request failed. Response: [$response]"
@@ -89,7 +114,6 @@ Get a list of all GitHub module workflows. Does not return all properties but on
 
 .PARAMETER PersonalAccessToken
 Optional. The PAT to use to interact with either GitHub / Azure DevOps. If not provided, the script will use the GitHub CLI to authenticate.
-
 
 .PARAMETER RepositoryOwner
 Mandatory. The repository's organization.
@@ -132,7 +156,7 @@ function Get-GitHubModuleWorkflowList {
             # Using PAT
             $requestInputObject = @{
                 Method  = 'GET'
-                Uri     = "https://api.github.com/$queryUrl"
+                Uri     = "https://api.github.com$queryUrl"
                 Headers = @{
                     Authorization = "Bearer $PersonalAccessToken"
                 }
