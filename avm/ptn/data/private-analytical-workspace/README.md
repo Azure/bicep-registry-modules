@@ -23,6 +23,8 @@ Using this pattern module, you can combine Azure services that frequently help w
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
+| `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups/securityRules) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
 | `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
@@ -189,17 +191,17 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dbwSubnetNameControlPlane`](#parameter-databricksdbwsubnetnamecontrolplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
-| [`dbwSubnetNameDataPlane`](#parameter-databricksdbwsubnetnamedataplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`subnetNameDbwControlPlane`](#parameter-databrickssubnetnamedbwcontrolplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`subnetNameDbwDataPlane`](#parameter-databrickssubnetnamedbwdataplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
 
-### Parameter: `databricks.dbwSubnetNameControlPlane`
+### Parameter: `databricks.subnetNameDbwControlPlane`
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
 - Required: No
 - Type: string
 
-### Parameter: `databricks.dbwSubnetNameDataPlane`
+### Parameter: `databricks.subnetNameDbwDataPlane`
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
@@ -343,6 +345,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/databricks/workspace:0.4.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.2.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.1.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.3.0` | Remote reference |

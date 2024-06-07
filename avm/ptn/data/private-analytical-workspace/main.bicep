@@ -39,8 +39,10 @@ param databricks databricksType?
 var diagnosticSettingsName = '${name}-diagnostic-settings'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
-var dbwSubnetNameControlPlane = '${name}-dbw-control-plane'
-var dbwSubnetNameDataPlane = '${name}-dbw-data-plane'
+var subnetNameDbwControlPlane = '${name}-dbw-control-plane'
+var subnetNameDbwDataPlane = '${name}-dbw-data-plane'
+var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
+var nsgNameDbwDataPlane = '${name}-nsg-dbw-data-plane'
 
 var existingVNET = !empty(privateEndpointSubnetResourceId)
 
@@ -70,12 +72,30 @@ var subnets = concat(
     ? [
         // DBW - 192.168.228.0/22
         {
+          name: subnetNameDbwControlPlane
           addressPrefix: '192.168.228.0/23'
-          name: dbwSubnetNameControlPlane
+          networkSecurityGroupResourceId: nsgDbwControlPlane.outputs.resourceId
+          delegations: [
+            {
+              name: 'Microsoft.Databricks/workspaces'
+              properties: {
+                serviceName: 'Microsoft.Databricks/workspaces'
+              }
+            }
+          ]
         }
         {
-          addressPrefix: '192.168.228.0/23'
-          name: dbwSubnetNameDataPlane
+          name: subnetNameDbwDataPlane
+          addressPrefix: '192.168.230.0/23'
+          networkSecurityGroupResourceId: nsgDbwDataPlane.outputs.resourceId
+          delegations: [
+            {
+              name: 'Microsoft.Databricks/workspaces'
+              properties: {
+                serviceName: 'Microsoft.Databricks/workspaces'
+              }
+            }
+          ]
         }
       ]
     : []
@@ -141,6 +161,88 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!existingVNE
     lock: lock
     subnets: subnets
     tags: tags
+  }
+}
+
+module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if ((!existingVNET) && enableDatabricks) {
+  name: nsgNameDbwControlPlane
+  params: {
+    // Required parameters
+    name: nsgNameDbwControlPlane
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+      }
+    ]
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    tags: tags
+    securityRules: [
+      // TODO
+      {
+        name: 'Any'
+        properties: {
+          access: 'Allow'
+          description: 'TODO'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '*'
+          direction: 'Outbound'
+          priority: 100
+          protocol: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+    ]
+  }
+}
+
+module nsgDbwDataPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if ((!existingVNET) && enableDatabricks) {
+  name: nsgNameDbwDataPlane
+  params: {
+    // Required parameters
+    name: nsgNameDbwDataPlane
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+      }
+    ]
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    tags: tags
+    securityRules: [
+      // TODO
+      {
+        name: 'Any'
+        properties: {
+          access: 'Allow'
+          description: 'TODO'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '*'
+          direction: 'Outbound'
+          priority: 100
+          protocol: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+    ]
   }
 }
 
@@ -242,7 +344,7 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (!exist
     tags: tags
     virtualNetworkLinks: [
       {
-        registrationEnabled: true
+        registrationEnabled: false
         virtualNetworkResourceId: vnet.outputs.resourceId
       }
     ]
@@ -256,13 +358,13 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     name: '${name}-dbw'
     // Non-required parameters
     customPrivateSubnetName: existingVNET
-      ? databricks.?dbwSubnetNameControlPlane // TODO validace
-      : filter(subnets, item => item.productPrice == dbwSubnetNameControlPlane)[0] // TODO
+      ? databricks.?subnetNameDbwControlPlane // TODO validace
+      : filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name // TODO
     customPublicSubnetName: existingVNET
-      ? databricks.?dbwSubnetNameDataPlane // TODO validace
-      : filter(subnets, item => item.productPrice == dbwSubnetNameDataPlane)[0] // TODO
+      ? databricks.?subnetNameDbwDataPlane // TODO validace
+      : filter(subnets, item => item.name == subnetNameDbwDataPlane)[0].name // TODO
     customVirtualNetworkResourceId: existingVNET
-      ? split(databricks.?dbwSubnetNameControlPlane, '/subnets/')[0]
+      ? split(databricks.?subnetNameDbwControlPlane, '/subnets/')[0] // TODO
       : vnet.outputs.resourceId // TODO
     diagnosticSettings: [
       {
@@ -306,7 +408,7 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if ((!exi
     tags: tags
     virtualNetworkLinks: [
       {
-        registrationEnabled: true
+        registrationEnabled: false
         virtualNetworkResourceId: vnet.outputs.resourceId
       }
     ]
@@ -356,7 +458,7 @@ type networkAclsType = {
 
 type databricksType = {
   @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
-  dbwSubnetNameControlPlane: string?
+  subnetNameDbwControlPlane: string?
   @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
-  dbwSubnetNameDataPlane: string?
+  subnetNameDbwDataPlane: string?
 }
