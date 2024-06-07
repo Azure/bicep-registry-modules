@@ -1,7 +1,13 @@
 name: AVM - CI Environment Issue 🚀
 description: Have an issue, question or suggestion for the CI Environment? Let us know!
 title: "[AVM CI Environment Issue]: "
-labels: ["Type: AVM :a: :v: :m:", "Needs: Triage :mag:"]
+labels:
+  [
+    "Type: AVM :a: :v: :m:",
+    "Needs: Triage :mag:",
+    "Needs: Core Team :genie:",
+    "Type: CI :rocket:",
+  ]
 projects: ["Azure/538"]
 body:
   - type: markdown
@@ -18,6 +24,17 @@ body:
       options:
         - label: I have checked for previous/existing GitHub issues
           required: true
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type?
+      description: How would you best describe this issue? Is this a...
+      options:
+        - ""
+        - "Feature Request"
+        - "Bug"
+    validations:
+      required: true
   - type: textarea
     id: question-feedback-text
     attributes:
