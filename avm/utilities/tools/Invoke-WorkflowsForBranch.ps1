@@ -88,7 +88,8 @@ Get a list of all GitHub module workflows
 Get a list of all GitHub module workflows. Does not return all properties but only the relevant ones.
 
 .PARAMETER PersonalAccessToken
-Mandatory. The GitHub PAT to leverage when interacting with the GitHub API.
+Optional. The PAT to use to interact with either GitHub / Azure DevOps. If not provided, the script will use the GitHub CLI to authenticate.
+
 
 .PARAMETER RepositoryOwner
 Mandatory. The repository's organization.
@@ -97,7 +98,7 @@ Mandatory. The repository's organization.
 Mandatory. The name of the repository to fetch the workflows from.
 
 .PARAMETER Filter
-Optional. A filter to apply when fetching the workflows. By default we fetch all module workflows (avm.res.*).
+Optional. A regex filter to apply when fetching the workflows. By default we fetch all module workflows (avm.res.*).
 
 .EXAMPLE
 Get-GitHubModuleWorkflowList -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules'
@@ -108,7 +109,7 @@ function Get-GitHubModuleWorkflowList {
 
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string] $PersonalAccessToken,
 
         [Parameter(Mandatory = $true)]
@@ -118,26 +119,40 @@ function Get-GitHubModuleWorkflowList {
         [string] $RepositoryName,
 
         [Parameter(Mandatory = $false)]
-        [string] $Filter = 'avm.res.*'
+        [string] $Filter = 'avm\.(?:res|ptn)'
     )
 
     $allWorkflows = @()
+
     $page = 1
     do {
-        $requestInputObject = @{
-            Method  = 'GET'
-            Uri     = "https://api.github.com/repos/$RepositoryOwner/$RepositoryName/actions/workflows?per_page=100&page=$page"
-            Headers = @{
-                Authorization = "Bearer $PersonalAccessToken"
+
+        $queryUrl = "/repos/$RepositoryOwner/$RepositoryName/actions/workflows?per_page=100&page=$page"
+        if ($PersonalAccessToken) {
+            # Using PAT
+            $requestInputObject = @{
+                Method  = 'GET'
+                Uri     = "https://api.github.com/$queryUrl"
+                Headers = @{
+                    Authorization = "Bearer $PersonalAccessToken"
+                }
             }
+            $response = Invoke-RestMethod @requestInputObject
+        } else {
+            # Using GH API instead of 'gh workflow list' to get all results instead of just the first few
+            $requestInputObject = @(
+                '-H', 'Accept: application/vnd.github+json',
+                '-H', 'X-GitHub-Api-Version: 2022-11-28',
+                $queryUrl
+            )
+            $response = (gh api @requestInputObject | ConvertFrom-Json)
         }
-        $response = Invoke-RestMethod @requestInputObject
 
         if (-not $response.workflows) {
             Write-Error "Request failed. Reponse: [$response]"
         }
 
-        $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url') | Where-Object { (Split-Path $_.path -Leaf) -like $Filter }
+        $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url') | Where-Object { (Split-Path $_.path -Leaf) -match $Filter }
 
         $expectedPages = [math]::ceiling($response.total_count / 100)
         $page++
@@ -155,13 +170,13 @@ Trigger all pipelines for GitHub
 Trigger all workflows for the given GitHub repository. By default, pipelines are filtered to AVM module pipelines.
 
 .PARAMETER PersonalAccessToken
-Mandatory. The PAT to use to interact with either GitHub / Azure DevOps.
+Optional. The PAT to use to interact with either GitHub / Azure DevOps. If not provided, the script will use the GitHub CLI to authenticate.
 
 .PARAMETER TargetBranch
 Optional. The branch to run the pipelines for (e.g. `main`). Defaults to currently checked-out branch.
 
 .PARAMETER PipelineFilter
-Optional. The pipeline files to filter down to. By default only files with a name that starts with 'avm.res.*' are considered. E.g. 'avm.res.*'.
+Optional. The pipeline files to filter down to (regex).
 
 .PARAMETER SkipPipelineBadges
 Optional. Specify to disable the output of generated pipeline status badges for the given pipeline configuration.
@@ -179,32 +194,37 @@ Optional. The inputs to pass into the workflows. Defaults to only run static val
 Optional. Trigger workflows only for those who's module files have changed (based on diff of branch to main)
 
 .EXAMPLE
-Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn)' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
-Run all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Also returns all GitHub status badges.
+Run all GitHub workflows that match 'avm\.(?:res|ptn)' using branch 'feature/branch'. Also returns all GitHub status badges.
 
 .EXAMPLE
-Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -WhatIf
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn)' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -WhatIf
 
-Only simulate the triggering of all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Hence ONLY returns all GitHub status badges.
+Only simulate the triggering of all GitHub workflows that match 'avm\.(?:res|ptn)' using branch 'feature/branch'. Hence ONLY returns all GitHub status badges.
 
 .EXAMPLE
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'MyFork'
 
 Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res.*', using the current locally checked out branch. Also returns all GitHub status badges.
+
+.EXAMPLE
+Invoke-WorkflowsForBranch -RepositoryOwner 'MyFork'
+
+Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res.*', using the current locally checked out branch and the GitHub CLI. Also returns all GitHub status badges.
 #>
 function Invoke-WorkflowsForBranch {
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [string] $PersonalAccessToken,
 
         [Parameter(Mandatory = $false)]
         [string] $TargetBranch = (git branch --show-current),
 
         [Parameter(Mandatory = $false)]
-        [string] $PipelineFilter = 'avm.res.*',
+        [string] $PipelineFilter = 'avm\.(?:res|ptn)',
 
         [Parameter(Mandatory = $false)]
         [switch] $InvokeForDiff,
@@ -230,9 +250,13 @@ function Invoke-WorkflowsForBranch {
     )
 
     $baseInputObject = @{
-        PersonalAccessToken = $PersonalAccessToken
-        RepositoryOwner     = $RepositoryOwner
-        RepositoryName      = $RepositoryName
+        RepositoryOwner = $RepositoryOwner
+        RepositoryName  = $RepositoryName
+    }
+    if ($PersonalAccessToken) {
+        $baseInputObject['PersonalAccessToken'] = @{
+            PersonalAccessToken = $PersonalAccessToken
+        }
     }
 
     Write-Verbose 'Fetching current GitHub workflows' -Verbose
