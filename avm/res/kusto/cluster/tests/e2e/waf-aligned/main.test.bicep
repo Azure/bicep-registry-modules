@@ -44,6 +44,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
       sku: 'Standard_D2_v2'
+      tier: 'Standard'
     }
   }
 ]
