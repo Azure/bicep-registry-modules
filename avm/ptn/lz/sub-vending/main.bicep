@@ -337,7 +337,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep' = if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
+module createSubscription './modules/subscriptionAlias.bicep' = if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
   scope: managementGroup()
   name: deploymentNames.createSubscription
   params: {
@@ -350,7 +350,7 @@ module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep'
   }
 }
 
-module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' = if (subscriptionAliasEnabled || !empty(existingSubscriptionId)) {
+module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (subscriptionAliasEnabled || !empty(existingSubscriptionId)) {
   name: deploymentNames.createSubscriptionResources
   params: {
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))

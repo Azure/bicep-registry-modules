@@ -100,22 +100,32 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2021-05-01' = {
   properties: {
     addressPrefix: addressPrefix
     allowBranchToBranchTraffic: allowBranchToBranchTraffic
-    azureFirewall: !empty(azureFirewallId) ? {
-      id: azureFirewallId
-    } : null
-    expressRouteGateway: !empty(expressRouteGatewayId) ? {
-      id: expressRouteGatewayId
-    } : null
-    p2SVpnGateway: !empty(p2SVpnGatewayId) ? {
-      id: p2SVpnGatewayId
-    } : null
+    azureFirewall: !empty(azureFirewallId)
+      ? {
+          id: azureFirewallId
+        }
+      : null
+    expressRouteGateway: !empty(expressRouteGatewayId)
+      ? {
+          id: expressRouteGatewayId
+        }
+      : null
+    p2SVpnGateway: !empty(p2SVpnGatewayId)
+      ? {
+          id: p2SVpnGatewayId
+        }
+      : null
     preferredRoutingGateway: !empty(preferredRoutingGateway) ? any(preferredRoutingGateway) : null
-    routeTable: !empty(routeTableRoutes) ? {
-      routes: routeTableRoutes
-    } : null
-    securityPartnerProvider: !empty(securityPartnerProviderId) ? {
-      id: securityPartnerProviderId
-    } : null
+    routeTable: !empty(routeTableRoutes)
+      ? {
+          routes: routeTableRoutes
+        }
+      : null
+    securityPartnerProvider: !empty(securityPartnerProviderId)
+      ? {
+          id: securityPartnerProviderId
+        }
+      : null
     securityProviderName: securityProviderName
     sku: sku
     virtualHubRouteTableV2s: virtualHubRouteTableV2s
@@ -124,9 +134,11 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2021-05-01' = {
     virtualWan: {
       id: virtualWanId
     }
-    vpnGateway: !empty(vpnGatewayId) ? {
-      id: vpnGatewayId
-    } : null
+    vpnGateway: !empty(vpnGatewayId)
+      ? {
+          id: vpnGatewayId
+        }
+      : null
   }
 }
 
@@ -134,36 +146,46 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty
   name: '${virtualHub.name}-${lock}-lock'
   properties: {
     level: any(lock)
-    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
+    notes: lock == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot modify the resource or child resources.'
   }
   scope: virtualHub
 }
 
-module virtualHub_routeTables 'hubRouteTables/deploy.bicep' = [for (routeTable, index) in hubRouteTables: {
-  name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
-  params: {
-    virtualHubName: virtualHub.name
-    name: routeTable.name
-    labels: contains(routeTable, 'labels') ? routeTable.labels : []
-    routes: contains(routeTable, 'routes') ? routeTable.routes : []
-    //enableDefaultTelemetry: enableReferencedModulesTelemetry
+module virtualHub_routeTables 'hubRouteTables.bicep' = [
+  for (routeTable, index) in hubRouteTables: {
+    name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
+    params: {
+      virtualHubName: virtualHub.name
+      name: routeTable.name
+      labels: contains(routeTable, 'labels') ? routeTable.labels : []
+      routes: contains(routeTable, 'routes') ? routeTable.routes : []
+      //enableDefaultTelemetry: enableReferencedModulesTelemetry
+    }
   }
-}]
+]
 
-module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnections/deploy.bicep' = [for (virtualNetworkConnection, index) in hubVirtualNetworkConnections: {
-  name: '${uniqueString(deployment().name, location)}-connection-${index}'
-  params: {
-    virtualHubName: virtualHub.name
-    name: virtualNetworkConnection.name
-    enableInternetSecurity: contains(virtualNetworkConnection, 'enableInternetSecurity') ? virtualNetworkConnection.enableInternetSecurity : true
-    remoteVirtualNetworkId: virtualNetworkConnection.remoteVirtualNetworkId
-    routingConfiguration: contains(virtualNetworkConnection, 'routingConfiguration') ? virtualNetworkConnection.routingConfiguration : {}
-    //enableDefaultTelemetry: enableReferencedModulesTelemetry
+module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnections.bicep' = [
+  for (virtualNetworkConnection, index) in hubVirtualNetworkConnections: {
+    name: '${uniqueString(deployment().name, location)}-connection-${index}'
+    params: {
+      virtualHubName: virtualHub.name
+      name: virtualNetworkConnection.name
+      enableInternetSecurity: contains(virtualNetworkConnection, 'enableInternetSecurity')
+        ? virtualNetworkConnection.enableInternetSecurity
+        : true
+      remoteVirtualNetworkId: virtualNetworkConnection.remoteVirtualNetworkId
+      routingConfiguration: contains(virtualNetworkConnection, 'routingConfiguration')
+        ? virtualNetworkConnection.routingConfiguration
+        : {}
+      //enableDefaultTelemetry: enableReferencedModulesTelemetry
+    }
+    dependsOn: [
+      virtualHub_routeTables
+    ]
   }
-  dependsOn: [
-    virtualHub_routeTables
-  ]
-}]
+]
 
 @description('The resource group the virtual hub was deployed into.')
 output resourceGroupName string = resourceGroup().name

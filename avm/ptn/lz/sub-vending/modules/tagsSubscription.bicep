@@ -28,7 +28,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }*/
 
-module readTags '.bicep/readTags.bicep' = if (onlyUpdate) {
+module readTags 'readTagsSubscription.bicep' = if (onlyUpdate) {
   name: '${deployment().name}-ReadTags'
 }
 

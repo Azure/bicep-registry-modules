@@ -313,7 +313,7 @@ var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
 // RESOURCES & MODULES
 
-module moveSubscriptionToManagementGroup '../Microsoft.Management/managementGroups/subscriptions/deploy.bicep' = if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
+module moveSubscriptionToManagementGroup './managementGroupSubscription.bicep' = if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
   scope: managementGroup(subscriptionManagementGroupId)
   name: deploymentNames.moveSubscriptionToManagementGroup
   params: {
@@ -322,7 +322,7 @@ module moveSubscriptionToManagementGroup '../Microsoft.Management/managementGrou
   }
 }
 
-module tagSubscription '../../modules/Microsoft.Resources/tags/deploy.bicep' = if (!empty(subscriptionTags)) {
+module tagSubscription 'tags.bicep' = if (!empty(subscriptionTags)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.tagSubscription
   params: {
@@ -347,7 +347,7 @@ module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-
   }
 }
 
-module tagResourceGroup '../../modules/Microsoft.Resources/tags/deploy.bicep' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualNetworkResourceGroupTags)) {
+module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualNetworkResourceGroupTags)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -394,7 +394,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (virt
   }
 }
 
-module createLzVirtualWanConnection '../../modules/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
+module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
   dependsOn: [
     createResourceGroupForLzNetworking
     createLzVnet
@@ -608,7 +608,7 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
     storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
     subnetResourceIds: !(empty(resourceProviders)) ? createDsVnet.outputs.subnetResourceIds : null
     arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
-    scriptContent: loadTextContent('../../scripts/Invoke-RegisterSubscriptionResourceProviders.ps1')
+    scriptContent: loadTextContent('../scripts/Invoke-RegisterSubscriptionResourceProviders.ps1')
   }
 }
 

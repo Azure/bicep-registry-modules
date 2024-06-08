@@ -33,7 +33,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }*/
 
-module tags_sub 'subscriptions/deploy.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
+module tags_sub 'tagsSubscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${deployment().name}-Tags-Sub'
   params: {
     onlyUpdate: onlyUpdate
@@ -43,7 +43,7 @@ module tags_sub 'subscriptions/deploy.bicep' = if (!empty(subscriptionId) && emp
   }
 }
 
-module tags_rg 'resourceGroups/deploy.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
+module tags_rg 'tagsResourceGroup.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
   name: '${deployment().name}-Tags-RG'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -54,10 +54,16 @@ module tags_rg 'resourceGroups/deploy.bicep' = if (!empty(resourceGroupName) && 
 }
 
 @description('The name of the tags resource.')
-output name string = (!empty(resourceGroupName) && !empty(subscriptionId)) ? tags_rg.outputs.name : tags_sub.outputs.name
+output name string = (!empty(resourceGroupName) && !empty(subscriptionId))
+  ? tags_rg.outputs.name
+  : tags_sub.outputs.name
 
 @description('The applied tags.')
-output tags object = (!empty(resourceGroupName) && !empty(subscriptionId)) ? tags_rg.outputs.tags : tags_sub.outputs.tags
+output tags object = (!empty(resourceGroupName) && !empty(subscriptionId))
+  ? tags_rg.outputs.tags
+  : tags_sub.outputs.tags
 
 @description('The resource ID of the applied tags.')
-output resourceId string = (!empty(resourceGroupName) && !empty(subscriptionId)) ? tags_rg.outputs.resourceId : tags_sub.outputs.resourceId
+output resourceId string = (!empty(resourceGroupName) && !empty(subscriptionId))
+  ? tags_rg.outputs.resourceId
+  : tags_sub.outputs.resourceId
