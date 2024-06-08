@@ -101,6 +101,93 @@ var subnets = concat(
     : []
 )
 
+var securityRulesDbw = [
+  {
+    name: 'worker-to-worker-inbound'
+    properties: {
+      priority: 100
+      direction: 'Inbound'
+      access: 'Allow'
+      protocol: '*'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+      destinationAddressPrefix: 'VirtualNetwork'
+      destinationPortRange: '*'
+      description: 'Required for worker nodes communication within a cluster.'
+    }
+  }
+  {
+    name: 'worker-to-databricks-webapp'
+    properties: {
+      priority: 100
+      direction: 'Outbound'
+      access: 'Allow'
+      protocol: 'Tcp'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+      destinationAddressPrefix: 'AzureDatabricks'
+      destinationPortRanges: ['443', '3306', '8443-8451']
+      description: 'Required for workers communication with Databricks Webapp.'
+    }
+  }
+  {
+    name: 'worker-to-sql'
+    properties: {
+      priority: 101
+      direction: 'Outbound'
+      access: 'Allow'
+      protocol: 'Tcp'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+      destinationAddressPrefix: 'Sql'
+      destinationPortRange: '3306'
+      description: 'Required for workers communication with Azure SQL services.'
+    }
+  }
+  {
+    name: 'worker-to-storage'
+    properties: {
+      priority: 102
+      direction: 'Outbound'
+      access: 'Allow'
+      protocol: 'Tcp'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+      destinationAddressPrefix: 'Storage'
+      destinationPortRange: '443'
+      description: 'Required for workers communication with Azure Storage services.'
+    }
+  }
+  {
+    name: 'worker-to-worker-outbound'
+    properties: {
+      priority: 103
+      direction: 'Outbound'
+      access: 'Allow'
+      protocol: '*'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+      destinationAddressPrefix: 'VirtualNetwork'
+      destinationPortRange: '*'
+      description: 'Required for worker nodes communication within a cluster.'
+    }
+  }
+  {
+    name: 'worker-to-eventhub'
+    properties: {
+      priority: 104
+      direction: 'Outbound'
+      access: 'Allow'
+      protocol: 'Tcp'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+      destinationAddressPrefix: 'EventHub'
+      destinationPortRange: '9093'
+      description: 'Required for worker communication with Azure Eventhub services.'
+    }
+  }
+]
+
 // ============== //
 // Resources      //
 // ============== //
@@ -185,23 +272,7 @@ module nsgDbwContainer 'br/public:avm/res/network/network-security-group:0.2.0' 
     location: location
     lock: lock
     tags: tags
-    securityRules: [
-      // TODO
-      {
-        name: 'Any'
-        properties: {
-          access: 'Allow'
-          description: 'TODO'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '*'
-          direction: 'Outbound'
-          priority: 100
-          protocol: '*'
-          sourceAddressPrefix: '*'
-          sourcePortRange: '*'
-        }
-      }
-    ]
+    securityRules: securityRulesDbw
   }
 }
 
@@ -226,23 +297,7 @@ module nsgDbwHost 'br/public:avm/res/network/network-security-group:0.2.0' = if 
     location: location
     lock: lock
     tags: tags
-    securityRules: [
-      // TODO
-      {
-        name: 'Any'
-        properties: {
-          access: 'Allow'
-          description: 'TODO'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '*'
-          direction: 'Outbound'
-          priority: 100
-          protocol: '*'
-          sourceAddressPrefix: '*'
-          sourcePortRange: '*'
-        }
-      }
-    ]
+    securityRules: securityRulesDbw
   }
 }
 

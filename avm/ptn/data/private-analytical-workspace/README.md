@@ -191,17 +191,17 @@ This parameter allows you to specify additional settings for Azure Databricks if
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`subnetNameDbwControlPlane`](#parameter-databrickssubnetnamedbwcontrolplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
-| [`subnetNameDbwDataPlane`](#parameter-databrickssubnetnamedbwdataplane) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`subnetNameDbwContainer`](#parameter-databrickssubnetnamedbwcontainer) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`subnetNameDbwHost`](#parameter-databrickssubnetnamedbwhost) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
 
-### Parameter: `databricks.subnetNameDbwControlPlane`
+### Parameter: `databricks.subnetNameDbwContainer`
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
 - Required: No
 - Type: string
 
-### Parameter: `databricks.subnetNameDbwDataPlane`
+### Parameter: `databricks.subnetNameDbwHost`
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
