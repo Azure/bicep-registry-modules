@@ -44,18 +44,16 @@ var subnetNameDbwDataPlane = '${name}-dbw-data-plane'
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
 var nsgNameDbwDataPlane = '${name}-nsg-dbw-data-plane'
 
-var existingVNET = !empty(privateEndpointSubnetResourceId)
+var createNewVNET = empty(privateEndpointSubnetResourceId)
+var createNewLog = empty(logAnalyticsWorkspaceResourceId)
+var createNewKV = empty(keyVaultResourceId)
 
 var cfg = ({
-  privateEndpointSubnetResourceId: empty(privateEndpointSubnetResourceId)
-    ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available and zero index
-    : privateEndpointSubnetResourceId
+  privateEndpointSubnetResourceId: createNewVNET ? vnet.outputs.subnetResourceIds[0] : privateEndpointSubnetResourceId // private link subnet should be always available at zero index
 })
 
 var logCfg = ({
-  logAnalyticsWorkspaceResourceId: empty(logAnalyticsWorkspaceResourceId)
-    ? log.outputs.resourceId
-    : logAnalyticsWorkspaceResourceId
+  logAnalyticsWorkspaceResourceId: createNewLog ? log.outputs.resourceId : logAnalyticsWorkspaceResourceId
 })
 
 var privateLinkSubnet = [
@@ -130,7 +128,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
-module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!existingVNET) {
+module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
   name: '${name}-vnet'
   params: {
     // Required parameters
@@ -164,7 +162,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!existingVNE
   }
 }
 
-module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if ((!existingVNET) && enableDatabricks) {
+module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
   name: nsgNameDbwControlPlane
   params: {
     // Required parameters
@@ -205,7 +203,7 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.
   }
 }
 
-module nsgDbwDataPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if ((!existingVNET) && enableDatabricks) {
+module nsgDbwDataPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
   name: nsgNameDbwDataPlane
   params: {
     // Required parameters
@@ -246,7 +244,7 @@ module nsgDbwDataPlane 'br/public:avm/res/network/network-security-group:0.2.0' 
   }
 }
 
-module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
+module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (createNewLog) {
   name: '${name}-log'
   params: {
     // Required parameters
@@ -263,7 +261,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (empty(
   }
 }
 
-module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResourceId)) {
+module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
   name: '${name}-kv'
   params: {
     // Required parameters
@@ -311,9 +309,8 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
           defaultAction: 'Deny'
         }
 
-    privateEndpoints: existingVNET
-      ? []
-      : [
+    privateEndpoints: createNewVNET
+      ? [
           {
             name: '${name}-kv-pep'
             location: location
@@ -324,7 +321,8 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
             lock: lock
           }
         ]
-    //publicNetworkAccess: existingVNET ? 'Disabled' : 'Enabled' // TODO - When existingVNET + ACL
+      : []
+    //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
     //roleAssignments: // TODO
     sku: 'premium'
     //softDeleteRetentionInDays: // TODO
@@ -332,7 +330,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (empty(keyVaultResource
   }
 }
 
-module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (!existingVNET) {
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET) {
   name: privateDnsZoneNameKv
   params: {
     // Required parameters
@@ -357,15 +355,15 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     // Required parameters
     name: '${name}-dbw'
     // Non-required parameters
-    customPrivateSubnetName: existingVNET
-      ? databricks.?subnetNameDbwControlPlane // TODO validace
-      : filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name // TODO
-    customPublicSubnetName: existingVNET
-      ? databricks.?subnetNameDbwDataPlane // TODO validace
-      : filter(subnets, item => item.name == subnetNameDbwDataPlane)[0].name // TODO
-    customVirtualNetworkResourceId: existingVNET
-      ? split(databricks.?subnetNameDbwControlPlane, '/subnets/')[0] // TODO
-      : vnet.outputs.resourceId // TODO
+    customPrivateSubnetName: createNewVNET
+      ? filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name // TODO
+      : databricks.?subnetNameDbwControlPlane // TODO validace
+    customPublicSubnetName: createNewVNET
+      ? filter(subnets, item => item.name == subnetNameDbwDataPlane)[0].name // TODO
+      : databricks.?subnetNameDbwDataPlane // TODO validace
+    customVirtualNetworkResourceId: createNewVNET
+      ? vnet.outputs.resourceId // TODO
+      : split(databricks.?subnetNameDbwControlPlane, '/subnets/')[0] // TODO
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -396,7 +394,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
   }
 }
 
-module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if ((!existingVNET) && enableDatabricks) {
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET && enableDatabricks) {
   name: privateDnsZoneNameDbw
   params: {
     // Required parameters

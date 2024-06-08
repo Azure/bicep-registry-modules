@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "18390834286525293816"
+      "templateHash": "13796519543641592502"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -162,7 +162,9 @@
     "subnetNameDbwDataPlane": "[format('{0}-dbw-data-plane', parameters('name'))]",
     "nsgNameDbwControlPlane": "[format('{0}-nsg-dbw-control-plane', parameters('name'))]",
     "nsgNameDbwDataPlane": "[format('{0}-nsg-dbw-data-plane', parameters('name'))]",
-    "existingVNET": "[not(empty(parameters('privateEndpointSubnetResourceId')))]",
+    "createNewVNET": "[empty(parameters('privateEndpointSubnetResourceId'))]",
+    "createNewLog": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
+    "createNewKV": "[empty(parameters('keyVaultResourceId'))]",
     "privateLinkSubnet": [
       {
         "addressPrefix": "192.168.224.0/24",
@@ -192,7 +194,7 @@
       }
     },
     "vnet": {
-      "condition": "[not(variables('existingVNET'))]",
+      "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vnet', parameters('name'))]",
@@ -224,7 +226,7 @@
                     "category": "AllMetrics"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
               }
             ]
           },
@@ -1386,7 +1388,7 @@
       ]
     },
     "nsgDbwControlPlane": {
-      "condition": "[and(not(variables('existingVNET')), parameters('enableDatabricks'))]",
+      "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[variables('nsgNameDbwControlPlane')]",
@@ -1408,7 +1410,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
               }
             ]
           },
@@ -2122,7 +2124,7 @@
       ]
     },
     "nsgDbwDataPlane": {
-      "condition": "[and(not(variables('existingVNET')), parameters('enableDatabricks'))]",
+      "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[variables('nsgNameDbwDataPlane')]",
@@ -2144,7 +2146,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
               }
             ]
           },
@@ -2858,7 +2860,7 @@
       ]
     },
     "log": {
-      "condition": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
+      "condition": "[variables('createNewLog')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-log', parameters('name'))]",
@@ -4811,7 +4813,7 @@
       }
     },
     "kv": {
-      "condition": "[empty(parameters('keyVaultResourceId'))]",
+      "condition": "[variables('createNewKV')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-kv', parameters('name'))]",
@@ -4841,7 +4843,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
               }
             ]
           },
@@ -4873,7 +4875,7 @@
             "value": "[parameters('lock')]"
           },
           "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray()))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')))]",
-          "privateEndpoints": "[if(variables('existingVNET'), createObject('value', createArray()), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('privateEndpointSubnetResourceId', if(empty(parameters('privateEndpointSubnetResourceId')), reference('vnet').outputs.subnetResourceIds.value[0], parameters('privateEndpointSubnetResourceId'))).privateEndpointSubnetResourceId, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))))]",
+          "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], parameters('privateEndpointSubnetResourceId'))).privateEndpointSubnetResourceId, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "sku": {
             "value": "premium"
           },
@@ -7622,7 +7624,7 @@
       ]
     },
     "dnsZoneKv": {
-      "condition": "[not(variables('existingVNET'))]",
+      "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[variables('privateDnsZoneNameKv')]",
@@ -10526,9 +10528,9 @@
           "name": {
             "value": "[format('{0}-dbw', parameters('name'))]"
           },
-          "customPrivateSubnetName": "[if(variables('existingVNET'), createObject('value', tryGet(parameters('databricks'), 'subnetNameDbwControlPlane')), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwDataPlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwDataPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwControlPlane'))))[0].name))]",
-          "customPublicSubnetName": "[if(variables('existingVNET'), createObject('value', tryGet(parameters('databricks'), 'subnetNameDbwDataPlane')), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwDataPlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwDataPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwDataPlane'))))[0].name))]",
-          "customVirtualNetworkResourceId": "[if(variables('existingVNET'), createObject('value', split(tryGet(parameters('databricks'), 'subnetNameDbwControlPlane'), '/subnets/')[0]), createObject('value', reference('vnet').outputs.resourceId.value))]",
+          "customPrivateSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwDataPlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwDataPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwControlPlane'))))[0].name), createObject('value', tryGet(parameters('databricks'), 'subnetNameDbwControlPlane')))]",
+          "customPublicSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwDataPlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwDataPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwDataPlane'))))[0].name), createObject('value', tryGet(parameters('databricks'), 'subnetNameDbwDataPlane')))]",
+          "customVirtualNetworkResourceId": "[if(variables('createNewVNET'), createObject('value', reference('vnet').outputs.resourceId.value), createObject('value', split(tryGet(parameters('databricks'), 'subnetNameDbwControlPlane'), '/subnets/')[0]))]",
           "diagnosticSettings": {
             "value": [
               {
@@ -10538,7 +10540,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
               }
             ]
           },
@@ -12170,7 +12172,7 @@
       ]
     },
     "dnsZoneDbw": {
-      "condition": "[and(not(variables('existingVNET')), parameters('enableDatabricks'))]",
+      "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[variables('privateDnsZoneNameDbw')]",
