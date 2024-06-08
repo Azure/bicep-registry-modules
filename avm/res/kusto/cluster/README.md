@@ -157,6 +157,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     sku: 'Standard_D2_v2'
     // Non-required parameters
     location: '<location>'
+    tier: 'Standard'
   }
 }
 ```
@@ -183,6 +184,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tier": {
+      "value": "Standard"
     }
   }
 }
