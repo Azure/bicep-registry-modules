@@ -1,38 +1,38 @@
 metadata name = 'private-analytical-workspace'
-metadata description = 'Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.'
+metadata description = 'This pattern module lets you use Azure services that are common for data analytics solutions. The aim is to help data scientists set up an environment for data analysis easily. It should be secure by default for enterprise use. Data scientists should not worry about making a secure infrastructure solution. They should only focus on the data analytics components they need for the solution.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the private analytical workspace solution and its components. Used to ensure unique resource names.')
 param name string
 
-@description('Optional. Location for all Resources.')
+@description('Optional. Location for all Resources in the solution.')
 param location string = resourceGroup().location
 
-@description('Optional. The lock settings of the service.')
+@description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType
 
-@description('Optional. Tags of the resource.')
+@description('Optional. Tags for all Resources in the solution.')
 param tags object?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for all Resources in the solution.')
 param enableTelemetry bool = true
 
 @description('Optional. Enable/Disable Azure Databricks service in the solution.')
 param enableDatabricks bool = false
 
-@description('Optional. If you already have an existing subnet resource ID in the region that is suitable for private endpoint, you can optionally provide it here. Otherwise, this module will create a new subnet for you.')
+@description('Optional. This option allows the full solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution and has the same region, you can choose to give it here. This parameter refers to a subnet in the customer provided VNET and the subnet is meant for private endpoints. If you do not use this option, this module will make a new VNET and subnet for you.')
 param privateEndpointSubnetResourceId string = ''
 
-@description('Optional. You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you.')
+@description('Optional. If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you.')
 param logAnalyticsWorkspaceResourceId string = ''
 
-@description('Optional. You can specify an existing Key Vault if you have one. If not, this module will create a new one for you.')
+@description('Optional. If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you.')
 param keyVaultResourceId string = ''
 
-@description('Optional. Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+@description('Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
 
-@description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.') // TODO
+@description('Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true.')
 param databricks databricksType?
 
 // Constants

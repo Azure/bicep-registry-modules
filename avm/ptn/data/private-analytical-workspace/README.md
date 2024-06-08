@@ -1,6 +1,6 @@
 # private-analytical-workspace `[Microsoft.DatabaseWatcher/privateanalyticalworkspace]`
 
-Using this pattern module, you can combine Azure services that frequently help with data analytics solutions.
+This pattern module lets you use Azure services that are common for data analytics solutions. The aim is to help data scientists set up an environment for data analysis easily. It should be secure by default for enterprise use. Data scientists should not worry about making a secure infrastructure solution. They should only focus on the data analytics components they need for the solution.
 
 ## Navigation
 
@@ -162,16 +162,16 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`databricks`](#parameter-databricks) | object | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`databricks`](#parameter-databricks) | object | This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true. |
 | [`enableDatabricks`](#parameter-enabledatabricks) | bool | Enable/Disable Azure Databricks service in the solution. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | You can specify an existing Key Vault if you have one. If not, this module will create a new one for you. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you. |
-| [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
-| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | If you already have an existing subnet resource ID in the region that is suitable for private endpoint, you can optionally provide it here. Otherwise, this module will create a new subnet for you. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for all Resources in the solution. |
+| [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you. |
+| [`location`](#parameter-location) | string | Location for all Resources in the solution. |
+| [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you. |
+| [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
+| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | This option allows the full solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution and has the same region, you can choose to give it here. This parameter refers to a subnet in the customer provided VNET and the subnet is meant for private endpoints. If you do not use this option, this module will make a new VNET and subnet for you. |
+| [`tags`](#parameter-tags) | object | Tags for all Resources in the solution. |
 
 ### Parameter: `name`
 
@@ -182,7 +182,7 @@ Name of the private analytical workspace solution and its components. Used to en
 
 ### Parameter: `databricks`
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true.
 
 - Required: No
 - Type: object
@@ -218,7 +218,7 @@ Enable/Disable Azure Databricks service in the solution.
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for module.
+Enable/Disable usage telemetry for all Resources in the solution.
 
 - Required: No
 - Type: bool
@@ -226,7 +226,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `keyVaultResourceId`
 
-You can specify an existing Key Vault if you have one. If not, this module will create a new one for you.
+If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you.
 
 - Required: No
 - Type: string
@@ -234,7 +234,7 @@ You can specify an existing Key Vault if you have one. If not, this module will 
 
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all Resources in the solution.
 
 - Required: No
 - Type: string
@@ -242,7 +242,7 @@ Location for all Resources.
 
 ### Parameter: `lock`
 
-The lock settings of the service.
+The lock settings for all Resources in the solution.
 
 - Required: No
 - Type: object
@@ -278,7 +278,7 @@ Specify the name of lock.
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
-You can specify an existing Log Analytics Workspace if you have one. If not, this module will create a new one for you.
+If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you.
 
 - Required: No
 - Type: string
@@ -286,7 +286,7 @@ You can specify an existing Log Analytics Workspace if you have one. If not, thi
 
 ### Parameter: `networkAcls`
 
-Rules governing the accessibility of the private analytical workspace solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.
+Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.
 
 - Required: No
 - Type: object
@@ -314,7 +314,7 @@ Sets the virtual network rules.
 
 ### Parameter: `privateEndpointSubnetResourceId`
 
-If you already have an existing subnet resource ID in the region that is suitable for private endpoint, you can optionally provide it here. Otherwise, this module will create a new subnet for you.
+This option allows the full solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution and has the same region, you can choose to give it here. This parameter refers to a subnet in the customer provided VNET and the subnet is meant for private endpoints. If you do not use this option, this module will make a new VNET and subnet for you.
 
 - Required: No
 - Type: string
@@ -322,7 +322,7 @@ If you already have an existing subnet resource ID in the region that is suitabl
 
 ### Parameter: `tags`
 
-Tags of the resource.
+Tags for all Resources in the solution.
 
 - Required: No
 - Type: object
