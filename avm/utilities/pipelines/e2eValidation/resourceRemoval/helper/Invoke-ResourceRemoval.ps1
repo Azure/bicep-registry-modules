@@ -185,7 +185,7 @@ function Invoke-ResourceRemoval {
             }
             break
         }
-        'Microsoft.Subscription/aliases' {
+        '$PSItem -eq 'Microsoft.Subscription/aliases' -and $ResourceId -like "ssa*' {
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscription = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName}
             $subscriptionId =  $subscription.Id
@@ -205,7 +205,7 @@ function Invoke-ResourceRemoval {
             if($subscriptionState -eq "Enabled"){
                 if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
-                $null = Disable-AzSubscription -SubscriptionId $subscriptionId -Confirm:$false
+                $null = Disable-AzSubscription -SubscriptionId $subscriptionId -Force
                 }
             }
         break
