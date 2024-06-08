@@ -194,7 +194,7 @@ function Invoke-ResourceRemoval {
             $null = Select-AzSubscription -SubscriptionId $subscriptionId -WarningAction SilentlyContinue
 
             # Delete NetworkWatcher resource group
-            if(-not (Get-AzResourceGroup -Name "NetworkWatcherRG" -ErrorAction SilentlyContinue)){
+            if((Get-AzResourceGroup -Name "NetworkWatcherRG" -ErrorAction SilentlyContinue)){
                 $null = Remove-AzResourceGroup -Name "NetworkWatcherRG" -Force
             }
 
