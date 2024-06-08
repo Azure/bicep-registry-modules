@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "14378593625895917065"
+      "version": "0.28.1.47646",
+      "templateHash": "11054528723768374288"
     },
     "name": "Kusto Cluster Principal Assignments",
     "description": "This module deploys a Kusto Cluster Principal Assignment.",
