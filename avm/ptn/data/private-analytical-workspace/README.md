@@ -1,6 +1,6 @@
 # private-analytical-workspace `[Microsoft.DatabaseWatcher/privateanalyticalworkspace]`
 
-This pattern module lets you use Azure services that are common for data analytics solutions. The aim is to help data scientists set up an environment for data analysis easily. It should be secure by default for enterprise use. Data scientists should not worry about making a secure infrastructure solution. They should only focus on the data analytics components they need for the solution.
+This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.
 
 ## Navigation
 
