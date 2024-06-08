@@ -4,8 +4,9 @@ metadata description = 'This instance deploys a subscription with a vwan network
 targetScope = 'managementGroup'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'uksouth'
+param resourceLocation string = deployment().location
 
+// This parameter needs to be updated with the billing account and the enrollment account of your enviornment.
 @description('Optional. The subscription billing scope.')
 param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAccounts/7690848/enrollmentAccounts/350580'
 
@@ -18,12 +19,25 @@ param serviceShort string = 'ssawan'
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 3))
 
+@description('Optional. The subscription id of the hub virtual network.')
+param vwanHubSubId string = '9948cae8-8c7c-4f5f-81c1-c53317cab23d'
+
+@description('Optional. The resource group of the existing hub virtual network.')
+param vwanHubResourceGroup string = 'rsg-blzv-perm-hubs-001'
+
+@description('Optional. The name of the existing hub virtual network.')
+param vwanHubVirtualNetworkName string = 'vnet-uksouth-hub-blzv'
+
+@description('Optional. The name of the existing vwan hub.')
+param vwanHubName string = 'vhub-uksouth-blzv'
+
+// Provide a reference to an existing Azure Virtual WAN hub.
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  scope: resourceGroup('9948cae8-8c7c-4f5f-81c1-c53317cab23d', 'rsg-blzv-perm-hubs-001')
+  scope: resourceGroup(vwanHubSubId, vwanHubResourceGroup)
   params: {
-    hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
-    virtualHubName: 'vhub-uksouth-blzv'
+    hubVirtualNetworkName: vwanHubVirtualNetworkName
+    virtualHubName: vwanHubName
   }
 }
 module testDeployment '../../../main.bicep' = {

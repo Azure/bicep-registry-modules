@@ -186,10 +186,6 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.Subscription/aliases' {
-            #Update-Module -Name Az.Accounts -Force
-            #Update-Module -Name Az.Subscription -Force
-            #Import-Module Az.Subscription -Force
-
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscription = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName}
             $subscriptionId =  $subscription.Id
@@ -197,30 +193,22 @@ function Invoke-ResourceRemoval {
 
             $null = Select-AzSubscription -SubscriptionId $subscriptionId -WarningAction SilentlyContinue
 
-            if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
-                # Unregister resource providers and features
-                Write-Verbose "Cleanup registered resource providers and features..."
-                $null = Unregister-AzProviderFeature -FeatureName "ArcServerPrivateLinkPreview" -ProviderNamespace "Microsoft.HybridCompute"
-                $null = Unregister-AzProviderFeature -FeatureName "AzureServicesVm" -ProviderNamespace "Microsoft.AVS"
-                $null = Unregister-AzResourceProvider -ProviderNamespace "Microsoft.HybridCompute"
-                $null = Unregister-AzResourceProvider -ProviderNamespace "Microsoft.AVS"
+            # Delete NetworkWatcher resource group
+            if(-not (Get-AzResourceGroup -Name "NetworkWatcherRG" -ErrorAction SilentlyContinue)){
+                $null = Remove-AzResourceGroup -Name "NetworkWatcherRG" -Force
+            }
 
-                # Delete NetworkWatcher resource group
-                if($null -ne (Get-AzResourceGroup -Name "NetworkWatcherRG" -ErrorAction SilentlyContinue)){
-                  $null = Remove-AzResourceGroup -Name "NetworkWatcherRG" -Force
-                }
-
-                # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
-                if($null -eq (Get-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId -ErrorAction SilentlyContinue)){
-                  $null = New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
-                }
-
+            # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
+            if(-not (Get-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId -ErrorAction SilentlyContinue)){
+                $null = New-AzManagementGroupSubscription -GroupName "bicep-lz-vending-automation-decom" -SubscriptionId $subscriptionId
+            }
+            if($subscriptionState -eq "Enabled"){
+                if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName]", 'Remove')) {
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $subscriptionName, $Type) -Verbose
-                if($subscriptionState -eq "Enabled"){
-                  $null = Disable-AzSubscription -SubscriptionId $subscriptionId -Confirm:$false
+                $null = Disable-AzSubscription -SubscriptionId $subscriptionId -Confirm:$false
                 }
             }
-            break
+        break
         }
         ### CODE LOCATION: Add custom removal action here
         Default {

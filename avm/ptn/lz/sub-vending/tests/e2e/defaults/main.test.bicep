@@ -4,8 +4,9 @@ metadata description = 'This instance deploys the module with the minimum set of
 targetScope = 'managementGroup'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'uksouth'
+param resourceLocation string = deployment().location
 
+// This parameter needs to be updated with the billing account and the enrollment account of your enviornment.
 @description('Optional. The subscription billing scope.')
 param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAccounts/7690848/enrollmentAccounts/350580'
 
