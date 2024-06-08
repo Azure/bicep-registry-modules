@@ -39,10 +39,10 @@ param databricks databricksType?
 var diagnosticSettingsName = '${name}-diagnostic-settings'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
-var subnetNameDbwControlPlane = '${name}-dbw-control-plane'
-var subnetNameDbwDataPlane = '${name}-dbw-data-plane'
-var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
-var nsgNameDbwDataPlane = '${name}-nsg-dbw-data-plane'
+var subnetNameDbwContainer = '${name}-dbw-container-subnet'
+var subnetNameDbwHost = '${name}-dbw-host-subnet'
+var nsgNameDbwContainer = '${name}-nsg-dbw-container'
+var nsgNameDbwHost = '${name}-nsg-dbw-host'
 
 var createNewVNET = empty(privateEndpointSubnetResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
@@ -70,9 +70,10 @@ var subnets = concat(
     ? [
         // DBW - 192.168.228.0/22
         {
-          name: subnetNameDbwControlPlane
+          // a container subnet (sometimes called the private subnet)
+          name: subnetNameDbwContainer
           addressPrefix: '192.168.228.0/23'
-          networkSecurityGroupResourceId: nsgDbwControlPlane.outputs.resourceId
+          networkSecurityGroupResourceId: nsgDbwContainer.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -83,9 +84,10 @@ var subnets = concat(
           ]
         }
         {
-          name: subnetNameDbwDataPlane
+          // host subnet (sometimes called the public subnet).
+          name: subnetNameDbwHost
           addressPrefix: '192.168.230.0/23'
-          networkSecurityGroupResourceId: nsgDbwDataPlane.outputs.resourceId
+          networkSecurityGroupResourceId: nsgDbwHost.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -162,11 +164,11 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNE
   }
 }
 
-module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwControlPlane
+module nsgDbwContainer 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwContainer
   params: {
     // Required parameters
-    name: nsgNameDbwControlPlane
+    name: nsgNameDbwContainer
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -203,11 +205,11 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.
   }
 }
 
-module nsgDbwDataPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwDataPlane
+module nsgDbwHost 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwHost
   params: {
     // Required parameters
-    name: nsgNameDbwDataPlane
+    name: nsgNameDbwHost
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -356,14 +358,14 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     name: '${name}-dbw'
     // Non-required parameters
     customPrivateSubnetName: createNewVNET
-      ? filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name // TODO
-      : databricks.?subnetNameDbwControlPlane // TODO validace
+      ? filter(subnets, item => item.name == subnetNameDbwContainer)[0].name // TODO
+      : databricks.?subnetNameDbwContainer // TODO validace
     customPublicSubnetName: createNewVNET
-      ? filter(subnets, item => item.name == subnetNameDbwDataPlane)[0].name // TODO
-      : databricks.?subnetNameDbwDataPlane // TODO validace
+      ? filter(subnets, item => item.name == subnetNameDbwHost)[0].name // TODO
+      : databricks.?subnetNameDbwHost // TODO validace
     customVirtualNetworkResourceId: createNewVNET
       ? vnet.outputs.resourceId // TODO
-      : split(databricks.?subnetNameDbwControlPlane, '/subnets/')[0] // TODO
+      : split(databricks.?subnetNameDbwContainer, '/subnets/')[0] // TODO
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -456,7 +458,7 @@ type networkAclsType = {
 
 type databricksType = {
   @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
-  subnetNameDbwControlPlane: string?
+  subnetNameDbwContainer: string?
   @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
-  subnetNameDbwDataPlane: string?
+  subnetNameDbwHost: string?
 }
