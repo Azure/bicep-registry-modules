@@ -104,7 +104,57 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     name: 'akcmax0001'
     sku: 'Standard_D2_v2'
     // Non-required parameters
+    allowedIpRangeList: [
+      '192.168.1.1'
+    ]
+    autoScaleMax: 6
+    autoScaleMin: 3
+    capacity: 3
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: true
+    enablePurge: true
+    enableRestrictOutboundNetworkAccess: true
+    enableStreamingIngest: true
+    enableZoneRedundant: true
+    engineType: 'V3'
+    languageExtensions: [
+      {
+        languageExtensionCustomImageName: 'myCustomImageName'
+        languageExtensionImageName: 'Python3_10_8'
+        languageExtensionName: 'PYTHON'
+      }
+    ]
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicIPType: 'DualStack'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
   }
 }
 ```
@@ -129,8 +179,96 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "Standard_D2_v2"
     },
     // Non-required parameters
+    "allowedIpRangeList": {
+      "value": [
+        "192.168.1.1"
+      ]
+    },
+    "autoScaleMax": {
+      "value": 6
+    },
+    "autoScaleMin": {
+      "value": 3
+    },
+    "capacity": {
+      "value": 3
+    },
+    "enableAutoScale": {
+      "value": true
+    },
+    "enableAutoStop": {
+      "value": true
+    },
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": true
+    },
+    "enablePurge": {
+      "value": true
+    },
+    "enableRestrictOutboundNetworkAccess": {
+      "value": true
+    },
+    "enableStreamingIngest": {
+      "value": true
+    },
+    "enableZoneRedundant": {
+      "value": true
+    },
+    "engineType": {
+      "value": "V3"
+    },
+    "languageExtensions": {
+      "value": [
+        {
+          "languageExtensionCustomImageName": "myCustomImageName",
+          "languageExtensionImageName": "Python3_10_8",
+          "languageExtensionName": "PYTHON"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicIPType": {
+      "value": "DualStack"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
     }
   }
 }
@@ -156,7 +294,23 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     name: 'akcwaf0001'
     sku: 'Standard_D2_v2'
     // Non-required parameters
+    autoScaleMax: 10
+    autoScaleMin: 3
+    capacity: 3
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: false
+    enableZoneRedundant: true
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: []
+    }
     tier: 'Standard'
   }
 }
@@ -182,8 +336,46 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "Standard_D2_v2"
     },
     // Non-required parameters
+    "autoScaleMax": {
+      "value": 10
+    },
+    "autoScaleMin": {
+      "value": 3
+    },
+    "capacity": {
+      "value": 3
+    },
+    "enableAutoScale": {
+      "value": true
+    },
+    "enableAutoStop": {
+      "value": true
+    },
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": false
+    },
+    "enableZoneRedundant": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": []
+      }
     },
     "tier": {
       "value": "Standard"
@@ -1178,7 +1370,7 @@ The tier of the Kusto Cluster.
 
 - Required: No
 - Type: string
-- Default: `'Basic'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [

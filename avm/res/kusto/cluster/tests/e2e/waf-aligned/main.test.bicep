@@ -31,6 +31,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -45,6 +54,22 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       sku: 'Standard_D2_v2'
       tier: 'Standard'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      capacity: 3
+      enableAutoScale: true
+      autoScaleMin: 3
+      autoScaleMax: 10
+      enableZoneRedundant: true
+      managedIdentities: {
+        userAssignedResourceIds: []
+      }
+      enableDiskEncryption: true
+      enableDoubleEncryption: true
+      enablePublicNetworkAccess: false
+      enableAutoStop: true
     }
   }
 ]

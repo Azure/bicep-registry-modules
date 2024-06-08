@@ -17,7 +17,7 @@ param capacity int = 1
 param sku string
 
 @description('Optional. The tier of the Kusto Cluster.')
-param tier kustoTierType = 'Basic'
+param tier kustoTierType = 'Standard'
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType

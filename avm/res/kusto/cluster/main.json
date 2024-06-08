@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16614624249056512972"
+      "templateHash": "4096222864091553645"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -586,7 +586,7 @@
     },
     "tier": {
       "$ref": "#/definitions/kustoTierType",
-      "defaultValue": "Basic",
+      "defaultValue": "Standard",
       "metadata": {
         "description": "Optional. The tier of the Kusto Cluster."
       }

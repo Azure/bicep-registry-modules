@@ -31,6 +31,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -44,6 +53,59 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
       sku: 'Standard_D2_v2'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      capacity: 3
+      autoScaleMin: 3
+      autoScaleMax: 6
+      enableAutoScale: true
+      enableAutoStop: true
+      enableDiskEncryption: true
+      enableDoubleEncryption: true
+      enablePublicNetworkAccess: true
+      enablePurge: true
+      enableStreamingIngest: true
+      allowedIpRangeList: [
+        '192.168.1.1'
+      ]
+      enableZoneRedundant: true
+      engineType: 'V3'
+      languageExtensions: [
+        {
+          languageExtensionCustomImageName: 'myCustomImageName'
+          languageExtensionImageName: 'Python3_10_8'
+          languageExtensionName: 'PYTHON'
+        }
+      ]
+      publicIPType: 'DualStack'
+      enableRestrictOutboundNetworkAccess: true
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
     }
   }
 ]
