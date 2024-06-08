@@ -186,7 +186,6 @@ function Invoke-ResourceRemoval {
             break
         }
         {$PSItem -eq 'Microsoft.Subscription/aliases' -and $ResourceId -like "*dep-sub-blzv-tests*"} {
-         {
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscription = Get-AzSubscription | Where-Object {$_.Name -eq $subscriptionName}
             $subscriptionId =  $subscription.Id
