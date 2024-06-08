@@ -508,7 +508,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   params: {
     location: deploymentScriptLocation
     principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
-    roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd'
     subscriptionId: subscriptionId
     resourceGroupName: deploymentScriptResourceGroupName
   }

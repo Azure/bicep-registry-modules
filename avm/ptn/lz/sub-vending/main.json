@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8632953701829388835"
+      "templateHash": "3077489697903639189"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -653,7 +653,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "14004843542541080651"
+              "templateHash": "12115355563479136953"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -7124,7 +7124,7 @@
                   },
                   "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
-                    "value": "69566ab7-960f-475b-8e7c-b3118f30c6bd"
+                    "value": "/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd"
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
