@@ -310,7 +310,6 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
         ]
       : []
     //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
-    //roleAssignments: // TODO
     sku: empty(advancedOptions)
       ? kvDefaultSku
       : (advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku)
@@ -347,14 +346,14 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     name: '${name}-dbw'
     // Non-required parameters
     customPrivateSubnetName: createNewVNET
-      ? filter(subnets, item => item.name == subnetNameDbwContainer)[0].name // TODO
-      : advancedOptions.?databricks.?subnetNameDbwContainer // TODO validace
+      ? filter(subnets, item => item.name == subnetNameDbwContainer)[0].name
+      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameDbwContainer // If not provided correctly, this will fail during deployment
     customPublicSubnetName: createNewVNET
-      ? filter(subnets, item => item.name == subnetNameDbwHost)[0].name // TODO
-      : advancedOptions.?databricks.?subnetNameDbwHost // TODO validace
+      ? filter(subnets, item => item.name == subnetNameDbwHost)[0].name
+      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameDbwHost // If not provided correctly, this will fail during deployment
     customVirtualNetworkResourceId: createNewVNET
-      ? vnet.outputs.resourceId // TODO
-      : split(advancedOptions.?databricks.?subnetNameDbwContainer, '/subnets/')[0] // TODO
+      ? vnet.outputs.resourceId
+      : empty(advancedOptions) ? null : split(advancedOptions.?databricks.?subnetNameDbwContainer ?? '', '/subnets/')[0] // If not provided correctly, this will fail during deployment
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -366,7 +365,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
         workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
       }
     ]
-    disablePublicIp: true // TODO
+    disablePublicIp: true // TODO ==================>
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
@@ -474,6 +473,7 @@ type networkAclsType = {
 }
 
 type databricksType = {
+  // must be providied when DBW is going to be enabled and VNET is provided
   @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
   subnetNameDbwContainer: string?
   @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
