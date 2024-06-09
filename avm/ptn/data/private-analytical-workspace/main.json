@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "3709676328155758863"
+      "templateHash": "1070966609468767575"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -37,6 +37,28 @@
         }
       },
       "nullable": true
+    },
+    "logAnalyticsWorkspaceType": {
+      "type": "object",
+      "properties": {
+        "dataRetention": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 730,
+          "metadata": {
+            "description": "Optional. Number of days data will be retained for. The dafult value is: 365"
+          }
+        },
+        "dailyQuotaGb": {
+          "type": "int",
+          "nullable": true,
+          "minValue": -1,
+          "metadata": {
+            "description": "Optional. The workspace daily quota for ingestion. The dafult value is: -1 (not limited)"
+          }
+        }
+      }
     },
     "networkAclsType": {
       "type": "object",
@@ -72,6 +94,32 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
+          }
+        }
+      }
+    },
+    "advancedOptionsType": {
+      "type": "object",
+      "properties": {
+        "logAnalyticsWorkspace": {
+          "$ref": "#/definitions/logAnalyticsWorkspaceType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty."
+          }
+        },
+        "networkAcls": {
+          "$ref": "#/definitions/networkAclsType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
+          }
+        },
+        "databricks": {
+          "$ref": "#/definitions/databricksType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true."
           }
         }
       }
@@ -139,18 +187,11 @@
         "description": "Optional. If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you."
       }
     },
-    "networkAcls": {
-      "$ref": "#/definitions/networkAclsType",
+    "advancedOptions": {
+      "$ref": "#/definitions/advancedOptionsType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
-      }
-    },
-    "databricks": {
-      "$ref": "#/definitions/databricksType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true."
+        "description": "Optional. Additional options that can affect some parts of the solution and how they are configured."
       }
     }
   },
@@ -162,6 +203,8 @@
     "subnetNameDbwHost": "[format('{0}-dbw-host-subnet', parameters('name'))]",
     "nsgNameDbwContainer": "[format('{0}-nsg-dbw-container', parameters('name'))]",
     "nsgNameDbwHost": "[format('{0}-nsg-dbw-host', parameters('name'))]",
+    "logDefaultDailyQuotaGb": -1,
+    "logDefaultDataRetention": 365,
     "createNewVNET": "[empty(parameters('privateEndpointSubnetResourceId'))]",
     "createNewLog": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
     "createNewKV": "[empty(parameters('keyVaultResourceId'))]",
@@ -169,96 +212,6 @@
       {
         "addressPrefix": "192.168.224.0/24",
         "name": "[format('{0}-private-link', parameters('name'))]"
-      }
-    ],
-    "securityRulesDbw": [
-      {
-        "name": "worker-to-worker-inbound",
-        "properties": {
-          "priority": 100,
-          "direction": "Inbound",
-          "access": "Allow",
-          "protocol": "*",
-          "sourceAddressPrefix": "VirtualNetwork",
-          "sourcePortRange": "*",
-          "destinationAddressPrefix": "VirtualNetwork",
-          "destinationPortRange": "*",
-          "description": "Required for worker nodes communication within a cluster."
-        }
-      },
-      {
-        "name": "worker-to-databricks-webapp",
-        "properties": {
-          "priority": 100,
-          "direction": "Outbound",
-          "access": "Allow",
-          "protocol": "Tcp",
-          "sourceAddressPrefix": "VirtualNetwork",
-          "sourcePortRange": "*",
-          "destinationAddressPrefix": "AzureDatabricks",
-          "destinationPortRanges": [
-            "443",
-            "3306",
-            "8443-8451"
-          ],
-          "description": "Required for workers communication with Databricks Webapp."
-        }
-      },
-      {
-        "name": "worker-to-sql",
-        "properties": {
-          "priority": 101,
-          "direction": "Outbound",
-          "access": "Allow",
-          "protocol": "Tcp",
-          "sourceAddressPrefix": "VirtualNetwork",
-          "sourcePortRange": "*",
-          "destinationAddressPrefix": "Sql",
-          "destinationPortRange": "3306",
-          "description": "Required for workers communication with Azure SQL services."
-        }
-      },
-      {
-        "name": "worker-to-storage",
-        "properties": {
-          "priority": 102,
-          "direction": "Outbound",
-          "access": "Allow",
-          "protocol": "Tcp",
-          "sourceAddressPrefix": "VirtualNetwork",
-          "sourcePortRange": "*",
-          "destinationAddressPrefix": "Storage",
-          "destinationPortRange": "443",
-          "description": "Required for workers communication with Azure Storage services."
-        }
-      },
-      {
-        "name": "worker-to-worker-outbound",
-        "properties": {
-          "priority": 103,
-          "direction": "Outbound",
-          "access": "Allow",
-          "protocol": "*",
-          "sourceAddressPrefix": "VirtualNetwork",
-          "sourcePortRange": "*",
-          "destinationAddressPrefix": "VirtualNetwork",
-          "destinationPortRange": "*",
-          "description": "Required for worker nodes communication within a cluster."
-        }
-      },
-      {
-        "name": "worker-to-eventhub",
-        "properties": {
-          "priority": 104,
-          "direction": "Outbound",
-          "access": "Allow",
-          "protocol": "Tcp",
-          "sourceAddressPrefix": "VirtualNetwork",
-          "sourcePortRange": "*",
-          "destinationAddressPrefix": "EventHub",
-          "destinationPortRange": "9093",
-          "description": "Required for worker communication with Azure Eventhub services."
-        }
       }
     ]
   },
@@ -1517,7 +1470,7 @@
             "value": "[parameters('tags')]"
           },
           "securityRules": {
-            "value": "[variables('securityRulesDbw')]"
+            "value": []
           }
         },
         "template": {
@@ -2238,7 +2191,7 @@
             "value": "[parameters('tags')]"
           },
           "securityRules": {
-            "value": "[variables('securityRulesDbw')]"
+            "value": []
           }
         },
         "template": {
@@ -2933,12 +2886,8 @@
           "name": {
             "value": "[format('{0}-log', parameters('name'))]"
           },
-          "dailyQuotaGb": {
-            "value": -1
-          },
-          "dataRetention": {
-            "value": 365
-          },
+          "dailyQuotaGb": "[if(empty(parameters('advancedOptions')), createObject('value', variables('logDefaultDailyQuotaGb')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'logAnalyticsWorkspace'), 'dailyQuotaGb'), variables('logDefaultDailyQuotaGb'))))]",
+          "dataRetention": "[if(empty(parameters('advancedOptions')), createObject('value', variables('logDefaultDataRetention')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'logAnalyticsWorkspace'), 'dataRetention'), variables('logDefaultDataRetention'))))]",
           "diagnosticSettings": {
             "value": []
           },
@@ -4934,7 +4883,7 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
-          "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray()))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')))]",
+          "networkAcls": "[if(and(not(empty(parameters('advancedOptions'))), not(empty(tryGet(parameters('advancedOptions'), 'networkAcls')))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules'), createArray()))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')))]",
           "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], parameters('privateEndpointSubnetResourceId'))).privateEndpointSubnetResourceId, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "sku": {
             "value": "premium"
@@ -10588,9 +10537,9 @@
           "name": {
             "value": "[format('{0}-dbw', parameters('name'))]"
           },
-          "customPrivateSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwContainer'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwContainer').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwHost'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwHost').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwContainer'))))[0].name), createObject('value', tryGet(parameters('databricks'), 'subnetNameDbwContainer')))]",
-          "customPublicSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwContainer'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwContainer').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwHost'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwHost').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwHost'))))[0].name), createObject('value', tryGet(parameters('databricks'), 'subnetNameDbwHost')))]",
-          "customVirtualNetworkResourceId": "[if(variables('createNewVNET'), createObject('value', reference('vnet').outputs.resourceId.value), createObject('value', split(tryGet(parameters('databricks'), 'subnetNameDbwContainer'), '/subnets/')[0]))]",
+          "customPrivateSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwContainer'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwContainer').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwHost'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwHost').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwContainer'))))[0].name), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameDbwContainer')))]",
+          "customPublicSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwContainer'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwContainer').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwHost'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwHost').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwHost'))))[0].name), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameDbwHost')))]",
+          "customVirtualNetworkResourceId": "[if(variables('createNewVNET'), createObject('value', reference('vnet').outputs.resourceId.value), createObject('value', split(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameDbwContainer'), '/subnets/')[0]))]",
           "diagnosticSettings": {
             "value": [
               {

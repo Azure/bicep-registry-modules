@@ -162,14 +162,13 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`databricks`](#parameter-databricks) | object | This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true. |
+| [`advancedOptions`](#parameter-advancedoptions) | object | Additional options that can affect some parts of the solution and how they are configured. |
 | [`enableDatabricks`](#parameter-enabledatabricks) | bool | Enable/Disable Azure Databricks service in the solution. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for all Resources in the solution. |
 | [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you. |
 | [`location`](#parameter-location) | string | Location for all Resources in the solution. |
 | [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you. |
-| [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 | [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | This option allows the full solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution and has the same region, you can choose to give it here. This parameter refers to a subnet in the customer provided VNET and the subnet is meant for private endpoints. If you do not use this option, this module will make a new VNET and subnet for you. |
 | [`tags`](#parameter-tags) | object | Tags for all Resources in the solution. |
 
@@ -180,7 +179,22 @@ Name of the private analytical workspace solution and its components. Used to en
 - Required: Yes
 - Type: string
 
-### Parameter: `databricks`
+### Parameter: `advancedOptions`
+
+Additional options that can affect some parts of the solution and how they are configured.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`databricks`](#parameter-advancedoptionsdatabricks) | object | This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true. |
+| [`logAnalyticsWorkspace`](#parameter-advancedoptionsloganalyticsworkspace) | object | This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty. |
+| [`networkAcls`](#parameter-advancedoptionsnetworkacls) | object | Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
+
+### Parameter: `advancedOptions.databricks`
 
 This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true.
 
@@ -191,22 +205,78 @@ This parameter allows you to specify additional settings for Azure Databricks if
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`subnetNameDbwContainer`](#parameter-databrickssubnetnamedbwcontainer) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
-| [`subnetNameDbwHost`](#parameter-databrickssubnetnamedbwhost) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`subnetNameDbwContainer`](#parameter-advancedoptionsdatabrickssubnetnamedbwcontainer) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`subnetNameDbwHost`](#parameter-advancedoptionsdatabrickssubnetnamedbwhost) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
 
-### Parameter: `databricks.subnetNameDbwContainer`
+### Parameter: `advancedOptions.databricks.subnetNameDbwContainer`
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+
+- Required: No
+- Type: string
+
+### Parameter: `advancedOptions.databricks.subnetNameDbwHost`
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
 - Required: No
 - Type: string
 
-### Parameter: `databricks.subnetNameDbwHost`
+### Parameter: `advancedOptions.logAnalyticsWorkspace`
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty.
 
 - Required: No
-- Type: string
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | int | The workspace daily quota for ingestion. The dafult value is: -1 (not limited) |
+| [`dataRetention`](#parameter-advancedoptionsloganalyticsworkspacedataretention) | int | Number of days data will be retained for. The dafult value is: 365 |
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.dailyQuotaGb`
+
+The workspace daily quota for ingestion. The dafult value is: -1 (not limited)
+
+- Required: No
+- Type: int
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.dataRetention`
+
+Number of days data will be retained for. The dafult value is: 365
+
+- Required: No
+- Type: int
+
+### Parameter: `advancedOptions.networkAcls`
+
+Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipRules`](#parameter-advancedoptionsnetworkaclsiprules) | array | Sets the IP ACL rules. |
+| [`virtualNetworkRules`](#parameter-advancedoptionsnetworkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
+
+### Parameter: `advancedOptions.networkAcls.ipRules`
+
+Sets the IP ACL rules.
+
+- Required: No
+- Type: array
+
+### Parameter: `advancedOptions.networkAcls.virtualNetworkRules`
+
+Sets the virtual network rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `enableDatabricks`
 
@@ -283,34 +353,6 @@ If you already have a Log Analytics Workspace that you want to use with the solu
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `networkAcls`
-
-Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
-| [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
-
-### Parameter: `networkAcls.ipRules`
-
-Sets the IP ACL rules.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkAcls.virtualNetworkRules`
-
-Sets the virtual network rules.
-
-- Required: No
-- Type: array
 
 ### Parameter: `privateEndpointSubnetResourceId`
 

@@ -29,11 +29,8 @@ param logAnalyticsWorkspaceResourceId string = ''
 @description('Optional. If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you.')
 param keyVaultResourceId string = ''
 
-@description('Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls networkAclsType?
-
-@description('Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true.')
-param databricks databricksType?
+@description('Optional. Additional options that can affect some parts of the solution and how they are configured.')
+param advancedOptions advancedOptionsType?
 
 // Constants
 var diagnosticSettingsName = '${name}-diagnostic-settings'
@@ -43,6 +40,9 @@ var subnetNameDbwContainer = '${name}-dbw-container-subnet'
 var subnetNameDbwHost = '${name}-dbw-host-subnet'
 var nsgNameDbwContainer = '${name}-nsg-dbw-container'
 var nsgNameDbwHost = '${name}-nsg-dbw-host'
+
+var logDefaultDailyQuotaGb = -1
+var logDefaultDataRetention = 365
 
 var createNewVNET = empty(privateEndpointSubnetResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
@@ -220,8 +220,12 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (create
     // Required parameters
     name: '${name}-log'
     // Non-required parameters
-    dailyQuotaGb: -1 // TODO
-    dataRetention: 365 // TODO
+    dailyQuotaGb: empty(advancedOptions)
+      ? logDefaultDailyQuotaGb
+      : advancedOptions.?logAnalyticsWorkspace.?dailyQuotaGb ?? logDefaultDailyQuotaGb
+    dataRetention: empty(advancedOptions)
+      ? logDefaultDataRetention
+      : advancedOptions.?logAnalyticsWorkspace.?dataRetention ?? logDefaultDataRetention
     diagnosticSettings: []
     enableTelemetry: enableTelemetry
     location: location
@@ -266,12 +270,12 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
     enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
     location: location
     lock: lock
-    networkAcls: !empty(networkAcls)
+    networkAcls: (!empty(advancedOptions)) && (!empty(advancedOptions.?networkAcls))
       ? {
           bypass: 'None'
           defaultAction: 'Deny'
-          virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
-          ipRules: networkAcls.?ipRules ?? []
+          virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
+          ipRules: advancedOptions.?networkAcls.?ipRules ?? []
         }
       : {
           // New default case that enables the firewall by default
@@ -327,13 +331,13 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     // Non-required parameters
     customPrivateSubnetName: createNewVNET
       ? filter(subnets, item => item.name == subnetNameDbwContainer)[0].name // TODO
-      : databricks.?subnetNameDbwContainer // TODO validace
+      : advancedOptions.?databricks.?subnetNameDbwContainer // TODO validace
     customPublicSubnetName: createNewVNET
       ? filter(subnets, item => item.name == subnetNameDbwHost)[0].name // TODO
-      : databricks.?subnetNameDbwHost // TODO validace
+      : advancedOptions.?databricks.?subnetNameDbwHost // TODO validace
     customVirtualNetworkResourceId: createNewVNET
       ? vnet.outputs.resourceId // TODO
-      : split(databricks.?subnetNameDbwContainer, '/subnets/')[0] // TODO
+      : split(advancedOptions.?databricks.?subnetNameDbwContainer, '/subnets/')[0] // TODO
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -416,6 +420,17 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+type logAnalyticsWorkspaceType = {
+  @description('Optional. Number of days data will be retained for. The dafult value is: 365')
+  @minValue(0)
+  @maxValue(730)
+  dataRetention: int?
+
+  @description('Optional. The workspace daily quota for ingestion. The dafult value is: -1 (not limited)')
+  @minValue(-1)
+  dailyQuotaGb: int?
+}
+
 type networkAclsType = {
   @description('Optional. Sets the virtual network rules.')
   virtualNetworkRules: array?
@@ -429,4 +444,15 @@ type databricksType = {
   subnetNameDbwContainer: string?
   @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
   subnetNameDbwHost: string?
+}
+
+type advancedOptionsType = {
+  @description('Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty.')
+  logAnalyticsWorkspace: logAnalyticsWorkspaceType?
+
+  @description('Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+  networkAcls: networkAclsType?
+
+  @description('Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true.')
+  databricks: databricksType?
 }
