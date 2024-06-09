@@ -46,6 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
+    backupManagementServiceApplicationObjectId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Tenant-specific Backup Management Service Enterprise Application Object Id
   }
 }
 
