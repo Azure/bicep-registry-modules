@@ -608,7 +608,7 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
     storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
     subnetResourceIds: !(empty(resourceProviders)) ? createDsVnet.outputs.subnetResourceIds : null
     arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
-    scriptContent: loadTextContent('../scripts/Invoke-RegisterSubscriptionResourceProviders.ps1')
+    scriptContent: loadTextContent('../scripts/Register-SubscriptionResourceProviderList.ps1')
   }
 }
 
