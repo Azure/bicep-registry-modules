@@ -14,7 +14,7 @@ param lock lockType
 @description('Optional. Tags for all Resources in the solution.')
 param tags object?
 
-@description('Optional. Enable/Disable usage telemetry for all Resources in the solution.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Enable/Disable Azure Databricks service in the solution.')
@@ -48,6 +48,7 @@ var kvDefaultCreateMode = 'default'
 var kvDefaultEnableSoftDelete = true
 var kvDefaultSoftDeleteRetentionInDays = 90
 var kvDefaultEnablePurgeProtection = true
+var kvDefaultSku = 'premium'
 
 var createNewVNET = empty(privateEndpointSubnetResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
@@ -310,7 +311,9 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
       : []
     //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
     //roleAssignments: // TODO
-    sku: 'premium'
+    sku: empty(advancedOptions)
+      ? kvDefaultSku
+      : (advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku)
     softDeleteRetentionInDays: empty(advancedOptions)
       ? kvDefaultSoftDeleteRetentionInDays
       : advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
@@ -435,27 +438,30 @@ type lockType = {
 }?
 
 type logAnalyticsWorkspaceType = {
-  @description('Optional. Number of days data will be retained for. The dafult value is: 365')
+  @description('Optional. Number of days data will be retained for. The dafult value is: \'365\'.')
   @minValue(0)
   @maxValue(730)
   dataRetention: int?
 
-  @description('Optional. The workspace daily quota for ingestion. The dafult value is: -1 (not limited)')
+  @description('Optional. The workspace daily quota for ingestion. The dafult value is: \'-1\' (not limited).')
   @minValue(-1)
   dailyQuotaGb: int?
 }
 
 type keyVaultType = {
-  @description('Optional. The vault\'s create mode to indicate whether the vault need to be recovered or not. - recover or default. The dafult value is: default')
+  @description('Optional. The vault\'s create mode to indicate whether the vault need to be recovered or not. - \'recover\' or \'default\'. The dafult value is: \'default\'.')
   createMode: string?
 
-  @description('Optional. Switch to enable/disable Key Vault\'s soft delete feature. The dafult value is: true')
+  @description('Optional. Specifies the SKU for the vault. - \'premium\' or \'standard\'. The dafult value is: \'premium\'.')
+  sku: string?
+
+  @description('Optional. Switch to enable/disable Key Vault\'s soft delete feature. The dafult value is: \'true\'.')
   enableSoftDelete: bool?
 
-  @description('Optional. softDelete data retention days. It accepts >=7 and <=90. The dafult value is: 90')
+  @description('Optional. Soft delete data retention days. It accepts >=7 and <=90. The dafult value is: \'90\'.')
   softDeleteRetentionInDays: int?
 
-  @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. The dafult value is: true')
+  @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. The dafult value is: \'true\'.')
   enablePurgeProtection: bool?
 }
 
