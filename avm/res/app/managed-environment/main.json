@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "15666134926564437864"
+      "templateHash": "16221242216822493056"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -436,6 +436,13 @@
         "description": "The Default domain of the Managed Environment."
       },
       "value": "[reference('managedEnvironment').defaultDomain]"
+    },
+    "staticIp": {
+      "type": "string",
+      "metadata": {
+        "description": "The IP address of the Managed Environment."
+      },
+      "value": "[reference('managedEnvironment').staticIp]"
     }
   }
 }
