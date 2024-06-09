@@ -191,6 +191,7 @@ Additional options that can affect some parts of the solution and how they are c
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`databricks`](#parameter-advancedoptionsdatabricks) | object | This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true. |
+| [`keyVault`](#parameter-advancedoptionskeyvault) | object | This parameter allows you to specify additional settings for Azure Key Vault if the keyVaultResourceId parameter is empty. |
 | [`logAnalyticsWorkspace`](#parameter-advancedoptionsloganalyticsworkspace) | object | This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty. |
 | [`networkAcls`](#parameter-advancedoptionsnetworkacls) | object | Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 
@@ -221,6 +222,50 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
 - Required: No
 - Type: string
+
+### Parameter: `advancedOptions.keyVault`
+
+This parameter allows you to specify additional settings for Azure Key Vault if the keyVaultResourceId parameter is empty.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createMode`](#parameter-advancedoptionskeyvaultcreatemode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default. The dafult value is: default |
+| [`enablePurgeProtection`](#parameter-advancedoptionskeyvaultenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: true |
+| [`enableSoftDelete`](#parameter-advancedoptionskeyvaultenablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. The dafult value is: true |
+| [`softDeleteRetentionInDays`](#parameter-advancedoptionskeyvaultsoftdeleteretentionindays) | int | softDelete data retention days. It accepts >=7 and <=90. The dafult value is: 90 |
+
+### Parameter: `advancedOptions.keyVault.createMode`
+
+The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default. The dafult value is: default
+
+- Required: No
+- Type: string
+
+### Parameter: `advancedOptions.keyVault.enablePurgeProtection`
+
+Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: true
+
+- Required: No
+- Type: bool
+
+### Parameter: `advancedOptions.keyVault.enableSoftDelete`
+
+Switch to enable/disable Key Vault's soft delete feature. The dafult value is: true
+
+- Required: No
+- Type: bool
+
+### Parameter: `advancedOptions.keyVault.softDeleteRetentionInDays`
+
+softDelete data retention days. It accepts >=7 and <=90. The dafult value is: 90
+
+- Required: No
+- Type: int
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace`
 

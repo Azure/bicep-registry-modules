@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "1070966609468767575"
+      "templateHash": "5723784302526022856"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -60,6 +60,39 @@
         }
       }
     },
+    "keyVaultType": {
+      "type": "object",
+      "properties": {
+        "createMode": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default. The dafult value is: default"
+          }
+        },
+        "enableSoftDelete": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Switch to enable/disable Key Vault's soft delete feature. The dafult value is: true"
+          }
+        },
+        "softDeleteRetentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. softDelete data retention days. It accepts >=7 and <=90. The dafult value is: 90"
+          }
+        },
+        "enablePurgeProtection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: true"
+          }
+        }
+      }
+    },
     "networkAclsType": {
       "type": "object",
       "properties": {
@@ -106,6 +139,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty."
+          }
+        },
+        "keyVault": {
+          "$ref": "#/definitions/keyVaultType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This parameter allows you to specify additional settings for Azure Key Vault if the keyVaultResourceId parameter is empty."
           }
         },
         "networkAcls": {
@@ -205,6 +245,10 @@
     "nsgNameDbwHost": "[format('{0}-nsg-dbw-host', parameters('name'))]",
     "logDefaultDailyQuotaGb": -1,
     "logDefaultDataRetention": 365,
+    "kvDefaultCreateMode": "default",
+    "kvDefaultEnableSoftDelete": true,
+    "kvDefaultSoftDeleteRetentionInDays": 90,
+    "kvDefaultEnablePurgeProtection": true,
     "createNewVNET": "[empty(parameters('privateEndpointSubnetResourceId'))]",
     "createNewLog": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
     "createNewKV": "[empty(parameters('keyVaultResourceId'))]",
@@ -4835,6 +4879,7 @@
           "name": {
             "value": "[format('{0}-kv', parameters('name'))]"
           },
+          "createMode": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultCreateMode')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'createMode'), variables('kvDefaultCreateMode'))))]",
           "diagnosticSettings": {
             "value": [
               {
@@ -4856,15 +4901,11 @@
               }
             ]
           },
-          "enablePurgeProtection": {
-            "value": false
-          },
+          "enablePurgeProtection": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultEnablePurgeProtection')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'enablePurgeProtection'), variables('kvDefaultEnablePurgeProtection'))))]",
           "enableRbacAuthorization": {
             "value": true
           },
-          "enableSoftDelete": {
-            "value": false
-          },
+          "enableSoftDelete": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultEnableSoftDelete')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'enableSoftDelete'), variables('kvDefaultEnableSoftDelete'))))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -4883,11 +4924,12 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
-          "networkAcls": "[if(and(not(empty(parameters('advancedOptions'))), not(empty(tryGet(parameters('advancedOptions'), 'networkAcls')))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules'), createArray()))), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')))]",
+          "networkAcls": "[if(empty(parameters('advancedOptions')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules'), createArray()))))]",
           "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], parameters('privateEndpointSubnetResourceId'))).privateEndpointSubnetResourceId, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "sku": {
             "value": "premium"
           },
+          "softDeleteRetentionInDays": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultSoftDeleteRetentionInDays')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'softDeleteRetentionInDays'), variables('kvDefaultSoftDeleteRetentionInDays'))))]",
           "tags": {
             "value": "[parameters('tags')]"
           }

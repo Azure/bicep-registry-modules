@@ -44,6 +44,11 @@ var nsgNameDbwHost = '${name}-nsg-dbw-host'
 var logDefaultDailyQuotaGb = -1
 var logDefaultDataRetention = 365
 
+var kvDefaultCreateMode = 'default'
+var kvDefaultEnableSoftDelete = true
+var kvDefaultSoftDeleteRetentionInDays = 90
+var kvDefaultEnablePurgeProtection = true
+
 var createNewVNET = empty(privateEndpointSubnetResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
 var createNewKV = empty(keyVaultResourceId)
@@ -241,7 +246,9 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
     // Required parameters
     name: '${name}-kv'
     // Non-required parameters
-    //createMode: '' // TODO
+    createMode: empty(advancedOptions)
+      ? kvDefaultCreateMode
+      : advancedOptions.?keyVault.?createMode ?? kvDefaultCreateMode
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -261,30 +268,35 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
         workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
       }
     ]
-    enablePurgeProtection: false // TODO
+    enablePurgeProtection: empty(advancedOptions)
+      ? kvDefaultEnablePurgeProtection
+      : advancedOptions.?keyVault.?enablePurgeProtection ?? kvDefaultEnablePurgeProtection
     enableRbacAuthorization: true
-    enableSoftDelete: false // TODO
+    enableSoftDelete: empty(advancedOptions)
+      ? kvDefaultEnableSoftDelete
+      : advancedOptions.?keyVault.?enableSoftDelete ?? kvDefaultEnableSoftDelete
     enableTelemetry: enableTelemetry
     enableVaultForDeployment: false
     enableVaultForTemplateDeployment: false
     enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
     location: location
     lock: lock
-    networkAcls: (!empty(advancedOptions)) && (!empty(advancedOptions.?networkAcls))
+    networkAcls: empty(advancedOptions)
       ? {
+          // New default case that enables the firewall by default
+          bypass: 'None'
+          defaultAction: 'Deny'
+        }
+      : {
           bypass: 'None'
           defaultAction: 'Deny'
           virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
           ipRules: advancedOptions.?networkAcls.?ipRules ?? []
         }
-      : {
-          // New default case that enables the firewall by default
-          bypass: 'None'
-          defaultAction: 'Deny'
-        }
 
     privateEndpoints: createNewVNET
       ? [
+          // Private endpoint for Key Vault only for new VNET
           {
             name: '${name}-kv-pep'
             location: location
@@ -299,7 +311,9 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
     //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
     //roleAssignments: // TODO
     sku: 'premium'
-    //softDeleteRetentionInDays: // TODO
+    softDeleteRetentionInDays: empty(advancedOptions)
+      ? kvDefaultSoftDeleteRetentionInDays
+      : advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
     tags: tags
   }
 }
@@ -431,6 +445,20 @@ type logAnalyticsWorkspaceType = {
   dailyQuotaGb: int?
 }
 
+type keyVaultType = {
+  @description('Optional. The vault\'s create mode to indicate whether the vault need to be recovered or not. - recover or default. The dafult value is: default')
+  createMode: string?
+
+  @description('Optional. Switch to enable/disable Key Vault\'s soft delete feature. The dafult value is: true')
+  enableSoftDelete: bool?
+
+  @description('Optional. softDelete data retention days. It accepts >=7 and <=90. The dafult value is: 90')
+  softDeleteRetentionInDays: int?
+
+  @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. The dafult value is: true')
+  enablePurgeProtection: bool?
+}
+
 type networkAclsType = {
   @description('Optional. Sets the virtual network rules.')
   virtualNetworkRules: array?
@@ -449,6 +477,9 @@ type databricksType = {
 type advancedOptionsType = {
   @description('Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty.')
   logAnalyticsWorkspace: logAnalyticsWorkspaceType?
+
+  @description('Optional. This parameter allows you to specify additional settings for Azure Key Vault if the keyVaultResourceId parameter is empty.')
+  keyVault: keyVaultType?
 
   @description('Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
   networkAcls: networkAclsType?
