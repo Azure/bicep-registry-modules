@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16051386719230333681"
+      "templateHash": "11443792202843961765"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -598,7 +598,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Add the last commit id from your git repo."
+        "description": "Optional. Add the tenantId of your Azure subscription."
       }
     },
     "globalParameters": {

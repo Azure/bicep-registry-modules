@@ -486,7 +486,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 | [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
 | [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
 | [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
-| [`gitTenantId`](#parameter-gittenantid) | string | Add the last commit id from your git repo. |
+| [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -791,7 +791,7 @@ The root folder path name. Default is '/'.
 
 ### Parameter: `gitTenantId`
 
-Add the last commit id from your git repo.
+Add the tenantId of your Azure subscription.
 
 - Required: No
 - Type: string
