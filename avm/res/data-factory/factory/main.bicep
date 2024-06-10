@@ -55,6 +55,9 @@ param gitHostName string = ''
 @description('Optional. Add the last commit id from your git repo.')
 param gitLastCommitId string = ''
 
+@description('Optional. Add the last commit id from your git repo.')
+param gitTenantId string = ''
+
 @description('Optional. List of Global Parameters for the factory.')
 param globalParameters object = {}
 
@@ -171,6 +174,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
             rootFolder: gitRootFolder
             disablePublish: gitDisablePublish
             lastCommitId: gitLastCommitId
+            tenantId: gitTenantId
           },
           (gitRepoType == 'FactoryVSTSConfiguration'
             ? {
