@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15112622274427305357"
+      "templateHash": "6985911720723507684"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -587,6 +587,13 @@
         "description": "Optional. The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'."
       }
     },
+    "gitLastCommitId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Add the last commit id from your git repo"
+      }
+    },
     "globalParameters": {
       "type": "object",
       "defaultValue": {},
@@ -716,7 +723,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "repoConfiguration": "[if(bool(parameters('gitConfigureLater')), null(), union(createObject('type', parameters('gitRepoType'), 'hostName', parameters('gitHostName'), 'accountName', parameters('gitAccountName'), 'repositoryName', parameters('gitRepositoryName'), 'collaborationBranch', parameters('gitCollaborationBranch'), 'rootFolder', parameters('gitRootFolder'), 'disablePublish', parameters('gitDisablePublish')), if(equals(parameters('gitRepoType'), 'FactoryVSTSConfiguration'), createObject('projectName', parameters('gitProjectName')), createObject()), createObject()))]",
+        "repoConfiguration": "[if(bool(parameters('gitConfigureLater')), null(), union(createObject('type', parameters('gitRepoType'), 'hostName', parameters('gitHostName'), 'accountName', parameters('gitAccountName'), 'repositoryName', parameters('gitRepositoryName'), 'collaborationBranch', parameters('gitCollaborationBranch'), 'rootFolder', parameters('gitRootFolder'), 'disablePublish', parameters('gitDisablePublish'), 'lastCommitId', if(not(empty(parameters('gitLastCommitId'))), parameters('gitLastCommitId'), null())), if(equals(parameters('gitRepoType'), 'FactoryVSTSConfiguration'), createObject('projectName', parameters('gitProjectName')), createObject()), createObject()))]",
         "globalParameters": "[if(not(empty(parameters('globalParameters'))), parameters('globalParameters'), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null())]"
