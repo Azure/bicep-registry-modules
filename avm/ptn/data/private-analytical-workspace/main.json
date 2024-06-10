@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "1594614311676016870"
+      "templateHash": "10250430699311734209"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -37,6 +37,18 @@
         }
       },
       "nullable": true
+    },
+    "virtualNetworkType": {
+      "type": "object",
+      "properties": {
+        "subnetNamePrivateLink": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the existing Private Link Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'."
+          }
+        }
+      }
     },
     "logAnalyticsWorkspaceType": {
       "type": "object",
@@ -126,14 +138,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the existing Control Plane Subnet within the Virtual Network."
+            "description": "Optional. The name of the existing Control Plane Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'."
           }
         },
         "subnetNameComputePlane": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the existing Compute Plane Subnet within the Virtual Network."
+            "description": "Optional. The name of the existing Compute Plane Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'."
           }
         }
       }
@@ -141,32 +153,39 @@
     "advancedOptionsType": {
       "type": "object",
       "properties": {
+        "virtualNetwork": {
+          "$ref": "#/definitions/virtualNetworkType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. You can use this parameter to integrate the solution with an existing Azure Virtual Network if the 'virtualNetworkResourceId' parameter is not empty."
+          }
+        },
         "logAnalyticsWorkspace": {
           "$ref": "#/definitions/logAnalyticsWorkspaceType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty."
+            "description": "Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the 'logAnalyticsWorkspaceResourceId' parameter is empty."
           }
         },
         "keyVault": {
           "$ref": "#/definitions/keyVaultType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. This parameter allows you to specify additional settings for Azure Key Vault if the keyVaultResourceId parameter is empty."
+            "description": "Optional. This parameter allows you to specify additional settings for Azure Key Vault if the 'keyVaultResourceId' parameter is empty."
           }
         },
         "networkAcls": {
           "$ref": "#/definitions/networkAclsType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
+            "description": "Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction 'Deny'."
           }
         },
         "databricks": {
           "$ref": "#/definitions/databricksType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true."
+            "description": "Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the 'enableDatabricks' parameter to 'true'."
           }
         }
       }
@@ -213,11 +232,11 @@
         "description": "Optional. Enable/Disable Azure Databricks service in the solution."
       }
     },
-    "privateEndpointSubnetResourceId": {
+    "virtualNetworkResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. This option allows the full solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution and has the same region, you can choose to give it here. This parameter refers to a subnet in the customer provided VNET and the subnet is meant for private endpoints. If you do not use this option, this module will make a new VNET and subnet for you."
+        "description": "Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can choose to give it here. If you do not use this option, this module will make a new VNET for you."
       }
     },
     "logAnalyticsWorkspaceResourceId": {
@@ -257,7 +276,7 @@
     "kvDefaultSoftDeleteRetentionInDays": 90,
     "kvDefaultEnablePurgeProtection": true,
     "kvDefaultSku": "premium",
-    "createNewVNET": "[empty(parameters('privateEndpointSubnetResourceId'))]",
+    "createNewVNET": "[empty(parameters('virtualNetworkResourceId'))]",
     "createNewLog": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
     "createNewKV": "[empty(parameters('keyVaultResourceId'))]",
     "privateLinkSubnet": [
@@ -4933,7 +4952,7 @@
             "value": "[parameters('lock')]"
           },
           "networkAcls": "[if(empty(parameters('advancedOptions')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules'), createArray()))))]",
-          "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], parameters('privateEndpointSubnetResourceId'))).privateEndpointSubnetResourceId, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], format('{0}/subnets/{1}', parameters('virtualNetworkResourceId'), if(empty(parameters('advancedOptions')), '', tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'))))).privateEndpointSubnetResourceId, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "sku": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultSku')), if(equals(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'sku'), 'standard'), createObject('value', 'standard'), createObject('value', variables('kvDefaultSku'))))]",
           "softDeleteRetentionInDays": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultSoftDeleteRetentionInDays')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'softDeleteRetentionInDays'), variables('kvDefaultSoftDeleteRetentionInDays'))))]",
           "tags": {

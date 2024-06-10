@@ -20,8 +20,8 @@ param enableTelemetry bool = true
 @description('Optional. Enable/Disable Azure Databricks service in the solution.')
 param enableDatabricks bool = false
 
-@description('Optional. This option allows the full solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution and has the same region, you can choose to give it here. This parameter refers to a subnet in the customer provided VNET and the subnet is meant for private endpoints. If you do not use this option, this module will make a new VNET and subnet for you.')
-param privateEndpointSubnetResourceId string = ''
+@description('Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can choose to give it here. If you do not use this option, this module will make a new VNET for you.')
+param virtualNetworkResourceId string = ''
 
 @description('Optional. If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you.')
 param logAnalyticsWorkspaceResourceId string = ''
@@ -50,12 +50,14 @@ var kvDefaultSoftDeleteRetentionInDays = 90
 var kvDefaultEnablePurgeProtection = true
 var kvDefaultSku = 'premium'
 
-var createNewVNET = empty(privateEndpointSubnetResourceId)
+var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
 var createNewKV = empty(keyVaultResourceId)
 
 var cfg = ({
-  privateEndpointSubnetResourceId: createNewVNET ? vnet.outputs.subnetResourceIds[0] : privateEndpointSubnetResourceId // private link subnet should be always available at zero index
+  privateEndpointSubnetResourceId: createNewVNET
+    ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available at zero index
+    : '${virtualNetworkResourceId}/subnets/${empty(advancedOptions) ? '' : advancedOptions.?virtualNetwork.?subnetNamePrivateLink}' // If not provided correctly, this will fail during deployment
 })
 
 var logCfg = ({
@@ -436,6 +438,11 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+type virtualNetworkType = {
+  @description('Optional. The name of the existing Private Link Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
+  subnetNamePrivateLink: string?
+}
+
 type logAnalyticsWorkspaceType = {
   @description('Optional. Number of days data will be retained for. The dafult value is: \'365\'.')
   @minValue(0)
@@ -474,22 +481,25 @@ type networkAclsType = {
 
 type databricksType = {
   // must be providied when DBW is going to be enabled and VNET is provided
-  @description('Optional. The name of the existing Control Plane Subnet within the Virtual Network.')
+  @description('Optional. The name of the existing Control Plane Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
   subnetNameControlPlane: string?
-  @description('Optional. The name of the existing Compute Plane Subnet within the Virtual Network.')
+  @description('Optional. The name of the existing Compute Plane Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
   subnetNameComputePlane: string?
 }
 
 type advancedOptionsType = {
-  @description('Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the logAnalyticsWorkspaceResourceId parameter is empty.')
+  @description('Optional. You can use this parameter to integrate the solution with an existing Azure Virtual Network if the \'virtualNetworkResourceId\' parameter is not empty.')
+  virtualNetwork: virtualNetworkType?
+
+  @description('Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the \'logAnalyticsWorkspaceResourceId\' parameter is empty.')
   logAnalyticsWorkspace: logAnalyticsWorkspaceType?
 
-  @description('Optional. This parameter allows you to specify additional settings for Azure Key Vault if the keyVaultResourceId parameter is empty.')
+  @description('Optional. This parameter allows you to specify additional settings for Azure Key Vault if the \'keyVaultResourceId\' parameter is empty.')
   keyVault: keyVaultType?
 
-  @description('Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+  @description('Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction \'Deny\'.')
   networkAcls: networkAclsType?
 
-  @description('Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the enableDatabricks parameter to true.')
+  @description('Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the \'enableDatabricks\' parameter to \'true\'.')
   databricks: databricksType?
 }
