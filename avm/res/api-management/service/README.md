@@ -66,23 +66,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
-    additionalLocations: [
-      {
-        disableGateway: false
-        location: 'westus'
-        sku: {
-          capacity: 1
-          name: 'Premium'
-        }
-      }
-    ]
     location: '<location>'
-    sku: 'Premium'
-    skuCount: 2
-    zones: [
-      '1'
-      '2'
-    ]
   }
 }
 ```
@@ -110,32 +94,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
-    "additionalLocations": {
-      "value": [
-        {
-          "disableGateway": false,
-          "location": "westus",
-          "sku": {
-            "capacity": 1,
-            "name": "Premium"
-          }
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
-    },
-    "sku": {
-      "value": "Premium"
-    },
-    "skuCount": {
-      "value": 2
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2"
-      ]
     }
   }
 }
@@ -322,8 +282,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    sku: 'Premium'
-    skuCount: 2
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
@@ -335,10 +293,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      '1'
-      '2'
-    ]
   }
 }
 ```
@@ -556,12 +510,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
-    "sku": {
-      "value": "Premium"
-    },
-    "skuCount": {
-      "value": 2
-    },
     "subscriptions": {
       "value": [
         {
@@ -576,12 +524,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2"
-      ]
     }
   }
 }
@@ -817,8 +759,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
       }
     ]
-    sku: 'Premium'
-    skuCount: 2
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
@@ -830,10 +770,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      '1'
-      '2'
-    ]
   }
 }
 ```
@@ -1038,12 +974,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
-    "sku": {
-      "value": "Premium"
-    },
-    "skuCount": {
-      "value": 2
-    },
     "subscriptions": {
       "value": [
         {
@@ -1058,12 +988,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2"
-      ]
     }
   }
 }
@@ -1623,7 +1547,7 @@ The pricing tier of this API Management service.
 
 - Required: No
 - Type: string
-- Default: `'Developer'`
+- Default: `'Premium'`
 - Allowed:
   ```Bicep
   [
@@ -1643,13 +1567,14 @@ The instance size of this API Management service.
 
 - Required: No
 - Type: int
-- Default: `1`
+- Default: `2`
 - Allowed:
   ```Bicep
   [
     0
     1
     2
+    3
   ]
   ```
 
@@ -1698,7 +1623,13 @@ A list of availability zones denoting where the resource needs to come from.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+  ]
+  ```
 
 
 ## Outputs
