@@ -55,6 +55,8 @@ var createNewLog = empty(logAnalyticsWorkspaceResourceId)
 var createNewKV = empty(keyVaultResourceId)
 
 var cfg = ({
+  virtualNetworkResourceId: createNewVNET ? vnet.outputs.resourceId : virtualNetworkResourceId
+
   privateEndpointSubnetResourceId: createNewVNET
     ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available at zero index
     : '${virtualNetworkResourceId}/subnets/${empty(advancedOptions) ? '' : advancedOptions.?virtualNetwork.?subnetNamePrivateLink}' // If not provided correctly, this will fail during deployment
@@ -108,6 +110,8 @@ var subnets = concat(
       ]
     : []
 )
+
+var securityRulesDbw = []
 
 // ============== //
 // Resources      //
@@ -193,7 +197,7 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.
     location: location
     lock: lock
     tags: tags
-    securityRules: [] // Databricks will add its own rules
+    securityRules: securityRulesDbw
   }
 }
 
@@ -218,7 +222,7 @@ module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.2.
     location: location
     lock: lock
     tags: tags
-    securityRules: [] // Databricks will add its own rules
+    securityRules: securityRulesDbw
   }
 }
 
@@ -353,9 +357,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     customPublicSubnetName: createNewVNET
       ? filter(subnets, item => item.name == subnetNameDbwComputePlane)[0].name
       : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameComputePlane // If not provided correctly, this will fail during deployment
-    customVirtualNetworkResourceId: createNewVNET
-      ? vnet.outputs.resourceId
-      : empty(advancedOptions) ? null : split(advancedOptions.?databricks.?subnetNameControlPlane ?? '', '/subnets/')[0] // If not provided correctly, this will fail during deployment
+    customVirtualNetworkResourceId: cfg.virtualNetworkResourceId
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -373,16 +375,35 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     lock: lock
     managedResourceGroupResourceId: null // TODO
     prepareEncryption: true // TODO
-    privateEndpoints: [] // TODO
-    publicIpName: null // TODO
-    publicNetworkAccess: null // TODO
-    requiredNsgRules: null // TODO
+    privateEndpoints: [
+      {
+        name: '${name}-dbw-ui-pep'
+        location: location
+        service: 'databricks_ui_api'
+        subnetResourceId: cfg.privateEndpointSubnetResourceId
+        privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
+        tags: tags
+        enableTelemetry: enableTelemetry
+        lock: lock
+      }
+      {
+        name: '${name}-dbw-auth-pep'
+        location: location
+        service: 'browser_authentication'
+        subnetResourceId: cfg.privateEndpointSubnetResourceId
+        privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
+        tags: tags
+        enableTelemetry: enableTelemetry
+        lock: lock
+      }
+    ] // TODO
+    //publicIpName: null // TODO
+    publicNetworkAccess: 'Disabled' // TODO
+    requiredNsgRules: 'NoAzureDatabricksRules' // TODO NoAzureDatabricksRules for full private, AllRules for public
     roleAssignments: [] // TODO
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
-    storageAccountName: null // TODO
-    storageAccountSkuName: null // TODO
+    storageAccountName: null // TODO add existing one (maybe with PEP)
     tags: tags
-    vnetAddressPrefix: null // VNET will be always provided (either as param or VNET cration module)
   }
 }
 
