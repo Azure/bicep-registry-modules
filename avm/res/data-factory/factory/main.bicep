@@ -170,7 +170,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
             collaborationBranch: gitCollaborationBranch
             rootFolder: gitRootFolder
             disablePublish: gitDisablePublish
-            lastCommitId: !empty(gitLastCommitId) ? gitLastCommitId : null
+            lastCommitId: gitLastCommitId
           },
           (gitRepoType == 'FactoryVSTSConfiguration'
             ? {
