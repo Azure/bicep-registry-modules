@@ -52,6 +52,9 @@ param gitRootFolder string = '/'
 @description('Optional. The GitHub Enterprise Server host (prefixed with \'https://\'). Only relevant for \'FactoryGitHubConfiguration\'.')
 param gitHostName string = ''
 
+@description('Optional. Add the last commit id from your git repo')
+param gitLastCommitId string = ''
+
 @description('Optional. List of Global Parameters for the factory.')
 param globalParameters object = {}
 
@@ -171,6 +174,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
             collaborationBranch: gitCollaborationBranch
             rootFolder: gitRootFolder
             disablePublish: gitDisablePublish
+            lastCommitId: gitLastCommitId
           },
           (gitRepoType == 'FactoryVSTSConfiguration'
             ? {
