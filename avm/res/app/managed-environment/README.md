@@ -180,16 +180,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     storages: [
       {
         accessMode: 'ReadWrite'
-        accountKey: '<accountKey>'
-        accountName: '<accountName>'
         kind: 'AzureFile'
-        shareName: 'myFileShareSmb'
+        shareName: 'smbfileshare'
+        storageAccountName: '<storageAccountName>'
       }
       {
         accessMode: 'ReadWrite'
         kind: 'NFS'
         server: '<server>'
-        shareName: 'myFileShareNfs'
+        shareName: '<shareName>'
       }
     ]
     tags: {
@@ -286,16 +285,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": [
         {
           "accessMode": "ReadWrite",
-          "accountKey": "<accountKey>",
-          "accountName": "<accountName>",
           "kind": "AzureFile",
-          "shareName": "myFileShareSmb"
+          "shareName": "smbfileshare",
+          "storageAccountName": "<storageAccountName>"
         },
         {
           "accessMode": "ReadWrite",
           "kind": "NFS",
           "server": "<server>",
-          "shareName": "myFileShareNfs"
+          "shareName": "<shareName>"
         }
       ]
     },
@@ -819,9 +817,8 @@ The list of storages to mount on the environment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accountKey`](#parameter-storagesaccountkey) | securestring | Storage account key for azure file. Required if deploying a Azure File Storage. |
-| [`accountName`](#parameter-storagesaccountname) | string | Storage account name for azure file. Required if deploying a Azure File Storage. |
 | [`server`](#parameter-storagesserver) | string | Server for NFS azure file. Required if deploying a NSF Azure File. |
+| [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name for azure file. Required if deploying a Azure File Storage. |
 
 ### Parameter: `storages.accessMode`
 
@@ -858,23 +855,16 @@ File share name.
 - Required: Yes
 - Type: string
 
-### Parameter: `storages.accountKey`
+### Parameter: `storages.server`
 
-Storage account key for azure file. Required if deploying a Azure File Storage.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `storages.accountName`
-
-Storage account name for azure file. Required if deploying a Azure File Storage.
+Server for NFS azure file. Required if deploying a NSF Azure File.
 
 - Required: No
 - Type: string
 
-### Parameter: `storages.server`
+### Parameter: `storages.storageAccountName`
 
-Server for NFS azure file. Required if deploying a NSF Azure File.
+Storage account name for azure file. Required if deploying a Azure File Storage.
 
 - Required: No
 - Type: string

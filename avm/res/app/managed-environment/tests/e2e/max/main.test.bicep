@@ -42,12 +42,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-// Required for the listKeys() function
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
-  name: nestedDependencies.outputs.storageAccountName
-  scope: resourceGroup
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -105,16 +99,15 @@ module testDeployment '../../../main.bicep' = [
       storages: [
         {
           kind: 'AzureFile'
-          shareName: 'myFileShareSmb'
+          shareName: 'smbfileshare'
           accessMode: 'ReadWrite'
-          accountKey: listKeys(storageAccount.id, '2021-09-01').keys[0].value
-          accountName: nestedDependencies.outputs.storageAccountName
+          storageAccountName: nestedDependencies.outputs.storageAccountName
         }
         {
           kind: 'NFS'
-          shareName: 'myFileShareNfs'
+          shareName: '/${nestedDependencies.outputs.storageAccountName}/nfsfileshare'
           accessMode: 'ReadWrite'
-          server: nestedDependencies.outputs.storageAccountName
+          server: nestedDependencies.outputs.storageAccountPrimaryFileEndpoint
         }
       ]
 

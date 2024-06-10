@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1324141318889841051"
+      "templateHash": "15508595559813167002"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -152,14 +152,7 @@
               "description": "Required. Type of storage: \"AzureFile\" or \"NFS\"."
             }
           },
-          "accountKey": {
-            "type": "securestring",
-            "nullable": true,
-            "metadata": {
-              "description": "Conditional. Storage account key for azure file. Required if deploying a Azure File Storage."
-            }
-          },
-          "accountName": {
+          "storageAccountName": {
             "type": "string",
             "nullable": true,
             "metadata": {
@@ -353,6 +346,22 @@
     }
   },
   "resources": {
+    "managedEnvironment::storage": {
+      "copy": {
+        "name": "storage",
+        "count": "[length(coalesce(parameters('storages'), createArray()))]"
+      },
+      "type": "Microsoft.App/managedEnvironments/storages",
+      "apiVersion": "2023-11-02-preview",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
+      "properties": {
+        "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', coalesce(parameters('storages'), createArray())[copyIndex()].server, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), null())]",
+        "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'AzureFile'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName), '2023-01-01').keys[0].value, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), null())]"
+      },
+      "dependsOn": [
+        "managedEnvironment"
+      ]
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -450,22 +459,6 @@
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
-      },
-      "dependsOn": [
-        "managedEnvironment"
-      ]
-    },
-    "managedEnvironment_storages": {
-      "copy": {
-        "name": "managedEnvironment_storages",
-        "count": "[length(coalesce(parameters('storages'), createArray()))]"
-      },
-      "type": "Microsoft.App/managedEnvironments/storages",
-      "apiVersion": "2023-11-02-preview",
-      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
-      "properties": {
-        "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', coalesce(parameters('storages'), createArray())[copyIndex()].server, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), createObject())]",
-        "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'AzureFile'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].accountName, 'accountKey', coalesce(parameters('storages'), createArray())[copyIndex()].accountKey, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), createObject())]"
       },
       "dependsOn": [
         "managedEnvironment"

@@ -51,6 +51,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
               }
             }
           ]
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+            }
+          ]
         }
       }
     ]
@@ -66,37 +71,41 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
   location: location
   sku: {
-    name: 'Standard_LRS'
+    name: 'Premium_LRS'
   }
-  kind: 'StorageV2'
+  kind: 'FileStorage'
   properties: {
-    isNfsV3Enabled: true
+    publicNetworkAccess: 'Enabled'
+    supportsHttpsTrafficOnly: false
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      virtualNetworkRules: [
+        {
+          id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetwork.name, 'defaultSubnet')
+        }
+      ]
+    }
   }
-}
 
-resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2023-01-01' = {
-  name: 'default'
-  parent: storageAccount
-  properties: {}
-}
+  resource fileService 'fileServices@2023-01-01' = {
+    name: 'default'
 
-resource azureFile 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
-  name: 'myFileShareSmb'
-  parent: fileService
-  properties: {
-    accessTier: 'Hot'
-    enabledProtocols: 'SMB'
-    shareQuota: 1
-  }
-}
+    resource smbfileshare 'shares@2023-01-01' = {
+      name: 'smbfileshare'
+      properties: {
+        enabledProtocols: 'SMB'
+        shareQuota: 100
+      }
+    }
 
-resource nfs 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
-  name: 'myFileShareNfs'
-  parent: fileService
-  properties: {
-    accessTier: 'Hot'
-    enabledProtocols: 'NFS'
-    shareQuota: 1
+    resource azureFileNFS 'shares@2023-01-01' = {
+      name: 'nfsfileshare'
+      properties: {
+        enabledProtocols: 'NFS'
+        shareQuota: 100
+      }
+    }
   }
 }
 
@@ -117,3 +126,6 @@ output storageAccountResourceId string = storageAccount.id
 
 @description('The name of the created Storage Account.')
 output storageAccountName string = storageAccount.name
+
+@description('The primary File endpoint of the created Storage Account.')
+output storageAccountPrimaryFileEndpoint string = storageAccount.properties.primaryEndpoints.file

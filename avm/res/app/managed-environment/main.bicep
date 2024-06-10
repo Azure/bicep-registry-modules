@@ -158,6 +158,32 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
     zoneRedundant: zoneRedundant
     infrastructureResourceGroup: infrastructureResourceGroupName
   }
+
+  resource storage 'storages' = [
+    for storage in (storages ?? []): {
+      name: storage.shareName
+      properties: {
+        nfsAzureFile: storage.kind == 'NFS'
+          ? {
+              accessMode: storage.accessMode
+              server: storage.server
+              shareName: storage.shareName
+            }
+          : null
+        azureFile: storage.kind == 'AzureFile'
+          ? {
+              accessMode: storage.accessMode
+              accountName: storage.storageAccountName
+              accountKey: listkeys(
+                resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
+                '2023-01-01'
+              ).keys[0].value
+              shareName: storage.shareName
+            }
+          : null
+      }
+    }
+  ]
 }
 
 resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -190,30 +216,6 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   }
   scope: managedEnvironment
 }
-
-resource managedEnvironment_storages 'Microsoft.App/managedEnvironments/storages@2023-11-02-preview' = [
-  for (storage, index) in (storages ?? []): {
-    name: storage.shareName
-    parent: managedEnvironment
-    properties: {
-      nfsAzureFile: storage.kind == 'NFS'
-        ? {
-            accessMode: storage.accessMode
-            server: storage.server
-            shareName: storage.shareName
-          }
-        : {}
-      azureFile: storage.kind == 'AzureFile'
-        ? {
-            accessMode: storage.accessMode
-            accountName: storage.accountName
-            accountKey: storage.accountKey
-            shareName: storage.shareName
-          }
-        : {}
-    }
-  }
-]
 
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -286,12 +288,8 @@ type storageType = {
   @description('Required. Type of storage: "AzureFile" or "NFS".')
   kind: ('AzureFile' | 'NFS')
 
-  @description('Conditional. Storage account key for azure file. Required if deploying a Azure File Storage.')
-  @secure()
-  accountKey: string?
-
   @description('Conditional. Storage account name for azure file. Required if deploying a Azure File Storage.')
-  accountName: string?
+  storageAccountName: string?
 
   @description('Required. File share name.')
   shareName: string
