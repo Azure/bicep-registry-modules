@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
-      sku: 'Standard_E2d_v4'
+      sku: 'Standard_E2ads_v5'
       tier: 'Standard'
       lock: {
         kind: 'CanNotDelete'

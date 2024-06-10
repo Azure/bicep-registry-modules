@@ -50,7 +50,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
     name: 'akcmin0001'
-    sku: 'Standard_E2d_v4'
+    sku: 'Standard_E2ads_v5'
     // Non-required parameters
     location: '<location>'
   }
@@ -74,7 +74,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "akcmin0001"
     },
     "sku": {
-      "value": "Standard_E2d_v4"
+      "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
     "location": {
@@ -102,7 +102,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
     name: 'akcmax0001'
-    sku: 'Standard_E2d_v4'
+    sku: 'Standard_E2ads_v5'
     // Non-required parameters
     allowedIpRangeList: [
       '192.168.1.1'
@@ -123,7 +123,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     languageExtensions: [
       {
         languageExtensionCustomImageName: 'myCustomImageName'
-        languageExtensionImageName: 'Python3_10_8'
+        languageExtensionImageName: 'PythonCustomImage'
         languageExtensionName: 'PYTHON'
       }
     ]
@@ -176,7 +176,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "akcmax0001"
     },
     "sku": {
-      "value": "Standard_E2d_v4"
+      "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
     "allowedIpRangeList": {
@@ -227,7 +227,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": [
         {
           "languageExtensionCustomImageName": "myCustomImageName",
-          "languageExtensionImageName": "Python3_10_8",
+          "languageExtensionImageName": "PythonCustomImage",
           "languageExtensionName": "PYTHON"
         }
       ]
@@ -292,7 +292,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
     name: 'akcwaf0001'
-    sku: 'Standard_E2d_v4'
+    sku: 'Standard_E2ads_v5'
     // Non-required parameters
     autoScaleMax: 10
     autoScaleMin: 3
@@ -333,7 +333,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "akcwaf0001"
     },
     "sku": {
-      "value": "Standard_E2d_v4"
+      "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
     "autoScaleMax": {
@@ -394,7 +394,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Kusto cluster. Must be unique within Azure |
 | [`sku`](#parameter-sku) | string | The SKU of the Kusto Cluster. |
 
 **Optional parameters**
@@ -433,13 +432,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 | [`trustedExternalTenants`](#parameter-trustedexternaltenants) | array | The external tenants trusted by the Kusto Cluster. |
 | [`virtualClusterGraduationProperties`](#parameter-virtualclustergraduationproperties) | securestring | The virtual cluster graduation properties of the Kusto Cluster. |
 | [`virtualNetworkConfiguration`](#parameter-virtualnetworkconfiguration) | object | The virtual network configuration of the Kusto Cluster. |
-
-### Parameter: `name`
-
-The name of the Kusto cluster. Must be unique within Azure
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `sku`
 

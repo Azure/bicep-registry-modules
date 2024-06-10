@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
-      sku: 'Standard_E2d_v4'
+      sku: 'Standard_E2ads_v5'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
       languageExtensions: [
         {
           languageExtensionCustomImageName: 'myCustomImageName'
-          languageExtensionImageName: 'Python3_10_8'
+          languageExtensionImageName: 'PythonCustomImage'
           languageExtensionName: 'PYTHON'
         }
       ]
