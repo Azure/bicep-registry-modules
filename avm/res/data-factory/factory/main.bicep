@@ -55,7 +55,7 @@ param gitHostName string = ''
 @description('Optional. Add the last commit id from your git repo.')
 param gitLastCommitId string = ''
 
-@description('Optional. Add the last commit id from your git repo.')
+@description('Optional. Add the tenantId of your Azure subscription.')
 param gitTenantId string = ''
 
 @description('Optional. List of Global Parameters for the factory.')
