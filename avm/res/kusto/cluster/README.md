@@ -50,7 +50,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
     name: 'akcmin0001'
-    sku: 'Standard_D2_v2'
+    sku: 'Standard_E2d_v4'
     // Non-required parameters
     location: '<location>'
   }
@@ -74,7 +74,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "akcmin0001"
     },
     "sku": {
-      "value": "Standard_D2_v2"
+      "value": "Standard_E2d_v4"
     },
     // Non-required parameters
     "location": {
@@ -102,7 +102,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
     name: 'akcmax0001'
-    sku: 'Standard_D2_v2'
+    sku: 'Standard_E2d_v4'
     // Non-required parameters
     allowedIpRangeList: [
       '192.168.1.1'
@@ -176,7 +176,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "akcmax0001"
     },
     "sku": {
-      "value": "Standard_D2_v2"
+      "value": "Standard_E2d_v4"
     },
     // Non-required parameters
     "allowedIpRangeList": {
@@ -292,7 +292,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
     name: 'akcwaf0001'
-    sku: 'Standard_D2_v2'
+    sku: 'Standard_E2d_v4'
     // Non-required parameters
     autoScaleMax: 10
     autoScaleMin: 3
@@ -333,7 +333,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "akcwaf0001"
     },
     "sku": {
-      "value": "Standard_D2_v2"
+      "value": "Standard_E2d_v4"
     },
     // Non-required parameters
     "autoScaleMax": {
