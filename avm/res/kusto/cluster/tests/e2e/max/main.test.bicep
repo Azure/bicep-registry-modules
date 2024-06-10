@@ -61,6 +61,16 @@ module testDeployment '../../../main.bicep' = [
       autoScaleMin: 3
       autoScaleMax: 6
       enableAutoScale: true
+      principalAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      allowedFqdnList: [
+        'contoso.com'
+      ]
       enableAutoStop: true
       enableDiskEncryption: true
       enableDoubleEncryption: true
@@ -70,15 +80,13 @@ module testDeployment '../../../main.bicep' = [
       allowedIpRangeList: [
         '192.168.1.1'
       ]
-      enableZoneRedundant: true
-      engineType: 'V3'
-      languageExtensions: [
+      acceptedAudiences: [
         {
-          languageExtensionCustomImageName: 'myCustomImageName'
-          languageExtensionImageName: 'PythonCustomImage'
-          languageExtensionName: 'PYTHON'
+          value: 'https://contoso.com'
         }
       ]
+      enableZoneRedundant: true
+      engineType: 'V3'
       publicIPType: 'DualStack'
       enableRestrictOutboundNetworkAccess: true
       managedIdentities: {

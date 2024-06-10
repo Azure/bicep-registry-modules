@@ -104,6 +104,14 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     name: 'akcmax0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
+    acceptedAudiences: [
+      {
+        value: 'https://contoso.com'
+      }
+    ]
+    allowedFqdnList: [
+      'contoso.com'
+    ]
     allowedIpRangeList: [
       '192.168.1.1'
     ]
@@ -120,13 +128,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     enableStreamingIngest: true
     enableZoneRedundant: true
     engineType: 'V3'
-    languageExtensions: [
-      {
-        languageExtensionCustomImageName: 'myCustomImageName'
-        languageExtensionImageName: 'PythonCustomImage'
-        languageExtensionName: 'PYTHON'
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -137,6 +138,13 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    principalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+    ]
     publicIPType: 'DualStack'
     roleAssignments: [
       {
@@ -179,6 +187,18 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
+    "acceptedAudiences": {
+      "value": [
+        {
+          "value": "https://contoso.com"
+        }
+      ]
+    },
+    "allowedFqdnList": {
+      "value": [
+        "contoso.com"
+      ]
+    },
     "allowedIpRangeList": {
       "value": [
         "192.168.1.1"
@@ -223,15 +243,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "engineType": {
       "value": "V3"
     },
-    "languageExtensions": {
-      "value": [
-        {
-          "languageExtensionCustomImageName": "myCustomImageName",
-          "languageExtensionImageName": "PythonCustomImage",
-          "languageExtensionName": "PYTHON"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -247,6 +258,15 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "principalAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        }
+      ]
     },
     "publicIPType": {
       "value": "DualStack"
