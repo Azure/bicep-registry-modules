@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "16221242216822493056"
+      "version": "0.28.1.47646",
+      "templateHash": "5659987370589027893"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -121,6 +121,62 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "storageType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "accessMode": {
+            "type": "string",
+            "allowedValues": [
+              "ReadOnly",
+              "ReadWrite"
+            ],
+            "metadata": {
+              "description": "Required. Access mode for storage: \"ReadOnly\" or \"ReadWrite\"."
+            }
+          },
+          "kind": {
+            "type": "string",
+            "allowedValues": [
+              "AzureFile",
+              "NFS"
+            ],
+            "metadata": {
+              "description": "Required. Type of storage: \"AzureFile\" or \"NFS\"."
+            }
+          },
+          "accountKey": {
+            "type": "securestring",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. Storage account key for azure file. Required when deploying a Azure File Storage."
+            }
+          },
+          "accountName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. Storage account name for azure file. Required when deploying a Azure File Storage."
+            }
+          },
+          "shareName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. File share name."
+            }
+          },
+          "server": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. Server for NFS azure file. Required when deploying a NSF Azure File."
             }
           }
         }
@@ -277,6 +333,12 @@
       "metadata": {
         "description": "Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
+    },
+    "storages": {
+      "$ref": "#/definitions/storageType",
+      "metadata": {
+        "description": "Optional. The list of storages to mount on the environment."
+      }
     }
   },
   "variables": {
@@ -388,6 +450,22 @@
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "managedEnvironment"
+      ]
+    },
+    "managedEnvironment_storages": {
+      "copy": {
+        "name": "managedEnvironment_storages",
+        "count": "[length(coalesce(parameters('storages'), createArray()))]"
+      },
+      "type": "Microsoft.App/managedEnvironments/storages",
+      "apiVersion": "2023-11-02-preview",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
+      "properties": {
+        "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', coalesce(parameters('storages'), createArray())[copyIndex()].server, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), createObject())]",
+        "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'AzureFile'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].accountName, 'accountKey', coalesce(parameters('storages'), createArray())[copyIndex()].accountKey, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), createObject())]"
       },
       "dependsOn": [
         "managedEnvironment"
