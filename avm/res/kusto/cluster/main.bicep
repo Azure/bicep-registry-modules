@@ -11,7 +11,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The number of instances of the Kusto Cluster.')
-param capacity int = 1
+param capacity int = 2
 
 @description('Required. The SKU of the Kusto Cluster.')
 param sku string

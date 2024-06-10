@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16351374126656331628"
+      "templateHash": "1670868880021420842"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -573,7 +573,7 @@
     },
     "capacity": {
       "type": "int",
-      "defaultValue": 1,
+      "defaultValue": 2,
       "metadata": {
         "description": "Optional. The number of instances of the Kusto Cluster."
       }

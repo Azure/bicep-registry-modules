@@ -499,7 +499,7 @@ The number of instances of the Kusto Cluster.
 
 - Required: No
 - Type: int
-- Default: `1`
+- Default: `2`
 
 ### Parameter: `customerManagedKey`
 
