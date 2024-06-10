@@ -64,15 +64,16 @@ param roleAssignments roleAssignmentType
   'StandardV2'
   'BasicV2'
 ])
-param sku string = 'Developer'
+param sku string = 'Premium'
 
 @description('Optional. The instance size of this API Management service.')
 @allowed([
   0
   1
   2
+  3
 ])
-param skuCount int = 1
+param skuCount int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string = ''
@@ -92,7 +93,7 @@ param virtualNetworkType string = 'None'
 param diagnosticSettings diagnosticSettingType
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
 param newGuidValue string = newGuid()
