@@ -4,7 +4,7 @@ metadata owner = 'Azure/module-maintainers'
 
 @minLength(4)
 @maxLength(22)
-@description('Required. The name of the Kusto cluster. Must be unique within Azure')
+@description('Required. The name of the Kusto cluster which must be unique within Azure')
 param name string
 
 @description('Optional. Location for all resources.')
