@@ -73,7 +73,6 @@ A description of the scope connection.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs

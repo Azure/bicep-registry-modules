@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "8731170458098397142"
+      "version": "0.27.1.19265",
+      "templateHash": "3090540558931006018"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -103,6 +103,487 @@
         }
       },
       "nullable": true
+    },
+    "aType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "aRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ipv4Address": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IPv4 address of this A record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of A records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "aaaaType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "aaaaRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ipv6Address": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IPv6 address of this AAAA record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of AAAA records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "cnameType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "cnameRecord": {
+            "type": "object",
+            "properties": {
+              "cname": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The canonical name of the CNAME record."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The CNAME record in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "mxType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "mxRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "exchange": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The domain name of the mail host for this MX record."
+                  }
+                },
+                "preference": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The preference value for this MX record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of MX records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "ptrType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "ptrRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ptrdname": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The PTR target domain name for this PTR record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of PTR records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "soaType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "soaRecord": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The email contact for this SOA record."
+                }
+              },
+              "expireTime": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The expire time for this SOA record."
+                }
+              },
+              "host": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The domain name of the authoritative name server for this SOA record."
+                }
+              },
+              "minimumTtl": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."
+                }
+              },
+              "refreshTime": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The refresh value for this SOA record."
+                }
+              },
+              "retryTime": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The retry time for this SOA record."
+                }
+              },
+              "serialNumber": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. The serial number for this SOA record."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The SOA record in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "srvType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "srvRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "priority": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The priority value for this SRV record."
+                  }
+                },
+                "weight": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The weight value for this SRV record."
+                  }
+                },
+                "port": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The port value for this SRV record."
+                  }
+                },
+                "target": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The target domain name for this SRV record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of SRV records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "txtType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the record."
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The metadata of the record."
+            }
+          },
+          "ttl": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The TTL of the record."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "txtRecords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. The text value of this TXT record."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The list of TXT records in the record set."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -113,57 +594,49 @@
       }
     },
     "a": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/aType",
       "metadata": {
         "description": "Optional. Array of A records."
       }
     },
     "aaaa": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/aaaaType",
       "metadata": {
         "description": "Optional. Array of AAAA records."
       }
     },
     "cname": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/cnameType",
       "metadata": {
         "description": "Optional. Array of CNAME records."
       }
     },
     "mx": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/mxType",
       "metadata": {
         "description": "Optional. Array of MX records."
       }
     },
     "ptr": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/ptrType",
       "metadata": {
         "description": "Optional. Array of PTR records."
       }
     },
     "soa": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/soaType",
       "metadata": {
         "description": "Optional. Array of SOA records."
       }
     },
     "srv": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/srvType",
       "metadata": {
         "description": "Optional. Array of SRV records."
       }
     },
     "txt": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/txtType",
       "metadata": {
         "description": "Optional. Array of TXT records."
       }
@@ -323,8 +796,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "12306956034851223701"
+              "version": "0.27.1.19265",
+              "templateHash": "1479424254286113961"
             },
             "name": "Private DNS Zone A record",
             "description": "This module deploys a Private DNS Zone A record.",
@@ -562,8 +1035,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15517532978293030748"
+              "version": "0.27.1.19265",
+              "templateHash": "9900490286335618416"
             },
             "name": "Private DNS Zone AAAA record",
             "description": "This module deploys a Private DNS Zone AAAA record.",
@@ -801,8 +1274,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4178056552366181250"
+              "version": "0.27.1.19265",
+              "templateHash": "9775157141161355944"
             },
             "name": "Private DNS Zone CNAME record",
             "description": "This module deploys a Private DNS Zone CNAME record.",
@@ -891,7 +1364,7 @@
             },
             "cnameRecord": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A CNAME record."
               }
@@ -1040,8 +1513,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "10977884265298427114"
+              "version": "0.27.1.19265",
+              "templateHash": "12759370349231900780"
             },
             "name": "Private DNS Zone MX record",
             "description": "This module deploys a Private DNS Zone MX record.",
@@ -1279,8 +1752,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "10561246444555326733"
+              "version": "0.27.1.19265",
+              "templateHash": "13592920041250204501"
             },
             "name": "Private DNS Zone PTR record",
             "description": "This module deploys a Private DNS Zone PTR record.",
@@ -1518,8 +1991,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17840534414219914835"
+              "version": "0.27.1.19265",
+              "templateHash": "17659308471739059293"
             },
             "name": "Private DNS Zone SOA record",
             "description": "This module deploys a Private DNS Zone SOA record.",
@@ -1757,8 +2230,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17625006509638611979"
+              "version": "0.27.1.19265",
+              "templateHash": "6384537155512618270"
             },
             "name": "Private DNS Zone SRV record",
             "description": "This module deploys a Private DNS Zone SRV record.",
@@ -1996,8 +2469,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1962752727391912227"
+              "version": "0.27.1.19265",
+              "templateHash": "14210083655409825976"
             },
             "name": "Private DNS Zone TXT record",
             "description": "This module deploys a Private DNS Zone TXT record.",
@@ -2235,8 +2708,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8223766852442158769"
+              "version": "0.27.1.19265",
+              "templateHash": "17374916809049988585"
             },
             "name": "Private DNS Zone Virtual Network Link",
             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
