@@ -10,6 +10,9 @@ param virtualNetworkName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Storage Account to create.')
+param storageAccountName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
@@ -59,6 +62,44 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    isNfsV3Enabled: true
+  }
+}
+
+resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2023-01-01' = {
+  name: 'default'
+  parent: storageAccount
+  properties: {}
+}
+
+resource azureFile 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+  name: 'myFileShareSmb'
+  parent: fileService
+  properties: {
+    accessTier: 'Hot'
+    enabledProtocols: 'SMB'
+    shareQuota: 1
+  }
+}
+
+resource nfs 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+  name: 'myFileShareNfs'
+  parent: fileService
+  properties: {
+    accessTier: 'Hot'
+    enabledProtocols: 'NFS'
+    shareQuota: 1
+  }
+}
+
 @description('The resource ID of the created Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
 
@@ -70,3 +111,9 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The resource ID of the created Storage Account.')
+output storageAccountResourceId string = storageAccount.id
+
+@description('The name of the created Storage Account.')
+output storageAccountName string = storageAccount.name

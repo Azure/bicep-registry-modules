@@ -72,6 +72,9 @@ param workloadProfiles array = []
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
 
+@description('Optional. The list of storages to mount on the environment.')
+param storages storageType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -188,6 +191,30 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
+resource managedEnvironment_storages 'Microsoft.App/managedEnvironments/storages@2023-11-02-preview' = [
+  for (storage, index) in (storages ?? []): {
+    name: storage.shareName
+    parent: managedEnvironment
+    properties: {
+      nfsAzureFile: storage.kind == 'NFS'
+        ? {
+            accessMode: storage.accessMode
+            server: storage.server
+            shareName: storage.shareName
+          }
+        : {}
+      azureFile: storage.kind == 'AzureFile'
+        ? {
+            accessMode: storage.accessMode
+            accountName: storage.accountName
+            accountKey: storage.accountKey
+            shareName: storage.shareName
+          }
+        : {}
+    }
+  }
+]
+
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -250,4 +277,25 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type storageType = {
+  @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')
+  accessMode: ('ReadOnly' | 'ReadWrite')
+
+  @description('Required. Type of storage: "AzureFile" or "NFS".')
+  kind: ('AzureFile' | 'NFS')
+
+  @description('Conditional. Storage account key for azure file. Required when deploying a Azure File Storage.')
+  @secure()
+  accountKey: string?
+
+  @description('Conditional. Storage account name for azure file. Required when deploying a Azure File Storage.')
+  accountName: string?
+
+  @description('Required. File share name.')
+  shareName: string
+
+  @description('Conditional. Server for NFS azure file. Required when deploying a NSF Azure File.')
+  server: string?
 }[]?

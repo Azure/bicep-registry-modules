@@ -38,7 +38,14 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
   }
+}
+
+// Required for the listKeys() function
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  name: nestedDependencies.outputs.storageAccountName
+  scope: resourceGroup
 }
 
 // ============== //
@@ -92,6 +99,22 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+
+      storages: [
+        {
+          kind: 'AzureFile'
+          shareName: 'myFileShareSmb'
+          accessMode: 'ReadWrite'
+          accountKey: listKeys(storageAccount.id, '2021-09-01').keys[0].value
+          accountName: nestedDependencies.outputs.storageAccountName
+        }
+        {
+          kind: 'NFS'
+          shareName: 'myFileShareNfs'
+          accessMode: 'ReadWrite'
+          server: nestedDependencies.outputs.storageAccountName
         }
       ]
 
