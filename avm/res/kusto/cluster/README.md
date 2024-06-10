@@ -414,7 +414,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Kusto cluster which must be unique within Azure |
+| [`name`](#parameter-name) | string | The name of the Kusto cluster which must be unique within Azure. |
 | [`sku`](#parameter-sku) | string | The SKU of the Kusto Cluster. |
 
 **Optional parameters**
@@ -456,7 +456,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 ### Parameter: `name`
 
-The name of the Kusto cluster which must be unique within Azure
+The name of the Kusto cluster which must be unique within Azure.
 
 - Required: Yes
 - Type: string
