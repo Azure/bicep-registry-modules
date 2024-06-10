@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5659987370589027893"
+      "templateHash": "1324141318889841051"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -156,14 +156,14 @@
             "type": "securestring",
             "nullable": true,
             "metadata": {
-              "description": "Conditional. Storage account key for azure file. Required when deploying a Azure File Storage."
+              "description": "Conditional. Storage account key for azure file. Required if deploying a Azure File Storage."
             }
           },
           "accountName": {
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Conditional. Storage account name for azure file. Required when deploying a Azure File Storage."
+              "description": "Conditional. Storage account name for azure file. Required if deploying a Azure File Storage."
             }
           },
           "shareName": {
@@ -176,7 +176,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Conditional. Server for NFS azure file. Required when deploying a NSF Azure File."
+              "description": "Conditional. Server for NFS azure file. Required if deploying a NSF Azure File."
             }
           }
         }

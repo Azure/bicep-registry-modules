@@ -286,16 +286,16 @@ type storageType = {
   @description('Required. Type of storage: "AzureFile" or "NFS".')
   kind: ('AzureFile' | 'NFS')
 
-  @description('Conditional. Storage account key for azure file. Required when deploying a Azure File Storage.')
+  @description('Conditional. Storage account key for azure file. Required if deploying a Azure File Storage.')
   @secure()
   accountKey: string?
 
-  @description('Conditional. Storage account name for azure file. Required when deploying a Azure File Storage.')
+  @description('Conditional. Storage account name for azure file. Required if deploying a Azure File Storage.')
   accountName: string?
 
   @description('Required. File share name.')
   shareName: string
 
-  @description('Conditional. Server for NFS azure file. Required when deploying a NSF Azure File.')
+  @description('Conditional. Server for NFS azure file. Required if deploying a NSF Azure File.')
   server: string?
 }[]?
