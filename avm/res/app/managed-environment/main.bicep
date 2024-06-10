@@ -72,6 +72,9 @@ param workloadProfiles array = []
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
 
+@description('Optional. The list of storages to mount on the environment.')
+param storages storageType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -156,6 +159,32 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
     zoneRedundant: zoneRedundant
     infrastructureResourceGroup: infrastructureResourceGroupName
   }
+
+  resource storage 'storages' = [
+    for storage in (storages ?? []): {
+      name: storage.shareName
+      properties: {
+        nfsAzureFile: storage.kind == 'NFS'
+          ? {
+              accessMode: storage.accessMode
+              server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
+              shareName: '/${storage.storageAccountName}/${storage.shareName}'
+            }
+          : null
+        azureFile: storage.kind == 'SMB'
+          ? {
+              accessMode: storage.accessMode
+              accountName: storage.storageAccountName
+              accountKey: listkeys(
+                resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
+                '2023-01-01'
+              ).keys[0].value
+              shareName: storage.shareName
+            }
+          : null
+      }
+    }
+  ]
 }
 
 resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -251,4 +280,18 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type storageType = {
+  @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')
+  accessMode: ('ReadOnly' | 'ReadWrite')
+
+  @description('Required. Type of storage: "SMB" or "NFS".')
+  kind: ('SMB' | 'NFS')
+
+  @description('Required. Storage account name.')
+  storageAccountName: string
+
+  @description('Required. File share name.')
+  shareName: string
 }[]?
