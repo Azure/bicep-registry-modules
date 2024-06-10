@@ -36,8 +36,8 @@ param advancedOptions advancedOptionsType?
 var diagnosticSettingsName = '${name}-diagnostic-settings'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
-var subnetNameDbwControlPlane = '${name}-dbw-control-plane-subnet'
-var subnetNameDbwComputePlane = '${name}-dbw-compute-plane-subnet'
+var subnetNameDbwControlPlane = 'dbw-control-plane-subnet'
+var subnetNameDbwComputePlane = 'dbw-compute-plane-subnet'
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
 var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
 
@@ -67,7 +67,7 @@ var logCfg = ({
 var privateLinkSubnet = [
   {
     addressPrefix: '192.168.224.0/24'
-    name: '${name}-private-link'
+    name: 'private-link'
   }
 ]
 
