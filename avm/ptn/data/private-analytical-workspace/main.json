@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "3048552462453574448"
+      "templateHash": "1594614311676016870"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -122,18 +122,18 @@
     "databricksType": {
       "type": "object",
       "properties": {
-        "subnetNameDbwContainer": {
+        "subnetNameControlPlane": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
+            "description": "Optional. The name of the existing Control Plane Subnet within the Virtual Network."
           }
         },
-        "subnetNameDbwHost": {
+        "subnetNameComputePlane": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX."
+            "description": "Optional. The name of the existing Compute Plane Subnet within the Virtual Network."
           }
         }
       }
@@ -246,10 +246,10 @@
     "diagnosticSettingsName": "[format('{0}-diagnostic-settings', parameters('name'))]",
     "privateDnsZoneNameKv": "privatelink.vaultcore.azure.net",
     "privateDnsZoneNameDbw": "privatelink.azuredatabricks.net",
-    "subnetNameDbwContainer": "[format('{0}-dbw-container-subnet', parameters('name'))]",
-    "subnetNameDbwHost": "[format('{0}-dbw-host-subnet', parameters('name'))]",
-    "nsgNameDbwContainer": "[format('{0}-nsg-dbw-container', parameters('name'))]",
-    "nsgNameDbwHost": "[format('{0}-nsg-dbw-host', parameters('name'))]",
+    "subnetNameDbwControlPlane": "[format('{0}-dbw-control-plane-subnet', parameters('name'))]",
+    "subnetNameDbwComputePlane": "[format('{0}-dbw-compute-plane-subnet', parameters('name'))]",
+    "nsgNameDbwControlPlane": "[format('{0}-nsg-dbw-control-plane', parameters('name'))]",
+    "nsgNameDbwComputePlane": "[format('{0}-nsg-dbw-compute-plane', parameters('name'))]",
     "logDefaultDailyQuotaGb": -1,
     "logDefaultDataRetention": 365,
     "kvDefaultCreateMode": "default",
@@ -338,7 +338,7 @@
             "value": "[parameters('lock')]"
           },
           "subnets": {
-            "value": "[concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwContainer'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwContainer').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwHost'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwHost').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray()))]"
+            "value": "[concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwComputePlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwComputePlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray()))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -1478,15 +1478,15 @@
       },
       "dependsOn": [
         "log",
-        "nsgDbwContainer",
-        "nsgDbwHost"
+        "nsgDbwComputePlane",
+        "nsgDbwControlPlane"
       ]
     },
-    "nsgDbwContainer": {
+    "nsgDbwControlPlane": {
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[variables('nsgNameDbwContainer')]",
+      "name": "[variables('nsgNameDbwControlPlane')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1494,7 +1494,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('nsgNameDbwContainer')]"
+            "value": "[variables('nsgNameDbwControlPlane')]"
           },
           "diagnosticSettings": {
             "value": [
@@ -2203,11 +2203,11 @@
         "log"
       ]
     },
-    "nsgDbwHost": {
+    "nsgDbwComputePlane": {
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[variables('nsgNameDbwHost')]",
+      "name": "[variables('nsgNameDbwComputePlane')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2215,7 +2215,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('nsgNameDbwHost')]"
+            "value": "[variables('nsgNameDbwComputePlane')]"
           },
           "diagnosticSettings": {
             "value": [
@@ -10585,9 +10585,9 @@
           "name": {
             "value": "[format('{0}-dbw', parameters('name'))]"
           },
-          "customPrivateSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwContainer'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwContainer').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwHost'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwHost').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwContainer'))))[0].name), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameDbwContainer'))))]",
-          "customPublicSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwContainer'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwContainer').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwHost'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwHost').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwHost'))))[0].name), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameDbwHost'))))]",
-          "customVirtualNetworkResourceId": "[if(variables('createNewVNET'), createObject('value', reference('vnet').outputs.resourceId.value), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', split(coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameDbwContainer'), ''), '/subnets/')[0])))]",
+          "customPrivateSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwComputePlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwComputePlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwControlPlane'))))[0].name), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'))))]",
+          "customPublicSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(variables('privateLinkSubnet'), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwComputePlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwComputePlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwComputePlane'))))[0].name), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'))))]",
+          "customVirtualNetworkResourceId": "[if(variables('createNewVNET'), createObject('value', reference('vnet').outputs.resourceId.value), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', split(coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), ''), '/subnets/')[0])))]",
           "diagnosticSettings": {
             "value": [
               {
@@ -12223,8 +12223,8 @@
       },
       "dependsOn": [
         "log",
-        "nsgDbwContainer",
-        "nsgDbwHost",
+        "nsgDbwComputePlane",
+        "nsgDbwControlPlane",
         "vnet"
       ]
     },

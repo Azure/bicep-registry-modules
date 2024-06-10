@@ -206,19 +206,19 @@ This parameter allows you to specify additional settings for Azure Databricks if
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`subnetNameDbwContainer`](#parameter-advancedoptionsdatabrickssubnetnamedbwcontainer) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
-| [`subnetNameDbwHost`](#parameter-advancedoptionsdatabrickssubnetnamedbwhost) | string | XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. |
+| [`subnetNameComputePlane`](#parameter-advancedoptionsdatabrickssubnetnamecomputeplane) | string | The name of the existing Compute Plane Subnet within the Virtual Network. |
+| [`subnetNameControlPlane`](#parameter-advancedoptionsdatabrickssubnetnamecontrolplane) | string | The name of the existing Control Plane Subnet within the Virtual Network. |
 
-### Parameter: `advancedOptions.databricks.subnetNameDbwContainer`
+### Parameter: `advancedOptions.databricks.subnetNameComputePlane`
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+The name of the existing Compute Plane Subnet within the Virtual Network.
 
 - Required: No
 - Type: string
 
-### Parameter: `advancedOptions.databricks.subnetNameDbwHost`
+### Parameter: `advancedOptions.databricks.subnetNameControlPlane`
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+The name of the existing Control Plane Subnet within the Virtual Network.
 
 - Required: No
 - Type: string

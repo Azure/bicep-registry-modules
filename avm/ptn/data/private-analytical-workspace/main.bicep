@@ -36,10 +36,10 @@ param advancedOptions advancedOptionsType?
 var diagnosticSettingsName = '${name}-diagnostic-settings'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
-var subnetNameDbwContainer = '${name}-dbw-container-subnet'
-var subnetNameDbwHost = '${name}-dbw-host-subnet'
-var nsgNameDbwContainer = '${name}-nsg-dbw-container'
-var nsgNameDbwHost = '${name}-nsg-dbw-host'
+var subnetNameDbwControlPlane = '${name}-dbw-control-plane-subnet'
+var subnetNameDbwComputePlane = '${name}-dbw-compute-plane-subnet'
+var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
+var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
 
 var logDefaultDailyQuotaGb = -1
 var logDefaultDataRetention = 365
@@ -76,10 +76,10 @@ var subnets = concat(
     ? [
         // DBW - 192.168.228.0/22
         {
-          // a container subnet (sometimes called the private subnet)
-          name: subnetNameDbwContainer
+          // a container subnet (sometimes called the private subnet, control plane)
+          name: subnetNameDbwControlPlane
           addressPrefix: '192.168.228.0/23'
-          networkSecurityGroupResourceId: nsgDbwContainer.outputs.resourceId
+          networkSecurityGroupResourceId: nsgDbwControlPlane.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -90,10 +90,10 @@ var subnets = concat(
           ]
         }
         {
-          // host subnet (sometimes called the public subnet).
-          name: subnetNameDbwHost
+          // host subnet (sometimes called the public subnet, compute plane).
+          name: subnetNameDbwComputePlane
           addressPrefix: '192.168.230.0/23'
-          networkSecurityGroupResourceId: nsgDbwHost.outputs.resourceId
+          networkSecurityGroupResourceId: nsgDbwComputePlane.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -170,11 +170,11 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNE
   }
 }
 
-module nsgDbwContainer 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwContainer
+module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwControlPlane
   params: {
     // Required parameters
-    name: nsgNameDbwContainer
+    name: nsgNameDbwControlPlane
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -195,11 +195,11 @@ module nsgDbwContainer 'br/public:avm/res/network/network-security-group:0.2.0' 
   }
 }
 
-module nsgDbwHost 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwHost
+module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwComputePlane
   params: {
     // Required parameters
-    name: nsgNameDbwHost
+    name: nsgNameDbwComputePlane
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -346,14 +346,14 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     name: '${name}-dbw'
     // Non-required parameters
     customPrivateSubnetName: createNewVNET
-      ? filter(subnets, item => item.name == subnetNameDbwContainer)[0].name
-      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameDbwContainer // If not provided correctly, this will fail during deployment
+      ? filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name
+      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameControlPlane // If not provided correctly, this will fail during deployment
     customPublicSubnetName: createNewVNET
-      ? filter(subnets, item => item.name == subnetNameDbwHost)[0].name
-      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameDbwHost // If not provided correctly, this will fail during deployment
+      ? filter(subnets, item => item.name == subnetNameDbwComputePlane)[0].name
+      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameComputePlane // If not provided correctly, this will fail during deployment
     customVirtualNetworkResourceId: createNewVNET
       ? vnet.outputs.resourceId
-      : empty(advancedOptions) ? null : split(advancedOptions.?databricks.?subnetNameDbwContainer ?? '', '/subnets/')[0] // If not provided correctly, this will fail during deployment
+      : empty(advancedOptions) ? null : split(advancedOptions.?databricks.?subnetNameControlPlane ?? '', '/subnets/')[0] // If not provided correctly, this will fail during deployment
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -376,7 +376,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     publicNetworkAccess: null // TODO
     requiredNsgRules: null // TODO
     roleAssignments: [] // TODO
-    skuName: 'premium'
+    skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO
     storageAccountSkuName: null // TODO
     tags: tags
@@ -474,10 +474,10 @@ type networkAclsType = {
 
 type databricksType = {
   // must be providied when DBW is going to be enabled and VNET is provided
-  @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
-  subnetNameDbwContainer: string?
-  @description('Optional. XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.')
-  subnetNameDbwHost: string?
+  @description('Optional. The name of the existing Control Plane Subnet within the Virtual Network.')
+  subnetNameControlPlane: string?
+  @description('Optional. The name of the existing Compute Plane Subnet within the Virtual Network.')
+  subnetNameComputePlane: string?
 }
 
 type advancedOptionsType = {
