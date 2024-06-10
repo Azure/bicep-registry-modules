@@ -52,7 +52,7 @@ param gitRootFolder string = '/'
 @description('Optional. The GitHub Enterprise Server host (prefixed with \'https://\'). Only relevant for \'FactoryGitHubConfiguration\'.')
 param gitHostName string = ''
 
-@description('Optional. Add the last commit id from your git repo')
+@description('Optional. Add the last commit id from your git repo.')
 param gitLastCommitId string = ''
 
 @description('Optional. List of Global Parameters for the factory.')
