@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Deploying with a key vault reference to save secrets'
-metadata description = 'This instance deploys the module saving all its secrets in a key vault.'
+metadata description = 'This instance deploys the module with sql role assignments'
 
 // ========== //
 // Parameters //
@@ -33,7 +33,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     appName: 'dep-${namePrefix}-app-${serviceShort}'
     appServicePlanName: 'dep-${namePrefix}-asp-${serviceShort}'
     location: enforcedLocation
