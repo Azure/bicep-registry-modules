@@ -63,8 +63,8 @@ module testDeployment '../../../main.bicep' = [
       enableAutoScale: true
       principalAssignments: [
         {
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'User'
+          principalId: nestedDependencies.outputs.entraIdGroupDisplayName
+          principalType: 'Group'
           role: 'AllDatabasesViewer'
         }
       ]
