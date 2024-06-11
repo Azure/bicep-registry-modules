@@ -28,6 +28,8 @@ param vnetHubResourceGroup string = 'rsg-blzv-perm-hubs-001'
 @description('Optional. The name of the existing hub virtual network.')
 param hubVirtualNetworkName string = 'vnet-uksouth-hub-blzv'
 
+var networkContributorRoleDefinitionId = '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+
 // Provide a reference to an existing hub virtual network.
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -72,10 +74,10 @@ module testDeployment '../../../main.bicep' = {
     roleAssignments: [
       {
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+        definition: networkContributorRoleDefinitionId
         relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
       }
-    ] //Assigning the Network Contributor role
+    ]
     resourceProviders: {
       'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
       'Microsoft.AVS': ['AzureServicesVm']
