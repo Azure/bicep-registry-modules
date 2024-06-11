@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "5141716518010159201"
+      "version": "0.28.1.47646",
+      "templateHash": "8091291469048769594"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -734,19 +734,6 @@
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
         "hubVirtualNetworkPeering"
       ]
-    },
-    "hubAzureFirewallSubnet": {
-      "copy": {
-        "name": "hubAzureFirewallSubnet",
-        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
-      "existing": true,
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2023-11-01",
-      "name": "[format('{0}/AzureFirewallSubnet', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
     },
     "hubVirtualNetwork": {
       "copy": {
@@ -5922,6 +5909,80 @@
         "hubVirtualNetwork"
       ]
     },
+    "hubAzureFirewallSubnet": {
+      "copy": {
+        "name": "hubAzureFirewallSubnet",
+        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]"
+      },
+      "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nafs', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "subnetName": {
+            "value": "AzureFirewallSubnet"
+          },
+          "virtualNetworkName": {
+            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "14647294443648054254"
+            },
+            "name": "Existing Virtual Network Subnets",
+            "description": "This module retrieves an existing Virtual Network Subnet.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "subnetName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The name of the subnet."
+              }
+            },
+            "virtualNetworkName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The name of the virtual network."
+              }
+            }
+          },
+          "resources": [],
+          "outputs": {
+            "subnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Subnet ID"
+              },
+              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[0], split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[1])]"
+            },
+            "addressPrefix": {
+              "type": "string",
+              "metadata": {
+                "description": "Subnet address prefix"
+              },
+              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[0], split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[1]), '2023-11-01').addressPrefix]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "hubVirtualNetwork"
+      ]
+    },
     "hubAzureFirewallSubnetAssociation": {
       "copy": {
         "name": "hubAzureFirewallSubnetAssociation",
@@ -5932,7 +5993,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nafs', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "name": "[format('{0}-{1}-nafsa', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5946,7 +6007,7 @@
             "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
           },
           "addressPrefix": {
-            "value": "[reference(format('hubAzureFirewallSubnet[{0}]', copyIndex())).addressPrefix]"
+            "value": "[reference(format('hubAzureFirewallSubnet[{0}]', copyIndex())).outputs.addressPrefix.value]"
           },
           "routeTableResourceId": {
             "value": "[reference(format('hubRouteTable[{0}]', copyIndex())).outputs.resourceId.value]"
@@ -5959,8 +6020,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "986085789636729411"
+              "version": "0.28.1.47646",
+              "templateHash": "1921223386989746708"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",

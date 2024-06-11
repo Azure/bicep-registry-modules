@@ -1,3 +1,7 @@
+metadata name = 'Existing Virtual Network Subnets'
+metadata description = 'This module retrieves an existing Virtual Network Subnet.'
+metadata owner = 'Azure/module-maintainers'
+
 @description('Optional. The name of the subnet.')
 param subnetName string = ''
 
