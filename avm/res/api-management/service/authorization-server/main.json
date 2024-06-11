@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "7774516059048213210"
+      "version": "0.28.1.47646",
+      "templateHash": "17095671534556603009"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server.",

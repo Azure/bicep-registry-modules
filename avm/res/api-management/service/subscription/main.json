@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "6405832615366371244"
+      "version": "0.28.1.47646",
+      "templateHash": "4461001441551159036"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription.",

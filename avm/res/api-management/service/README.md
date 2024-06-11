@@ -16,31 +16,16 @@ This module deploys an API Management Service.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service) |
-| `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
-| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
-| `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
-| `Microsoft.ApiManagement/service/apiVersionSets` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apiVersionSets) |
-| `Microsoft.ApiManagement/service/authorizationServers` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/authorizationServers) |
-| `Microsoft.ApiManagement/service/backends` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/backends) |
-| `Microsoft.ApiManagement/service/caches` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/caches) |
-| `Microsoft.ApiManagement/service/identityProviders` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/identityProviders) |
-| `Microsoft.ApiManagement/service/loggers` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/loggers) |
-| `Microsoft.ApiManagement/service/namedValues` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/namedValues) |
-| `Microsoft.ApiManagement/service/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/policies) |
-| `Microsoft.ApiManagement/service/portalsettings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
-| `Microsoft.ApiManagement/service/products` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/products) |
-| `Microsoft.ApiManagement/service/products/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/products/apis) |
-| `Microsoft.ApiManagement/service/products/groups` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/products/groups) |
-| `Microsoft.ApiManagement/service/subscriptions` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/subscriptions) |
 | `Microsoft.ApiManagement/service` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2023-05-01-preview/service) |
 | `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
 | `Microsoft.ApiManagement/service/apiVersionSets` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apiVersionSets) |
 | `Microsoft.ApiManagement/service/authorizationServers` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/authorizationServers) |
 | `Microsoft.ApiManagement/service/backends` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/backends) |
 | `Microsoft.ApiManagement/service/caches` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/caches) |
 | `Microsoft.ApiManagement/service/identityProviders` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/identityProviders) |
+| `Microsoft.ApiManagement/service/loggers` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/loggers) |
 | `Microsoft.ApiManagement/service/namedValues` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/namedValues) |
 | `Microsoft.ApiManagement/service/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/policies) |
 | `Microsoft.ApiManagement/service/portalsettings` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
@@ -139,13 +124,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
-    apiDiagnostics: [
-      {
-        apiName: 'echo-api'
-        loggerName: 'logger'
-        metrics: true
-      }
-    ]
     additionalLocations: [
       {
         disableGateway: false
@@ -154,6 +132,13 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           capacity: 1
           name: 'Premium'
         }
+      }
+    ]
+    apiDiagnostics: [
+      {
+        apiName: 'echo-api'
+        loggerName: 'logger'
+        metrics: true
       }
     ]
     apis: [
@@ -356,15 +341,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
-    "apiDiagnostics": {
-      "value": [
-        {
-          "apiName": "echo-api",
-          "loggerName": "logger",
-          "metrics": true
-        }
-      ]
-    },
     "additionalLocations": {
       "value": [
         {
@@ -374,6 +350,15 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "capacity": 1,
             "name": "Premium"
           }
+        }
+      ]
+    },
+    "apiDiagnostics": {
+      "value": [
+        {
+          "apiName": "echo-api",
+          "loggerName": "logger",
+          "metrics": true
         }
       ]
     },
@@ -778,7 +763,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         resourceId: '<resourceId>'
       }
     ]
-    minApiVersion: '2021-08-01'
     minApiVersion: '2022-08-01'
     namedValues: [
       {
@@ -1097,9 +1081,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`additionalLocations`](#parameter-additionallocations) | array | Additional datacenter locations of the API Management service. |
-| [`apiDiagnostics`](#parameter-apidiagnostics) | array | API Diagnostics. |
 | [`additionalLocations`](#parameter-additionallocations) | array | Additional datacenter locations of the API Management service. Not supported with V2 SKUs. |
+| [`apiDiagnostics`](#parameter-apidiagnostics) | array | API Diagnostics. |
 | [`apis`](#parameter-apis) | array | APIs. |
 | [`apiVersionSets`](#parameter-apiversionsets) | array | API Version Sets. |
 | [`authorizationServers`](#parameter-authorizationservers) | secureObject | Authorization servers. |

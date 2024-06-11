@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13769078050874958863"
+      "templateHash": "13454374315723864017"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -578,16 +578,16 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[if(contains(parameters('sku'), 'v2'), 1, parameters('skuCount'))]"
+        "capacity": "[if(contains(parameters('sku'), 'V2'), 1, parameters('skuCount'))]"
       },
-      "zones": "[if(contains(parameters('sku'), 'v2'), null(), parameters('zones'))]",
+      "zones": "[if(contains(parameters('sku'), 'V2'), null(), parameters('zones'))]",
       "identity": "[variables('identity')]",
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[if(contains(parameters('sku'), 'v2'), null(), parameters('additionalLocations'))]",
+        "additionalLocations": "[if(contains(parameters('sku'), 'V2'), null(), parameters('additionalLocations'))]",
         "customProperties": "[parameters('customProperties')]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
@@ -767,7 +767,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5298444323508151574"
+              "templateHash": "6272881213101632478"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -984,7 +984,7 @@
             "api": {
               "type": "Microsoft.ApiManagement/service/apis",
               "apiVersion": "2022-08-01",
-              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiName'))]",
               "properties": {
                 "apiRevision": "[parameters('apiRevision')]",
                 "apiRevisionDescription": "[parameters('apiRevisionDescription')]",
@@ -1187,8 +1187,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "7895336074633098203"
+                      "version": "0.28.1.47646",
+                      "templateHash": "16947785409651708752"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics.",
@@ -2097,8 +2097,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "7895336074633098203"
+              "version": "0.28.1.47646",
+              "templateHash": "16947785409651708752"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -2470,8 +2470,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "15755887883626146385"
+              "version": "0.28.1.47646",
+              "templateHash": "11887059084876487326"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger.",
