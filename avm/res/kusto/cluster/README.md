@@ -142,7 +142,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'User'
-        role: 'Reader'
+        role: 'AllDatabasesViewer'
       }
     ]
     publicIPType: 'DualStack'
@@ -264,7 +264,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "User",
-          "role": "Reader"
+          "role": "AllDatabasesViewer"
         }
       ]
     },

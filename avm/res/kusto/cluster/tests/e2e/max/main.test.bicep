@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
         {
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'User'
-          role: 'Reader'
+          role: 'AllDatabasesViewer'
         }
       ]
       allowedFqdnList: [
