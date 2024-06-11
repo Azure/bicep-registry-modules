@@ -36,6 +36,7 @@ param advancedOptions advancedOptionsType?
 var diagnosticSettingsName = '${name}-diagnostic-settings'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
+var subnetNamePrivateLink = 'private-link-subnet'
 var subnetNameDbwControlPlane = 'dbw-control-plane-subnet'
 var subnetNameDbwComputePlane = 'dbw-compute-plane-subnet'
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
@@ -54,19 +55,28 @@ var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
 var createNewKV = empty(keyVaultResourceId)
 
-var cfg = ({
-  virtualNetworkResourceId: createNewVNET ? vnet.outputs.resourceId : virtualNetworkResourceId
+var vnetCfg = ({
+  resourceId: createNewVNET ? vnet.outputs.resourceId : vnetExisting.id
+  name: createNewVNET ? vnet.outputs.name : vnetExisting.name
+  location: createNewVNET ? vnet.outputs.location : vnetExisting.location
+  resourceGroupName: createNewVNET ? vnet.outputs.resourceGroupName : split(vnetExisting.id, '/')[4]
 
-  privateEndpointSubnetResourceId: createNewVNET
+  subnetResourceIdPrivateLink: createNewVNET
     ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available at zero index
-    : '${virtualNetworkResourceId}/subnets/${empty(advancedOptions) ? '' : advancedOptions.?virtualNetwork.?subnetNamePrivateLink}' // If not provided correctly, this will fail during deployment
+    : vnetExisting::subnetPrivateLink.id
+  subnetNameDbwControlPlane: createNewVNET
+    ? filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name
+    : vnetExisting::subnetDbwControlPlane.name
+  subnetNameDbwComputePlane: createNewVNET
+    ? filter(subnets, item => item.name == subnetNameDbwComputePlane)[0].name
+    : vnetExisting::subnetDbwComputePlane.name
 })
 
 var logCfg = ({
-  resourceId: createNewLog ? log.outputs.resourceId : logAnalyticsWorkspaceExisting.id
-  name: createNewLog ? log.outputs.name : logAnalyticsWorkspaceExisting.name
-  location: createNewLog ? log.outputs.location : logAnalyticsWorkspaceExisting.location
-  resourceGroupName: createNewLog ? log.outputs.resourceGroupName : split(logAnalyticsWorkspaceExisting.id, '/')[4]
+  resourceId: createNewLog ? log.outputs.resourceId : logExisting.id
+  name: createNewLog ? log.outputs.name : logExisting.name
+  location: createNewLog ? log.outputs.location : logExisting.location
+  resourceGroupName: createNewLog ? log.outputs.resourceGroupName : split(logExisting.id, '/')[4]
 })
 
 var kvCfg = ({
@@ -78,8 +88,8 @@ var kvCfg = ({
 
 var privateLinkSubnet = [
   {
+    name: subnetNamePrivateLink
     addressPrefix: '192.168.224.0/24'
-    name: 'private-link'
   }
 ]
 
@@ -152,7 +162,24 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
-resource logAnalyticsWorkspaceExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!createNewLog) {
+resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = if (!createNewVNET) {
+  name: last(split(virtualNetworkResourceId, '/'))
+  scope: resourceGroup(split(virtualNetworkResourceId, '/')[2], split(virtualNetworkResourceId, '/')[4])
+
+  resource subnetPrivateLink 'subnets@2023-11-01' existing = if (!empty(advancedOptions) && !empty(advancedOptions.?virtualNetwork.?subnetNamePrivateLink)) {
+    name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? ''
+  }
+
+  resource subnetDbwControlPlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameControlPlane)) {
+    name: advancedOptions.?databricks.?subnetNameControlPlane ?? ''
+  }
+
+  resource subnetDbwComputePlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameComputePlane)) {
+    name: advancedOptions.?databricks.?subnetNameComputePlane ?? ''
+  }
+}
+
+resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!createNewLog) {
   name: last(split(logAnalyticsWorkspaceResourceId, '/'))
   scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
 }
@@ -328,7 +355,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
             location: location
             privateDnsZoneResourceIds: [dnsZoneKv.outputs.resourceId]
             tags: tags
-            subnetResourceId: cfg.privateEndpointSubnetResourceId
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
             enableTelemetry: enableTelemetry
             lock: lock
           }
@@ -377,7 +404,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     customPublicSubnetName: createNewVNET
       ? filter(subnets, item => item.name == subnetNameDbwComputePlane)[0].name
       : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameComputePlane // If not provided correctly, this will fail during deployment
-    customVirtualNetworkResourceId: cfg.virtualNetworkResourceId
+    customVirtualNetworkResourceId: vnetCfg.resourceId
     diagnosticSettings: [
       {
         name: diagnosticSettingsName
@@ -401,7 +428,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
             name: '${name}-dbw-ui-pep'
             location: location
             service: 'databricks_ui_api'
-            subnetResourceId: cfg.privateEndpointSubnetResourceId
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
             privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
             tags: tags
             enableTelemetry: enableTelemetry
@@ -411,7 +438,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
             name: '${name}-dbw-auth-pep'
             location: location
             service: 'browser_authentication'
-            subnetResourceId: cfg.privateEndpointSubnetResourceId
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
             privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
             tags: tags
             enableTelemetry: enableTelemetry
@@ -450,6 +477,18 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (creat
 // ============ //
 // Outputs      //
 // ============ //
+
+@description('The resource ID of the Azure Virtual Network.')
+output virtualNetworkResourceId string = vnetCfg.resourceId
+
+@description('The name of the Azure Virtual Network.')
+output virtualNetworkName string = vnetCfg.name
+
+@description('The location of the Azure Virtual Network.')
+output virtualNetworkLocation string = vnetCfg.location
+
+@description('The name of the Azure Virtual Network resource group.')
+output virtualNetworkResourceGroupName string = vnetCfg.resourceGroupName
 
 @description('The resource ID of the Azure Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logCfg.resourceId
