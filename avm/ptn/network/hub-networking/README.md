@@ -557,7 +557,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           tags: {}
           threatIntelMode: 'Alert'
           virtualHub: ''
-          zones: []
+          zones: [
+            1
+            2
+            3
+          ]
         }
         bastionHost: {
           disableCopyPaste: true
@@ -673,7 +677,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "tags": {},
             "threatIntelMode": "Alert",
             "virtualHub": "",
-            "zones": []
+            "zones": [
+              1,
+              2,
+              3
+            ]
           },
           "bastionHost": {
             "disableCopyPaste": true,

@@ -84,7 +84,11 @@ module testDeployment '../../../main.bicep' = [
             roleAssignments: []
             tags: {}
             threatIntelMode: 'Alert'
-            zones: []
+            zones: [
+              1
+              2
+              3
+            ]
           }
           bastionHost: {
             disableCopyPaste: true
