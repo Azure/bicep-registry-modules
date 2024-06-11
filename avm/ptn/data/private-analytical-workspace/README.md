@@ -394,7 +394,6 @@ If you already have a Key Vault that you want to use with the solution, you can 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -446,7 +445,6 @@ If you already have a Log Analytics Workspace that you want to use with the solu
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -461,7 +459,6 @@ This option allows the solution to be connected to a VNET that the customer prov
 
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs

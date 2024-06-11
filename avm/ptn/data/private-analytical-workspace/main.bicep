@@ -163,30 +163,36 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 //
 
 resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = if (!createNewVNET) {
-  name: last(split(virtualNetworkResourceId, '/'))
-  scope: resourceGroup(split(virtualNetworkResourceId, '/')[2], split(virtualNetworkResourceId, '/')[4])
+  name: empty(virtualNetworkResourceId) ? 'dummyName' : last(split(virtualNetworkResourceId!, '/'))
+  scope: empty(virtualNetworkResourceId)
+    ? resourceGroup()
+    : resourceGroup(split(virtualNetworkResourceId!, '/')[2], split(virtualNetworkResourceId!, '/')[4])
 
   resource subnetPrivateLink 'subnets@2023-11-01' existing = if (!empty(advancedOptions) && !empty(advancedOptions.?virtualNetwork.?subnetNamePrivateLink)) {
-    name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? ''
+    name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'specifySubnetNamePrivateLink'
   }
 
   resource subnetDbwControlPlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameControlPlane)) {
-    name: advancedOptions.?databricks.?subnetNameControlPlane ?? ''
+    name: advancedOptions.?databricks.?subnetNameControlPlane ?? 'specifySubnetNameControlPlane'
   }
 
   resource subnetDbwComputePlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameComputePlane)) {
-    name: advancedOptions.?databricks.?subnetNameComputePlane ?? ''
+    name: advancedOptions.?databricks.?subnetNameComputePlane ?? 'specifySubnetNameComputePlane'
   }
 }
 
 resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!createNewLog) {
-  name: last(split(logAnalyticsWorkspaceResourceId, '/'))
-  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
+  name: empty(logAnalyticsWorkspaceResourceId) ? 'dummyName' : last(split(logAnalyticsWorkspaceResourceId!, '/'))
+  scope: empty(logAnalyticsWorkspaceResourceId)
+    ? resourceGroup()
+    : resourceGroup(split(logAnalyticsWorkspaceResourceId!, '/')[2], split(logAnalyticsWorkspaceResourceId!, '/')[4])
 }
 
 resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
-  name: last(split(keyVaultResourceId, '/'))
-  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
+  name: empty(keyVaultResourceId) ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
+  scope: empty(keyVaultResourceId)
+    ? resourceGroup()
+    : resourceGroup(split(keyVaultResourceId!, '/')[2], split(keyVaultResourceId!, '/')[4])
 }
 
 module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
