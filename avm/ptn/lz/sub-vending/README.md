@@ -168,7 +168,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignmentEnabled: true
     roleAssignments: [
       {
-        definition: '<definition>'
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
       }
@@ -250,7 +250,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "definition": "<definition>",
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>"
         }
@@ -341,7 +341,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignmentEnabled: true
     roleAssignments: [
       {
-        definition: '<definition>'
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
       }
@@ -415,7 +415,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "definition": "<definition>",
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>"
         }
