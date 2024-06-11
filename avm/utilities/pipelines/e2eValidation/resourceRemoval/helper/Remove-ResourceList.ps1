@@ -54,8 +54,15 @@ function Remove-ResourceListInner {
                     [array]$processedResources += $resource.resourceId
                     [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
                 } catch {
-                    Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
-                    [array]$resourcesToRetry += $resource
+                    if ($_.Exception.HttpStatus -notin @(404, 'NotFound')) {
+                        Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
+                        [array]$resourcesToRetry += $resource
+                    } else {
+                        # Skipping because parent missing. This 'exception handling' can be required in case the parent resource removal ran into an issue, but was completed regardless
+                        Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It or its parent cannot be found.' -f $resourceName, $resource.type) -Verbose
+                        [array]$processedResources += $resource.resourceId
+                        [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
+                    }
                 }
             }
 
