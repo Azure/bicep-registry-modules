@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "12766340891438905235"
+      "templateHash": "16197601961662294075"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -10641,42 +10641,12 @@
           "prepareEncryption": {
             "value": true
           },
-          "privateEndpoints": {
-            "value": [
-              {
-                "name": "[format('{0}-dbw-ui-pep', parameters('name'))]",
-                "location": "[parameters('location')]",
-                "service": "databricks_ui_api",
-                "subnetResourceId": "[createObject('virtualNetworkResourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, parameters('virtualNetworkResourceId')), 'privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], format('{0}/subnets/{1}', parameters('virtualNetworkResourceId'), if(empty(parameters('advancedOptions')), '', tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'))))).privateEndpointSubnetResourceId]",
-                "privateDnsZoneResourceIds": [
-                  "[reference('dnsZoneDbw').outputs.resourceId.value]"
-                ],
-                "tags": "[parameters('tags')]",
-                "enableTelemetry": "[parameters('enableTelemetry')]",
-                "lock": "[parameters('lock')]"
-              },
-              {
-                "name": "[format('{0}-dbw-auth-pep', parameters('name'))]",
-                "location": "[parameters('location')]",
-                "service": "browser_authentication",
-                "subnetResourceId": "[createObject('virtualNetworkResourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, parameters('virtualNetworkResourceId')), 'privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], format('{0}/subnets/{1}', parameters('virtualNetworkResourceId'), if(empty(parameters('advancedOptions')), '', tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'))))).privateEndpointSubnetResourceId]",
-                "privateDnsZoneResourceIds": [
-                  "[reference('dnsZoneDbw').outputs.resourceId.value]"
-                ],
-                "tags": "[parameters('tags')]",
-                "enableTelemetry": "[parameters('enableTelemetry')]",
-                "lock": "[parameters('lock')]"
-              }
-            ]
-          },
+          "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-dbw-ui-pep', parameters('name')), 'location', parameters('location'), 'service', 'databricks_ui_api', 'subnetResourceId', createObject('virtualNetworkResourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, parameters('virtualNetworkResourceId')), 'privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], format('{0}/subnets/{1}', parameters('virtualNetworkResourceId'), if(empty(parameters('advancedOptions')), '', tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'))))).privateEndpointSubnetResourceId, 'privateDnsZoneResourceIds', createArray(reference('dnsZoneDbw').outputs.resourceId.value), 'tags', parameters('tags'), 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')), createObject('name', format('{0}-dbw-auth-pep', parameters('name')), 'location', parameters('location'), 'service', 'browser_authentication', 'subnetResourceId', createObject('virtualNetworkResourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, parameters('virtualNetworkResourceId')), 'privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], format('{0}/subnets/{1}', parameters('virtualNetworkResourceId'), if(empty(parameters('advancedOptions')), '', tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'))))).privateEndpointSubnetResourceId, 'privateDnsZoneResourceIds', createArray(reference('dnsZoneDbw').outputs.resourceId.value), 'tags', parameters('tags'), 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "publicNetworkAccess": {
             "value": "Disabled"
           },
           "requiredNsgRules": {
             "value": "NoAzureDatabricksRules"
-          },
-          "roleAssignments": {
-            "value": []
           },
           "skuName": {
             "value": "premium"
