@@ -369,12 +369,13 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
         workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
       }
     ]
-    disablePublicIp: true // TODO ==================>
+    disablePublicIp: true // For now only private, in the future maybe we can add public + ACL
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
-    managedResourceGroupResourceId: null // TODO
-    prepareEncryption: true // TODO
+    managedResourceGroupResourceId: null // Maybe in the future we can support custom RG
+    prepareEncryption: true
+    // ========================================= TODO =========================================
     privateEndpoints: [
       {
         name: '${name}-dbw-ui-pep'
@@ -397,12 +398,11 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
         lock: lock
       }
     ] // TODO
-    //publicIpName: null // TODO
-    publicNetworkAccess: 'Disabled' // TODO
-    requiredNsgRules: 'NoAzureDatabricksRules' // TODO NoAzureDatabricksRules for full private, AllRules for public
+    publicNetworkAccess: 'Disabled' // Disabled to access workspace only via private link, in the future maybe we can add public + ACL
+    requiredNsgRules: 'NoAzureDatabricksRules' // NoAzureDatabricksRules for full private, AllRules for public
     roleAssignments: [] // TODO
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
-    storageAccountName: null // TODO add existing one (maybe with PEP)
+    storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
     tags: tags
   }
 }
