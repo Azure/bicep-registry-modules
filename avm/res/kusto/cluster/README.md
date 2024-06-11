@@ -141,7 +141,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     principalAssignments: [
       {
         principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
+        principalType: 'User'
         role: 'Reader'
       }
     ]
@@ -263,7 +263,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": [
         {
           "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
+          "principalType": "User",
           "role": "Reader"
         }
       ]

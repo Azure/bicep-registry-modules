@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
       principalAssignments: [
         {
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
+          principalType: 'User'
           role: 'Reader'
         }
       ]
