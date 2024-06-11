@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
             diagnosticSettings: []
             enableTelemetry: true
             firewallPolicyId: ''
-            location: 'westus'
+            location: resourceLocation
             lock: {}
             managementIPAddressObject: {}
             managementIPResourceID: ''
@@ -115,7 +115,7 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
-          location: 'westus'
+          location: resourceLocation
           lock: {
             kind: 'CanNotDelete'
             name: 'hub1Lock'

@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
             diagnosticSettings: []
             enableTelemetry: true
             firewallPolicyId: ''
-            location: 'westus'
+            location: resourceLocation
             lock: {}
             managementIPAddressObject: {}
             managementIPResourceID: ''
@@ -118,7 +118,7 @@ module testDeployment '../../../main.bicep' = [
           enablePeering: false
           enableTelemetry: true
           flowTimeoutInMinutes: 30
-          location: 'westus'
+          location: resourceLocation
           lock: {
             kind: 'CanNotDelete'
             name: 'hub1Lock'
@@ -175,7 +175,7 @@ module testDeployment '../../../main.bicep' = [
             diagnosticSettings: []
             enableTelemetry: true
             firewallPolicyId: ''
-            location: 'westus2'
+            location: resourceLocation
             lock: {}
             managementIPAddressObject: {}
             managementIPResourceID: ''
@@ -210,7 +210,7 @@ module testDeployment '../../../main.bicep' = [
           enablePeering: false
           enableTelemetry: false
           flowTimeoutInMinutes: 10
-          location: 'westus2'
+          location: resourceLocation
           lock: {
             kind: 'CanNotDelete'
             name: 'hub2Lock'

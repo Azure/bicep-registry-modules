@@ -188,20 +188,25 @@ module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.3.0' = [
   }
 ]
 
-@batchSize(1)
-resource hubAzureFirewallSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' existing = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
-    name: '${hub.key}/AzureFirewallSubnet'
-  }
-]
-@batchSize(1)
-module hubAzureFirewallSubnetAssociation 'modules/subnets.bicep' = [
+module hubAzureFirewallSubnet 'modules/getSubnet.bicep' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nafs'
     params: {
+      subnetName: 'AzureFirewallSubnet'
+      virtualNetworkName: hub.key
+    }
+    dependsOn: [hubVirtualNetwork]
+  }
+]
+
+@batchSize(1)
+module hubAzureFirewallSubnetAssociation 'modules/subnets.bicep' = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
+    name: '${uniqueString(deployment().name, location)}-${hub.key}-nafsa'
+    params: {
       name: 'AzureFirewallSubnet'
       virtualNetworkName: hub.key
-      addressPrefix: hubAzureFirewallSubnet[index].properties.addressPrefix
+      addressPrefix: hubAzureFirewallSubnet[index].outputs.addressPrefix
       routeTableResourceId: hubRouteTable[index].outputs.resourceId
     }
     dependsOn: [hubAzureFirewallSubnet, hubAzureFirewall, hubVirtualNetwork]

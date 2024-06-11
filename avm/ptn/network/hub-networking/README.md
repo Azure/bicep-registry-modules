@@ -105,7 +105,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           enableTelemetry: true
           firewallPolicyId: ''
           hubIpAddresses: {}
-          location: 'westus'
+          location: '<location>'
           lock: {}
           managementIPAddressObject: {}
           managementIPResourceID: ''
@@ -153,7 +153,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enablePeering: false
         enableTelemetry: true
         flowTimeoutInMinutes: 30
-        location: 'westus'
+        location: '<location>'
         lock: {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
@@ -209,7 +209,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           enableTelemetry: true
           firewallPolicyId: ''
           hubIpAddresses: {}
-          location: 'westus2'
+          location: '<location>'
           lock: {}
           managementIPAddressObject: {}
           managementIPResourceID: ''
@@ -245,7 +245,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enablePeering: false
         enableTelemetry: false
         flowTimeoutInMinutes: 10
-        location: 'westus2'
+        location: '<location>'
         lock: {
           kind: 'CanNotDelete'
           name: 'hub2Lock'
@@ -321,7 +321,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "enableTelemetry": true,
             "firewallPolicyId": "",
             "hubIpAddresses": {},
-            "location": "westus",
+            "location": "<location>",
             "lock": {},
             "managementIPAddressObject": {},
             "managementIPResourceID": "",
@@ -369,7 +369,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enablePeering": false,
           "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
-          "location": "westus",
+          "location": "<location>",
           "lock": {
             "kind": "CanNotDelete",
             "name": "hub1Lock"
@@ -425,7 +425,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "enableTelemetry": true,
             "firewallPolicyId": "",
             "hubIpAddresses": {},
-            "location": "westus2",
+            "location": "<location>",
             "lock": {},
             "managementIPAddressObject": {},
             "managementIPResourceID": "",
@@ -461,7 +461,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enablePeering": false,
           "enableTelemetry": false,
           "flowTimeoutInMinutes": 10,
-          "location": "westus2",
+          "location": "<location>",
           "lock": {
             "kind": "CanNotDelete",
             "name": "hub2Lock"
@@ -543,7 +543,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           enableTelemetry: true
           firewallPolicyId: ''
           hubIpAddresses: {}
-          location: 'westus'
+          location: '<location>'
           lock: {}
           managementIPAddressObject: {}
           managementIPResourceID: ''
@@ -591,7 +591,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enablePeering: false
         enableTelemetry: true
         flowTimeoutInMinutes: 30
-        location: 'westus'
+        location: '<location>'
         lock: {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
@@ -659,7 +659,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "enableTelemetry": true,
             "firewallPolicyId": "",
             "hubIpAddresses": {},
-            "location": "westus",
+            "location": "<location>",
             "lock": {},
             "managementIPAddressObject": {},
             "managementIPResourceID": "",
@@ -707,7 +707,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enablePeering": false,
           "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
-          "location": "westus",
+          "location": "<location>",
           "lock": {
             "kind": "CanNotDelete",
             "name": "hub1Lock"
