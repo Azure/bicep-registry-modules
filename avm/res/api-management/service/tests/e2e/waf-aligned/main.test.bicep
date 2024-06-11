@@ -71,6 +71,16 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      additionalLocations: [
+        {
+          location: 'westus'
+          sku: {
+            name: 'Premium'
+            capacity: 1
+          }
+          disableGateway: false
+        }
+      ]
       customProperties: {
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
@@ -88,7 +98,7 @@ module testDeployment '../../../main.bicep' = [
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
       }
-      minApiVersion: '2021-08-01'
+      minApiVersion: '2022-08-01'
       apis: [
         {
           apiVersionSet: {

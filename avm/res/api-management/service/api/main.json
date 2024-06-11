@@ -7,6 +7,8 @@
       "name": "bicep",
       "version": "0.27.1.19265",
       "templateHash": "1718068720166471847"
+      "version": "0.27.1.19265",
+      "templateHash": "10455797347171817275"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -217,13 +219,15 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "api": {
       "type": "Microsoft.ApiManagement/service/apis",
       "apiVersion": "2021-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiName'))]",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "apiRevision": "[parameters('apiRevision')]",
         "apiRevisionDescription": "[parameters('apiRevisionDescription')]",
@@ -283,6 +287,8 @@
               "name": "bicep",
               "version": "0.27.1.19265",
               "templateHash": "11047529479323733917"
+              "version": "0.27.1.19265",
+              "templateHash": "15396431397976108905"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy.",
@@ -331,7 +337,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/apis/policies",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
               "properties": {
                 "format": "[parameters('format')]",

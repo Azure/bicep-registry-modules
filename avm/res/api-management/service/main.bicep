@@ -2,7 +2,7 @@ metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Additional datacenter locations of the API Management service.')
+@description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
 
 @description('Required. The name of the API Management service.')
@@ -64,15 +64,16 @@ param roleAssignments roleAssignmentType
   'StandardV2'
   'BasicV2'
 ])
-param sku string = 'Developer'
+param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service.')
+@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs.')
 @allowed([
   0
   1
   2
+  3
 ])
-param skuCount int = 1
+param skuCount int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string = ''
@@ -91,8 +92,8 @@ param virtualNetworkType string = 'None'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+@description('Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.')
+param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
 param newGuidValue string = newGuid()
@@ -202,22 +203,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: sku
-    capacity: skuCount
+    capacity: contains(sku, 'V2') ? 1 : skuCount
   }
-  zones: zones
+  zones: contains(sku, 'V2') ? null : zones
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: additionalLocations
+    additionalLocations: contains(sku, 'V2') ? null : additionalLocations
     customProperties: customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
