@@ -15,6 +15,7 @@
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/alerts-management/action-rule/ @Azure/avm-res-alertsmanagement-actionrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/api-management/service/ @Azure/avm-res-apimanagement-service-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app/container-app/ @Azure/avm-res-app-containerapp-module-owners-bicep @Azure/avm-core-team-technical-bicep
