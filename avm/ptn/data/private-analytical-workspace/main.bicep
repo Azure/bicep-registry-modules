@@ -21,13 +21,13 @@ param enableTelemetry bool = true
 param enableDatabricks bool = false
 
 @description('Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can specify it here. If you do not use this option, this module will make a new VNET for you.')
-param virtualNetworkResourceId string = ''
+param virtualNetworkResourceId string?
 
 @description('Optional. If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you.')
-param logAnalyticsWorkspaceResourceId string = ''
+param logAnalyticsWorkspaceResourceId string?
 
 @description('Optional. If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you.')
-param keyVaultResourceId string = ''
+param keyVaultResourceId string?
 
 @description('Optional. Additional options that can affect some parts of the solution and how they are configured.')
 param advancedOptions advancedOptionsType?
