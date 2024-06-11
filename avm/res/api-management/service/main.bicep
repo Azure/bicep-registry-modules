@@ -2,7 +2,7 @@ metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Additional datacenter locations of the API Management service.')
+@description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
 
 @description('Required. The name of the API Management service.')
@@ -66,7 +66,7 @@ param roleAssignments roleAssignmentType
 ])
 param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service.')
+@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs.')
 @allowed([
   0
   1
@@ -92,7 +92,7 @@ param virtualNetworkType string = 'None'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from.')
+@description('Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.')
 param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
@@ -203,16 +203,16 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: skuCount
+    capacity: contains(sku, 'v2') ? 1 : skuCount
   }
-  zones: zones
+  zones: contains(sku, 'v2') ? null : zones
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: additionalLocations
+    additionalLocations: contains(sku, 'v2') ? null : additionalLocations
     customProperties: customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
