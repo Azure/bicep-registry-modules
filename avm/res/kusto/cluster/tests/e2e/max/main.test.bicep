@@ -63,9 +63,9 @@ module testDeployment '../../../main.bicep' = [
       enableAutoScale: true
       principalAssignments: [
         {
-          roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+          role: 'Reader'
         }
       ]
       allowedFqdnList: [
