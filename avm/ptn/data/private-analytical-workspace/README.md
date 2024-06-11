@@ -59,7 +59,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/data/private-analytical-workspace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using defaults with provided existing Azure Log Analytics Workspace](#example-2-using-defaults-with-provided-existing-azure-log-analytics-workspace)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -101,7 +102,55 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using defaults with provided existing Azure Log Analytics Workspace_
+
+This instance deploys the module with the minimum set of required parameters and with provided existing Azure Log Analytics Workspace.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawminlog001'
+    // Non-required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawminlog001"
+    },
+    // Non-required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
