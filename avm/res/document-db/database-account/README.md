@@ -49,7 +49,7 @@ The following section provides usage examples for the module, which were used to
 - [Deploying multiple regions](#example-8-deploying-multiple-regions)
 - [Plain](#example-9-plain)
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
-- [Deploying with a key vault reference to save secrets](#example-11-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
 - [SQL Database](#example-12-sql-database)
 - [WAF-aligned](#example-13-waf-aligned)
 
@@ -1489,9 +1489,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 11: _Deploying with a key vault reference to save secrets_
+### Example 11: _Deploying with a sql role definision and assignment_
 
-This instance deploys the module saving all its secrets in a key vault.
+This instance deploys the module with sql role definision and assignment
 
 
 <details>

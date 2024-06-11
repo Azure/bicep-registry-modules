@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "15259114374101661753"
+      "version": "0.28.1.47646",
+      "templateHash": "4087763028359449995"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1313,8 +1313,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "8319829662998768775"
+              "version": "0.28.1.47646",
+              "templateHash": "5335306568168720143"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1446,8 +1446,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "3824205620211058652"
+                      "version": "0.28.1.47646",
+                      "templateHash": "18224989843504865412"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1703,8 +1703,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "3253497245872237132"
+              "version": "0.28.1.47646",
+              "templateHash": "4952845565421031590"
             },
             "name": "DocumentDB Database Account SQL Role.",
             "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -1725,11 +1725,7 @@
             },
             "dataActions": {
               "type": "array",
-              "defaultValue": [
-                "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
-                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
-              ],
+              "defaultValue": [],
               "metadata": {
                 "description": "Optional. An array of data actions that are allowed."
               }
@@ -1790,8 +1786,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "5653485584159511775"
+                      "version": "0.28.1.47646",
+                      "templateHash": "2467251929819586670"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
                     "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -1915,8 +1911,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "12924779272926798782"
+                      "version": "0.28.1.47646",
+                      "templateHash": "4968352550056104037"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
@@ -2027,8 +2023,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "1527748615955553712"
+              "version": "0.28.1.47646",
+              "templateHash": "10789567092566068185"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -2130,8 +2126,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "6235322895830297683"
+                      "version": "0.28.1.47646",
+                      "templateHash": "15131365585122011750"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -2286,8 +2282,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "6889435067791947905"
+              "version": "0.28.1.47646",
+              "templateHash": "6730968766448186151"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -2390,8 +2386,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "3987394297554402770"
+                      "version": "0.28.1.47646",
+                      "templateHash": "16910156821054362754"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
@@ -3253,8 +3249,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17423703517558214368"
+              "version": "0.28.1.47646",
+              "templateHash": "13154453205210713878"
             }
           },
           "definitions": {

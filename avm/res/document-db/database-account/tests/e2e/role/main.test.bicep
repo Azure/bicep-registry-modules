@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying with a key vault reference to save secrets'
+metadata name = 'Deploying with a sql role definision and assignment'
 metadata description = 'This instance deploys the module with sql role definision and assignment'
 
 // ========== //
