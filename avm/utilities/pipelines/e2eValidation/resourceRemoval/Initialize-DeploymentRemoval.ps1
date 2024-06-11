@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Remove deployed resources based on their deploymentName(s)
 
