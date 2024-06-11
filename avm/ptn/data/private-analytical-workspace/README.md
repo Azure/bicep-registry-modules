@@ -170,7 +170,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 | [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you. |
 | [`tags`](#parameter-tags) | object | Tags for all Resources in the solution. |
-| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can choose to give it here. If you do not use this option, this module will make a new VNET for you. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can specify it here. If you do not use this option, this module will make a new VNET for you. |
 
 ### Parameter: `name`
 
@@ -193,7 +193,6 @@ Additional options that can affect some parts of the solution and how they are c
 | [`databricks`](#parameter-advancedoptionsdatabricks) | object | This parameter allows you to specify additional settings for Azure Databricks if you set the 'enableDatabricks' parameter to 'true'. |
 | [`keyVault`](#parameter-advancedoptionskeyvault) | object | This parameter allows you to specify additional settings for Azure Key Vault if the 'keyVaultResourceId' parameter is empty. |
 | [`logAnalyticsWorkspace`](#parameter-advancedoptionsloganalyticsworkspace) | object | This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the 'logAnalyticsWorkspaceResourceId' parameter is empty. |
-| [`networkAcls`](#parameter-advancedoptionsnetworkacls) | object | Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction 'Deny'. |
 | [`virtualNetwork`](#parameter-advancedoptionsvirtualnetwork) | object | You can use this parameter to integrate the solution with an existing Azure Virtual Network if the 'virtualNetworkResourceId' parameter is not empty. |
 
 ### Parameter: `advancedOptions.databricks`
@@ -304,34 +303,6 @@ Number of days data will be retained for. The dafult value is: '365'.
 - Required: No
 - Type: int
 
-### Parameter: `advancedOptions.networkAcls`
-
-Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction 'Deny'.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipRules`](#parameter-advancedoptionsnetworkaclsiprules) | array | Sets the IP ACL rules. |
-| [`virtualNetworkRules`](#parameter-advancedoptionsnetworkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
-
-### Parameter: `advancedOptions.networkAcls.ipRules`
-
-Sets the IP ACL rules.
-
-- Required: No
-- Type: array
-
-### Parameter: `advancedOptions.networkAcls.virtualNetworkRules`
-
-Sets the virtual network rules.
-
-- Required: No
-- Type: array
-
 ### Parameter: `advancedOptions.virtualNetwork`
 
 You can use this parameter to integrate the solution with an existing Azure Virtual Network if the 'virtualNetworkResourceId' parameter is not empty.
@@ -437,7 +408,7 @@ Tags for all Resources in the solution.
 
 ### Parameter: `virtualNetworkResourceId`
 
-This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can choose to give it here. If you do not use this option, this module will make a new VNET for you.
+This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can specify it here. If you do not use this option, this module will make a new VNET for you.
 
 - Required: No
 - Type: string
@@ -448,10 +419,14 @@ This option allows the solution to be connected to a VNET that the customer prov
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the resource. |
-| `resourceGroupName` | string | The name of the managed resource group. |
-| `resourceId` | string | The resource ID of the resource. |
+| `keyVaultLocation` | string | The location of the Azure Key Vault. |
+| `keyVaultName` | string | The name of the Azure Key Vault. |
+| `keyVaultResourceGroupName` | string | The name of the Azure Key Vault resource group. |
+| `keyVaultResourceId` | string | The resource ID of the Azure Key Vault. |
+| `logAnalyticsWorkspaceLocation` | string | The location of the Azure Log Analytics Workspace. |
+| `logAnalyticsWorkspaceName` | string | The name of the Azure Log Analytics Workspace. |
+| `logAnalyticsWorkspaceResourceGroupName` | string | The name of the Azure Log Analytics Workspace resource group. |
+| `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Azure Log Analytics Workspace. |
 
 ## Cross-referenced modules
 

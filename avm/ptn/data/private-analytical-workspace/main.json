@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16197601961662294075"
+      "templateHash": "14231232207972896195"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -112,25 +112,6 @@
         }
       }
     },
-    "networkAclsType": {
-      "type": "object",
-      "properties": {
-        "virtualNetworkRules": {
-          "type": "array",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Sets the virtual network rules."
-          }
-        },
-        "ipRules": {
-          "type": "array",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Sets the IP ACL rules."
-          }
-        }
-      }
-    },
     "databricksType": {
       "type": "object",
       "properties": {
@@ -172,13 +153,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. This parameter allows you to specify additional settings for Azure Key Vault if the 'keyVaultResourceId' parameter is empty."
-          }
-        },
-        "networkAcls": {
-          "$ref": "#/definitions/networkAclsType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction 'Deny'."
           }
         },
         "databricks": {
@@ -236,7 +210,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can choose to give it here. If you do not use this option, this module will make a new VNET for you."
+        "description": "Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can specify it here. If you do not use this option, this module will make a new VNET for you."
       }
     },
     "logAnalyticsWorkspaceResourceId": {
@@ -308,6 +282,24 @@
         }
       }
     },
+    "logAnalyticsWorkspaceExisting": {
+      "condition": "[not(variables('createNewLog'))]",
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "subscriptionId": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))]"
+    },
+    "kvExisting": {
+      "condition": "[not(variables('createNewKV'))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+    },
     "vnet": {
       "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
@@ -341,7 +333,7 @@
                     "category": "AllMetrics"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).resourceId]"
               }
             ]
           },
@@ -1498,6 +1490,7 @@
       },
       "dependsOn": [
         "log",
+        "logAnalyticsWorkspaceExisting",
         "nsgDbwComputePlane",
         "nsgDbwControlPlane"
       ]
@@ -1525,7 +1518,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).resourceId]"
               }
             ]
           },
@@ -2220,7 +2213,8 @@
         }
       },
       "dependsOn": [
-        "log"
+        "log",
+        "logAnalyticsWorkspaceExisting"
       ]
     },
     "nsgDbwComputePlane": {
@@ -2246,7 +2240,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).resourceId]"
               }
             ]
           },
@@ -2941,7 +2935,8 @@
         }
       },
       "dependsOn": [
-        "log"
+        "log",
+        "logAnalyticsWorkspaceExisting"
       ]
     },
     "log": {
@@ -4925,7 +4920,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).resourceId]"
               }
             ]
           },
@@ -4952,7 +4947,7 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
-          "networkAcls": "[if(empty(parameters('advancedOptions')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny', 'virtualNetworkRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules'), createArray()))))]",
+          "networkAcls": "[if(empty(parameters('advancedOptions')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')), createObject('value', createObject('bypass', 'None', 'defaultAction', 'Deny')))]",
           "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('virtualNetworkResourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, parameters('virtualNetworkResourceId')), 'privateEndpointSubnetResourceId', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], format('{0}/subnets/{1}', parameters('virtualNetworkResourceId'), if(empty(parameters('advancedOptions')), '', tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'))))).privateEndpointSubnetResourceId, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "sku": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultSku')), if(equals(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'sku'), 'standard'), createObject('value', 'standard'), createObject('value', variables('kvDefaultSku'))))]",
           "softDeleteRetentionInDays": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultSoftDeleteRetentionInDays')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'softDeleteRetentionInDays'), variables('kvDefaultSoftDeleteRetentionInDays'))))]",
@@ -7697,6 +7692,7 @@
       "dependsOn": [
         "dnsZoneKv",
         "log",
+        "logAnalyticsWorkspaceExisting",
         "vnet"
       ]
     },
@@ -10619,7 +10615,7 @@
                     "categoryGroup": "allLogs"
                   }
                 ],
-                "workspaceResourceId": "[createObject('logAnalyticsWorkspaceResourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))).logAnalyticsWorkspaceResourceId]"
+                "workspaceResourceId": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).resourceId]"
               }
             ]
           },
@@ -12232,6 +12228,7 @@
       "dependsOn": [
         "dnsZoneDbw",
         "log",
+        "logAnalyticsWorkspaceExisting",
         "nsgDbwComputePlane",
         "nsgDbwControlPlane",
         "vnet"
@@ -15130,33 +15127,61 @@
     }
   },
   "outputs": {
-    "resourceId": {
+    "logAnalyticsWorkspaceResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the resource."
+        "description": "The resource ID of the Azure Log Analytics Workspace."
       },
-      "value": "[reference('log').outputs.resourceId.value]"
+      "value": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).resourceId]"
     },
-    "name": {
+    "logAnalyticsWorkspaceName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource."
+        "description": "The name of the Azure Log Analytics Workspace."
       },
-      "value": "[reference('log').outputs.name.value]"
+      "value": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).name]"
     },
-    "location": {
+    "logAnalyticsWorkspaceLocation": {
       "type": "string",
       "metadata": {
-        "description": "The location the resource was deployed into."
+        "description": "The location of the Azure Log Analytics Workspace."
       },
-      "value": "[reference('log').outputs.location.value]"
+      "value": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).location]"
     },
-    "resourceGroupName": {
+    "logAnalyticsWorkspaceResourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the managed resource group."
+        "description": "The name of the Azure Log Analytics Workspace resource group."
       },
-      "value": "[reference('log').outputs.resourceGroupName.value]"
+      "value": "[createObject('resourceId', if(variables('createNewLog'), reference('log').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/')))), 'name', if(variables('createNewLog'), reference('log').outputs.name.value, last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), 'location', if(variables('createNewLog'), reference('log').outputs.location.value, reference('logAnalyticsWorkspaceExisting', '2022-10-01', 'full').location), 'resourceGroupName', if(variables('createNewLog'), reference('log').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '/')[4])).resourceGroupName]"
+    },
+    "keyVaultResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure Key Vault."
+      },
+      "value": "[createObject('resourceId', if(variables('createNewKV'), reference('kv').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))), 'name', if(variables('createNewKV'), reference('kv').outputs.name.value, last(split(parameters('keyVaultResourceId'), '/'))), 'location', if(variables('createNewKV'), reference('kv').outputs.location.value, reference('kvExisting', '2023-07-01', 'full').location), 'resourceGroupName', if(variables('createNewKV'), reference('kv').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '/')[4])).resourceId]"
+    },
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Key Vault."
+      },
+      "value": "[createObject('resourceId', if(variables('createNewKV'), reference('kv').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))), 'name', if(variables('createNewKV'), reference('kv').outputs.name.value, last(split(parameters('keyVaultResourceId'), '/'))), 'location', if(variables('createNewKV'), reference('kv').outputs.location.value, reference('kvExisting', '2023-07-01', 'full').location), 'resourceGroupName', if(variables('createNewKV'), reference('kv').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '/')[4])).name]"
+    },
+    "keyVaultLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the Azure Key Vault."
+      },
+      "value": "[createObject('resourceId', if(variables('createNewKV'), reference('kv').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))), 'name', if(variables('createNewKV'), reference('kv').outputs.name.value, last(split(parameters('keyVaultResourceId'), '/'))), 'location', if(variables('createNewKV'), reference('kv').outputs.location.value, reference('kvExisting', '2023-07-01', 'full').location), 'resourceGroupName', if(variables('createNewKV'), reference('kv').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '/')[4])).location]"
+    },
+    "keyVaultResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Key Vault resource group."
+      },
+      "value": "[createObject('resourceId', if(variables('createNewKV'), reference('kv').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))), 'name', if(variables('createNewKV'), reference('kv').outputs.name.value, last(split(parameters('keyVaultResourceId'), '/'))), 'location', if(variables('createNewKV'), reference('kv').outputs.location.value, reference('kvExisting', '2023-07-01', 'full').location), 'resourceGroupName', if(variables('createNewKV'), reference('kv').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '/')[4])).resourceGroupName]"
     }
   }
 }

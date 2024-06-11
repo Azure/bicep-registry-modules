@@ -20,7 +20,7 @@ param enableTelemetry bool = true
 @description('Optional. Enable/Disable Azure Databricks service in the solution.')
 param enableDatabricks bool = false
 
-@description('Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can choose to give it here. If you do not use this option, this module will make a new VNET for you.')
+@description('Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can specify it here. If you do not use this option, this module will make a new VNET for you.')
 param virtualNetworkResourceId string = ''
 
 @description('Optional. If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you.')
@@ -63,7 +63,17 @@ var cfg = ({
 })
 
 var logCfg = ({
-  logAnalyticsWorkspaceResourceId: createNewLog ? log.outputs.resourceId : logAnalyticsWorkspaceResourceId
+  resourceId: createNewLog ? log.outputs.resourceId : logAnalyticsWorkspaceExisting.id
+  name: createNewLog ? log.outputs.name : logAnalyticsWorkspaceExisting.name
+  location: createNewLog ? log.outputs.location : logAnalyticsWorkspaceExisting.location
+  resourceGroupName: createNewLog ? log.outputs.resourceGroupName : split(logAnalyticsWorkspaceExisting.id, '/')[4]
+})
+
+var kvCfg = ({
+  resourceId: createNewKV ? kv.outputs.resourceId : kvExisting.id
+  name: createNewKV ? kv.outputs.name : kvExisting.name
+  location: createNewKV ? kv.outputs.location : kvExisting.location
+  resourceGroupName: createNewKV ? kv.outputs.resourceGroupName : split(kvExisting.id, '/')[4]
 })
 
 var privateLinkSubnet = [
@@ -142,6 +152,16 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
+resource logAnalyticsWorkspaceExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!createNewLog) {
+  name: last(split(logAnalyticsWorkspaceResourceId, '/'))
+  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
+}
+
+resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
+  name: last(split(keyVaultResourceId, '/'))
+  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
+}
+
 module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
   name: '${name}-vnet'
   params: {
@@ -164,7 +184,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNE
             category: 'AllMetrics'
           }
         ]
-        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+        workspaceResourceId: logCfg.resourceId
       }
     ]
     dnsServers: []
@@ -190,7 +210,7 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.
             categoryGroup: 'allLogs'
           }
         ]
-        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+        workspaceResourceId: logCfg.resourceId
       }
     ]
     enableTelemetry: enableTelemetry
@@ -215,7 +235,7 @@ module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.2.
             categoryGroup: 'allLogs'
           }
         ]
-        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+        workspaceResourceId: logCfg.resourceId
       }
     ]
     enableTelemetry: enableTelemetry
@@ -272,7 +292,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
             categoryGroup: 'allLogs'
           }
         ]
-        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+        workspaceResourceId: logCfg.resourceId
       }
     ]
     enablePurgeProtection: empty(advancedOptions)
@@ -297,10 +317,9 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
       : {
           bypass: 'None'
           defaultAction: 'Deny'
-          virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
-          ipRules: advancedOptions.?networkAcls.?ipRules ?? []
+          // TODO virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
+          // TODO ipRules: advancedOptions.?networkAcls.?ipRules ?? []
         }
-
     privateEndpoints: createNewVNET
       ? [
           // Private endpoint for Key Vault only for new VNET
@@ -316,6 +335,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
         ]
       : []
     //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
+    publicNetworkAccess: 'Disabled'
     sku: empty(advancedOptions)
       ? kvDefaultSku
       : (advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku)
@@ -366,7 +386,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
             categoryGroup: 'allLogs'
           }
         ]
-        workspaceResourceId: logCfg.logAnalyticsWorkspaceResourceId
+        workspaceResourceId: logCfg.resourceId
       }
     ]
     disablePublicIp: true // For now only private, in the future maybe we can add public + ACL
@@ -431,26 +451,33 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (creat
 // Outputs      //
 // ============ //
 
-// Add your outputs here
+@description('The resource ID of the Azure Log Analytics Workspace.')
+output logAnalyticsWorkspaceResourceId string = logCfg.resourceId
 
-@description('The resource ID of the resource.')
-output resourceId string = log.outputs.resourceId // TODO
+@description('The name of the Azure Log Analytics Workspace.')
+output logAnalyticsWorkspaceName string = logCfg.name
 
-@description('The name of the resource.')
-output name string = log.outputs.name // TODO
+@description('The location of the Azure Log Analytics Workspace.')
+output logAnalyticsWorkspaceLocation string = logCfg.location
 
-@description('The location the resource was deployed into.')
-output location string = log.outputs.location // TODO
+@description('The name of the Azure Log Analytics Workspace resource group.')
+output logAnalyticsWorkspaceResourceGroupName string = logCfg.resourceGroupName
 
-@description('The name of the managed resource group.')
-output resourceGroupName string = log.outputs.resourceGroupName // TODO
+@description('The resource ID of the Azure Key Vault.')
+output keyVaultResourceId string = kvCfg.resourceId
+
+@description('The name of the Azure Key Vault.')
+output keyVaultName string = kvCfg.name
+
+@description('The location of the Azure Key Vault.')
+output keyVaultLocation string = kvCfg.location
+
+@description('The name of the Azure Key Vault resource group.')
+output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
 // ================ //
 // Definitions      //
 // ================ //
-//
-// Add your User-defined-types here, if any
-//
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
@@ -493,14 +520,6 @@ type keyVaultType = {
   enablePurgeProtection: bool?
 }
 
-type networkAclsType = {
-  @description('Optional. Sets the virtual network rules.')
-  virtualNetworkRules: array?
-
-  @description('Optional. Sets the IP ACL rules.')
-  ipRules: array?
-}
-
 type databricksType = {
   // must be providied when DBW is going to be enabled and VNET is provided
   @description('Optional. The name of the existing Control Plane Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
@@ -518,9 +537,6 @@ type advancedOptionsType = {
 
   @description('Optional. This parameter allows you to specify additional settings for Azure Key Vault if the \'keyVaultResourceId\' parameter is empty.')
   keyVault: keyVaultType?
-
-  @description('Optional. Rules governing the accessibility of the solution and its components from specific network locations. Contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction \'Deny\'.')
-  networkAcls: networkAclsType?
 
   @description('Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the \'enableDatabricks\' parameter to \'true\'.')
   databricks: databricksType?
