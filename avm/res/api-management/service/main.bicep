@@ -203,16 +203,16 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: contains(sku, 'v2') ? 1 : skuCount
+    capacity: contains(sku, 'V2') ? 1 : skuCount
   }
-  zones: contains(sku, 'v2') ? null : zones
+  zones: contains(sku, 'V2') ? null : zones
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: contains(sku, 'v2') ? null : additionalLocations
+    additionalLocations: contains(sku, 'V2') ? null : additionalLocations
     customProperties: customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
