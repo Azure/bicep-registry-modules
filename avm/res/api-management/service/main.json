@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "362198223642393953"
+      "templateHash": "13769078050874958863"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -253,7 +253,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Additional datacenter locations of the API Management service."
+        "description": "Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs."
       }
     },
     "name": {
@@ -389,7 +389,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. The instance size of this API Management service."
+        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs."
       }
     },
     "subnetResourceId": {
@@ -431,7 +431,7 @@
         2
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the resource needs to come from."
+        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs."
       }
     },
     "newGuidValue": {
@@ -564,16 +564,16 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[parameters('skuCount')]"
+        "capacity": "[if(contains(parameters('sku'), 'v2'), 1, parameters('skuCount'))]"
       },
-      "zones": "[parameters('zones')]",
+      "zones": "[if(contains(parameters('sku'), 'v2'), null(), parameters('zones'))]",
       "identity": "[variables('identity')]",
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[parameters('additionalLocations')]",
+        "additionalLocations": "[if(contains(parameters('sku'), 'v2'), null(), parameters('additionalLocations'))]",
         "customProperties": "[parameters('customProperties')]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",

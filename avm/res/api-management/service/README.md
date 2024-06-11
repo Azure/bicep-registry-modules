@@ -1011,7 +1011,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`additionalLocations`](#parameter-additionallocations) | array | Additional datacenter locations of the API Management service. |
+| [`additionalLocations`](#parameter-additionallocations) | array | Additional datacenter locations of the API Management service. Not supported with V2 SKUs. |
 | [`apis`](#parameter-apis) | array | APIs. |
 | [`apiVersionSets`](#parameter-apiversionsets) | array | API Version Sets. |
 | [`authorizationServers`](#parameter-authorizationservers) | secureObject | Authorization servers. |
@@ -1038,12 +1038,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. |
+| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Not supported with V2 SKUs. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs. |
 
 ### Parameter: `name`
 
@@ -1068,7 +1068,7 @@ The name of the owner of the service.
 
 ### Parameter: `additionalLocations`
 
-Additional datacenter locations of the API Management service.
+Additional datacenter locations of the API Management service. Not supported with V2 SKUs.
 
 - Required: No
 - Type: array
@@ -1563,7 +1563,7 @@ The pricing tier of this API Management service.
 
 ### Parameter: `skuCount`
 
-The instance size of this API Management service.
+The instance size of this API Management service. Not supported with V2 SKUs.
 
 - Required: No
 - Type: int
@@ -1619,7 +1619,7 @@ The type of VPN in which API Management service needs to be configured in. None 
 
 ### Parameter: `zones`
 
-A list of availability zones denoting where the resource needs to come from.
+A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.
 
 - Required: No
 - Type: array
