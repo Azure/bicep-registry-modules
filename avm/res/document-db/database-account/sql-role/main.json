@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "3253497245872237132"
+      "version": "0.28.1.47646",
+      "templateHash": "4952845565421031590"
     },
     "name": "DocumentDB Database Account SQL Role.",
     "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -26,11 +26,7 @@
     },
     "dataActions": {
       "type": "array",
-      "defaultValue": [
-        "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
-        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
-      ],
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. An array of data actions that are allowed."
       }
@@ -91,8 +87,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "5653485584159511775"
+              "version": "0.28.1.47646",
+              "templateHash": "2467251929819586670"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -216,8 +212,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "12924779272926798782"
+              "version": "0.28.1.47646",
+              "templateHash": "4968352550056104037"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
