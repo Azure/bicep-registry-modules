@@ -329,7 +329,13 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      userAssignedResourceIds: []
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
     }
     tier: 'Standard'
   }
@@ -394,7 +400,15 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourceIds": []
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "tags": {
+      "value": {
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
       }
     },
     "tier": {

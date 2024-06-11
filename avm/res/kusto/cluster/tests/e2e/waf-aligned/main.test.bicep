@@ -64,12 +64,18 @@ module testDeployment '../../../main.bicep' = [
       autoScaleMax: 10
       enableZoneRedundant: true
       managedIdentities: {
-        userAssignedResourceIds: []
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
       }
       enableDiskEncryption: true
       enableDoubleEncryption: true
       enablePublicNetworkAccess: false
       enableAutoStop: true
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Env: 'test'
+      }
     }
   }
 ]
