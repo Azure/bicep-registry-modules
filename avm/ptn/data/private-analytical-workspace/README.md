@@ -472,10 +472,14 @@ This option allows the solution to be connected to a VNET that the customer prov
 | `keyVaultName` | string | The name of the Azure Key Vault. |
 | `keyVaultResourceGroupName` | string | The name of the Azure Key Vault resource group. |
 | `keyVaultResourceId` | string | The resource ID of the Azure Key Vault. |
+| `location` | string | The location the resource was deployed into. |
 | `logAnalyticsWorkspaceLocation` | string | The location of the Azure Log Analytics Workspace. |
 | `logAnalyticsWorkspaceName` | string | The name of the Azure Log Analytics Workspace. |
 | `logAnalyticsWorkspaceResourceGroupName` | string | The name of the Azure Log Analytics Workspace resource group. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Azure Log Analytics Workspace. |
+| `name` | string | The name of the resource. |
+| `resourceGroupName` | string | The name of the managed resource group. |
+| `resourceId` | string | The resource ID of the resource. |
 | `virtualNetworkLocation` | string | The location of the Azure Virtual Network. |
 | `virtualNetworkName` | string | The name of the Azure Virtual Network. |
 | `virtualNetworkResourceGroupName` | string | The name of the Azure Virtual Network resource group. |

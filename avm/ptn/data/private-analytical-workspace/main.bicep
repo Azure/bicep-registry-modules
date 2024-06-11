@@ -478,6 +478,18 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (creat
 // Outputs      //
 // ============ //
 
+@description('The resource ID of the resource.')
+output resourceId string = vnetCfg.resourceId
+
+@description('The name of the resource.')
+output name string = vnetCfg.name
+
+@description('The location the resource was deployed into.')
+output location string = vnetCfg.location
+
+@description('The name of the managed resource group.')
+output resourceGroupName string = vnetCfg.resourceGroupName
+
 @description('The resource ID of the Azure Virtual Network.')
 output virtualNetworkResourceId string = vnetCfg.resourceId
 
