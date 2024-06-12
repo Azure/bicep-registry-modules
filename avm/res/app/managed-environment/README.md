@@ -791,6 +791,7 @@ Whether or not this Managed Environment is zone-redundant.
 | `name` | string | The name of the Managed Environment. |
 | `resourceGroupName` | string | The name of the resource group the Managed Environment was deployed into. |
 | `resourceId` | string | The resource ID of the Managed Environment. |
+| `staticIp` | string | The IP address of the Managed Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
