@@ -18,8 +18,8 @@ param lock lockType?
 @metadata({
   example: '''
   {
-      "key1": "value1",
-      "key2": "value2"
+      key1: 'value1'
+      key2: 'value2'
   }
   '''
 })
@@ -27,52 +27,52 @@ param tags object?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 @metadata({
-  example: '''[
-  {
-    "server": "myregistry.azurecr.io",
-    "identity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity"
-  },
-  {
-    "server": "myregistry2.azurecr.io",
-    "identity": "system"
-  }
-  ,
-  {
-    "server": "myregistry3.azurecr.io",
-    "username": "myusername",
-    "passwordSecretRef": "secret-name"
-  }
-]'''
+  example: '''
+  [
+    {
+      server: 'myregistry.azurecr.io'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+    }
+    {
+      server: 'myregistry2.azurecr.io'
+      identity: 'system'
+    }
+    {
+      server: 'myregistry3.azurecr.io'
+      username: 'myusername'
+      passwordSecretRef: 'secret-name'
+    }
+  ]'''
 })
-param registries registryType?
+param registries registryType[]?
 
 @description('Optional. The managed identity definition for this resource.')
 @metadata({
   example: '''
   {
-    "systemAssigned": true,
-    "userAssignedResourceIds": [
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity"
+    systemAssigned: true,
+    userAssignedResourceIds: [
+      '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
     ]
-  },
+  }
   {
-    "systemAssigned": true
+    systemAssigned: true
   }
   '''
 })
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentitiesType?
 
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Required. List of container definitions for the Container App.')
-param containers containerType
+param containers containerType[]
 
 @description('Optional. List of specialized containers that run before app containers.')
-param initContainers initContainerType?
+param initContainers initContainerType[]?
 
 @description('Conditional. Configuration of an event driven job. Required if `TriggerType` is `Event`.')
 param eventTriggerConfig eventTriggerConfigType?
@@ -92,30 +92,32 @@ param workloadProfileName string = 'Consumption'
 @description('Optional. The secrets of the Container App.')
 @metadata({
   example: '''
-{
-  "name": "mysecret"
-  "identity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity",
-  "keyVaultUrl": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
-},
-{
-  "name": "mysecret"
-  "identity": "system",
-  "keyVaultUrl": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
-},
-{
-  "name": "mysecret",
-  "value": "mysecretvalue"
-}
-{
-  name: 'connection-string'
-  value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value
-}
-'''
+  [
+    {
+      name: 'mysecret'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      name: 'mysecret'
+      identity: 'system'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      name: 'mysecret'
+      value: 'mysecretvalue'
+    }
+    {
+      name: 'connection-string'
+      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value
+    }
+  ]
+  '''
 })
-param secrets secretType?
+param secrets secretType[]?
 
 @description('Optional. List of volume definitions for the Container App.')
-param volumes volumeType?
+param volumes volumeType[]?
 
 @description('Optional. Maximum number of seconds a replica is allowed to run.')
 param replicaTimeout int = 1800
@@ -266,8 +268,7 @@ output location string = job.location
 
 @description('The principal ID of the system assigned identity.')
 @metadata({
-  example: ''''00000000-0000-0000-0000-000000000000'
-  '''''
+  example: '00000000-0000-0000-0000-000000000000'
 })
 output systemAssignedMIPrincipalId string = job.?identity.?principalId ?? ''
 
@@ -281,7 +282,7 @@ type managedIdentitiesType = {
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
-}?
+}
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
@@ -312,7 +313,7 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
-}[]?
+}[]
 
 type registryType = {
   @description('Required. The FQDN name of the container registry.')
@@ -333,7 +334,7 @@ type registryType = {
 
   @description('Conditional. The name of the secret contains the login password. Required if `username` is not null.')
   passwordSecretRef: string?
-}[]?
+}
 
 type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
@@ -341,9 +342,7 @@ type secretType = {
 
   @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
   @metadata({
-    example: '''
-    https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret
-    '''
+    example: '''https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'''
   })
   keyVaultUrl: string?
 
@@ -353,7 +352,7 @@ type secretType = {
   @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
   @secure()
   value: string?
-}[]?
+}
 
 type volumeType = {
   @description('Required. The name of the volume.')
@@ -376,7 +375,7 @@ type volumeType = {
 
   @description('Required. The container name.')
   storageType: ('AzureFile' | 'EmptyDir' | 'NfsAzureFile' | 'Secret')
-}[]?
+}
 
 type containerEnvironmentVariablesType = {
   @description('Required. The environment variable name.')
@@ -387,15 +386,7 @@ type containerEnvironmentVariablesType = {
 
   @description('Conditional. The environment variable value. Required if `secretRef` is null.')
   value: string?
-}[]?
-
-type containerProbeHttpGetHttpHeadersItem = {
-  @description('Required. The header field name.')
-  name: string
-
-  @description('Required. The header field value.')
-  value: string
-}[]?
+}
 
 type containerProbeType = {
   @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
@@ -467,7 +458,7 @@ type containerProbeType = {
 
   @description('Required. The type of probe.')
   type: ('Liveness' | 'Readiness' | 'Startup')
-}[]?
+}
 
 type containerResourceType = {
   @description('Required. The CPU limit of the container in cores.')
@@ -488,7 +479,7 @@ type containerResourceType = {
     '''
   })
   memory: string
-}?
+}
 
 type containerVolumeMountType = {
   @description('Required. The path within the container at which the volume should be mounted. Must not contain \':\'.')
@@ -499,7 +490,7 @@ type containerVolumeMountType = {
 
   @description('Required. This must match the Name of a Volume.')
   volumeName: string
-}[]?
+}
 
 type manualTriggerConfigType = {
   @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
@@ -550,19 +541,21 @@ type jobScaleType = {
   @description('Optional. Scaling rules for the job.')
   @metadata({
     example: '''
-    // for type azure-queue
-    {
-      name: 'myrule'
-      type: 'azure-queue'
-      metadata: {
-        queueName: 'default'
-        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+    [
+      // for type azure-queue
+      {
+        name: 'myrule'
+        type: 'azure-queue'
+        metadata: {
+          queueName: 'default'
+          storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+        }
+        auth: {
+          secretRef: 'mysecret'
+          triggerParameter: 'queueName'
+        }
       }
-      auth: {
-        secretRef: 'mysecret'
-        triggerParameter: 'queueName'
-      }
-    }
+    ]
     '''
   })
   rules: {
@@ -595,11 +588,9 @@ type jobScaleType = {
     @description('Optional. The type of the rule.')
     @metadata({
       example: '''
-    {
       "azure-servicebus"
       "azure-queue"
       "redis"
-    }
     '''
     })
     'type': string
@@ -628,7 +619,7 @@ type initContainerType = {
     ]
     '''
   })
-  env: containerEnvironmentVariablesType
+  env: containerEnvironmentVariablesType[]?
 
   @description('Required. The image of the container.')
   image: string
@@ -637,11 +628,11 @@ type initContainerType = {
   name: string
 
   @description('Required. Container resource requirements.')
-  resources: containerResourceType
+  resources: containerResourceType?
 
   @description('Optional. The volume mounts to attach to the container.')
-  volumeMounts: containerVolumeMountType
-}[]
+  volumeMounts: containerVolumeMountType[]?
+}
 
 type containerType = {
   @description('Optional. Container start command arguments.')
@@ -651,7 +642,7 @@ type containerType = {
   command: string[]?
 
   @description('Optional. The environment variables to set in the container.')
-  env: containerEnvironmentVariablesType
+  env: containerEnvironmentVariablesType[]?
 
   @description('Required. The image of the container.')
   image: string
@@ -660,11 +651,11 @@ type containerType = {
   name: string
 
   @description('Optional. The probes of the container.')
-  probes: containerProbeType
+  probes: containerProbeType[]?
 
   @description('Optional. The resources to allocate to the container.')
-  resources: containerResourceType
+  resources: containerResourceType?
 
   @description('Optional. The volume mounts to attach to the container.')
-  volumeMounts: containerVolumeMountType
-}[]
+  volumeMounts: containerVolumeMountType[]?
+}
