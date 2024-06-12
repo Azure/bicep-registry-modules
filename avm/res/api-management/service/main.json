@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11375250545386921106"
+      "templateHash": "15040012705656782712"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -2067,12 +2067,8 @@
           "alwaysLog": {
             "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'alwaysLog')]"
           },
-          "backend": {
-            "value": "[parameters('apiDiagnostics')[copyIndex()].backend]"
-          },
-          "frontend": {
-            "value": "[parameters('apiDiagnostics')[copyIndex()].frontend]"
-          },
+          "backend": "[if(not(empty(parameters('apiDiagnostics')[copyIndex()].backend)), createObject('value', parameters('apiDiagnostics')[copyIndex()].backend), createObject('value', null()))]",
+          "frontend": "[if(not(empty(parameters('apiDiagnostics')[copyIndex()].frontend)), createObject('value', parameters('apiDiagnostics')[copyIndex()].frontend), createObject('value', null()))]",
           "httpCorrelationProtocol": {
             "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'httpCorrelationProtocol')]"
           },

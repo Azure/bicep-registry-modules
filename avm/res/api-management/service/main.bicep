@@ -372,8 +372,8 @@ module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
       apiName: apidiagnostic.apiName
       loggerName: apidiagnostic.loggerName
       alwaysLog: apidiagnostic.?alwaysLog
-      backend: apidiagnostic.backend
-      frontend: apidiagnostic.frontend
+      backend: !empty(apidiagnostic.backend) ? apidiagnostic.backend : null
+      frontend: !empty(apidiagnostic.frontend) ? apidiagnostic.frontend : null
       httpCorrelationProtocol: apidiagnostic.?httpCorrelationProtocol
       logClientIp: apidiagnostic.?logClientIp
       metrics: apidiagnostic.?metrics
