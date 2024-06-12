@@ -78,8 +78,9 @@ Emit custom metrics via emit-metric policy. Required if using Application Insigh
 
 Specifies for what type of messages sampling settings should not apply.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `'allErrors'`
 
 ### Parameter: `backend`
 

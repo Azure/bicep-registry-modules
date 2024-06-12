@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12268224276698898239"
+      "templateHash": "9315569786175173438"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -427,7 +427,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "6470780623584875324"
+              "templateHash": "12286346672343723519"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -460,6 +460,7 @@
             },
             "alwaysLog": {
               "type": "string",
+              "defaultValue": "allErrors",
               "metadata": {
                 "description": "Optional. Specifies for what type of messages sampling settings should not apply."
               }
@@ -533,7 +534,7 @@
               "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('diagnosticName'))]",
               "properties": {
-                "alwaysLog": "[if(not(empty(parameters('alwaysLog'))), parameters('alwaysLog'), 'allErrors')]",
+                "alwaysLog": "[parameters('alwaysLog')]",
                 "backend": "[parameters('backend')]",
                 "frontend": "[parameters('frontend')]",
                 "httpCorrelationProtocol": "[parameters('httpCorrelationProtocol')]",

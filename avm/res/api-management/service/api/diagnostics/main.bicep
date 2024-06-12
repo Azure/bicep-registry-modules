@@ -15,7 +15,7 @@ param loggerName string
 param diagnosticName string
 
 @description('Optional. Specifies for what type of messages sampling settings should not apply.')
-param alwaysLog string
+param alwaysLog string = 'allErrors'
 
 @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
 param backend object
@@ -71,7 +71,7 @@ resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2022-08-01
   name: diagnosticName
   parent: service::api
   properties: {
-    alwaysLog: !empty(alwaysLog) ? alwaysLog : 'allErrors'
+    alwaysLog: alwaysLog
     backend: backend
     frontend: frontend
     httpCorrelationProtocol: httpCorrelationProtocol
