@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6272881213101632478"
+      "templateHash": "12268224276698898239"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -427,7 +427,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16947785409651708752"
+              "templateHash": "6470780623584875324"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -496,7 +496,7 @@
             "metrics": {
               "type": "bool",
               "metadata": {
-                "description": "Conditional. Emit custom metrics via emit-metric policy. Applicable only to Application Insights diagnostic settings."
+                "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
               }
             },
             "operationNameFormat": {
