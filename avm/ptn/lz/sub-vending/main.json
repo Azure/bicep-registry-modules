@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15102253576670931874"
+      "templateHash": "8525857900541840253"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -437,6 +437,12 @@
           },
           "subscriptionOwnerId": {
             "value": "[parameters('subscriptionOwnerId')]"
+          },
+          "subscriptionManagementGroupAssociationEnabled": {
+            "value": "[parameters('subscriptionManagementGroupAssociationEnabled')]"
+          },
+          "subscriptionManagementGroupId": {
+            "value": "[parameters('subscriptionManagementGroupId')]"
           }
         },
         "template": {
@@ -446,7 +452,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "3306118610933947345"
+              "templateHash": "7781618399688178714"
             }
           },
           "parameters": {
@@ -496,7 +502,24 @@
               "metadata": {
                 "description": "The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner. Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)."
               }
+            },
+            "subscriptionManagementGroupAssociationEnabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Whether to move the subscription to the specified management group supplied in the pararmeter subscriptionManagementGroupId."
+              }
+            },
+            "subscriptionManagementGroupId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "The destination management group ID for the new subscription. Note: Do not supply the display name. The management group ID forms part of the Azure resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`."
+              }
             }
+          },
+          "variables": {
+            "formattedAdditionalProperties": "[union(if(and(parameters('subscriptionManagementGroupAssociationEnabled'), not(empty(parameters('subscriptionManagementGroupId')))), createObject('managementGroupId', tenantResourceId('Microsoft.Management/managementGroups', parameters('subscriptionManagementGroupId'))), createObject()), if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), createObject('subscriptionTenantId', parameters('subscriptionTenantId'), 'subscriptionOwnerId', parameters('subscriptionOwnerId')), createObject()))]"
           },
           "resources": [
             {
@@ -508,7 +531,7 @@
                 "workload": "[parameters('subscriptionWorkload')]",
                 "displayName": "[parameters('subscriptionDisplayName')]",
                 "billingScope": "[parameters('subscriptionBillingScope')]",
-                "additionalProperties": "[if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), createObject('subscriptionTenantId', parameters('subscriptionTenantId'), 'subscriptionOwnerId', parameters('subscriptionOwnerId')), createObject())]"
+                "additionalProperties": "[variables('formattedAdditionalProperties')]"
               }
             }
           ],
@@ -546,12 +569,6 @@
         "mode": "Incremental",
         "parameters": {
           "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
-          "subscriptionManagementGroupAssociationEnabled": {
-            "value": "[parameters('subscriptionManagementGroupAssociationEnabled')]"
-          },
-          "subscriptionManagementGroupId": {
-            "value": "[parameters('subscriptionManagementGroupId')]"
-          },
           "subscriptionTags": {
             "value": "[parameters('subscriptionTags')]"
           },
@@ -653,7 +670,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12115355563479136953"
+              "templateHash": "3666975856606342472"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -663,20 +680,6 @@
             "subscriptionId": {
               "type": "string",
               "maxLength": 36
-            },
-            "subscriptionManagementGroupAssociationEnabled": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Whether to move the subscription to the specified management group supplied in the pararmeter subscriptionManagementGroupId."
-              }
-            },
-            "subscriptionManagementGroupId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "The destination management group ID for the new subscription. Note: Do not supply the display name. The management group ID forms part of the Azure resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`."
-              }
             },
             "subscriptionTags": {
               "type": "object",
@@ -965,7 +968,6 @@
           "variables": {
             "$fxv#0": "Param(\n  [string]$subscriptionId,\n  [string]$resourceProviders\n)\n\n$ErrorActionPreference = 'SilentlyContinue'\n# Selecting the right subscription\nSelect-AzSubscription -SubscriptionId $subscriptionId\n\n# Defining variables\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\n$failedProviders = ''\n$failedFeatures = ''\n$DeploymentScriptOutputs = @{}\n\n##############################################\n## Registering resource providers and features\n##############################################\n\nif ($providers.Count -gt 0) {\n  foreach ($provider in $providers.keys) {\n    try {\n      # Registering resource providers\n      $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState\n      # Check if the providered is registered\n      if ($providerStatus -eq 'NotRegistered') {\n        Write-Output \"`n Registering the '$provider' provider\"\n        if (Register-AzResourceProvider -ProviderNamespace $provider) {\n          Write-Output \"`n The registration for provider'$provider' has started successfully\"\n        } else {\n          Write-Output \"`n The '$provider' provider has not been registered successfully\"\n          $failedProviders += \",$provider\"\n        }\n      } elseif ($providerStatus -eq 'Registering') {\n        Write-Output \"`n The '$provider' provider is in registering state\"\n        $failedProviders += \",$provider\"\n      } elseif ( $null -eq $providerStatus) {\n        Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n        $failedProviders += \",$provider\"\n      }\n\n      if ($failedProviders.length -gt 0) {\n        $output = $failedProviders.substring(1)\n      } else {\n        $output = 'No failures'\n      }\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n    } catch {\n      Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n      $failedProviders += \",$provider\"\n      if ($failedProviders.length -gt 0) {\n        $output = $failedProviders.substring(1)\n      }\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n    }\n    # Registering resource providers features\n    $features = $providers[$provider]\n    if ($features.length -gt 0) {\n      foreach ($feature in $features) {\n        try {\n          # Define variables\n          $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).RegistrationState\n          # Check if the feature is registered\n          if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\n            Write-Output \"`n Registering the '$feature' feature\"\n            if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\n              Write-Output \"`n The The registration for feature '$feature' has started successfully\"\n            } else {\n              Write-Output \"`n The '$feature' feature has not been registered successfully\"\n              $failedFeatures += \",$feature\"\n            }\n          } elseif ($null -eq $featureStatus) {\n            Write-Output \"`n The '$feature' feature doesn't exist.\"\n            $failedFeatures += \",$feature\"\n          }\n          if ($failedFeatures.length -gt 0) {\n            $output = $failedFeatures.substring(1)\n          } else {\n            $output = 'No failures'\n          }\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        } catch {\n          Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\n          $failedFeatures += \",$feature\"\n          if ($failedFeatures.length -gt 0) {\n            $output = $failedFeatures.substring(1)\n          }\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        }\n      }\n    } else {\n      $output = 'No failures'\n      $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n    }\n  }\n} else {\n  Write-Output \"`n No providers or features to register\"\n}\n",
             "deploymentNames": {
-              "moveSubscriptionToManagementGroup": "[take(format('lz-vend-move-sub-{0}', uniqueString(parameters('subscriptionId'), parameters('subscriptionManagementGroupId'), deployment().name)), 64)]",
               "tagSubscription": "[take(format('lz-vend-tag-sub-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
               "createResourceGroupForLzNetworking": "[take(format('lz-vend-rsg-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), deployment().name)), 64)]",
               "tagResoruceGroupForLzNetworking": "[take(format('lz-vend-tag-rsg-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), deployment().name)), 64)]",
@@ -1002,61 +1004,6 @@
             "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]"
           },
           "resources": [
-            {
-              "condition": "[and(parameters('subscriptionManagementGroupAssociationEnabled'), not(empty(parameters('subscriptionManagementGroupId'))))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[variables('deploymentNames').moveSubscriptionToManagementGroup]",
-              "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('subscriptionManagementGroupId'))]",
-              "location": "[deployment().location]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "subscriptionManagementGroupId": {
-                    "value": "[parameters('subscriptionManagementGroupId')]"
-                  },
-                  "subscriptionId": {
-                    "value": "[parameters('subscriptionId')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "9313475896614087193"
-                    }
-                  },
-                  "parameters": {
-                    "subscriptionManagementGroupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The destination management group ID for the new subscription. Note: Do not supply the display name. The management group ID forms part of the Azure resource ID e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`."
-                      }
-                    },
-                    "subscriptionId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The ID of the Subscription to move to the target Management Group"
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Management/managementGroups/subscriptions",
-                      "apiVersion": "2021-04-01",
-                      "scope": "/",
-                      "name": "[format('{0}/{1}', parameters('subscriptionManagementGroupId'), parameters('subscriptionId'))]"
-                    }
-                  ]
-                }
-              }
-            },
             {
               "condition": "[not(empty(parameters('subscriptionTags')))]",
               "type": "Microsoft.Resources/deployments",
