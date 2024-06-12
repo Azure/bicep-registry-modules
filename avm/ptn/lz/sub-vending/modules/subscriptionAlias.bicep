@@ -26,6 +26,26 @@ param subscriptionTenantId string = ''
 @description('''The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner. Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).''')
 param subscriptionOwnerId string = ''
 
+@description('Whether to move the subscription to the specified management group supplied in the pararmeter subscriptionManagementGroupId.')
+param subscriptionManagementGroupAssociationEnabled bool = true
+
+@description('The destination management group ID for the new subscription. Note: Do not supply the display name. The management group ID forms part of the Azure resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.')
+param subscriptionManagementGroupId string = ''
+
+var formattedAdditionalProperties = union(
+  subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)
+    ? {
+        managementGroupId: tenantResourceId('Microsoft.Management/managementGroups', subscriptionManagementGroupId)
+      }
+    : {},
+  (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+    ? {
+        subscriptionTenantId: subscriptionTenantId
+        subscriptionOwnerId: subscriptionOwnerId
+      }
+    : {}
+)
+
 resource subscriptionAlias 'Microsoft.Subscription/aliases@2021-10-01' = {
   scope: tenant()
   name: subscriptionAliasName
@@ -33,14 +53,15 @@ resource subscriptionAlias 'Microsoft.Subscription/aliases@2021-10-01' = {
     workload: subscriptionWorkload
     displayName: subscriptionDisplayName
     billingScope: subscriptionBillingScope
-    additionalProperties: (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? {
-      subscriptionTenantId: subscriptionTenantId
-      subscriptionOwnerId: subscriptionOwnerId
-    } : {}
+    additionalProperties: formattedAdditionalProperties
   }
 }
 
 output subscriptionId string = subscriptionAlias.properties.subscriptionId
 output subscriptionResourceId string = '/subscriptions/${subscriptionAlias.properties.subscriptionId}'
-output subscriptionAcceptOwnershipState string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? subscriptionAlias.properties.acceptOwnershipState : 'N/A'
-output subscriptionAcceptOwnershipUrl string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? subscriptionAlias.properties.acceptOwnershipUrl : 'N/A'
+output subscriptionAcceptOwnershipState string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+  ? subscriptionAlias.properties.acceptOwnershipState
+  : 'N/A'
+output subscriptionAcceptOwnershipUrl string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+  ? subscriptionAlias.properties.acceptOwnershipUrl
+  : 'N/A'

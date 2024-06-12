@@ -345,6 +345,8 @@ module createSubscription './modules/subscriptionAlias.bicep' = if (subscription
     subscriptionWorkload: subscriptionWorkload
     subscriptionTenantId: subscriptionTenantId
     subscriptionOwnerId: subscriptionOwnerId
+    subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
+    subscriptionManagementGroupId: subscriptionManagementGroupId
   }
 }
 
@@ -354,8 +356,6 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
       ? createSubscription.outputs.subscriptionId
       : existingSubscriptionId
-    subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
-    subscriptionManagementGroupId: subscriptionManagementGroupId
     subscriptionTags: subscriptionTags
     virtualNetworkEnabled: virtualNetworkEnabled
     virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
