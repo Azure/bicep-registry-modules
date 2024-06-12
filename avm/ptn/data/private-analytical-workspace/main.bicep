@@ -172,15 +172,15 @@ resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = 
     : resourceGroup(split(virtualNetworkResourceId!, '/')[2], split(virtualNetworkResourceId!, '/')[4])
 
   resource subnetPrivateLink 'subnets@2023-11-01' existing = if (!empty(advancedOptions) && !empty(advancedOptions.?virtualNetwork.?subnetNamePrivateLink)) {
-    name: empty(advancedOptions) ? 'dummyName' : advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'dummyName'
+    name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'dummyName'
   }
 
   resource subnetDbwControlPlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameControlPlane)) {
-    name: empty(advancedOptions) ? 'dummyName' : advancedOptions.?databricks.?subnetNameControlPlane ?? 'dummyName'
+    name: advancedOptions.?databricks.?subnetNameControlPlane ?? 'dummyName'
   }
 
   resource subnetDbwComputePlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameComputePlane)) {
-    name: empty(advancedOptions) ? 'dummyName' : advancedOptions.?databricks.?subnetNameComputePlane ?? 'dummyName'
+    name: advancedOptions.?databricks.?subnetNameComputePlane ?? 'dummyName'
   }
 }
 
@@ -488,28 +488,28 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (creat
 // ============ //
 
 @description('The resource ID of the resource.')
-output resourceId string = vnetCfg.resourceId
+output resourceId string = logCfg.resourceId
 
 @description('The name of the resource.')
-output name string = vnetCfg.name
+output name string = logCfg.name
 
 @description('The location the resource was deployed into.')
-output location string = vnetCfg.location
+output location string = logCfg.location
 
 @description('The name of the managed resource group.')
-output resourceGroupName string = vnetCfg.resourceGroupName
+output resourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Virtual Network.')
-output virtualNetworkResourceId string = vnetCfg.resourceId
+output virtualNetworkResourceId string = logCfg.resourceId
 
 @description('The name of the Azure Virtual Network.')
-output virtualNetworkName string = vnetCfg.name
+output virtualNetworkName string = logCfg.name
 
 @description('The location of the Azure Virtual Network.')
-output virtualNetworkLocation string = vnetCfg.location
+output virtualNetworkLocation string = logCfg.location
 
 @description('The name of the Azure Virtual Network resource group.')
-output virtualNetworkResourceGroupName string = vnetCfg.resourceGroupName
+output virtualNetworkResourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logCfg.resourceId
