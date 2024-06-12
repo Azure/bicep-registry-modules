@@ -396,13 +396,15 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
     minimumTlsVersion: minimumTlsVersion
     networkAcls: !empty(networkAcls)
-      ? {
-          resourceAccessRules: networkAcls.?resourceAccessRules
-          bypass: networkAcls.?bypass
-          defaultAction: networkAcls.?defaultAction ?? 'Deny'
-          virtualNetworkRules: networkAcls.?virtualNetworkRules
-          ipRules: networkAcls.?ipRules
-        }
+      ? union(
+          {
+            resourceAccessRules: networkAcls.?resourceAccessRules
+            defaultAction: networkAcls.?defaultAction ?? 'Deny'
+            virtualNetworkRules: networkAcls.?virtualNetworkRules
+            ipRules: networkAcls.?ipRules
+          },
+          (contains(networkAcls!, 'bypass') ? { bypass: networkAcls.?bypass } : {}) // setting `bypass` to `null`is not supported
+        )
       : {
           // New default case that enables the firewall by default
           bypass: 'AzureServices'
