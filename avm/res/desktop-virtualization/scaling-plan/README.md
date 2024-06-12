@@ -735,7 +735,7 @@ Host pool type of the Scaling Plan.
 - Required: No
 - Type: string
 - Default: `'Pooled'`
-- - Allowed:
+- Allowed:
   ```Bicep
   [
     'Personal'
