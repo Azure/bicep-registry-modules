@@ -169,15 +169,15 @@ resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = 
     : resourceGroup(split(virtualNetworkResourceId!, '/')[2], split(virtualNetworkResourceId!, '/')[4])
 
   resource subnetPrivateLink 'subnets@2023-11-01' existing = if (!empty(advancedOptions) && !empty(advancedOptions.?virtualNetwork.?subnetNamePrivateLink)) {
-    name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'specifySubnetNamePrivateLink'
+    name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'dummyName'
   }
 
   resource subnetDbwControlPlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameControlPlane)) {
-    name: advancedOptions.?databricks.?subnetNameControlPlane ?? 'specifySubnetNameControlPlane'
+    name: advancedOptions.?databricks.?subnetNameControlPlane ?? 'dummyName'
   }
 
   resource subnetDbwComputePlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameComputePlane)) {
-    name: advancedOptions.?databricks.?subnetNameComputePlane ?? 'specifySubnetNameComputePlane'
+    name: advancedOptions.?databricks.?subnetNameComputePlane ?? 'dummyName'
   }
 }
 
