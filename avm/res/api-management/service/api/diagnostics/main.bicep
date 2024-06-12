@@ -34,7 +34,7 @@ param httpCorrelationProtocol string
 @description('Optional. Log the ClientIP. Default is false.')
 param logClientIp bool
 
-@description('Conditional. Emit custom metrics via emit-metric policy. Applicable only to Application Insights diagnostic settings.')
+@description('Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights.')
 param metrics bool
 
 @allowed([

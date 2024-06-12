@@ -30,7 +30,7 @@ This module deploys an API Management Service API Diagnostics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Applicable only to Application Insights diagnostic settings. |
+| [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
 
 **Optional parameters**
 
@@ -69,7 +69,7 @@ The name of the logger.
 
 ### Parameter: `metrics`
 
-Emit custom metrics via emit-metric policy. Applicable only to Application Insights diagnostic settings.
+Emit custom metrics via emit-metric policy. Required if using Application Insights.
 
 - Required: Yes
 - Type: bool
