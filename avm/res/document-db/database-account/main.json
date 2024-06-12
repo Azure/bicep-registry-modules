@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4087763028359449995"
+      "templateHash": "17921062197239369089"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1704,7 +1704,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "4952845565421031590"
+              "templateHash": "6438933554145929110"
             },
             "name": "DocumentDB Database Account SQL Role.",
             "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -1725,7 +1725,11 @@
             },
             "dataActions": {
               "type": "array",
-              "defaultValue": [],
+              "defaultValue": [
+                "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
+                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
+              ],
               "metadata": {
                 "description": "Optional. An array of data actions that are allowed."
               }
@@ -1787,7 +1791,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "2467251929819586670"
+                      "templateHash": "5774063578247320117"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
                     "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -1802,11 +1806,7 @@
                     },
                     "dataActions": {
                       "type": "array",
-                      "defaultValue": [
-                        "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-                        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
-                        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
-                      ],
+                      "defaultValue": [],
                       "metadata": {
                         "description": "Optional. An array of data actions that are allowed."
                       }

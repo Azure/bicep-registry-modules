@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "5653485584159511775"
+      "version": "0.28.1.47646",
+      "templateHash": "5774063578247320117"
     },
     "name": "DocumentDB Database Account SQL Role Definitions.",
     "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -20,11 +20,7 @@
     },
     "dataActions": {
       "type": "array",
-      "defaultValue": [
-        "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
-        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
-      ],
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. An array of data actions that are allowed."
       }

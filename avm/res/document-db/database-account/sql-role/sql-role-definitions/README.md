@@ -45,14 +45,7 @@ An array of data actions that are allowed.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    'Microsoft.DocumentDB/databaseAccounts/readMetadata'
-    'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
-    'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
-  ]
-  ```
+- Default: `[]`
 
 ### Parameter: `roleName`
 

@@ -6,11 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param databaseAccountName string
 
 @description('Optional. An array of data actions that are allowed.')
-param dataActions array = [
-  'Microsoft.DocumentDB/databaseAccounts/readMetadata'
-  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
-  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
-]
+param dataActions array = []
 
 @description('Optional. A user-friendly name for the Role Definition. Must be unique for the database account.')
 param roleName string = 'Reader Writer'

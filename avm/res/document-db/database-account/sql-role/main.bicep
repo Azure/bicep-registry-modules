@@ -9,7 +9,11 @@ param databaseAccountName string
 param name string
 
 @description('Optional. An array of data actions that are allowed.')
-param dataActions array = []
+param dataActions array = [
+  'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+  'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+]
 
 @description('Optional. Ids needs to be granted.')
 param principalIds array = []
