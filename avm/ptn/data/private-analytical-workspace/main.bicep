@@ -32,7 +32,10 @@ param keyVaultResourceId string?
 @description('Optional. Additional options that can affect some parts of the solution and how they are configured.')
 param advancedOptions advancedOptionsType?
 
-// Constants
+// ============== //
+// Variables      //
+// ============== //
+
 var diagnosticSettingsName = '${name}-diagnostic-settings'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
