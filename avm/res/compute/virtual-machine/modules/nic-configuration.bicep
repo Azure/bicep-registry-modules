@@ -27,11 +27,13 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.4.0' = [
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.4.1' = [
   for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration')) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
-      name: '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+      name: contains(ipConfiguration.pipConfiguration, 'name')
+        ? ipConfiguration.pipConfiguration.name
+        : '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
@@ -86,7 +88,9 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.2.4' = {
         publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration')
           ? resourceId(
               'Microsoft.Network/publicIPAddresses',
-              '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+              contains(ipConfiguration.pipConfiguration, 'name')
+                ? ipConfiguration.pipConfiguration.name
+                : '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
             )
           : null
         subnetResourceId: ipConfiguration.subnetResourceId

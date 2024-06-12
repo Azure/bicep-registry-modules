@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               pipConfiguration: {
-                publicIpNameSuffix: '-pip-01'
+                name: 'pip-01'
               }
             }
           ]
