@@ -184,13 +184,6 @@ resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' exist
     : resourceGroup(split(logAnalyticsWorkspaceResourceId!, '/')[2], split(logAnalyticsWorkspaceResourceId!, '/')[4])
 }
 
-resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
-  name: empty(keyVaultResourceId) ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
-  scope: empty(keyVaultResourceId)
-    ? resourceGroup()
-    : resourceGroup(split(keyVaultResourceId!, '/')[2], split(keyVaultResourceId!, '/')[4])
-}
-
 module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
   name: '${name}-vnet'
   params: {
@@ -296,6 +289,88 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (create
   }
 }
 
+module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks) {
+  name: '${name}-dbw'
+  params: {
+    // Required parameters
+    name: '${name}-dbw'
+    // Non-required parameters
+    customPrivateSubnetName: createNewVNET
+      ? filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name
+      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameControlPlane // If not provided correctly, this will fail during deployment
+    customPublicSubnetName: createNewVNET
+      ? filter(subnets, item => item.name == subnetNameDbwComputePlane)[0].name
+      : empty(advancedOptions) ? null : advancedOptions.?databricks.?subnetNameComputePlane // If not provided correctly, this will fail during deployment
+    customVirtualNetworkResourceId: vnetCfg.resourceId
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.resourceId
+      }
+    ]
+    disablePublicIp: true // For now only private, in the future maybe we can add public + ACL
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    managedResourceGroupResourceId: null // Maybe in the future we can support custom RG
+    prepareEncryption: true
+    privateEndpoints: createNewVNET
+      ? [
+          {
+            name: '${name}-dbw-ui-pep'
+            location: location
+            service: 'databricks_ui_api'
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+            privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
+            tags: tags
+            enableTelemetry: enableTelemetry
+            lock: lock
+          }
+          {
+            name: '${name}-dbw-auth-pep'
+            location: location
+            service: 'browser_authentication'
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+            privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
+            tags: tags
+            enableTelemetry: enableTelemetry
+            lock: lock
+          }
+        ]
+      : [] // In customer provided VNET, customer must create PEPs on their own
+    publicNetworkAccess: 'Disabled' // Disabled to access workspace only via private link, in the future maybe we can add public + ACL
+    requiredNsgRules: 'NoAzureDatabricksRules' // NoAzureDatabricksRules for full private, AllRules for public
+    // roleAssignments: [] // Maybe in the next iteration
+    skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
+    storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
+    tags: tags
+  }
+}
+
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET && enableDatabricks) {
+  name: privateDnsZoneNameDbw
+  params: {
+    // Required parameters
+    name: privateDnsZoneNameDbw
+    // Non-required parameters
+    enableTelemetry: enableTelemetry
+    location: 'global'
+    lock: lock
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        virtualNetworkResourceId: vnet.outputs.resourceId
+      }
+    ]
+  }
+}
+
 // ============ //
 // Outputs      //
 // ============ //
@@ -313,16 +388,16 @@ output location string = logCfg.location
 output resourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Virtual Network.')
-output virtualNetworkResourceId string = logCfg.resourceId
+output virtualNetworkResourceId string = vnetCfg.resourceId
 
 @description('The name of the Azure Virtual Network.')
-output virtualNetworkName string = logCfg.name
+output virtualNetworkName string = vnetCfg.name
 
 @description('The location of the Azure Virtual Network.')
-output virtualNetworkLocation string = logCfg.location
+output virtualNetworkLocation string = vnetCfg.location
 
 @description('The name of the Azure Virtual Network resource group.')
-output virtualNetworkResourceGroupName string = logCfg.resourceGroupName
+output virtualNetworkResourceGroupName string = vnetCfg.resourceGroupName
 
 @description('The resource ID of the Azure Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logCfg.resourceId
