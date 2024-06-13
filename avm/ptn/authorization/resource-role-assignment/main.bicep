@@ -63,7 +63,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource resourceRoleAssignment 'Microsoft.Resources/deployments@2023-07-01' = {
+#disable-next-line no-deployments-resources
+resource resourceRoleAssignment 'Microsoft.Resources/deployments@2024-03-01' = {
   name: '${guid(resourceId, principalId, roleDefinitionId)}-ResourceRoleAssignment'
   properties: {
     mode: 'Incremental'
