@@ -35,10 +35,10 @@ param certificate certificateType
 @description('Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.')
 param certificateCommonNames certificateCommonNamesType
 
-@description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster.')
+@description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used.')
 param clientCertificateCommonNames clientCertificateCommonNameType
 
-@description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster.')
+@description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used.')
 param clientCertificateThumbprints clientCertificateThumbprintType
 
 @description('Optional. The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions.')
