@@ -1,6 +1,6 @@
-# Data Factories `[Microsoft.DataFactory/factories]`
+# Kusto Cluster `[Microsoft.Kusto/clusters]`
 
-This module deploys a Data Factory.
+This module deploys a Kusto Cluster.
 
 ## Navigation
 
@@ -9,7 +9,6 @@ This module deploys a Data Factory.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -18,11 +17,9 @@ This module deploys a Data Factory.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DataFactory/factories` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories) |
-| `Microsoft.DataFactory/factories/integrationRuntimes` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/integrationRuntimes) |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks) |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Kusto/clusters` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters) |
+| `Microsoft.Kusto/clusters/principalAssignments` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/principalAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -32,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/kusto/cluster:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -48,11 +45,12 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: 'factoryDeployment'
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'dffmin001'
+    name: 'akcmin0001'
+    sku: 'Standard_E2ads_v5'
     // Non-required parameters
     location: '<location>'
   }
@@ -73,7 +71,10 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffmin001"
+      "value": "akcmin0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
     "location": {
@@ -96,94 +97,55 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: 'factoryDeployment'
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'dffmax001'
+    name: 'akcmax0001'
+    sku: 'Standard_E2ads_v5'
     // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    diagnosticSettings: [
+    acceptedAudiences: [
       {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
+        value: 'https://contoso.com'
       }
     ]
-    gitConfigureLater: true
-    globalParameters: {
-      testParameter1: {
-        type: 'String'
-        value: 'testValue1'
-      }
-    }
-    integrationRuntimes: [
-      {
-        managedVirtualNetworkName: 'default'
-        name: 'AutoResolveIntegrationRuntime'
-        type: 'Managed'
-        typeProperties: {
-          computeProperties: {
-            location: 'AutoResolve'
-          }
-        }
-      }
-      {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
-      }
+    allowedFqdnList: [
+      'contoso.com'
     ]
+    allowedIpRangeList: [
+      '192.168.1.1'
+    ]
+    autoScaleMax: 6
+    autoScaleMin: 3
+    capacity: 3
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: true
+    enablePurge: true
+    enableRestrictOutboundNetworkAccess: true
+    enableStreamingIngest: true
+    enableZoneRedundant: true
+    engineType: 'V3'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    managedPrivateEndpoints: [
+    principalAssignments: [
       {
-        fqdns: [
-          '<storageAccountBlobEndpoint>'
-        ]
-        groupId: 'blob'
-        name: '<name>'
-        privateLinkResourceId: '<privateLinkResourceId>'
+        principalId: '<principalId>'
+        principalType: 'Group'
+        role: 'AllDatabasesViewer'
       }
     ]
-    managedVirtualNetworkName: 'default'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          application: 'AVM'
-          'hidden-title': 'This is visible in the resource name'
-        }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
+    publicIPType: 'DualStack'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -201,11 +163,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -224,60 +181,67 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffmax001"
+      "value": "akcmax0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "diagnosticSettings": {
+    "acceptedAudiences": {
       "value": [
         {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
+          "value": "https://contoso.com"
         }
       ]
     },
-    "gitConfigureLater": {
+    "allowedFqdnList": {
+      "value": [
+        "contoso.com"
+      ]
+    },
+    "allowedIpRangeList": {
+      "value": [
+        "192.168.1.1"
+      ]
+    },
+    "autoScaleMax": {
+      "value": 6
+    },
+    "autoScaleMin": {
+      "value": 3
+    },
+    "capacity": {
+      "value": 3
+    },
+    "enableAutoScale": {
       "value": true
     },
-    "globalParameters": {
-      "value": {
-        "testParameter1": {
-          "type": "String",
-          "value": "testValue1"
-        }
-      }
+    "enableAutoStop": {
+      "value": true
     },
-    "integrationRuntimes": {
-      "value": [
-        {
-          "managedVirtualNetworkName": "default",
-          "name": "AutoResolveIntegrationRuntime",
-          "type": "Managed",
-          "typeProperties": {
-            "computeProperties": {
-              "location": "AutoResolve"
-            }
-          }
-        },
-        {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
-        }
-      ]
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": true
+    },
+    "enablePurge": {
+      "value": true
+    },
+    "enableRestrictOutboundNetworkAccess": {
+      "value": true
+    },
+    "enableStreamingIngest": {
+      "value": true
+    },
+    "enableZoneRedundant": {
+      "value": true
+    },
+    "engineType": {
+      "value": "V3"
     },
     "location": {
       "value": "<location>"
@@ -290,46 +254,22 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
     },
-    "managedPrivateEndpoints": {
+    "principalAssignments": {
       "value": [
         {
-          "fqdns": [
-            "<storageAccountBlobEndpoint>"
-          ],
-          "groupId": "blob",
-          "name": "<name>",
-          "privateLinkResourceId": "<privateLinkResourceId>"
+          "principalId": "<principalId>",
+          "principalType": "Group",
+          "role": "AllDatabasesViewer"
         }
       ]
     },
-    "managedVirtualNetworkName": {
-      "value": "default"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "application": "AVM",
-            "hidden-title": "This is visible in the resource name"
-          }
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
+    "publicIPType": {
+      "value": "DualStack"
     },
     "roleAssignments": {
       "value": [
@@ -349,13 +289,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -374,33 +307,37 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: 'factoryDeployment'
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'dffwaf001'
+    name: 'akcwaf0001'
+    sku: 'Standard_E2ads_v5'
     // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    gitConfigureLater: true
-    integrationRuntimes: [
-      {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
-      }
-    ]
+    autoScaleMax: 10
+    autoScaleMin: 3
+    capacity: 3
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: false
+    enableZoneRedundant: true
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
+    }
+    tier: 'Standard'
   }
 }
 ```
@@ -419,39 +356,63 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffwaf001"
+      "value": "akcwaf0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "autoScaleMax": {
+      "value": 10
     },
-    "gitConfigureLater": {
+    "autoScaleMin": {
+      "value": 3
+    },
+    "capacity": {
+      "value": 3
+    },
+    "enableAutoScale": {
       "value": true
     },
-    "integrationRuntimes": {
-      "value": [
-        {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
-        }
-      ]
+    "enableAutoStop": {
+      "value": true
+    },
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": false
+    },
+    "enableZoneRedundant": {
+      "value": true
     },
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "tags": {
       "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
       }
+    },
+    "tier": {
+      "value": "Standard"
     }
   }
 }
@@ -467,44 +428,120 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Azure Factory to create. |
+| [`name`](#parameter-name) | string | The name of the Kusto cluster which must be unique within Azure. |
+| [`sku`](#parameter-sku) | string | The SKU of the Kusto Cluster. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`acceptedAudiences`](#parameter-acceptedaudiences) | array | The Kusto Cluster's accepted audiences. |
+| [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed fully-qulified domain names (FQDNs) for egress from the Kusto Cluster. |
+| [`allowedIpRangeList`](#parameter-allowediprangelist) | array | List of IP addresses in CIDR format allowed to connect to the Kusto Cluster. |
+| [`autoScaleMax`](#parameter-autoscalemax) | int | When auto-scale is enabled, the maximum number of instances in the Kusto Cluster. |
+| [`autoScaleMin`](#parameter-autoscalemin) | int | When auto-scale is enabled, the minimum number of instances in the Kusto Cluster. |
+| [`capacity`](#parameter-capacity) | int | The number of instances of the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gitAccountName`](#parameter-gitaccountname) | string | The account name. |
-| [`gitCollaborationBranch`](#parameter-gitcollaborationbranch) | string | The collaboration branch name. Default is 'main'. |
-| [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
-| [`gitDisablePublish`](#parameter-gitdisablepublish) | bool | Disable manual publish operation in ADF studio to favor automated publish. |
-| [`gitHostName`](#parameter-githostname) | string | The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'. |
-| [`gitLastCommitId`](#parameter-gitlastcommitid) | string | Add the last commit id from your git repo. |
-| [`gitProjectName`](#parameter-gitprojectname) | string | The project name. Only relevant for 'FactoryVSTSConfiguration'. |
-| [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
-| [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
-| [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
-| [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
-| [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
-| [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`enableAutoScale`](#parameter-enableautoscale) | bool | Enable/disable auto-scale. |
+| [`enableAutoStop`](#parameter-enableautostop) | bool | Enable/disable auto-stop. |
+| [`enableDiskEncryption`](#parameter-enablediskencryption) | bool | Enable/disable disk encryption. |
+| [`enableDoubleEncryption`](#parameter-enabledoubleencryption) | bool | Enable/disable double encryption. |
+| [`enablePublicNetworkAccess`](#parameter-enablepublicnetworkaccess) | bool | Enable/disable public network access. If disabled, only private endpoint connection is allowed to the Kusto Cluster. |
+| [`enablePurge`](#parameter-enablepurge) | bool | Enable/disable purge. |
+| [`enableRestrictOutboundNetworkAccess`](#parameter-enablerestrictoutboundnetworkaccess) | bool | Enable/disable restricting outbound network access. |
+| [`enableStreamingIngest`](#parameter-enablestreamingingest) | bool | Enable/disable streaming ingest. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/disable usage telemetry for module. |
+| [`enableZoneRedundant`](#parameter-enablezoneredundant) | bool | Enable/disable zone redundancy. |
+| [`engineType`](#parameter-enginetype) | string | The engine type of the Kusto Cluster. |
+| [`languageExtensions`](#parameter-languageextensions) | array | List of the language extensions of the Kusto Cluster. |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`managedPrivateEndpoints`](#parameter-managedprivateendpoints) | array | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
-| [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`principalAssignments`](#parameter-principalassignments) | array | The Principal Assignments for the Kusto Cluster. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`publicIPType`](#parameter-publiciptype) | string | Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6). |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tier`](#parameter-tier) | string | The tier of the Kusto Cluster. |
+| [`trustedExternalTenants`](#parameter-trustedexternaltenants) | array | The external tenants trusted by the Kusto Cluster. |
+| [`virtualClusterGraduationProperties`](#parameter-virtualclustergraduationproperties) | securestring | The virtual cluster graduation properties of the Kusto Cluster. |
+| [`virtualNetworkConfiguration`](#parameter-virtualnetworkconfiguration) | object | The virtual network configuration of the Kusto Cluster. |
 
 ### Parameter: `name`
 
-The name of the Azure Factory to create.
+The name of the Kusto cluster which must be unique within Azure.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `sku`
+
+The SKU of the Kusto Cluster.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `acceptedAudiences`
+
+The Kusto Cluster's accepted audiences.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-acceptedaudiencesvalue) | string | GUID or valid URL representing an accepted audience. |
+
+### Parameter: `acceptedAudiences.value`
+
+GUID or valid URL representing an accepted audience.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `allowedFqdnList`
+
+List of allowed fully-qulified domain names (FQDNs) for egress from the Kusto Cluster.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `allowedIpRangeList`
+
+List of IP addresses in CIDR format allowed to connect to the Kusto Cluster.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `autoScaleMax`
+
+When auto-scale is enabled, the maximum number of instances in the Kusto Cluster.
+
+- Required: No
+- Type: int
+- Default: `3`
+
+### Parameter: `autoScaleMin`
+
+When auto-scale is enabled, the minimum number of instances in the Kusto Cluster.
+
+- Required: No
+- Type: int
+- Default: `2`
+
+### Parameter: `capacity`
+
+The number of instances of the Kusto Cluster.
+
+- Required: No
+- Type: int
+- Default: `2`
 
 ### Parameter: `customerManagedKey`
 
@@ -519,13 +556,13 @@ The customer managed key definition.
 | :-- | :-- | :-- |
 | [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
 | [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
@@ -541,16 +578,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `customerManagedKey.keyVersion`
 
 The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
-
-- Required: No
-- Type: string
-
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string
@@ -701,121 +738,158 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableTelemetry`
+### Parameter: `enableAutoScale`
 
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitAccountName`
-
-The account name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitCollaborationBranch`
-
-The collaboration branch name. Default is 'main'.
-
-- Required: No
-- Type: string
-- Default: `'main'`
-
-### Parameter: `gitConfigureLater`
-
-Boolean to define whether or not to configure git during template deployment.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitDisablePublish`
-
-Disable manual publish operation in ADF studio to favor automated publish.
+Enable/disable auto-scale.
 
 - Required: No
 - Type: bool
 - Default: `False`
 
-### Parameter: `gitHostName`
+### Parameter: `enableAutoStop`
 
-The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'.
+Enable/disable auto-stop.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableDiskEncryption`
+
+Enable/disable disk encryption.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableDoubleEncryption`
+
+Enable/disable double encryption.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePublicNetworkAccess`
+
+Enable/disable public network access. If disabled, only private endpoint connection is allowed to the Kusto Cluster.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enablePurge`
+
+Enable/disable purge.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableRestrictOutboundNetworkAccess`
+
+Enable/disable restricting outbound network access.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableStreamingIngest`
+
+Enable/disable streaming ingest.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableZoneRedundant`
+
+Enable/disable zone redundancy.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `engineType`
+
+The engine type of the Kusto Cluster.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'V3'`
+- Allowed:
+  ```Bicep
+  [
+    'V2'
+    'V3'
+  ]
+  ```
 
-### Parameter: `gitLastCommitId`
+### Parameter: `languageExtensions`
 
-Add the last commit id from your git repo.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitProjectName`
-
-The project name. Only relevant for 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepositoryName`
-
-The repository name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepoType`
-
-Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `'FactoryVSTSConfiguration'`
-
-### Parameter: `gitRootFolder`
-
-The root folder path name. Default is '/'.
-
-- Required: No
-- Type: string
-- Default: `'/'`
-
-### Parameter: `gitTenantId`
-
-Add the tenantId of your Azure subscription.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `globalParameters`
-
-List of Global Parameters for the factory.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `integrationRuntimes`
-
-An array of objects for the configuration of an Integration Runtime.
+List of the language extensions of the Kusto Cluster.
 
 - Required: No
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`languageExtensionCustomImageName`](#parameter-languageextensionslanguageextensioncustomimagename) | string | The name of the language extension custom image. |
+| [`languageExtensionImageName`](#parameter-languageextensionslanguageextensionimagename) | string | The name of the language extension image. |
+| [`languageExtensionName`](#parameter-languageextensionslanguageextensionname) | string | The name of the language extension. |
+
+### Parameter: `languageExtensions.languageExtensionCustomImageName`
+
+The name of the language extension custom image.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `languageExtensions.languageExtensionImageName`
+
+The name of the language extension image.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Python3_10_8'
+    'Python3_10_8_DL'
+    'Python3_6_5'
+    'PythonCustomImage'
+    'R'
+  ]
+  ```
+
+### Parameter: `languageExtensions.languageExtensionName`
+
+The name of the language extension.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PYTHON'
+    'R'
+  ]
+  ```
+
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all resources.
 
 - Required: No
 - Type: string
@@ -868,42 +942,26 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
-
-### Parameter: `managedIdentities.systemAssigned`
-
-Enables system assigned managed identity on the resource.
-
-- Required: No
-- Type: bool
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource id(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource id(s) to assign to the resource.
 
-- Required: No
+- Required: Yes
 - Type: array
 
-### Parameter: `managedPrivateEndpoints`
+### Parameter: `principalAssignments`
 
-An array of managed private endpoints objects created in the Data Factory managed virtual network.
+The Principal Assignments for the Kusto Cluster.
 
 - Required: No
 - Type: array
 - Default: `[]`
 
-### Parameter: `managedVirtualNetworkName`
-
-The name of the Managed Virtual Network.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `privateEndpoints`
 
-Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -912,6 +970,7 @@ Configuration Details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -923,18 +982,22 @@ Configuration Details for private endpoints. For security reasons, it is recomme
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
-| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | Manual PrivateLink Service Connections. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
-| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+
+### Parameter: `privateEndpoints.service`
+
+The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -961,19 +1024,19 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
-Fqdn that resolves to private endpoint IP address.
+Fqdn that resolves to private endpoint ip address.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
-A list of private IP addresses of the private endpoint.
+A list of private ip addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
@@ -1026,7 +1089,7 @@ Properties of private endpoint IP configurations.
 | :-- | :-- | :-- |
 | [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
 
@@ -1044,14 +1107,14 @@ The member name of a group obtained from the remote resource that this private e
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
-A private IP address obtained from the private endpoint's subnet.
+A private ip address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
-If Manual Private Link Connection is required.
+Manual PrivateLink Service Connections.
 
 - Required: No
 - Type: bool
@@ -1115,7 +1178,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
 
 - Required: No
 - Type: string
@@ -1126,20 +1189,6 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
-
-### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
-
-The name of the private link connection to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.resourceGroupName`
-
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -1230,13 +1279,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `privateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
-
-- Required: No
-- Type: string
-
 ### Parameter: `privateEndpoints.tags`
 
 Tags to be applied on all resources/resource groups in this deployment.
@@ -1244,19 +1286,19 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `publicNetworkAccess`
+### Parameter: `publicIPType`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6).
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'DualStack'`
 - Allowed:
   ```Bicep
   [
-    ''
-    'Disabled'
-    'Enabled'
+    'DualStack'
+    'IPv4'
+    'IPv6'
   ]
   ```
 
@@ -1356,16 +1398,102 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `tier`
+
+The tier of the Kusto Cluster.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `trustedExternalTenants`
+
+The external tenants trusted by the Kusto Cluster.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-trustedexternaltenantsvalue) | string | GUID representing an external tenant. |
+
+### Parameter: `trustedExternalTenants.value`
+
+GUID representing an external tenant.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualClusterGraduationProperties`
+
+The virtual cluster graduation properties of the Kusto Cluster.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `virtualNetworkConfiguration`
+
+The virtual network configuration of the Kusto Cluster.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataManagementPublicIpId`](#parameter-virtualnetworkconfigurationdatamanagementpublicipid) | string | The public IP address resource id of the data management service.. |
+| [`enableVirtualNetworkInjection`](#parameter-virtualnetworkconfigurationenablevirtualnetworkinjection) | bool | Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet. |
+| [`enginePublicIpId`](#parameter-virtualnetworkconfigurationenginepublicipid) | string | The public IP address resource id of the engine service. |
+| [`subnetId`](#parameter-virtualnetworkconfigurationsubnetid) | string | The resource ID of the subnet to which to deploy the Kusto Cluster. |
+
+### Parameter: `virtualNetworkConfiguration.dataManagementPublicIpId`
+
+The public IP address resource id of the data management service..
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkConfiguration.enableVirtualNetworkInjection`
+
+Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `virtualNetworkConfiguration.enginePublicIpId`
+
+The public IP address resource id of the engine service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkConfiguration.subnetId`
+
+The resource ID of the subnet to which to deploy the Kusto Cluster.
+
+- Required: Yes
+- Type: string
+
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The Name of the Azure Data Factory instance. |
-| `resourceGroupName` | string | The name of the Resource Group with the Data factory. |
-| `resourceId` | string | The Resource ID of the Data factory. |
-| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `name` | string | The name of the resource. |
+| `resourceGroupName` | string | The resource group the resource was deployed into. |
+| `resourceId` | string | The resource id of the resource. |
 
 ## Cross-referenced modules
 
@@ -1373,59 +1501,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
-
-## Notes
-
-### Parameter Usage: `managedPrivateEndpoints`
-
-To use Managed Private Endpoints the following dependencies must be deployed:
-
-- The `managedVirtualNetworkName` property must be set to allow provisioning of a managed virtual network in Azure Data Factory.
-- Destination private link resource must be created before and permissions allow requesting a private link connection to that resource.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"managedPrivateEndpoints": {
-    "value": [
-        {
-            "name": "mystorageaccount-managed-privateEndpoint", // Required: The managed private endpoint resource name
-            "groupId": "blob", // Required: The groupId to which the managed private endpoint is created
-            "fqdns": [
-                "mystorageaccount.blob.core.windows.net" // Required: Fully qualified domain names
-            ],
-            "privateLinkResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/mystorageaccount"
-            // Required: The ARM resource ID of the resource to which the managed private endpoint is created.
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-managedPrivateEndpoints:  [
-    // Example showing all available fields
-    {
-        name: 'mystorageaccount-managed-privateEndpoint' // Required: The managed private endpoint resource name
-        groupId: 'blob' // Required: The groupId to which the managed private endpoint is created
-        fqdns: [
-          'mystorageaccount.blob.core.windows.net' // Required: Fully qualified domain names
-        ]
-        privateLinkResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/mystorageaccount'
-    } // Required: The ARM resource ID of the resource to which the managed private endpoint is created.
-]
-```
-
-</details>
-<p>
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Data Collection
 
