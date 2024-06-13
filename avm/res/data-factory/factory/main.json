@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15112622274427305357"
+      "version": "0.28.1.47646",
+      "templateHash": "11443792202843961765"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -587,6 +587,20 @@
         "description": "Optional. The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'."
       }
     },
+    "gitLastCommitId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Add the last commit id from your git repo."
+      }
+    },
+    "gitTenantId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Add the tenantId of your Azure subscription."
+      }
+    },
     "globalParameters": {
       "type": "object",
       "defaultValue": {},
@@ -716,7 +730,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "repoConfiguration": "[if(bool(parameters('gitConfigureLater')), null(), union(createObject('type', parameters('gitRepoType'), 'hostName', parameters('gitHostName'), 'accountName', parameters('gitAccountName'), 'repositoryName', parameters('gitRepositoryName'), 'collaborationBranch', parameters('gitCollaborationBranch'), 'rootFolder', parameters('gitRootFolder'), 'disablePublish', parameters('gitDisablePublish')), if(equals(parameters('gitRepoType'), 'FactoryVSTSConfiguration'), createObject('projectName', parameters('gitProjectName')), createObject()), createObject()))]",
+        "repoConfiguration": "[if(bool(parameters('gitConfigureLater')), null(), union(createObject('type', parameters('gitRepoType'), 'hostName', parameters('gitHostName'), 'accountName', parameters('gitAccountName'), 'repositoryName', parameters('gitRepositoryName'), 'collaborationBranch', parameters('gitCollaborationBranch'), 'rootFolder', parameters('gitRootFolder'), 'disablePublish', parameters('gitDisablePublish'), 'lastCommitId', parameters('gitLastCommitId'), 'tenantId', parameters('gitTenantId')), if(equals(parameters('gitRepoType'), 'FactoryVSTSConfiguration'), createObject('projectName', parameters('gitProjectName')), createObject()), createObject()))]",
         "globalParameters": "[if(not(empty(parameters('globalParameters'))), parameters('globalParameters'), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null())]"
@@ -830,8 +844,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11423521716306055194"
+              "version": "0.28.1.47646",
+              "templateHash": "17394540019744867695"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network.",
@@ -904,8 +918,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "15559328970285278624"
+                      "version": "0.28.1.47646",
+                      "templateHash": "1848819997653095971"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
@@ -1052,8 +1066,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "6019779622358376532"
+              "version": "0.28.1.47646",
+              "templateHash": "17668999863735154468"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",

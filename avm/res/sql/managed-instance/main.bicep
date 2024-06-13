@@ -143,47 +143,81 @@ param minimalTlsVersion string = '1.2'
 ])
 param requestedBackupStorageRedundancy string = 'Geo'
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
-
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Reservation Purchaser': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'SQL DB Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec')
-  'SQL Managed Instance Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d')
-  'SQL Security Manager': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')
-  'SQL Server Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')
-  'SqlDb Migration Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')
-  'SqlMI Migration Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d335eef-eee1-47fe-a9e0-53214eba8872')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Reservation Purchaser': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f7b75c60-3036-4b75-91c3-6b41c27c1689'
+  )
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'SQL DB Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec'
+  )
+  'SQL Managed Instance Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d'
+  )
+  'SQL Security Manager': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '056cd41c-7e88-42e1-933e-88ba6a50c9c3'
+  )
+  'SQL Server Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437'
+  )
+  'SqlDb Migration Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '189207d4-bb67-4208-a635-b06afe8b2c57'
+  )
+  'SqlMI Migration Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1d335eef-eee1-47fe-a9e0-53214eba8872'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' = {
   name: name
@@ -222,14 +256,17 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' = {
   }
 }
 
-resource managedInstance_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource managedInstance_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: managedInstance
   }
-  scope: managedInstance
-}
 
 resource managedInstance_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -273,89 +310,126 @@ resource managedInstance_roleAssignments 'Microsoft.Authorization/roleAssignment
   }
 ]
 
-module managedInstance_databases 'database/main.bicep' = [for (database, index) in databases: {
-  name: '${uniqueString(deployment().name, location)}-SqlMi-DB-${index}'
-  params: {
-    name: database.name
-    managedInstanceName: managedInstance.name
-    catalogCollation: contains(database, 'catalogCollation') ? database.catalogCollation : 'SQL_Latin1_General_CP1_CI_AS'
-    collation: contains(database, 'collation') ? database.collation : 'SQL_Latin1_General_CP1_CI_AS'
-    createMode: contains(database, 'createMode') ? database.createMode : 'Default'
-    diagnosticSettings: database.?diagnosticSettings
-    location: contains(database, 'location') ? database.location : managedInstance.location
-    lock: database.?lock ?? lock
-    longTermRetentionBackupResourceId: contains(database, 'longTermRetentionBackupResourceId') ? database.longTermRetentionBackupResourceId : ''
-    recoverableDatabaseId: contains(database, 'recoverableDatabaseId') ? database.recoverableDatabaseId : ''
-    restorableDroppedDatabaseId: contains(database, 'restorableDroppedDatabaseId') ? database.restorableDroppedDatabaseId : ''
-    restorePointInTime: contains(database, 'restorePointInTime') ? database.restorePointInTime : ''
-    sourceDatabaseId: contains(database, 'sourceDatabaseId') ? database.sourceDatabaseId : ''
-    storageContainerSasToken: contains(database, 'storageContainerSasToken') ? database.storageContainerSasToken : ''
-    storageContainerUri: contains(database, 'storageContainerUri') ? database.storageContainerUri : ''
-    tags: database.?tags ?? tags
-    backupShortTermRetentionPoliciesObj: contains(database, 'backupShortTermRetentionPolicies') ? database.backupShortTermRetentionPolicies : {}
-    backupLongTermRetentionPoliciesObj: contains(database, 'backupLongTermRetentionPolicies') ? database.backupLongTermRetentionPolicies : {}
+module managedInstance_databases 'database/main.bicep' = [
+  for (database, index) in databases: {
+    name: '${uniqueString(deployment().name, location)}-SqlMi-DB-${index}'
+    params: {
+      name: database.name
+      managedInstanceName: managedInstance.name
+      catalogCollation: contains(database, 'catalogCollation')
+        ? database.catalogCollation
+        : 'SQL_Latin1_General_CP1_CI_AS'
+      collation: contains(database, 'collation') ? database.collation : 'SQL_Latin1_General_CP1_CI_AS'
+      createMode: contains(database, 'createMode') ? database.createMode : 'Default'
+      diagnosticSettings: database.?diagnosticSettings
+      location: contains(database, 'location') ? database.location : managedInstance.location
+      lock: database.?lock ?? lock
+      longTermRetentionBackupResourceId: contains(database, 'longTermRetentionBackupResourceId')
+        ? database.longTermRetentionBackupResourceId
+        : ''
+      recoverableDatabaseId: contains(database, 'recoverableDatabaseId') ? database.recoverableDatabaseId : ''
+      restorableDroppedDatabaseId: contains(database, 'restorableDroppedDatabaseId')
+        ? database.restorableDroppedDatabaseId
+        : ''
+      restorePointInTime: contains(database, 'restorePointInTime') ? database.restorePointInTime : ''
+      sourceDatabaseId: contains(database, 'sourceDatabaseId') ? database.sourceDatabaseId : ''
+      storageContainerSasToken: contains(database, 'storageContainerSasToken') ? database.storageContainerSasToken : ''
+      storageContainerUri: contains(database, 'storageContainerUri') ? database.storageContainerUri : ''
+      tags: database.?tags ?? tags
+      backupShortTermRetentionPoliciesObj: contains(database, 'backupShortTermRetentionPolicies')
+        ? database.backupShortTermRetentionPolicies
+        : {}
+      backupLongTermRetentionPoliciesObj: contains(database, 'backupLongTermRetentionPolicies')
+        ? database.backupLongTermRetentionPolicies
+        : {}
+    }
   }
-}]
+]
 
-module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = if (!empty(securityAlertPoliciesObj)) {
-  name: '${uniqueString(deployment().name, location)}-SqlMi-SecAlertPol'
-  params: {
-    managedInstanceName: managedInstance.name
-    name: securityAlertPoliciesObj.name
-    emailAccountAdmins: contains(securityAlertPoliciesObj, 'emailAccountAdmins') ? securityAlertPoliciesObj.emailAccountAdmins : false
-    state: contains(securityAlertPoliciesObj, 'state') ? securityAlertPoliciesObj.state : 'Disabled'
+module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' =
+  if (!empty(securityAlertPoliciesObj)) {
+    name: '${uniqueString(deployment().name, location)}-SqlMi-SecAlertPol'
+    params: {
+      managedInstanceName: managedInstance.name
+      name: securityAlertPoliciesObj.name
+      emailAccountAdmins: contains(securityAlertPoliciesObj, 'emailAccountAdmins')
+        ? securityAlertPoliciesObj.emailAccountAdmins
+        : false
+      state: contains(securityAlertPoliciesObj, 'state') ? securityAlertPoliciesObj.state : 'Disabled'
+    }
   }
-}
 
-module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessmentsObj) && (managedIdentities.?systemAssigned ?? false)) {
-  name: '${uniqueString(deployment().name, location)}-SqlMi-VulnAssessm'
-  params: {
-    managedInstanceName: managedInstance.name
-    name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails') ? vulnerabilityAssessmentsObj.recurringScansEmails : []
-    recurringScansEmailSubscriptionAdmins: contains(vulnerabilityAssessmentsObj, 'recurringScansEmailSubscriptionAdmins') ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins : false
-    recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled') ? vulnerabilityAssessmentsObj.recurringScansIsEnabled : false
-    storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey') ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey : false
-    createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment') ? vulnerabilityAssessmentsObj.createStorageRoleAssignment : true
+module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' =
+  if (!empty(vulnerabilityAssessmentsObj) && (managedIdentities.?systemAssigned ?? false)) {
+    name: '${uniqueString(deployment().name, location)}-SqlMi-VulnAssessm'
+    params: {
+      managedInstanceName: managedInstance.name
+      name: vulnerabilityAssessmentsObj.name
+      recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
+        ? vulnerabilityAssessmentsObj.recurringScansEmails
+        : []
+      recurringScansEmailSubscriptionAdmins: contains(
+          vulnerabilityAssessmentsObj,
+          'recurringScansEmailSubscriptionAdmins'
+        )
+        ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
+        : false
+      recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
+        ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
+        : false
+      storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
+      useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
+        ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
+        : false
+      createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
+        ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
+        : true
+    }
+    dependsOn: [
+      managedInstance_securityAlertPolicy
+    ]
   }
-  dependsOn: [
-    managedInstance_securityAlertPolicy
-  ]
-}
 
-module managedInstance_keys 'key/main.bicep' = [for (key, index) in keys: {
-  name: '${uniqueString(deployment().name, location)}-SqlMi-Key-${index}'
-  params: {
-    name: key.name
-    managedInstanceName: managedInstance.name
-    serverKeyType: contains(key, 'serverKeyType') ? key.serverKeyType : 'ServiceManaged'
-    uri: contains(key, 'uri') ? key.uri : ''
+module managedInstance_keys 'key/main.bicep' = [
+  for (key, index) in keys: {
+    name: '${uniqueString(deployment().name, location)}-SqlMi-Key-${index}'
+    params: {
+      name: key.name
+      managedInstanceName: managedInstance.name
+      serverKeyType: contains(key, 'serverKeyType') ? key.serverKeyType : 'ServiceManaged'
+      uri: contains(key, 'uri') ? key.uri : ''
+    }
   }
-}]
+]
 
-module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtectorObj)) {
-  name: '${uniqueString(deployment().name, location)}-SqlMi-EncryProtector'
-  params: {
-    managedInstanceName: managedInstance.name
-    serverKeyName: encryptionProtectorObj.serverKeyName
-    serverKeyType: contains(encryptionProtectorObj, 'serverKeyType') ? encryptionProtectorObj.serverKeyType : 'ServiceManaged'
-    autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled') ? encryptionProtectorObj.autoRotationEnabled : true
+module managedInstance_encryptionProtector 'encryption-protector/main.bicep' =
+  if (!empty(encryptionProtectorObj)) {
+    name: '${uniqueString(deployment().name, location)}-SqlMi-EncryProtector'
+    params: {
+      managedInstanceName: managedInstance.name
+      serverKeyName: encryptionProtectorObj.serverKeyName
+      serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
+        ? encryptionProtectorObj.serverKeyType
+        : 'ServiceManaged'
+      autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
+        ? encryptionProtectorObj.autoRotationEnabled
+        : true
+    }
+    dependsOn: [
+      managedInstance_keys
+    ]
   }
-  dependsOn: [
-    managedInstance_keys
-  ]
-}
 
-module managedInstance_administrator 'administrator/main.bicep' = if (!empty(administratorsObj)) {
-  name: '${uniqueString(deployment().name, location)}-SqlMi-Admin'
-  params: {
-    managedInstanceName: managedInstance.name
-    login: administratorsObj.name
-    sid: administratorsObj.sid
-    tenantId: contains(administratorsObj, 'tenantId') ? administratorsObj.tenantId : ''
+module managedInstance_administrator 'administrator/main.bicep' =
+  if (!empty(administratorsObj)) {
+    name: '${uniqueString(deployment().name, location)}-SqlMi-Admin'
+    params: {
+      managedInstanceName: managedInstance.name
+      login: administratorsObj.name
+      sid: administratorsObj.sid
+      tenantId: contains(administratorsObj, 'tenantId') ? administratorsObj.tenantId : ''
+    }
   }
-}
 
 @description('The name of the deployed managed instance.')
 output name string = managedInstance.name

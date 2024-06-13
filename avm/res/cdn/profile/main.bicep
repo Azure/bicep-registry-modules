@@ -16,7 +16,6 @@ param location string = resourceGroup().location
   'StandardPlus_AvgBandWidth_ChinaCdn'
   'StandardPlus_ChinaCdn'
   'Standard_955BandWidth_ChinaCdn'
-  'Standard_Akamai'
   'Standard_AvgBandWidth_ChinaCdn'
   'Standard_AzureFrontDoor'
   'Standard_ChinaCdn'
@@ -92,24 +91,23 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.cdn-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cdn-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' = {
   name: name
@@ -123,17 +121,16 @@ resource profile 'Microsoft.Cdn/profiles@2023-05-01' = {
   tags: tags
 }
 
-resource profile_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: profile
+resource profile_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: profile
+}
 
 resource profile_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -155,16 +152,15 @@ resource profile_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
-module profile_endpoint 'endpoint/main.bicep' =
-  if (!empty(endpointProperties)) {
-    name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
-    params: {
-      name: endpointName ?? '${profile.name}-endpoint'
-      properties: endpointProperties ?? {}
-      location: location
-      profileName: profile.name
-    }
+module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
+  name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
+  params: {
+    name: endpointName ?? '${profile.name}-endpoint'
+    properties: endpointProperties ?? {}
+    location: location
+    profileName: profile.name
   }
+}
 
 module profile_secrets 'secret/main.bicep' = [
   for (secret, index) in secrets: {

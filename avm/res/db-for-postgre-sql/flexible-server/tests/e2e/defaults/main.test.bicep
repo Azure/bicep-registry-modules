@@ -50,5 +50,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     administratorLoginPassword: password
     skuName: 'Standard_B2s'
     tier: 'Burstable'
+    geoRedundantBackup: 'Enabled'
   }
 }]

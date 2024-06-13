@@ -29,24 +29,24 @@ param subscriptionId string = '#_subscriptionId_#'
 // General resources
 // =================
 
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' ={
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
     name: resourceGroupName
     location: resourceLocation
   }
-
-
 }
-module nestedDependencies 'interim.dependencies.bicep' = {
-  scope: subscription('${subscriptionId}')
+module nestedDependencies 'dependencies.bicep' = {
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    resourceGroupName: resourceGroupName
     location: resourceLocation
   }
+  dependsOn: [
+    resourceGroup
+  ]
 }
 
 // ============== //

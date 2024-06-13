@@ -278,6 +278,14 @@ module testDeployment '../../../main.bicep' = {
               'myPartitionKey1'
             ]
           }
+          {
+            name: 'container-005'
+            kind: 'Hash'
+            version: 2
+            paths: [
+              'myPartitionKey1'
+            ]
+          }
         ]
         name: 'all-partition-key-types'
       }
