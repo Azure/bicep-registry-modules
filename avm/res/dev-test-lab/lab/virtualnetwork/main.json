@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6899804233871456970"
+      "version": "0.28.1.47646",
+      "templateHash": "17468377090212462449"
     },
     "name": "DevTest Lab Virtual Networks",
     "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",

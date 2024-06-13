@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2926837656927862519"
+      "version": "0.28.1.47646",
+      "templateHash": "2429514513188546824"
     },
     "name": "Virtual Network Peerings",
     "description": "This module deploys a Virtual Network Peering.",
