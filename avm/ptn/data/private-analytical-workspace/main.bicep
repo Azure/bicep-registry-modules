@@ -66,13 +66,7 @@ var vnetCfg = ({
 
   subnetResourceIdPrivateLink: createNewVNET
     ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available at zero index
-    : vnetExisting::subnetPrivateLink.id
-  subnetNameDbwControlPlane: createNewVNET
-    ? filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name
-    : vnetExisting::subnetDbwControlPlane.name
-  subnetNameDbwComputePlane: createNewVNET
-    ? filter(subnets, item => item.name == subnetNameDbwComputePlane)[0].name
-    : vnetExisting::subnetDbwComputePlane.name
+    : ''
 })
 
 var logCfg = ({
@@ -356,6 +350,20 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
           // TODO virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
           // TODO ipRules: advancedOptions.?networkAcls.?ipRules ?? []
         }
+    privateEndpoints: createNewVNET
+      ? [
+          // Private endpoint for Key Vault only for new VNET
+          {
+            name: '${name}-kv-pep'
+            location: location
+            privateDnsZoneResourceIds: [dnsZoneKv.outputs.resourceId]
+            tags: tags
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+            enableTelemetry: enableTelemetry
+            lock: lock
+          }
+        ]
+      : []
     //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
     publicNetworkAccess: 'Disabled'
     sku: empty(advancedOptions)
@@ -486,16 +494,16 @@ output location string = logCfg.location
 output resourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Virtual Network.')
-output virtualNetworkResourceId string = logCfg.resourceId
+output virtualNetworkResourceId string = vnetCfg.resourceId
 
 @description('The name of the Azure Virtual Network.')
-output virtualNetworkName string = logCfg.name
+output virtualNetworkName string = vnetCfg.name
 
 @description('The location of the Azure Virtual Network.')
-output virtualNetworkLocation string = logCfg.location
+output virtualNetworkLocation string = vnetCfg.location
 
 @description('The name of the Azure Virtual Network resource group.')
-output virtualNetworkResourceGroupName string = logCfg.resourceGroupName
+output virtualNetworkResourceGroupName string = vnetCfg.resourceGroupName
 
 @description('The resource ID of the Azure Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logCfg.resourceId
