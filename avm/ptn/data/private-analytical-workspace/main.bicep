@@ -344,6 +344,19 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
     enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
     location: location
     lock: lock
+    networkAcls: empty(advancedOptions)
+      ? {
+          // New default case that enables the firewall by default
+          bypass: 'None'
+          defaultAction: 'Deny'
+        }
+      : {
+          bypass: 'None'
+          defaultAction: 'Deny'
+          // TODO virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
+          // TODO ipRules: advancedOptions.?networkAcls.?ipRules ?? []
+        }
+    //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
     publicNetworkAccess: 'Disabled'
     sku: empty(advancedOptions)
       ? kvDefaultSku
@@ -497,16 +510,16 @@ output logAnalyticsWorkspaceLocation string = logCfg.location
 output logAnalyticsWorkspaceResourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Key Vault.')
-output keyVaultResourceId string = logCfg.resourceId
+output keyVaultResourceId string = kvCfg.resourceId
 
 @description('The name of the Azure Key Vault.')
-output keyVaultName string = logCfg.name
+output keyVaultName string = kvCfg.name
 
 @description('The location of the Azure Key Vault.')
-output keyVaultLocation string = logCfg.location
+output keyVaultLocation string = kvCfg.location
 
 @description('The name of the Azure Key Vault resource group.')
-output keyVaultResourceGroupName string = logCfg.resourceGroupName
+output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
 // ================ //
 // Definitions      //
