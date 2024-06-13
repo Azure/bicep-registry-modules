@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "9883583040461189210"
+      "version": "0.28.1.47646",
+      "templateHash": "9253206103047535758"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -474,6 +474,44 @@
         }
       },
       "nullable": true
+    },
+    "credentialType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the Automation Account credential."
+            }
+          },
+          "userName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The user name associated to the credential."
+            }
+          },
+          "password": {
+            "type": "securestring",
+            "metadata": {
+              "description": "Required. Password of the credential."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Description of the credential."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "credential/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -505,6 +543,13 @@
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
         "description": "Optional. The customer managed key definition."
+      }
+    },
+    "credentials": {
+      "$ref": "#/definitions/credentialType",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of credentials to be created in the automation account."
       }
     },
     "modules": {
@@ -790,6 +835,150 @@
         "automationAccount"
       ]
     },
+    "automationAccount_credentials": {
+      "condition": "[not(empty(parameters('credentials')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutomationAccount-Credentials', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "credentials": {
+            "value": "[parameters('credentials')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "17311442241252857733"
+            },
+            "name": "Automation Account Credential",
+            "description": "This module deploys Azure Automation Account Credential.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "credentialType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the Automation Account credential."
+                    }
+                  },
+                  "userName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The user name associated to the credential."
+                    }
+                  },
+                  "password": {
+                    "type": "securestring",
+                    "metadata": {
+                      "description": "Required. Password of the credential."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Description of the credential."
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "parameters": {
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "credentials": {
+              "$ref": "#/definitions/credentialType",
+              "metadata": {
+                "description": "Required. The credential definition."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "automationAccount_credential": {
+              "copy": {
+                "name": "automationAccount_credential",
+                "count": "[length(parameters('credentials'))]"
+              },
+              "type": "Microsoft.Automation/automationAccounts/credentials",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('credentials')[copyIndex()].name)]",
+              "properties": {
+                "password": "[parameters('credentials')[copyIndex()].password]",
+                "userName": "[parameters('credentials')[copyIndex()].userName]",
+                "description": "[coalesce(tryGet(parameters('credentials')[copyIndex()], 'description'), '')]"
+              },
+              "dependsOn": [
+                "automationAccount"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "array",
+              "metadata": {
+                "description": "The resource IDs of the credentials associated to the automation account."
+              },
+              "copy": {
+                "count": "[length(range(0, length(parameters('credentials'))))]",
+                "input": "[resourceId('Microsoft.Automation/automationAccounts/credentials', parameters('automationAccountName'), parameters('credentials')[range(0, length(parameters('credentials')))[copyIndex()]].name)]"
+              }
+            },
+            "name": {
+              "type": "array",
+              "metadata": {
+                "description": "The names of the credentials associated to the automation account."
+              },
+              "copy": {
+                "count": "[length(range(0, length(parameters('credentials'))))]",
+                "input": "[parameters('credentials')[range(0, length(parameters('credentials')))[copyIndex()]].name]"
+              }
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed credential."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
     "automationAccount_modules": {
       "copy": {
         "name": "automationAccount_modules",
@@ -830,8 +1019,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17695610509863036784"
+              "version": "0.28.1.47646",
+              "templateHash": "1661319858724328950"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module.",
@@ -972,8 +1161,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "138940659217362139"
+              "version": "0.28.1.47646",
+              "templateHash": "11730927882334055011"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule.",
@@ -1151,8 +1340,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "6946565957724859459"
+              "version": "0.28.1.47646",
+              "templateHash": "16990805873972671446"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook.",
@@ -1355,8 +1544,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "1753602189799388874"
+              "version": "0.28.1.47646",
+              "templateHash": "7852489714477748054"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule.",
@@ -1483,8 +1672,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "12833257216729067514"
+              "version": "0.28.1.47646",
+              "templateHash": "17408217027458282021"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable.",
@@ -1598,8 +1787,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "11747347606522833060"
+              "version": "0.28.1.47646",
+              "templateHash": "11327223922004680974"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -1917,8 +2106,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "14866221548688198425"
+              "version": "0.28.1.47646",
+              "templateHash": "5046214814278705138"
             },
             "name": "Automation Account Software Update Configurations",
             "description": "This module deploys an Azure Automation Account Software Update Configuration.",
