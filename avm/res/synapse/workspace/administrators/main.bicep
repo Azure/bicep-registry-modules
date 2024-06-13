@@ -12,7 +12,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
   name: workspaceName
 }
 
-resource synapse_workspace_administrator 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if (administrator.login != null) {
+resource synapse_workspace_administrator 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if (administrator.login != '') {
   name: 'activeDirectory'
   parent: workspace
   properties: {
@@ -38,14 +38,14 @@ output resourceGroupName string = resourceGroup().name
 
 @export()
 type adminType = {
-  @description('Optional. Workspace active directory administrator type.')
-  administratorType: string?
+  @description('Required. Workspace active directory administrator type.')
+  administratorType: string
 
-  @description('Optional. Login of the workspace active directory administrator.')
+  @description('Required. Login of the workspace active directory administrator.')
   @secure()
-  login: string?
+  login: string
 
-  @description('Optional. Object ID of the workspace active directory administrator.')
+  @description('Required. Object ID of the workspace active directory administrator.')
   @secure()
-  sid: string?
+  sid: string
 }

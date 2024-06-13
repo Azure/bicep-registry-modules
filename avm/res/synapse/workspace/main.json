@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "363597219812795065"
+      "templateHash": "5965481290140036947"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -440,23 +440,20 @@
       "properties": {
         "administratorType": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Workspace active directory administrator type."
+            "description": "Required. Workspace active directory administrator type."
           }
         },
         "login": {
           "type": "securestring",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Login of the workspace active directory administrator."
+            "description": "Required. Login of the workspace active directory administrator."
           }
         },
         "sid": {
           "type": "securestring",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Object ID of the workspace active directory administrator."
+            "description": "Required. Object ID of the workspace active directory administrator."
           }
         }
       },
@@ -531,7 +528,11 @@
     },
     "administrator": {
       "$ref": "#/definitions/adminType",
-      "defaultValue": {},
+      "defaultValue": {
+        "administratorType": "",
+        "login": "",
+        "sid": ""
+      },
       "metadata": {
         "description": "Optional. The Entra ID administrator for the synapse workspace."
       }
@@ -1143,7 +1144,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "13477545732982141232"
+              "templateHash": "10177877467215828228"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators.",
@@ -1155,23 +1156,20 @@
               "properties": {
                 "administratorType": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. Workspace active directory administrator type."
+                    "description": "Required. Workspace active directory administrator type."
                   }
                 },
                 "login": {
                   "type": "securestring",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. Login of the workspace active directory administrator."
+                    "description": "Required. Login of the workspace active directory administrator."
                   }
                 },
                 "sid": {
                   "type": "securestring",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. Object ID of the workspace active directory administrator."
+                    "description": "Required. Object ID of the workspace active directory administrator."
                   }
                 }
               },
@@ -1202,7 +1200,7 @@
               "name": "[parameters('workspaceName')]"
             },
             "synapse_workspace_administrator": {
-              "condition": "[not(equals(parameters('administrator').login, null()))]",
+              "condition": "[not(equals(parameters('administrator').login, ''))]",
               "type": "Microsoft.Synapse/workspaces/administrators",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), 'activeDirectory')]",

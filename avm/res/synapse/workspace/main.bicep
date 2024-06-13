@@ -33,7 +33,7 @@ param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
 
 import { adminType } from 'administrators/main.bicep'
 @description('Optional. The Entra ID administrator for the synapse workspace.')
-param administrator adminType = {}
+param administrator adminType = { administratorType: '', login: '', sid: '' }
 
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType

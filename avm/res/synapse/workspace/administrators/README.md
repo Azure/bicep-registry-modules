@@ -37,7 +37,7 @@ The administrators definition.
 - Required: Yes
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -49,21 +49,21 @@ The administrators definition.
 
 Workspace active directory administrator type.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `administrator.login`
 
 Login of the workspace active directory administrator.
 
-- Required: No
+- Required: Yes
 - Type: securestring
 
 ### Parameter: `administrator.sid`
 
 Object ID of the workspace active directory administrator.
 
-- Required: No
+- Required: Yes
 - Type: securestring
 
 ### Parameter: `workspaceName`

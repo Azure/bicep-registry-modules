@@ -838,9 +838,16 @@ The Entra ID administrator for the synapse workspace.
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      administratorType: ''
+      login: ''
+      sid: ''
+  }
+  ```
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -852,21 +859,21 @@ The Entra ID administrator for the synapse workspace.
 
 Workspace active directory administrator type.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `administrator.login`
 
 Login of the workspace active directory administrator.
 
-- Required: No
+- Required: Yes
 - Type: securestring
 
 ### Parameter: `administrator.sid`
 
 Object ID of the workspace active directory administrator.
 
-- Required: No
+- Required: Yes
 - Type: securestring
 
 ### Parameter: `allowedAadTenantIdsForLinking`
