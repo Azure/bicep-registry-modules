@@ -53,6 +53,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      certificate: {
+        thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        x509StoreName: 'My'
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'Service Fabric'
@@ -70,15 +74,6 @@ module testDeployment '../../../main.bicep' = [
         clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
         tenantId: tenant().tenantId
       }
-      certificateCommonNames: {
-        commonNames: [
-          {
-            certificateCommonName: 'certcommon'
-            certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-          }
-        ]
-        x509StoreName: ''
-      }
       clientCertificateCommonNames: [
         {
           certificateCommonName: 'clientcommoncert1'
@@ -88,16 +83,6 @@ module testDeployment '../../../main.bicep' = [
         {
           certificateCommonName: 'clientcommoncert2'
           certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
-          isAdmin: false
-        }
-      ]
-      clientCertificateThumbprints: [
-        {
-          certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-          isAdmin: false
-        }
-        {
-          certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
           isAdmin: false
         }
       ]

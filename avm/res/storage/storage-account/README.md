@@ -2160,7 +2160,7 @@ Allow or disallow cross AAD tenant object replication.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `allowedCopyScope`
 
