@@ -7,6 +7,7 @@ metadata owner = 'Azure/module-maintainers'
 @maxLength(60)
 param name string
 
+
 @description('Required. The name of the SKU will Determine the tier, size, family of the App Service Plan.')
 @metadata({
   example: '''
