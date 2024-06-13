@@ -31,6 +31,10 @@ param defaultDataLakeStorageFilesystem string
 @description('Optional. Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace\'s primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account.')
 param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
 
+import { adminType } from 'administrators/main.bicep'
+@description('Optional. The Entra ID administrator for the synapse workspace.')
+param administrator adminType = {}
+
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -133,47 +137,43 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.synapse-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.synapse-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
   name: name
@@ -246,51 +246,57 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
 
 // Workspace encryption with customer managed keys
 // - Assign Synapse Workspace MSI access to encryption key
-module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' =
-  if (encryptionActivateWorkspace) {
-    name: '${workspace.name}-cmk-rbac'
-    params: {
-      workspaceIndentityPrincipalId: workspace.identity.principalId
-      keyvaultName: !empty(customerManagedKey.?keyVaultResourceId) ? cMKKeyVault.name : ''
-      usesRbacAuthorization: !empty(customerManagedKey.?keyVaultResourceId)
-        ? cMKKeyVault.properties.enableRbacAuthorization
-        : true
-    }
-    scope: encryptionActivateWorkspace
-      ? resourceGroup(
-          split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-          split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup()
+module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivateWorkspace) {
+  name: '${workspace.name}-cmk-rbac'
+  params: {
+    workspaceIndentityPrincipalId: workspace.identity.principalId
+    keyvaultName: !empty(customerManagedKey.?keyVaultResourceId) ? cMKKeyVault.name : ''
+    usesRbacAuthorization: !empty(customerManagedKey.?keyVaultResourceId)
+      ? cMKKeyVault.properties.enableRbacAuthorization
+      : true
   }
+  scope: encryptionActivateWorkspace
+    ? resourceGroup(
+        split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+        split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+      )
+    : resourceGroup()
+}
 
 // - Workspace encryption - Activate Workspace
-module workspace_key 'key/main.bicep' =
-  if (encryptionActivateWorkspace) {
-    name: '${workspace.name}-cmk-activation'
-    params: {
-      name: customerManagedKey!.keyName
-      isActiveCMK: true
-      keyVaultResourceId: cMKKeyVault.id
-      workspaceName: workspace.name
-    }
-    dependsOn: [
-      workspace_cmk_rbac
-    ]
+module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
+  name: '${workspace.name}-cmk-activation'
+  params: {
+    name: customerManagedKey!.keyName
+    isActiveCMK: true
+    keyVaultResourceId: cMKKeyVault.id
+    workspaceName: workspace.name
   }
+  dependsOn: [
+    workspace_cmk_rbac
+  ]
+}
+
+// - Workspace Entra ID Administrator
+module workspace_administrator 'administrators/main.bicep' = if (!empty(administrator.login)) {
+  name: '${workspace.name}-administrator'
+  params: {
+    workspaceName: workspace.name
+    administrator: administrator
+  }
+}
 
 // Resource Lock
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: workspace
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: workspace
+}
 
 // RBAC
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
