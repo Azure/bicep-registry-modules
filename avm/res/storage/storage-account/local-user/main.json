@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "14593329616022153178"
+      "version": "0.28.1.47646",
+      "templateHash": "14968464858285923305"
     },
     "name": "Storage Account Local Users",
     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -101,12 +101,12 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-04-01",
       "name": "[parameters('storageAccountName')]"
     },
     "localUsers": {
       "type": "Microsoft.Storage/storageAccounts/localUsers",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
       "properties": {
         "hasSharedKey": "[parameters('hasSharedKey')]",

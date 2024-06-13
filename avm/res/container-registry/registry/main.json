@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15445287807627348186"
+      "version": "0.27.1.19265",
+      "templateHash": "10889694252440800848"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -523,7 +523,7 @@
         "enabled"
       ],
       "metadata": {
-        "description": "Optional. The value that indicates whether the quarantine policy is enabled or not."
+        "description": "Optional. The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'."
       }
     },
     "trustPolicyStatus": {
@@ -534,7 +534,7 @@
         "enabled"
       ],
       "metadata": {
-        "description": "Optional. The value that indicates whether the trust policy is enabled or not."
+        "description": "Optional. The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'."
       }
     },
     "retentionPolicyStatus": {
@@ -717,7 +717,7 @@
   },
   "variables": {
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "AcrDelete": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')]",
       "AcrImageSigner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6cef56e8-d556-48e5-a04f-b8e64114680f')]",
@@ -802,13 +802,8 @@
             "status": "[parameters('azureADAuthenticationAsArmPolicyStatus')]"
           },
           "exportPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('status', parameters('exportPolicyStatus')), null())]",
-          "quarantinePolicy": {
-            "status": "[parameters('quarantinePolicyStatus')]"
-          },
-          "trustPolicy": {
-            "type": "Notary",
-            "status": "[parameters('trustPolicyStatus')]"
-          },
+          "quarantinePolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('status', parameters('quarantinePolicyStatus')), null())]",
+          "trustPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('type', 'Notary', 'status', parameters('trustPolicyStatus')), null())]",
           "retentionPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('days', parameters('retentionPolicyDays'), 'status', parameters('retentionPolicyStatus')), null())]",
           "softDeletePolicy": {
             "retentionDays": "[parameters('softDeletePolicyDays')]",
@@ -943,8 +938,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "16451316437757175736"
+              "version": "0.27.1.19265",
+              "templateHash": "17370607380629293508"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication.",
@@ -1091,8 +1086,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17108035841365544326"
+              "version": "0.27.1.19265",
+              "templateHash": "15228477210534278013"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1232,8 +1227,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "10731035117081750792"
+              "version": "0.27.1.19265",
+              "templateHash": "12261942841024526503"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
