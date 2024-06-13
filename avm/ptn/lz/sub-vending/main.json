@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15102253576670931874"
+      "templateHash": "9023775947522532486"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -653,7 +653,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12115355563479136953"
+              "templateHash": "9397210340148497295"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -12993,7 +12993,7 @@
                       {
                         "addressPrefix": "[if(not(empty(parameters('resourceProviders'))), cidrSubnet(parameters('virtualNetworkDeploymentScriptAddressPrefix'), 24, 0), null())]",
                         "name": "ds-subnet-001",
-                        "networkSecurityGroupId": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg), '2022-09-01').outputs.resourceId.value, null())]",
+                        "networkSecurityGroupResourceId": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg), '2022-09-01').outputs.resourceId.value, null())]",
                         "serviceEndpoints": [
                           {
                             "service": "Microsoft.Storage"
