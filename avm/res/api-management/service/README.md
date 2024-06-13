@@ -286,6 +286,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         subscriptionRequired: false
       }
     ]
+    publicIpAddressId: '<publicIpAddressId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -303,6 +304,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    subnetResourceId: '<subnetResourceId>'
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
@@ -314,6 +316,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkType: 'Internal'
   }
 }
 ```
@@ -535,6 +538,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "publicIpAddressId": {
+      "value": "<publicIpAddressId>"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -554,6 +560,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
     "subscriptions": {
       "value": [
         {
@@ -568,6 +577,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualNetworkType": {
+      "value": "Internal"
     }
   }
 }
@@ -1107,6 +1119,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`policies`](#parameter-policies) | array | Policies. |
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
 | [`products`](#parameter-products) | array | Products. |
+| [`publicIpAddressId`](#parameter-publicipaddressid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
@@ -1531,6 +1544,14 @@ Products.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `publicIpAddressId`
+
+Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `restore`
 
