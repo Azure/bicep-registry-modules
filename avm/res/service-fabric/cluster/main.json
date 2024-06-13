@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "16398694168437365170"
+      "version": "0.28.1.47646",
+      "templateHash": "16663156727449762885"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -49,7 +49,7 @@
       },
       "nullable": true
     },
-    "certificateCommonNamesType": {
+    "certificateCommonNameType": {
       "type": "object",
       "properties": {
         "commonNames": {
@@ -299,7 +299,7 @@
       }
     },
     "certificateCommonNames": {
-      "$ref": "#/definitions/certificateCommonNamesType",
+      "$ref": "#/definitions/certificateCommonNameType",
       "metadata": {
         "description": "Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used."
       }
@@ -307,13 +307,13 @@
     "clientCertificateCommonNames": {
       "$ref": "#/definitions/clientCertificateCommonNameType",
       "metadata": {
-        "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster."
+        "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used."
       }
     },
     "clientCertificateThumbprints": {
       "$ref": "#/definitions/clientCertificateThumbprintType",
       "metadata": {
-        "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster."
+        "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used."
       }
     },
     "clusterCodeVersion": {
@@ -690,8 +690,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "13599042181504544220"
+              "version": "0.28.1.47646",
+              "templateHash": "10847125060034010702"
             },
             "name": "Service Fabric Cluster Application Types",
             "description": "This module deploys a Service Fabric Cluster Application Type.",

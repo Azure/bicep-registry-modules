@@ -456,7 +456,7 @@ type certificateType = {
     | 'TrustedPublisher')?
 }?
 
-type certificateCommonNamesType = {
+type certificateCommonNameType = {
   @description('Required. The list of server certificates referenced by common name that are used to secure the cluster.')
   commonNames: serverCertificateCommonNameType
 

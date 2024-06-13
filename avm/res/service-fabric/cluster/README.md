@@ -926,8 +926,8 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 | [`addOnFeatures`](#parameter-addonfeatures) | array | The list of add-on features to enable in the cluster. |
 | [`applicationTypes`](#parameter-applicationtypes) | array | Array of Service Fabric cluster application types. |
 | [`azureActiveDirectory`](#parameter-azureactivedirectory) | object | The settings to enable AAD authentication on the cluster. |
-| [`clientCertificateCommonNames`](#parameter-clientcertificatecommonnames) | array | The list of client certificates referenced by common name that are allowed to manage the cluster. |
-| [`clientCertificateThumbprints`](#parameter-clientcertificatethumbprints) | array | The list of client certificates referenced by thumbprint that are allowed to manage the cluster. |
+| [`clientCertificateCommonNames`](#parameter-clientcertificatecommonnames) | array | The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used. |
+| [`clientCertificateThumbprints`](#parameter-clientcertificatethumbprints) | array | The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used. |
 | [`clusterCodeVersion`](#parameter-clustercodeversion) | string | The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions. |
 | [`diagnosticsStorageAccountConfig`](#parameter-diagnosticsstorageaccountconfig) | object | The storage account information for storing Service Fabric diagnostic logs. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1146,7 +1146,7 @@ The settings to enable AAD authentication on the cluster.
 
 ### Parameter: `clientCertificateCommonNames`
 
-The list of client certificates referenced by common name that are allowed to manage the cluster.
+The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used.
 
 - Required: No
 - Type: array
@@ -1182,7 +1182,7 @@ Indicates if the client certificate has admin access to the cluster. Non admin c
 
 ### Parameter: `clientCertificateThumbprints`
 
-The list of client certificates referenced by thumbprint that are allowed to manage the cluster.
+The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used.
 
 - Required: No
 - Type: array
