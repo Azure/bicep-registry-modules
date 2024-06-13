@@ -366,20 +366,20 @@ module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
     params: {
       apiManagementServiceName: service.name
-      diagnosticName: contains(apidiagnostic, 'diagnosticName')
-        ? apidiagnostic.diagnosticName
-        : '${service.name}-diagnostics-${index}'
       apiName: apidiagnostic.apiName
       loggerName: apidiagnostic.loggerName
-      alwaysLog: apidiagnostic.?alwaysLog
-      backend: !empty(apidiagnostic.backend) ? apidiagnostic.backend : null
-      frontend: !empty(apidiagnostic.frontend) ? apidiagnostic.frontend : null
-      httpCorrelationProtocol: apidiagnostic.?httpCorrelationProtocol
-      logClientIp: apidiagnostic.?logClientIp
-      metrics: apidiagnostic.?metrics
-      operationNameFormat: apidiagnostic.?operationNameFormat
-      samplingPercentage: apidiagnostic.?samplingPercentage
-      verbosity: apidiagnostic.?verbosity
+      diagnosticName: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : null
+      alwaysLog: contains(apidiagnostic, 'alwaysLog') ? apidiagnostic.alwaysLog : 'allErrors'
+      backend: contains(apidiagnostic, 'backend') ? apidiagnostic.backend : {}
+      frontend: contains(apidiagnostic, 'frontend') ? apidiagnostic.frontend : {}
+      httpCorrelationProtocol: contains(apidiagnostic, 'httpCorrelationProtocol')
+        ? apidiagnostic.httpCorrelationProtocol
+        : 'Legacy'
+      logClientIp: contains(apidiagnostic, 'logClientIp') ? apidiagnostic.logClientIp : false
+      metrics: contains(apidiagnostic, 'metrics') ? apidiagnostic.metrics : false
+      operationNameFormat: contains(apidiagnostic, 'operationNameFormat') ? apidiagnostic.operationNameFormat : 'Name'
+      samplingPercentage: contains(apidiagnostic, 'samplingPercentage') ? apidiagnostic.samplingPercentage : 100
+      verbosity: contains(apidiagnostic, 'verbosity') ? apidiagnostic.verbosity : 'error'
     }
     dependsOn: [
       service_apis

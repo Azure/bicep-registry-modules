@@ -30,7 +30,9 @@ This module deploys an API Management Service API Diagnostics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
+| [`httpCorrelationProtocol`](#parameter-httpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights. |
+| [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights. |
+| [`operationNameFormat`](#parameter-operationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights. |
 
 **Optional parameters**
 
@@ -38,13 +40,11 @@ This module deploys an API Management Service API Diagnostics.
 | :-- | :-- | :-- |
 | [`alwaysLog`](#parameter-alwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
 | [`backend`](#parameter-backend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
-| [`diagnosticName`](#parameter-diagnosticname) | string | The name of the diagnostic. |
+| [`diagnosticName`](#parameter-diagnosticname) | string | Identifier of the diagnostics entity. |
 | [`frontend`](#parameter-frontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
-| [`httpCorrelationProtocol`](#parameter-httpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. |
 | [`logClientIp`](#parameter-logclientip) | bool | Log the ClientIP. Default is false. |
-| [`operationNameFormat`](#parameter-operationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Default is Name. |
-| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. |
-| [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. |
+| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100 |
+| [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. Default is "error". |
 
 ### Parameter: `apiManagementServiceName`
 
@@ -67,12 +67,44 @@ The name of the logger.
 - Required: Yes
 - Type: string
 
+### Parameter: `httpCorrelationProtocol`
+
+Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Default: `'Legacy'`
+- Allowed:
+  ```Bicep
+  [
+    'Legacy'
+    'None'
+    'W3C'
+  ]
+  ```
+
 ### Parameter: `metrics`
 
-Emit custom metrics via emit-metric policy. Required if using Application Insights.
+Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights.
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `False`
+
+### Parameter: `operationNameFormat`
+
+The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Default: `'Name'`
+- Allowed:
+  ```Bicep
+  [
+    'Name'
+    'URI'
+  ]
+  ```
 
 ### Parameter: `alwaysLog`
 
@@ -86,72 +118,56 @@ Specifies for what type of messages sampling settings should not apply.
 
 Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
 
-- Required: Yes
+- Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `diagnosticName`
 
-The name of the diagnostic.
+Identifier of the diagnostics entity.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'applicationinsights'
+    'azuremonitor'
+    'local'
+  ]
+  ```
 
 ### Parameter: `frontend`
 
 Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
 
-- Required: Yes
+- Required: No
 - Type: object
-
-### Parameter: `httpCorrelationProtocol`
-
-Sets correlation protocol to use for Application Insights diagnostics.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Legacy'
-    'None'
-    'W3C'
-  ]
-  ```
+- Default: `{}`
 
 ### Parameter: `logClientIp`
 
 Log the ClientIP. Default is false.
 
-- Required: Yes
+- Required: No
 - Type: bool
-
-### Parameter: `operationNameFormat`
-
-The format of the Operation Name for Application Insights telemetries. Default is Name.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Name'
-    'URI'
-  ]
-  ```
+- Default: `False`
 
 ### Parameter: `samplingPercentage`
 
-Rate of sampling for fixed-rate sampling.
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100
 
-- Required: Yes
+- Required: No
 - Type: int
+- Default: `100`
 
 ### Parameter: `verbosity`
 
-The verbosity level applied to traces emitted by trace policies.
+The verbosity level applied to traces emitted by trace policies. Default is "error".
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `'error'`
 - Allowed:
   ```Bicep
   [

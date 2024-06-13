@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15040012705656782712"
+      "templateHash": "1573463587736667224"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -767,7 +767,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "9315569786175173438"
+              "templateHash": "3709179786281114486"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -1188,7 +1188,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "12286346672343723519"
+                      "templateHash": "10511867464998400406"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics.",
@@ -1215,8 +1215,13 @@
                     },
                     "diagnosticName": {
                       "type": "string",
+                      "allowedValues": [
+                        "applicationinsights",
+                        "azuremonitor",
+                        "local"
+                      ],
                       "metadata": {
-                        "description": "Optional. The name of the diagnostic."
+                        "description": "Optional. Identifier of the diagnostics entity."
                       }
                     },
                     "alwaysLog": {
@@ -1228,64 +1233,72 @@
                     },
                     "backend": {
                       "type": "object",
+                      "defaultValue": {},
                       "metadata": {
                         "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
                       }
                     },
                     "frontend": {
                       "type": "object",
+                      "defaultValue": {},
                       "metadata": {
                         "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
                       }
                     },
                     "httpCorrelationProtocol": {
                       "type": "string",
+                      "defaultValue": "Legacy",
                       "allowedValues": [
                         "Legacy",
                         "None",
                         "W3C"
                       ],
                       "metadata": {
-                        "description": "Optional. Sets correlation protocol to use for Application Insights diagnostics."
+                        "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights."
                       }
                     },
                     "logClientIp": {
                       "type": "bool",
+                      "defaultValue": false,
                       "metadata": {
                         "description": "Optional. Log the ClientIP. Default is false."
                       }
                     },
                     "metrics": {
                       "type": "bool",
+                      "defaultValue": false,
                       "metadata": {
-                        "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
+                        "description": "Conditional. Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights."
                       }
                     },
                     "operationNameFormat": {
                       "type": "string",
+                      "defaultValue": "Name",
                       "allowedValues": [
                         "Name",
                         "URI"
                       ],
                       "metadata": {
-                        "description": "Optional. The format of the Operation Name for Application Insights telemetries. Default is Name."
+                        "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights."
                       }
                     },
                     "samplingPercentage": {
                       "type": "int",
+                      "defaultValue": 100,
                       "metadata": {
-                        "description": "Optional. Rate of sampling for fixed-rate sampling."
+                        "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100"
                       }
                     },
                     "verbosity": {
                       "type": "string",
+                      "defaultValue": "error",
                       "allowedValues": [
                         "error",
                         "information",
                         "verbose"
                       ],
                       "metadata": {
-                        "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+                        "description": "Optional. The verbosity level applied to traces emitted by trace policies. Default is \"error\"."
                       }
                     }
                   },
@@ -2057,36 +2070,22 @@
           "apiManagementServiceName": {
             "value": "[parameters('name')]"
           },
-          "diagnosticName": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'diagnosticName'), createObject('value', parameters('apiDiagnostics')[copyIndex()].diagnosticName), createObject('value', format('{0}-diagnostics-{1}', parameters('name'), copyIndex())))]",
           "apiName": {
             "value": "[parameters('apiDiagnostics')[copyIndex()].apiName]"
           },
           "loggerName": {
             "value": "[parameters('apiDiagnostics')[copyIndex()].loggerName]"
           },
-          "alwaysLog": {
-            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'alwaysLog')]"
-          },
-          "backend": "[if(not(empty(parameters('apiDiagnostics')[copyIndex()].backend)), createObject('value', parameters('apiDiagnostics')[copyIndex()].backend), createObject('value', null()))]",
-          "frontend": "[if(not(empty(parameters('apiDiagnostics')[copyIndex()].frontend)), createObject('value', parameters('apiDiagnostics')[copyIndex()].frontend), createObject('value', null()))]",
-          "httpCorrelationProtocol": {
-            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'httpCorrelationProtocol')]"
-          },
-          "logClientIp": {
-            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'logClientIp')]"
-          },
-          "metrics": {
-            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'metrics')]"
-          },
-          "operationNameFormat": {
-            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'operationNameFormat')]"
-          },
-          "samplingPercentage": {
-            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'samplingPercentage')]"
-          },
-          "verbosity": {
-            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'verbosity')]"
-          }
+          "diagnosticName": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'diagnosticName'), createObject('value', parameters('apiDiagnostics')[copyIndex()].diagnosticName), createObject('value', null()))]",
+          "alwaysLog": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'alwaysLog'), createObject('value', parameters('apiDiagnostics')[copyIndex()].alwaysLog), createObject('value', 'allErrors'))]",
+          "backend": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'backend'), createObject('value', parameters('apiDiagnostics')[copyIndex()].backend), createObject('value', createObject()))]",
+          "frontend": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'frontend'), createObject('value', parameters('apiDiagnostics')[copyIndex()].frontend), createObject('value', createObject()))]",
+          "httpCorrelationProtocol": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'httpCorrelationProtocol'), createObject('value', parameters('apiDiagnostics')[copyIndex()].httpCorrelationProtocol), createObject('value', 'Legacy'))]",
+          "logClientIp": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'logClientIp'), createObject('value', parameters('apiDiagnostics')[copyIndex()].logClientIp), createObject('value', false()))]",
+          "metrics": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'metrics'), createObject('value', parameters('apiDiagnostics')[copyIndex()].metrics), createObject('value', false()))]",
+          "operationNameFormat": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'operationNameFormat'), createObject('value', parameters('apiDiagnostics')[copyIndex()].operationNameFormat), createObject('value', 'Name'))]",
+          "samplingPercentage": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'samplingPercentage'), createObject('value', parameters('apiDiagnostics')[copyIndex()].samplingPercentage), createObject('value', 100))]",
+          "verbosity": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'verbosity'), createObject('value', parameters('apiDiagnostics')[copyIndex()].verbosity), createObject('value', 'error'))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2095,7 +2094,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12286346672343723519"
+              "templateHash": "10511867464998400406"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -2122,8 +2121,13 @@
             },
             "diagnosticName": {
               "type": "string",
+              "allowedValues": [
+                "applicationinsights",
+                "azuremonitor",
+                "local"
+              ],
               "metadata": {
-                "description": "Optional. The name of the diagnostic."
+                "description": "Optional. Identifier of the diagnostics entity."
               }
             },
             "alwaysLog": {
@@ -2135,64 +2139,72 @@
             },
             "backend": {
               "type": "object",
+              "defaultValue": {},
               "metadata": {
                 "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
               }
             },
             "frontend": {
               "type": "object",
+              "defaultValue": {},
               "metadata": {
                 "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
               }
             },
             "httpCorrelationProtocol": {
               "type": "string",
+              "defaultValue": "Legacy",
               "allowedValues": [
                 "Legacy",
                 "None",
                 "W3C"
               ],
               "metadata": {
-                "description": "Optional. Sets correlation protocol to use for Application Insights diagnostics."
+                "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights."
               }
             },
             "logClientIp": {
               "type": "bool",
+              "defaultValue": false,
               "metadata": {
                 "description": "Optional. Log the ClientIP. Default is false."
               }
             },
             "metrics": {
               "type": "bool",
+              "defaultValue": false,
               "metadata": {
-                "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
+                "description": "Conditional. Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights."
               }
             },
             "operationNameFormat": {
               "type": "string",
+              "defaultValue": "Name",
               "allowedValues": [
                 "Name",
                 "URI"
               ],
               "metadata": {
-                "description": "Optional. The format of the Operation Name for Application Insights telemetries. Default is Name."
+                "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights."
               }
             },
             "samplingPercentage": {
               "type": "int",
+              "defaultValue": 100,
               "metadata": {
-                "description": "Optional. Rate of sampling for fixed-rate sampling."
+                "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100"
               }
             },
             "verbosity": {
               "type": "string",
+              "defaultValue": "error",
               "allowedValues": [
                 "error",
                 "information",
                 "verbose"
               ],
               "metadata": {
-                "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+                "description": "Optional. The verbosity level applied to traces emitted by trace policies. Default is \"error\"."
               }
             }
           },
