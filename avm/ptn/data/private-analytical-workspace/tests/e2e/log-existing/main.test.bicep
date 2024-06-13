@@ -56,3 +56,20 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+output resourceId string = testDeployment[0].outputs.resourceId
+output name string = testDeployment[0].outputs.name
+output location string = testDeployment[0].outputs.location
+output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
+output virtualNetworkResourceId string = testDeployment[0].outputs.resourceId
+output virtualNetworkName string = testDeployment[0].outputs.name
+output virtualNetworkLocation string = testDeployment[0].outputs.location
+output virtualNetworkResourceGroupName string = testDeployment[0].outputs.resourceGroupName
+output logAnalyticsWorkspaceResourceId string = testDeployment[0].outputs.resourceId
+output logAnalyticsWorkspaceName string = testDeployment[0].outputs.name
+output logAnalyticsWorkspaceLocation string = testDeployment[0].outputs.location
+output logAnalyticsWorkspaceResourceGroupName string = testDeployment[0].outputs.resourceGroupName
+output keyVaultResourceId string = testDeployment[0].outputs.resourceId
+output keyVaultName string = testDeployment[0].outputs.name
+output keyVaultLocation string = testDeployment[0].outputs.location
+output keyVaultResourceGroupName string = testDeployment[0].outputs.resourceGroupName
