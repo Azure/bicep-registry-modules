@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Certificate'
-metadata description = 'This instance deploys the module with a certificate.'
+metadata name = 'Windows Web App for Containers, using only defaults'
+metadata description = 'This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with a certificate.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-servicefabric.clusters-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sfccer'
+param serviceShort string = 'wswcamin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -31,6 +31,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -41,31 +50,23 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      managementEndpoint: 'https://${namePrefix}${serviceShort}001.westeurope.cloudapp.azure.com:19080'
-      reliabilityLevel: 'None'
-      certificate: {
-        thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        x509StoreName: 'My'
+      location: resourceLocation
+      kind: 'app,container,windows'
+      serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
+      siteConfig: {
+        appSettings: [
+          {
+            name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+            value: 'false'
+          }
+        ]
+        windowsFxVersion: 'DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest'
       }
-      nodeTypes: [
-        {
-          applicationPorts: {
-            endPort: 30000
-            startPort: 20000
-          }
-          clientConnectionEndpointPort: 19000
-          durabilityLevel: 'Bronze'
-          ephemeralPorts: {
-            endPort: 65534
-            startPort: 49152
-          }
-          httpGatewayEndpointPort: 19080
-          isPrimary: true
-          name: 'Node01'
-        }
-      ]
     }
+
+    dependsOn: [
+      nestedDependencies
+    ]
   }
 ]
