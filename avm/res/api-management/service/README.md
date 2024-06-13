@@ -137,11 +137,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     apiDiagnostics: [
       {
         apiName: 'echo-api'
-        diagnosticName: 'applicationinsights'
-        httpCorrelationProtocol: 'None'
         loggerName: 'logger'
         metrics: true
-        operationNameFormat: 'Name'
       }
     ]
     apis: [
@@ -360,11 +357,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "apiName": "echo-api",
-          "diagnosticName": "applicationinsights",
-          "httpCorrelationProtocol": "None",
           "loggerName": "logger",
-          "metrics": true,
-          "operationNameFormat": "Name"
+          "metrics": true
         }
       ]
     },
