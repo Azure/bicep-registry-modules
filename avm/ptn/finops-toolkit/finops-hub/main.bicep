@@ -174,6 +174,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+#disable-next-line no-deployments-resources
 resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
   properties: {
