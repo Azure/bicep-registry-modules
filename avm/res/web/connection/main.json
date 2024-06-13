@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "153462740137838298"
+      "version": "0.28.1.47646",
+      "templateHash": "2460380322221205337"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection.",
@@ -103,20 +103,161 @@
         }
       },
       "nullable": true
+    },
+    "apiReferenceType": {
+      "type": "object",
+      "properties": {
+        "brandColor": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Brand color."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom API description."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The display name of the API connection."
+          }
+        },
+        "iconUri": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The icon URI."
+          }
+        },
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ID of the API connection."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the API connection."
+          }
+        },
+        "swagger": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The swagger URL. For Bicep, you can use the any() function."
+          }
+        },
+        "type": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource reference type."
+          }
+        }
+      }
+    },
+    "statusType": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "etag": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. The etag of the error."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. The location of the resource."
+              }
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. Code of the status."
+                  }
+                },
+                "message": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. Description of the status."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Optional. Connection Error Properties."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "description": "Optional. The tags of the error."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Optional. The error of the connection."
+          }
+        },
+        "status": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The status of the connection."
+          }
+        },
+        "target": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The target of the error."
+          }
+        }
+      }
+    },
+    "testLinkType": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The HTTP Method."
+          }
+        },
+        "requestUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. Test link request URI."
+          }
+        }
+      }
     }
   },
   "parameters": {
-    "api": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Specific values for some API connections."
-      }
-    },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource."
+        "example": "azureblob",
+        "description": "Required. Connection name for connection. It can change depending on the resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location of the deployment."
       }
     },
     "enableTelemetry": {
@@ -124,6 +265,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "api": {
+      "$ref": "#/definitions/apiReferenceType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specific values for some API connections."
       }
     },
     "customParameterValues": {
@@ -136,14 +284,7 @@
     "displayName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource."
-      }
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Optional. Location of the deployment."
+        "description": "Required. Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource."
       }
     },
     "nonSecretParameterValues": {
@@ -157,7 +298,15 @@
       "type": "secureObject",
       "nullable": true,
       "metadata": {
+        "example": "  {\r\n      //connectionString: '[listKeys(resourceId(parameters('servicebus_resourceGroup'),'Microsoft.ServiceBus/namespaces/AuthorizationRules', parameters('serviceBusName'), 'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]'\r\n      connectionString: 'list'\r\n      }\r\n      ",
         "description": "Optional. Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource."
+      }
+    },
+    "parameterValueSet": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Additional parameter Value Set."
       }
     },
     "roleAssignments": {
@@ -168,6 +317,9 @@
     },
     "statuses": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/statusType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Status of the connection."
@@ -183,11 +335,15 @@
       "type": "object",
       "nullable": true,
       "metadata": {
+        "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
     "testLinks": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/testLinkType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Links to test the API connection."
@@ -237,7 +393,8 @@
         "parameterValues": "[parameters('parameterValues')]",
         "nonSecretParameterValues": "[parameters('nonSecretParameterValues')]",
         "testLinks": "[parameters('testLinks')]",
-        "statuses": "[parameters('statuses')]"
+        "statuses": "[parameters('statuses')]",
+        "parameterValueSet": "[parameters('parameterValueSet')]"
       }
     },
     "connection_lock": {

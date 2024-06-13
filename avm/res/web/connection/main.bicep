@@ -2,23 +2,27 @@ metadata name = 'API Connections'
 metadata description = 'This module deploys an Azure API Connection.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Specific values for some API connections.')
-param api object?
-
-@description('Required. Connection name for connection. Example: \'azureblob\' when using blobs. It can change depending on the resource.')
+@description('Required. Connection name for connection. It can change depending on the resource.')
 param name string
+
+@description('Optional. Location of the deployment.')
+param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+// ============ //
+// Parameters   //
+// ============ //
+
+@description('Optional. Specific values for some API connections.')
+param api apiReferenceType?
+
 @description('Optional. Dictionary of custom parameter values for specific connections.')
 param customParameterValues object?
 
-@description('Required. Display name connection. Example: \'blobconnection\' when using blobs. It can change depending on the resource.')
+@description('Required. Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource.')
 param displayName string
-
-@description('Optional. Location of the deployment.')
-param location string = resourceGroup().location
 
 @description('Optional. Dictionary of nonsecret parameter values.')
 #disable-next-line secure-secrets-in-params // Not a secret
@@ -26,22 +30,38 @@ param nonSecretParameterValues object?
 
 @description('Optional. Connection strings or access keys for connection. Example: \'accountName\' and \'accessKey\' when using blobs.  It can change depending on the resource.')
 @secure()
+@metadata({
+  example: '''
+      connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'
+  '''
+})
 param parameterValues object?
+
+@description('Optional. Additional parameter Value Set.')
+param parameterValueSet object?
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Status of the connection.')
-param statuses array?
+param statuses statusType[]?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
+@metadata({
+  example: '''
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  '''
+})
 @description('Optional. Tags of the resource.')
 param tags object?
 
 @description('Optional. Links to test the API connection.')
-param testLinks array?
+param testLinks testLinkType[]?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -57,24 +77,27 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.web-connection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+// ============== //
+// Resources      //
+// ============== //
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.web-connection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource connection 'Microsoft.Web/connections@2016-06-01' = {
   name: name
@@ -88,20 +111,21 @@ resource connection 'Microsoft.Web/connections@2016-06-01' = {
     nonSecretParameterValues: nonSecretParameterValues
     testLinks: testLinks
     statuses: statuses
+    #disable-next-line BCP037
+    parameterValueSet: parameterValueSet
   }
 }
 
-resource connection_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: connection
+resource connection_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: connection
+}
 
 resource connection_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -122,6 +146,10 @@ resource connection_roleAssignments 'Microsoft.Authorization/roleAssignments@202
     scope: connection
   }
 ]
+
+// ============ //
+// Outputs      //
+// ============ //
 
 @description('The resource ID of the connection.')
 output resourceId string = connection.id
@@ -169,3 +197,65 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type apiReferenceType = {
+  @description('Optional. The Brand color.')
+  brandColor: string?
+
+  @description('Optional. The custom API description.')
+  description: string?
+
+  @description('Optional. The display name of the API connection.')
+  displayName: string?
+
+  @description('Optional. The icon URI.')
+  iconUri: string?
+
+  @description('Required. The ID of the API connection.')
+  id: string
+
+  @description('Optional. The name of the API connection.')
+  name: string?
+
+  @description('Optional. The swagger URL. For Bicep, you can use the any() function.')
+  swagger: string?
+
+  @description('Optional. The resource reference type.')
+  'type': string?
+}
+
+type statusType = {
+  @description('Optional. The error of the connection.')
+  error: {
+    @description('Optional. The etag of the error.')
+    etag: string
+
+    @description('Optional. The location of the resource.')
+    location: string
+
+    @description('Optional. Connection Error Properties.')
+    properties: {
+      @description('Optional. Code of the status.')
+      code: string
+
+      @description('Optional. Description of the status.')
+      message: string
+    }
+
+    @description('Optional. The tags of the error.')
+    tags: object
+  }
+  @description('Optional. The status of the connection.')
+  status: string
+
+  @description('Optional. The target of the error.')
+  target: string
+}
+
+type testLinkType = {
+  @description('Optional. The HTTP Method.')
+  method: string
+
+  @description('Optional. Test link request URI.')
+  requestUri: string
+}

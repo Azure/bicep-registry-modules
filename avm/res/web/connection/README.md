@@ -34,7 +34,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -214,7 +215,97 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module connection 'br/public:avm/res/web/connection:<version>' = {
+  name: 'connectionDeployment'
+  params: {
+    // Required parameters
+    displayName: 'Service Bus'
+    name: 'servicebus'
+    // Non-required parameters
+    api: {
+      id: '<id>'
+    }
+    location: '<location>'
+    parameterValueSet: {
+      name: 'managedIdentityAuth'
+      values: {
+        namespaceEndpoint: {
+          value: '<value>'
+        }
+      }
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "displayName": {
+      "value": "Service Bus"
+    },
+    "name": {
+      "value": "servicebus"
+    },
+    // Non-required parameters
+    "api": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "parameterValueSet": {
+      "value": {
+        "name": "managedIdentityAuth",
+        "values": {
+          "namespaceEndpoint": {
+            "value": "<value>"
+          }
+        }
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -293,8 +384,8 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource. |
-| [`name`](#parameter-name) | string | Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource. |
+| [`displayName`](#parameter-displayname) | string | Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource. |
+| [`name`](#parameter-name) | string | Connection name for connection. It can change depending on the resource. |
 
 **Optional parameters**
 
@@ -307,6 +398,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`nonSecretParameterValues`](#parameter-nonsecretparametervalues) | object | Dictionary of nonsecret parameter values. |
 | [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource. |
+| [`parameterValueSet`](#parameter-parametervalueset) | object | Additional parameter Value Set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`statuses`](#parameter-statuses) | array | Status of the connection. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -314,14 +406,14 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 ### Parameter: `displayName`
 
-Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource.
+Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `name`
 
-Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource.
+Connection name for connection. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
@@ -332,6 +424,80 @@ Specific values for some API connections.
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-apiid) | string | The ID of the API connection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`brandColor`](#parameter-apibrandcolor) | string | The Brand color. |
+| [`description`](#parameter-apidescription) | string | The custom API description. |
+| [`displayName`](#parameter-apidisplayname) | string | The display name of the API connection. |
+| [`iconUri`](#parameter-apiiconuri) | string | The icon URI. |
+| [`name`](#parameter-apiname) | string | The name of the API connection. |
+| [`swagger`](#parameter-apiswagger) | string | The swagger URL. For Bicep, you can use the any() function. |
+| [`type`](#parameter-apitype) | string | The resource reference type. |
+
+### Parameter: `api.id`
+
+The ID of the API connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `api.brandColor`
+
+The Brand color.
+
+- Required: No
+- Type: string
+
+### Parameter: `api.description`
+
+The custom API description.
+
+- Required: No
+- Type: string
+
+### Parameter: `api.displayName`
+
+The display name of the API connection.
+
+- Required: No
+- Type: string
+
+### Parameter: `api.iconUri`
+
+The icon URI.
+
+- Required: No
+- Type: string
+
+### Parameter: `api.name`
+
+The name of the API connection.
+
+- Required: No
+- Type: string
+
+### Parameter: `api.swagger`
+
+The swagger URL. For Bicep, you can use the any() function.
+
+- Required: No
+- Type: string
+
+### Parameter: `api.type`
+
+The resource reference type.
+
+- Required: No
+- Type: string
 
 ### Parameter: `customParameterValues`
 
@@ -405,6 +571,13 @@ Connection strings or access keys for connection. Example: 'accountName' and 'ac
 
 - Required: No
 - Type: secureObject
+
+### Parameter: `parameterValueSet`
+
+Additional parameter Value Set.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 
