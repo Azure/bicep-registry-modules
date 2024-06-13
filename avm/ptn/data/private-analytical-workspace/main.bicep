@@ -388,16 +388,16 @@ output location string = logCfg.location
 output resourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Virtual Network.')
-output virtualNetworkResourceId string = vnetCfg.resourceId
+output virtualNetworkResourceId string = logCfg.resourceId
 
 @description('The name of the Azure Virtual Network.')
-output virtualNetworkName string = vnetCfg.name
+output virtualNetworkName string = logCfg.name
 
 @description('The location of the Azure Virtual Network.')
-output virtualNetworkLocation string = vnetCfg.location
+output virtualNetworkLocation string = logCfg.location
 
 @description('The name of the Azure Virtual Network resource group.')
-output virtualNetworkResourceGroupName string = vnetCfg.resourceGroupName
+output virtualNetworkResourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logCfg.resourceId
