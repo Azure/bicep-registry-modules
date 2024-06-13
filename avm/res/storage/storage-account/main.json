@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13250084048652501613"
+      "templateHash": "40246928960516757"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -631,7 +631,7 @@
     },
     "allowCrossTenantReplication": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Allow or disallow cross AAD tenant object replication."
       }
