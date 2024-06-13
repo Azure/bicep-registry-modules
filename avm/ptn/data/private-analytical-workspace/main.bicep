@@ -296,6 +296,59 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (create
   }
 }
 
+module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
+  name: '${name}-kv'
+  params: {
+    // Required parameters
+    name: '${name}-kv'
+    // Non-required parameters
+    createMode: empty(advancedOptions)
+      ? kvDefaultCreateMode
+      : advancedOptions.?keyVault.?createMode ?? kvDefaultCreateMode
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'audit'
+          }
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.resourceId
+      }
+    ]
+    enablePurgeProtection: empty(advancedOptions)
+      ? kvDefaultEnablePurgeProtection
+      : advancedOptions.?keyVault.?enablePurgeProtection ?? kvDefaultEnablePurgeProtection
+    enableRbacAuthorization: true
+    enableSoftDelete: empty(advancedOptions)
+      ? kvDefaultEnableSoftDelete
+      : advancedOptions.?keyVault.?enableSoftDelete ?? kvDefaultEnableSoftDelete
+    enableTelemetry: enableTelemetry
+    enableVaultForDeployment: false
+    enableVaultForTemplateDeployment: false
+    enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
+    location: location
+    lock: lock
+    //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
+    publicNetworkAccess: 'Disabled'
+    sku: empty(advancedOptions)
+      ? kvDefaultSku
+      : (advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku)
+    softDeleteRetentionInDays: empty(advancedOptions)
+      ? kvDefaultSoftDeleteRetentionInDays
+      : advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
+    tags: tags
+  }
+}
+
 module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks) {
   name: '${name}-dbw'
   params: {
