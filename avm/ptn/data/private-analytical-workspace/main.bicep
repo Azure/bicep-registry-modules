@@ -66,7 +66,9 @@ var vnetCfg = ({
 
   subnetResourceIdPrivateLink: createNewVNET
     ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available at zero index
-    : ''
+    : vnetExisting::subnetPrivateLink.id
+  subnetNameDbwControlPlane: createNewVNET ? subnetNameDbwControlPlane : vnetExisting::subnetDbwControlPlane.name
+  subnetNameDbwComputePlane: createNewVNET ? subnetNameDbwComputePlane : vnetExisting::subnetDbwComputePlane.name
 })
 
 var logCfg = ({
