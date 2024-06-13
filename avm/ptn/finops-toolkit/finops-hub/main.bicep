@@ -156,7 +156,7 @@ module keyVault 'modules/keyVault.bicep' = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource defaultTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.finopstoolkit-finopshub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -175,7 +175,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 #disable-next-line no-deployments-resources
-resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource defaultTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
   properties: {
     mode: 'Incremental'
