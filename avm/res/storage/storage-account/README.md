@@ -25,14 +25,14 @@ This module deploys a Storage Account.
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2021-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2022-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-05-01/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2021-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2021-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2021-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2021-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -44,13 +44,14 @@ The following section provides usage examples for the module, which were used to
 
 - [Deploying as a Blob Storage](#example-1-deploying-as-a-blob-storage)
 - [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-5-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-6-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-7-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-8-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Using only changefeed configuration](#example-3-using-only-changefeed-configuration)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-6-deploying-with-a-nfs-file-share)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-7-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-8-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-9-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -164,7 +165,67 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Using only changefeed configuration_
+
+This instance deploys the module with the minimum set of required parameters for the changefeed configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssachf001'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    blobServices: {
+      changeFeedEnabled: true
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssachf001"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "blobServices": {
+      "value": {
+        "changeFeedEnabled": true
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -181,6 +242,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
+    location: '<location>'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
   }
 }
 ```
@@ -204,6 +270,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     "allowBlobPublicAccess": {
       "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
     }
   }
 }
@@ -212,7 +287,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1078,7 +1153,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Deploying with a NFS File Share_
+### Example 6: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -1152,7 +1227,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 7: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -1256,7 +1331,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 8: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -1376,7 +1451,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 8: _Deploying as Storage Account version 1_
+### Example 9: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -1428,7 +1503,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1649,7 +1724,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
     requireInfrastructureEncryption: true
     sasExpirationPeriod: '180.00:00:00'
-    skuName: 'Standard_LRS'
+    skuName: 'Standard_ZRS'
     tableServices: {
       diagnosticSettings: [
         {
@@ -1940,7 +2015,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": "180.00:00:00"
     },
     "skuName": {
-      "value": "Standard_LRS"
+      "value": "Standard_ZRS"
     },
     "tableServices": {
       "value": {
@@ -1990,7 +2065,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Storage Account. Must be lower-case. |
-| [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 
 **Conditional parameters**
 
@@ -2020,6 +2094,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
+| [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
 | [`largeFileSharesState`](#parameter-largefilesharesstate) | string | Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares). |
 | [`localUsers`](#parameter-localusers) | array | Local users to deploy for SFTP authentication. |
@@ -2028,6 +2103,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managementPolicyRules`](#parameter-managementpolicyrules) | array | The Storage Account ManagementPolicies Rules. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Set the minimum TLS version on request to storage. |
+| [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`queueServices`](#parameter-queueservices) | object | Queue service and queues to create. |
@@ -2045,111 +2121,6 @@ Name of the Storage Account. Must be lower-case.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `networkAcls`
-
-Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-  }
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`bypass`](#parameter-networkaclsbypass) | string | Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics. |
-| [`defaultAction`](#parameter-networkaclsdefaultaction) | string | Specifies the default action of allow or deny when no other rules match. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
-| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. |
-| [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
-
-### Parameter: `networkAcls.bypass`
-
-Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureServices'
-    'AzureServices, Logging'
-    'AzureServices, Logging, Metrics'
-    'AzureServices, Metrics'
-    'Logging'
-    'Logging, Metrics'
-    'Metrics'
-    'None'
-  ]
-  ```
-
-### Parameter: `networkAcls.defaultAction`
-
-Specifies the default action of allow or deny when no other rules match.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Allow'
-    'Deny'
-  ]
-  ```
-
-### Parameter: `networkAcls.ipRules`
-
-Sets the IP ACL rules.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkAcls.resourceAccessRules`
-
-Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`resourceId`](#parameter-networkaclsresourceaccessrulesresourceid) | string | The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included. |
-| [`tenantId`](#parameter-networkaclsresourceaccessrulestenantid) | string | The ID of the tenant in which the resource resides in. |
-
-### Parameter: `networkAcls.resourceAccessRules.resourceId`
-
-The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `networkAcls.resourceAccessRules.tenantId`
-
-The ID of the tenant in which the resource resides in.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `networkAcls.virtualNetworkRules`
-
-Sets the virtual network rules.
-
-- Required: No
-- Type: array
 
 ### Parameter: `accessTier`
 
@@ -2189,7 +2160,7 @@ Allow or disallow cross AAD tenant object replication.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `allowedCopyScope`
 
@@ -2469,6 +2440,20 @@ Enables local users feature, if set to true.
 - Type: bool
 - Default: `False`
 
+### Parameter: `keyType`
+
+The keyType to use with Queue & Table services.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Account'
+    'Service'
+  ]
+  ```
+
 ### Parameter: `kind`
 
 Type of Storage Account to create.
@@ -2604,6 +2589,99 @@ Set the minimum TLS version on request to storage.
     'TLS1_2'
   ]
   ```
+
+### Parameter: `networkAcls`
+
+Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bypass`](#parameter-networkaclsbypass) | string | Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics. |
+| [`defaultAction`](#parameter-networkaclsdefaultaction) | string | Specifies the default action of allow or deny when no other rules match. |
+| [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
+| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. |
+| [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
+
+### Parameter: `networkAcls.bypass`
+
+Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureServices'
+    'AzureServices, Logging'
+    'AzureServices, Logging, Metrics'
+    'AzureServices, Metrics'
+    'Logging'
+    'Logging, Metrics'
+    'Metrics'
+    'None'
+  ]
+  ```
+
+### Parameter: `networkAcls.defaultAction`
+
+Specifies the default action of allow or deny when no other rules match.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkAcls.ipRules`
+
+Sets the IP ACL rules.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkAcls.resourceAccessRules`
+
+Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-networkaclsresourceaccessrulesresourceid) | string | The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included. |
+| [`tenantId`](#parameter-networkaclsresourceaccessrulestenantid) | string | The ID of the tenant in which the resource resides in. |
+
+### Parameter: `networkAcls.resourceAccessRules.resourceId`
+
+The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.resourceAccessRules.tenantId`
+
+The ID of the tenant in which the resource resides in.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.virtualNetworkRules`
+
+Sets the virtual network rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `privateEndpoints`
 
@@ -3123,7 +3201,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 
 ## Notes
 

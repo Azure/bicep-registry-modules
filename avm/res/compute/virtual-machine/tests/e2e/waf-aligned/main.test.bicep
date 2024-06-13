@@ -49,6 +49,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
+    backupManagementServiceApplicationObjectId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Tenant-specific Backup Management Service Enterprise Application Object Id
   }
 }
 
@@ -104,6 +105,11 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIpNameSuffix: '-pip-01'
+                zones: [
+                  1
+                  2
+                  3
+                ]
                 roleAssignments: [
                   {
                     roleDefinitionIdOrName: 'Reader'
@@ -112,11 +118,6 @@ module testDeployment '../../../main.bicep' = [
                   }
                 ]
               }
-              zones: [
-                '1'
-                '2'
-                '3'
-              ]
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               diagnosticSettings: [
                 {
@@ -160,9 +161,9 @@ module testDeployment '../../../main.bicep' = [
       ]
       osDisk: {
         caching: 'ReadWrite'
-        createOption: 'fromImage'
+        createOption: 'FromImage'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -170,7 +171,7 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
-      availabilityZone: 2
+      zone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
       backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
       backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -179,7 +180,7 @@ module testDeployment '../../../main.bicep' = [
           caching: 'ReadOnly'
           createOption: 'Empty'
           deleteOption: 'Delete'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
@@ -188,7 +189,7 @@ module testDeployment '../../../main.bicep' = [
           caching: 'ReadOnly'
           createOption: 'Empty'
           deleteOption: 'Delete'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
@@ -239,6 +240,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionDependencyAgentConfig: {
         enabled: true
+        enableAMA: true
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

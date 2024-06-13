@@ -11,14 +11,18 @@ param appName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Required. Type of slot to deploy.')
+@description('Required. Type of site to deploy.')
 @allowed([
   'functionapp' // function app windows os
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
   'app,linux' // linux web app
-  'app' // normal web app
+  'app' // windows web app
+  'linux,api' // linux api app
+  'api' // windows api app
+  'app,linux,container' // linux container app
+  'app,container,windows' // windows container app
 ])
 param kind string
 
@@ -47,7 +51,9 @@ param storageAccountRequired bool = false
 param virtualNetworkSubnetId string?
 
 @description('Optional. The site config object.')
-param siteConfig object?
+param siteConfig object = {
+  alwaysOn: true
+}
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
@@ -158,7 +164,7 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
@@ -232,30 +238,28 @@ resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
   }
 }
 
-module slot_appsettings 'config--appsettings/main.bicep' =
-  if (!empty(appSettingsKeyValuePairs)) {
-    name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
-    params: {
-      slotName: slot.name
-      appName: app.name
-      kind: kind
-      storageAccountResourceId: storageAccountResourceId
-      storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
-      appInsightResourceId: appInsightResourceId
-      appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    }
+module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
+  params: {
+    slotName: slot.name
+    appName: app.name
+    kind: kind
+    storageAccountResourceId: storageAccountResourceId
+    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
+    appInsightResourceId: appInsightResourceId
+    appSettingsKeyValuePairs: appSettingsKeyValuePairs
   }
+}
 
-module slot_authsettingsv2 'config--authsettingsv2/main.bicep' =
-  if (!empty(authSettingV2Configuration)) {
-    name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AuthSettingsV2'
-    params: {
-      slotName: slot.name
-      appName: app.name
-      kind: kind
-      authSettingV2Configuration: authSettingV2Configuration ?? {}
-    }
+module slot_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authSettingV2Configuration)) {
+  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AuthSettingsV2'
+  params: {
+    slotName: slot.name
+    appName: app.name
+    kind: kind
+    authSettingV2Configuration: authSettingV2Configuration ?? {}
   }
+}
 
 module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [
   for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
@@ -281,17 +285,16 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
   }
 ]
 
-resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: slot
+resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: slot
+}
 
 resource slot_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -342,12 +345,13 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Slot-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${name}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
@@ -360,7 +364,7 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' 
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
@@ -459,6 +463,9 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
@@ -522,6 +529,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {

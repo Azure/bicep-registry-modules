@@ -26,10 +26,10 @@ param sku string = 'Standard'
 param createMode string = 'Default'
 
 @description('Optional. Disables all authentication methods other than AAD authentication.')
-param disableLocalAuth bool = false
+param disableLocalAuth bool = true
 
-@description('Optional. Property specifying whether protection against purge is enabled for this configuration store.')
-param enablePurgeProtection bool = false
+@description('Optional. Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier.')
+param enablePurgeProtection bool = true
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -48,6 +48,9 @@ param customerManagedKey customerManagedKeyType
 
 @description('Optional. All Key / Values to create. Requires local authentication to be enabled.')
 param keyValues array?
+
+@description('Optional. All Replicas to create.')
+param replicaLocations array?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -198,6 +201,16 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
   }
 ]
 
+module configurationStore_replicas 'replicas/main.bicep' = [
+  for (replicaLocation, index) in (replicaLocations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'
+    params: {
+      appConfigurationName: configurationStore.name
+      replicaLocation: replicaLocation
+      name: '${replicaLocation}replica'
+    }
+  }
+]
 resource configurationStore_lock 'Microsoft.Authorization/locks@2020-05-01' =
   if (!empty(lock ?? {}) && lock.?kind != 'None') {
     name: lock.?name ?? 'lock-${name}'
@@ -263,9 +276,10 @@ resource configurationStore_roleAssignments 'Microsoft.Authorization/roleAssignm
 module configurationStore_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-configurationStore-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(configurationStore.id, '/'))}-${privateEndpoint.?service ?? 'configurationStores'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(configurationStore.id, '/'))}-${privateEndpoint.?service ?? 'configurationStores'}-${index}'
@@ -278,7 +292,7 @@ module configurationStore_privateEndpoints 'br/public:avm/res/network/private-en
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(configurationStore.id, '/'))}-${privateEndpoint.?service ?? 'configurationStores'}-${index}'
@@ -377,6 +391,9 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
@@ -392,7 +409,8 @@ type privateEndpointType = {
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
   manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
@@ -439,6 +457,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {

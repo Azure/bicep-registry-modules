@@ -1,0 +1,202 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.170.59819",
+      "templateHash": "5227498596204234250"
+    },
+    "name": "Azure SQL Server Audit Settings",
+    "description": "This module deploys an Azure SQL Server Audit Settings.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the audit settings."
+      }
+    },
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The Name of SQL Server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "state": {
+      "type": "string",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Required. The resource group of the SQL Server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "auditActionsAndGroups": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies the Actions-Groups and Actions to audit."
+      }
+    },
+    "isAzureMonitorTargetEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
+      }
+    },
+    "isDevopsAuditEnabled": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor."
+      }
+    },
+    "isManagedIdentityInUse": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether Managed Identity is used to access blob storage."
+      }
+    },
+    "isStorageSecondaryKeyInUse": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies whether storageAccountAccessKey value is the storage's secondary key."
+      }
+    },
+    "queueDelayMs": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed."
+      }
+    },
+    "retentionDays": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies the number of days to keep in the audit logs in the storage account."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. A blob storage to hold the auditing storage account."
+      }
+    }
+  },
+  "resources": {
+    "server": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[parameters('serverName')]"
+    },
+    "auditSettings": {
+      "type": "Microsoft.Sql/servers/auditingSettings",
+      "apiVersion": "2023-08-01-preview",
+      "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
+      "properties": {
+        "state": "[parameters('state')]",
+        "auditActionsAndGroups": "[parameters('auditActionsAndGroups')]",
+        "isAzureMonitorTargetEnabled": "[parameters('isAzureMonitorTargetEnabled')]",
+        "isDevopsAuditEnabled": "[parameters('isDevopsAuditEnabled')]",
+        "isManagedIdentityInUse": "[parameters('isManagedIdentityInUse')]",
+        "isStorageSecondaryKeyInUse": "[parameters('isStorageSecondaryKeyInUse')]",
+        "queueDelayMs": "[parameters('queueDelayMs')]",
+        "retentionDays": "[parameters('retentionDays')]",
+        "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
+        "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
+        "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
+      },
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "storageAccount_sbdc_rbac": {
+      "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-stau-rbac', parameters('serverName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+          },
+          "managedInstanceIdentityPrincipalId": {
+            "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.170.59819",
+              "templateHash": "14931947659838606269"
+            }
+          },
+          "parameters": {
+            "storageAccountName": {
+              "type": "string"
+            },
+            "managedInstanceIdentityPrincipalId": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+              "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedInstanceIdentityPrincipalId')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                "principalId": "[parameters('managedInstanceIdentityPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "server"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed audit settings."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed audit settings."
+      },
+      "value": "[resourceId('Microsoft.Sql/servers/auditingSettings', parameters('serverName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed audit settings."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -11,11 +11,8 @@ metadata description = 'This instance deploys the module for a VM with dedicated
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinnvidia'
+param serviceShort string = 'cvmwinnv'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -24,8 +21,8 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be ued in the AVM testing subscription
-var tempLocation = 'eastus'
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation = 'eastus'
 
 // ============ //
 // Dependencies //
@@ -35,14 +32,14 @@ var tempLocation = 'eastus'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: tempLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, tempLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: tempLocation
+    location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -54,9 +51,9 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, tempLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: tempLocation
+      location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
       imageReference: {
@@ -65,7 +62,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
-      availabilityZone: 0
+      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -78,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
-        diskSizeGB: '128'
+        diskSizeGB: 128
         caching: 'ReadWrite'
         managedDisk: {
           storageAccountType: 'Premium_LRS'

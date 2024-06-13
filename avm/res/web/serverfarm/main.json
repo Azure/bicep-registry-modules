@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "12495804892051718765"
+      "version": "0.27.1.19265",
+      "templateHash": "3135450909992165111"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -201,11 +201,17 @@
         "description": "Required. Name of the app service plan."
       }
     },
-    "sku": {
-      "type": "object",
+    "skuName": {
+      "type": "string",
       "metadata": {
-        "example": "  {\n    name: 'P1v3'\n    tier: 'Premium'\n    size: 'P1v3'\n    family: 'P'\n    capacity: 3\n  }\n  ",
-        "description": "Required. Defines the name, tier, size, family and capacity of the App Service Plan."
+        "example": "  'F1'\n  'B1'\n  'P1v3'\n  'I1v2'\n  ",
+        "description": "Required. The name of the SKU will Determine the tier, size, family of the App Service Plan."
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Number of workers associated with the App Service Plan."
       }
     },
     "location": {
@@ -231,7 +237,7 @@
     },
     "reserved": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": "[equals(parameters('kind'), 'Linux')]",
       "metadata": {
         "description": "Conditional. Defaults to false when creating Windows/app App Service Plan. Required if creating a Linux App Service Plan and must be set to true."
       }
@@ -285,9 +291,9 @@
     },
     "zoneRedundant": {
       "type": "bool",
-      "defaultValue": "[if(or(equals(parameters('sku').tier, 'Premium'), equals(parameters('sku').tier, 'ElasticPremium')), true(), false())]",
+      "defaultValue": "[if(or(startsWith(parameters('skuName'), 'P'), startsWith(parameters('skuName'), 'EP')), true(), false())]",
       "metadata": {
-        "description": "Optional. Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs)."
+        "description": "Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs)."
       }
     },
     "lock": {
@@ -362,7 +368,10 @@
       "kind": "[parameters('kind')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "sku": "[parameters('sku')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "capacity": "[parameters('skuCapacity')]"
+      },
       "properties": {
         "workerTierName": "[parameters('workerTierName')]",
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentId'))), createObject('id', parameters('appServiceEnvironmentId')), null())]",

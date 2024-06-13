@@ -61,7 +61,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Required parameters
     name: 'rsvmin001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     replicationAlertSettings: {
       customEmailAddresses: [
@@ -96,9 +95,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       "value": "rsvmin001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -141,7 +137,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Required parameters
     name: '<name>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     replicationFabrics: [
       {
@@ -224,9 +219,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -571,7 +563,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -960,9 +951,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -1365,7 +1353,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1737,9 +1724,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -2181,6 +2165,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
@@ -2376,6 +2361,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 

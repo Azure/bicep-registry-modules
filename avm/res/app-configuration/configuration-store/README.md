@@ -1,10 +1,5 @@
 # App Configuration Stores `[Microsoft.AppConfiguration/configurationStores]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an App Configuration Store.
 
 ## Navigation
@@ -22,6 +17,7 @@ This module deploys an App Configuration Store.
 | :-- | :-- |
 | `Microsoft.AppConfiguration/configurationStores` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2023-03-01/configurationStores) |
 | `Microsoft.AppConfiguration/configurationStores/keyValues` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2023-03-01/configurationStores/keyValues) |
+| `Microsoft.AppConfiguration/configurationStores/replicas` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2023-03-01/configurationStores/replicas) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -58,6 +54,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Required parameters
     name: 'accmin001'
     // Non-required parameters
+    enablePurgeProtection: '<enablePurgeProtection>'
     location: '<location>'
   }
 }
@@ -80,6 +77,9 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "accmin001"
     },
     // Non-required parameters
+    "enablePurgeProtection": {
+      "value": "<enablePurgeProtection>"
+    },
     "location": {
       "value": "<location>"
     }
@@ -112,8 +112,8 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    disableLocalAuth: false
-    enablePurgeProtection: false
+    disableLocalAuth: '<disableLocalAuth>'
+    enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
         contentType: 'contentType'
@@ -167,10 +167,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     },
     "disableLocalAuth": {
-      "value": false
+      "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
-      "value": false
+      "value": "<enablePurgeProtection>"
     },
     "keyValues": {
       "value": [
@@ -239,8 +239,8 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: false
-    enablePurgeProtection: false
+    disableLocalAuth: '<disableLocalAuth>'
+    enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
         contentType: 'contentType'
@@ -270,6 +270,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         '<managedIdentityResourceId>'
       ]
     }
+    replicaLocations: [
+      'centralus'
+      'westus'
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -334,10 +338,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       ]
     },
     "disableLocalAuth": {
-      "value": false
+      "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
-      "value": false
+      "value": "<enablePurgeProtection>"
     },
     "keyValues": {
       "value": [
@@ -375,6 +379,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "replicaLocations": {
+      "value": [
+        "centralus",
+        "westus"
+      ]
     },
     "roleAssignments": {
       "value": [
@@ -429,8 +439,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     name: 'accpe001'
     // Non-required parameters
     createMode: 'Default'
-    disableLocalAuth: false
-    enablePurgeProtection: false
+    enablePurgeProtection: '<enablePurgeProtection>'
     location: '<location>'
     privateEndpoints: [
       {
@@ -476,11 +485,8 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     "createMode": {
       "value": "Default"
     },
-    "disableLocalAuth": {
-      "value": false
-    },
     "enablePurgeProtection": {
-      "value": false
+      "value": "<enablePurgeProtection>"
     },
     "location": {
       "value": "<location>"
@@ -541,8 +547,8 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: false
-    enablePurgeProtection: false
+    disableLocalAuth: '<disableLocalAuth>'
+    enablePurgeProtection: '<enablePurgeProtection>'
     keyValues: [
       {
         contentType: 'contentType'
@@ -551,6 +557,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     ]
     location: '<location>'
+    replicaLocations: [
+      'centralus'
+      'westus'
+    ]
     softDeleteRetentionInDays: 1
     tags: {
       Environment: 'Non-Prod'
@@ -592,10 +602,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       ]
     },
     "disableLocalAuth": {
-      "value": false
+      "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
-      "value": false
+      "value": "<enablePurgeProtection>"
     },
     "keyValues": {
       "value": [
@@ -608,6 +618,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "location": {
       "value": "<location>"
+    },
+    "replicaLocations": {
+      "value": [
+        "centralus",
+        "westus"
+      ]
     },
     "softDeleteRetentionInDays": {
       "value": 1
@@ -643,7 +659,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disables all authentication methods other than AAD authentication. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store. |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyValues`](#parameter-keyvalues) | array | All Key / Values to create. Requires local authentication to be enabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -651,6 +667,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`replicaLocations`](#parameter-replicalocations) | array | All Replicas to create. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | Pricing tier of App Configuration. |
 | [`softDeleteRetentionInDays`](#parameter-softdeleteretentionindays) | int | The amount of time in days that the configuration store will be retained when it is soft deleted. |
@@ -858,15 +875,15 @@ Disables all authentication methods other than AAD authentication.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enablePurgeProtection`
 
-Property specifying whether protection against purge is enabled for this configuration store.
+Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 
@@ -980,10 +997,12 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
+| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -1153,7 +1172,7 @@ Specify the name of lock.
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -1178,6 +1197,20 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -1295,6 +1328,13 @@ Whether or not public network access is allowed for this resource. For security 
     'Enabled'
   ]
   ```
+
+### Parameter: `replicaLocations`
+
+All Replicas to create.
+
+- Required: No
+- Type: array
 
 ### Parameter: `roleAssignments`
 

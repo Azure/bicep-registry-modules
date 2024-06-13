@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "18064037455551234601"
+      "version": "0.28.1.47646",
+      "templateHash": "3871470071443638506"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting.",
@@ -27,7 +27,11 @@
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
         "app,linux",
-        "app"
+        "app",
+        "linux,api",
+        "api",
+        "app,linux,container",
+        "app,container,windows"
       ],
       "metadata": {
         "description": "Required. Type of site to deploy."

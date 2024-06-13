@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11085405057722780022"
+      "version": "0.26.170.59819",
+      "templateHash": "9575484808117369324"
     },
     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -42,7 +42,7 @@
   "resources": [
     {
       "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2023-08-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
       "properties": {
         "diffBackupIntervalInHours": "[parameters('diffBackupIntervalInHours')]",

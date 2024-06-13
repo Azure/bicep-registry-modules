@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13860799899517512764"
+      "version": "0.28.1.47646",
+      "templateHash": "7463227074634701879"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service.",
@@ -184,12 +184,12 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-04-01",
       "name": "[parameters('storageAccountName')]"
     },
     "fileServices": {
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
       "properties": {
         "protocolSettings": "[parameters('protocolSettings')]",
@@ -264,7 +264,7 @@
             "value": "[coalesce(parameters('shares'), createArray())[copyIndex()].name]"
           },
           "accessTier": {
-            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2021-09-01', 'full').kind, 'FileStorage'), 'Premium', 'TransactionOptimized'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2023-04-01', 'full').kind, 'FileStorage'), 'Premium', 'TransactionOptimized'))]"
           },
           "enabledProtocols": {
             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'enabledProtocols')]"
@@ -286,8 +286,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "18405917853511220559"
+              "version": "0.28.1.47646",
+              "templateHash": "1342480740201032357"
             },
             "name": "Storage Account File Shares",
             "description": "This module deploys a Storage Account File Share.",
@@ -436,7 +436,7 @@
             "storageAccount::fileService": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts/fileServices",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]",
               "dependsOn": [
                 "storageAccount"
@@ -445,7 +445,7 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2023-04-01",
               "name": "[parameters('storageAccountName')]"
             },
             "fileShare": {
@@ -486,8 +486,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "16221226236637657314"
+                      "version": "0.28.1.47646",
+                      "templateHash": "8779226603522513073"
                     }
                   },
                   "parameters": {

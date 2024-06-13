@@ -34,13 +34,13 @@ param managementIPResourceID string = ''
 param managementIPAddressObject object = {}
 
 @description('Optional. Collection of application rule collections used by Azure Firewall.')
-param applicationRuleCollections array = []
+param applicationRuleCollections applicationRuleCollectionType
 
 @description('Optional. Collection of network rule collections used by Azure Firewall.')
-param networkRuleCollections array = []
+param networkRuleCollections networkRuleCollectionType
 
 @description('Optional. Collection of NAT rule collections used by Azure Firewall.')
-param natRuleCollections array = []
+param natRuleCollections natRuleCollectionType
 
 @description('Optional. Resource ID of the Firewall Policy that should be attached.')
 param firewallPolicyId string = ''
@@ -61,9 +61,9 @@ param threatIntelMode string = 'Deny'
 
 @description('Optional. Zone numbers e.g. 1,2,3.')
 param zones array = [
-  '1'
-  '2'
-  '3'
+  1
+  2
+  3
 ]
 
 @description('Optional. The diagnostic settings of the service.')
@@ -143,7 +143,7 @@ var managementIPConfiguration = {
         id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
       }
     },
-    (!empty(publicIPResourceID) || !empty(managementIPAddressObject))
+    (!empty(managementIPResourceID) || !empty(managementIPAddressObject))
       ? {
           // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
           publicIPAddress: {
@@ -169,92 +169,87 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.network-azurefirewall.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-azurefirewall.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' =
-  if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
-    name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
-    params: {
-      name: publicIPAddressObject.name
-      publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId')
-        ? (!(empty(publicIPAddressObject.publicIPPrefixResourceId))
-            ? publicIPAddressObject.publicIPPrefixResourceId
-            : '')
-        : ''
-      publicIPAllocationMethod: contains(publicIPAddressObject, 'publicIPAllocationMethod')
-        ? (!(empty(publicIPAddressObject.publicIPAllocationMethod))
-            ? publicIPAddressObject.publicIPAllocationMethod
-            : 'Static')
-        : 'Static'
-      skuName: contains(publicIPAddressObject, 'skuName')
-        ? (!(empty(publicIPAddressObject.skuName)) ? publicIPAddressObject.skuName : 'Standard')
-        : 'Standard'
-      skuTier: contains(publicIPAddressObject, 'skuTier')
-        ? (!(empty(publicIPAddressObject.skuTier)) ? publicIPAddressObject.skuTier : 'Regional')
-        : 'Regional'
-      roleAssignments: contains(publicIPAddressObject, 'roleAssignments')
-        ? (!empty(publicIPAddressObject.roleAssignments) ? publicIPAddressObject.roleAssignments : [])
-        : []
-      diagnosticSettings: publicIPAddressObject.?diagnosticSettings
-      location: location
-      lock: lock
-      tags: publicIPAddressObject.?tags ?? tags
-      zones: zones
-      enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
-    }
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.4.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
+  params: {
+    name: publicIPAddressObject.name
+    publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId')
+      ? (!(empty(publicIPAddressObject.publicIPPrefixResourceId)) ? publicIPAddressObject.publicIPPrefixResourceId : '')
+      : ''
+    publicIPAllocationMethod: contains(publicIPAddressObject, 'publicIPAllocationMethod')
+      ? (!(empty(publicIPAddressObject.publicIPAllocationMethod))
+          ? publicIPAddressObject.publicIPAllocationMethod
+          : 'Static')
+      : 'Static'
+    skuName: contains(publicIPAddressObject, 'skuName')
+      ? (!(empty(publicIPAddressObject.skuName)) ? publicIPAddressObject.skuName : 'Standard')
+      : 'Standard'
+    skuTier: contains(publicIPAddressObject, 'skuTier')
+      ? (!(empty(publicIPAddressObject.skuTier)) ? publicIPAddressObject.skuTier : 'Regional')
+      : 'Regional'
+    roleAssignments: contains(publicIPAddressObject, 'roleAssignments')
+      ? (!empty(publicIPAddressObject.roleAssignments) ? publicIPAddressObject.roleAssignments : [])
+      : []
+    diagnosticSettings: publicIPAddressObject.?diagnosticSettings
+    location: location
+    lock: lock
+    tags: publicIPAddressObject.?tags ?? tags
+    zones: zones
+    enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
   }
+}
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' =
-  if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
-    name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
-    params: {
-      name: contains(managementIPAddressObject, 'name')
-        ? (!(empty(managementIPAddressObject.name)) ? managementIPAddressObject.name : '${name}-mip')
-        : '${name}-mip'
-      publicIpPrefixResourceId: contains(managementIPAddressObject, 'managementIPPrefixResourceId')
-        ? (!(empty(managementIPAddressObject.publicIPPrefixResourceId))
-            ? managementIPAddressObject.publicIPPrefixResourceId
-            : '')
-        : ''
-      publicIPAllocationMethod: contains(managementIPAddressObject, 'managementIPAllocationMethod')
-        ? (!(empty(managementIPAddressObject.publicIPAllocationMethod))
-            ? managementIPAddressObject.publicIPAllocationMethod
-            : 'Static')
-        : 'Static'
-      skuName: contains(managementIPAddressObject, 'skuName')
-        ? (!(empty(managementIPAddressObject.skuName)) ? managementIPAddressObject.skuName : 'Standard')
-        : 'Standard'
-      skuTier: contains(managementIPAddressObject, 'skuTier')
-        ? (!(empty(managementIPAddressObject.skuTier)) ? managementIPAddressObject.skuTier : 'Regional')
-        : 'Regional'
-      roleAssignments: contains(managementIPAddressObject, 'roleAssignments')
-        ? (!empty(managementIPAddressObject.roleAssignments) ? managementIPAddressObject.roleAssignments : [])
-        : []
-      diagnosticSettings: managementIPAddressObject.?diagnosticSettings
-      location: location
-      tags: managementIPAddressObject.?tags ?? tags
-      zones: zones
-      enableTelemetry: managementIPAddressObject.?enableTelemetry ?? enableTelemetry
-    }
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.4.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
+  params: {
+    name: contains(managementIPAddressObject, 'name')
+      ? (!(empty(managementIPAddressObject.name)) ? managementIPAddressObject.name : '${name}-mip')
+      : '${name}-mip'
+    publicIpPrefixResourceId: contains(managementIPAddressObject, 'managementIPPrefixResourceId')
+      ? (!(empty(managementIPAddressObject.managementIPPrefixResourceId))
+          ? managementIPAddressObject.managementIPPrefixResourceId
+          : '')
+      : ''
+    publicIPAllocationMethod: contains(managementIPAddressObject, 'managementIPAllocationMethod')
+      ? (!(empty(managementIPAddressObject.managementIPAllocationMethod))
+          ? managementIPAddressObject.managementIPAllocationMethod
+          : 'Static')
+      : 'Static'
+    skuName: contains(managementIPAddressObject, 'skuName')
+      ? (!(empty(managementIPAddressObject.skuName)) ? managementIPAddressObject.skuName : 'Standard')
+      : 'Standard'
+    skuTier: contains(managementIPAddressObject, 'skuTier')
+      ? (!(empty(managementIPAddressObject.skuTier)) ? managementIPAddressObject.skuTier : 'Regional')
+      : 'Regional'
+    roleAssignments: contains(managementIPAddressObject, 'roleAssignments')
+      ? (!empty(managementIPAddressObject.roleAssignments) ? managementIPAddressObject.roleAssignments : [])
+      : []
+    diagnosticSettings: managementIPAddressObject.?diagnosticSettings
+    location: location
+    tags: managementIPAddressObject.?tags ?? tags
+    zones: zones
+    enableTelemetry: managementIPAddressObject.?enableTelemetry ?? enableTelemetry
   }
+}
 
 resource azureFirewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
   name: name
@@ -275,9 +270,9 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
           name: azureSkuName
           tier: azureSkuTier
         }
-        applicationRuleCollections: applicationRuleCollections
-        natRuleCollections: natRuleCollections
-        networkRuleCollections: networkRuleCollections
+        applicationRuleCollections: applicationRuleCollections ?? []
+        natRuleCollections: natRuleCollections ?? []
+        networkRuleCollections: networkRuleCollections ?? []
       }
     : {
         firewallPolicy: !empty(firewallPolicyId)
@@ -298,17 +293,16 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
       }
 }
 
-resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: azureFirewall
+resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: azureFirewall
+}
 
 resource azureFirewall_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -378,14 +372,14 @@ output ipConfAzureFirewallSubnet object = contains(azureFirewall.properties, 'ip
   ? azureFirewall.properties.ipConfigurations[0]
   : {}
 
-@description('List of Application Rule Collections.')
-output applicationRuleCollections array = applicationRuleCollections
+@description('List of Application Rule Collections used by Azure Firewall.')
+output applicationRuleCollections array = applicationRuleCollections ?? []
 
-@description('List of Network Rule Collections.')
-output networkRuleCollections array = networkRuleCollections
+@description('List of Network Rule Collections used by Azure Firewall.')
+output networkRuleCollections array = networkRuleCollections ?? []
 
-@description('Collection of NAT rule collections used by Azure Firewall.')
-output natRuleCollections array = natRuleCollections
+@description('List of NAT rule collections used by Azure Firewall.')
+output natRuleCollections array = natRuleCollections ?? []
 
 @description('The location the resource was deployed into.')
 output location string = azureFirewall.location
@@ -467,4 +461,155 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
+}[]?
+
+type natRuleCollectionType = {
+  @description('Required. Name of the NAT rule collection.')
+  name: string
+
+  @description('Required. Properties of the azure firewall NAT rule collection.')
+  properties: {
+    @description('Required. The action type of a NAT rule collection.')
+    action: {
+      @description('Required. The type of action.')
+      type: 'Dnat' | 'Snat'
+    }
+
+    @description('Required. Priority of the NAT rule collection.')
+    @minValue(100)
+    @maxValue(65000)
+    priority: int
+
+    @description('Required. Collection of rules used by a NAT rule collection.')
+    rules: {
+      @description('Required. Name of the NAT rule.')
+      name: string
+
+      @description('Optional. Description of the rule.')
+      description: string?
+
+      @description('Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.')
+      protocols: ('TCP' | 'UDP' | 'Any' | 'ICMP')[]
+
+      @description('Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.')
+      destinationAddresses: string[]?
+
+      @description('Optional. List of destination ports.')
+      destinationPorts: string[]?
+
+      @description('Optional. List of source IP addresses for this rule.')
+      sourceAddresses: string[]?
+
+      @description('Optional. List of source IpGroups for this rule.')
+      sourceIpGroups: string[]?
+
+      @description('Optional. The translated address for this NAT rule.')
+      translatedAddress: string?
+
+      @description('Optional. The translated FQDN for this NAT rule.')
+      translatedFqdn: string?
+
+      @description('Optional. The translated port for this NAT rule.')
+      translatedPort: string?
+    }[]
+  }
+}[]?
+
+type applicationRuleCollectionType = {
+  @description('Required. Name of the application rule collection.')
+  name: string
+
+  @description('Required. Properties of the azure firewall application rule collection.')
+  properties: {
+    @description('Required. The action type of a rule collection.')
+    action: {
+      @description('Required. The type of action.')
+      type: 'Allow' | 'Deny'
+    }
+
+    @description('Required. Priority of the application rule collection.')
+    @minValue(100)
+    @maxValue(65000)
+    priority: int
+
+    @description('Required. Collection of rules used by a application rule collection.')
+    rules: {
+      @description('Required. Name of the application rule.')
+      name: string
+
+      @description('Optional. Description of the rule.')
+      description: string?
+
+      @description('Required. Array of ApplicationRuleProtocols.')
+      protocols: {
+        @description('Optional. Port number for the protocol.')
+        @maxValue(64000)
+        port: int?
+
+        @description('Required. Protocol type.')
+        protocolType: 'Http' | 'Https' | 'Mssql'
+      }[]
+
+      @description('Optional. List of FQDN Tags for this rule.')
+      fqdnTags: string[]?
+
+      @description('Optional. List of FQDNs for this rule.')
+      targetFqdns: string[]?
+
+      @description('Optional. List of source IP addresses for this rule.')
+      sourceAddresses: string[]?
+
+      @description('Optional. List of source IpGroups for this rule.')
+      sourceIpGroups: string[]?
+    }[]
+  }
+}[]?
+
+type networkRuleCollectionType = {
+  @description('Required. Name of the network rule collection.')
+  name: string
+
+  @description('Required. Properties of the azure firewall network rule collection.')
+  properties: {
+    @description('Required. The action type of a rule collection.')
+    action: {
+      @description('Required. The type of action.')
+      type: 'Allow' | 'Deny'
+    }
+
+    @description('Required. Priority of the network rule collection.')
+    @minValue(100)
+    @maxValue(65000)
+    priority: int
+
+    @description('Required. Collection of rules used by a network rule collection.')
+    rules: {
+      @description('Required. Name of the network rule.')
+      name: string
+
+      @description('Optional. Description of the rule.')
+      description: string?
+
+      @description('Required. Array of AzureFirewallNetworkRuleProtocols.')
+      protocols: ('TCP' | 'UDP' | 'Any' | 'ICMP')[]
+
+      @description('Optional. List of destination IP addresses.')
+      destinationAddresses: string[]?
+
+      @description('Optional. List of destination FQDNs.')
+      destinationFqdns: string[]?
+
+      @description('Optional. List of destination IP groups for this rule.')
+      destinationIpGroups: string[]?
+
+      @description('Optional. List of destination ports.')
+      destinationPorts: string[]?
+
+      @description('Optional. List of source IP addresses for this rule.')
+      sourceAddresses: string[]?
+
+      @description('Optional. List of source IpGroups for this rule.')
+      sourceIpGroups: string[]?
+    }[]
+  }
 }[]?

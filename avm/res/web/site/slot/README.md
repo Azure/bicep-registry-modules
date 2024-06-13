@@ -31,7 +31,7 @@ This module deploys a Web or Function App Deployment Slot.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | Type of slot to deploy. |
+| [`kind`](#parameter-kind) | string | Type of site to deploy. |
 | [`name`](#parameter-name) | string | Name of the slot. |
 
 **Conditional parameters**
@@ -85,19 +85,23 @@ This module deploys a Web or Function App Deployment Slot.
 
 ### Parameter: `kind`
 
-Type of slot to deploy.
+Type of site to deploy.
 
 - Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
+    'api'
     'app'
+    'app,container,windows'
     'app,linux'
+    'app,linux,container'
     'functionapp'
     'functionapp,linux'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
+    'linux,api'
   ]
   ```
 
@@ -517,6 +521,8 @@ Configuration details for private endpoints.
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
+| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -711,6 +717,20 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -949,6 +969,12 @@ The site config object.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      alwaysOn: true
+  }
+  ```
 
 ### Parameter: `storageAccountRequired`
 
@@ -1028,7 +1054,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 
 ## Notes
 

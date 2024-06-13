@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "12764984503745572183"
+      "version": "0.28.1.47646",
+      "templateHash": "13436161316184945032"
     },
     "name": "Site Slot App Settings",
     "description": "This module deploys a Site Slot App Setting.",
@@ -33,10 +33,14 @@
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
         "app,linux",
-        "app"
+        "app",
+        "linux,api",
+        "api",
+        "app,linux,container",
+        "app,container,windows"
       ],
       "metadata": {
-        "description": "Required. Type of slot to deploy."
+        "description": "Required. Type of site to deploy."
       }
     },
     "storageAccountResourceId": {

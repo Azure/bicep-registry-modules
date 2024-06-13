@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'allow-app-rules'
           properties: {
             action: {
-              type: 'allow'
+              type: 'Allow'
             }
             priority: 100
             rules: [
@@ -86,12 +86,12 @@ module testDeployment '../../../main.bicep' = [
                 name: 'allow-ase-tags'
                 protocols: [
                   {
-                    port: '80'
-                    protocolType: 'HTTP'
+                    port: 80
+                    protocolType: 'Http'
                   }
                   {
-                    port: '443'
-                    protocolType: 'HTTPS'
+                    port: 443
+                    protocolType: 'Https'
                   }
                 ]
                 sourceAddresses: [
@@ -102,12 +102,12 @@ module testDeployment '../../../main.bicep' = [
                 name: 'allow-ase-management'
                 protocols: [
                   {
-                    port: '80'
-                    protocolType: 'HTTP'
+                    port: 80
+                    protocolType: 'Http'
                   }
                   {
-                    port: '443'
-                    protocolType: 'HTTPS'
+                    port: 443
+                    protocolType: 'Https'
                   }
                 ]
                 sourceAddresses: [
@@ -145,7 +145,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'allow-network-rules'
           properties: {
             action: {
-              type: 'allow'
+              type: 'Allow'
             }
             priority: 100
             rules: [
@@ -163,6 +163,22 @@ module testDeployment '../../../main.bicep' = [
                 ]
                 sourceAddresses: [
                   '*'
+                ]
+              }
+              {
+                name: 'allow-azure-devops'
+                protocols: [
+                  'Any'
+                ]
+                description: 'allow azure devops'
+                sourceAddresses: [
+                  '*'
+                ]
+                destinationAddresses: [
+                  'AzureDevOps'
+                ]
+                destinationPorts: [
+                  '443'
                 ]
               }
             ]

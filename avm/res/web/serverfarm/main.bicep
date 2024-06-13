@@ -7,19 +7,19 @@ metadata owner = 'Azure/module-maintainers'
 @maxLength(60)
 param name string
 
-@description('Required. Defines the name, tier, size, family and capacity of the App Service Plan.')
+@description('Required. The name of the SKU will Determine the tier, size, family of the App Service Plan.')
 @metadata({
   example: '''
-  {
-    name: 'P1v3'
-    tier: 'Premium'
-    size: 'P1v3'
-    family: 'P'
-    capacity: 3
-  }
+  'F1'
+  'B1'
+  'P1v3'
+  'I1v2'
   '''
 })
-param sku object
+param skuName string
+
+@description('Required. Number of workers associated with the App Service Plan.')
+param skuCapacity int
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -35,7 +35,7 @@ param location string = resourceGroup().location
 param kind string = 'App'
 
 @description('Conditional. Defaults to false when creating Windows/app App Service Plan. Required if creating a Linux App Service Plan and must be set to true.')
-param reserved bool = false
+param reserved bool = (kind == 'Linux')
 
 @description('Optional. The Resource ID of the App Service Environment to use for the App Service Plan.')
 param appServiceEnvironmentId string = ''
@@ -60,8 +60,8 @@ param targetWorkerCount int = 0
 ])
 param targetWorkerSize int = 0
 
-@description('Optional. Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).')
-param zoneRedundant bool = (sku.tier == 'Premium' || sku.tier == 'ElasticPremium') ? true : false
+@description('Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).')
+param zoneRedundant bool = startsWith(skuName, 'P') || startsWith(skuName, 'EP') ? true : false
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -100,31 +100,33 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.web-serverfarm.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.web-serverfarm.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: name
   kind: kind
   location: location
   tags: tags
-  sku: sku
+  sku: {
+    name: skuName
+    capacity: skuCapacity
+  }
   properties: {
     workerTierName: workerTierName
     hostingEnvironmentProfile: !empty(appServiceEnvironmentId)
@@ -163,17 +165,16 @@ resource appServicePlan_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-resource appServicePlan_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: appServicePlan
+resource appServicePlan_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: appServicePlan
+}
 
 resource appServicePlan_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {

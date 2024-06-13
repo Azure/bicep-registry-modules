@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "17373442840517371502"
+      "version": "0.28.1.47646",
+      "templateHash": "16839054392438941735"
     },
     "name": "Storage Account Table Services",
     "description": "This module deploys a Storage Account Table Service.",
@@ -163,12 +163,12 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-04-01",
       "name": "[parameters('storageAccountName')]"
     },
     "tableServices": {
       "type": "Microsoft.Storage/storageAccounts/tableServices",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
       "properties": {},
       "dependsOn": [
@@ -247,8 +247,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "10226619499666007193"
+              "version": "0.28.1.47646",
+              "templateHash": "3177845984945141330"
             },
             "name": "Storage Account Table",
             "description": "This module deploys a Storage Account Table.",
@@ -362,7 +362,7 @@
             "storageAccount::tableServices": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts/tableServices",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
               "dependsOn": [
                 "storageAccount"
@@ -371,12 +371,12 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2023-04-01",
               "name": "[parameters('storageAccountName')]"
             },
             "table": {
               "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
               "dependsOn": [
                 "storageAccount::tableServices"

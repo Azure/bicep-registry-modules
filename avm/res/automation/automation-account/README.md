@@ -18,9 +18,10 @@ This module deploys an Azure Automation Account.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automation/automationAccounts` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts) |
+| `Microsoft.Automation/automationAccounts/credentials` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials) |
 | `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
 | `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
-| `Microsoft.Automation/automationAccounts/runbooks` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/runbooks) |
+| `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
 | `Microsoft.Automation/automationAccounts/schedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/schedules) |
 | `Microsoft.Automation/automationAccounts/softwareUpdateConfigurations` | [2019-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2019-06-01/automationAccounts/softwareUpdateConfigurations) |
 | `Microsoft.Automation/automationAccounts/variables` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/variables) |
@@ -179,6 +180,19 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     // Required parameters
     name: 'aamax001'
     // Non-required parameters
+    credentials: [
+      {
+        description: 'Description of Credential01'
+        name: 'Credential01'
+        password: '<password>'
+        userName: 'userName01'
+      }
+      {
+        name: 'Credential02'
+        password: '<password>'
+        userName: 'username02'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -406,6 +420,21 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       "value": "aamax001"
     },
     // Non-required parameters
+    "credentials": {
+      "value": [
+        {
+          "description": "Description of Credential01",
+          "name": "Credential01",
+          "password": "<password>",
+          "userName": "userName01"
+        },
+        {
+          "name": "Credential02",
+          "password": "<password>",
+          "userName": "username02"
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1090,6 +1119,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`credentials`](#parameter-credentials) | array | List of credentials to be created in the automation account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable local authentication profile used within the resource. |
@@ -1116,6 +1146,56 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 Name of the Automation Account.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `credentials`
+
+List of credentials to be created in the automation account.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-credentialsname) | string | Name of the Automation Account credential. |
+| [`password`](#parameter-credentialspassword) | securestring | Password of the credential. |
+| [`userName`](#parameter-credentialsusername) | string | The user name associated to the credential. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-credentialsdescription) | string | Description of the credential. |
+
+### Parameter: `credentials.name`
+
+Name of the Automation Account credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentials.password`
+
+Password of the credential.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `credentials.userName`
+
+The user name associated to the credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentials.description`
+
+Description of the credential.
+
+- Required: No
 - Type: string
 
 ### Parameter: `customerManagedKey`
@@ -1463,6 +1543,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -1664,6 +1745,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.resourceGroupName`
 
