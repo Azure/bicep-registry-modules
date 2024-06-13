@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13958416989180111099"
+      "templateHash": "363597219812795065"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -1143,7 +1143,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1990066188266359857"
+              "templateHash": "13477545732982141232"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators.",
@@ -1202,7 +1202,7 @@
               "name": "[parameters('workspaceName')]"
             },
             "synapse_workspace_administrator": {
-              "condition": "[not(empty(parameters('administrator')))]",
+              "condition": "[not(equals(parameters('administrator').login, null()))]",
               "type": "Microsoft.Synapse/workspaces/administrators",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), 'activeDirectory')]",

@@ -12,7 +12,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
   name: workspaceName
 }
 
-resource synapse_workspace_administrator 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if (!empty(administrator)) {
+resource synapse_workspace_administrator 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if (administrator.login != null) {
   name: 'activeDirectory'
   parent: workspace
   properties: {
