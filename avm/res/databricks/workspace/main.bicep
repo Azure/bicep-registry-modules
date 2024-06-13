@@ -266,7 +266,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
                     keyVaultUri: cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                      ? customerManagedKey!.keyVersion
+                      ? customerManagedKey!.keyVersion!
                       : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
                 }
@@ -278,7 +278,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
                     keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                      ? customerManagedKeyManagedDisk!.keyVersion
+                      ? customerManagedKeyManagedDisk!.keyVersion!
                       : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
                   rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
