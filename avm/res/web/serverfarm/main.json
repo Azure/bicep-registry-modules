@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "5846778493081554072"
+      "version": "0.27.1.19265",
+      "templateHash": "3135450909992165111"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -293,7 +293,7 @@
       "type": "bool",
       "defaultValue": "[if(or(startsWith(parameters('skuName'), 'P'), startsWith(parameters('skuName'), 'EP')), true(), false())]",
       "metadata": {
-        "description": "Optional. Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs)."
+        "description": "Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs)."
       }
     },
     "lock": {
