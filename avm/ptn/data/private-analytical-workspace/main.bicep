@@ -82,6 +82,13 @@ var logCfg = ({
   resourceGroupName: createNewLog ? log.outputs.resourceGroupName : split(logExisting.id, '/')[4]
 })
 
+var kvCfg = ({
+  resourceId: createNewKV ? kv.outputs.resourceId : kvExisting.id
+  name: createNewKV ? kv.outputs.name : kvExisting.name
+  location: createNewKV ? kv.outputs.location : kvExisting.location
+  resourceGroupName: createNewKV ? kv.outputs.resourceGroupName : split(kvExisting.id, '/')[4]
+})
+
 var privateLinkSubnet = [
   {
     name: subnetNamePrivateLink
@@ -337,7 +344,6 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
     enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
     location: location
     lock: lock
-    //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
     publicNetworkAccess: 'Disabled'
     sku: empty(advancedOptions)
       ? kvDefaultSku
@@ -346,6 +352,25 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
       ? kvDefaultSoftDeleteRetentionInDays
       : advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
     tags: tags
+  }
+}
+
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET) {
+  name: privateDnsZoneNameKv
+  params: {
+    // Required parameters
+    name: privateDnsZoneNameKv
+    // Non-required parameters
+    enableTelemetry: enableTelemetry
+    location: 'global'
+    lock: lock
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        virtualNetworkResourceId: vnet.outputs.resourceId
+      }
+    ]
   }
 }
 
