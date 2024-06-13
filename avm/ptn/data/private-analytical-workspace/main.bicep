@@ -56,6 +56,7 @@ var kvDefaultSku = 'premium'
 
 var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
+var createNewKV = empty(keyVaultResourceId)
 
 var vnetCfg = ({
   resourceId: createNewVNET ? vnet.outputs.resourceId : vnetExisting.id
@@ -81,6 +82,13 @@ var logCfg = ({
   resourceGroupName: createNewLog ? log.outputs.resourceGroupName : split(logExisting.id, '/')[4]
 })
 
+var kvCfg = ({
+  resourceId: createNewKV ? kv.outputs.resourceId : kvExisting.id
+  name: createNewKV ? kv.outputs.name : kvExisting.name
+  location: createNewKV ? kv.outputs.location : kvExisting.location
+  resourceGroupName: createNewKV ? kv.outputs.resourceGroupName : split(kvExisting.id, '/')[4]
+})
+
 var privateLinkSubnet = [
   {
     name: subnetNamePrivateLink
@@ -98,6 +106,7 @@ var subnets = concat(
           // a container subnet (sometimes called the private subnet, control plane)
           name: subnetNameDbwControlPlane
           addressPrefix: '192.168.228.0/23'
+          networkSecurityGroupResourceId: nsgDbwControlPlane.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -111,6 +120,7 @@ var subnets = concat(
           // host subnet (sometimes called the public subnet, compute plane).
           name: subnetNameDbwComputePlane
           addressPrefix: '192.168.230.0/23'
+          networkSecurityGroupResourceId: nsgDbwComputePlane.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -181,6 +191,13 @@ resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' exist
     : resourceGroup(split(logAnalyticsWorkspaceResourceId!, '/')[2], split(logAnalyticsWorkspaceResourceId!, '/')[4])
 }
 
+resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
+  name: empty(keyVaultResourceId) ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
+  scope: empty(keyVaultResourceId)
+    ? resourceGroup()
+    : resourceGroup(split(keyVaultResourceId!, '/')[2], split(keyVaultResourceId!, '/')[4])
+}
+
 module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
   name: '${name}-vnet'
   params: {
@@ -190,12 +207,78 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNE
     ]
     name: '${name}-vnet'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        workspaceResourceId: logCfg.resourceId
+      }
+    ]
     dnsServers: []
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
     subnets: subnets
     tags: tags
+  }
+}
+
+module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwControlPlane
+  params: {
+    // Required parameters
+    name: nsgNameDbwControlPlane
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.resourceId
+      }
+    ]
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    tags: tags
+    securityRules: securityRulesDbw
+  }
+}
+
+module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwComputePlane
+  params: {
+    // Required parameters
+    name: nsgNameDbwComputePlane
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.resourceId
+      }
+    ]
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    tags: tags
+    securityRules: securityRulesDbw
   }
 }
 
@@ -217,6 +300,104 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (create
     lock: lock
     skuName: 'PerGB2018'
     tags: tags
+  }
+}
+
+module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
+  name: '${name}-kv'
+  params: {
+    // Required parameters
+    name: '${name}-kv'
+    // Non-required parameters
+    createMode: empty(advancedOptions)
+      ? kvDefaultCreateMode
+      : advancedOptions.?keyVault.?createMode ?? kvDefaultCreateMode
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'audit'
+          }
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.resourceId
+      }
+    ]
+    enablePurgeProtection: empty(advancedOptions)
+      ? kvDefaultEnablePurgeProtection
+      : advancedOptions.?keyVault.?enablePurgeProtection ?? kvDefaultEnablePurgeProtection
+    enableRbacAuthorization: true
+    enableSoftDelete: empty(advancedOptions)
+      ? kvDefaultEnableSoftDelete
+      : advancedOptions.?keyVault.?enableSoftDelete ?? kvDefaultEnableSoftDelete
+    enableTelemetry: enableTelemetry
+    enableVaultForDeployment: false
+    enableVaultForTemplateDeployment: false
+    enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
+    location: location
+    lock: lock
+    networkAcls: empty(advancedOptions)
+      ? {
+          // New default case that enables the firewall by default
+          bypass: 'None'
+          defaultAction: 'Deny'
+        }
+      : {
+          bypass: 'None'
+          defaultAction: 'Deny'
+          // TODO virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
+          // TODO ipRules: advancedOptions.?networkAcls.?ipRules ?? []
+        }
+    privateEndpoints: createNewVNET
+      ? [
+          // Private endpoint for Key Vault only for new VNET
+          {
+            name: '${name}-kv-pep'
+            location: location
+            privateDnsZoneResourceIds: [dnsZoneKv.outputs.resourceId]
+            tags: tags
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+            enableTelemetry: enableTelemetry
+            lock: lock
+          }
+        ]
+      : []
+    //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
+    publicNetworkAccess: 'Disabled'
+    sku: empty(advancedOptions)
+      ? kvDefaultSku
+      : (advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku)
+    softDeleteRetentionInDays: empty(advancedOptions)
+      ? kvDefaultSoftDeleteRetentionInDays
+      : advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
+    tags: tags
+  }
+}
+
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET) {
+  name: privateDnsZoneNameKv
+  params: {
+    // Required parameters
+    name: privateDnsZoneNameKv
+    // Non-required parameters
+    enableTelemetry: enableTelemetry
+    location: 'global'
+    lock: lock
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        virtualNetworkResourceId: vnet.outputs.resourceId
+      }
+    ]
   }
 }
 
@@ -261,16 +442,16 @@ output logAnalyticsWorkspaceLocation string = logCfg.location
 output logAnalyticsWorkspaceResourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Key Vault.')
-output keyVaultResourceId string = logCfg.resourceId
+output keyVaultResourceId string = kvCfg.resourceId
 
 @description('The name of the Azure Key Vault.')
-output keyVaultName string = logCfg.name
+output keyVaultName string = kvCfg.name
 
 @description('The location of the Azure Key Vault.')
-output keyVaultLocation string = logCfg.location
+output keyVaultLocation string = kvCfg.location
 
 @description('The name of the Azure Key Vault resource group.')
-output keyVaultResourceGroupName string = logCfg.resourceGroupName
+output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
 // ================ //
 // Definitions      //
