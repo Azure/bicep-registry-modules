@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "14293034461420213122"
+      "templateHash": "897248721149933455"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -246,7 +246,7 @@
     "nsgNameDbwComputePlane": "[format('{0}-nsg-dbw-compute-plane', parameters('name'))]",
     "logDefaultDailyQuotaGb": -1,
     "logDefaultDataRetention": 365,
-    "kvDefaultCreateMode": "recover",
+    "kvDefaultCreateMode": "default",
     "kvDefaultEnableSoftDelete": true,
     "kvDefaultSoftDeleteRetentionInDays": 90,
     "kvDefaultEnablePurgeProtection": true,
