@@ -82,13 +82,6 @@ var logCfg = ({
   resourceGroupName: createNewLog ? log.outputs.resourceGroupName : split(logExisting.id, '/')[4]
 })
 
-var kvCfg = ({
-  resourceId: createNewKV ? kv.outputs.resourceId : kvExisting.id
-  name: createNewKV ? kv.outputs.name : kvExisting.name
-  location: createNewKV ? kv.outputs.location : kvExisting.location
-  resourceGroupName: createNewKV ? kv.outputs.resourceGroupName : split(kvExisting.id, '/')[4]
-})
-
 var privateLinkSubnet = [
   {
     name: subnetNamePrivateLink
@@ -300,104 +293,6 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (create
     lock: lock
     skuName: 'PerGB2018'
     tags: tags
-  }
-}
-
-module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
-  name: '${name}-kv'
-  params: {
-    // Required parameters
-    name: '${name}-kv'
-    // Non-required parameters
-    createMode: empty(advancedOptions)
-      ? kvDefaultCreateMode
-      : advancedOptions.?keyVault.?createMode ?? kvDefaultCreateMode
-    diagnosticSettings: [
-      {
-        name: diagnosticSettingsName
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'audit'
-          }
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        workspaceResourceId: logCfg.resourceId
-      }
-    ]
-    enablePurgeProtection: empty(advancedOptions)
-      ? kvDefaultEnablePurgeProtection
-      : advancedOptions.?keyVault.?enablePurgeProtection ?? kvDefaultEnablePurgeProtection
-    enableRbacAuthorization: true
-    enableSoftDelete: empty(advancedOptions)
-      ? kvDefaultEnableSoftDelete
-      : advancedOptions.?keyVault.?enableSoftDelete ?? kvDefaultEnableSoftDelete
-    enableTelemetry: enableTelemetry
-    enableVaultForDeployment: false
-    enableVaultForTemplateDeployment: false
-    enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
-    location: location
-    lock: lock
-    networkAcls: empty(advancedOptions)
-      ? {
-          // New default case that enables the firewall by default
-          bypass: 'None'
-          defaultAction: 'Deny'
-        }
-      : {
-          bypass: 'None'
-          defaultAction: 'Deny'
-          // TODO virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
-          // TODO ipRules: advancedOptions.?networkAcls.?ipRules ?? []
-        }
-    privateEndpoints: createNewVNET
-      ? [
-          // Private endpoint for Key Vault only for new VNET
-          {
-            name: '${name}-kv-pep'
-            location: location
-            privateDnsZoneResourceIds: [dnsZoneKv.outputs.resourceId]
-            tags: tags
-            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-            enableTelemetry: enableTelemetry
-            lock: lock
-          }
-        ]
-      : []
-    //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
-    publicNetworkAccess: 'Disabled'
-    sku: empty(advancedOptions)
-      ? kvDefaultSku
-      : (advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku)
-    softDeleteRetentionInDays: empty(advancedOptions)
-      ? kvDefaultSoftDeleteRetentionInDays
-      : advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
-    tags: tags
-  }
-}
-
-module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET) {
-  name: privateDnsZoneNameKv
-  params: {
-    // Required parameters
-    name: privateDnsZoneNameKv
-    // Non-required parameters
-    enableTelemetry: enableTelemetry
-    location: 'global'
-    lock: lock
-    tags: tags
-    virtualNetworkLinks: [
-      {
-        registrationEnabled: false
-        virtualNetworkResourceId: vnet.outputs.resourceId
-      }
-    ]
   }
 }
 
