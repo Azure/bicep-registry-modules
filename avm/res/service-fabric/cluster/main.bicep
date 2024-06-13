@@ -33,7 +33,7 @@ param azureActiveDirectory object = {}
 param certificate certificateType
 
 @description('Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.')
-param certificateCommonNames certificateCommonNamesType
+param certificateCommonNames certificateCommonNameType
 
 @description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used.')
 param clientCertificateCommonNames clientCertificateCommonNameType
