@@ -61,7 +61,7 @@ var builtInRoleNames = {
 }
 
 #disable-next-line no-deployments-resources
-resource defaultTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.desktopvirtualization-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64

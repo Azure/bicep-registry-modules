@@ -97,7 +97,7 @@ param authorizationKey string = ''
 param localNetworkGateway2 object = {}
 
 #disable-next-line no-deployments-resources
-resource defaultTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-connection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
