@@ -44,7 +44,7 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   location: location
   properties: {
     publicIPAllocationMethod: 'Static'
-  }  
+  }
   sku: {
     name: 'Standard'
   }
@@ -103,10 +103,10 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   location: location
   properties: {
     publicIPAllocationMethod: 'Static'
-  }  
+  }
   sku: {
     name: 'Standard'
-  }  
+  }
 }
 
 resource secondaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2023-04-01' = {

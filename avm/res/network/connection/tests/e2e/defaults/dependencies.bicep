@@ -106,7 +106,7 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   }
   sku: {
     name: 'Standard'
-  } 
+  }
 }
 
 resource secondaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2023-04-01' = {
