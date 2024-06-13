@@ -48,7 +48,7 @@ var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
 var logDefaultDailyQuotaGb = -1
 var logDefaultDataRetention = 365
 
-var kvDefaultCreateMode = 'default'
+var kvDefaultCreateMode = 'recover'
 var kvDefaultEnableSoftDelete = true
 var kvDefaultSoftDeleteRetentionInDays = 90
 var kvDefaultEnablePurgeProtection = true
