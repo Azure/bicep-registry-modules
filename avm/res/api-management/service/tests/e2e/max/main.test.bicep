@@ -74,6 +74,16 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      additionalLocations: [
+        {
+          location: 'westus'
+          sku: {
+            name: 'Premium'
+            capacity: 1
+          }
+          disableGateway: false
+        }
+      ]
       virtualNetworkType: 'Internal'
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       publicIpAddressId: nestedDependencies.outputs.publicIPResourceId
@@ -125,6 +135,13 @@ module testDeployment '../../../main.bicep' = [
           useFromLocation: 'westeurope'
         }
       ]
+      apiDiagnostics: [
+        {
+          loggerName: 'logger'
+          apiName: 'echo-api'
+          metrics: true
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -149,6 +166,18 @@ module testDeployment '../../../main.bicep' = [
           allowedTenants: [
             'mytenant.onmicrosoft.com'
           ]
+        }
+      ]
+      loggers: [
+        {
+          name: 'logger'
+          loggerType: 'applicationInsights'
+          isBuffered: false
+          description: 'Logger to Azure Application Insights'
+          credentials: {
+            instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
+          }
+          resourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
       lock: {

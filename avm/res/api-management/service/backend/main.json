@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5914852504306173482"
+      "version": "0.28.1.47646",
+      "templateHash": "1411324864869146839"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend.",
@@ -95,12 +95,12 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "backend": {
       "type": "Microsoft.ApiManagement/service/backends",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "title": "[parameters('title')]",

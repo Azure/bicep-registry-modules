@@ -2,7 +2,7 @@ metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Additional datacenter locations of the API Management service.')
+@description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
 
 @description('Required. The name of the API Management service.')
@@ -64,15 +64,16 @@ param roleAssignments roleAssignmentType
   'StandardV2'
   'BasicV2'
 ])
-param sku string = 'Developer'
+param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service.')
+@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs.')
 @allowed([
   0
   1
   2
+  3
 ])
-param skuCount int = 1
+param skuCount int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string = ''
@@ -91,8 +92,8 @@ param virtualNetworkType string = 'None'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+@description('Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.')
+param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
 param newGuidValue string = newGuid()
@@ -113,8 +114,14 @@ param backends array = []
 @description('Optional. Caches.')
 param caches array = []
 
+@description('Optional. API Diagnostics.')
+param apiDiagnostics array = []
+
 @description('Optional. Identity providers.')
 param identityProviders array = []
+
+@description('Optional. Loggers.')
+param loggers array = []
 
 @description('Optional. Named values.')
 param namedValues array = []
@@ -205,16 +212,16 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: skuCount
+    capacity: contains(sku, 'V2') ? 1 : skuCount
   }
-  zones: zones
+  zones: contains(sku, 'V2') ? null : zones
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: additionalLocations
+    additionalLocations: contains(sku, 'V2') ? null : additionalLocations
     customProperties: customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
@@ -241,8 +248,8 @@ module service_apis 'api/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       displayName: api.displayName
-      name: api.name
-      path: api.path
+      apiName: api.name
+      apiPath: api.path
       apiDescription: api.?apiDescription
       apiRevision: api.?apiRevision
       apiRevisionDescription: api.?apiRevisionDescription
@@ -358,6 +365,33 @@ module service_caches 'cache/main.bicep' = [
   }
 ]
 
+module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
+  for (apidiagnostic, index) in apiDiagnostics: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
+    params: {
+      apiManagementServiceName: service.name
+      apiName: apidiagnostic.apiName
+      loggerName: apidiagnostic.loggerName
+      diagnosticName: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : null
+      alwaysLog: contains(apidiagnostic, 'alwaysLog') ? apidiagnostic.alwaysLog : 'allErrors'
+      backend: contains(apidiagnostic, 'backend') ? apidiagnostic.backend : {}
+      frontend: contains(apidiagnostic, 'frontend') ? apidiagnostic.frontend : {}
+      httpCorrelationProtocol: contains(apidiagnostic, 'httpCorrelationProtocol')
+        ? apidiagnostic.httpCorrelationProtocol
+        : 'Legacy'
+      logClientIp: contains(apidiagnostic, 'logClientIp') ? apidiagnostic.logClientIp : false
+      metrics: contains(apidiagnostic, 'metrics') ? apidiagnostic.metrics : false
+      operationNameFormat: contains(apidiagnostic, 'operationNameFormat') ? apidiagnostic.operationNameFormat : 'Name'
+      samplingPercentage: contains(apidiagnostic, 'samplingPercentage') ? apidiagnostic.samplingPercentage : 100
+      verbosity: contains(apidiagnostic, 'verbosity') ? apidiagnostic.verbosity : 'error'
+    }
+    dependsOn: [
+      service_apis
+      service_loggers
+    ]
+  }
+]
+
 module service_identityProviders 'identity-provider/main.bicep' = [
   for (identityProvider, index) in identityProviders: {
     name: '${uniqueString(deployment().name, location)}-Apim-IdentityProvider-${index}'
@@ -378,6 +412,21 @@ module service_identityProviders 'identity-provider/main.bicep' = [
       signInTenant: contains(identityProvider, 'signInTenant') ? identityProvider.signInTenant : ''
       signUpPolicyName: contains(identityProvider, 'signUpPolicyName') ? identityProvider.signUpPolicyName : ''
       type: contains(identityProvider, 'type') ? identityProvider.type : 'aad'
+    }
+  }
+]
+
+module service_loggers 'loggers/main.bicep' = [
+  for (logger, index) in loggers: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
+    params: {
+      name: logger.name
+      apiManagementServiceName: service.name
+      credentials: contains(logger, 'credentials') ? logger.credentials : {}
+      isBuffered: contains(logger, 'isBuffered') ? logger.isBuffered : true
+      loggerDescription: contains(logger, 'loggerDescription') ? logger.loggerDescription : ''
+      loggerType: contains(logger, 'loggerType') ? logger.loggerType : 'azureMonitor'
+      targetResourceId: contains(logger, 'targetResourceId') ? logger.targetResourceId : ''
     }
   }
 ]

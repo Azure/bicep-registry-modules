@@ -27,6 +27,16 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: 'applicationInsights'
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    // todo: change to workspace based LAW
+  }
+}
+
 resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: vnetName
   location: location
@@ -221,6 +231,12 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The Application Insights Instrumentation Key')
+output appInsightsInstrumentationKey string = applicationInsights.properties.InstrumentationKey
+
+@description('The Application Insights ResourceId')
+output appInsightsResourceId string = applicationInsights.id
 
 @description('The resource ID of the created Public IP.')
 output publicIPResourceId string = publicIP.id
