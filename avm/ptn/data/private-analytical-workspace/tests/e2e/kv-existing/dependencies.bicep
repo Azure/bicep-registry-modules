@@ -8,13 +8,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: keyVaultName
   location: location
   properties: {
-    createMode: 'default'
     enabledForDeployment: false
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
     enableSoftDelete: false
     enableRbacAuthorization: true
-    enablePurgeProtection: false
+    enablePurgeProtection: null
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
