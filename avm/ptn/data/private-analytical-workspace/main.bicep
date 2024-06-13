@@ -36,10 +36,43 @@ param advancedOptions advancedOptionsType?
 // Variables      //
 // ============== //
 
+var diagnosticSettingsName = '${name}-diagnostic-settings'
+var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
+var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
+var subnetNamePrivateLink = 'private-link-subnet'
+var subnetNameDbwControlPlane = 'dbw-control-plane-subnet'
+var subnetNameDbwComputePlane = 'dbw-compute-plane-subnet'
+var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
+var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
+
 var logDefaultDailyQuotaGb = -1
 var logDefaultDataRetention = 365
 
+var kvDefaultCreateMode = 'default'
+var kvDefaultEnableSoftDelete = true
+var kvDefaultSoftDeleteRetentionInDays = 90
+var kvDefaultEnablePurgeProtection = true
+var kvDefaultSku = 'premium'
+
+var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
+
+var vnetCfg = ({
+  resourceId: createNewVNET ? vnet.outputs.resourceId : vnetExisting.id
+  name: createNewVNET ? vnet.outputs.name : vnetExisting.name
+  location: createNewVNET ? vnet.outputs.location : vnetExisting.location
+  resourceGroupName: createNewVNET ? vnet.outputs.resourceGroupName : split(vnetExisting.id, '/')[4]
+
+  subnetResourceIdPrivateLink: createNewVNET
+    ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available at zero index
+    : vnetExisting::subnetPrivateLink.id
+  subnetNameDbwControlPlane: createNewVNET
+    ? filter(subnets, item => item.name == subnetNameDbwControlPlane)[0].name
+    : vnetExisting::subnetDbwControlPlane.name
+  subnetNameDbwComputePlane: createNewVNET
+    ? filter(subnets, item => item.name == subnetNameDbwComputePlane)[0].name
+    : vnetExisting::subnetDbwComputePlane.name
+})
 
 var logCfg = ({
   resourceId: createNewLog ? log.outputs.resourceId : logExisting.id
@@ -47,6 +80,51 @@ var logCfg = ({
   location: createNewLog ? log.outputs.location : logExisting.location
   resourceGroupName: createNewLog ? log.outputs.resourceGroupName : split(logExisting.id, '/')[4]
 })
+
+var privateLinkSubnet = [
+  {
+    name: subnetNamePrivateLink
+    addressPrefix: '192.168.224.0/24'
+  }
+]
+
+var subnets = concat(
+  privateLinkSubnet,
+  // Subnets for service typically in the /22 chunk
+  enableDatabricks
+    ? [
+        // DBW - 192.168.228.0/22
+        {
+          // a container subnet (sometimes called the private subnet, control plane)
+          name: subnetNameDbwControlPlane
+          addressPrefix: '192.168.228.0/23'
+          delegations: [
+            {
+              name: 'Microsoft.Databricks/workspaces'
+              properties: {
+                serviceName: 'Microsoft.Databricks/workspaces'
+              }
+            }
+          ]
+        }
+        {
+          // host subnet (sometimes called the public subnet, compute plane).
+          name: subnetNameDbwComputePlane
+          addressPrefix: '192.168.230.0/23'
+          delegations: [
+            {
+              name: 'Microsoft.Databricks/workspaces'
+              properties: {
+                serviceName: 'Microsoft.Databricks/workspaces'
+              }
+            }
+          ]
+        }
+      ]
+    : []
+)
+
+var securityRulesDbw = []
 
 // ============== //
 // Resources      //
@@ -77,11 +155,48 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Add your resources here
 //
 
+resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = if (!createNewVNET) {
+  name: empty(virtualNetworkResourceId) ? 'dummyName' : last(split(virtualNetworkResourceId!, '/'))
+  scope: empty(virtualNetworkResourceId)
+    ? resourceGroup()
+    : resourceGroup(split(virtualNetworkResourceId!, '/')[2], split(virtualNetworkResourceId!, '/')[4])
+
+  resource subnetPrivateLink 'subnets@2023-11-01' existing = if (!empty(advancedOptions) && !empty(advancedOptions.?virtualNetwork.?subnetNamePrivateLink)) {
+    name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'dummyName'
+  }
+
+  resource subnetDbwControlPlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameControlPlane)) {
+    name: advancedOptions.?databricks.?subnetNameControlPlane ?? 'dummyName'
+  }
+
+  resource subnetDbwComputePlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions) && !empty(advancedOptions.?databricks.?subnetNameComputePlane)) {
+    name: advancedOptions.?databricks.?subnetNameComputePlane ?? 'dummyName'
+  }
+}
+
 resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!createNewLog) {
   name: empty(logAnalyticsWorkspaceResourceId) ? 'dummyName' : last(split(logAnalyticsWorkspaceResourceId!, '/'))
   scope: empty(logAnalyticsWorkspaceResourceId)
     ? resourceGroup()
     : resourceGroup(split(logAnalyticsWorkspaceResourceId!, '/')[2], split(logAnalyticsWorkspaceResourceId!, '/')[4])
+}
+
+module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
+  name: '${name}-vnet'
+  params: {
+    // Required parameters
+    addressPrefixes: [
+      '192.168.224.0/19'
+    ]
+    name: '${name}-vnet'
+    // Non-required parameters
+    dnsServers: []
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    subnets: subnets
+    tags: tags
+  }
 }
 
 module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (createNewLog) {
