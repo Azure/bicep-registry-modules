@@ -41,6 +41,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
+    dnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
   }
 }
 
@@ -72,6 +74,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      virtualNetworkType: 'Internal'
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      publicIpAddressId: nestedDependencies.outputs.publicIPResourceId
       apis: [
         {
           apiVersionSet: {
