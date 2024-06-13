@@ -524,16 +524,16 @@ output logAnalyticsWorkspaceLocation string = logCfg.location
 output logAnalyticsWorkspaceResourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Key Vault.')
-output keyVaultResourceId string = kvCfg.resourceId
+output keyVaultResourceId string = logCfg.resourceId
 
 @description('The name of the Azure Key Vault.')
-output keyVaultName string = kvCfg.name
+output keyVaultName string = logCfg.name
 
 @description('The location of the Azure Key Vault.')
-output keyVaultLocation string = kvCfg.location
+output keyVaultLocation string = logCfg.location
 
 @description('The name of the Azure Key Vault resource group.')
-output keyVaultResourceGroupName string = kvCfg.resourceGroupName
+output keyVaultResourceGroupName string = logCfg.resourceGroupName
 
 // ================ //
 // Definitions      //
