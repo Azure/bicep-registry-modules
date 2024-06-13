@@ -15,7 +15,7 @@ Describe 'Validate deployment with provided Azure Log Analytics Workspace' {
 
     Context 'Validate sucessful deployment' {
 
-        It 'Private endpoints should be deployed in resource group' {
+        It 'Check Azure Log Analytics Workspace' {
 
             $logAnalyticsWorkspaceResourceId = $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceResourceId.Value
             $logAnalyticsWorkspaceName = $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceName.Value
