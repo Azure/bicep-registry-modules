@@ -961,6 +961,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       {
         name: 'privateIPConfig1'
         subnetId: '<subnetId>'
+        zones: [
+          '1'
+          '2'
+          '3'
+        ]
       }
     ]
     name: 'nlbwaf001'
@@ -1055,7 +1060,12 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": [
         {
           "name": "privateIPConfig1",
-          "subnetId": "<subnetId>"
+          "subnetId": "<subnetId>",
+          "zones": [
+            "1",
+            "2",
+            "3"
+          ]
         }
       ]
     },
