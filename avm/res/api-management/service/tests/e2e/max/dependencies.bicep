@@ -2,7 +2,10 @@
 param managedIdentityName string
 
 @description('Optional. The location to deploy resources to.')
-param location string = resourceGroup().location
+param locationRegion1 string = resourceGroup().location
+
+@description('Optional. The location to deploy resources to.')
+param locationRegion2 string = 'westus'
 
 @description('Required. The name of the Public IP to create.')
 param publicIPName string
@@ -24,12 +27,12 @@ param dnsLabelPrefix string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
-  location: location
+  location: locationRegion1
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'applicationInsights'
-  location: location
+  location: locationRegion1
   kind: 'web'
   properties: {
     Application_Type: 'web'
@@ -37,9 +40,9 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource vnetRegion1 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: vnetName
-  location: location
+  location: locationRegion1
   properties: {
     addressSpace: {
       addressPrefixes: [
@@ -52,10 +55,10 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         properties: {
           addressPrefix: subnetPrefix
           networkSecurityGroup: {
-            id: nsg.id
+            id: nsgRegion1.id
           }
           routeTable: {
-            id: routeTable.id
+            id: routeTableRegion1.id
           }
           serviceEndpoints: [
             {
@@ -74,9 +77,46 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource routeTable 'Microsoft.Network/routeTables@2023-11-01' = {
-  name: 'apimRouteTableTest'
-  location: location
+resource vnetRegion2 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+  name: '${vnetName}-${locationRegion2}'
+  location: locationRegion2
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        vnetAddressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: subnetName
+        properties: {
+          addressPrefix: subnetPrefix
+          networkSecurityGroup: {
+            id: nsgRegion2.id
+          }
+          routeTable: {
+            id: routeTableRegion2.id
+          }
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+            }
+            {
+              service: 'Microsoft.Sql'
+            }
+            {
+              service: 'Microsoft.KeyVault'
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+resource routeTableRegion1 'Microsoft.Network/routeTables@2023-11-01' = {
+  name: 'apimRouteTableTest-${locationRegion1}'
+  location: locationRegion1
   properties: {
     disableBgpRoutePropagation: false
     routes: [
@@ -91,9 +131,26 @@ resource routeTable 'Microsoft.Network/routeTables@2023-11-01' = {
   }
 }
 
-resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'testNSG'
-  location: location
+resource routeTableRegion2 'Microsoft.Network/routeTables@2023-11-01' = {
+  name: 'apimRouteTableTest-${locationRegion2}'
+  location: locationRegion2
+  properties: {
+    disableBgpRoutePropagation: false
+    routes: [
+      {
+        name: 'apimToInternet'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'Internet'
+        }
+      }
+    ]
+  }
+}
+
+resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+  name: 'testNSG-${locationRegion1}'
+  location: locationRegion1
   properties: {
     securityRules: [
       {
@@ -210,9 +267,144 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
-  name: publicIPName
-  location: location
+resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+  name: 'testNSG-${locationRegion2}'
+  location: locationRegion2
+  properties: {
+    securityRules: [
+      {
+        name: 'Client_communication_to_API_Management'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+          destinationPortRanges: [
+            '80'
+            '443'
+          ]
+        }
+      }
+      {
+        name: 'Management_endpoint_for_Azure_portal_and_Powershell'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '3443'
+          sourceAddressPrefix: 'ApiManagement'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 120
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'Azure_Infrastructure_Load_Balancer'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '6390'
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 125
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'Azure_Traffic_Manager_routing_for_multi_region_deployment'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: 'AzureTrafficManager'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 130
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'Dependency_on_Azure_Storage_for_core_service_functionality'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '433'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'Storage'
+          access: 'Allow'
+          priority: 140
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Access_to_Azure_SQL_endpoints_for_core_service_functionality'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '1433'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'Sql'
+          access: 'Allow'
+          priority: 150
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Access_to_Azure_Key_Vault_for_core_service_functionality'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'AzureKeyVault'
+          access: 'Allow'
+          priority: 160
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Publish_Diagnostics_Logs_and_Metrics_Resource_Health_and_Application_Insights'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '1886'
+            '443'
+          ]
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'AzureMonitor'
+          access: 'Allow'
+          priority: 170
+          direction: 'Inbound'
+        }
+      }
+    ]
+  }
+}
+
+resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+  name: '${publicIPName}-${locationRegion1}'
+  location: locationRegion1
+  sku: {
+    name: 'Standard'
+    tier: 'Regional'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv4'
+    dnsSettings: {
+      domainNameLabel: dnsLabelPrefix
+    }
+  }
+}
+
+resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+  name: '${publicIPName}-${locationRegion2}'
+  location: locationRegion2
   sku: {
     name: 'Standard'
     tier: 'Regional'
@@ -238,8 +430,14 @@ output appInsightsInstrumentationKey string = applicationInsights.properties.Ins
 @description('The Application Insights ResourceId')
 output appInsightsResourceId string = applicationInsights.id
 
-@description('The resource ID of the created Public IP.')
-output publicIPResourceId string = publicIP.id
+@description('The resource ID of the created Public IP for Region1.')
+output publicIPResourceIdRegion1 string = publicIpRegion1.id
 
-@description('The resource ID of the created Public IP.')
-output subnetResourceId string = vnet.properties.subnets[0].id
+@description('The resource ID of the created Public IP for Region2.')
+output publicIPResourceIdRegion2 string = publicIpRegion2.id
+
+@description('The resource ID of the created Public IP for Region1.')
+output subnetResourceIdRegion1 string = vnetRegion1.properties.subnets[0].id
+
+@description('The resource ID of the created Public IP for Region1.')
+output subnetResourceIdRegion2 string = vnetRegion2.properties.subnets[0].id

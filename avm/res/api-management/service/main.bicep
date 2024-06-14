@@ -232,7 +232,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
           subnetResourceId: subnetResourceId
         }
       : null
-    publicIpAddressId: publicIpAddressId
+    publicIpAddressId: !empty(publicIpAddressId) ? publicIpAddressId : null
     apiVersionConstraint: !empty(minApiVersion)
       ? {
           minApiVersion: minApiVersion

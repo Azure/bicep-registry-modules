@@ -11,8 +11,11 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
+@description('Optional. The location to deploy primary resources to.')
 param resourceLocation string = deployment().location
+
+@description('Optional. Location to deploy secondary resources to (for APIM additionalLocations).')
+param locationRegion2 string = 'westus'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'apismax'
@@ -40,7 +43,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
+    locationRegion1: resourceLocation
+    locationRegion2: locationRegion2
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     dnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
   }
@@ -76,17 +80,21 @@ module testDeployment '../../../main.bicep' = [
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
         {
-          location: 'westus'
+          location: locationRegion2
           sku: {
             name: 'Premium'
             capacity: 1
           }
           disableGateway: false
+          publicIpAddressId: nestedDependencies.outputs.publicIPResourceIdRegion2
+          virtualNetworkConfiguration: {
+            subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion2
+          }
         }
       ]
       virtualNetworkType: 'Internal'
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      publicIpAddressId: nestedDependencies.outputs.publicIPResourceId
+      subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
+      publicIpAddressId: nestedDependencies.outputs.publicIPResourceIdRegion1
       apis: [
         {
           apiVersionSet: {
