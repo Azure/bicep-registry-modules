@@ -49,7 +49,7 @@ param metrics bool = false
 @description('Conditional. The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights.')
 param operationNameFormat string = 'Name'
 
-@description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100')
+@description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100.')
 param samplingPercentage int = 100
 
 @allowed([
