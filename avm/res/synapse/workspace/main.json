@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5965481290140036947"
+      "templateHash": "17715798091076146566"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -455,13 +455,16 @@
           "metadata": {
             "description": "Required. Object ID of the workspace active directory administrator."
           }
+        },
+        "tenantId": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tenant ID of the workspace active directory administrator."
+          }
         }
       },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "administrators/main.bicep"
-        }
-      }
+      "nullable": true
     }
   },
   "parameters": {
@@ -528,11 +531,6 @@
     },
     "administrator": {
       "$ref": "#/definitions/adminType",
-      "defaultValue": {
-        "administratorType": "",
-        "login": "",
-        "sid": ""
-      },
       "metadata": {
         "description": "Optional. The Entra ID administrator for the synapse workspace."
       }
@@ -1119,7 +1117,7 @@
       ]
     },
     "workspace_administrator": {
-      "condition": "[not(empty(parameters('administrator').login))]",
+      "condition": "[not(empty(parameters('administrator')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-administrator', parameters('name'))]",
@@ -1132,51 +1130,31 @@
           "workspaceName": {
             "value": "[parameters('name')]"
           },
-          "administrator": {
-            "value": "[parameters('administrator')]"
+          "administratorType": {
+            "value": "[parameters('administrator').administratorType]"
+          },
+          "login": {
+            "value": "[parameters('administrator').login]"
+          },
+          "sid": {
+            "value": "[parameters('administrator').sid]"
+          },
+          "tenantId": {
+            "value": "[parameters('administrator').tenantId]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "10177877467215828228"
+              "templateHash": "8534245747651989650"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators.",
             "owner": "Azure/module-maintainers"
-          },
-          "definitions": {
-            "adminType": {
-              "type": "object",
-              "properties": {
-                "administratorType": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Workspace active directory administrator type."
-                  }
-                },
-                "login": {
-                  "type": "securestring",
-                  "metadata": {
-                    "description": "Required. Login of the workspace active directory administrator."
-                  }
-                },
-                "sid": {
-                  "type": "securestring",
-                  "metadata": {
-                    "description": "Required. Object ID of the workspace active directory administrator."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            }
           },
           "parameters": {
             "workspaceName": {
@@ -1185,36 +1163,45 @@
                 "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
               }
             },
-            "administrator": {
-              "$ref": "#/definitions/adminType",
+            "administratorType": {
+              "type": "string",
               "metadata": {
-                "description": "Required. The administrators definition."
+                "description": "Required. Workspace active directory administrator type."
+              }
+            },
+            "login": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. Login of the workspace active directory administrator."
+              }
+            },
+            "sid": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. Object ID of the workspace active directory administrator."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "defaultValue": "[tenant().tenantId]",
+              "metadata": {
+                "description": "Optional. Tenant ID of the workspace active directory administrator. If not specified the workspace subscription assiciated tenant is used."
               }
             }
           },
-          "resources": {
-            "workspace": {
-              "existing": true,
-              "type": "Microsoft.Synapse/workspaces",
-              "apiVersion": "2021-06-01",
-              "name": "[parameters('workspaceName')]"
-            },
-            "synapse_workspace_administrator": {
-              "condition": "[not(equals(parameters('administrator').login, ''))]",
+          "resources": [
+            {
               "type": "Microsoft.Synapse/workspaces/administrators",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), 'activeDirectory')]",
               "properties": {
-                "administratorType": "[parameters('administrator').administratorType]",
-                "login": "[parameters('administrator').login]",
-                "sid": "[parameters('administrator').sid]",
-                "tenantId": "[subscription().tenantId]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+                "administratorType": "[parameters('administratorType')]",
+                "login": "[parameters('login')]",
+                "sid": "[parameters('sid')]",
+                "tenantId": "[parameters('tenantId')]"
+              }
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",

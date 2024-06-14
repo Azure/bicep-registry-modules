@@ -31,9 +31,8 @@ param defaultDataLakeStorageFilesystem string
 @description('Optional. Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace\'s primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account.')
 param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
 
-import { adminType } from 'administrators/main.bicep'
 @description('Optional. The Entra ID administrator for the synapse workspace.')
-param administrator adminType = { administratorType: '', login: '', sid: '' }
+param administrator adminType
 
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
@@ -278,11 +277,14 @@ module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
 }
 
 // - Workspace Entra ID Administrator
-module workspace_administrator 'administrators/main.bicep' = if (!empty(administrator.login)) {
+module workspace_administrator 'administrators/main.bicep' = if (!empty(administrator)) {
   name: '${workspace.name}-administrator'
   params: {
     workspaceName: workspace.name
-    administrator: administrator
+    administratorType: administrator!.administratorType
+    login: administrator!.login
+    sid: administrator!.sid
+    tenantId: administrator!.tenantId
   }
 }
 
@@ -575,4 +577,21 @@ type customerManagedKeyType = {
 
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
+}?
+
+type adminType = {
+  @description('Required. Workspace active directory administrator type.')
+  administratorType: string
+
+  @description('Required. Login of the workspace active directory administrator.')
+  @secure()
+  login: string
+
+  @description('Required. Object ID of the workspace active directory administrator.')
+  @secure()
+  sid: string
+
+  @description('Optional. Tenant ID of the workspace active directory administrator.')
+  @secure()
+  tenantId: string?
 }?

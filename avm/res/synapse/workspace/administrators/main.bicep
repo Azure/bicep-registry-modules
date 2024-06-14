@@ -5,21 +5,32 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@description('Required. The administrators definition.')
-param administrator adminType
+@description('Required. Workspace active directory administrator type.')
+param administratorType string
+
+@description('Required. Login of the workspace active directory administrator.')
+@secure()
+param login string
+
+@description('Required. Object ID of the workspace active directory administrator.')
+@secure()
+param sid string
+
+@description('Optional. Tenant ID of the workspace active directory administrator. If not specified the workspace subscription assiciated tenant is used.')
+param tenantId string = tenant().tenantId
 
 resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
   name: workspaceName
 }
 
-resource synapse_workspace_administrator 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = if (administrator.login != '') {
+resource synapse_workspace_administrator 'Microsoft.Synapse/workspaces/administrators@2021-06-01' = {
   name: 'activeDirectory'
   parent: workspace
   properties: {
-    administratorType: administrator.administratorType
-    login: administrator.login
-    sid: administrator.sid
-    tenantId: subscription().tenantId
+    administratorType: administratorType
+    login: login
+    sid: sid
+    tenantId: tenantId
   }
 }
 
@@ -31,21 +42,3 @@ output resourceId string = synapse_workspace_administrator.id
 
 @description('The resource group of the deployed administrator.')
 output resourceGroupName string = resourceGroup().name
-
-// ================ //
-// Definitions      //
-// ================ //
-
-@export()
-type adminType = {
-  @description('Required. Workspace active directory administrator type.')
-  administratorType: string
-
-  @description('Required. Login of the workspace active directory administrator.')
-  @secure()
-  login: string
-
-  @description('Required. Object ID of the workspace active directory administrator.')
-  @secure()
-  sid: string
-}

@@ -22,7 +22,9 @@ This module deploys Synapse Workspaces Administrators.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`administrator`](#parameter-administrator) | object | The administrators definition. |
+| [`administratorType`](#parameter-administratortype) | string | Workspace active directory administrator type. |
+| [`login`](#parameter-login) | securestring | Login of the workspace active directory administrator. |
+| [`sid`](#parameter-sid) | securestring | Object ID of the workspace active directory administrator. |
 
 **Conditional parameters**
 
@@ -30,36 +32,27 @@ This module deploys Synapse Workspaces Administrators.
 | :-- | :-- | :-- |
 | [`workspaceName`](#parameter-workspacename) | string | The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment. |
 
-### Parameter: `administrator`
-
-The administrators definition.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`administratorType`](#parameter-administratoradministratortype) | string | Workspace active directory administrator type. |
-| [`login`](#parameter-administratorlogin) | securestring | Login of the workspace active directory administrator. |
-| [`sid`](#parameter-administratorsid) | securestring | Object ID of the workspace active directory administrator. |
+| [`tenantId`](#parameter-tenantid) | string | Tenant ID of the workspace active directory administrator. If not specified the workspace subscription assiciated tenant is used. |
 
-### Parameter: `administrator.administratorType`
+### Parameter: `administratorType`
 
 Workspace active directory administrator type.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `administrator.login`
+### Parameter: `login`
 
 Login of the workspace active directory administrator.
 
 - Required: Yes
 - Type: securestring
 
-### Parameter: `administrator.sid`
+### Parameter: `sid`
 
 Object ID of the workspace active directory administrator.
 
@@ -72,6 +65,14 @@ The name of the parent Synapse Workspace. Required if the template is used in a 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `tenantId`
+
+Tenant ID of the workspace active directory administrator. If not specified the workspace subscription assiciated tenant is used.
+
+- Required: No
+- Type: string
+- Default: `[tenant().tenantId]`
 
 
 ## Outputs
