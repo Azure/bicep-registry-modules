@@ -21,7 +21,7 @@ param serviceShort string = 'ndppmax'
 param namePrefix string = '#_namePrefix_#'
 
 // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-#disable-next-line no-hardcoded-location
+#disable-next-line no-hardcoded-location 
 var enforcedLocation = 'northeurope'
 
 // ============ //
