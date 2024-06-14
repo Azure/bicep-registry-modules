@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13436161316184945032"
+      "templateHash": "7468244783040054160"
     },
     "name": "Site Slot App Settings",
     "description": "This module deploys a Site Slot App Setting.",
@@ -32,6 +32,7 @@
         "functionapp,linux",
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
+        "functionapp,linux,container",
         "app,linux",
         "app",
         "linux,api",
