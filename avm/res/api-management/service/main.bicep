@@ -66,7 +66,7 @@ param roleAssignments roleAssignmentType
 ])
 param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service. Default is 2. Not supported with V2 SKUs.')
+@description('Optional. The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. If using Consumption, sku should = 0.')
 @allowed([
   0
   1
@@ -212,7 +212,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: contains(sku, 'V2') ? 1 : skuCount
+    capacity: contains(sku, 'V2') ? 1 : contains(sku, 'Consumption') ? 0 : skuCount
   }
   zones: contains(sku, 'V2') ? null : zones
   identity: identity

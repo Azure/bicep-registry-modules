@@ -291,7 +291,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         subscriptionRequired: false
       }
     ]
-    publicIpAddressId: '<publicIpAddressId>'
+    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -548,8 +548,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
-    "publicIpAddressId": {
-      "value": "<publicIpAddressId>"
+    "publicIpAddressResourceId": {
+      "value": "<publicIpAddressResourceId>"
     },
     "roleAssignments": {
       "value": [
@@ -1129,11 +1129,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`policies`](#parameter-policies) | array | Policies. |
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
 | [`products`](#parameter-products) | array | Products. |
-| [`publicIpAddressId`](#parameter-publicipaddressid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
+| [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. Default is Premium. |
-| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. |
+| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. If using Consumption, sku should = 0. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1554,7 +1554,7 @@ Products.
 - Type: array
 - Default: `[]`
 
-### Parameter: `publicIpAddressId`
+### Parameter: `publicIpAddressResourceId`
 
 Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.
 
@@ -1680,7 +1680,7 @@ The pricing tier of this API Management service. Default is Premium.
 
 ### Parameter: `skuCount`
 
-The instance size of this API Management service. Default is 2. Not supported with V2 SKUs.
+The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. If using Consumption, sku should = 0.
 
 - Required: No
 - Type: int

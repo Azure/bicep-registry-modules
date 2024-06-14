@@ -46,7 +46,9 @@ module nestedDependencies 'dependencies.bicep' = {
     locationRegion1: resourceLocation
     locationRegion2: locationRegion2
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
-    dnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
+    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
+    networkSecurityGroupName: 'nsg'
+    virtualNetworkName: 'vnet'
   }
 }
 
@@ -94,7 +96,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       virtualNetworkType: 'Internal'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
-      publicIpAddressId: nestedDependencies.outputs.publicIPResourceIdRegion1
+      publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion1
       apis: [
         {
           apiVersionSet: {
