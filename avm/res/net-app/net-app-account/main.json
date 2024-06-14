@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3443173491807200896"
+      "version": "0.27.1.19265",
+      "templateHash": "17614166962197031000"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -307,7 +307,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.netapp-netappaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -437,8 +437,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13254524547530770866"
+              "version": "0.27.1.19265",
+              "templateHash": "16622075120254910820"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -705,8 +705,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "308407733537316660"
+                      "version": "0.27.1.19265",
+                      "templateHash": "8316026534353601275"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
