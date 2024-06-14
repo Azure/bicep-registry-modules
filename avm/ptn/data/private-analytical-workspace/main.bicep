@@ -42,6 +42,7 @@ var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
 var subnetNamePrivateLink = 'private-link-subnet'
 var subnetNameDbwControlPlane = 'dbw-control-plane-subnet'
 var subnetNameDbwComputePlane = 'dbw-compute-plane-subnet'
+var nsgNamePrivateLink = '${name}-nsg-private-link'
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
 var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
 
@@ -89,6 +90,7 @@ var privateLinkSubnet = [
   {
     name: subnetNamePrivateLink
     addressPrefix: '192.168.224.0/24'
+    networkSecurityGroupResourceId: nsgPrivateLink.outputs.resourceId
   }
 ]
 
@@ -228,6 +230,31 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNE
     lock: lock
     subnets: subnets
     tags: tags
+  }
+}
+
+module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET) {
+  name: nsgNamePrivateLink
+  params: {
+    // Required parameters
+    name: nsgNamePrivateLink
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        name: diagnosticSettingsName
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        workspaceResourceId: logCfg.resourceId
+      }
+    ]
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    tags: tags
+    securityRules: []
   }
 }
 
