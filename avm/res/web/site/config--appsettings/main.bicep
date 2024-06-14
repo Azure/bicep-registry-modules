@@ -11,6 +11,8 @@ param appName string
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
+  'functionapp,linux,container' // function app linux container
+
   'app,linux' // linux web app
   'app' // windows web app
   'linux,api' // linux api app
