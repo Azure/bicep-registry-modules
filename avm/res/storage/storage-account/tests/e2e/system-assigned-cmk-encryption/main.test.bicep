@@ -51,40 +51,38 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: resourceLocation
-      name: nestedDependencies.outputs.storageAccountName
-      privateEndpoints: [
-        {
-          service: 'blob'
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
-        }
-      ]
-      blobServices: {
-        containers: [
-          {
-            name: '${namePrefix}container'
-            publicAccess: 'None'
-          }
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  params: {
+    location: resourceLocation
+    name: nestedDependencies.outputs.storageAccountName
+    privateEndpoints: [
+      {
+        service: 'blob'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
         ]
       }
-      managedIdentities: {
-        systemAssigned: true
-      }
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      }
-    }
-    dependsOn: [
-      nestedDependencies
     ]
+    blobServices: {
+      containers: [
+        {
+          name: '${namePrefix}container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    customerManagedKey: {
+      keyName: nestedDependencies.outputs.keyName
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+    }
   }
-]
+  dependsOn: [
+    nestedDependencies
+  ]
+}]

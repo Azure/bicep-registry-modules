@@ -18,20 +18,23 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         addressPrefix
       ]
     }
-    subnets: map(range(0, 2), i => {
-      name: 'subnet-${i}'
-      properties: {
-        addressPrefix: cidrSubnet(addressPrefix, 25, i)
-        delegations: [
-          {
-            name: 'dnsdel'
-            properties: {
-              serviceName: 'Microsoft.Network/dnsResolvers'
+    subnets: map(
+      range(0, 2),
+      i => {
+        name: 'subnet-${i}'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 25, i)
+          delegations: [
+            {
+              name: 'dnsdel'
+              properties: {
+                serviceName: 'Microsoft.Network/dnsResolvers'
+              }
             }
-          }
-        ]
+          ]
+        }
       }
-    })
+    )
   }
 }
 

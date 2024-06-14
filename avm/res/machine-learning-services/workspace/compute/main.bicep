@@ -98,34 +98,35 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Deployments  //
 // ============ //
 
-resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' = if (deployCompute == true) {
-  name: name
-  location: location
-  tags: empty(resourceId) ? tags : any(null)
-  sku: empty(resourceId)
-    ? {
-        name: sku
-        tier: sku
-      }
-    : any(null)
-  parent: machineLearningWorkspace
-  identity: empty(resourceId) ? identity : any(null)
-  properties: union(
-    {
-      description: description
-      disableLocalAuth: disableLocalAuth
-      computeType: computeType
-    },
-    (!empty(resourceId)
+resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' =
+  if (deployCompute == true) {
+    name: name
+    location: location
+    tags: empty(resourceId) ? tags : any(null)
+    sku: empty(resourceId)
       ? {
-          resourceId: resourceId
+          name: sku
+          tier: sku
         }
-      : {
-          computeLocation: computeLocation
-          properties: properties
-        })
-  )
-}
+      : any(null)
+    parent: machineLearningWorkspace
+    identity: empty(resourceId) ? identity : any(null)
+    properties: union(
+      {
+        description: description
+        disableLocalAuth: disableLocalAuth
+        computeType: computeType
+      },
+      (!empty(resourceId)
+        ? {
+            resourceId: resourceId
+          }
+        : {
+            computeLocation: computeLocation
+            properties: properties
+          })
+    )
+  }
 
 // =========== //
 // Outputs     //
