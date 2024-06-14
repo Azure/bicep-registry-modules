@@ -1620,25 +1620,29 @@ function Initialize-ReadMe {
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
 
-    if ($FullModuleIdentifier -match 'avm.(?:res)') {
+    if ($ReadMeFilePath -match 'avm.(?:res)') {
+        # Resource module
         $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+
+        $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
+            $_ -match "^$formattedResourceType$"
+        }
+
+        if ($inTemplateResourceType) {
+            $headerType = $inTemplateResourceType
+        } else {
+            Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
+            $headerType = $formattedResourceType
+        }
     } else {
         # Non-resource modules always need a custom identifier
         $parentIdentifierName, $childIdentifierName = $FullModuleIdentifier -Split '[\/|\\]', 2 # e.g. 'lz' & 'sub-vending'
         $formattedParentIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($parentIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
         $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
-        $formattedResourceType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
+        $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
     }
+
     $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
-
-    $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
-        $_ -match "^$formattedResourceType$"
-    }
-
-    if (-not $inTemplateResourceType) {
-        Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
-        $inTemplateResourceType = $formattedResourceType
-    }
 
     # Orphaned readme existing?
     $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
@@ -1653,7 +1657,7 @@ function Initialize-ReadMe {
     }
 
     $initialContent = @(
-        "# $moduleName ``[$inTemplateResourceType]``",
+        "# $moduleName ``[$headerType]``",
         '',
         ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
         ((Test-Path $orphanedReadMeFilePath) ? '' : $null),
