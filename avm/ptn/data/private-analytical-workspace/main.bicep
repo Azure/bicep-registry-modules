@@ -162,10 +162,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 //
 
 resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = if (!createNewVNET) {
-  name: empty(virtualNetworkResourceId) ? 'dummyName' : last(split(virtualNetworkResourceId!, '/'))
-  scope: empty(virtualNetworkResourceId)
-    ? resourceGroup()
-    : resourceGroup(split(virtualNetworkResourceId!, '/')[2], split(virtualNetworkResourceId!, '/')[4])
+  name: createNewVNET ? 'dummyName' : last(split(virtualNetworkResourceId!, '/'))
+  scope: resourceGroup(
+    createNewVNET ? subscription().id : (split(virtualNetworkResourceId!, '/')[2]),
+    createNewVNET ? resourceGroup().id : (split(virtualNetworkResourceId!, '/')[4])
+  )
 
   resource subnetPrivateLink 'subnets@2023-11-01' existing = if (!empty(advancedOptions) && !empty(advancedOptions.?virtualNetwork.?subnetNamePrivateLink)) {
     name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'dummyName'
@@ -181,17 +182,19 @@ resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = 
 }
 
 resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!createNewLog) {
-  name: empty(logAnalyticsWorkspaceResourceId) ? 'dummyName' : last(split(logAnalyticsWorkspaceResourceId!, '/'))
-  scope: empty(logAnalyticsWorkspaceResourceId)
-    ? resourceGroup()
-    : resourceGroup(split(logAnalyticsWorkspaceResourceId!, '/')[2], split(logAnalyticsWorkspaceResourceId!, '/')[4])
+  name: createNewLog ? 'dummyName' : last(split(logAnalyticsWorkspaceResourceId!, '/'))
+  scope: resourceGroup(
+    createNewLog ? subscription().id : (split(logAnalyticsWorkspaceResourceId!, '/')[2]),
+    createNewLog ? resourceGroup().id : (split(logAnalyticsWorkspaceResourceId!, '/')[4])
+  )
 }
 
 resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
-  name: empty(keyVaultResourceId) ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
-  scope: empty(keyVaultResourceId)
-    ? resourceGroup()
-    : resourceGroup(split(keyVaultResourceId!, '/')[2], split(keyVaultResourceId!, '/')[4])
+  name: createNewKV ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    createNewKV ? subscription().id : (split(keyVaultResourceId!, '/')[2]),
+    createNewKV ? resourceGroup().id : (split(keyVaultResourceId!, '/')[4])
+  )
 }
 
 module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
