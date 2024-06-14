@@ -362,9 +362,6 @@ param enableAzureMonitorProfileMetrics bool = false
 @description('Optional. Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled.')
 param enableAzureMonitorProfileLogs bool = false
 
-@description('Optional. Indicates if Application Monitoring of the kubenetes cluster is enabled.')
-param enableAppMonitoring bool = false
-
 @description('Optional. Whether the Windows Log Collection for Azure Monitor Container Insights Logs Addon is enabled.')
 param enableWindowsHostLogs bool = false
 
@@ -596,7 +593,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         enabled: enableKeyvaultSecretsProvider
         config: enableKeyvaultSecretsProvider
           ? {
-              enableSecretRotation: string(enableSecretRotation)
+              enableSecretRotation: toLower(string(enableSecretRotation))
             }
           : null
       }
@@ -646,7 +643,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       tenantID: aadProfileTenantId
     }
     autoScalerProfile: {
-      'balance-similar-node-groups': string(autoScalerProfileBalanceSimilarNodeGroups)
+      'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
       'max-empty-bulk-delete': autoScalerProfileMaxEmptyBulkDelete
       'max-graceful-termination-sec': autoScalerProfileMaxGracefulTerminationSec
@@ -661,8 +658,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       'scale-down-unready-time': autoScalerProfileScaleDownUnreadyTime
       'scale-down-utilization-threshold': autoScalerProfileUtilizationThreshold
       'scan-interval': autoScalerProfileScanInterval
-      'skip-nodes-with-local-storage': string(autoScalerProfileSkipNodesWithLocalStorage)
-      'skip-nodes-with-system-pods': string(autoScalerProfileSkipNodesWithSystemPods)
+      'skip-nodes-with-local-storage': toLower(string(autoScalerProfileSkipNodesWithLocalStorage))
+      'skip-nodes-with-system-pods': toLower(string(autoScalerProfileSkipNodesWithSystemPods))
     }
     autoUpgradeProfile: {
       upgradeChannel: autoUpgradeProfileUpgradeChannel
@@ -677,9 +674,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     azureMonitorProfile: {
       logs: enableAzureMonitorProfileLogs
         ? {
-            appMonitoring: {
-              enabled: enableAppMonitoring
-            }
             containerInsights: {
               enabled: enableContainerInsights
               logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null

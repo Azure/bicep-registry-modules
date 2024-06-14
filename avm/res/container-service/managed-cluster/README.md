@@ -1487,7 +1487,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
-| [`enableAppMonitoring`](#parameter-enableappmonitoring) | bool | Indicates if Application Monitoring of the kubenetes cluster is enabled. |
 | [`enableAppMonitoringOpenTelemetryMetrics`](#parameter-enableappmonitoringopentelemetrymetrics) | bool | Indicates if Application Monitoring Open Telemetry Metrics is enabled. |
 | [`enableAzureDefender`](#parameter-enableazuredefender) | bool | Whether to enable Azure Defender. |
 | [`enableAzureMonitorProfileLogs`](#parameter-enableazuremonitorprofilelogs) | bool | Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled. |
@@ -2468,14 +2467,6 @@ Specifies the resource ID of connected DNS zone. It will be ignored if `webAppli
 
 - Required: No
 - Type: string
-
-### Parameter: `enableAppMonitoring`
-
-Indicates if Application Monitoring of the kubenetes cluster is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableAppMonitoringOpenTelemetryMetrics`
 
