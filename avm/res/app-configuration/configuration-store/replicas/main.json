@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "15490063653423076927"
+      "version": "0.26.170.59819",
+      "templateHash": "3867721314598368740"
     },
     "name": "App Configuration Replicas",
     "description": "This module deploys an App Configuration Replica.",

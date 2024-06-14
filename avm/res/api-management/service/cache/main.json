@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "10892187305080519873"
+      "version": "0.26.54.24096",
+      "templateHash": "5452536693649070190"
     },
     "name": "API Management Service Caches",
     "description": "This module deploys an API Management Service Cache.",
