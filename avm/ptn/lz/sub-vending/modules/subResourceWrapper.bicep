@@ -545,7 +545,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!emp
       {
         addressPrefix: !empty(resourceProviders) ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0) : null
         name: 'ds-subnet-001'
-        networkSecurityGroupId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+        networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
         serviceEndpoints: [
           {
             service: 'Microsoft.Storage'

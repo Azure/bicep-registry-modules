@@ -670,7 +670,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
+              <<<<<<< HEAD
               "templateHash": "3666975856606342472"
+              =======
+              "templateHash": "9397210340148497295"
+              >>>>>>> e6527fa9cfd6d99a825f98c886f9e167a83c4d9e
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -12940,7 +12944,7 @@
                       {
                         "addressPrefix": "[if(not(empty(parameters('resourceProviders'))), cidrSubnet(parameters('virtualNetworkDeploymentScriptAddressPrefix'), 24, 0), null())]",
                         "name": "ds-subnet-001",
-                        "networkSecurityGroupId": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg), '2022-09-01').outputs.resourceId.value, null())]",
+                        "networkSecurityGroupResourceId": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg), '2022-09-01').outputs.resourceId.value, null())]",
                         "serviceEndpoints": [
                           {
                             "service": "Microsoft.Storage"
