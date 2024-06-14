@@ -70,7 +70,7 @@ function Initialize-DeploymentRemoval {
         }
 
         # The initial sequence is a general order-recommendation
-        $removalSequence = @(
+        $RemoveFirstSequence = @(
             'Microsoft.Authorization/locks',
             'Microsoft.Authorization/roleAssignments',
             'Microsoft.Insights/diagnosticSettings',
@@ -90,9 +90,15 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Sql/managedInstances',
             'Microsoft.MachineLearningServices/workspaces',
             'Microsoft.Compute/virtualMachines',
+            'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
             'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
+            'Microsoft.Databricks/workspaces'
             'Microsoft.Resources/resourceGroups'
+        )
+
+        $removeLastSequence = @(
+            'Microsoft.Subscription/aliases'
         )
 
         if ($DeploymentNames.Count -gt 0) {
@@ -113,7 +119,12 @@ function Initialize-DeploymentRemoval {
         # $moduleName = Split-Path (Split-Path (Split-Path $templateFilePath -Parent) -Parent) -LeafBase
         # switch ($moduleName) {
         #     '<moduleName01>' {                # For example: 'virtualWans', 'automationAccounts'
-        #         $removalSequence += @(
+        #         $RemoveFirstSequence += @(
+        #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
+        #             '<resourceType02>',
+        #             '<resourceType03>'
+        #         )
+        #         $RemoveLastSequence += @(
         #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
         #             '<resourceType02>',
         #             '<resourceType03>'
@@ -125,19 +136,20 @@ function Initialize-DeploymentRemoval {
         if ($PurgeTestResources) {
             # Resources
             $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceIds | Sort-Object -Culture 'en-US' -Unique)
 
             # Resource groups
             $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Culture 'en-US' -Unique)
         }
 
         # Invoke removal
         $inputObject = @{
-            DeploymentNames  = $DeploymentNames
-            ResourceIds      = $ResourceIds
-            TemplateFilePath = $TemplateFilePath
-            RemovalSequence  = $removalSequence
+            DeploymentNames     = $DeploymentNames
+            ResourceIds         = $ResourceIds
+            TemplateFilePath    = $TemplateFilePath
+            RemoveFirstSequence = $removeFirstSequence
+            RemoveLastSequence  = $removeLastSequence
         }
         if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
             $inputObject['TemplateFilePath'] = $TemplateFilePath

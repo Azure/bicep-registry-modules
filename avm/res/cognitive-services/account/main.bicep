@@ -9,11 +9,6 @@ param name string
 @allowed([
   'AIServices'
   'AnomalyDetector'
-  'Bing.Autosuggest.v7'
-  'Bing.CustomSearch'
-  'Bing.EntitySearch'
-  'Bing.Search.v7'
-  'Bing.SpellCheck.v7'
   'CognitiveServices'
   'ComputerVision'
   'ContentModerator'

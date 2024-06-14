@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "9790133647197956266"
+      "version": "0.27.1.19265",
+      "templateHash": "7194247781912576602"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -103,6 +103,451 @@
         }
       },
       "nullable": true
+    },
+    "networkGroupType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the network group."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the network group."
+            }
+          },
+          "staticMembers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the static member."
+                  }
+                },
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Resource ID of the virtual network."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "networkManagerScopeAccessType": {
+      "type": "array",
+      "allowedValues": [
+        "Connectivity",
+        "SecurityAdmin"
+      ]
+    },
+    "networkManagerScopesType": {
+      "type": "object",
+      "properties": {
+        "managementGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional.  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'."
+          }
+        },
+        "subscriptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'."
+          }
+        }
+      }
+    },
+    "scopeConnectionType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the scope connection."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the scope connection."
+            }
+          },
+          "resourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Enter the subscription or management group resource ID that you want to add to this network manager's scope."
+            }
+          },
+          "tenantId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Tenant ID of the subscription or management group that you want to manage."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "connectivityConfigurationsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the connectivity configuration."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the connectivity configuration."
+            }
+          },
+          "appliesToGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "groupConnectivity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "DirectlyConnected",
+                    "None"
+                  ],
+                  "metadata": {
+                    "description": "Required. Group connectivity type."
+                  }
+                },
+                "isGlobal": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Flag if global is supported."
+                  }
+                },
+                "networkGroupResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Resource Id of the network group."
+                  }
+                },
+                "useHubGateway": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Flag if use hub gateway."
+                  }
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group."
+            }
+          },
+          "connectivityTopology": {
+            "type": "string",
+            "allowedValues": [
+              "HubAndSpoke",
+              "Mesh"
+            ],
+            "metadata": {
+              "description": "Required. The connectivity topology to apply the configuration to."
+            }
+          },
+          "hubs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Resource Id of the hub."
+                  }
+                },
+                "resourceType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Microsoft.Network/virtualNetworks"
+                  ],
+                  "metadata": {
+                    "description": "Required. Resource type of the hub."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The hubs to apply the configuration to."
+            }
+          },
+          "deleteExistingPeering": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Delete existing peering connections."
+            }
+          },
+          "isGlobal": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Is global configuration."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "securityAdminConfigurationsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the security admin configuration."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the security admin configuration."
+            }
+          },
+          "applyOnNetworkIntentPolicyBasedServices": {
+            "type": "array",
+            "allowedValues": [
+              "All",
+              "AllowRulesOnly",
+              "None"
+            ],
+            "metadata": {
+              "description": "Required. Apply on network intent policy based services."
+            }
+          },
+          "ruleCollections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the admin rule collection."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A description of the admin rule collection."
+                  }
+                },
+                "appliesToGroups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "networkGroupResourceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource ID of the network group."
+                        }
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group."
+                  }
+                },
+                "rules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The name of the rule."
+                        }
+                      },
+                      "access": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Allow",
+                          "AlwaysAllow",
+                          "Deny"
+                        ],
+                        "metadata": {
+                          "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
+                        }
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A description of the rule."
+                        }
+                      },
+                      "destinationPortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                        }
+                      },
+                      "destinations": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "addressPrefixType": {
+                              "type": "string",
+                              "allowedValues": [
+                                "IPPrefix",
+                                "ServiceTag"
+                              ],
+                              "metadata": {
+                                "description": "Required. Address prefix type."
+                              }
+                            },
+                            "addressPrefix": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Address prefix."
+                              }
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                        }
+                      },
+                      "direction": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Inbound",
+                          "Outbound"
+                        ],
+                        "metadata": {
+                          "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 1,
+                        "maxValue": 4096,
+                        "metadata": {
+                          "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                        }
+                      },
+                      "protocol": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Ah",
+                          "Any",
+                          "Esp",
+                          "Icmp",
+                          "Tcp",
+                          "Udp"
+                        ],
+                        "metadata": {
+                          "description": "Required. Network protocol this rule applies to."
+                        }
+                      },
+                      "sourcePortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                        }
+                      },
+                      "sources": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "addressPrefixType": {
+                              "type": "string",
+                              "allowedValues": [
+                                "IPPrefix",
+                                "ServiceTag"
+                              ],
+                              "metadata": {
+                                "description": "Required. Address prefix type."
+                              }
+                            },
+                            "addressPrefix": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Address prefix."
+                              }
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Rule collections to create for the security admin configuration."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -149,41 +594,37 @@
       }
     },
     "networkManagerScopeAccesses": {
-      "type": "array",
+      "$ref": "#/definitions/networkManagerScopeAccessType",
       "metadata": {
         "description": "Required. Scope Access. String array containing any of \"Connectivity\", \"SecurityAdmin\". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs."
       }
     },
     "networkManagerScopes": {
-      "type": "object",
+      "$ref": "#/definitions/networkManagerScopesType",
       "metadata": {
-        "description": "Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the \"Microsoft.Network\" resource provider is registered for those Management Groups prior to deployment."
+        "description": "Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the \"Microsoft.Network\" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription."
       }
     },
     "networkGroups": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/networkGroupType",
       "metadata": {
         "description": "Conditional. Network Groups and static members to create for the network manager. Required if using \"connectivityConfigurations\" or \"securityAdminConfigurations\" parameters. A network group is global container that includes a set of virtual network resources from any region. Then, configurations are applied to target the network group, which applies the configuration to all members of the group. The two types are group memberships are static and dynamic memberships. Static membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks, and is available as a child module, while dynamic membership is defined through Azure policy. See [How Azure Policy works with Network Groups](https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-azure-policy-integration) for more details."
       }
     },
     "connectivityConfigurations": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/connectivityConfigurationsType",
       "metadata": {
         "description": "Optional. Connectivity Configurations to create for the network manager. Network manager must contain at least one network group in order to define connectivity configurations."
       }
     },
     "scopeConnections": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/scopeConnectionType",
       "metadata": {
         "description": "Optional. Scope Connections to create for the network manager. Allows network manager to manage resources from another tenant. Supports management groups or subscriptions from another tenant."
       }
     },
     "securityAdminConfigurations": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/securityAdminConfigurationsType",
       "metadata": {
         "description": "Optional. Security Admin Configurations, Rule Collections and Rules to create for the network manager. Azure Virtual Network Manager provides two different types of configurations you can deploy across your virtual networks, one of them being a SecurityAdmin configuration. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to."
       }
@@ -281,7 +722,7 @@
     "networkManager_networkGroups": {
       "copy": {
         "name": "networkManager_networkGroups",
-        "count": "[length(parameters('networkGroups'))]"
+        "count": "[length(coalesce(parameters('networkGroups'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -293,26 +734,54 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('networkGroups')[copyIndex()].name]"
+            "value": "[coalesce(parameters('networkGroups'), createArray())[copyIndex()].name]"
           },
           "networkManagerName": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(contains(parameters('networkGroups')[copyIndex()], 'description'), createObject('value', parameters('networkGroups')[copyIndex()].description), createObject('value', ''))]",
-          "staticMembers": "[if(contains(parameters('networkGroups')[copyIndex()], 'staticMembers'), createObject('value', parameters('networkGroups')[copyIndex()].staticMembers), createObject('value', createArray()))]"
+          "description": {
+            "value": "[coalesce(tryGet(coalesce(parameters('networkGroups'), createArray())[copyIndex()], 'description'), '')]"
+          },
+          "staticMembers": {
+            "value": "[tryGet(coalesce(parameters('networkGroups'), createArray())[copyIndex()], 'staticMembers')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4214103423142628663"
+              "version": "0.27.1.19265",
+              "templateHash": "1167650749257240939"
             },
             "name": "Network Manager Network Groups",
-            "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
+            "description": "This module deploys a Network Manager Network Group.\r\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "staticMembersType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the static member."
+                    }
+                  },
+                  "resourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Resource ID of the virtual network."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
           },
           "parameters": {
             "networkManagerName": {
@@ -330,33 +799,41 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the network group."
               }
             },
             "staticMembers": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/staticMembersType",
               "metadata": {
                 "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "networkManager": {
+              "existing": true,
+              "type": "Microsoft.Network/networkManagers",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('networkManagerName')]"
+            },
+            "networkGroup": {
               "type": "Microsoft.Network/networkManagers/networkGroups",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[parameters('description')]"
-              }
+                "description": "[coalesce(parameters('description'), '')]"
+              },
+              "dependsOn": [
+                "networkManager"
+              ]
             },
-            {
+            "networkGroup_staticMembers": {
               "copy": {
                 "name": "networkGroup_staticMembers",
-                "count": "[length(parameters('staticMembers'))]"
+                "count": "[length(coalesce(parameters('staticMembers'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -374,10 +851,10 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('staticMembers')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('staticMembers'), createArray())[copyIndex()].name]"
                   },
                   "resourceId": {
-                    "value": "[parameters('staticMembers')[copyIndex()].resourceId]"
+                    "value": "[coalesce(parameters('staticMembers'), createArray())[copyIndex()].resourceId]"
                   }
                 },
                 "template": {
@@ -386,11 +863,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "6637396315337813947"
+                      "version": "0.27.1.19265",
+                      "templateHash": "15788464740461325450"
                     },
                     "name": "Network Manager Network Group Static Members",
-                    "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+                    "description": "This module deploys a Network Manager Network Group Static Member.\r\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
                     "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
@@ -455,10 +932,11 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagerName'), parameters('name'))]"
+                "networkGroup",
+                "networkManager"
               ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -491,7 +969,7 @@
     "networkManager_connectivityConfigurations": {
       "copy": {
         "name": "networkManager_connectivityConfigurations",
-        "count": "[length(parameters('connectivityConfigurations'))]"
+        "count": "[length(coalesce(parameters('connectivityConfigurations'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -503,34 +981,107 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('connectivityConfigurations')[copyIndex()].name]"
+            "value": "[coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()].name]"
           },
           "networkManagerName": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(contains(parameters('connectivityConfigurations')[copyIndex()], 'description'), createObject('value', parameters('connectivityConfigurations')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'description'), '')]"
+          },
           "appliesToGroups": {
-            "value": "[parameters('connectivityConfigurations')[copyIndex()].appliesToGroups]"
+            "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'appliesToGroups'), createArray())]"
           },
           "connectivityTopology": {
-            "value": "[parameters('connectivityConfigurations')[copyIndex()].connectivityTopology]"
+            "value": "[coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()].connectivityTopology]"
           },
-          "hubs": "[if(contains(parameters('connectivityConfigurations')[copyIndex()], 'hubs'), createObject('value', parameters('connectivityConfigurations')[copyIndex()].hubs), createObject('value', createArray()))]",
-          "deleteExistingPeering": "[if(and(contains(parameters('connectivityConfigurations')[copyIndex()], 'hubs'), equals(parameters('connectivityConfigurations')[copyIndex()].connectivityTopology, 'HubAndSpoke')), createObject('value', parameters('connectivityConfigurations')[copyIndex()].deleteExistingPeering), createObject('value', 'False'))]",
-          "isGlobal": "[if(contains(parameters('connectivityConfigurations')[copyIndex()], 'isGlobal'), createObject('value', parameters('connectivityConfigurations')[copyIndex()].isGlobal), createObject('value', 'False'))]"
+          "hubs": {
+            "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'hubs'), createArray())]"
+          },
+          "deleteExistingPeering": {
+            "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'deleteExistingPeering'), false())]"
+          },
+          "isGlobal": {
+            "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'isGlobal'), false())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "3569964888966454016"
+              "version": "0.27.1.19265",
+              "templateHash": "2756544330949607993"
             },
             "name": "Network Manager Connectivity Configurations",
-            "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+            "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "appliesToGroupsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "groupConnectivity": {
+                    "type": "string",
+                    "allowedValues": [
+                      "DirectlyConnected",
+                      "None"
+                    ],
+                    "metadata": {
+                      "description": "Required. Group connectivity type."
+                    }
+                  },
+                  "isGlobal": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Flag if global is supported."
+                    }
+                  },
+                  "networkGroupResourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Resource Id of the network group."
+                    }
+                  },
+                  "useHubGateway": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Flag if use hub gateway."
+                    }
+                  }
+                }
+              }
+            },
+            "hubsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "resourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Resource Id of the hub."
+                    }
+                  },
+                  "resourceType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Microsoft.Network/virtualNetworks"
+                    ],
+                    "metadata": {
+                      "description": "Required. Resource type of the hub."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
           },
           "parameters": {
             "networkManagerName": {
@@ -548,17 +1099,16 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the connectivity configuration."
               }
             },
             "appliesToGroups": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/appliesToGroupsType",
               "metadata": {
-                "description": "Required. Network Groups for the configuration."
+                "description": "Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group."
               }
             },
             "connectivityTopology": {
@@ -572,50 +1122,50 @@
               }
             },
             "hubs": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/hubsType",
               "metadata": {
                 "description": "Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type \"HubAndSpoke\"."
               }
             },
             "deleteExistingPeering": {
-              "type": "string",
-              "defaultValue": "False",
-              "allowedValues": [
-                "True",
-                "False"
-              ],
+              "type": "bool",
+              "defaultValue": false,
               "metadata": {
                 "description": "Optional. Flag if need to remove current existing peerings. If set to \"True\", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type \"HubAndSpoke\"."
               }
             },
             "isGlobal": {
-              "type": "string",
-              "defaultValue": "False",
-              "allowedValues": [
-                "True",
-                "False"
-              ],
+              "type": "bool",
+              "defaultValue": false,
               "metadata": {
                 "description": "Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to \"True\", a global mesh enables connectivity across regions."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "networkManager": {
+              "existing": true,
+              "type": "Microsoft.Network/networkManagers",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('networkManagerName')]"
+            },
+            "connectivityConfiguration": {
               "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "appliesToGroups": "[parameters('appliesToGroups')]",
+                "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
                 "connectivityTopology": "[parameters('connectivityTopology')]",
-                "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('deleteExistingPeering'), 'False')]",
-                "description": "[parameters('description')]",
+                "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
+                "description": "[coalesce(parameters('description'), '')]",
                 "hubs": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('hubs'), createArray())]",
-                "isGlobal": "[parameters('isGlobal')]"
-              }
+                "isGlobal": "[string(parameters('isGlobal'))]"
+              },
+              "dependsOn": [
+                "networkManager"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -649,7 +1199,7 @@
     "networkManager_scopeConnections": {
       "copy": {
         "name": "networkManager_scopeConnections",
-        "count": "[length(parameters('scopeConnections'))]"
+        "count": "[length(coalesce(parameters('scopeConnections'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -661,32 +1211,33 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('scopeConnections')[copyIndex()].name]"
+            "value": "[coalesce(parameters('scopeConnections'), createArray())[copyIndex()].name]"
           },
           "networkManagerName": {
             "value": "[parameters('name')]"
           },
           "description": {
-            "value": "[tryGet(parameters('scopeConnections')[copyIndex()], 'description')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('scopeConnections'), createArray())[copyIndex()], 'description'), '')]"
           },
           "resourceId": {
-            "value": "[parameters('scopeConnections')[copyIndex()].resourceId]"
+            "value": "[coalesce(parameters('scopeConnections'), createArray())[copyIndex()].resourceId]"
           },
           "tenantId": {
-            "value": "[parameters('scopeConnections')[copyIndex()].tenantId]"
+            "value": "[coalesce(parameters('scopeConnections'), createArray())[copyIndex()].tenantId]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8767540456657043434"
+              "version": "0.27.1.19265",
+              "templateHash": "13509671695440625631"
             },
             "name": "Network Manager Scope Connections",
-            "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
+            "description": "This module deploys a Network Manager Scope Connection.\r\nCreate a cross-tenant connection to manage a resource from another tenant.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -705,7 +1256,7 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the scope connection."
@@ -724,18 +1275,27 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "networkManager": {
+              "existing": true,
+              "type": "Microsoft.Network/networkManagers",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('networkManagerName')]"
+            },
+            "scopeConnection": {
               "type": "Microsoft.Network/networkManagers/scopeConnections",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[parameters('description')]",
+                "description": "[coalesce(parameters('description'), '')]",
                 "resourceId": "[parameters('resourceId')]",
                 "tenantId": "[parameters('tenantId')]"
-              }
+              },
+              "dependsOn": [
+                "networkManager"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -768,7 +1328,7 @@
     "networkManager_securityAdminConfigurations": {
       "copy": {
         "name": "networkManager_securityAdminConfigurations",
-        "count": "[length(parameters('securityAdminConfigurations'))]"
+        "count": "[length(coalesce(parameters('securityAdminConfigurations'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -780,33 +1340,227 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('securityAdminConfigurations')[copyIndex()].name]"
+            "value": "[coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()].name]"
           },
           "networkManagerName": {
             "value": "[parameters('name')]"
           },
           "description": {
-            "value": "[tryGet(parameters('securityAdminConfigurations')[copyIndex()], 'description')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()], 'description'), '')]"
           },
           "applyOnNetworkIntentPolicyBasedServices": {
-            "value": "[parameters('securityAdminConfigurations')[copyIndex()].applyOnNetworkIntentPolicyBasedServices]"
+            "value": "[coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()].applyOnNetworkIntentPolicyBasedServices]"
           },
           "ruleCollections": {
-            "value": "[tryGet(parameters('securityAdminConfigurations')[copyIndex()], 'ruleCollections')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()], 'ruleCollections'), createArray())]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "254507184583897429"
+              "version": "0.27.1.19265",
+              "templateHash": "11015814946289049349"
             },
             "name": "Network Manager Security Admin Configurations",
-            "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+            "description": "This module deploys an Network Manager Security Admin Configuration.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "applyOnNetworkIntentPolicyBasedServicesType": {
+              "type": "array",
+              "allowedValues": [
+                "All",
+                "AllowRulesOnly",
+                "None"
+              ]
+            },
+            "ruleCollectionType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the admin rule collection."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A description of the admin rule collection."
+                    }
+                  },
+                  "appliesToGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "networkGroupResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The resource ID of the network group."
+                          }
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group."
+                    }
+                  },
+                  "rules": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the rule."
+                          }
+                        },
+                        "access": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Allow",
+                            "AlwaysAllow",
+                            "Deny"
+                          ],
+                          "metadata": {
+                            "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A description of the rule."
+                          }
+                        },
+                        "destinationPortRanges": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                          }
+                        },
+                        "destinations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "addressPrefixType": {
+                                "type": "string",
+                                "allowedValues": [
+                                  "IPPrefix",
+                                  "ServiceTag"
+                                ],
+                                "metadata": {
+                                  "description": "Required. Address prefix type."
+                                }
+                              },
+                              "addressPrefix": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Address prefix."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                          }
+                        },
+                        "direction": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Inbound",
+                            "Outbound"
+                          ],
+                          "metadata": {
+                            "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
+                          }
+                        },
+                        "priority": {
+                          "type": "int",
+                          "minValue": 1,
+                          "maxValue": 4096,
+                          "metadata": {
+                            "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                          }
+                        },
+                        "protocol": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Ah",
+                            "Any",
+                            "Esp",
+                            "Icmp",
+                            "Tcp",
+                            "Udp"
+                          ],
+                          "metadata": {
+                            "description": "Required. Network protocol this rule applies to."
+                          }
+                        },
+                        "sourcePortRanges": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                          }
+                        },
+                        "sources": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "addressPrefixType": {
+                                "type": "string",
+                                "allowedValues": [
+                                  "IPPrefix",
+                                  "ServiceTag"
+                                ],
+                                "metadata": {
+                                  "description": "Required. Address prefix type."
+                                }
+                              },
+                              "addressPrefix": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Address prefix."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
           },
           "parameters": {
             "networkManagerName": {
@@ -824,48 +1578,48 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the security admin configuration."
               }
             },
             "applyOnNetworkIntentPolicyBasedServices": {
-              "type": "array",
-              "defaultValue": [
-                "None"
-              ],
-              "allowedValues": [
-                "None",
-                "All",
-                "AllowRulesOnly"
-              ],
+              "$ref": "#/definitions/applyOnNetworkIntentPolicyBasedServicesType",
               "metadata": {
                 "description": "Required. Enum list of network intent policy based services."
               }
             },
             "ruleCollections": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/ruleCollectionType",
               "metadata": {
                 "description": "Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "networkManager": {
+              "existing": true,
+              "type": "Microsoft.Network/networkManagers",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('networkManagerName')]"
+            },
+            "securityAdminConfigurations": {
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[parameters('description')]",
+                "description": "[coalesce(parameters('description'), '')]",
                 "applyOnNetworkIntentPolicyBasedServices": "[parameters('applyOnNetworkIntentPolicyBasedServices')]"
-              }
+              },
+              "dependsOn": [
+                "networkManager"
+              ]
             },
-            {
+            "securityAdminConfigurations_ruleCollections": {
               "copy": {
                 "name": "securityAdminConfigurations_ruleCollections",
-                "count": "[length(parameters('ruleCollections'))]"
+                "count": "[length(coalesce(parameters('ruleCollections'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -883,25 +1637,188 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('ruleCollections')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].name]"
+                  },
+                  "description": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description'), '')]"
                   },
                   "appliesToGroups": {
-                    "value": "[parameters('ruleCollections')[copyIndex()].appliesToGroups]"
+                    "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].appliesToGroups]"
                   },
-                  "rules": "[if(contains(parameters('ruleCollections')[copyIndex()], 'rules'), createObject('value', parameters('ruleCollections')[copyIndex()].rules), createObject('value', createArray()))]"
+                  "rules": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'rules'), createArray())]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.54.24096",
-                      "templateHash": "14135307535635501181"
+                      "version": "0.27.1.19265",
+                      "templateHash": "4261286839823300724"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
-                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
+                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
                     "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "appliesToGroupsType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "networkGroupResourceId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The resource ID of the network group."
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "rulesType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The name of the rule."
+                            }
+                          },
+                          "access": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Allow",
+                              "AlwaysAllow",
+                              "Deny"
+                            ],
+                            "metadata": {
+                              "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
+                            }
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. A description of the rule."
+                            }
+                          },
+                          "destinationPortRanges": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                            }
+                          },
+                          "destinations": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "addressPrefixType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "IPPrefix",
+                                    "ServiceTag"
+                                  ],
+                                  "metadata": {
+                                    "description": "Required. Address prefix type."
+                                  }
+                                },
+                                "addressPrefix": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. Address prefix."
+                                  }
+                                }
+                              }
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                            }
+                          },
+                          "direction": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Inbound",
+                              "Outbound"
+                            ],
+                            "metadata": {
+                              "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
+                            }
+                          },
+                          "priority": {
+                            "type": "int",
+                            "minValue": 1,
+                            "maxValue": 4096,
+                            "metadata": {
+                              "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                            }
+                          },
+                          "protocol": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Ah",
+                              "Any",
+                              "Esp",
+                              "Icmp",
+                              "Tcp",
+                              "Udp"
+                            ],
+                            "metadata": {
+                              "description": "Required. Network protocol this rule applies to."
+                            }
+                          },
+                          "sourcePortRanges": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                            }
+                          },
+                          "sources": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "addressPrefixType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "IPPrefix",
+                                    "ServiceTag"
+                                  ],
+                                  "metadata": {
+                                    "description": "Required. Address prefix type."
+                                  }
+                                },
+                                "addressPrefix": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. Address prefix."
+                                  }
+                                }
+                              }
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
                   },
                   "parameters": {
                     "networkManagerName": {
@@ -925,39 +1842,57 @@
                     },
                     "description": {
                       "type": "string",
-                      "defaultValue": "",
+                      "nullable": true,
                       "maxLength": 500,
                       "metadata": {
                         "description": "Optional. A description of the admin rule collection."
                       }
                     },
                     "appliesToGroups": {
-                      "type": "array",
+                      "$ref": "#/definitions/appliesToGroupsType",
                       "metadata": {
                         "description": "Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group."
                       }
                     },
                     "rules": {
-                      "type": "array",
+                      "$ref": "#/definitions/rulesType",
                       "metadata": {
                         "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "networkManager::securityAdminConfiguration": {
+                      "existing": true,
+                      "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
+                      "apiVersion": "2023-04-01",
+                      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]",
+                      "dependsOn": [
+                        "networkManager"
+                      ]
+                    },
+                    "networkManager": {
+                      "existing": true,
+                      "type": "Microsoft.Network/networkManagers",
+                      "apiVersion": "2023-04-01",
+                      "name": "[parameters('networkManagerName')]"
+                    },
+                    "ruleCollection": {
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
                       "apiVersion": "2023-04-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
                       "properties": {
-                        "description": "[parameters('description')]",
-                        "appliesToGroups": "[parameters('appliesToGroups')]"
-                      }
+                        "description": "[coalesce(parameters('description'), '')]",
+                        "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]"
+                      },
+                      "dependsOn": [
+                        "networkManager::securityAdminConfiguration"
+                      ]
                     },
-                    {
+                    "securityAdminConfigurations_rules": {
                       "copy": {
                         "name": "securityAdminConfigurations_rules",
-                        "count": "[length(parameters('rules'))]"
+                        "count": "[length(coalesce(parameters('rules'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
@@ -978,38 +1913,115 @@
                             "value": "[parameters('name')]"
                           },
                           "name": {
-                            "value": "[parameters('rules')[copyIndex()].name]"
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
                           },
                           "access": {
-                            "value": "[parameters('rules')[copyIndex()].access]"
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].access]"
                           },
-                          "description": "[if(contains(parameters('rules')[copyIndex()], 'description'), createObject('value', parameters('rules')[copyIndex()].description), createObject('value', ''))]",
-                          "destinationPortRanges": "[if(contains(parameters('rules')[copyIndex()], 'destinationPortRanges'), createObject('value', parameters('rules')[copyIndex()].destinationPortRanges), createObject('value', createArray()))]",
-                          "destinations": "[if(contains(parameters('rules')[copyIndex()], 'destinations'), createObject('value', parameters('rules')[copyIndex()].destinations), createObject('value', createArray()))]",
+                          "description": {
+                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description'), '')]"
+                          },
+                          "destinationPortRanges": {
+                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'destinationPortRanges'), createArray())]"
+                          },
+                          "destinations": {
+                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'destinations'), createArray())]"
+                          },
                           "direction": {
-                            "value": "[parameters('rules')[copyIndex()].direction]"
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].direction]"
                           },
                           "priority": {
-                            "value": "[parameters('rules')[copyIndex()].priority]"
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].priority]"
                           },
                           "protocol": {
-                            "value": "[parameters('rules')[copyIndex()].protocol]"
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].protocol]"
                           },
-                          "sourcePortRanges": "[if(contains(parameters('rules')[copyIndex()], 'sourcePortRanges'), createObject('value', parameters('rules')[copyIndex()].sourcePortRanges), createObject('value', createArray()))]",
-                          "sources": "[if(contains(parameters('rules')[copyIndex()], 'sources'), createObject('value', parameters('rules')[copyIndex()].sources), createObject('value', createArray()))]"
+                          "sourcePortRanges": {
+                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'sourcePortRanges'), createArray())]"
+                          },
+                          "sources": {
+                            "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'sources'), createArray())]"
+                          }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.54.24096",
-                              "templateHash": "3477492114570114110"
+                              "version": "0.27.1.19265",
+                              "templateHash": "17880704693619791217"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
                             "owner": "Azure/module-maintainers"
+                          },
+                          "definitions": {
+                            "destinationPortRangesType": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true
+                            },
+                            "destinationsType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "addressPrefixType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "IPPrefix",
+                                      "ServiceTag"
+                                    ],
+                                    "metadata": {
+                                      "description": "Required. Address prefix type."
+                                    }
+                                  },
+                                  "addressPrefix": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. Address prefix."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            },
+                            "sourcePortRangesType": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true
+                            },
+                            "sourcesType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "addressPrefixType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "IPPrefix",
+                                      "ServiceTag"
+                                    ],
+                                    "metadata": {
+                                      "description": "Required. Address prefix type."
+                                    }
+                                  },
+                                  "addressPrefix": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. Address prefix."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            }
                           },
                           "parameters": {
                             "networkManagerName": {
@@ -1039,7 +2051,7 @@
                             },
                             "description": {
                               "type": "string",
-                              "defaultValue": "",
+                              "nullable": true,
                               "maxLength": 500,
                               "metadata": {
                                 "description": "Optional. A description of the rule."
@@ -1058,14 +2070,16 @@
                             },
                             "destinationPortRanges": {
                               "type": "array",
-                              "defaultValue": [],
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
                               }
                             },
                             "destinations": {
-                              "type": "array",
-                              "defaultValue": [],
+                              "$ref": "#/definitions/destinationsType",
                               "metadata": {
                                 "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
                               }
@@ -1104,28 +2118,54 @@
                             },
                             "sourcePortRanges": {
                               "type": "array",
-                              "defaultValue": [],
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
                               }
                             },
                             "sources": {
-                              "type": "array",
-                              "defaultValue": [],
+                              "$ref": "#/definitions/sourcesType",
                               "metadata": {
                                 "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
                               }
                             }
                           },
-                          "resources": [
-                            {
+                          "resources": {
+                            "networkManager::securityAdminConfiguration::ruleCollection": {
+                              "existing": true,
+                              "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
+                              "apiVersion": "2023-04-01",
+                              "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'))]",
+                              "dependsOn": [
+                                "networkManager::securityAdminConfiguration"
+                              ]
+                            },
+                            "networkManager::securityAdminConfiguration": {
+                              "existing": true,
+                              "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
+                              "apiVersion": "2023-04-01",
+                              "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]",
+                              "dependsOn": [
+                                "networkManager"
+                              ]
+                            },
+                            "networkManager": {
+                              "existing": true,
+                              "type": "Microsoft.Network/networkManagers",
+                              "apiVersion": "2023-04-01",
+                              "name": "[parameters('networkManagerName')]"
+                            },
+                            "rule": {
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
                               "apiVersion": "2023-04-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                               "kind": "Custom",
                               "properties": {
                                 "access": "[parameters('access')]",
-                                "description": "[parameters('description')]",
+                                "description": "[coalesce(parameters('description'), '')]",
                                 "destinationPortRanges": "[parameters('destinationPortRanges')]",
                                 "destinations": "[parameters('destinations')]",
                                 "direction": "[parameters('direction')]",
@@ -1133,9 +2173,12 @@
                                 "protocol": "[parameters('protocol')]",
                                 "sourcePortRanges": "[parameters('sourcePortRanges')]",
                                 "sources": "[parameters('sources')]"
-                              }
+                              },
+                              "dependsOn": [
+                                "networkManager::securityAdminConfiguration::ruleCollection"
+                              ]
                             }
-                          ],
+                          },
                           "outputs": {
                             "name": {
                               "type": "string",
@@ -1162,10 +2205,11 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]"
+                        "networkManager",
+                        "ruleCollection"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -1192,10 +2236,11 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations', parameters('networkManagerName'), parameters('name'))]"
+                "networkManager",
+                "securityAdminConfigurations"
               ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
