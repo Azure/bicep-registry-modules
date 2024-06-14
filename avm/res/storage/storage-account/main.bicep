@@ -75,7 +75,7 @@ param networkAcls networkAclsType?
 param requireInfrastructureEncryption bool = true
 
 @description('Optional. Allow or disallow cross AAD tenant object replication.')
-param allowCrossTenantReplication bool = true
+param allowCrossTenantReplication bool = false
 
 @description('Optional. Sets the custom domain name assigned to the storage account. Name is the CNAME source.')
 param customDomainName string = ''
