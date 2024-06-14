@@ -15,6 +15,10 @@ param friendlyName string = name
 param timeZone string = 'UTC'
 
 @sys.description('Optional. Host pool type of the Scaling Plan.')
+@allowed([
+  'Personal'
+  'Pooled'
+])
 param hostPoolType string = 'Pooled'
 
 @sys.description('Optional. Exclusion tag to be used for exclusion of VMs from Scaling Plan.')
@@ -85,7 +89,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2022-09-09' = {
+resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2023-09-05' = {
   name: name
   location: location
   tags: tags
