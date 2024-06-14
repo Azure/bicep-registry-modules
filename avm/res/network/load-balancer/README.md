@@ -945,7 +945,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 ### Example 5: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.
+This instance deploys the module with the minimum set of required parameters to deploy a WAF alligned internal load balancer.
 
 
 <details>

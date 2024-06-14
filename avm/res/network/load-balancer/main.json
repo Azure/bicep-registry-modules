@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13363495325030562981"
+      "version": "0.26.170.59819",
+      "templateHash": "3911239041572011237"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -393,7 +393,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.network-loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -525,8 +525,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "12599435098613045377"
+              "version": "0.26.170.59819",
+              "templateHash": "13778755355834790948"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -662,8 +662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "18107219293143755407"
+              "version": "0.26.170.59819",
+              "templateHash": "528968121052795299"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",
