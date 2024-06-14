@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8534245747651989650"
+      "templateHash": "8650432057997975223"
     },
     "name": "Synapse Workspaces Administrators",
     "description": "This module deploys Synapse Workspaces Administrators.",
@@ -38,9 +38,8 @@
     },
     "tenantId": {
       "type": "string",
-      "defaultValue": "[tenant().tenantId]",
       "metadata": {
-        "description": "Optional. Tenant ID of the workspace active directory administrator. If not specified the workspace subscription assiciated tenant is used."
+        "description": "Required. Tenant ID of the workspace active directory administrator."
       }
     }
   },

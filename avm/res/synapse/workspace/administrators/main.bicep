@@ -16,8 +16,8 @@ param login string
 @secure()
 param sid string
 
-@description('Optional. Tenant ID of the workspace active directory administrator. If not specified the workspace subscription assiciated tenant is used.')
-param tenantId string = tenant().tenantId
+@description('Required. Tenant ID of the workspace active directory administrator.')
+param tenantId string
 
 resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
   name: workspaceName

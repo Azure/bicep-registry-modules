@@ -351,6 +351,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       administratorType: 'ServicePrincipal'
       login: 'dep-msi-swmax'
       sid: '<sid>'
+      tenantId: '<tenantId>'
     }
     diagnosticSettings: [
       {
@@ -479,7 +480,8 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": {
         "administratorType": "ServicePrincipal",
         "login": "dep-msi-swmax",
-        "sid": "<sid>"
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
       }
     },
     "diagnosticSettings": {
@@ -846,11 +848,6 @@ The Entra ID administrator for the synapse workspace.
 | [`administratorType`](#parameter-administratoradministratortype) | string | Workspace active directory administrator type. |
 | [`login`](#parameter-administratorlogin) | securestring | Login of the workspace active directory administrator. |
 | [`sid`](#parameter-administratorsid) | securestring | Object ID of the workspace active directory administrator. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`tenantId`](#parameter-administratortenantid) | securestring | Tenant ID of the workspace active directory administrator. |
 
 ### Parameter: `administrator.administratorType`
@@ -878,7 +875,7 @@ Object ID of the workspace active directory administrator.
 
 Tenant ID of the workspace active directory administrator.
 
-- Required: No
+- Required: Yes
 - Type: securestring
 
 ### Parameter: `allowedAadTenantIdsForLinking`

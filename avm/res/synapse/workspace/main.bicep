@@ -591,7 +591,7 @@ type adminType = {
   @secure()
   sid: string
 
-  @description('Optional. Tenant ID of the workspace active directory administrator.')
+  @description('Required. Tenant ID of the workspace active directory administrator.')
   @secure()
-  tenantId: string?
+  tenantId: string
 }?

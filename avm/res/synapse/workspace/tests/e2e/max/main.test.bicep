@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'swmax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'eli01' //'#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -81,6 +81,7 @@ module testDeployment '../../../main.bicep' = [
         administratorType: 'ServicePrincipal'
         login: 'dep-${namePrefix}-msi-${serviceShort}'
         sid: nestedDependencies.outputs.managedIdentityPrincipalId
+        tenantId: tenant().tenantId
       }
 
       roleAssignments: [
