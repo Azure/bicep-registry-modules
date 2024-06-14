@@ -1631,8 +1631,8 @@ The resource ID of the (user) managed identity, which is used to access the Azur
 - Type: string
 - Example:
   ```Bicep
-  user-assigned /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
-  system-assigned system
+  user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
+  system-assigned identity: system
   ```
 
 ### Parameter: `registries.username`

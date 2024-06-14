@@ -418,16 +418,17 @@ function Set-DefinitionSection {
             if (-not [String]::IsNullOrEmpty($example)) {
                 # allign content to the left by removing trailing whitespaces
                 $leadingSpacesToTrim = ($example -match '^(\s+).+') ? $matches[1].Length : 0
-                $bicepCleanedExample = $example -replace ('{0}: ' -f $parameter.name) # Unwrapping the object
-                $example = $bicepCleanedExample -split '\n' | ForEach-Object { $_ -replace "^\s{$leadingSpacesToTrim}" }  # Removing excess leading spaces
+                $exampleLines = $example -split '\n'
+                # Removing excess leading spaces
+                $example = ($exampleLines | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" -replace "^\s{$leadingSpacesToTrim}" } | Out-String).TrimEnd()
 
-                if (($example -split '\n').count -eq 1) {
-                    $formattedExample = '- Example: `{0}`' -f $example
+                if ($exampleLines.count -eq 1) {
+                    $formattedExample = '- Example: `{0}`' -f $example.TrimStart()
                 } else {
                     $formattedExample = @(
                         '- Example:',
                         '  ```Bicep',
-              ($example -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        $example,
                         '  ```'
                     )
                 }
