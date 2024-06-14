@@ -37,7 +37,7 @@ param location string = resourceGroup().location
 param lock lockType
 
 @description('Optional. Limit control plane API calls to API Management service with version equal to or newer than this value.')
-param minApiVersion string = ''
+param minApiVersion string?
 
 @description('Optional. The notification sender email address for the service.')
 param notificationSenderEmail string = 'apimgmt-noreply@mail.windowsazure.com'
@@ -54,7 +54,7 @@ param restore bool = false
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. The pricing tier of this API Management service.')
+@description('Optional. The pricing tier of this API Management service. Default is Premium.')
 @allowed([
   'Consumption'
   'Developer'
@@ -66,7 +66,7 @@ param roleAssignments roleAssignmentType
 ])
 param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs.')
+@description('Optional. The instance size of this API Management service. Default is 2. Not supported with V2 SKUs.')
 @allowed([
   0
   1
@@ -76,7 +76,7 @@ param sku string = 'Premium'
 param skuCount int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
-param subnetResourceId string = ''
+param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -139,7 +139,7 @@ param products array = []
 param subscriptions array = []
 
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
-param publicIpAddressId string = ''
+param publicIpAddressId string?
 
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
