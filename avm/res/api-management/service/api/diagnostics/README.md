@@ -43,7 +43,7 @@ This module deploys an API Management Service API Diagnostics.
 | [`diagnosticName`](#parameter-diagnosticname) | string | Type of diagnostic resource. Default is local. |
 | [`frontend`](#parameter-frontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
 | [`logClientIp`](#parameter-logclientip) | bool | Log the ClientIP. Default is false. |
-| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100 |
+| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100. |
 | [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. Default is "error". |
 
 ### Parameter: `apiManagementServiceName`
@@ -156,7 +156,7 @@ Log the ClientIP. Default is false.
 
 ### Parameter: `samplingPercentage`
 
-Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100.
 
 - Required: No
 - Type: int
