@@ -372,7 +372,7 @@ module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
       apiManagementServiceName: service.name
       apiName: apidiagnostic.apiName
       loggerName: apidiagnostic.loggerName
-      diagnosticName: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : null
+      diagnosticName: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : 'local'
       alwaysLog: contains(apidiagnostic, 'alwaysLog') ? apidiagnostic.alwaysLog : 'allErrors'
       backend: contains(apidiagnostic, 'backend') ? apidiagnostic.backend : {}
       frontend: contains(apidiagnostic, 'frontend') ? apidiagnostic.frontend : {}

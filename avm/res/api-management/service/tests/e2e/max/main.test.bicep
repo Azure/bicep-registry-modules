@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serv
 @description('Optional. The location to deploy primary resources to.')
 param resourceLocation string = deployment().location
 
-@description('Optional. Location to deploy secondary resources to (for APIM additionalLocations).')
+@description('Optional. Location to deploy secondary resources to for APIM additionalLocations.')
 param locationRegion2 string = 'westus'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
         {
-          location: locationRegion2
+          location: '${locationRegion2}'
           sku: {
             name: 'Premium'
             capacity: 1
@@ -148,6 +148,7 @@ module testDeployment '../../../main.bicep' = [
           loggerName: 'logger'
           apiName: 'echo-api'
           metrics: true
+          diagnosticName: 'applicationinsights'
         }
       ]
       diagnosticSettings: [

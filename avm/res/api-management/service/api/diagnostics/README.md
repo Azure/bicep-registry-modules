@@ -40,7 +40,7 @@ This module deploys an API Management Service API Diagnostics.
 | :-- | :-- | :-- |
 | [`alwaysLog`](#parameter-alwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
 | [`backend`](#parameter-backend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
-| [`diagnosticName`](#parameter-diagnosticname) | string | Identifier of the diagnostics entity. |
+| [`diagnosticName`](#parameter-diagnosticname) | string | Type of diagnostic resource. Default is local. |
 | [`frontend`](#parameter-frontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
 | [`logClientIp`](#parameter-logclientip) | bool | Log the ClientIP. Default is false. |
 | [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100 |
@@ -124,10 +124,11 @@ Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
 
 ### Parameter: `diagnosticName`
 
-Identifier of the diagnostics entity.
+Type of diagnostic resource. Default is local.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `'local'`
 - Allowed:
   ```Bicep
   [

@@ -41,7 +41,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 resource vnetRegion1 'Microsoft.Network/virtualNetworks@2023-04-01' = {
-  name: vnetName
+  name: '${vnetName}-${locationRegion1}'
   location: locationRegion1
   properties: {
     addressSpace: {

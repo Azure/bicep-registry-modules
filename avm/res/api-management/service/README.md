@@ -127,16 +127,21 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     additionalLocations: [
       {
         disableGateway: false
-        location: 'westus'
+        location: '<location>'
+        publicIpAddressId: '<publicIpAddressId>'
         sku: {
           capacity: 1
           name: 'Premium'
+        }
+        virtualNetworkConfiguration: {
+          subnetResourceId: '<subnetResourceId>'
         }
       }
     ]
     apiDiagnostics: [
       {
         apiName: 'echo-api'
+        diagnosticName: 'applicationinsights'
         loggerName: 'logger'
         metrics: true
       }
@@ -348,10 +353,14 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "disableGateway": false,
-          "location": "westus",
+          "location": "<location>",
+          "publicIpAddressId": "<publicIpAddressId>",
           "sku": {
             "capacity": 1,
             "name": "Premium"
+          },
+          "virtualNetworkConfiguration": {
+            "subnetResourceId": "<subnetResourceId>"
           }
         }
       ]
@@ -360,6 +369,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "apiName": "echo-api",
+          "diagnosticName": "applicationinsights",
           "loggerName": "logger",
           "metrics": true
         }
@@ -1122,8 +1132,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`publicIpAddressId`](#parameter-publicipaddressid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Not supported with V2 SKUs. |
+| [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. Default is Premium. |
+| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1495,7 +1505,6 @@ Limit control plane API calls to API Management service with version equal to or
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `namedValues`
 
@@ -1551,7 +1560,6 @@ Public Standard SKU IP V4 based IP address to be associated with Virtual Network
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `restore`
 
@@ -1652,7 +1660,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `sku`
 
-The pricing tier of this API Management service.
+The pricing tier of this API Management service. Default is Premium.
 
 - Required: No
 - Type: string
@@ -1672,7 +1680,7 @@ The pricing tier of this API Management service.
 
 ### Parameter: `skuCount`
 
-The instance size of this API Management service. Not supported with V2 SKUs.
+The instance size of this API Management service. Default is 2. Not supported with V2 SKUs.
 
 - Required: No
 - Type: int
@@ -1693,7 +1701,6 @@ The full resource ID of a subnet in a virtual network to deploy the API Manageme
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `subscriptions`
 

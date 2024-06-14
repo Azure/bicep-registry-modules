@@ -12,12 +12,12 @@ param apiName string
 param loggerName string
 
 @allowed([
-  'applicationinsights'
   'azuremonitor'
+  'applicationinsights'
   'local'
 ])
-@description('Optional. Identifier of the diagnostics entity.')
-param diagnosticName string
+@description('Optional. Type of diagnostic resource. Default is local.')
+param diagnosticName string = 'local'
 
 @description('Optional. Specifies for what type of messages sampling settings should not apply.')
 param alwaysLog string = 'allErrors'
