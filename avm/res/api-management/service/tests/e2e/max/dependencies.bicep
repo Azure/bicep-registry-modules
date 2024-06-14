@@ -10,20 +10,16 @@ param locationRegion2 string = 'westus'
 @description('Required. The name of the Public IP to create.')
 param publicIPName string
 
-@description('VNet name')
-param vnetName string = 'VNet'
-
-@description('Address prefix')
-param vnetAddressPrefix string = '10.0.0.0/16'
-
-@description('Subnet Prefix')
-param subnetPrefix string = '10.0.0.0/24'
-
-@description('Subnet Name')
-param subnetName string = 'Subnet'
+@description('Required. The name of the Virtual Network to create.')
+param virtualNetworkName string
 
 @description('DNS Prefix')
-param dnsLabelPrefix string
+param publicIpDnsLabelPrefix string
+
+@description('Required. The name of the NSG to create.')
+param networkSecurityGroupName string
+
+var addressPrefix = '10.0.0.0/16'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
@@ -41,19 +37,19 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 resource vnetRegion1 'Microsoft.Network/virtualNetworks@2023-04-01' = {
-  name: '${vnetName}-${locationRegion1}'
+  name: '${virtualNetworkName}-${locationRegion1}'
   location: locationRegion1
   properties: {
     addressSpace: {
       addressPrefixes: [
-        vnetAddressPrefix
+        addressPrefix
       ]
     }
     subnets: [
       {
-        name: subnetName
+        name: 'default'
         properties: {
-          addressPrefix: subnetPrefix
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
           networkSecurityGroup: {
             id: nsgRegion1.id
           }
@@ -78,19 +74,19 @@ resource vnetRegion1 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 resource vnetRegion2 'Microsoft.Network/virtualNetworks@2023-04-01' = {
-  name: '${vnetName}-${locationRegion2}'
+  name: '${virtualNetworkName}-${locationRegion2}'
   location: locationRegion2
   properties: {
     addressSpace: {
       addressPrefixes: [
-        vnetAddressPrefix
+        addressPrefix
       ]
     }
     subnets: [
       {
-        name: subnetName
+        name: 'default'
         properties: {
-          addressPrefix: subnetPrefix
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
           networkSecurityGroup: {
             id: nsgRegion2.id
           }
@@ -149,7 +145,7 @@ resource routeTableRegion2 'Microsoft.Network/routeTables@2023-11-01' = {
 }
 
 resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'testNSG-${locationRegion1}'
+  name: '${networkSecurityGroupName}-${locationRegion1}'
   location: locationRegion1
   properties: {
     securityRules: [
@@ -268,7 +264,7 @@ resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
 }
 
 resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: 'testNSG-${locationRegion2}'
+  name: '${networkSecurityGroupName}-${locationRegion2}'
   location: locationRegion2
   properties: {
     securityRules: [
@@ -397,7 +393,7 @@ resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
     publicIPAllocationMethod: 'Static'
     publicIPAddressVersion: 'IPv4'
     dnsSettings: {
-      domainNameLabel: dnsLabelPrefix
+      domainNameLabel: publicIpDnsLabelPrefix
     }
   }
 }
@@ -413,7 +409,7 @@ resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
     publicIPAllocationMethod: 'Static'
     publicIPAddressVersion: 'IPv4'
     dnsSettings: {
-      domainNameLabel: dnsLabelPrefix
+      domainNameLabel: publicIpDnsLabelPrefix
     }
   }
 }

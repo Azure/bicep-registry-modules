@@ -139,7 +139,7 @@ param products array = []
 param subscriptions array = []
 
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
-param publicIpAddressId string?
+param publicIpAddressResourceId string?
 
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
@@ -232,7 +232,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
           subnetResourceId: subnetResourceId
         }
       : null
-    publicIpAddressId: !empty(publicIpAddressId) ? publicIpAddressId : null
+    publicIpAddressId: !empty(publicIpAddressResourceId) ? publicIpAddressResourceId : null
     apiVersionConstraint: !empty(minApiVersion)
       ? {
           minApiVersion: minApiVersion
