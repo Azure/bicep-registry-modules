@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10511867464998400406"
+      "templateHash": "15617437598594922289"
     },
     "name": "API Management Service APIs Diagnostics.",
     "description": "This module deploys an API Management Service API Diagnostics.",
@@ -32,13 +32,14 @@
     },
     "diagnosticName": {
       "type": "string",
+      "defaultValue": "local",
       "allowedValues": [
-        "applicationinsights",
         "azuremonitor",
+        "applicationinsights",
         "local"
       ],
       "metadata": {
-        "description": "Optional. Identifier of the diagnostics entity."
+        "description": "Optional. Type of diagnostic resource. Default is local."
       }
     },
     "alwaysLog": {

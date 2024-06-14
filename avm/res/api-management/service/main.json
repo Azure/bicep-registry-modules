@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1573463587736667224"
+      "templateHash": "14717221017523571074"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -326,7 +326,7 @@
     },
     "minApiVersion": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Limit control plane API calls to API Management service with version equal to or newer than this value."
       }
@@ -376,7 +376,7 @@
         "BasicV2"
       ],
       "metadata": {
-        "description": "Optional. The pricing tier of this API Management service."
+        "description": "Optional. The pricing tier of this API Management service. Default is Premium."
       }
     },
     "skuCount": {
@@ -389,12 +389,12 @@
         3
       ],
       "metadata": {
-        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs."
+        "description": "Optional. The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. If using Consumption, sku should = 0."
       }
     },
     "subnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in."
       }
@@ -531,6 +531,13 @@
       "metadata": {
         "description": "Optional. Subscriptions."
       }
+    },
+    "publicIpAddressResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network."
+      }
     }
   },
   "variables": {
@@ -578,7 +585,7 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[if(contains(parameters('sku'), 'V2'), 1, parameters('skuCount'))]"
+        "capacity": "[if(contains(parameters('sku'), 'V2'), 1, if(contains(parameters('sku'), 'Consumption'), 0, parameters('skuCount')))]"
       },
       "zones": "[if(contains(parameters('sku'), 'V2'), null(), parameters('zones'))]",
       "identity": "[variables('identity')]",
@@ -594,6 +601,7 @@
         "disableGateway": "[parameters('disableGateway')]",
         "virtualNetworkType": "[parameters('virtualNetworkType')]",
         "virtualNetworkConfiguration": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetResourceId', parameters('subnetResourceId')), null())]",
+        "publicIpAddressId": "[if(not(empty(parameters('publicIpAddressResourceId'))), parameters('publicIpAddressResourceId'), null())]",
         "apiVersionConstraint": "[if(not(empty(parameters('minApiVersion'))), createObject('minApiVersion', parameters('minApiVersion')), null())]",
         "restore": "[parameters('restore')]"
       }
@@ -767,7 +775,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "3709179786281114486"
+              "templateHash": "5517853204446887196"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -1188,7 +1196,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "10511867464998400406"
+                      "templateHash": "15617437598594922289"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics.",
@@ -1215,13 +1223,14 @@
                     },
                     "diagnosticName": {
                       "type": "string",
+                      "defaultValue": "local",
                       "allowedValues": [
-                        "applicationinsights",
                         "azuremonitor",
+                        "applicationinsights",
                         "local"
                       ],
                       "metadata": {
-                        "description": "Optional. Identifier of the diagnostics entity."
+                        "description": "Optional. Type of diagnostic resource. Default is local."
                       }
                     },
                     "alwaysLog": {
@@ -2076,7 +2085,7 @@
           "loggerName": {
             "value": "[parameters('apiDiagnostics')[copyIndex()].loggerName]"
           },
-          "diagnosticName": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'diagnosticName'), createObject('value', parameters('apiDiagnostics')[copyIndex()].diagnosticName), createObject('value', null()))]",
+          "diagnosticName": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'diagnosticName'), createObject('value', parameters('apiDiagnostics')[copyIndex()].diagnosticName), createObject('value', 'local'))]",
           "alwaysLog": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'alwaysLog'), createObject('value', parameters('apiDiagnostics')[copyIndex()].alwaysLog), createObject('value', 'allErrors'))]",
           "backend": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'backend'), createObject('value', parameters('apiDiagnostics')[copyIndex()].backend), createObject('value', createObject()))]",
           "frontend": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'frontend'), createObject('value', parameters('apiDiagnostics')[copyIndex()].frontend), createObject('value', createObject()))]",
@@ -2094,7 +2103,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "10511867464998400406"
+              "templateHash": "15617437598594922289"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -2121,13 +2130,14 @@
             },
             "diagnosticName": {
               "type": "string",
+              "defaultValue": "local",
               "allowedValues": [
-                "applicationinsights",
                 "azuremonitor",
+                "applicationinsights",
                 "local"
               ],
               "metadata": {
-                "description": "Optional. Identifier of the diagnostics entity."
+                "description": "Optional. Type of diagnostic resource. Default is local."
               }
             },
             "alwaysLog": {
