@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "8395600145628095339"
+      "version": "0.26.170.59819",
+      "templateHash": "9840642184886177634"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -663,7 +663,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.synapse-workspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -818,8 +818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "12071965359188483950"
+              "version": "0.26.170.59819",
+              "templateHash": "12068224449891293218"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -916,8 +916,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15762141115882405712"
+              "version": "0.26.170.59819",
+              "templateHash": "23966606142695564"
             }
           },
           "parameters": {
@@ -1004,8 +1004,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "17207449952619386820"
+              "version": "0.26.170.59819",
+              "templateHash": "15295521192306502787"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
