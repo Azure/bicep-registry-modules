@@ -9,6 +9,7 @@ This pattern module enables you to use Azure services that are typical for data 
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -543,6 +544,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.1.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.3.0` | Remote reference |
+
+## Notes
+
+TODO: !!!!! UPDATE NOTES !!!!!
 
 ## Data Collection
 
