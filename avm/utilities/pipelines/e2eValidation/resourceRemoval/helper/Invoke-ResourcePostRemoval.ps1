@@ -156,7 +156,7 @@ function Invoke-ResourcePostRemoval {
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
             # If the `managedResourceGroupResourceId` parameter was set during deployment, we should look for that resource group and remove it as it is not automatically removed
-            # NOTE: This requires that the provided value uses the prefif `rg-` and suffix '-managed'
+            # NOTE: This requires that the provided value uses the prefix `rg-` and suffix '-managed'
             $managedResourceGroupName = "rg-$resourceGroupName-managed"
             if (Get-AzResourceGroup -Name $managedResourceGroupName -ErrorAction 'SilentlyContinue') {
                 Write-Verbose ('[*] Removing managed resource group [{0}] of workspace [{1}]' -f $managedResourceGroupName, $resourceName) -Verbose
