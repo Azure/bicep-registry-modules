@@ -18,6 +18,10 @@ param enableTelemetry bool = true
 @description('Optional. Specific values for some API connections.')
 param api apiReferenceType?
 
+@description('Optional. The kind of the connection. `V1` for StandardLogicApp.')
+@allowed(['V1', 'V2'])
+param kind string
+
 @description('Optional. Dictionary of custom parameter values for specific connections.')
 param customParameterValues object?
 
@@ -32,12 +36,29 @@ param nonSecretParameterValues object?
 @secure()
 @metadata({
   example: '''
+    {
       connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'
+    }
+    {
+      rootfolder: fileshareConnection.rootfolder
+      authType: fileshareConnection.authType
+      // to add an object, use the any() function
+      gateway: any({
+        name: fileshareConnection.odgw.name
+        id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)
+        type: 'Microsoft.Web/connectionGateways'
+      })
+      username: username
+      password: password
+    }
   '''
 })
 param parameterValues object?
 
-@description('Optional. Additional parameter Value Set.')
+@allowed(['', 'Alternative'])
+param alternativeParameterValues string?
+
+@description('Optional. Additional parameter Value Set used for authentication settings.')
 param parameterValueSet object?
 
 @description('Optional. Array of role assignments to create.')
@@ -102,15 +123,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 resource connection 'Microsoft.Web/connections@2016-06-01' = {
   name: name
   location: location
+  #disable-next-line BCP187
+  kind: kind
   tags: tags
   properties: {
     displayName: displayName
     customParameterValues: customParameterValues
     api: api
-    parameterValues: parameterValues
-    nonSecretParameterValues: nonSecretParameterValues
-    testLinks: testLinks
-    statuses: statuses
+    parameterValues: !empty(parameterValues) ? parameterValues : null
+    nonSecretParameterValues: !empty(nonSecretParameterValues) ? nonSecretParameterValues : null
+    testLinks: !empty(testLinks) ? testLinks : null
+    statuses: !empty(statuses) ? statuses : null
     #disable-next-line BCP037
     parameterValueSet: parameterValueSet
   }

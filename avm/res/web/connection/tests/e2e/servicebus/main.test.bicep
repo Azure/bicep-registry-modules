@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
       name: 'servicebus'
       location: resourceLocation
       api: {
+        type: 'Microsoft.Web/locations/managedApis'
         id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')
       }
       parameterValueSet: {
