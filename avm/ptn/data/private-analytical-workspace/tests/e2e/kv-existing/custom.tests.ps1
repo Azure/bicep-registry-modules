@@ -57,25 +57,29 @@ Describe 'Validate deployment' {
 
         It 'Check Mandatory Objects' {
 
-            $r = Get-AzVirtualNetwork -Name $name -ResourceGroupName $resourceGroupName -ErrorAction SilentlyContinue
+            $r = Get-AzResource -ResourceId $resourceId -ErrorAction SilentlyContinue
             $r | Should -Not -BeNullOrEmpty
-            $r.ResourceId | Should -Be $resourceId
+            $r.Name | Should -Be $name
             $r.Location | Should -Be $location
+            $r.ResourceGroupName | Should -Be $resourceGroupName
 
-            $vnet = Get-AzVirtualNetwork -Name $virtualNetworkName -ResourceGroupName $virtualNetworkResourceGroupName -ErrorAction SilentlyContinue
-            $vnet | Should -Not -BeNullOrEmpty
-            $vnet.ResourceId | Should -Be $virtualNetworkResourceId
-            $vnet.Location | Should -Be $virtualNetworkLocation
+            $r = Get-AzResource -ResourceId $virtualNetworkResourceId -ErrorAction SilentlyContinue
+            $r | Should -Not -BeNullOrEmpty
+            $r.Name | Should -Be $virtualNetworkName
+            $r.Location | Should -Be $virtualNetworkLocation
+            $r.ResourceGroupName | Should -Be $virtualNetworkResourceGroupName
 
-            $log = Get-AzOperationalInsightsWorkspace -Name $logAnalyticsWorkspaceName -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -ErrorAction SilentlyContinue
-            $log | Should -Not -BeNullOrEmpty
-            $log.ResourceId | Should -Be $logAnalyticsWorkspaceResourceId
-            $log.Location | Should -Be $logAnalyticsWorkspaceLocation
+            $r = Get-AzResource -ResourceId $logAnalyticsWorkspaceResourceId -ErrorAction SilentlyContinue
+            $r | Should -Not -BeNullOrEmpty
+            $r.Name | Should -Be $logAnalyticsWorkspaceName
+            $r.Location | Should -Be $logAnalyticsWorkspaceLocation
+            $r.ResourceGroupName | Should -Be $logAnalyticsWorkspaceResourceGroupName
 
-            $kv = Get-AzKeyVault -VaultName $keyVaultName -ResourceGroupName $keyVaultResourceGroupName -ErrorAction SilentlyContinue
-            $kv | Should -Not -BeNullOrEmpty
-            $kv.ResourceId | Should -Be $keyVaultResourceId
-            $kv.Location | Should -Be $keyVaultLocation
+            $r = Get-AzResource -ResourceId $keyVaultResourceId -ErrorAction SilentlyContinue
+            $r | Should -Not -BeNullOrEmpty
+            $r.Name | Should -Be $keyVaultName
+            $r.Location | Should -Be $keyVaultLocation
+            $r.ResourceGroupName | Should -Be $keyVaultResourceGroupName
         }
     }
 
