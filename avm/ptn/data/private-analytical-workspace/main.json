@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "4373067326244427844"
+      "templateHash": "10439349121893698761"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -268,6 +268,7 @@
       }
     ],
     "diagnosticSettingsName": "[format('{0}-diagnostic-settings', parameters('name'))]",
+    "vnetName": "[format('{0}-vnet', parameters('name'))]",
     "privateDnsZoneNameKv": "privatelink.vaultcore.azure.net",
     "privateDnsZoneNameDbw": "privatelink.azuredatabricks.net",
     "subnetNamePrivateLink": "private-link-subnet",
@@ -276,13 +277,16 @@
     "nsgNamePrivateLink": "[format('{0}-nsg-private-link', parameters('name'))]",
     "nsgNameDbwControlPlane": "[format('{0}-nsg-dbw-control-plane', parameters('name'))]",
     "nsgNameDbwComputePlane": "[format('{0}-nsg-dbw-compute-plane', parameters('name'))]",
+    "logName": "[format('{0}-log', parameters('name'))]",
     "logDefaultDailyQuotaGb": -1,
     "logDefaultDataRetention": 365,
+    "kvName": "[format('{0}-kv', parameters('name'))]",
     "kvDefaultCreateMode": "default",
     "kvDefaultEnableSoftDelete": true,
     "kvDefaultSoftDeleteRetentionInDays": 90,
     "kvDefaultEnablePurgeProtection": true,
     "kvDefaultSku": "premium",
+    "dbwName": "[format('{0}-dbw', parameters('name'))]",
     "createNewVNET": "[empty(parameters('virtualNetworkResourceId'))]",
     "createNewLog": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
     "createNewKV": "[empty(parameters('keyVaultResourceId'))]",
@@ -290,7 +294,7 @@
   },
   "resources": {
     "vnetExisting::subnetPrivateLink": {
-      "condition": "[and(not(variables('createNewVNET')), and(not(empty(parameters('advancedOptions'))), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink')))))]",
+      "condition": "[and(not(variables('createNewVNET')), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'))))]",
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "apiVersion": "2023-11-01",
@@ -302,7 +306,7 @@
       ]
     },
     "vnetExisting::subnetDbwControlPlane": {
-      "condition": "[and(not(variables('createNewVNET')), and(and(parameters('enableDatabricks'), not(empty(parameters('advancedOptions')))), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane')))))]",
+      "condition": "[and(not(variables('createNewVNET')), and(parameters('enableDatabricks'), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane')))))]",
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "apiVersion": "2023-11-01",
@@ -314,7 +318,7 @@
       ]
     },
     "vnetExisting::subnetDbwComputePlane": {
-      "condition": "[and(not(variables('createNewVNET')), and(and(parameters('enableDatabricks'), not(empty(parameters('advancedOptions')))), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane')))))]",
+      "condition": "[and(not(variables('createNewVNET')), and(parameters('enableDatabricks'), not(empty(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane')))))]",
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "apiVersion": "2023-11-01",
@@ -376,7 +380,7 @@
       "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-vnet', parameters('name'))]",
+      "name": "[variables('vnetName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -389,7 +393,7 @@
             ]
           },
           "name": {
-            "value": "[format('{0}-vnet', parameters('name'))]"
+            "value": "[variables('vnetName')]"
           },
           "diagnosticSettings": {
             "value": [
@@ -3738,7 +3742,7 @@
       "condition": "[variables('createNewLog')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-log', parameters('name'))]",
+      "name": "[variables('logName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3746,10 +3750,14 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-log', parameters('name'))]"
+            "value": "[variables('logName')]"
           },
-          "dailyQuotaGb": "[if(empty(parameters('advancedOptions')), createObject('value', variables('logDefaultDailyQuotaGb')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'logAnalyticsWorkspace'), 'dailyQuotaGb'), variables('logDefaultDailyQuotaGb'))))]",
-          "dataRetention": "[if(empty(parameters('advancedOptions')), createObject('value', variables('logDefaultDataRetention')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'logAnalyticsWorkspace'), 'dataRetention'), variables('logDefaultDataRetention'))))]",
+          "dailyQuotaGb": {
+            "value": "[coalesce(tryGet(tryGet(parameters('advancedOptions'), 'logAnalyticsWorkspace'), 'dailyQuotaGb'), variables('logDefaultDailyQuotaGb'))]"
+          },
+          "dataRetention": {
+            "value": "[coalesce(tryGet(tryGet(parameters('advancedOptions'), 'logAnalyticsWorkspace'), 'dataRetention'), variables('logDefaultDataRetention'))]"
+          },
           "diagnosticSettings": {
             "value": []
           },
@@ -5687,7 +5695,7 @@
       "condition": "[variables('createNewKV')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-kv', parameters('name'))]",
+      "name": "[variables('kvName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5695,9 +5703,11 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-kv', parameters('name'))]"
+            "value": "[variables('kvName')]"
           },
-          "createMode": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultCreateMode')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'createMode'), variables('kvDefaultCreateMode'))))]",
+          "createMode": {
+            "value": "[coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'createMode'), variables('kvDefaultCreateMode'))]"
+          },
           "diagnosticSettings": {
             "value": [
               {
@@ -5719,11 +5729,15 @@
               }
             ]
           },
-          "enablePurgeProtection": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultEnablePurgeProtection')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'enablePurgeProtection'), variables('kvDefaultEnablePurgeProtection'))))]",
+          "enablePurgeProtection": {
+            "value": "[coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'enablePurgeProtection'), variables('kvDefaultEnablePurgeProtection'))]"
+          },
           "enableRbacAuthorization": {
             "value": true
           },
-          "enableSoftDelete": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultEnableSoftDelete')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'enableSoftDelete'), variables('kvDefaultEnableSoftDelete'))))]",
+          "enableSoftDelete": {
+            "value": "[coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'enableSoftDelete'), variables('kvDefaultEnableSoftDelete'))]"
+          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -5751,8 +5765,10 @@
           },
           "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'subnetResourceId', createObject('resourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))))), 'name', if(variables('createNewVNET'), reference('vnet').outputs.name.value, if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), 'location', if(variables('createNewVNET'), reference('vnet').outputs.location.value, reference('vnetExisting', '2023-11-01', 'full').location), 'resourceGroupName', if(variables('createNewVNET'), reference('vnet').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), '/')[4]), 'subnetResourceIdPrivateLink', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks/subnets', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))), 'subnetNameDbwControlPlane', if(variables('createNewVNET'), variables('subnetNameDbwControlPlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), 'dummyName')), 'subnetNameDbwComputePlane', if(variables('createNewVNET'), variables('subnetNameDbwComputePlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'), 'dummyName'))).subnetResourceIdPrivateLink, 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "publicNetworkAccess": "[if(empty(variables('kvIpRules')), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "sku": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultSku')), if(equals(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'sku'), 'standard'), createObject('value', 'standard'), createObject('value', variables('kvDefaultSku'))))]",
-          "softDeleteRetentionInDays": "[if(empty(parameters('advancedOptions')), createObject('value', variables('kvDefaultSoftDeleteRetentionInDays')), createObject('value', coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'softDeleteRetentionInDays'), variables('kvDefaultSoftDeleteRetentionInDays'))))]",
+          "sku": "[if(equals(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'sku'), 'standard'), createObject('value', 'standard'), createObject('value', variables('kvDefaultSku')))]",
+          "softDeleteRetentionInDays": {
+            "value": "[coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'softDeleteRetentionInDays'), variables('kvDefaultSoftDeleteRetentionInDays'))]"
+          },
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -11394,7 +11410,7 @@
       "condition": "[parameters('enableDatabricks')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-dbw', parameters('name'))]",
+      "name": "[variables('dbwName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -11402,10 +11418,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-dbw', parameters('name'))]"
+            "value": "[variables('dbwName')]"
           },
-          "customPrivateSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(createArray(createObject('name', variables('subnetNamePrivateLink'), 'addressPrefix', '192.168.224.0/24', 'networkSecurityGroupResourceId', reference('nsgPrivateLink').outputs.resourceId.value)), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwComputePlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwComputePlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwControlPlane'))))[0].name), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'))))]",
-          "customPublicSubnetName": "[if(variables('createNewVNET'), createObject('value', filter(concat(createArray(createObject('name', variables('subnetNamePrivateLink'), 'addressPrefix', '192.168.224.0/24', 'networkSecurityGroupResourceId', reference('nsgPrivateLink').outputs.resourceId.value)), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwControlPlane'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwControlPlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwComputePlane'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwComputePlane').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray())), lambda('item', equals(lambdaVariables('item').name, variables('subnetNameDbwComputePlane'))))[0].name), if(empty(parameters('advancedOptions')), createObject('value', null()), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'))))]",
+          "customPrivateSubnetName": "[if(variables('createNewVNET'), createObject('value', variables('subnetNameDbwControlPlane')), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane')))]",
+          "customPublicSubnetName": "[if(variables('createNewVNET'), createObject('value', variables('subnetNameDbwComputePlane')), createObject('value', tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane')))]",
           "customVirtualNetworkResourceId": {
             "value": "[createObject('resourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))))), 'name', if(variables('createNewVNET'), reference('vnet').outputs.name.value, if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), 'location', if(variables('createNewVNET'), reference('vnet').outputs.location.value, reference('vnetExisting', '2023-11-01', 'full').location), 'resourceGroupName', if(variables('createNewVNET'), reference('vnet').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), '/')[4]), 'subnetResourceIdPrivateLink', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks/subnets', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))), 'subnetNameDbwControlPlane', if(variables('createNewVNET'), variables('subnetNameDbwControlPlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), 'dummyName')), 'subnetNameDbwComputePlane', if(variables('createNewVNET'), variables('subnetNameDbwComputePlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'), 'dummyName'))).resourceId]"
           },
@@ -13032,9 +13048,6 @@
         "dnsZoneDbw",
         "log",
         "logExisting",
-        "nsgDbwComputePlane",
-        "nsgDbwControlPlane",
-        "nsgPrivateLink",
         "vnet",
         "vnetExisting"
       ]
