@@ -59,6 +59,12 @@ var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
 var createNewKV = empty(keyVaultResourceId)
 
+var kvIpRules = [
+  for (val, i) in empty(advancedOptions.?networkAcls.?ipRules) ? [] : advancedOptions!.networkAcls!.ipRules!: {
+    value: val
+  }
+]
+
 var vnetCfg = ({
   resourceId: createNewVNET ? vnet.outputs.resourceId : vnetExisting.id
   name: createNewVNET ? vnet.outputs.name : vnetExisting.name
@@ -370,18 +376,11 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
     enableVaultForDiskEncryption: false // When enabledForDiskEncryption is true, networkAcls.bypass must include \"AzureServices\
     location: location
     lock: lock
-    networkAcls: empty(advancedOptions)
-      ? {
-          // New default case that enables the firewall by default
-          bypass: 'None'
-          defaultAction: 'Deny'
-        }
-      : {
-          bypass: 'None'
-          defaultAction: 'Deny'
-          // TODO virtualNetworkRules: advancedOptions.?networkAcls.?virtualNetworkRules ?? []
-          // TODO ipRules: advancedOptions.?networkAcls.?ipRules ?? []
-        }
+    networkAcls: {
+      bypass: 'None'
+      defaultAction: 'Deny'
+      ipRules: kvIpRules
+    }
     privateEndpoints: createNewVNET
       ? [
           // Private endpoint for Key Vault only for new VNET
@@ -396,8 +395,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
           }
         ]
       : []
-    //publicNetworkAccess: createNewVNET ? 'Enabled' : 'Disabled' // TODO - When createNewVNET + ACL
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: empty(kvIpRules) ? 'Disabled' : 'Enabled'
     sku: empty(advancedOptions)
       ? kvDefaultSku
       : (advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku)
@@ -573,6 +571,11 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+type networkAclsType = {
+  @description('Optional. Sets the public IP addresses or ranges that are allowed to access resources in the solution.')
+  ipRules: string[]?
+}
+
 type virtualNetworkType = {
   @description('Optional. The name of the existing Private Link Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
   subnetNamePrivateLink: string?
@@ -617,6 +620,9 @@ type databricksType = {
 type advancedOptionsType = {
   @description('Optional. You can use this parameter to integrate the solution with an existing Azure Virtual Network if the \'virtualNetworkResourceId\' parameter is not empty.')
   virtualNetwork: virtualNetworkType?
+
+  @description('Optional. Networks Access Control Lists. This value has public IP addresses or ranges that are allowed to access resources in the solution.')
+  networkAcls: networkAclsType?
 
   @description('Optional. This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the \'logAnalyticsWorkspaceResourceId\' parameter is empty.')
   logAnalyticsWorkspace: logAnalyticsWorkspaceType?

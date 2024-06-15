@@ -292,6 +292,7 @@ Additional options that can affect some parts of the solution and how they are c
 | [`databricks`](#parameter-advancedoptionsdatabricks) | object | This parameter allows you to specify additional settings for Azure Databricks if you set the 'enableDatabricks' parameter to 'true'. |
 | [`keyVault`](#parameter-advancedoptionskeyvault) | object | This parameter allows you to specify additional settings for Azure Key Vault if the 'keyVaultResourceId' parameter is empty. |
 | [`logAnalyticsWorkspace`](#parameter-advancedoptionsloganalyticsworkspace) | object | This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the 'logAnalyticsWorkspaceResourceId' parameter is empty. |
+| [`networkAcls`](#parameter-advancedoptionsnetworkacls) | object | Networks Access Control Lists. This value has public IP addresses or ranges that are allowed to access resources in the solution. |
 | [`virtualNetwork`](#parameter-advancedoptionsvirtualnetwork) | object | You can use this parameter to integrate the solution with an existing Azure Virtual Network if the 'virtualNetworkResourceId' parameter is not empty. |
 
 ### Parameter: `advancedOptions.databricks`
@@ -401,6 +402,26 @@ Number of days data will be retained for. The dafult value is: '365'.
 
 - Required: No
 - Type: int
+
+### Parameter: `advancedOptions.networkAcls`
+
+Networks Access Control Lists. This value has public IP addresses or ranges that are allowed to access resources in the solution.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipRules`](#parameter-advancedoptionsnetworkaclsiprules) | array | Sets the public IP addresses or ranges that are allowed to access resources in the solution. |
+
+### Parameter: `advancedOptions.networkAcls.ipRules`
+
+Sets the public IP addresses or ranges that are allowed to access resources in the solution.
+
+- Required: No
+- Type: array
 
 ### Parameter: `advancedOptions.virtualNetwork`
 
