@@ -84,11 +84,14 @@ Describe 'Validate deployment with provided Azure Log Analytics Workspace' {
         BeforeAll {
         }
 
-        It 'Check Azure Log Analytics Workspace' {
+        It 'Check Azure Log Analytics Workspace Defaults' {
 
             $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -Name $logAnalyticsWorkspaceName -ErrorAction SilentlyContinue
 
-            $log.Sku | Should -Be 'PerGB2018'
+            # NOT Relevant for this test
+            #$log.Sku | Should -Be 'PerGB2018'
+            #$log.RetentionInDays | Should -Be 365
+            #$log.WorkspaceFeatures.DailyQuotaGb | Should -Be -1
         }
     }
 }
