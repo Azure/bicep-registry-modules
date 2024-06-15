@@ -90,8 +90,8 @@ Describe 'Validate deployment' {
 
         It 'Check Azure Log Analytics Workspace Defaults' {
 
-            $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -Name $logAnalyticsWorkspaceName -ErrorAction SilentlyContinue
-            $log
+            $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -Name $logAnalyticsWorkspaceName
+            Write-Host ($log | Out-String)
 
             $log.Sku | Should -Be 'PerGB2018'
             $log.RetentionInDays | Should -Be 365
