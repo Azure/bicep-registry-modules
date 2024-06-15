@@ -57,25 +57,25 @@ Describe 'Validate deployment' {
 
         It 'Check Mandatory Objects' {
 
-            $r = Get-AzResource -ResourceId $resourceId -ErrorAction SilentlyContinue
+            $r = Get-AzResource -ResourceId $resourceId
             $r | Should -Not -BeNullOrEmpty
             $r.Name | Should -Be $name
             $r.Location | Should -Be $location
             $r.ResourceGroupName | Should -Be $resourceGroupName
 
-            $r = Get-AzResource -ResourceId $virtualNetworkResourceId -ErrorAction SilentlyContinue
+            $r = Get-AzResource -ResourceId $virtualNetworkResourceId
             $r | Should -Not -BeNullOrEmpty
             $r.Name | Should -Be $virtualNetworkName
             $r.Location | Should -Be $virtualNetworkLocation
             $r.ResourceGroupName | Should -Be $virtualNetworkResourceGroupName
 
-            $r = Get-AzResource -ResourceId $logAnalyticsWorkspaceResourceId -ErrorAction SilentlyContinue
+            $r = Get-AzResource -ResourceId $logAnalyticsWorkspaceResourceId
             $r | Should -Not -BeNullOrEmpty
             $r.Name | Should -Be $logAnalyticsWorkspaceName
             $r.Location | Should -Be $logAnalyticsWorkspaceLocation
             $r.ResourceGroupName | Should -Be $logAnalyticsWorkspaceResourceGroupName
 
-            $r = Get-AzResource -ResourceId $keyVaultResourceId -ErrorAction SilentlyContinue
+            $r = Get-AzResource -ResourceId $keyVaultResourceId
             $r | Should -Not -BeNullOrEmpty
             $r.Name | Should -Be $keyVaultName
             $r.Location | Should -Be $keyVaultLocation
