@@ -40,6 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -180,6 +181,12 @@ module testDeployment '../../../main.bicep' = [
           resourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
       namedValues: [
         {
           displayName: 'apimkey'

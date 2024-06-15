@@ -16,7 +16,16 @@ param certificates array = []
 param enableTelemetry bool = true
 
 @description('Optional. Custom properties of the API Management service.')
-param customProperties object = {}
+param customProperties object = {
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
+}
 
 @description('Optional. Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region.')
 param disableGateway bool = false
@@ -237,7 +246,9 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
       ? {
           minApiVersion: minApiVersion
         }
-      : null
+      : {
+          minApiVersion: '2021-08-01'
+        }
     restore: restore
   }
 }

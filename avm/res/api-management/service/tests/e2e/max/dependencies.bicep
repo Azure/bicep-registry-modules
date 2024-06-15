@@ -26,13 +26,30 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: locationRegion1
 }
 
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: 'logAnalyticsWorkspace'
+  location: locationRegion1
+  tags: {
+    Environment: 'Non-Prod'
+    Role: 'DeploymentValidation'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    sku: {
+      name: 'Standard'
+    }
+  }
+}
+
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'applicationInsights'
   location: locationRegion1
   kind: 'web'
   properties: {
     Application_Type: 'web'
-    // todo: change to workspace based LAW
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 
