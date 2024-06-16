@@ -503,52 +503,52 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (creat
 // ============ //
 
 @description('The resource ID of the resource.')
-output resourceId string = 'A'
+output resourceId string = vnetCfg.resourceId
 
 @description('The name of the resource.')
-output name string = 'B'
+output name string = vnetCfg.name
 
 @description('The location the resource was deployed into.')
-output location string = 'C'
+output location string = vnetCfg.location
 
 @description('The name of the managed resource group.')
-output resourceGroupName string = 'D'
+output resourceGroupName string = vnetCfg.resourceGroupName
 
 @description('The resource ID of the Azure Virtual Network.')
-output virtualNetworkResourceId string = 'E'
+output virtualNetworkResourceId string = vnetCfg.resourceId
 
 @description('The name of the Azure Virtual Network.')
-output virtualNetworkName string = 'F'
+output virtualNetworkName string = vnetCfg.name
 
 @description('The location of the Azure Virtual Network.')
-output virtualNetworkLocation string = 'G'
+output virtualNetworkLocation string = vnetCfg.location
 
 @description('The name of the Azure Virtual Network resource group.')
-output virtualNetworkResourceGroupName string = 'H'
+output virtualNetworkResourceGroupName string = vnetCfg.resourceGroupName
 
 @description('The resource ID of the Azure Log Analytics Workspace.')
-output logAnalyticsWorkspaceResourceId string = 'I'
+output logAnalyticsWorkspaceResourceId string = logCfg.resourceId
 
 @description('The name of the Azure Log Analytics Workspace.')
-output logAnalyticsWorkspaceName string = 'J'
+output logAnalyticsWorkspaceName string = logCfg.name
 
 @description('The location of the Azure Log Analytics Workspace.')
-output logAnalyticsWorkspaceLocation string = 'K'
+output logAnalyticsWorkspaceLocation string = logCfg.location
 
 @description('The name of the Azure Log Analytics Workspace resource group.')
-output logAnalyticsWorkspaceResourceGroupName string = 'L'
+output logAnalyticsWorkspaceResourceGroupName string = logCfg.resourceGroupName
 
 @description('The resource ID of the Azure Key Vault.')
-output keyVaultResourceId string = 'M'
+output keyVaultResourceId string = kvCfg.resourceId
 
 @description('The name of the Azure Key Vault.')
-output keyVaultName string = 'N'
+output keyVaultName string = kvCfg.name
 
 @description('The location of the Azure Key Vault.')
-output keyVaultLocation string = 'O'
+output keyVaultLocation string = kvCfg.location
 
 @description('The name of the Azure Key Vault resource group.')
-output keyVaultResourceGroupName string = 'P'
+output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
 // ================ //
 // Definitions      //
