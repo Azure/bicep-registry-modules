@@ -238,6 +238,7 @@ function Get-DeploymentTargetResourceList {
 
             [array]$targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
             if ($targetResources.Count -gt 0) {
+                Write-Verbose ('Found & resolved deployment [{0}]' -f $deploymentNameObject.Name) -Verbose
                 $deploymentNameObject.Resolved = $true
                 $resourcesToRemove += $targetResources
             }
