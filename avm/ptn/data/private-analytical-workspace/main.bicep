@@ -64,12 +64,6 @@ var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
 var createNewKV = empty(keyVaultResourceId)
 
-var kvIpRules = [
-  for (val, i) in empty(advancedOptions.?networkAcls.?ipRules) ? [] : advancedOptions!.networkAcls!.ipRules!: {
-    value: val
-  }
-]
-
 var vnetCfg = ({
   resourceId: createNewVNET ? vnet.outputs.resourceId : vnetExisting.id
   name: createNewVNET ? vnet.outputs.name : vnetExisting.name
@@ -96,6 +90,23 @@ var kvCfg = ({
   location: createNewKV ? kv.outputs.location : kvExisting.location
   resourceGroupName: createNewKV ? kv.outputs.resourceGroupName : split(kvExisting.id, '/')[4]
 })
+
+var kvIpRules = [
+  for (item, i) in empty(advancedOptions.?networkAcls.?ipRules) ? [] : advancedOptions!.networkAcls!.ipRules!: {
+    value: item
+  }
+]
+
+var kvRoleAssignments = [
+  for (item, i) in empty(advancedOptions.?solutionAdminRoleAssignments)
+    ? []
+    : advancedOptions!.solutionAdminRoleAssignments!: {
+    roleDefinitionIdOrName: 'Key Vault Administrator'
+    principalId: item.principalId
+    principalType: item.principalType
+    description: 'Perform all data plane operations on a key vault and all objects in it, including certificates, keys, and secrets.'
+  }
+]
 
 var privateLinkSubnet = [
   {
@@ -391,6 +402,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
         ]
       : []
     publicNetworkAccess: empty(kvIpRules) ? 'Disabled' : 'Enabled'
+    roleAssignments: empty(kvRoleAssignments) ? [] : kvRoleAssignments
     sku: advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku
     softDeleteRetentionInDays: advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
     tags: tags
