@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16536836575165672888"
+      "templateHash": "16862738493314278912"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -333,8 +333,10 @@
     "subnetNameDbwControlPlane": "dbw-control-plane-subnet",
     "subnetNameDbwComputePlane": "dbw-compute-plane-subnet",
     "nsgNamePrivateLink": "[format('{0}-nsg-private-link', parameters('name'))]",
+    "nsgRulesPrivateLink": [],
     "nsgNameDbwControlPlane": "[format('{0}-nsg-dbw-control-plane', parameters('name'))]",
     "nsgNameDbwComputePlane": "[format('{0}-nsg-dbw-compute-plane', parameters('name'))]",
+    "nsgRulesDbw": [],
     "logName": "[format('{0}-log', parameters('name'))]",
     "logDefaultDailyQuotaGb": -1,
     "logDefaultDataRetention": 365,
@@ -347,8 +349,7 @@
     "dbwName": "[format('{0}-dbw', parameters('name'))]",
     "createNewVNET": "[empty(parameters('virtualNetworkResourceId'))]",
     "createNewLog": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
-    "createNewKV": "[empty(parameters('keyVaultResourceId'))]",
-    "securityRulesDbw": []
+    "createNewKV": "[empty(parameters('keyVaultResourceId'))]"
   },
   "resources": {
     "vnetExisting::subnetPrivateLink": {
@@ -1670,7 +1671,7 @@
             "value": "[parameters('tags')]"
           },
           "securityRules": {
-            "value": []
+            "value": "[variables('nsgRulesPrivateLink')]"
           }
         },
         "template": {
@@ -2392,7 +2393,7 @@
             "value": "[parameters('tags')]"
           },
           "securityRules": {
-            "value": "[variables('securityRulesDbw')]"
+            "value": "[variables('nsgRulesDbw')]"
           }
         },
         "template": {
@@ -3114,7 +3115,7 @@
             "value": "[parameters('tags')]"
           },
           "securityRules": {
-            "value": "[variables('securityRulesDbw')]"
+            "value": "[variables('nsgRulesDbw')]"
           }
         },
         "template": {
@@ -11498,7 +11499,7 @@
             ]
           },
           "disablePublicIp": {
-            "value": "[empty(variables('dbwIpRules'))]"
+            "value": true
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -11517,7 +11518,9 @@
           },
           "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-dbw-ui-pep', parameters('name')), 'location', parameters('location'), 'service', 'databricks_ui_api', 'subnetResourceId', createObject('resourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))))), 'name', if(variables('createNewVNET'), reference('vnet').outputs.name.value, if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), 'location', if(variables('createNewVNET'), reference('vnet').outputs.location.value, reference('vnetExisting', '2023-11-01', 'full').location), 'resourceGroupName', if(variables('createNewVNET'), reference('vnet').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), '/')[4]), 'subnetResourceIdPrivateLink', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks/subnets', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))), 'subnetNameDbwControlPlane', if(variables('createNewVNET'), variables('subnetNameDbwControlPlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), 'dummyName')), 'subnetNameDbwComputePlane', if(variables('createNewVNET'), variables('subnetNameDbwComputePlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'), 'dummyName'))).subnetResourceIdPrivateLink, 'privateDnsZoneResourceIds', createArray(reference('dnsZoneDbw').outputs.resourceId.value), 'tags', parameters('tags'), 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')), createObject('name', format('{0}-dbw-auth-pep', parameters('name')), 'location', parameters('location'), 'service', 'browser_authentication', 'subnetResourceId', createObject('resourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))))), 'name', if(variables('createNewVNET'), reference('vnet').outputs.name.value, if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), 'location', if(variables('createNewVNET'), reference('vnet').outputs.location.value, reference('vnetExisting', '2023-11-01', 'full').location), 'resourceGroupName', if(variables('createNewVNET'), reference('vnet').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), '/')[4]), 'subnetResourceIdPrivateLink', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks/subnets', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))), 'subnetNameDbwControlPlane', if(variables('createNewVNET'), variables('subnetNameDbwControlPlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), 'dummyName')), 'subnetNameDbwComputePlane', if(variables('createNewVNET'), variables('subnetNameDbwComputePlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'), 'dummyName'))).subnetResourceIdPrivateLink, 'privateDnsZoneResourceIds', createArray(reference('dnsZoneDbw').outputs.resourceId.value), 'tags', parameters('tags'), 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "publicNetworkAccess": "[if(empty(variables('dbwIpRules')), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "requiredNsgRules": "[if(empty(variables('dbwIpRules')), createObject('value', 'NoAzureDatabricksRules'), createObject('value', 'AllRules'))]",
+          "requiredNsgRules": {
+            "value": "NoAzureDatabricksRules"
+          },
           "roleAssignments": "[if(empty(variables('dbwRoleAssignments')), createObject('value', createArray()), createObject('value', variables('dbwRoleAssignments')))]",
           "skuName": {
             "value": "premium"

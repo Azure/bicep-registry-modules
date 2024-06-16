@@ -47,8 +47,10 @@ var subnetNamePrivateLink = 'private-link-subnet'
 var subnetNameDbwControlPlane = 'dbw-control-plane-subnet'
 var subnetNameDbwComputePlane = 'dbw-compute-plane-subnet'
 var nsgNamePrivateLink = '${name}-nsg-private-link'
+var nsgRulesPrivateLink = [] // Standard - No special needs
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
 var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
+var nsgRulesDbw = [] // We always use NoAzureDatabricksRules which means does not need specific network security group rules
 
 var logName = '${name}-log'
 var logDefaultDailyQuotaGb = -1
@@ -170,8 +172,6 @@ var subnets = concat(
     : []
 )
 
-var securityRulesDbw = []
-
 // ============== //
 // Resources      //
 // ============== //
@@ -292,7 +292,7 @@ module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.2.0' =
     location: location
     lock: lock
     tags: tags
-    securityRules: []
+    securityRules: nsgRulesPrivateLink
   }
 }
 
@@ -317,7 +317,7 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.
     location: location
     lock: lock
     tags: tags
-    securityRules: securityRulesDbw
+    securityRules: nsgRulesDbw
   }
 }
 
@@ -342,7 +342,7 @@ module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.2.
     location: location
     lock: lock
     tags: tags
-    securityRules: securityRulesDbw
+    securityRules: nsgRulesDbw
   }
 }
 
@@ -468,7 +468,8 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
         workspaceResourceId: logCfg.resourceId
       }
     ]
-    disablePublicIp: empty(dbwIpRules)
+    // With secure cluster connectivity enabled, customer virtual networks have no open ports and Databricks Runtime cluster nodes have no public IP addresses.
+    disablePublicIp: true // true means Secure Cluster Connectivity is enabled
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
@@ -498,8 +499,13 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
           }
         ]
       : [] // In customer provided VNET, customer must create PEPs on their own
+    // Allow Public Network Access
+    // Enabled means You can connect to your Databricks workspace either publicly, via public IP addresses, or privately, using a private endpoint.
     publicNetworkAccess: empty(dbwIpRules) ? 'Disabled' : 'Enabled'
-    requiredNsgRules: empty(dbwIpRules) ? 'NoAzureDatabricksRules' : 'AllRules'
+    // Select No Azure Databricks Rules if you are using back-end Private Link,
+    // which means that your workspace data plane does not need network security group rules
+    // to connect to the Azure Databricks control plane. Otherwise, select All Rules.
+    requiredNsgRules: 'NoAzureDatabricksRules'
     roleAssignments: empty(dbwRoleAssignments) ? [] : dbwRoleAssignments
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
