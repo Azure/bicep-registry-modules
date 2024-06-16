@@ -241,11 +241,11 @@ function Get-DeploymentTargetResourceList {
                 $deploymentNameObject.Resolved = $true
                 $resourcesToRemove += $targetResources
             }
+        }
 
-            # Break check
-            if ($deploymentNameObjects.Resolved -notcontains $false) {
-                break
-            }
+        # Break check
+        if ($deploymentNameObjects.Resolved -notcontains $false) {
+            break
         }
 
         $remainingDeploymentNames = $deploymentNameObjects | Where-Object { -not $_.Resolved } | Select-Object -Property 'Name'
