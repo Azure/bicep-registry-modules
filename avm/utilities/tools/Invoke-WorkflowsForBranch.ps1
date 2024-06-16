@@ -184,8 +184,8 @@ function Get-GitHubModuleWorkflowList {
         }
 
         $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url', 'state') | Where-Object {
-            (Split-Path $_.path -Leaf) -match $Filter -and
-            $IncludeDisabled ? $true : $_.state -eq 'active'
+            $_.name -match $Filter -and
+            ($IncludeDisabled ? $true : $_.state -eq 'active')
         }
 
         $expectedPages = [math]::ceiling($response.total_count / 100)
