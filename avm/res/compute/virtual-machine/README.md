@@ -232,10 +232,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: 'ipconfig01'
             pipConfiguration: {
               name: 'pip-01'
-              tags: {
-                Environment: 'Non-Prod'
-                Role: 'DeploymentValidation'
-              }
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -303,11 +299,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "name": "pip-01",
-                "tags": {
-                  "Environment": "Non-Prod",
-                  "Role": "DeploymentValidation"
-                }
+                "name": "pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
