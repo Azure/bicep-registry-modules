@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using internal load balancer parameter'
-metadata description = 'This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer.'
+metadata name = 'Using external load balancer parameter'
+metadata description = 'This instance deploys the module with an externally facing load balancer.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.loadbalancers-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nlbint'
+param serviceShort string = 'nlbext'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,8 +35,22 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -55,13 +69,30 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       frontendIPConfigurations: [
         {
-          name: 'privateIPConfig1'
-          subnetId: nestedDependencies.outputs.subnetResourceId
+          name: 'publicIPConfig1'
+          publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
         }
       ]
       backendAddressPools: [
         {
-          name: 'servers'
+          name: 'backendAddressPool1'
+        }
+        {
+          name: 'backendAddressPool2'
+        }
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
       inboundNatRules: [
@@ -69,7 +100,7 @@ module testDeployment '../../../main.bicep' = [
           backendPort: 443
           enableFloatingIP: false
           enableTcpReset: false
-          frontendIPConfigurationName: 'privateIPConfig1'
+          frontendIPConfigurationName: 'publicIPConfig1'
           frontendPort: 443
           idleTimeoutInMinutes: 4
           name: 'inboundNatRule1'
@@ -77,35 +108,62 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           backendPort: 3389
-          frontendIPConfigurationName: 'privateIPConfig1'
+          frontendIPConfigurationName: 'publicIPConfig1'
           frontendPort: 3389
           name: 'inboundNatRule2'
         }
       ]
-      skuName: 'Standard'
       loadBalancingRules: [
         {
-          backendAddressPoolName: 'servers'
-          backendPort: 0
+          backendAddressPoolName: 'backendAddressPool1'
+          backendPort: 80
           disableOutboundSnat: true
-          enableFloatingIP: true
+          enableFloatingIP: false
           enableTcpReset: false
-          frontendIPConfigurationName: 'privateIPConfig1'
-          frontendPort: 0
-          idleTimeoutInMinutes: 4
+          frontendIPConfigurationName: 'publicIPConfig1'
+          frontendPort: 80
+          idleTimeoutInMinutes: 5
           loadDistribution: 'Default'
-          name: 'privateIPLBRule1'
+          name: 'publicIPLBRule1'
           probeName: 'probe1'
-          protocol: 'All'
+          protocol: 'Tcp'
+        }
+        {
+          backendAddressPoolName: 'backendAddressPool2'
+          backendPort: 8080
+          frontendIPConfigurationName: 'publicIPConfig1'
+          frontendPort: 8080
+          loadDistribution: 'Default'
+          name: 'publicIPLBRule2'
+          probeName: 'probe2'
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      outboundRules: [
+        {
+          allocatedOutboundPorts: 63984
+          backendAddressPoolName: 'backendAddressPool1'
+          frontendIPConfigurationName: 'publicIPConfig1'
+          name: 'outboundRule1'
         }
       ]
       probes: [
         {
-          intervalInSeconds: 5
+          intervalInSeconds: 10
           name: 'probe1'
-          numberOfProbes: 2
-          port: '62000'
-          protocol: 'Tcp'
+          numberOfProbes: 5
+          port: 80
+          protocol: 'Http'
+          requestPath: '/http-probe'
+        }
+        {
+          name: 'probe2'
+          port: 443
+          protocol: 'Https'
+          requestPath: '/https-probe'
         }
       ]
       roleAssignments: [
