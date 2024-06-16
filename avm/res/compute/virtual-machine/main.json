@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1101087458540265019"
+      "templateHash": "8007594709688742996"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -567,7 +567,7 @@
         "description": "Optional. The configuration for auto-shutdown."
       }
     },
-    "maintenanceConfigurationId": {
+    "maintenanceConfigurationResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -1049,14 +1049,14 @@
       ]
     },
     "vm_configurationAssignment": {
-      "condition": "[not(empty(parameters('maintenanceConfigurationId')))]",
+      "condition": "[not(empty(parameters('maintenanceConfigurationResourceId')))]",
       "type": "Microsoft.Maintenance/configurationAssignments",
       "apiVersion": "2023-04-01",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
       "name": "[format('{0}assignment', parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
-        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationResourceId')]",
         "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
       },
       "dependsOn": [
