@@ -109,6 +109,21 @@ var kvRoleAssignments = [
   }
 ]
 
+var dbwIpRules = [
+  for (item, i) in empty(advancedOptions.?networkAcls.?ipRules) ? [] : advancedOptions!.networkAcls!.ipRules!: {
+    value: item
+  }
+]
+
+var dbwRoleAssignments = [
+  for (item, i) in empty(solutionAdministrators) ? [] : solutionAdministrators!: {
+    roleDefinitionIdOrName: 'Owner'
+    principalId: item.principalId
+    principalType: item.principalType
+    description: 'Full access to manage this resource, including the ability to assign roles in Azure RBAC.'
+  }
+]
+
 var privateLinkSubnet = [
   {
     name: subnetNamePrivateLink
@@ -394,9 +409,9 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
           {
             name: '${name}-kv-pep'
             location: location
+            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
             privateDnsZoneResourceIds: [dnsZoneKv.outputs.resourceId]
             tags: tags
-            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
             enableTelemetry: enableTelemetry
             lock: lock
           }
@@ -453,7 +468,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
         workspaceResourceId: logCfg.resourceId
       }
     ]
-    disablePublicIp: true // For now only private, in the future maybe we can add public + ACL
+    disablePublicIp: empty(dbwIpRules)
     enableTelemetry: enableTelemetry
     location: location
     lock: lock
@@ -483,9 +498,9 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
           }
         ]
       : [] // In customer provided VNET, customer must create PEPs on their own
-    publicNetworkAccess: 'Disabled' // Disabled to access workspace only via private link, in the future maybe we can add public + ACL
-    requiredNsgRules: 'NoAzureDatabricksRules' // NoAzureDatabricksRules for full private, AllRules for public
-    // roleAssignments: [] // Maybe in the next iteration
+    publicNetworkAccess: empty(dbwIpRules) ? 'Disabled' : 'Enabled'
+    requiredNsgRules: empty(dbwIpRules) ? 'NoAzureDatabricksRules' : 'AllRules'
+    roleAssignments: empty(dbwRoleAssignments) ? [] : dbwRoleAssignments
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
     tags: tags
