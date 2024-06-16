@@ -8,6 +8,13 @@ on:
         description: "The regex of the test file(s) to run"
         required: false
         default: '.*'
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/platform.ci-tests.yml"
+      - "avm/utilities/**"
+      - "!*/**/README.md"
   schedule:
     - cron: "0 0 * * Sun" # Every Sunday
 
