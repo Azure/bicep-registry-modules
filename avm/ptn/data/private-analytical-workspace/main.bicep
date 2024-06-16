@@ -50,7 +50,7 @@ var nsgNamePrivateLink = '${name}-nsg-private-link'
 var nsgRulesPrivateLink = [] // Standard - No special needs
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
 var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
-var nsgRulesDbw = [] // We always use NoAzureDatabricksRules which means does not need specific network security group rules
+var nsgRulesDbw = [] // Azure Databricks will modify NSG if needed - depends on options
 
 var logName = '${name}-log'
 var logDefaultDailyQuotaGb = -1
@@ -505,7 +505,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     // Select No Azure Databricks Rules if you are using back-end Private Link,
     // which means that your workspace data plane does not need network security group rules
     // to connect to the Azure Databricks control plane. Otherwise, select All Rules.
-    requiredNsgRules: 'NoAzureDatabricksRules'
+    requiredNsgRules: 'AllRules' // In some environments with 'NoAzureDatabricksRules' cluster cannot be created
     roleAssignments: empty(dbwRoleAssignments) ? [] : dbwRoleAssignments
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
