@@ -77,10 +77,6 @@ module testDeployment '../../../main.bicep' = [
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               pipConfiguration: {
                 name: 'pip-01'
-                tags: {
-                  Environment: 'Non-Prod'
-                  Role: 'DeploymentValidation'
-                }
               }
             }
           ]
