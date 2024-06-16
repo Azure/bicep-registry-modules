@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -35,7 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
@@ -69,18 +69,16 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       frontendIPConfigurations: [
         {
-          name: 'privateIPConfig1'
-          subnetId: nestedDependencies.outputs.subnetResourceId
-          zones: [
-            1
-            2
-            3
-          ]
+          name: 'publicIPConfig1'
+          publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
         }
       ]
       backendAddressPools: [
         {
-          name: 'servers'
+          name: 'backendAddressPool1'
+        }
+        {
+          name: 'backendAddressPool2'
         }
       ]
       diagnosticSettings: [
@@ -102,7 +100,7 @@ module testDeployment '../../../main.bicep' = [
           backendPort: 443
           enableFloatingIP: false
           enableTcpReset: false
-          frontendIPConfigurationName: 'privateIPConfig1'
+          frontendIPConfigurationName: 'publicIPConfig1'
           frontendPort: 443
           idleTimeoutInMinutes: 4
           name: 'inboundNatRule1'
@@ -110,35 +108,82 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           backendPort: 3389
-          frontendIPConfigurationName: 'privateIPConfig1'
+          frontendIPConfigurationName: 'publicIPConfig1'
           frontendPort: 3389
           name: 'inboundNatRule2'
         }
       ]
-      skuName: 'Standard'
       loadBalancingRules: [
         {
-          backendAddressPoolName: 'servers'
-          backendPort: 0
+          backendAddressPoolName: 'backendAddressPool1'
+          backendPort: 80
           disableOutboundSnat: true
-          enableFloatingIP: true
+          enableFloatingIP: false
           enableTcpReset: false
-          frontendIPConfigurationName: 'privateIPConfig1'
-          frontendPort: 0
-          idleTimeoutInMinutes: 4
+          frontendIPConfigurationName: 'publicIPConfig1'
+          frontendPort: 80
+          idleTimeoutInMinutes: 5
           loadDistribution: 'Default'
-          name: 'privateIPLBRule1'
+          name: 'publicIPLBRule1'
           probeName: 'probe1'
-          protocol: 'All'
+          protocol: 'Tcp'
+        }
+        {
+          backendAddressPoolName: 'backendAddressPool2'
+          backendPort: 8080
+          frontendIPConfigurationName: 'publicIPConfig1'
+          frontendPort: 8080
+          loadDistribution: 'Default'
+          name: 'publicIPLBRule2'
+          probeName: 'probe2'
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      outboundRules: [
+        {
+          allocatedOutboundPorts: 63984
+          backendAddressPoolName: 'backendAddressPool1'
+          frontendIPConfigurationName: 'publicIPConfig1'
+          name: 'outboundRule1'
         }
       ]
       probes: [
         {
-          intervalInSeconds: 5
+          intervalInSeconds: 10
           name: 'probe1'
-          numberOfProbes: 2
-          port: '62000'
-          protocol: 'Tcp'
+          numberOfProbes: 5
+          port: 80
+          protocol: 'Http'
+          requestPath: '/http-probe'
+        }
+        {
+          name: 'probe2'
+          port: 443
+          protocol: 'Https'
+          requestPath: '/https-probe'
+        }
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
         }
       ]
       tags: {
@@ -147,5 +192,9 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
 ]

@@ -66,6 +66,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      lock: {}
+      diagnosticSettings: []
       frontendIPConfigurations: [
         {
           name: 'publicIPConfig1'
@@ -73,5 +75,9 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
 ]
