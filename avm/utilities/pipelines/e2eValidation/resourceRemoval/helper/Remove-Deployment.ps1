@@ -91,8 +91,8 @@ function Remove-Deployment {
             # Fetch deployments
             # =================
             $deploymentsInputObject = @{
-                Name  = $DeploymentNames
-                Scope = $deploymentScope
+                DeploymentNames = $DeploymentNames
+                Scope           = $deploymentScope
             }
             if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
                 $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
