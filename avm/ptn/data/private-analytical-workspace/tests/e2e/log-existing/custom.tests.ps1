@@ -7,40 +7,24 @@ Describe 'Validate deployment' {
 
     BeforeAll {
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
-        Write-Host $resourceId
         $name = $TestInputData.DeploymentOutputs.name.Value
-        Write-Host $name
         $location = $TestInputData.DeploymentOutputs.location.Value
-        Write-Host $location
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
-        Write-Host $resourceGroupName
 
         $virtualNetworkResourceId = $TestInputData.DeploymentOutputs.virtualNetworkResourceId.Value
-        Write-Host $virtualNetworkResourceId
         $virtualNetworkName = $TestInputData.DeploymentOutputs.virtualNetworkName.Value
-        Write-Host $virtualNetworkName
         $virtualNetworkLocation = $TestInputData.DeploymentOutputs.virtualNetworkLocation.Value
-        Write-Host $virtualNetworkLocation
         $virtualNetworkResourceGroupName = $TestInputData.DeploymentOutputs.virtualNetworkResourceGroupName.Value
-        Write-Host $virtualNetworkResourceGroupName
 
         $logAnalyticsWorkspaceResourceId = $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceResourceId.Value
-        Write-Host $logAnalyticsWorkspaceResourceId
         $logAnalyticsWorkspaceName = $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceName.Value
-        Write-Host $logAnalyticsWorkspaceName
         $logAnalyticsWorkspaceLocation = $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceLocation.Value
-        Write-Host $logAnalyticsWorkspaceLocation
         $logAnalyticsWorkspaceResourceGroupName = $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceResourceGroupName.Value
-        Write-Host $logAnalyticsWorkspaceResourceGroupName
 
         $keyVaultResourceId = $TestInputData.DeploymentOutputs.keyVaultResourceId.Value
-        Write-Host $keyVaultResourceId
         $keyVaultName = $TestInputData.DeploymentOutputs.keyVaultName.Value
-        Write-Host $keyVaultName
         $keyVaultLocation = $TestInputData.DeploymentOutputs.keyVaultLocation.Value
-        Write-Host $keyVaultLocation
         $keyVaultResourceGroupName = $TestInputData.DeploymentOutputs.keyVaultResourceGroupName.Value
-        Write-Host $keyVaultResourceGroupName
     }
 
     Context 'Common Tests' {
@@ -107,12 +91,11 @@ Describe 'Validate deployment' {
         It 'Check Azure Log Analytics Workspace Defaults' {
 
             $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -Name $logAnalyticsWorkspaceName
-            Write-Host ($log | Out-String)
 
             # NOT Relevant for this test
-            #$log.Sku | Should -Be 'PerGB2018'
-            #$log.RetentionInDays | Should -Be 365
-            #$log.WorkspaceFeatures.DailyQuotaGb | Should -Be -1
+            # $log.Sku | Should -Be 'PerGB2018'
+            # $log.RetentionInDays | Should -Be 365
+            # $log.WorkspaceFeatures.DailyQuotaGb | Should -Be -1
         }
     }
 }
