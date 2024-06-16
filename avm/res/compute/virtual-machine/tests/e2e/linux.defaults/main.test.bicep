@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
@@ -76,6 +77,10 @@ module testDeployment '../../../main.bicep' = [
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               pipConfiguration: {
                 name: 'pip-01'
+                tags: {
+                  Environment: 'Non-Prod'
+                  Role: 'DeploymentValidation'
+                }
               }
             }
           ]
@@ -92,6 +97,9 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Linux'
       vmSize: 'Standard_DS2_v2'
       disablePasswordAuthentication: true
+      patchMode: 'AutomaticByPlatform'
+      bypassPlatformSafetyChecksOnUserSchedule: true
+      maintenanceConfigurationId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       publicKeys: [
         {
           keyData: nestedDependencies.outputs.SSHKeyPublicKey

@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
   }
 }
 
@@ -84,6 +85,9 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
+      patchMode: 'AutomaticByPlatform'
+      bypassPlatformSafetyChecksOnUserSchedule: true
+      maintenanceConfigurationId: nestedDependencies.outputs.maintenanceConfigurationResourceId
     }
   }
 ]
