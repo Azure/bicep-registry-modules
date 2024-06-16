@@ -293,6 +293,7 @@ Additional options that can affect some parts of the solution and how they are c
 | [`keyVault`](#parameter-advancedoptionskeyvault) | object | This parameter allows you to specify additional settings for Azure Key Vault if the 'keyVaultResourceId' parameter is empty. |
 | [`logAnalyticsWorkspace`](#parameter-advancedoptionsloganalyticsworkspace) | object | This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the 'logAnalyticsWorkspaceResourceId' parameter is empty. |
 | [`networkAcls`](#parameter-advancedoptionsnetworkacls) | object | Networks Access Control Lists. This value has public IP addresses or ranges that are allowed to access resources in the solution. |
+| [`solutionAdminRoleAssignments`](#parameter-advancedoptionssolutionadminroleassignments) | array | Array of user or group role assignments to create. |
 | [`virtualNetwork`](#parameter-advancedoptionsvirtualnetwork) | object | You can use this parameter to integrate the solution with an existing Azure Virtual Network if the 'virtualNetworkResourceId' parameter is not empty. |
 
 ### Parameter: `advancedOptions.databricks`
@@ -422,6 +423,46 @@ Sets the public IP addresses or ranges that are allowed to access resources in t
 
 - Required: No
 - Type: array
+
+### Parameter: `advancedOptions.solutionAdminRoleAssignments`
+
+Array of user or group role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-advancedoptionssolutionadminroleassignmentsprincipalid) | string | The principal ID of the principal (user/group) to assign the role to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalType`](#parameter-advancedoptionssolutionadminroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `advancedOptions.solutionAdminRoleAssignments.principalId`
+
+The principal ID of the principal (user/group) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `advancedOptions.solutionAdminRoleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'User'
+  ]
+  ```
 
 ### Parameter: `advancedOptions.virtualNetwork`
 

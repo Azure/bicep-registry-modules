@@ -562,6 +562,14 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+type userGroupRoleAssignmentType = {
+  @description('Required. The principal ID of the principal (user/group) to assign the role to.')
+  principalId: string
+
+  @description('Optional. The principal type of the assigned principal ID.')
+  principalType: ('Group' | 'User')?
+}[]?
+
 type networkAclsType = {
   @description('Optional. Sets the public IP addresses or ranges that are allowed to access resources in the solution.')
   ipRules: string[]?
@@ -610,6 +618,9 @@ type databricksType = {
 }
 
 type advancedOptionsType = {
+  @description('Optional. Array of user or group role assignments to create.')
+  solutionAdminRoleAssignments: userGroupRoleAssignmentType
+
   @description('Optional. You can use this parameter to integrate the solution with an existing Azure Virtual Network if the \'virtualNetworkResourceId\' parameter is not empty.')
   virtualNetwork: virtualNetworkType?
 
