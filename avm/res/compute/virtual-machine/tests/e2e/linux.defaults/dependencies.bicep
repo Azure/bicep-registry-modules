@@ -40,6 +40,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 
 resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
   name: maintenanceConfigurationName
+  location: location
   properties: {
     extensionProperties: {
       InGuestPatchMode: 'User'
