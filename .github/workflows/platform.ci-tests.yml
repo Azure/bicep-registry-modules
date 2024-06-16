@@ -1,8 +1,6 @@
 name: ".Platform - Run CI tests"
 
 on:
-  # TODO: Remove trigger once done
-  push:
   workflow_dispatch:
     inputs:
       testFile:
