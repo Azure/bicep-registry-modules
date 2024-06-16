@@ -12,6 +12,10 @@ Optional. The root of the repository. Used to correctly resolve paths.
 .PARAMETER BranchName
 Optional. The branch to test for.
 
+.PARAMETER GitHubRepository
+Optional. The repository containing the test file. If provided it will be used to generate a URL to the exact line of the test.
+For example: 'Azure/ResourceModules'
+
 .PARAMETER TestFileRegex
 Optional. The regex to use when searching for test files
 
@@ -37,6 +41,9 @@ function Test-CI {
 
         [Parameter()]
         [string] $BranchName = (git branch --show-current),
+
+        [Parameter(Mandatory )]
+        [string] $GitHubRepository,
 
         [Parameter()]
         [string] $TestFileRegex = '.*',
@@ -86,7 +93,7 @@ function Test-CI {
             RepoRootPath      = $RepoRootPath
             PesterTestResults = $testResults
             OutputFilePath    = Join-Path $RepoRootPath 'avm' 'utilities' 'tests' 'Pester-output.md'
-            GitHubRepository  = $RepoRootPath
+            GitHubRepository  = $GitHubRepository
             BranchName        = $BranchName
         }
 
