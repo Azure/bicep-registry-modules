@@ -117,7 +117,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    publicNetworkAccess: 'SecuredByPerimeter'
     requireInfrastructureEncryption: true
     skuName: 'Premium'
   }
@@ -158,9 +157,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "publicNetworkAccess": {
-      "value": "SecuredByPerimeter"
     },
     "requireInfrastructureEncryption": {
       "value": true
