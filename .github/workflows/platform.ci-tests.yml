@@ -70,8 +70,8 @@ jobs:
             $functionInput = @{
               RepoRootPath      = $env:GITHUB_WORKSPACE
               BranchName        = $env:GITHUB_REF
-\             GitHubRepository  = $env:GITHUB_REPOSITORY
-              TestFileRegex = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).testFileRegex }}'
+              GitHubRepository  = $env:GITHUB_REPOSITORY
+              TestFileRegex     = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).testFileRegex }}'
             }
 
             Write-Verbose "Invoke task with" -Verbose
