@@ -611,9 +611,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
 }
 
 resource vm_configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(maintenanceConfigurationId)) {
-  name: 'default'
+  name: '${vm.name}assignment'
+  location: location
   properties: {
     maintenanceConfigurationId: maintenanceConfigurationId
+    resourceId: vm.id
   }
   scope: vm
 }
