@@ -163,7 +163,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                 throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
             }
         } catch {
-            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+            Write-Error "Failed to telemetry information from [$telemetryUrl]." # Invalid url
         }
 
         # create reference as it must be loaded in the thread to work
