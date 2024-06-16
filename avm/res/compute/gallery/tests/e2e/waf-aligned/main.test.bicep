@@ -52,6 +52,18 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           name: '${namePrefix}-az-imgd-ws-001'
+          properties: {
+            identifier: {
+              publisher: 'MicrosoftWindowsServer'
+              offer: 'WindowsServer'
+              sku: '2022-datacenter-azure-edition'
+            }
+            osState: 'Windows'
+          }
+        }
+        // testing deprecated paramters
+        {
+          name: '${namePrefix}-az-imgd-ws-001'
           offer: 'WindowsServer'
           osType: 'Windows'
           publisher: 'MicrosoftWindowsServer'

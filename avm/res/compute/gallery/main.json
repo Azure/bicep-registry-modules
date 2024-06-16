@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "4586802822078326566"
+      "version": "0.28.1.47646",
+      "templateHash": "11302405052694256809"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -35,8 +35,7 @@
             "description": "Optional. Specify the type of lock."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "roleAssignmentType": {
       "type": "array",
@@ -101,8 +100,322 @@
             }
           }
         }
-      },
-      "nullable": true
+      }
+    },
+    "imageType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "metadata": {
+            "description": "Required. The resource name."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location of the resource. Defaults to the gallery resource location."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
+            "description": "Optional. Tags for all resources. Defaults to the tags of the gallery."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The description of this gallery image definition resource. This property is updatable."
+              }
+            },
+            "disallowed": {
+              "type": "object",
+              "properties": {
+                "diskTypes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "example": "[[\n        'Standard_LRS'\n      ]",
+                    "description": "Required. A list of disk types."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Describes the disallowed disk types."
+              }
+            },
+            "endOfLife": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable."
+              }
+            },
+            "eula": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Eula agreement for the gallery image definition."
+              }
+            },
+            "hyperVGeneration": {
+              "type": "string",
+              "allowedValues": [
+                "V1",
+                "V2"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
+              }
+            },
+            "osType": {
+              "type": "string",
+              "allowedValues": [
+                "Generalized",
+                "Specialized"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`."
+              }
+            },
+            "osState": {
+              "type": "string",
+              "allowedValues": [
+                "Linux",
+                "Windows"
+              ],
+              "metadata": {
+                "description": "Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`."
+              }
+            },
+            "identifier": {
+              "type": "object",
+              "properties": {
+                "publisher": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the gallery image definition offer."
+                  }
+                },
+                "offer": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the gallery image definition publisher."
+                  }
+                },
+                "sku": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the gallery image definition SKU."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. This is the gallery image definition identifier."
+              }
+            },
+            "privacyStatementUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The privacy statement uri."
+              }
+            },
+            "purchasePlan": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The plan ID."
+                  }
+                },
+                "product": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The product ID."
+                  }
+                },
+                "publisher": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The publisher ID."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Describes the gallery image definition purchase plan. This is used by marketplace images."
+              }
+            },
+            "recommended": {
+              "type": "object",
+              "properties": {
+                "vCPUs": {
+                  "$ref": "#/definitions/resourceRangeType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4."
+                  }
+                },
+                "memory": {
+                  "$ref": "#/definitions/resourceRangeType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable."
+              }
+            },
+            "releaseNoteUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The release note uri. Has to be a valid URL."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Describes the properties of a gallery image definition."
+          }
+        },
+        "securityType": {
+          "type": "string",
+          "allowedValues": [
+            "ConfidentialVM",
+            "ConfidentialVMSupported",
+            "Standard",
+            "TrustedLaunch"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`."
+          }
+        },
+        "isAcceleratedNetworkSupported": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify if the image supports accelerated networking. Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types. Defaults to true."
+          }
+        },
+        "isHibernateSupported": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifiy if the image supports hibernation."
+          }
+        },
+        "offer": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `identifier.offer` instead."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `identifier.publisher` instead."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `identifier.sku` instead."
+          }
+        },
+        "osType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `osState` instead."
+          }
+        },
+        "hyperVGeneration": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `hyperVGeneration` instead."
+          }
+        },
+        "osState": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `osType` instead."
+          }
+        },
+        "minRecommendedMemory": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.memory.min` instead."
+          }
+        },
+        "maxRecommendedMemory": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.memory.max` instead."
+          }
+        },
+        "minRecommendedvCPUs": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.vCPUs.min` instead."
+          }
+        },
+        "maxRecommendedvCPUs": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.vCPUs.max` instead."
+          }
+        }
+      }
+    },
+    "resourceRangeType": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum number of the resource."
+          }
+        },
+        "max": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum number of the resource."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -118,6 +431,13 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "description": {
@@ -136,6 +456,9 @@
     },
     "images": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/imageType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Images to create."
@@ -143,12 +466,14 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -157,14 +482,8 @@
       "type": "object",
       "nullable": true,
       "metadata": {
+        "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags for all resources."
-      }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "sharingProfile": {
@@ -319,8 +638,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "9175012718933553578"
+              "version": "0.28.1.47646",
+              "templateHash": "1567876913625134678"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -591,7 +910,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'location'), parameters('location'))]"
           },
           "name": {
             "value": "[coalesce(parameters('images'), createArray())[copyIndex()].name]"
@@ -600,67 +919,67 @@
             "value": "[parameters('name')]"
           },
           "osType": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].osType]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].properties.osType]"
           },
           "osState": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'osState')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'osState'), 'Generalized')]"
           },
           "publisher": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].publisher]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].properties.identifier.publisher]"
           },
           "offer": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].offer]"
+            "value": "[coalesce(coalesce(parameters('images'), createArray())[copyIndex()].properties.identifier.offer, coalesce(parameters('images'), createArray())[copyIndex()].offer)]"
           },
           "sku": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].sku]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].properties.identifier.sku]"
           },
           "minRecommendedvCPUs": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedvCPUs')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'vCPUs', 'min')]"
           },
           "maxRecommendedvCPUs": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedvCPUs')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'vCPUs', 'max')]"
           },
           "minRecommendedMemory": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedMemory')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'memory', 'min')]"
           },
           "maxRecommendedMemory": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedMemory')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'memory', 'min')]"
           },
           "hyperVGeneration": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'hyperVGeneration')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'hyperVGeneration')]"
           },
           "securityType": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'securityType')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'securityType'), 'Standard')]"
           },
           "isAcceleratedNetworkSupported": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'isAcceleratedNetworkSupported')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'isAcceleratedNetworkSupported'), true())]"
           },
           "description": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'description')]"
           },
           "eula": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'eula')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'eula')]"
           },
           "privacyStatementUri": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'privacyStatementUri')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'privacyStatementUri')]"
           },
           "releaseNoteUri": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'releaseNoteUri')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'releaseNoteUri')]"
           },
           "productName": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'productName')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'purchasePlan', 'product')]"
           },
           "planName": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'planName')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'purchasePlan', 'name')]"
           },
           "planPublisherName": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'planPublisherName')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'purchasePlan', 'publisher')]"
           },
           "endOfLife": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'endOfLife')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'endOfLife')]"
           },
           "excludedDiskTypes": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'excludedDiskTypes')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'disallowed', 'excludedDiskTypes')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -676,8 +995,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "7059991596058545894"
+              "version": "0.28.1.47646",
+              "templateHash": "5623163747199511447"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
