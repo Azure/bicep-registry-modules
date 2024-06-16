@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "5091884272484347334"
+      "templateHash": "15489134394059045578"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -55,14 +55,12 @@
               "Group",
               "User"
             ],
-            "nullable": true,
             "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
+              "description": "Required. The principal type of the assigned principal ID."
             }
           }
         }
-      },
-      "nullable": true
+      }
     },
     "networkAclsType": {
       "type": "object",
@@ -175,12 +173,6 @@
     "advancedOptionsType": {
       "type": "object",
       "properties": {
-        "solutionAdminRoleAssignments": {
-          "$ref": "#/definitions/userGroupRoleAssignmentType",
-          "metadata": {
-            "description": "Optional. Array of user or group role assignments to create."
-          }
-        },
         "virtualNetwork": {
           "$ref": "#/definitions/virtualNetworkType",
           "nullable": true,
@@ -281,6 +273,13 @@
         "description": "Optional. If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you."
       }
     },
+    "solutionAdministrators": {
+      "$ref": "#/definitions/userGroupRoleAssignmentType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of users or groups who are in charge of the solution."
+      }
+    },
     "advancedOptions": {
       "$ref": "#/definitions/advancedOptionsType",
       "nullable": true,
@@ -300,11 +299,11 @@
       },
       {
         "name": "kvRoleAssignments",
-        "count": "[length(if(empty(tryGet(parameters('advancedOptions'), 'solutionAdminRoleAssignments')), createArray(), parameters('advancedOptions').solutionAdminRoleAssignments))]",
+        "count": "[length(if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators')))]",
         "input": {
           "roleDefinitionIdOrName": "Key Vault Administrator",
-          "principalId": "[if(empty(tryGet(parameters('advancedOptions'), 'solutionAdminRoleAssignments')), createArray(), parameters('advancedOptions').solutionAdminRoleAssignments)[copyIndex('kvRoleAssignments')].principalId]",
-          "principalType": "[if(empty(tryGet(parameters('advancedOptions'), 'solutionAdminRoleAssignments')), createArray(), parameters('advancedOptions').solutionAdminRoleAssignments)[copyIndex('kvRoleAssignments')].principalType]",
+          "principalId": "[if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators'))[copyIndex('kvRoleAssignments')].principalId]",
+          "principalType": "[if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators'))[copyIndex('kvRoleAssignments')].principalType]",
           "description": "Perform all data plane operations on a key vault and all objects in it, including certificates, keys, and secrets."
         }
       }

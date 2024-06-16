@@ -29,6 +29,9 @@ param logAnalyticsWorkspaceResourceId string?
 @description('Optional. If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you.')
 param keyVaultResourceId string?
 
+@description('Optional. Array of users or groups who are in charge of the solution.')
+param solutionAdministrators userGroupRoleAssignmentType?
+
 @description('Optional. Additional options that can affect some parts of the solution and how they are configured.')
 param advancedOptions advancedOptionsType?
 
@@ -98,9 +101,7 @@ var kvIpRules = [
 ]
 
 var kvRoleAssignments = [
-  for (item, i) in empty(advancedOptions.?solutionAdminRoleAssignments)
-    ? []
-    : advancedOptions!.solutionAdminRoleAssignments!: {
+  for (item, i) in empty(solutionAdministrators) ? [] : solutionAdministrators!: {
     roleDefinitionIdOrName: 'Key Vault Administrator'
     principalId: item.principalId
     principalType: item.principalType
@@ -578,9 +579,9 @@ type userGroupRoleAssignmentType = {
   @description('Required. The principal ID of the principal (user/group) to assign the role to.')
   principalId: string
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('Group' | 'User')?
-}[]?
+  @description('Required. The principal type of the assigned principal ID.')
+  principalType: ('Group' | 'User')
+}[]
 
 type networkAclsType = {
   @description('Optional. Sets the public IP addresses or ranges that are allowed to access resources in the solution.')
@@ -630,9 +631,6 @@ type databricksType = {
 }
 
 type advancedOptionsType = {
-  @description('Optional. Array of user or group role assignments to create.')
-  solutionAdminRoleAssignments: userGroupRoleAssignmentType
-
   @description('Optional. You can use this parameter to integrate the solution with an existing Azure Virtual Network if the \'virtualNetworkResourceId\' parameter is not empty.')
   virtualNetwork: virtualNetworkType?
 

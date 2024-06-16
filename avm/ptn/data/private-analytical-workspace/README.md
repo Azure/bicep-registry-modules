@@ -268,6 +268,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 | [`location`](#parameter-location) | string | Location for all Resources in the solution. |
 | [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | If you already have a Log Analytics Workspace that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Log Analytics Workspace for you. |
+| [`solutionAdministrators`](#parameter-solutionadministrators) | array | Array of users or groups who are in charge of the solution. |
 | [`tags`](#parameter-tags) | object | Tags for all Resources in the solution. |
 | [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can specify it here. If you do not use this option, this module will make a new VNET for you. |
 
@@ -293,7 +294,6 @@ Additional options that can affect some parts of the solution and how they are c
 | [`keyVault`](#parameter-advancedoptionskeyvault) | object | This parameter allows you to specify additional settings for Azure Key Vault if the 'keyVaultResourceId' parameter is empty. |
 | [`logAnalyticsWorkspace`](#parameter-advancedoptionsloganalyticsworkspace) | object | This parameter allows you to specify additional settings for Azure Log Analytics Workspace if the 'logAnalyticsWorkspaceResourceId' parameter is empty. |
 | [`networkAcls`](#parameter-advancedoptionsnetworkacls) | object | Networks Access Control Lists. This value has public IP addresses or ranges that are allowed to access resources in the solution. |
-| [`solutionAdminRoleAssignments`](#parameter-advancedoptionssolutionadminroleassignments) | array | Array of user or group role assignments to create. |
 | [`virtualNetwork`](#parameter-advancedoptionsvirtualnetwork) | object | You can use this parameter to integrate the solution with an existing Azure Virtual Network if the 'virtualNetworkResourceId' parameter is not empty. |
 
 ### Parameter: `advancedOptions.databricks`
@@ -424,46 +424,6 @@ Sets the public IP addresses or ranges that are allowed to access resources in t
 - Required: No
 - Type: array
 
-### Parameter: `advancedOptions.solutionAdminRoleAssignments`
-
-Array of user or group role assignments to create.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-advancedoptionssolutionadminroleassignmentsprincipalid) | string | The principal ID of the principal (user/group) to assign the role to. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalType`](#parameter-advancedoptionssolutionadminroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
-
-### Parameter: `advancedOptions.solutionAdminRoleAssignments.principalId`
-
-The principal ID of the principal (user/group) to assign the role to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `advancedOptions.solutionAdminRoleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Group'
-    'User'
-  ]
-  ```
-
 ### Parameter: `advancedOptions.virtualNetwork`
 
 You can use this parameter to integrate the solution with an existing Azure Virtual Network if the 'virtualNetworkResourceId' parameter is not empty.
@@ -557,6 +517,41 @@ If you already have a Log Analytics Workspace that you want to use with the solu
 
 - Required: No
 - Type: string
+
+### Parameter: `solutionAdministrators`
+
+Array of users or groups who are in charge of the solution.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-solutionadministratorsprincipalid) | string | The principal ID of the principal (user/group) to assign the role to. |
+| [`principalType`](#parameter-solutionadministratorsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `solutionAdministrators.principalId`
+
+The principal ID of the principal (user/group) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `solutionAdministrators.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'User'
+  ]
+  ```
 
 ### Parameter: `tags`
 
