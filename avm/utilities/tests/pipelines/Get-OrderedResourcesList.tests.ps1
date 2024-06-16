@@ -3,9 +3,13 @@
     [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.FullName
 )
 
-. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'helper' 'Get-OrderedResourcesList.ps1')
+$script:repoRootPath = $repoRootPath
 
 Describe 'Test sequence ordering' {
+
+    BeforeEach {
+        . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'helper' 'Get-OrderedResourcesList.ps1')
+    }
 
     It 'Remove first sequence should be as expected' {
 

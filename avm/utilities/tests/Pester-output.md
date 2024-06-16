@@ -18,9 +18,9 @@ No tests failed.
 
 | Name | Source |
 | :-- | :-- |
-| Test sequence ordering / **Remove first sequence should be as expected** | <code>[Get-OrderedResourcesList.tests.ps1:10](https://github.com/C:\dev\ip\bicep-registry-modules\fork-AlexanderSehr/blob/users/alsehr/pesterCiTests/avm\utilities\tests\pipelines\Get-OrderedResourcesList.tests.ps1#L10)</code> |
-| Test sequence ordering / **Remove last sequence should be as expected** | <code>[Get-OrderedResourcesList.tests.ps1:77](https://github.com/C:\dev\ip\bicep-registry-modules\fork-AlexanderSehr/blob/users/alsehr/pesterCiTests/avm\utilities\tests\pipelines\Get-OrderedResourcesList.tests.ps1#L77)</code> |
-| Test sequence ordering / **Remove sequence should be as expected if both first & last priorities are provided** | <code>[Get-OrderedResourcesList.tests.ps1:146](https://github.com/C:\dev\ip\bicep-registry-modules\fork-AlexanderSehr/blob/users/alsehr/pesterCiTests/avm\utilities\tests\pipelines\Get-OrderedResourcesList.tests.ps1#L146)</code> |
+| Test sequence ordering / **Remove first sequence should be as expected** | <code>[Get-OrderedResourcesList.tests.ps1:14](https://github.com/C:\dev\ip\bicep-registry-modules\Upstream-Azure/blob/users/alsehr/pesterCiTests/avm\utilities\tests\pipelines\Get-OrderedResourcesList.tests.ps1#L14)</code> |
+| Test sequence ordering / **Remove last sequence should be as expected** | <code>[Get-OrderedResourcesList.tests.ps1:81](https://github.com/C:\dev\ip\bicep-registry-modules\Upstream-Azure/blob/users/alsehr/pesterCiTests/avm\utilities\tests\pipelines\Get-OrderedResourcesList.tests.ps1#L81)</code> |
+| Test sequence ordering / **Remove sequence should be as expected if both first & last priorities are provided** | <code>[Get-OrderedResourcesList.tests.ps1:150](https://github.com/C:\dev\ip\bicep-registry-modules\Upstream-Azure/blob/users/alsehr/pesterCiTests/avm\utilities\tests\pipelines\Get-OrderedResourcesList.tests.ps1#L150)</code> |
 
 </details>
 
