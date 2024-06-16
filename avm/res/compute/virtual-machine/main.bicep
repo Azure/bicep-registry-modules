@@ -132,7 +132,7 @@ param backupPolicyName string = 'DefaultPolicy'
 param autoShutdownConfig object = {}
 
 @description('Optional. The resource Id of a maintenance configuration for this VM.')
-param maintenanceConfigurationId string = ''
+param maintenanceConfigurationResourceId string = ''
 
 // Child resources
 @description('Optional. Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine.')
@@ -610,11 +610,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   ]
 }
 
-resource vm_configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(maintenanceConfigurationId)) {
+resource vm_configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(maintenanceConfigurationResourceId)) {
   name: '${vm.name}assignment'
   location: location
   properties: {
-    maintenanceConfigurationId: maintenanceConfigurationId
+    maintenanceConfigurationId: maintenanceConfigurationResourceId
     resourceId: vm.id
   }
   scope: vm

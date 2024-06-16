@@ -87,7 +87,6 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
         ]
       }
     }
-    // configurationType: 'Regular'
   }
 }
 

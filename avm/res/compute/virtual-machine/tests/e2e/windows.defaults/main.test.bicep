@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
       adminPassword: password
       patchMode: 'AutomaticByPlatform'
       bypassPlatformSafetyChecksOnUserSchedule: true
-      maintenanceConfigurationId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
     }
   }
 ]

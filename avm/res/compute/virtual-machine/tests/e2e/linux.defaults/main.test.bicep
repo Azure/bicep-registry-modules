@@ -95,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
       disablePasswordAuthentication: true
       patchMode: 'AutomaticByPlatform'
       bypassPlatformSafetyChecksOnUserSchedule: true
-      maintenanceConfigurationId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       publicKeys: [
         {
           keyData: nestedDependencies.outputs.SSHKeyPublicKey

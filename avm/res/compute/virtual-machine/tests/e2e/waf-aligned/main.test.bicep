@@ -199,7 +199,7 @@ module testDeployment '../../../main.bicep' = [
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
       bypassPlatformSafetyChecksOnUserSchedule: true
-      maintenanceConfigurationId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       encryptionAtHost: false
       extensionAntiMalwareConfig: {
         enabled: true
