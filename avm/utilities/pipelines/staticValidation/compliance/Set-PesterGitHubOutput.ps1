@@ -136,7 +136,7 @@ function Set-PesterGitHubOutput {
       '| Name | Error | Source |',
       '| :-- | :-- | :-- |'
     )
-    foreach ($failedTest in ($failedTests | Sort-Object -Property { $PSItem.ExpandedName })) {
+    foreach ($failedTest in ($failedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName })) {
 
       $intermediateNameElements = $failedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $failedTest.ExpandedName
@@ -190,7 +190,7 @@ function Set-PesterGitHubOutput {
       '| Name | Source |',
       '| :-- | :-- |'
     )
-    foreach ($passedTest in ($passedTests | Sort-Object -Property { $PSItem.ExpandedName }) ) {
+    foreach ($passedTest in ($passedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
 
       $intermediateNameElements = $passedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $passedTest.ExpandedName
@@ -242,7 +242,7 @@ function Set-PesterGitHubOutput {
       '| Name | Reason | Source |',
       '| :-- | :-- | :-- |'
     )
-    foreach ($skippedTest in ($skippedTests | Sort-Object -Property { $PSItem.ExpandedName }) ) {
+    foreach ($skippedTest in ($skippedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
 
       $intermediateNameElements = $skippedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $skippedTest.ExpandedName
@@ -296,7 +296,7 @@ function Set-PesterGitHubOutput {
       '| Name | Warning | Source |',
       '| :-- | :-- | :-- |'
     )
-    foreach ($test in ($testsWithWarnings | Sort-Object -Property { $PSItem.ExpandedName }) ) {
+    foreach ($test in ($testsWithWarnings | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
       foreach ($warning in $test.StandardOutput.Warning) {
         $intermediateNameElements = $test.Path
         $intermediateNameElements[-1] = '**{0}**' -f $test.ExpandedName

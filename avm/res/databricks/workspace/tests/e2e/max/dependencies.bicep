@@ -31,6 +31,9 @@ param logAnalyticsWorkspaceName string
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
+@description('Required. The object ID of the Databricks Enterprise Application. Required for Customer-Managed-Keys.')
+param databricksApplicationObjectId string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
@@ -94,7 +97,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
   scope: keyVault::key
   properties: {
-    principalId: '711330f9-cfad-4b10-a462-d82faa92027d' // AzureDatabricks Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: databricksApplicationObjectId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '12338af0-0e69-4776-bea7-57ae8d297424'

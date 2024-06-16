@@ -90,8 +90,10 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Sql/managedInstances',
             'Microsoft.MachineLearningServices/workspaces',
             'Microsoft.Compute/virtualMachines',
+            'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
             'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
+            'Microsoft.Databricks/workspaces'
             'Microsoft.Resources/resourceGroups'
         )
 
@@ -122,6 +124,11 @@ function Initialize-DeploymentRemoval {
         #             '<resourceType02>',
         #             '<resourceType03>'
         #         )
+        #         $RemoveLastSequence += @(
+        #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
+        #             '<resourceType02>',
+        #             '<resourceType03>'
+        #         )
         #         break
         #     }
         # }
@@ -129,11 +136,11 @@ function Initialize-DeploymentRemoval {
         if ($PurgeTestResources) {
             # Resources
             $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceIds | Sort-Object -Culture 'en-US' -Unique)
 
             # Resource groups
             $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Culture 'en-US' -Unique)
         }
 
         # Invoke removal
