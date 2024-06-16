@@ -255,7 +255,7 @@ function Get-DeploymentTargetResourceList {
     } while ($searchRetryCount -le $searchRetryLimit)
 
     if (-not $resourcesToRemove) {
-        Write-Warning "No deployment target resources found for [$name]"
+        Write-Warning ('No deployment target resources found for [{0}]' -f ($DeploymentNames -join ', '))
         return @()
     }
 
