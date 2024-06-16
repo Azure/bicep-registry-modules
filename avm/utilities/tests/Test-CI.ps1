@@ -10,10 +10,7 @@ function Test-CI {
         [string] $BranchName = (git branch --show-current),
 
         [Parameter()]
-        [string] $TestFile = '.*',
-
-        [Parameter()]
-        [string] $TestCase # TODO: Add support
+        [string] $TestFile = '.*'
     )
 
     # Load used functions

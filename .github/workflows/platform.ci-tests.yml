@@ -8,11 +8,6 @@ on:
         description: "The regex of the test file(s) to run"
         required: false
         default: '.*'
-      testCase:
-        type: string
-        description: "The test case to run"
-        required: false
-        default: ''
   schedule:
     - cron: "0 0 * * Sun" # Every Sunday
 
@@ -69,7 +64,6 @@ jobs:
               RepoRootPath = $env:GITHUB_WORKSPACE
               BranchName   = $env:GITHUB_REF
               TestFile     = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).testFile }}'
-              TestCase     = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).testCase }}'
             }
 
             Write-Verbose "Invoke task with" -Verbose
