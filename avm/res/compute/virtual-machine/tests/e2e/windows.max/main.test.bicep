@@ -49,7 +49,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
-    backupManagementServiceApplicationObjectId: 'be766fc3-eac4-4627-b8f5-298e35c8aea4' // Tenant-specific Backup Management Service Enterprise Application Object Id
+    backupManagementServiceApplicationObjectId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Tenant-specific Backup Management Service Enterprise Application Object Id
   }
 }
 
