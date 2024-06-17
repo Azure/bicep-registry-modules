@@ -139,18 +139,18 @@ var accountSasProperties = {
   signedProtocol: 'https'
 }
 
-resource #_namePrefix_#Telemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.hybridcompute-machine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '#_moduleVersion_#.0'
+      contentVersion: '0.0.0'
       resources: []
       outputs: {
         telemetry: {
           type: 'String'
-          value: 'For more information, see https://aka.ms/#_namePrefix_#/TelemetryInfo'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
@@ -199,7 +199,6 @@ module machine_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJ
       ? extensionDomainJoinConfig.enableAutomaticUpgrade
       : false
     settings: extensionDomainJoinConfig.settings
-    supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
     tags: extensionDomainJoinConfig.?tags ?? tags
     protectedSettings: {
       Password: extensionDomainJoinPassword
@@ -225,7 +224,6 @@ module machine_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extens
       ? extensionAntiMalwareConfig.enableAutomaticUpgrade
       : false
     settings: extensionAntiMalwareConfig.settings
-    supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }
   dependsOn: [
@@ -273,7 +271,6 @@ module machine_azureMonitorAgentExtension 'extension/main.bicep' = if (extension
         : ''
       GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
     }
-    supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
     tags: extensionMonitoringAgentConfig.?tags ?? tags
     protectedSettings: {
       workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
@@ -306,7 +303,6 @@ module machine_dependencyAgentExtension 'extension/main.bicep' = if (extensionDe
     settings: {
       enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA') ? extensionDependencyAgentConfig.enableAMA : true
     }
-    supressFailures: extensionDependencyAgentConfig.?supressFailures ?? false
     tags: extensionDependencyAgentConfig.?tags ?? tags
   }
   dependsOn: [
@@ -332,7 +328,6 @@ module machine_desiredStateConfigurationExtension 'extension/main.bicep' = if (e
       ? extensionDSCConfig.enableAutomaticUpgrade
       : false
     settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
-    supressFailures: extensionDSCConfig.?supressFailures ?? false
     tags: extensionDSCConfig.?tags ?? tags
     protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
   }
@@ -362,7 +357,6 @@ module machine_customScriptExtension 'extension/main.bicep' = if (extensionCusto
           : fileData.uri
       ]
     }
-    supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
     tags: extensionCustomScriptConfig.?tags ?? tags
     protectedSettings: extensionCustomScriptProtectedSetting
   }
@@ -394,7 +388,6 @@ module machine_azureGuestConfigurationExtension 'extension/main.bicep' = if (ext
     settings: contains(extensionGuestConfigurationExtension, 'settings')
       ? extensionGuestConfigurationExtension.settings
       : {}
-    supressFailures: extensionGuestConfigurationExtension.?supressFailures ?? false
     protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
     tags: extensionGuestConfigurationExtension.?tags ?? tags
   }
