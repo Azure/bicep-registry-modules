@@ -95,7 +95,7 @@ Describe 'Validate deployment' {
             # NOT Relevant for this test
             # $log.Sku | Should -Be 'PerGB2018'
             # $log.RetentionInDays | Should -Be 365
-            # $log.WorkspaceFeatures.DailyQuotaGb | Should -Be -1
+            # $log.WorkspaceCapping.DailyQuotaGb | Should -Be -1
         }
     }
 }
