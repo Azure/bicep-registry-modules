@@ -62,7 +62,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using defaults with provided existing Azure Key Vault](#example-2-using-defaults-with-provided-existing-azure-key-vault)
 - [Using defaults with provided existing Azure Log Analytics Workspace](#example-3-using-defaults-with-provided-existing-azure-log-analytics-workspace)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -200,7 +201,125 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawmax001'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        createMode: 'default'
+        enablePurgeProtection: true
+        enableSoftDelete: false
+        sku: 'standard'
+        softDeleteRetentionInDays: 7
+      }
+      logAnalyticsWorkspace: {
+        dailyQuotaGb: 1
+        dataRetention: 12
+      }
+      networkAcls: {
+        ipRules: [
+          '192.168.1.1/32'
+        ]
+      }
+    }
+    enableDatabricks: true
+    enableTelemetry: true
+    location: '<location>'
+    solutionAdministrators: [
+      {
+        principalId: '053a6e39-3f31-4dc3-b17d-164f5fe7f834'
+        principalType: 'Group'
+      }
+    ]
+    tags: {
+      'Cost Center': '2345-324'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawmax001"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "createMode": "default",
+          "enablePurgeProtection": true,
+          "enableSoftDelete": false,
+          "sku": "standard",
+          "softDeleteRetentionInDays": 7
+        },
+        "logAnalyticsWorkspace": {
+          "dailyQuotaGb": 1,
+          "dataRetention": 12
+        },
+        "networkAcls": {
+          "ipRules": [
+            "192.168.1.1/32"
+          ]
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionAdministrators": {
+      "value": [
+        {
+          "principalId": "053a6e39-3f31-4dc3-b17d-164f5fe7f834",
+          "principalType": "Group"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Cost Center": "2345-324",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
