@@ -227,7 +227,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
       logAnalyticsWorkspace: {
         dailyQuotaGb: 1
-        dataRetention: 12
+        dataRetention: 35
       }
       networkAcls: {
         ipRules: [
@@ -280,7 +280,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         },
         "logAnalyticsWorkspace": {
           "dailyQuotaGb": 1,
-          "dataRetention": 12
+          "dataRetention": 35
         },
         "networkAcls": {
           "ipRules": [

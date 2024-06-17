@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
       //keyVaultResourceId: null
       advancedOptions: {
         networkAcls: { ipRules: ['192.168.1.1/32'] }
-        logAnalyticsWorkspace: { dataRetention: 12, dailyQuotaGb: 1 }
+        logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
         keyVault: {
           createMode: 'default'
           sku: 'standard'
