@@ -1,5 +1,5 @@
 metadata name = 'Hybrid Compute Machines'
-metadata description = 'This module deploys a Arc machine with one or multiple NICs and optionally one or multiple public IPs.'
+metadata description = 'This module deploys a Arc Machines for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Arc machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
@@ -18,59 +18,31 @@ param parentClusterResourceId string = ''
 param vmId string = ''
 
 @description('Optional. The Public Key that the client provides to be used during initial resource onboarding.')
-param clientPublicKye string = ''
+param clientPublicKey string = ''
+
+@description('Optional. VM guest patching orchestration mode. \'AutomaticByOS\' & \'Manual\' are for Windows only, \'ImageDefault\' for Linux only.')
+@allowed([
+  'AutomaticByPlatform'
+  'AutomaticByOS'
+  'Manual'
+  'ImageDefault'
+  ''
+])
+param patchMode string = ''
+
+@description('Optional. VM guest patching assessment mode. Set it to \'AutomaticByPlatform\' to enable automatically check for updates every 24 hours.')
+@allowed([
+  'AutomaticByPlatform'
+  'ImageDefault'
+])
+param patchAssessmentMode string = 'ImageDefault'
+
+@description('Optional. Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot.')
+param enableHotpatching bool = false
 
 // Child resources
-@description('Optional. Required if name is specified. Password of the user specified in user parameter.')
-@secure()
-param extensionDomainJoinPassword string = ''
-
-@description('Optional. The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDomainJoinConfig object = {
-  enabled: false
-}
-
-@description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionAntiMalwareConfig object = {
-  enabled: false
-}
-
-@description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionMonitoringAgentConfig object = {
-  enabled: false
-}
-
-@description('Optional. The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDependencyAgentConfig object = {
-  enabled: false
-}
-
-@description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDSCConfig object = {
-  enabled: false
-}
-
-@description('Optional. The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionCustomScriptConfig object = {
-  enabled: false
-  fileData: []
-}
-
-@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
-param extensionGuestConfigurationExtension object = {
-  enabled: false
-}
-
 @description('Optional. The guest configuration for the Arc machine. Needs the Guest Configuration extension to be enabled.')
 param guestConfiguration object = {}
-
-@description('Optional. An object that contains the extension specific protected settings.')
-@secure()
-param extensionCustomScriptProtectedSetting object = {}
-
-@description('Optional. An object that contains the extension specific protected settings.')
-@secure()
-param extensionGuestConfigurationExtensionProtectedSettings object = {}
 
 @description('Conditional. The chosen OS type.')
 @allowed([
@@ -93,17 +65,30 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Generated. Do not provide a value! This date value is used to generate a registration token.')
-param baseTime string = utcNow('u')
-
-@description('Optional. SAS token validity length to use to download files from storage accounts. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.')
-param sasTokenValidityLength string = 'PT8H'
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
+
+var linuxConfiguration = {
+  patchSettings: (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'ImageDefault')
+    ? {
+        patchMode: patchMode
+        assessmentMode: patchAssessmentMode
+      }
+    : null
+}
+
+var windowsConfiguration = {
+  patchSettings: (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'AutomaticByOS' || patchMode =~ 'Manual')
+    ? {
+        patchMode: patchMode
+        assessmentMode: patchAssessmentMode
+        enableHotpatching: enableHotpatching
+      }
+    : null
+}
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -129,14 +114,6 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'fb879df8-f326-4884-b1cf-06f3ad86be52'
   )
-}
-
-var accountSasProperties = {
-  signedServices: 'b'
-  signedPermission: 'r'
-  signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
-  signedResourceTypes: 'o'
-  signedProtocol: 'https'
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
@@ -166,9 +143,13 @@ resource machine 'Microsoft.HybridCompute/machines@2023-03-15-preview' = {
   tags: tags
   kind: kind
   properties: {
+    osProfile: {
+      windowsConfiguration: osType == 'Windows' ? windowsConfiguration : null
+      linuxConfiguration: osType == 'Linux' ? linuxConfiguration : null
+    }
     parentClusterResourceId: parentClusterResourceId
     vmId: vmId
-    clientPublicKey: clientPublicKye
+    clientPublicKey: clientPublicKey
     privateLinkScopeResourceId: privateLinkScopeResourceId
   }
 }
@@ -181,225 +162,10 @@ resource machine_configurationProfileAssignment 'Microsoft.Automanage/configurat
   scope: machine
 }
 
-module machine_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
-  params: {
-    arcMachineName: machine.name
-    name: 'DomainJoin'
-    location: location
-    publisher: 'Microsoft.Compute'
-    type: 'JsonADDomainExtension'
-    typeHandlerVersion: contains(extensionDomainJoinConfig, 'typeHandlerVersion')
-      ? extensionDomainJoinConfig.typeHandlerVersion
-      : '1.3'
-    autoUpgradeMinorVersion: contains(extensionDomainJoinConfig, 'autoUpgradeMinorVersion')
-      ? extensionDomainJoinConfig.autoUpgradeMinorVersion
-      : true
-    enableAutomaticUpgrade: contains(extensionDomainJoinConfig, 'enableAutomaticUpgrade')
-      ? extensionDomainJoinConfig.enableAutomaticUpgrade
-      : false
-    settings: extensionDomainJoinConfig.settings
-    tags: extensionDomainJoinConfig.?tags ?? tags
-    protectedSettings: {
-      Password: extensionDomainJoinPassword
-    }
-  }
-}
-
-module machine_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAntiMalwareConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
-  params: {
-    arcMachineName: machine.name
-    name: 'MicrosoftAntiMalware'
-    location: location
-    publisher: 'Microsoft.Azure.Security'
-    type: 'IaaSAntimalware'
-    typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion')
-      ? extensionAntiMalwareConfig.typeHandlerVersion
-      : '1.3'
-    autoUpgradeMinorVersion: contains(extensionAntiMalwareConfig, 'autoUpgradeMinorVersion')
-      ? extensionAntiMalwareConfig.autoUpgradeMinorVersion
-      : true
-    enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade')
-      ? extensionAntiMalwareConfig.enableAutomaticUpgrade
-      : false
-    settings: extensionAntiMalwareConfig.settings
-    tags: extensionAntiMalwareConfig.?tags ?? tags
-  }
-  dependsOn: [
-    machine_domainJoinExtension
-  ]
-}
-
-resource machine_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
-  name: last(split(
-    (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-      ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-      : 'law'),
-    '/'
-  ))!
-  scope: az.resourceGroup(
-    split(
-      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : '//'),
-      '/'
-    )[2],
-    split(
-      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : '////'),
-      '/'
-    )[4]
-  )
-}
-
-module machine_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
-  params: {
-    arcMachineName: machine.name
-    name: 'AzureMonitorAgent'
-    location: location
-    publisher: 'Microsoft.Azure.Monitor'
-    type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
-    autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
-    enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
-    settings: {
-      workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? machine_logAnalyticsWorkspace.properties.customerId
-        : ''
-      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
-    }
-    tags: extensionMonitoringAgentConfig.?tags ?? tags
-    protectedSettings: {
-      workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? machine_logAnalyticsWorkspace.listKeys().primarySharedKey
-        : ''
-    }
-  }
-  dependsOn: [
-    machine_microsoftAntiMalwareExtension
-  ]
-}
-
-module machine_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
-  params: {
-    arcMachineName: machine.name
-    name: 'DependencyAgent'
-    location: location
-    publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-    type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-    typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
-      ? extensionDependencyAgentConfig.typeHandlerVersion
-      : '9.10'
-    autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
-      ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
-      : true
-    enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
-      ? extensionDependencyAgentConfig.enableAutomaticUpgrade
-      : true
-    settings: {
-      enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA') ? extensionDependencyAgentConfig.enableAMA : true
-    }
-    tags: extensionDependencyAgentConfig.?tags ?? tags
-  }
-  dependsOn: [
-    machine_azureMonitorAgentExtension
-  ]
-}
-
-module machine_desiredStateConfigurationExtension 'extension/main.bicep' = if (extensionDSCConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
-  params: {
-    arcMachineName: machine.name
-    name: 'DesiredStateConfiguration'
-    location: location
-    publisher: 'Microsoft.Powershell'
-    type: 'DSC'
-    typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion')
-      ? extensionDSCConfig.typeHandlerVersion
-      : '2.77'
-    autoUpgradeMinorVersion: contains(extensionDSCConfig, 'autoUpgradeMinorVersion')
-      ? extensionDSCConfig.autoUpgradeMinorVersion
-      : true
-    enableAutomaticUpgrade: contains(extensionDSCConfig, 'enableAutomaticUpgrade')
-      ? extensionDSCConfig.enableAutomaticUpgrade
-      : false
-    settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
-    tags: extensionDSCConfig.?tags ?? tags
-    protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
-  }
-}
-
-module machine_customScriptExtension 'extension/main.bicep' = if (extensionCustomScriptConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
-  params: {
-    arcMachineName: machine.name
-    name: 'CustomScriptExtension'
-    location: location
-    publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
-    type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
-    typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion')
-      ? extensionCustomScriptConfig.typeHandlerVersion
-      : (osType == 'Windows' ? '1.10' : '2.1')
-    autoUpgradeMinorVersion: contains(extensionCustomScriptConfig, 'autoUpgradeMinorVersion')
-      ? extensionCustomScriptConfig.autoUpgradeMinorVersion
-      : true
-    enableAutomaticUpgrade: contains(extensionCustomScriptConfig, 'enableAutomaticUpgrade')
-      ? extensionCustomScriptConfig.enableAutomaticUpgrade
-      : false
-    settings: {
-      fileUris: [
-        for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
-          ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
-          : fileData.uri
-      ]
-    }
-    tags: extensionCustomScriptConfig.?tags ?? tags
-    protectedSettings: extensionCustomScriptProtectedSetting
-  }
-  dependsOn: [
-    machine_desiredStateConfigurationExtension
-  ]
-}
-
-module machine_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensionGuestConfigurationExtension.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
-  params: {
-    arcMachineName: machine.name
-    name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
-    location: location
-    publisher: 'Microsoft.GuestConfiguration'
-    type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
-    typeHandlerVersion: contains(extensionGuestConfigurationExtension, 'typeHandlerVersion')
-      ? extensionGuestConfigurationExtension.typeHandlerVersion
-      : (osType == 'Windows' ? '1.0' : '1.0')
-    autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion')
-      ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion
-      : true
-    enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade')
-      ? extensionGuestConfigurationExtension.enableAutomaticUpgrade
-      : true
-    forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag')
-      ? extensionGuestConfigurationExtension.forceUpdateTag
-      : '1.0'
-    settings: contains(extensionGuestConfigurationExtension, 'settings')
-      ? extensionGuestConfigurationExtension.settings
-      : {}
-    protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
-    tags: extensionGuestConfigurationExtension.?tags ?? tags
-  }
-  dependsOn: []
-}
-
 resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
   name: 'AzureWindowsBaseline'
   scope: machine
-  dependsOn: [
-    machine_azureGuestConfigurationExtension
-  ]
+  dependsOn: []
   location: location
   properties: {
     guestConfiguration: guestConfiguration

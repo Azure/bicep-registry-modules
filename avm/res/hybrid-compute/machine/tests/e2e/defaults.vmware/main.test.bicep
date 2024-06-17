@@ -1,14 +1,14 @@
 targetScope = 'subscription'
 
-metadata name = 'Creates an Arc Machine with maximum configurations'
-metadata description = 'This instance deploys the module with the full set of required parameters.'
+metadata name = 'Creates only an Arc Machine'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Required. The kind of machine to deploy.')
-param kind string = 'HCI'
+param kind string = 'Vmware'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -46,33 +46,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       kind: kind
-      configurationProfile: 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
-      patchAssessmentMode: 'AutomaticByPlatform'
-      patchMode: 'AutomaticByPlatform'
-      guestConfiguration: {
-        name: 'AzureWindowsBaseline'
-        version: '1.*'
-        assignmentType: 'ApplyAndMonitor'
-        configurationParameter: [
-          {
-            name: 'Minimum Password Length;ExpectedValue'
-            value: '16'
-          }
-          {
-            name: 'Minimum Password Length;RemediateValue'
-            value: '16'
-          }
-          {
-            name: 'Maximum Password Age;ExpectedValue'
-            value: '75'
-          }
-          {
-            name: 'Maximum Password Age;RemediateValue'
-            value: '75'
-          }
-        ]
-      }
-      osType: 'Windows'
     }
   }
 ]
