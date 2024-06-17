@@ -33,9 +33,6 @@ param settings object = {}
 @secure()
 param protectedSettings object = {}
 
-@description('Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false.')
-param supressFailures bool = false
-
 @description('Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available.')
 param enableAutomaticUpgrade bool
 

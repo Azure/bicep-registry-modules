@@ -8,6 +8,18 @@ param name string
 @description('Required. Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware')
 param kind string
 
+@description('Conditional. The resource ID of an Arc Private Link Scope which which to associate this machine. Required if you are using Private Link for Arc and your Arc Machine will resolve a Private Endpoint for connectivity to Azure.')
+param privateLinkScopeResourceId string = ''
+
+@description('Optional. Parent cluster resource ID (Azure Stack HCI).')
+param parentClusterResourceId string = ''
+
+@description('Optional. The GUID of the on-premises virtual machine from your hypervisor.')
+param vmId string = ''
+
+@description('Optional. The Public Key that the client provides to be used during initial resource onboarding.')
+param clientPublicKye string = ''
+
 // Child resources
 @description('Optional. Required if name is specified. Password of the user specified in user parameter.')
 @secure()
@@ -153,7 +165,12 @@ resource machine 'Microsoft.HybridCompute/machines@2023-03-15-preview' = {
   }
   tags: tags
   kind: kind
-  properties: {}
+  properties: {
+    parentClusterResourceId: parentClusterResourceId
+    vmId: vmId
+    clientPublicKey: clientPublicKye
+    privateLinkScopeResourceId: privateLinkScopeResourceId
+  }
 }
 
 resource machine_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' = if (!empty(configurationProfile)) {
