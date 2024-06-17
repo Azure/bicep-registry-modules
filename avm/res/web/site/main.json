@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1552831654975933298"
+      "templateHash": "1115653198241027677"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -466,6 +466,7 @@
         "functionapp,linux",
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
+        "functionapp,linux,container",
         "app,linux",
         "app",
         "linux,api",
@@ -948,7 +949,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "3871470071443638506"
+              "templateHash": "4955490965342210207"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -968,6 +969,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "functionapp,linux,container",
                 "app,linux",
                 "app",
                 "linux,api",
@@ -1103,7 +1105,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11565204524014149487"
+              "templateHash": "8625962477180026020"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1123,6 +1125,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "functionapp,linux,container",
                 "app,linux",
                 "app",
                 "linux,api",
@@ -1327,7 +1330,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11477349541306921578"
+              "templateHash": "15715280445379891193"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -1793,6 +1796,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "functionapp,linux,container",
                 "app,linux",
                 "app",
                 "linux,api",
@@ -2253,7 +2257,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "13436161316184945032"
+                      "templateHash": "7468244783040054160"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2279,6 +2283,7 @@
                         "functionapp,linux",
                         "functionapp,workflowapp",
                         "functionapp,workflowapp,linux",
+                        "functionapp,linux,container",
                         "app,linux",
                         "app",
                         "linux,api",
@@ -2427,7 +2432,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "9218575462407672352"
+                      "templateHash": "10212981101211605812"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2453,6 +2458,7 @@
                         "functionapp,linux",
                         "functionapp,workflowapp",
                         "functionapp,workflowapp,linux",
+                        "functionapp,linux,container",
                         "app,linux",
                         "app",
                         "linux,api",
