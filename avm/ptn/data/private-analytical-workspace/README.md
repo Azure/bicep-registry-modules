@@ -238,12 +238,6 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     enableDatabricks: true
     enableTelemetry: true
     location: '<location>'
-    solutionAdministrators: [
-      {
-        principalId: '053a6e39-3f31-4dc3-b17d-164f5fe7f834'
-        principalType: 'Group'
-      }
-    ]
     tags: {
       'Cost Center': '2345-324'
       Owner: 'Contoso'
@@ -297,14 +291,6 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     },
     "location": {
       "value": "<location>"
-    },
-    "solutionAdministrators": {
-      "value": [
-        {
-          "principalId": "053a6e39-3f31-4dc3-b17d-164f5fe7f834",
-          "principalType": "Group"
-        }
-      ]
     },
     "tags": {
       "value": {

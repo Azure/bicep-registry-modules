@@ -44,12 +44,12 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      solutionAdministrators: [
-        {
-          principalId: '053a6e39-3f31-4dc3-b17d-164f5fe7f834'
-          principalType: 'Group'
-        }
-      ]
+      //solutionAdministrators: [
+      //  {
+      //    principalId: '053a6e39-3f31-4dc3-b17d-164f5fe7f834'
+      //    principalType: 'Group'
+      //  }
+      //]
       tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
       enableTelemetry: true
       enableDatabricks: true
