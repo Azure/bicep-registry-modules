@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "9815061252044383943"
+      "version": "0.28.1.47646",
+      "templateHash": "12551745482202425473"
     },
     "name": "Azure Virtual Desktop Scaling Plan",
     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -231,6 +231,10 @@
     "hostPoolType": {
       "type": "string",
       "defaultValue": "Pooled",
+      "allowedValues": [
+        "Personal",
+        "Pooled"
+      ],
       "metadata": {
         "description": "Optional. Host pool type of the Scaling Plan."
       }
@@ -342,7 +346,7 @@
     },
     "scalingPlan": {
       "type": "Microsoft.DesktopVirtualization/scalingPlans",
-      "apiVersion": "2022-09-09",
+      "apiVersion": "2023-09-05",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -452,7 +456,7 @@
       "metadata": {
         "description": "The location of the Scaling Plan."
       },
-      "value": "[reference('scalingPlan', '2022-09-09', 'full').location]"
+      "value": "[reference('scalingPlan', '2023-09-05', 'full').location]"
     }
   }
 }
