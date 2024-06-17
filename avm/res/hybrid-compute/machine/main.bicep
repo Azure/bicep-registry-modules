@@ -5,13 +5,10 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the Arc machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
 
-@description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
-param managedIdentities managedIdentitiesType
+@description('Required. Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware')
+param kind string
 
 // Child resources
-@description('Optional. Specifies whether extension operations should be allowed on the Arc machine. This may only be set to False when no extensions are present on the Arc machine.')
-param allowExtensionOperations bool = true
-
 @description('Optional. Required if name is specified. Password of the user specified in user parameter.')
 @secure()
 param extensionDomainJoinPassword string = ''
@@ -130,28 +127,32 @@ var accountSasProperties = {
   signedProtocol: 'https'
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource #_namePrefix_#Telemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.hybridcompute-machine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
+      contentVersion: '#_moduleVersion_#.0'
       resources: []
       outputs: {
         telemetry: {
           type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          value: 'For more information, see https://aka.ms/#_namePrefix_#/TelemetryInfo'
         }
       }
     }
   }
 }
 
-resource machine 'Microsoft.HybridCompute/machines@2022-12-27' = {
+resource machine 'Microsoft.HybridCompute/machines@2023-03-15-preview' = {
   name: name
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   tags: tags
+  kind: kind
   properties: {}
 }
 

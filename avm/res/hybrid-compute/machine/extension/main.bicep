@@ -60,7 +60,6 @@ resource extension 'Microsoft.HybridCompute/machines/extensions@2022-12-27' = {
     forceUpdateTag: !empty(forceUpdateTag) ? forceUpdateTag : null
     settings: !empty(settings) ? settings : null
     protectedSettings: !empty(protectedSettings) ? protectedSettings : null
-    suppressFailures: supressFailures
   }
 }
 
