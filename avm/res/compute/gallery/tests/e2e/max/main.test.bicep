@@ -75,6 +75,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       images: [
         {
+          name: '${namePrefix}-az-imgd-ws-001'
           properties: {
             hyperVGeneration: 'V1'
             identifier: {
@@ -82,9 +83,9 @@ module testDeployment '../../../main.bicep' = [
               offer: 'WindowsServer'
               sku: '2022-datacenter-azure-edition'
             }
-            osState: 'Windows'
+            osType: 'Windows'
+            eula: 'test Eula'
           }
-          name: '${namePrefix}-az-imgd-ws-001'
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -102,7 +103,7 @@ module testDeployment '../../../main.bicep' = [
               offer: 'WindowsServer'
               sku: '2022-datacenter-azure-edition-hibernate'
             }
-            osState: 'Windows'
+            osType: 'Windows'
             recommended: {
               memory: {
                 min: 4
@@ -113,7 +114,7 @@ module testDeployment '../../../main.bicep' = [
                 max: 8
               }
             }
-            osType: 'Generalized'
+            osState: 'Generalized'
           }
           isHibernateSupported: true
           isAcceleratedNetworkSupported: false
@@ -126,11 +127,12 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
+          name: '${namePrefix}-az-imgd-wdtl-003'
           hyperVGeneration: 'V2'
           securityType: 'TrustedLaunch'
           properties: {
-            osState: 'Windows'
-            osType: 'Generalized'
+            osType: 'Windows'
+            osState: 'Generalized'
             identifier: {
               publisher: 'MicrosoftWindowsDesktop'
               offer: 'WindowsDesktop'
@@ -147,7 +149,6 @@ module testDeployment '../../../main.bicep' = [
               }
             }
           }
-          name: '${namePrefix}-az-imgd-wdtl-001'
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -157,15 +158,15 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          name: '${namePrefix}-az-imgd-us-001'
+          name: '${namePrefix}-az-imgd-us-004'
           hyperVGeneration: 'V2'
           properties: {
-            osState: 'Linux'
-            osType: 'Generalized'
+            osType: 'Linux'
+            osState: 'Generalized'
             identifier: {
               publisher: 'canonical'
-              offer: '0001-com-ubuntu-server-focal'
-              sku: '20_04-lts-gen2'
+              offer: '0001-com-ubuntu-minimal-focal'
+              sku: '22_04-lts-gen2'
             }
             recommended: {
               memory: {
@@ -181,14 +182,14 @@ module testDeployment '../../../main.bicep' = [
           isAcceleratedNetworkSupported: false
         }
         {
-          name: '${namePrefix}-az-imgd-us-001'
+          name: '${namePrefix}-az-imgd-us-005'
           hyperVGeneration: 'V2'
           properties: {
-            osState: 'Linux'
-            osType: 'Generalized'
+            osType: 'Linux'
+            osState: 'Generalized'
             identifier: {
               publisher: 'canonical'
-              offer: '0001-com-ubuntu-server-focal'
+              offer: '0001-com-ubuntu-minimal-focal'
               sku: '20_04-lts-gen2'
             }
             recommended: {
@@ -205,10 +206,10 @@ module testDeployment '../../../main.bicep' = [
           isAcceleratedNetworkSupported: true
         }
         {
-          name: '${namePrefix}-az-imgd-us-001'
+          name: '${namePrefix}-az-imgd-us-006'
           properties: {
-            osState: 'Linux'
-            osType: 'Generalized'
+            osType: 'Linux'
+            osState: 'Generalized'
             identifier: {
               publisher: 'canonical'
               offer: '0001-com-ubuntu-server-focal'
@@ -227,21 +228,6 @@ module testDeployment '../../../main.bicep' = [
           }
           hyperVGeneration: 'V2'
           isAcceleratedNetworkSupported: false
-        }
-        // testing deprecated parameters
-        {
-          hyperVGeneration: 'V2'
-          maxRecommendedMemory: 32
-          maxRecommendedvCPUs: 4
-          minRecommendedMemory: 4
-          minRecommendedvCPUs: 1
-          isAcceleratedNetworkSupported: true
-          name: '${namePrefix}-az-imgd-us-001'
-          offer: '0001-com-ubuntu-server-focal'
-          osState: 'Generalized'
-          osType: 'Linux'
-          publisher: 'canonical'
-          sku: '20_04-lts-gen2'
         }
       ]
       roleAssignments: [

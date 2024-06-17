@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using deprecated parameters'
+metadata description = 'This instance deploys the module with deprecated parameters.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.galleries-${serviceS
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cgwaf'
+param serviceShort string = 'cgdep'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -41,32 +41,31 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      applications: [
-        {
-          name: '${namePrefix}-${serviceShort}-appd-001'
-          supportedOSType: 'Windows'
-        }
-      ]
+      location: resourceLocation
       images: [
         {
-          name: '${namePrefix}-az-imgd-ws-001'
-          properties: {
-            identifier: {
-              publisher: 'MicrosoftWindowsServer'
-              offer: 'WindowsServer'
-              sku: '2022-datacenter-azure-edition'
-            }
-            osType: 'Windows'
-          }
+          name: '${namePrefix}-az-imgd-us-001'
+          hyperVGeneration: 'V2'
+          maxRecommendedMemory: 32
+          maxRecommendedvCPUs: 4
+          minRecommendedMemory: 4
+          minRecommendedvCPUs: 1
+          isAcceleratedNetworkSupported: true
+          offer: '0001-com-ubuntu-server-focal'
+          osState: 'Generalized'
+          osType: 'Linux'
+          publisher: 'canonical'
+          sku: '20_04-lts-gen2'
         }
+        // {
+        //   name: '${namePrefix}-az-imgd-ws-001'
+        //   offer: 'WindowsServer'
+        //   osType: 'Windows'
+        //   publisher: 'MicrosoftWindowsServer'
+        //   sku: '2022-datacenter-azure-edition'
+        // }
       ]
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
     }
   }
 ]

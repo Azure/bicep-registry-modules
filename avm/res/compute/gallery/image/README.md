@@ -52,10 +52,11 @@ This module deploys an Azure Compute Gallery Image Definition.
 | [`minRecommendedMemory`](#parameter-minrecommendedmemory) | int | The minimum amount of RAM in GB recommended for this image. |
 | [`minRecommendedvCPUs`](#parameter-minrecommendedvcpus) | int | The minimum number of the CPU cores recommended for this image. |
 | [`osState`](#parameter-osstate) | string | This property allows the user to specify whether the virtual machines created under this image are 'Generalized' or 'Specialized'. |
-| [`planName`](#parameter-planname) | string | The plan ID. |
 | [`planPublisherName`](#parameter-planpublishername) | string | The publisher ID. |
 | [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. Has to be a valid URL. |
 | [`productName`](#parameter-productname) | string | The product ID. |
+| [`purchasePlan`](#parameter-purchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
+| [`recommended`](#parameter-recommended) | object | The properties describe the recommended machine configuration for this Image Definition. These properties are updatable. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. |
@@ -225,13 +226,6 @@ This property allows the user to specify whether the virtual machines created un
   ]
   ```
 
-### Parameter: `planName`
-
-The plan ID.
-
-- Required: No
-- Type: string
-
 ### Parameter: `planPublisherName`
 
 The publisher ID.
@@ -252,6 +246,112 @@ The product ID.
 
 - Required: No
 - Type: string
+
+### Parameter: `purchasePlan`
+
+Describes the gallery image definition purchase plan. This is used by marketplace images.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-purchaseplanname) | string | The plan ID. |
+| [`product`](#parameter-purchaseplanproduct) | string | The product ID. |
+| [`publisher`](#parameter-purchaseplanpublisher) | string | The publisher ID. |
+
+### Parameter: `purchasePlan.name`
+
+The plan ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `purchasePlan.product`
+
+The product ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `purchasePlan.publisher`
+
+The publisher ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `recommended`
+
+The properties describe the recommended machine configuration for this Image Definition. These properties are updatable.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`memory`](#parameter-recommendedmemory) | object | Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16. |
+| [`vCPUs`](#parameter-recommendedvcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
+
+### Parameter: `recommended.memory`
+
+Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-recommendedmemorymax) | int | The minimum number of the resource. |
+| [`min`](#parameter-recommendedmemorymin) | int | The minimum number of the resource. |
+
+### Parameter: `recommended.memory.max`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `recommended.memory.min`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `recommended.vCPUs`
+
+Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-recommendedvcpusmax) | int | The minimum number of the resource. |
+| [`min`](#parameter-recommendedvcpusmin) | int | The minimum number of the resource. |
+
+### Parameter: `recommended.vCPUs.max`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `recommended.vCPUs.min`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
 
 ### Parameter: `releaseNoteUri`
 

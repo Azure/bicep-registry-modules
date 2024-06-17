@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "7059991596058545894"
+      "version": "0.28.1.47646",
+      "templateHash": "16644519634803543514"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -78,6 +78,70 @@
         }
       },
       "nullable": true
+    },
+    "recommendedType": {
+      "type": "object",
+      "properties": {
+        "vCPUs": {
+          "$ref": "#/definitions/resourceRangeType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4."
+          }
+        },
+        "memory": {
+          "$ref": "#/definitions/resourceRangeType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable."
+      }
+    },
+    "resourceRangeType": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum number of the resource."
+          }
+        },
+        "max": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum number of the resource."
+          }
+        }
+      }
+    },
+    "purchasePlanType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The plan ID."
+          }
+        },
+        "product": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The product ID."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The publisher ID."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -140,6 +204,13 @@
         "description": "Required. The name of the gallery Image Definition SKU."
       }
     },
+    "recommended": {
+      "$ref": "#/definitions/recommendedType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable."
+      }
+    },
     "minRecommendedvCPUs": {
       "type": "int",
       "defaultValue": 1,
@@ -184,7 +255,7 @@
         "V2"
       ],
       "metadata": {
-        "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
+        "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n- If this value is not specified, then it is determined by the securityType parameter.\r\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
       }
     },
     "securityType": {
@@ -211,7 +282,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
+        "description": "Optional. Specify if the image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\r\n"
       }
     },
     "description": {
@@ -242,18 +313,18 @@
         "description": "Optional. The release note uri. Has to be a valid URL."
       }
     },
+    "purchasePlan": {
+      "$ref": "#/definitions/purchasePlanType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Describes the gallery image definition purchase plan. This is used by marketplace images."
+      }
+    },
     "productName": {
       "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. The product ID."
-      }
-    },
-    "planName": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The plan ID."
       }
     },
     "planPublisherName": {
@@ -324,12 +395,12 @@
         },
         "recommended": {
           "vCPUs": {
-            "min": "[parameters('minRecommendedvCPUs')]",
-            "max": "[parameters('maxRecommendedvCPUs')]"
+            "min": "[coalesce(coalesce(tryGet(parameters('recommended'), 'vCPUs', 'min'), parameters('minRecommendedvCPUs')), 1)]",
+            "max": "[coalesce(coalesce(tryGet(parameters('recommended'), 'vCPUs', 'max'), parameters('maxRecommendedvCPUs')), 4)]"
           },
           "memory": {
-            "min": "[parameters('minRecommendedMemory')]",
-            "max": "[parameters('maxRecommendedMemory')]"
+            "min": "[coalesce(coalesce(tryGet(parameters('recommended'), 'memory', 'min'), parameters('minRecommendedMemory')), 4)]",
+            "max": "[coalesce(coalesce(tryGet(parameters('recommended'), 'memory', 'max'), parameters('maxRecommendedMemory')), 16)]"
           }
         },
         "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
@@ -339,9 +410,9 @@
         "privacyStatementUri": "[parameters('privacyStatementUri')]",
         "releaseNoteUri": "[parameters('releaseNoteUri')]",
         "purchasePlan": {
-          "product": "[parameters('productName')]",
-          "name": "[parameters('planName')]",
-          "publisher": "[parameters('planPublisherName')]"
+          "product": "[coalesce(tryGet(parameters('purchasePlan'), 'product'), parameters('productName'))]",
+          "name": "[coalesce(tryGet(parameters('purchasePlan'), 'name'), parameters('productName'))]",
+          "publisher": "[coalesce(tryGet(parameters('purchasePlan'), 'publisher'), parameters('planPublisherName'))]"
         },
         "endOfLifeDate": "[parameters('endOfLife')]",
         "disallowed": {

@@ -155,30 +155,36 @@ module galleries_images 'image/main.bicep' = [
   for (image, index) in (images ?? []): {
     name: '${uniqueString(deployment().name, location)}-Gallery-Image-${index}'
     params: {
-      location: image.?location ?? location
       name: image.name
+      location: image.?location ?? location
       galleryName: gallery.name
-      osType: image.properties.osType
-      osState: image.?properties.osState ?? 'Generalized'
-      publisher: image.properties.identifier.publisher
-      offer: image.properties.identifier.offer ?? image.offer // offer is deprecated. use identifier.offer instead
-      sku: image.properties.identifier.sku
-      minRecommendedvCPUs: image.?properties.recommended.vCPUs.min
-      maxRecommendedvCPUs: image.?properties.recommended.vCPUs.max
-      minRecommendedMemory: image.?properties.recommended.memory.min
-      maxRecommendedMemory: image.?properties.recommended.memory.min
-      hyperVGeneration: image.?properties.hyperVGeneration
+      osType: image.?properties.osType ?? image.?osType ?? 'Linux' // osType is deprecated. Default to Linux for deprecation compatibility
+      osState: image.?properties.?osState ?? image.?osState ?? 'Generalized' // osState is deprecated
+      publisher: image.?properties.identifier.publisher ?? image.?publisher ?? '' // publisher is deprecated. Default to '' for deprecation compatibility
+      offer: image.?properties.identifier.offer ?? image.?offer ?? '' // offer is deprecated. Default to '' for deprecation compatibility
+      sku: image.?properties.identifier.sku ?? image.?sku ?? '' // sku is deprecated. Default to '' for deprecation compatibility
+      recommended: image.?recommended
+      minRecommendedvCPUs: image.?minRecommendedvCPUs // minRecommendedvCPUs is deprecated
+      maxRecommendedvCPUs: image.?maxRecommendedvCPUs // masRecommendedvCPUs is deprecated
+      minRecommendedMemory: image.?minRecommendedMemory // minRecommendedMemory is deprecated
+      maxRecommendedMemory: image.?maxRecommendedMemory // maxRecommendedMemory is deprecated
+      hyperVGeneration: (contains(image.?properties, 'hyperVGeneration') ? image.properties.hyperVGeneration : null) ?? (contains(
+          image,
+          'hyperVGeneration'
+        )
+        ? image.hyperVGeneration
+        : null) // hyperVGeneration is deprecated
       securityType: image.?securityType ?? 'Standard'
       isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported ?? true
       description: image.?description
-      eula: image.?properties.eula
-      privacyStatementUri: image.?properties.privacyStatementUri
-      releaseNoteUri: image.?properties.releaseNoteUri
-      productName: image.?properties.purchasePlan.product
-      planName: image.?properties.purchasePlan.name
-      planPublisherName: image.?properties.purchasePlan.publisher
-      endOfLife: image.?properties.endOfLife
-      excludedDiskTypes: image.?properties.disallowed.excludedDiskTypes
+      eula: contains(image, 'eula') ? image.eula : null
+      privacyStatementUri: contains(image.?properties, 'privacyStatementUri')
+        ? image.properties.privacyStatementUri
+        : null
+      releaseNoteUri: contains(image.?properties, 'releaseNoteUri') ? image.properties.releaseNoteUri : null
+      purchasePlan: contains(image.?properties, 'purchasePlan') ? image.properties.purchasePlan : null
+      endOfLife: contains(image.?properties, 'endOfLife') ? image.properties.endOfLife : null
+      excludedDiskTypes: contains(image.?properties, 'disallowed') ? image.properties.disallowed.dispTypes : []
       roleAssignments: image.?roleAssignments
       tags: image.?tags ?? tags
     }
@@ -269,7 +275,8 @@ type imageType = {
     @sys.description('Optional. Describes the disallowed disk types.')
     disallowed: {
       @sys.description('Required. A list of disk types.')
-      @metadata({ example: '''[
+      @metadata({ example: '''
+      [
         'Standard_LRS'
       ]''' })
       diskTypes: string[]
@@ -282,13 +289,13 @@ type imageType = {
     eula: string?
 
     @sys.description('Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
-    hyperVGeneration: ('V1' | 'V2')?
+    hyperVGeneration: 'V1' | 'V2'?
 
     @sys.description('Optional. This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.')
-    osType: ('Generalized' | 'Specialized')?
+    osState: 'Generalized' | 'Specialized'?
 
     @sys.description('Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`.')
-    osState: ('Linux' | 'Windows')
+    osType: 'Linux' | 'Windows'
 
     @sys.description('Required. This is the gallery image definition identifier.')
     identifier: {
@@ -333,40 +340,43 @@ type imageType = {
   @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.')
   securityType: ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
 
-  @sys.description('Optional. Specify if the image supports accelerated networking. Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types. Defaults to true.')
+  @sys.description('Optional. Specify if the image supports accelerated networking. Defaults to true.')
   isAcceleratedNetworkSupported: bool?
 
   @sys.description('Optional. Specifiy if the image supports hibernation.')
   isHibernateSupported: bool?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `identifier.offer` instead.')
+  @sys.description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.offer` instead.')
   offer: string?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `identifier.publisher` instead.')
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.publisher` instead.')
   publisher: string?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `identifier.sku` instead.')
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.sku` instead.')
   sku: string?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `osState` instead.')
-  osType: string?
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.osType` instead.')
+  osType: 'Linux' | 'Windows'?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `hyperVGeneration` instead.')
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.hyperVGeneration` instead.')
   hyperVGeneration: string?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `osType` instead.')
-  osState: string?
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.osState` instead.')
+  osState: 'Generalized' | 'Specialized'?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `recommended.memory.min` instead.')
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.min` instead.')
   minRecommendedMemory: int?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `recommended.memory.max` instead.')
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.max` instead.')
   maxRecommendedMemory: int?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `recommended.vCPUs.min` instead.')
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.min` instead.')
   minRecommendedvCPUs: int?
 
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `recommended.vCPUs.max` instead.')
+  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.max` instead.')
   maxRecommendedvCPUs: int?
 }
 

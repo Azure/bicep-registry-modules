@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11302405052694256809"
+      "templateHash": "16170909459338219917"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -124,7 +124,7 @@
           "type": "object",
           "nullable": true,
           "metadata": {
-            "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
+            "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
             "description": "Optional. Tags for all resources. Defaults to the tags of the gallery."
           }
         },
@@ -147,7 +147,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "example": "[[\n        'Standard_LRS'\n      ]",
+                    "example": "      [\r\n        'Standard_LRS'\r\n      ]",
                     "description": "Required. A list of disk types."
                   }
                 }
@@ -182,7 +182,7 @@
                 "description": "Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
               }
             },
-            "osType": {
+            "osState": {
               "type": "string",
               "allowedValues": [
                 "Generalized",
@@ -193,7 +193,7 @@
                 "description": "Optional. This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`."
               }
             },
-            "osState": {
+            "osType": {
               "type": "string",
               "allowedValues": [
                 "Linux",
@@ -316,7 +316,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify if the image supports accelerated networking. Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types. Defaults to true."
+            "description": "Optional. Specify if the image supports accelerated networking. Defaults to true."
           }
         },
         "isHibernateSupported": {
@@ -326,74 +326,89 @@
             "description": "Optional. Specifiy if the image supports hibernation."
           }
         },
+        "roleAssignments": {
+          "$ref": "#/definitions/roleAssignmentType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
         "offer": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `identifier.offer` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.offer` instead."
           }
         },
         "publisher": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `identifier.publisher` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.publisher` instead."
           }
         },
         "sku": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `identifier.sku` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.sku` instead."
           }
         },
         "osType": {
           "type": "string",
+          "allowedValues": [
+            "Linux",
+            "Windows"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding `osState` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `properties.osType` instead."
           }
         },
         "hyperVGeneration": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding `hyperVGeneration` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `properties.hyperVGeneration` instead."
           }
         },
         "osState": {
           "type": "string",
+          "allowedValues": [
+            "Generalized",
+            "Specialized"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding `osType` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `properties.osState` instead."
           }
         },
         "minRecommendedMemory": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.memory.min` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.min` instead."
           }
         },
         "maxRecommendedMemory": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.memory.max` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.max` instead."
           }
         },
         "minRecommendedvCPUs": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.vCPUs.min` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.min` instead."
           }
         },
         "maxRecommendedvCPUs": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Note: This is a deprecated property, please use the corresponding `recommended.vCPUs.max` instead."
+            "description": "Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.max` instead."
           }
         }
       }
@@ -482,7 +497,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
+        "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
         "description": "Optional. Tags for all resources."
       }
     },
@@ -909,44 +924,47 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "location": {
-            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'location'), parameters('location'))]"
-          },
           "name": {
             "value": "[coalesce(parameters('images'), createArray())[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'location'), parameters('location'))]"
           },
           "galleryName": {
             "value": "[parameters('name')]"
           },
           "osType": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].properties.osType]"
+            "value": "[coalesce(coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'osType'), tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'osType')), 'Linux')]"
           },
           "osState": {
-            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'osState'), 'Generalized')]"
+            "value": "[coalesce(if(contains(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties'), 'osState'), coalesce(parameters('images'), createArray())[copyIndex()].properties.osState, null()), if(contains(coalesce(parameters('images'), createArray())[copyIndex()], 'osState'), coalesce(parameters('images'), createArray())[copyIndex()].osState, 'Generalized'))]"
           },
           "publisher": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].properties.identifier.publisher]"
+            "value": "[coalesce(coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'identifier', 'publisher'), tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'publisher')), '')]"
           },
           "offer": {
-            "value": "[coalesce(coalesce(parameters('images'), createArray())[copyIndex()].properties.identifier.offer, coalesce(parameters('images'), createArray())[copyIndex()].offer)]"
+            "value": "[coalesce(coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'identifier', 'offer'), tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'offer')), '')]"
           },
           "sku": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].properties.identifier.sku]"
+            "value": "[coalesce(coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'identifier', 'sku'), tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'sku')), '')]"
+          },
+          "recommended": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'recommended')]"
           },
           "minRecommendedvCPUs": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'vCPUs', 'min')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedvCPUs')]"
           },
           "maxRecommendedvCPUs": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'vCPUs', 'max')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedvCPUs')]"
           },
           "minRecommendedMemory": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'memory', 'min')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedMemory')]"
           },
           "maxRecommendedMemory": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'recommended', 'memory', 'min')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedMemory')]"
           },
           "hyperVGeneration": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'hyperVGeneration')]"
+            "value": "[coalesce(if(contains(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties'), 'hyperVGeneration'), coalesce(parameters('images'), createArray())[copyIndex()].properties.hyperVGeneration, null()), if(contains(coalesce(parameters('images'), createArray())[copyIndex()], 'hyperVGeneration'), coalesce(parameters('images'), createArray())[copyIndex()].hyperVGeneration, null()))]"
           },
           "securityType": {
             "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'securityType'), 'Standard')]"
@@ -957,30 +975,12 @@
           "description": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'description')]"
           },
-          "eula": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'eula')]"
-          },
-          "privacyStatementUri": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'privacyStatementUri')]"
-          },
-          "releaseNoteUri": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'releaseNoteUri')]"
-          },
-          "productName": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'purchasePlan', 'product')]"
-          },
-          "planName": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'purchasePlan', 'name')]"
-          },
-          "planPublisherName": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'purchasePlan', 'publisher')]"
-          },
-          "endOfLife": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'endOfLife')]"
-          },
-          "excludedDiskTypes": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties', 'disallowed', 'excludedDiskTypes')]"
-          },
+          "eula": "[if(contains(coalesce(parameters('images'), createArray())[copyIndex()], 'eula'), createObject('value', coalesce(parameters('images'), createArray())[copyIndex()].eula), createObject('value', null()))]",
+          "privacyStatementUri": "[if(contains(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties'), 'privacyStatementUri'), createObject('value', coalesce(parameters('images'), createArray())[copyIndex()].properties.privacyStatementUri), createObject('value', null()))]",
+          "releaseNoteUri": "[if(contains(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties'), 'releaseNoteUri'), createObject('value', coalesce(parameters('images'), createArray())[copyIndex()].properties.releaseNoteUri), createObject('value', null()))]",
+          "purchasePlan": "[if(contains(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties'), 'purchasePlan'), createObject('value', coalesce(parameters('images'), createArray())[copyIndex()].properties.purchasePlan), createObject('value', null()))]",
+          "endOfLife": "[if(contains(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties'), 'endOfLife'), createObject('value', coalesce(parameters('images'), createArray())[copyIndex()].properties.endOfLife), createObject('value', null()))]",
+          "excludedDiskTypes": "[if(contains(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'properties'), 'disallowed'), createObject('value', coalesce(parameters('images'), createArray())[copyIndex()].properties.disallowed.dispTypes), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'roleAssignments')]"
           },
@@ -996,7 +996,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5623163747199511447"
+              "templateHash": "16644519634803543514"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -1068,6 +1068,70 @@
                 }
               },
               "nullable": true
+            },
+            "recommendedType": {
+              "type": "object",
+              "properties": {
+                "vCPUs": {
+                  "$ref": "#/definitions/resourceRangeType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4."
+                  }
+                },
+                "memory": {
+                  "$ref": "#/definitions/resourceRangeType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable."
+              }
+            },
+            "resourceRangeType": {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The minimum number of the resource."
+                  }
+                },
+                "max": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The minimum number of the resource."
+                  }
+                }
+              }
+            },
+            "purchasePlanType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The plan ID."
+                  }
+                },
+                "product": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The product ID."
+                  }
+                },
+                "publisher": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The publisher ID."
+                  }
+                }
+              }
             }
           },
           "parameters": {
@@ -1130,6 +1194,13 @@
                 "description": "Required. The name of the gallery Image Definition SKU."
               }
             },
+            "recommended": {
+              "$ref": "#/definitions/recommendedType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable."
+              }
+            },
             "minRecommendedvCPUs": {
               "type": "int",
               "defaultValue": 1,
@@ -1174,7 +1245,7 @@
                 "V2"
               ],
               "metadata": {
-                "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n- If this value is not specified, then it is determined by the securityType parameter.\r\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
               }
             },
             "securityType": {
@@ -1201,7 +1272,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
+                "description": "Optional. Specify if the image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\r\n"
               }
             },
             "description": {
@@ -1232,18 +1303,18 @@
                 "description": "Optional. The release note uri. Has to be a valid URL."
               }
             },
+            "purchasePlan": {
+              "$ref": "#/definitions/purchasePlanType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Describes the gallery image definition purchase plan. This is used by marketplace images."
+              }
+            },
             "productName": {
               "type": "string",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The product ID."
-              }
-            },
-            "planName": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The plan ID."
               }
             },
             "planPublisherName": {
@@ -1314,12 +1385,12 @@
                 },
                 "recommended": {
                   "vCPUs": {
-                    "min": "[parameters('minRecommendedvCPUs')]",
-                    "max": "[parameters('maxRecommendedvCPUs')]"
+                    "min": "[coalesce(coalesce(tryGet(parameters('recommended'), 'vCPUs', 'min'), parameters('minRecommendedvCPUs')), 1)]",
+                    "max": "[coalesce(coalesce(tryGet(parameters('recommended'), 'vCPUs', 'max'), parameters('maxRecommendedvCPUs')), 4)]"
                   },
                   "memory": {
-                    "min": "[parameters('minRecommendedMemory')]",
-                    "max": "[parameters('maxRecommendedMemory')]"
+                    "min": "[coalesce(coalesce(tryGet(parameters('recommended'), 'memory', 'min'), parameters('minRecommendedMemory')), 4)]",
+                    "max": "[coalesce(coalesce(tryGet(parameters('recommended'), 'memory', 'max'), parameters('maxRecommendedMemory')), 16)]"
                   }
                 },
                 "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
@@ -1329,9 +1400,9 @@
                 "privacyStatementUri": "[parameters('privacyStatementUri')]",
                 "releaseNoteUri": "[parameters('releaseNoteUri')]",
                 "purchasePlan": {
-                  "product": "[parameters('productName')]",
-                  "name": "[parameters('planName')]",
-                  "publisher": "[parameters('planPublisherName')]"
+                  "product": "[coalesce(tryGet(parameters('purchasePlan'), 'product'), parameters('productName'))]",
+                  "name": "[coalesce(tryGet(parameters('purchasePlan'), 'name'), parameters('productName'))]",
+                  "publisher": "[coalesce(tryGet(parameters('purchasePlan'), 'publisher'), parameters('planPublisherName'))]"
                 },
                 "endOfLifeDate": "[parameters('endOfLife')]",
                 "disallowed": {

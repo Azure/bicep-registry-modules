@@ -35,6 +35,9 @@ param offer string
 @sys.description('Required. The name of the gallery Image Definition SKU.')
 param sku string
 
+@sys.description('Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable.')
+param recommended recommendedType?
+
 @sys.description('Optional. The minimum number of the CPU cores recommended for this image.')
 @minValue(1)
 @maxValue(128)
@@ -95,6 +98,9 @@ param privacyStatementUri string?
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
 param releaseNoteUri string?
 
+@sys.description('Optional. Describes the gallery image definition purchase plan. This is used by marketplace images.')
+param purchasePlan purchasePlanType?
+
 @sys.description('Optional. The product ID.')
 param productName string?
 
@@ -153,12 +159,12 @@ resource image 'Microsoft.Compute/galleries/images@2022-03-03' = {
     }
     recommended: {
       vCPUs: {
-        min: minRecommendedvCPUs
-        max: maxRecommendedvCPUs
+        min: recommended.?vCPUs.min ?? minRecommendedvCPUs ?? 1
+        max: recommended.?vCPUs.max ?? maxRecommendedvCPUs ?? 4
       }
       memory: {
-        min: minRecommendedMemory
-        max: maxRecommendedMemory
+        min: recommended.?memory.min ?? minRecommendedMemory ?? 4
+        max: recommended.?memory.max ?? maxRecommendedMemory ?? 16
       }
     }
     hyperVGeneration: hyperVGeneration ?? (!empty(securityType) ? 'V2' : 'V1')
@@ -187,9 +193,9 @@ resource image 'Microsoft.Compute/galleries/images@2022-03-03' = {
     privacyStatementUri: privacyStatementUri
     releaseNoteUri: releaseNoteUri
     purchasePlan: {
-      product: productName
-      name: planName
-      publisher: planPublisherName
+      product: purchasePlan.?product ?? productName
+      name: purchasePlan.?name ?? planName
+      publisher: purchasePlan.?publisher ?? planPublisherName
     }
     endOfLifeDate: endOfLife
     disallowed: {
@@ -256,3 +262,31 @@ type roleAssignmentType = {
   @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@sys.description('Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable.')
+type recommendedType = {
+  @sys.description('Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.')
+  vCPUs: resourceRangeType?
+
+  @sys.description('Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.')
+  memory: resourceRangeType?
+}
+
+type resourceRangeType = {
+  @sys.description('Optional. The minimum number of the resource.')
+  min: int?
+
+  @sys.description('Optional. The minimum number of the resource.')
+  max: int?
+}
+
+type purchasePlanType = {
+  @sys.description('Required. The plan ID.')
+  name: string
+
+  @sys.description('Required. The product ID.')
+  product: string
+
+  @sys.description('Required. The publisher ID.')
+  publisher: string
+}
