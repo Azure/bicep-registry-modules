@@ -147,18 +147,14 @@ module testDeployment '../../../main.bicep' = [
             access: 'Allow'
             description: 'Allow inbound access on TCP 8082'
             destinationApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
+              nestedDependencies.outputs.applicationSecurityGroupResourceId
             ]
             destinationPortRange: '8082'
             direction: 'Inbound'
             priority: 102
             protocol: '*'
             sourceApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
+              nestedDependencies.outputs.applicationSecurityGroupResourceId
             ]
             sourcePortRange: '*'
           }
