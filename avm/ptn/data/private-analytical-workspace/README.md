@@ -231,7 +231,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
       networkAcls: {
         ipRules: [
-          '192.168.1.1/32'
+          '40.92.1.1/32'
         ]
       }
     }
@@ -284,7 +284,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         },
         "networkAcls": {
           "ipRules": [
-            "192.168.1.1/32"
+            "40.92.1.1/32"
           ]
         }
       }
