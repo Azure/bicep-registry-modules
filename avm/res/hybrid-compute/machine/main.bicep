@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the Arc machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
 
-@description('Required. Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware')
+@description('Required. Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware.')
 param kind string
 
 @description('Conditional. The resource ID of an Arc Private Link Scope which which to associate this machine. Required if you are using Private Link for Arc and your Arc Machine will resolve a Private Endpoint for connectivity to Azure.')
