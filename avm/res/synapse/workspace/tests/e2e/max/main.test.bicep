@@ -81,7 +81,6 @@ module testDeployment '../../../main.bicep' = [
         administratorType: 'ServicePrincipal'
         login: 'dep-${namePrefix}-msi-${serviceShort}'
         sid: nestedDependencies.outputs.managedIdentityPrincipalId
-        tenantId: tenant().tenantId
       }
 
       roleAssignments: [

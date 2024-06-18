@@ -351,7 +351,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       administratorType: 'ServicePrincipal'
       login: 'dep-msi-swmax'
       sid: '<sid>'
-      tenantId: '<tenantId>'
     }
     diagnosticSettings: [
       {
@@ -480,8 +479,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": {
         "administratorType": "ServicePrincipal",
         "login": "dep-msi-swmax",
-        "sid": "<sid>",
-        "tenantId": "<tenantId>"
+        "sid": "<sid>"
       }
     },
     "diagnosticSettings": {
@@ -875,7 +873,7 @@ Object ID of the workspace active directory administrator.
 
 Tenant ID of the workspace active directory administrator.
 
-- Required: Yes
+- Required: No
 - Type: securestring
 
 ### Parameter: `allowedAadTenantIdsForLinking`

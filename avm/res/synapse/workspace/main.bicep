@@ -284,7 +284,7 @@ module workspace_administrator 'administrators/main.bicep' = if (!empty(administ
     administratorType: administrator!.administratorType
     login: administrator!.login
     sid: administrator!.sid
-    tenantId: administrator!.tenantId
+    tenantId: administrator.?tenantId
   }
 }
 
@@ -593,5 +593,5 @@ type adminType = {
 
   @description('Required. Tenant ID of the workspace active directory administrator.')
   @secure()
-  tenantId: string
+  tenantId: string?
 }?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14525172951326176956"
+      "templateHash": "6243259117007790651"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -458,6 +458,7 @@
         },
         "tenantId": {
           "type": "securestring",
+          "nullable": true,
           "metadata": {
             "description": "Required. Tenant ID of the workspace active directory administrator."
           }
@@ -1139,7 +1140,7 @@
             "value": "[parameters('administrator').sid]"
           },
           "tenantId": {
-            "value": "[parameters('administrator').tenantId]"
+            "value": "[tryGet(parameters('administrator'), 'tenantId')]"
           }
         },
         "template": {
@@ -1149,7 +1150,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8650432057997975223"
+              "templateHash": "351030244990389212"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators.",
@@ -1182,8 +1183,9 @@
             },
             "tenantId": {
               "type": "string",
+              "defaultValue": "[tenant().tenantId]",
               "metadata": {
-                "description": "Required. Tenant ID of the workspace active directory administrator."
+                "description": "Optional. Tenant ID of the workspace active directory administrator."
               }
             }
           },
