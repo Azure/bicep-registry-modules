@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Creates only an Arc Machine'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //

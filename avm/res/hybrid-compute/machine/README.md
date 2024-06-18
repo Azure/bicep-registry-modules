@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 - [Creates only an Arc Machine](#example-1-creates-only-an-arc-machine)
 - [Creates an Arc Machine with maximum configurations](#example-2-creates-an-arc-machine-with-maximum-configurations)
 - [Creates only an Arc Machine](#example-3-creates-only-an-arc-machine)
-- [Creates only an Arc Machine](#example-4-creates-only-an-arc-machine)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Creates only an Arc Machine_
 
@@ -289,9 +289,9 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
-### Example 4: _Creates only an Arc Machine_
+### Example 4: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
