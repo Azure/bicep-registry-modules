@@ -1,0 +1,44 @@
+name: AVM - CI Environment Issue 🚀
+description: Have an issue, question or suggestion for the CI Environment or its utilities? Let us know!
+title: "[AVM CI Environment Issue]: "
+labels:
+  [
+    "Type: AVM :a: :v: :m:",
+    "Needs: Triage :mag:",
+    "Needs: Core Team :genie:",
+    "Type: CI :rocket:",
+  ]
+projects: ["Azure/538"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for submitting this issue!
+
+        > **NOTE**: If your question/request is related to the AVM site/documentation, please file an issue in the [AVM repo](https://github.com/Azure/Azure-Verified-Modules/issues/new?assignees=&labels=Type%3A+Question%2FFeedback+%3Araising_hand%3A%2CNeeds%3A+Triage+%3Amag%3A&projects=&template=question_feedback.yml&title=%5BQuestion%2FFeedback%5D%3A+).
+  - type: checkboxes
+    id: existing-checks
+    attributes:
+      label: Check for previous/existing GitHub issues
+      description: By submitting this issue, you confirm that you have [searched for previous/existing GitHub issues](https://aka.ms/BRM/TypeAVM) to avoid creating a duplicate.
+      options:
+        - label: I have checked for previous/existing GitHub issues
+          required: true
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type?
+      description: How would you best describe this issue? Is this a...
+      options:
+        - ""
+        - "Feature Request"
+        - "Bug"
+    validations:
+      required: true
+  - type: textarea
+    id: question-feedback-text
+    attributes:
+      label: Description
+      description: Let us know your question, feedback or suggestion here!
+    validations:
+      required: true

@@ -47,6 +47,9 @@ param workerTierName string = ''
 @description('Optional. If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan.')
 param perSiteScaling bool = false
 
+@description('Optional. Enable/Disable ElasticScaleEnabled App Service Plan.')
+param elasticScaleEnabled bool = maximumElasticWorkerCount > 1
+
 @description('Optional. Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.')
 param maximumElasticWorkerCount int = 1
 
@@ -137,6 +140,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
       : null
     perSiteScaling: perSiteScaling
     maximumElasticWorkerCount: maximumElasticWorkerCount
+    elasticScaleEnabled: elasticScaleEnabled
     reserved: reserved
     targetWorkerCount: targetWorkerCount
     targetWorkerSizeId: targetWorkerSize
