@@ -71,3 +71,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = extension.location
+
+@description('The name of the Resource Group the extension was created in.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = extension.location
