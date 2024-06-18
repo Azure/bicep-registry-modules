@@ -44,7 +44,7 @@ param enableHotpatching bool = false
 @description('Optional. The guest configuration for the Arc machine. Needs the Guest Configuration extension to be enabled.')
 param guestConfiguration object = {}
 
-@description('Conditional. The chosen OS type.')
+@description('Conditional. Required if you are providing OS-type specified configurations, such as patch settings. The chosen OS type, either Windows or Linux.')
 @allowed([
   'Windows'
   'Linux'

@@ -30,8 +30,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/hybrid-compute/machine:<version>`.
 
 - [Creates only an Arc Machine](#example-1-creates-only-an-arc-machine)
-- [Creates only an Arc Machine](#example-2-creates-only-an-arc-machine)
-- [Creates an Arc Machine with maximum configurations](#example-3-creates-an-arc-machine-with-maximum-configurations)
+- [Creates an Arc Machine with maximum configurations](#example-2-creates-an-arc-machine-with-maximum-configurations)
+- [Creates only an Arc Machine](#example-3-creates-only-an-arc-machine)
 
 ### Example 1: _Creates only an Arc Machine_
 
@@ -85,59 +85,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
-### Example 2: _Creates only an Arc Machine_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
-  name: 'machineDeployment'
-  params: {
-    // Required parameters
-    kind: '<kind>'
-    name: 'arcmacmin'
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "<kind>"
-    },
-    "name": {
-      "value": "arcmacmin"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Creates an Arc Machine with maximum configurations_
+### Example 2: _Creates an Arc Machine with maximum configurations_
 
 This instance deploys the module with the full set of required parameters.
 
@@ -253,6 +201,58 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
+### Example 3: _Creates only an Arc Machine_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
+  name: 'machineDeployment'
+  params: {
+    // Required parameters
+    kind: '<kind>'
+    name: 'arcmacmin'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "<kind>"
+    },
+    "name": {
+      "value": "arcmacmin"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -260,7 +260,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware |
+| [`kind`](#parameter-kind) | string | Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware. |
 | [`name`](#parameter-name) | string | The name of the Arc machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
 
 **Conditional parameters**
@@ -290,7 +290,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 ### Parameter: `kind`
 
-Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware
+Kind of Arc machine to be created. Possible values are: HCI, SCVMM, VMware.
 
 - Required: Yes
 - Type: string
