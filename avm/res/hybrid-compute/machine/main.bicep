@@ -150,7 +150,7 @@ resource machine 'Microsoft.HybridCompute/machines@2023-03-15-preview' = {
     parentClusterResourceId: parentClusterResourceId
     vmId: vmId
     clientPublicKey: clientPublicKey
-    privateLinkScopeResourceId: privateLinkScopeResourceId
+    privateLinkScopeResourceId: empty(privateLinkScopeResourceId) ? null : privateLinkScopeResourceId
   }
 }
 

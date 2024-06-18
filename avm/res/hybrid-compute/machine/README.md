@@ -49,9 +49,14 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   params: {
     // Required parameters
     kind: '<kind>'
-    name: 'arcmacmin'
+    name: 'arcmachcimin'
     // Non-required parameters
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -73,11 +78,18 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
       "value": "<kind>"
     },
     "name": {
-      "value": "arcmacmin"
+      "value": "arcmachcimin"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -101,7 +113,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   params: {
     // Required parameters
     kind: '<kind>'
-    name: 'arcmacmin'
+    name: 'arcmachcimx'
     // Non-required parameters
     configurationProfile: 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
     guestConfiguration: {
@@ -131,6 +143,12 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     osType: 'Windows'
     patchAssessmentMode: 'AutomaticByPlatform'
     patchMode: 'AutomaticByPlatform'
+    privateLinkScopeResourceId: '<privateLinkScopeResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -152,7 +170,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
       "value": "<kind>"
     },
     "name": {
-      "value": "arcmacmin"
+      "value": "arcmachcimx"
     },
     // Non-required parameters
     "configurationProfile": {
@@ -194,6 +212,16 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     },
     "patchMode": {
       "value": "AutomaticByPlatform"
+    },
+    "privateLinkScopeResourceId": {
+      "value": "<privateLinkScopeResourceId>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -217,9 +245,14 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   params: {
     // Required parameters
     kind: '<kind>'
-    name: 'arcmacmin'
+    name: 'arcmacvmwmin'
     // Non-required parameters
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -241,11 +274,18 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
       "value": "<kind>"
     },
     "name": {
-      "value": "arcmacmin"
+      "value": "arcmacvmwmin"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -269,9 +309,14 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   params: {
     // Required parameters
     kind: '<kind>'
-    name: 'arcmacmin'
+    name: 'arcmacwaf'
     // Non-required parameters
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -293,11 +338,18 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
       "value": "<kind>"
     },
     "name": {
-      "value": "arcmacmin"
+      "value": "arcmacwaf"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }

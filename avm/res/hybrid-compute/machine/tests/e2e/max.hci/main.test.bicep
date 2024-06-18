@@ -34,6 +34,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    privateLinkScopeName: 'dep-${namePrefix}-pls-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -49,6 +58,7 @@ module testDeployment '../../../main.bicep' = [
       configurationProfile: 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
       patchAssessmentMode: 'AutomaticByPlatform'
       patchMode: 'AutomaticByPlatform'
+      privateLinkScopeResourceId: nestedDependencies.outputs.privateLinkScopeResourceId
       guestConfiguration: {
         name: 'AzureWindowsBaseline'
         version: '1.*'
