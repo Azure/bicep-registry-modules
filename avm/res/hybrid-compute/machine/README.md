@@ -32,6 +32,7 @@ The following section provides usage examples for the module, which were used to
 - [Creates only an Arc Machine](#example-1-creates-only-an-arc-machine)
 - [Creates an Arc Machine with maximum configurations](#example-2-creates-an-arc-machine-with-maximum-configurations)
 - [Creates only an Arc Machine](#example-3-creates-only-an-arc-machine)
+- [Creates only an Arc Machine](#example-4-creates-only-an-arc-machine)
 
 ### Example 1: _Creates only an Arc Machine_
 
@@ -253,6 +254,58 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
+### Example 4: _Creates only an Arc Machine_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
+  name: 'machineDeployment'
+  params: {
+    // Required parameters
+    kind: '<kind>'
+    name: 'arcmacmin'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "<kind>"
+    },
+    "name": {
+      "value": "arcmacmin"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -267,7 +320,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`osType`](#parameter-ostype) | string | The chosen OS type. |
+| [`osType`](#parameter-ostype) | string | Required if you are providing OS-type specified configurations, such as patch settings. The chosen OS type, either Windows or Linux. |
 | [`privateLinkScopeResourceId`](#parameter-privatelinkscoperesourceid) | string | The resource ID of an Arc Private Link Scope which which to associate this machine. Required if you are using Private Link for Arc and your Arc Machine will resolve a Private Endpoint for connectivity to Azure. |
 
 **Optional parameters**
@@ -304,7 +357,7 @@ The name of the Arc machine to be created. You should use a unique prefix to red
 
 ### Parameter: `osType`
 
-The chosen OS type.
+Required if you are providing OS-type specified configurations, such as patch settings. The chosen OS type, either Windows or Linux.
 
 - Required: No
 - Type: string
