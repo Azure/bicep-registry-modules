@@ -82,7 +82,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-0
           destinationApplicationSecurityGroups: map(
             securityRule.properties.?destinationApplicationSecurityGroups ?? [],
             (destinationApplicationSecurityGroup) => {
-              id: destinationApplicationSecurityGroup.id
+              id: destinationApplicationSecurityGroup
             }
           )
           destinationPortRange: securityRule.properties.?destinationPortRange ?? ''
@@ -95,7 +95,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-0
           sourceApplicationSecurityGroups: map(
             securityRule.properties.?sourceApplicationSecurityGroups ?? [],
             (sourceApplicationSecurityGroup) => {
-              id: sourceApplicationSecurityGroup.id
+              id: sourceApplicationSecurityGroup
             }
           )
           sourcePortRange: securityRule.properties.?sourcePortRange ?? ''
