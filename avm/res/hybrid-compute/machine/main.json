@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15387314263277045505"
+      "templateHash": "4502679634466883571"
     },
     "name": "Hybrid Compute Machines",
     "description": "This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.",
@@ -252,13 +252,6 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
-    },
-    "configurationProfile": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile."
-      }
     }
   },
   "variables": {
@@ -276,7 +269,8 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
       "Arc machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
       "Arc machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
-      "Arc machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]"
+      "Arc machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
+      "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
     }
   },
   "resources": {
@@ -320,19 +314,6 @@
         "clientPublicKey": "[parameters('clientPublicKey')]",
         "privateLinkScopeResourceId": "[if(empty(parameters('privateLinkScopeResourceId')), null(), parameters('privateLinkScopeResourceId'))]"
       }
-    },
-    "machine_configurationProfileAssignment": {
-      "condition": "[not(empty(parameters('configurationProfile')))]",
-      "type": "Microsoft.Automanage/configurationProfileAssignments",
-      "apiVersion": "2022-05-04",
-      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('name'))]",
-      "name": "default",
-      "properties": {
-        "configurationProfile": "[parameters('configurationProfile')]"
-      },
-      "dependsOn": [
-        "machine"
-      ]
     },
     "AzureWindowsBaseline": {
       "condition": "[not(empty(parameters('guestConfiguration')))]",

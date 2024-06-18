@@ -17,7 +17,6 @@ This module deploys an Arc Machine for use with Arc Resource Bridge for Azure St
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.HybridCompute/machines` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2023-03-15-preview/machines) |
 
@@ -115,7 +114,6 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     kind: '<kind>'
     name: 'arcmachcimx'
     // Non-required parameters
-    configurationProfile: 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
     guestConfiguration: {
       assignmentType: 'ApplyAndMonitor'
       configurationParameter: [
@@ -173,9 +171,6 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
       "value": "arcmachcimx"
     },
     // Non-required parameters
-    "configurationProfile": {
-      "value": "providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest"
-    },
     "guestConfiguration": {
       "value": {
         "assignmentType": "ApplyAndMonitor",
@@ -380,7 +375,6 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`clientPublicKey`](#parameter-clientpublickey) | string | The Public Key that the client provides to be used during initial resource onboarding. |
-| [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile. |
 | [`enableHotpatching`](#parameter-enablehotpatching) | bool | Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the Arc machine. Needs the Guest Configuration extension to be enabled. |
@@ -434,14 +428,6 @@ The resource ID of an Arc Private Link Scope which which to associate this machi
 ### Parameter: `clientPublicKey`
 
 The Public Key that the client provides to be used during initial resource onboarding.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `configurationProfile`
-
-The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile.
 
 - Required: No
 - Type: string

@@ -68,9 +68,6 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
-param configurationProfile string = ''
-
 var linuxConfiguration = {
   patchSettings: (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'ImageDefault')
     ? {
@@ -114,6 +111,10 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'fb879df8-f326-4884-b1cf-06f3ad86be52'
   )
+  'Windows Admin Center Administrator Login': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a6333a3e-0164-44c3-b281-7a577aff287f'
+  )
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
@@ -152,14 +153,6 @@ resource machine 'Microsoft.HybridCompute/machines@2023-03-15-preview' = {
     clientPublicKey: clientPublicKey
     privateLinkScopeResourceId: empty(privateLinkScopeResourceId) ? null : privateLinkScopeResourceId
   }
-}
-
-resource machine_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' = if (!empty(configurationProfile)) {
-  name: 'default'
-  properties: {
-    configurationProfile: configurationProfile
-  }
-  scope: machine
 }
 
 resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
