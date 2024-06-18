@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1115653198241027677"
+      "templateHash": "1379565176848201973"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -912,7 +912,7 @@
       ]
     },
     "app_appsettings": {
-      "condition": "[not(empty(parameters('appSettingsKeyValuePairs')))]",
+      "condition": "[or(or(not(empty(parameters('appSettingsKeyValuePairs'))), not(empty(parameters('appInsightResourceId')))), not(empty(parameters('storageAccountResourceId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Site-Config-AppSettings', uniqueString(deployment().name, parameters('location')))]",
