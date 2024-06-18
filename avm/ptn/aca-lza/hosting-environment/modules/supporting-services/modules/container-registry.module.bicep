@@ -1,0 +1,149 @@
+targetScope = 'resourceGroup'
+
+// ------------------
+//    PARAMETERS
+// ------------------
+
+@description('The location where the resources will be created.')
+param location string = resourceGroup().location
+
+@description('The name of the container registry.')
+param containerRegistryName string
+
+@description('Optional. The tags to be assigned to the created resources.')
+param tags object = {}
+
+@description('Optional. The resource ID of the Hub Virtual Network.')
+param hubVNetId string = ''
+
+@description('The resource ID of the VNet to which the private endpoint will be connected.')
+param spokeVNetId string
+
+@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
+param spokePrivateEndpointSubnetName string
+
+@description('The name of the private endpoint to be created for Azure Container Registry.')
+param containerRegistryPrivateEndpointName string
+
+@description('The name of the user assigned identity to be created to pull image from Azure Container Registry.')
+param containerRegistryUserAssignedIdentityName string
+
+@description('Optional. Resource ID of the diagnostic log analytics workspace.')
+param diagnosticWorkspaceId string = ''
+
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
+// ------------------
+// VARIABLES
+// ------------------
+
+var privateDnsZoneNames = 'privatelink.azurecr.io'
+var spokeVNetIdTokens = split(spokeVNetId, '/')
+var spokeSubscriptionId = spokeVNetIdTokens[2]
+var spokeResourceGroupName = spokeVNetIdTokens[4]
+var spokeVNetName = spokeVNetIdTokens[8]
+var containerRegistryPullRoleGuid = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+
+// ------------------
+// RESOURCES
+// ------------------
+resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
+  scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)
+  name: spokeVNetName
+}
+
+resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
+  parent: vnetSpoke
+  name: spokePrivateEndpointSubnetName
+}
+
+module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: containerRegistryUserAssignedIdentityName
+  params: {
+    name: containerRegistryUserAssignedIdentityName
+    location: location
+    tags: tags
+  }
+}
+
+module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
+  name: 'privateDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
+  params: {
+    name: privateDnsZoneNames
+    location: location
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: spokeVNetId
+        registrationEnabled: true
+      }
+      (!empty(hubVNetId))
+        ? {
+            virtualNetworkResourceId: hubVNetId
+            registrationEnabled: true
+          }
+        : {}
+    ]
+  }
+}
+
+module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
+  name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
+  params: {
+    name: containerRegistryName
+    location: location
+    tags: tags
+    acrSku: 'Premium'
+    publicNetworkAccess: 'Disabled'
+    acrAdminUserEnabled: false
+    networkRuleBypassOptions: 'AzureServices'
+    zoneRedundancy: deployZoneRedundantResources ? 'Enabled' : 'Disabled'
+    diagnosticSettings: [
+      {
+        name: 'acr-log-analytics'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        workspaceResourceId: diagnosticWorkspaceId
+      }
+    ]
+    privateEndpoints: [
+      {
+        name: containerRegistryPrivateEndpointName
+        privateDnsZoneResourceIds: [
+          acrdnszone.outputs.resourceId
+        ]
+        subnetResourceId: spokePrivateEndpointSubnet.id
+      }
+    ]
+    quarantinePolicyStatus: 'enabled'
+    roleAssignments: [
+      {
+        principalId: acrUserAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: containerRegistryPullRoleGuid
+      }
+    ]
+    softDeletePolicyDays: 7
+    softDeletePolicyStatus: 'disabled'
+  }
+}
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The resource ID of the container registry.')
+output containerRegistryId string = acr.outputs.resourceId
+
+@description('The name of the container registry.')
+output containerRegistryName string = acr.outputs.name
+
+@description('The name of the container registry login server.')
+output containerRegistryLoginServer string = acr.outputs.loginServer
+
+@description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
+output containerRegistryUserAssignedIdentityId string = acrUserAssignedIdentity.outputs.resourceId
