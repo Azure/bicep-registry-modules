@@ -18,7 +18,7 @@ This module deploys an Arc Machine for use with Arc Resource Bridge for Azure St
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
-| `Microsoft.HybridCompute/machines` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2023-03-15-preview/machines) |
+| `Microsoft.HybridCompute/machines` | [2024-05-20-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/machines) |
 
 ## Usage examples
 

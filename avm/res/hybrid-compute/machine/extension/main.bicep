@@ -39,11 +39,11 @@ param enableAutomaticUpgrade bool
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource machine 'Microsoft.HybridCompute/machines@2022-12-27' existing = {
+resource machine 'Microsoft.HybridCompute/machines@2024-05-20-preview' existing = {
   name: arcMachineName
 }
 
-resource extension 'Microsoft.HybridCompute/machines/extensions@2022-12-27' = {
+resource extension 'Microsoft.HybridCompute/machines/extensions@2024-05-20-preview' = {
   name: name
   parent: machine
   location: location
@@ -65,12 +65,6 @@ output name string = extension.name
 
 @description('The resource ID of the extension.')
 output resourceId string = extension.id
-
-@description('The name of the Resource Group the extension was created in.')
-output resourceGroupName string = resourceGroup().name
-
-@description('The location the resource was deployed into.')
-output location string = extension.location
 
 @description('The name of the Resource Group the extension was created in.')
 output resourceGroupName string = resourceGroup().name
