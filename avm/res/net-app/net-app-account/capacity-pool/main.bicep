@@ -63,11 +63,11 @@ var builtInRoleNames = {
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2022-11-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2023-11-01' = {
   name: name
   parent: netAppAccount
   location: location
