@@ -166,7 +166,7 @@ function Invoke-ResourcePostRemoval {
             }
             # If the `managedResourceGroupResourceId` parameter was NOT set during deployment, we should look for a resource group with the default name and remove it as it is not automatically removed
             # NOTE: This requires that the default value uses the prefix 'rg-'
-            $defaultManagedResourceGroupName = "rg-$resourceName"
+            $defaultManagedResourceGroupName = "rg-$resourceName-managed"
             if (Get-AzResourceGroup -Name $defaultManagedResourceGroupName -ErrorAction 'SilentlyContinue') {
                 Write-Verbose ('[*] Removing managed resource group [{0}] of workspace [{1}]' -f $defaultManagedResourceGroupName, $resourceName) -Verbose
                 if ($PSCmdlet.ShouldProcess(('Managed resource group [{0}]' -f $defaultManagedResourceGroupName), 'Remove')) {
