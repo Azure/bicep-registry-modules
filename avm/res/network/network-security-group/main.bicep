@@ -80,9 +80,9 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-0
           destinationAddressPrefix: securityRule.properties.?destinationAddressPrefix ?? ''
           destinationAddressPrefixes: securityRule.properties.?destinationAddressPrefixes ?? []
           destinationApplicationSecurityGroups: map(
-            securityRule.properties.?destinationApplicationSecurityGroups ?? [],
-            (destinationApplicationSecurityGroup) => {
-              id: destinationApplicationSecurityGroup
+            securityRule.properties.?destinationApplicationSecurityGroupResourceIds ?? [],
+            (destinationApplicationSecurityGroupResourceId) => {
+              id: destinationApplicationSecurityGroupResourceId
             }
           )
           destinationPortRange: securityRule.properties.?destinationPortRange ?? ''
@@ -93,9 +93,9 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-0
           sourceAddressPrefix: securityRule.properties.?sourceAddressPrefix ?? ''
           sourceAddressPrefixes: securityRule.properties.?sourceAddressPrefixes ?? []
           sourceApplicationSecurityGroups: map(
-            securityRule.properties.?sourceApplicationSecurityGroups ?? [],
-            (sourceApplicationSecurityGroup) => {
-              id: sourceApplicationSecurityGroup
+            securityRule.properties.?sourceApplicationSecurityGroupResourceIds ?? [],
+            (sourceApplicationSecurityGroupResourceId) => {
+              id: sourceApplicationSecurityGroupResourceId
             }
           )
           sourcePortRange: securityRule.properties.?sourcePortRange ?? ''
@@ -259,8 +259,8 @@ type securityRulesType = {
     @description('Optional. The destination address prefixes. CIDR or destination IP ranges.')
     destinationAddressPrefixes: string[]?
 
-    @description('Optional. The application security group resource IDs specified as destination.')
-    destinationApplicationSecurityGroups: string[]?
+    @description('Optional. The resource IDs of the application security groups specified as destination.')
+    destinationApplicationSecurityGroupResourceIds: string[]?
 
     @description('Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.')
     destinationPortRange: string?
@@ -285,8 +285,8 @@ type securityRulesType = {
     @description('Optional. The CIDR or source IP ranges.')
     sourceAddressPrefixes: string[]?
 
-    @description('Optional.  The application security group resource IDs specified as source.')
-    sourceApplicationSecurityGroups: string[]?
+    @description('Optional. The resource IDs of the application security groups specified as source.')
+    sourceApplicationSecurityGroupResourceIds: string[]?
 
     @description('Optional. The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.')
     sourcePortRange: string?
