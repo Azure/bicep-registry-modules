@@ -1,6 +1,6 @@
 # Arc Machine Extensions `[Microsoft.HybridCompute/machines/extensions]`
 
-This module deploys a Arc Machine Extension.
+This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.
 
 ## Navigation
 
@@ -22,18 +22,13 @@ This module deploys a Arc Machine Extension.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`arcMachineName`](#parameter-arcmachinename) | string | The name of the parent Arc Machine that extension is provisioned for. |
 | [`autoUpgradeMinorVersion`](#parameter-autoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. |
 | [`enableAutomaticUpgrade`](#parameter-enableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. |
 | [`name`](#parameter-name) | string | The name of the Arc Machine extension. |
 | [`publisher`](#parameter-publisher) | string | The name of the extension handler publisher. |
 | [`type`](#parameter-type) | string | Specifies the type of the extension; an example is "CustomScriptExtension". |
 | [`typeHandlerVersion`](#parameter-typehandlerversion) | string | Specifies the version of the script handler. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`arcMachineName`](#parameter-arcmachinename) | string | The name of the parent Arc Machine that extension is provisioned for. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -44,6 +39,13 @@ This module deploys a Arc Machine Extension.
 | [`protectedSettings`](#parameter-protectedsettings) | secureObject | Any object that contains the extension specific protected settings. |
 | [`settings`](#parameter-settings) | object | Any object that contains the extension specific settings. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+
+### Parameter: `arcMachineName`
+
+The name of the parent Arc Machine that extension is provisioned for.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `autoUpgradeMinorVersion`
 
@@ -83,13 +85,6 @@ Specifies the type of the extension; an example is "CustomScriptExtension".
 ### Parameter: `typeHandlerVersion`
 
 Specifies the version of the script handler.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `arcMachineName`
-
-The name of the parent Arc Machine that extension is provisioned for. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string

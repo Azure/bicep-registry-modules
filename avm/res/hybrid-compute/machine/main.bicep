@@ -1,5 +1,5 @@
 metadata name = 'Hybrid Compute Machines'
-metadata description = 'This module deploys a Arc Machines for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource.'
+metadata description = 'This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Arc machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')

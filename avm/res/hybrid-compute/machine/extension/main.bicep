@@ -1,8 +1,8 @@
 metadata name = 'Arc Machine Extensions'
-metadata description = 'This module deploys a Arc Machine Extension.'
+metadata description = 'This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Conditional. The name of the parent Arc Machine that extension is provisioned for. Required if the template is used in a standalone deployment.')
+@description('Required. The name of the parent Arc Machine that extension is provisioned for.')
 param arcMachineName string
 
 @description('Required. The name of the Arc Machine extension.')

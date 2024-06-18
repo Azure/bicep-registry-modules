@@ -1,9 +1,6 @@
 # Hybrid Compute Machines `[Microsoft.HybridCompute/machines]`
 
-This module deploys a Arc Machines for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource.
-
-> !NOTE
-> This module is not applicable to other Arc Machine scenarios, which do not require the resource to be pre-created before connecting the Azure Connected Machine (Arc) agent. Futher, the extensions child resource in this module will not work when initially creating the Arc Machine resource because at that point, the Arc agent has not been connected.
+This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.
 
 ## Navigation
 
