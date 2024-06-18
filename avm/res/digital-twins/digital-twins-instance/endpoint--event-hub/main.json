@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13720195975702696848"
+      "version": "0.26.54.24096",
+      "templateHash": "1964184668152537300"
     },
     "name": "Digital Twins Instance EventHub Endpoint",
     "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",

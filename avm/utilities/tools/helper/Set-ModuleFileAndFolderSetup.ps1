@@ -46,11 +46,17 @@ function Set-ModuleFileAndFolderSetup {
     )
 
     if ([String]::IsNullOrEmpty($CurrentLevelFolderPath)) {
-        # First invocation. Handling provider namespace
-        $resourceTypeIdentifier = ($FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+        # Extract resource type identifier
+        $resourceTypeIdentifier = ($FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # <provider>\<resourceType>
+
+        # Split resource type identifier into components
         $providerNamespace, $resourceType, $childResourceType = $resourceTypeIdentifier -split '[\/|\\]', 3
-        $avmModuleRoot = ($FullModuleFolderPath -split $providerNamespace)[0]
-        $currentLevelFolderPath = Join-Path $avmModuleRoot $providerNamespace $resourceType
+
+        # Construct the root module path up to the providerNamespace (excluding resourceType and childResourceType)
+        $avmModuleRoot = ($FullModuleFolderPath -split [regex]::Escape("\$providerNamespace\$resourceType"))[0] + "\$providerNamespace"
+
+        # Join the required path to get up to the resource type folder
+        $CurrentLevelFolderPath = Join-Path -Path $avmModuleRoot -ChildPath $resourceType
     }
 
     # Collect data
