@@ -157,7 +157,7 @@ resource machine 'Microsoft.HybridCompute/machines@2024-03-31-preview' = {
 }
 
 resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
-  name: 'AzureWindowsBaseline'
+  name: 'gca-${name}'
   scope: machine
   dependsOn: []
   location: location
