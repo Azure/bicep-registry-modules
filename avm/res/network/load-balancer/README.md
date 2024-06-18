@@ -59,9 +59,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     ]
     name: 'nlbmin001'
     // Non-required parameters
-    diagnosticSettings: []
     location: '<location>'
-    lock: {}
   }
 }
 ```
@@ -91,14 +89,8 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": "nlbmin001"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
     }
   }
 }
@@ -961,6 +953,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       {
         name: 'privateIPConfig1'
         subnetId: '<subnetId>'
+        zones: [
+          1
+          2
+          3
+        ]
       }
     ]
     name: 'nlbwaf001'
@@ -1055,7 +1052,12 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": [
         {
           "name": "privateIPConfig1",
-          "subnetId": "<subnetId>"
+          "subnetId": "<subnetId>",
+          "zones": [
+            1,
+            2,
+            3
+          ]
         }
       ]
     },
