@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "101283708334468532"
+      "version": "0.28.1.47646",
+      "templateHash": "11325298741783779919"
     },
     "name": "SQL Managed Instance Keys",
     "description": "This module deploys a SQL Managed Instance Key.",
