@@ -16,11 +16,16 @@ param enableTelemetry bool = true
 // ============ //
 
 @description('Optional. Specific values for some API connections.')
-param api apiReferenceType?
-
-@description('Optional. The kind of the connection. `V1` for StandardLogicApp.')
-@allowed(['V1', 'V2'])
-param kind string
+@metadata({
+  example: '''
+  // for a Service Bus connection
+  {
+    type: 'Microsoft.Web/locations/managedApis'
+    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')
+  }
+'''
+})
+param api object?
 
 @description('Optional. Dictionary of custom parameter values for specific connections.')
 param customParameterValues object?
@@ -32,7 +37,7 @@ param displayName string
 #disable-next-line secure-secrets-in-params // Not a secret
 param nonSecretParameterValues object?
 
-@description('Optional. Connection strings or access keys for connection. Example: \'accountName\' and \'accessKey\' when using blobs.  It can change depending on the resource.')
+@description('Optional. Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource.')
 @secure()
 @metadata({
   example: '''
@@ -55,17 +60,27 @@ param nonSecretParameterValues object?
 })
 param parameterValues object?
 
-@allowed(['', 'Alternative'])
-param alternativeParameterValues string?
-
 @description('Optional. Additional parameter Value Set used for authentication settings.')
+@metadata({
+  example: '''
+  // for a Service Bus connection
+  {
+    name: 'managedIdentityAuth'
+    values: {
+      namespaceEndpoint: {
+        value: 'sb://${dependency.outputs.serviceBusEndpoint}'
+      }
+    }
+  }
+'''
+})
 param parameterValueSet object?
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Status of the connection.')
-param statuses statusType[]?
+param statuses array[]?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -82,7 +97,7 @@ param lock lockType
 param tags object?
 
 @description('Optional. Links to test the API connection.')
-param testLinks testLinkType[]?
+param testLinks array[]?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -103,7 +118,7 @@ var builtInRoleNames = {
 // ============== //
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.web-connection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: take('46d3xbcp.res.web-connection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 4)
   properties: {
     mode: 'Incremental'
     template: {
@@ -123,8 +138,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 resource connection 'Microsoft.Web/connections@2016-06-01' = {
   name: name
   location: location
-  #disable-next-line BCP187
-  kind: kind
   tags: tags
   properties: {
     displayName: displayName
@@ -132,8 +145,8 @@ resource connection 'Microsoft.Web/connections@2016-06-01' = {
     api: api
     parameterValues: !empty(parameterValues) ? parameterValues : null
     nonSecretParameterValues: !empty(nonSecretParameterValues) ? nonSecretParameterValues : null
-    testLinks: !empty(testLinks) ? testLinks : null
-    statuses: !empty(statuses) ? statuses : null
+    testLinks: testLinks
+    statuses: statuses
     #disable-next-line BCP037
     parameterValueSet: parameterValueSet
   }
@@ -220,65 +233,3 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
-
-type apiReferenceType = {
-  @description('Optional. The Brand color.')
-  brandColor: string?
-
-  @description('Optional. The custom API description.')
-  description: string?
-
-  @description('Optional. The display name of the API connection.')
-  displayName: string?
-
-  @description('Optional. The icon URI.')
-  iconUri: string?
-
-  @description('Required. The ID of the API connection.')
-  id: string
-
-  @description('Optional. The name of the API connection.')
-  name: string?
-
-  @description('Optional. The swagger URL. For Bicep, you can use the any() function.')
-  swagger: string?
-
-  @description('Optional. The resource reference type.')
-  'type': string?
-}
-
-type statusType = {
-  @description('Optional. The error of the connection.')
-  error: {
-    @description('Optional. The etag of the error.')
-    etag: string
-
-    @description('Optional. The location of the resource.')
-    location: string
-
-    @description('Optional. Connection Error Properties.')
-    properties: {
-      @description('Optional. Code of the status.')
-      code: string
-
-      @description('Optional. Description of the status.')
-      message: string
-    }
-
-    @description('Optional. The tags of the error.')
-    tags: object
-  }
-  @description('Optional. The status of the connection.')
-  status: string
-
-  @description('Optional. The target of the error.')
-  target: string
-}
-
-type testLinkType = {
-  @description('Optional. The HTTP Method.')
-  method: string
-
-  @description('Optional. Test link request URI.')
-  requestUri: string
-}

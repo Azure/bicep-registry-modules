@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2460380322221205337"
+      "templateHash": "9402688204918471482"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection.",
@@ -103,153 +103,12 @@
         }
       },
       "nullable": true
-    },
-    "apiReferenceType": {
-      "type": "object",
-      "properties": {
-        "brandColor": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Brand color."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The custom API description."
-          }
-        },
-        "displayName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The display name of the API connection."
-          }
-        },
-        "iconUri": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The icon URI."
-          }
-        },
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The ID of the API connection."
-          }
-        },
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the API connection."
-          }
-        },
-        "swagger": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The swagger URL. For Bicep, you can use the any() function."
-          }
-        },
-        "type": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource reference type."
-          }
-        }
-      }
-    },
-    "statusType": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "object",
-          "properties": {
-            "etag": {
-              "type": "string",
-              "metadata": {
-                "description": "Optional. The etag of the error."
-              }
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Optional. The location of the resource."
-              }
-            },
-            "properties": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Optional. Code of the status."
-                  }
-                },
-                "message": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Optional. Description of the status."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Optional. Connection Error Properties."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Optional. The tags of the error."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Optional. The error of the connection."
-          }
-        },
-        "status": {
-          "type": "string",
-          "metadata": {
-            "description": "Optional. The status of the connection."
-          }
-        },
-        "target": {
-          "type": "string",
-          "metadata": {
-            "description": "Optional. The target of the error."
-          }
-        }
-      }
-    },
-    "testLinkType": {
-      "type": "object",
-      "properties": {
-        "method": {
-          "type": "string",
-          "metadata": {
-            "description": "Optional. The HTTP Method."
-          }
-        },
-        "requestUri": {
-          "type": "string",
-          "metadata": {
-            "description": "Optional. Test link request URI."
-          }
-        }
-      }
     }
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "example": "azureblob",
         "description": "Required. Connection name for connection. It can change depending on the resource."
       }
     },
@@ -268,9 +127,10 @@
       }
     },
     "api": {
-      "$ref": "#/definitions/apiReferenceType",
+      "type": "object",
       "nullable": true,
       "metadata": {
+        "example": "  // for a Service Bus connection\n  {\n    type: 'Microsoft.Web/locations/managedApis'\n    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')\n  }\n",
         "description": "Optional. Specific values for some API connections."
       }
     },
@@ -298,15 +158,16 @@
       "type": "secureObject",
       "nullable": true,
       "metadata": {
-        "example": "  {\r\n      //connectionString: '[listKeys(resourceId(parameters('servicebus_resourceGroup'),'Microsoft.ServiceBus/namespaces/AuthorizationRules', parameters('serviceBusName'), 'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]'\r\n      connectionString: 'list'\r\n      }\r\n      ",
-        "description": "Optional. Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource."
+        "example": "    {\n      connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'\n    }\n    {\n      rootfolder: fileshareConnection.rootfolder\n      authType: fileshareConnection.authType\n      // to add an object, use the any() function\n      gateway: any({\n        name: fileshareConnection.odgw.name\n        id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)\n        type: 'Microsoft.Web/connectionGateways'\n      })\n      username: username\n      password: password\n    }\n  ",
+        "description": "Optional. Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource."
       }
     },
     "parameterValueSet": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Additional parameter Value Set."
+        "example": "  // for a Service Bus connection\n  {\n    name: 'managedIdentityAuth'\n    values: {\n      namespaceEndpoint: {\n        value: 'sb://${dependency.outputs.serviceBusEndpoint}'\n      }\n    }\n  }\n",
+        "description": "Optional. Additional parameter Value Set used for authentication settings."
       }
     },
     "roleAssignments": {
@@ -318,7 +179,7 @@
     "statuses": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/statusType"
+        "type": "array"
       },
       "nullable": true,
       "metadata": {
@@ -335,14 +196,14 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
+        "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
     "testLinks": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/testLinkType"
+        "type": "array"
       },
       "nullable": true,
       "metadata": {
@@ -364,7 +225,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.web-connection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[take(format('46d3xbcp.res.web-connection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 4)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -390,8 +251,8 @@
         "displayName": "[parameters('displayName')]",
         "customParameterValues": "[parameters('customParameterValues')]",
         "api": "[parameters('api')]",
-        "parameterValues": "[parameters('parameterValues')]",
-        "nonSecretParameterValues": "[parameters('nonSecretParameterValues')]",
+        "parameterValues": "[if(not(empty(parameters('parameterValues'))), parameters('parameterValues'), null())]",
+        "nonSecretParameterValues": "[if(not(empty(parameters('nonSecretParameterValues'))), parameters('nonSecretParameterValues'), null())]",
         "testLinks": "[parameters('testLinks')]",
         "statuses": "[parameters('statuses')]",
         "parameterValueSet": "[parameters('parameterValueSet')]"
