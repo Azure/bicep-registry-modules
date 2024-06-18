@@ -18,7 +18,7 @@ This module deploys an Arc Machine for use with Arc Resource Bridge for Azure St
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
-| `Microsoft.HybridCompute/machines` | [2024-05-20-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/machines) |
+| `Microsoft.HybridCompute/machines` | [2024-03-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/machines) |
 
 ## Usage examples
 
@@ -375,7 +375,6 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`clientPublicKey`](#parameter-clientpublickey) | string | The Public Key that the client provides to be used during initial resource onboarding. |
-| [`enableHotpatching`](#parameter-enablehotpatching) | bool | Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the Arc machine. Needs the Guest Configuration extension to be enabled. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -432,14 +431,6 @@ The Public Key that the client provides to be used during initial resource onboa
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableHotpatching`
-
-Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableTelemetry`
 

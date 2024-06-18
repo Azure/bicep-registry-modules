@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2990849316618349180"
+      "templateHash": "1676670089655828815"
     },
     "name": "Hybrid Compute Machines",
     "description": "This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.",
@@ -194,13 +194,6 @@
         "description": "Optional. VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours."
       }
     },
-    "enableHotpatching": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot."
-      }
-    },
     "guestConfiguration": {
       "type": "object",
       "defaultValue": {},
@@ -259,7 +252,7 @@
       "patchSettings": "[if(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault'))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
     },
     "windowsConfiguration": {
-      "patchSettings": "[if(or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual'))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'enableHotpatching', parameters('enableHotpatching')), null())]"
+      "patchSettings": "[if(or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual'))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
     },
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -296,7 +289,7 @@
     },
     "machine": {
       "type": "Microsoft.HybridCompute/machines",
-      "apiVersion": "2024-05-20-preview",
+      "apiVersion": "2024-03-31-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": {
@@ -393,14 +386,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('machine', '2024-05-20-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('machine', '2024-03-31-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('machine', '2024-05-20-preview', 'full').location]"
+      "value": "[reference('machine', '2024-03-31-preview', 'full').location]"
     }
   }
 }

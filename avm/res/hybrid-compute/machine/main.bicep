@@ -37,8 +37,9 @@ param patchMode string = ''
 ])
 param patchAssessmentMode string = 'ImageDefault'
 
-@description('Optional. Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot.')
-param enableHotpatching bool = false
+// support added in 2024-05-20-preview
+//@description('Optional. Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot.')
+//param enableHotpatching bool = false
 
 // Child resources
 @description('Optional. The guest configuration for the Arc machine. Needs the Guest Configuration extension to be enabled.')
@@ -82,7 +83,7 @@ var windowsConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
-        enableHotpatching: enableHotpatching
+        // enableHotpatching: enableHotpatching // support added in 2024-05-20-preview
       }
     : null
 }
@@ -135,7 +136,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource machine 'Microsoft.HybridCompute/machines@2024-05-20-preview' = {
+resource machine 'Microsoft.HybridCompute/machines@2024-03-31-preview' = {
   name: name
   location: location
   identity: {

@@ -39,11 +39,11 @@ param enableAutomaticUpgrade bool
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource machine 'Microsoft.HybridCompute/machines@2024-05-20-preview' existing = {
+resource machine 'Microsoft.HybridCompute/machines@2024-03-31-preview' existing = {
   name: arcMachineName
 }
 
-resource extension 'Microsoft.HybridCompute/machines/extensions@2024-05-20-preview' = {
+resource extension 'Microsoft.HybridCompute/machines/extensions@2024-03-31-preview' = {
   name: name
   parent: machine
   location: location
