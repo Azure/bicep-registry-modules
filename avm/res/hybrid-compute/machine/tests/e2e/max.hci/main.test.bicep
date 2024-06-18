@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       kind: kind
-      configurationProfile: 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
+      configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
       patchAssessmentMode: 'AutomaticByPlatform'
       patchMode: 'AutomaticByPlatform'
       privateLinkScopeResourceId: nestedDependencies.outputs.privateLinkScopeResourceId
