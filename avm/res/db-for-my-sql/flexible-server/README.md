@@ -52,7 +52,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Required parameters
     name: 'dfmsfsmin001'
     skuName: 'Standard_B1ms'
-    tier: 'Burstable'
+    tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -81,7 +81,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Standard_B1ms"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
     "administratorLogin": {

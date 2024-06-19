@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_B1ms'
-      tier: 'Burstable'
+      tier: 'GeneralPurpose'
     }
   }
 ]
