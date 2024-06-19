@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       highAvailability: 'ZoneRedundant'
       highAvailabilityZone: '2'
       maintenanceWindow: {
-        maintenanceWindow: 'Enabled'
+        customWindow: 'Enabled'
         dayOfWeek: 0
         startHour: 0
         startMinute: 0

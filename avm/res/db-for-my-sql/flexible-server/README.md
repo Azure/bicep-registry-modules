@@ -58,8 +58,8 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLoginPassword: '<administratorLoginPassword>'
     location: '<location>'
     maintenanceWindow: {
+      customWindow: 'Enabled'
       dayOfWeek: 0
-      maintenanceWindow: 'Enabled'
       startHour: 0
       startMinute: 0
     }
@@ -101,8 +101,8 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "maintenanceWindow": {
       "value": {
+        "customWindow": "Enabled",
         "dayOfWeek": 0,
-        "maintenanceWindow": "Enabled",
         "startHour": 0,
         "startMinute": 0
       }
@@ -563,8 +563,8 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       name: 'myCustomLockName'
     }
     maintenanceWindow: {
+      customWindow: 'Enabled'
       dayOfWeek: 0
-      maintenanceWindow: 'Enabled'
       startHour: 0
       startMinute: 0
     }
@@ -627,8 +627,8 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "maintenanceWindow": {
       "value": {
+        "customWindow": "Enabled",
         "dayOfWeek": 0,
-        "maintenanceWindow": "Enabled",
         "startHour": 0,
         "startMinute": 0
       }

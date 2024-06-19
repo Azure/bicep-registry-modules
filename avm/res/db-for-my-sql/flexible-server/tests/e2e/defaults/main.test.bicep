@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       maintenanceWindow: {
-        maintenanceWindow: 'Enabled'
+        customWindow: 'Enabled'
         dayOfWeek: 0
         startHour: 0
         startMinute: 0
