@@ -29,17 +29,17 @@ param maxUnusedVersionsToKeep int = 3
 @description('Optional. The settings to enable AAD authentication on the cluster.')
 param azureActiveDirectory object = {}
 
-@description('Optional. Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location.')
-param certificate object = {}
+@description('Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used.')
+param certificate certificateType
 
-@description('Optional. Describes a list of server certificates referenced by common name that are used to secure the cluster.')
-param certificateCommonNames object = {}
+@description('Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.')
+param certificateCommonNames certificateCommonNameType
 
-@description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster.')
-param clientCertificateCommonNames array = []
+@description('Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used.')
+param clientCertificateCommonNames clientCertificateCommonNameType
 
-@description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster.')
-param clientCertificateThumbprints array = []
+@description('Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used.')
+param clientCertificateThumbprints clientCertificateThumbprintType
 
 @description('Optional. The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions.')
 param clusterCodeVersion string?
@@ -135,23 +135,17 @@ param applicationTypes array = []
 param enableTelemetry bool = true
 
 var clientCertificateCommonNamesVar = [
-  for clientCertificateCommonName in clientCertificateCommonNames: {
-    certificateCommonName: contains(clientCertificateCommonName, 'certificateCommonName')
-      ? clientCertificateCommonName.certificateCommonName
-      : null
-    certificateIssuerThumbprint: contains(clientCertificateCommonName, 'certificateIssuerThumbprint')
-      ? clientCertificateCommonName.certificateIssuerThumbprint
-      : null
-    isAdmin: contains(clientCertificateCommonName, 'isAdmin') ? clientCertificateCommonName.isAdmin : false
+  for (clientCertificateCommonName, index) in (clientCertificateCommonNames ?? []): {
+    certificateCommonName: clientCertificateCommonName.certificateCommonName
+    certificateIssuerThumbprint: clientCertificateCommonName.certificateIssuerThumbprint
+    isAdmin: clientCertificateCommonName.isAdmin
   }
 ]
 
 var clientCertificateThumbprintsVar = [
-  for clientCertificateThumbprint in clientCertificateThumbprints: {
-    certificateThumbprint: contains(clientCertificateThumbprint, 'certificateThumbprint')
-      ? clientCertificateThumbprint.certificateThumbprint
-      : null
-    isAdmin: contains(clientCertificateThumbprint, 'isAdmin') ? clientCertificateThumbprint.isAdmin : false
+  for (clientCertificateThumbprint, index) in (clientCertificateThumbprints ?? []): {
+    certificateThumbprint: clientCertificateThumbprint.certificateThumbprint
+    isAdmin: clientCertificateThumbprint.isAdmin
   }
 ]
 
@@ -262,24 +256,24 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.servicefabric-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.servicefabric-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 // Service Fabric cluster resource
 resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
@@ -304,21 +298,19 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
       : null
     certificate: !empty(certificate)
       ? {
-          thumbprint: contains(certificate, 'thumbprint') ? certificate.thumbprint : null
-          thumbprintSecondary: contains(certificate, 'thumbprintSecondary') ? certificate.thumbprintSecondary : null
-          x509StoreName: contains(certificate, 'x509StoreName') ? certificate.x509StoreName : null
+          thumbprint: certificate.?thumbprint ?? ''
+          thumbprintSecondary: certificate.?thumbprintSecondary ?? null
+          x509StoreName: certificate.?x509StoreName ?? null
         }
       : null
     certificateCommonNames: !empty(certificateCommonNames)
       ? {
-          commonNames: contains(certificateCommonNames, 'commonNames') ? certificateCommonNames.commonNames : null
-          x509StoreName: contains(certificateCommonNames, 'certificateCommonNamesx509StoreName')
-            ? certificateCommonNames.certificateCommonNamesx509StoreName
-            : null
+          commonNames: certificateCommonNames.?commonNames ?? []
+          x509StoreName: certificateCommonNames.?x509StoreName ?? null
         }
       : null
-    clientCertificateCommonNames: !empty(clientCertificateCommonNames) ? clientCertificateCommonNamesVar : null
-    clientCertificateThumbprints: !empty(clientCertificateThumbprints) ? clientCertificateThumbprintsVar : null
+    clientCertificateCommonNames: clientCertificateCommonNamesVar
+    clientCertificateThumbprints: clientCertificateThumbprintsVar
     clusterCodeVersion: clusterCodeVersion
     diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig)
       ? {
@@ -383,17 +375,16 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
 }
 
 // Service Fabric cluster resource lock
-resource serviceFabricCluster_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: serviceFabricCluster
+resource serviceFabricCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: serviceFabricCluster
+}
 
 // Service Fabric cluster RBAC assignment
 resource serviceFabricCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -446,6 +437,68 @@ output location string = serviceFabricCluster.location
 // =============== //
 //   Definitions   //
 // =============== //
+
+type certificateType = {
+  @description('Required. The thumbprint of the primary certificate.')
+  thumbprint: string
+
+  @description('Optional. The thumbprint of the secondary certificate.')
+  thumbprintSecondary: string?
+
+  @description('Optional. The local certificate store location.')
+  x509StoreName: (
+    | 'AddressBook'
+    | 'AuthRoot'
+    | 'CertificateAuthority'
+    | 'Disallowed'
+    | 'My'
+    | 'Root'
+    | 'TrustedPeople'
+    | 'TrustedPublisher')?
+}?
+
+type certificateCommonNameType = {
+  @description('Required. The list of server certificates referenced by common name that are used to secure the cluster.')
+  commonNames: serverCertificateCommonNameType
+
+  @description('Optional. The local certificate store location.')
+  x509StoreName: (
+    | 'AddressBook'
+    | 'AuthRoot'
+    | 'CertificateAuthority'
+    | 'Disallowed'
+    | 'My'
+    | 'Root'
+    | 'TrustedPeople'
+    | 'TrustedPublisher')?
+}?
+
+type serverCertificateCommonNameType = {
+  @description('Required. The common name of the server certificate.')
+  certificateCommonName: string
+
+  @description('Required. The issuer thumbprint of the server certificate.')
+  certificateIssuerThumbprint: string
+}[]
+
+type clientCertificateCommonNameType = {
+  @description('Required. The common name of the client certificate.')
+  certificateCommonName: string
+
+  @description('Required. The issuer thumbprint of the client certificate.')
+  certificateIssuerThumbprint: string
+
+  @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
+  isAdmin: bool
+}[]?
+
+type clientCertificateThumbprintType = {
+  @description('Required. The thumbprint of the client certificate.')
+  certificateThumbprint: string
+
+  @description('Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.')
+  isAdmin: bool
+}[]?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

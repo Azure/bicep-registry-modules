@@ -246,7 +246,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. Note - whilst this test is WAF aligned, zoneRedundant is set to false to avoid temporary AVM environment challenges. It is highly recommended that users of this module set the property value to true.
 
 
 <details>
@@ -259,7 +259,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfwaf001'
-    skuCapacity: 3
+    skuCapacity: 2
     skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
@@ -287,7 +287,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: true
+    zoneRedundant: false
   }
 }
 ```
@@ -309,7 +309,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "wsfwaf001"
     },
     "skuCapacity": {
-      "value": 3
+      "value": 2
     },
     "skuName": {
       "value": "P1v3"
@@ -351,7 +351,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     "zoneRedundant": {
-      "value": true
+      "value": false
     }
   }
 }
@@ -383,6 +383,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | :-- | :-- | :-- |
 | [`appServiceEnvironmentId`](#parameter-appserviceenvironmentid) | string | The Resource ID of the App Service Environment to use for the App Service Plan. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`elasticScaleEnabled`](#parameter-elasticscaleenabled) | bool | Enable/Disable ElasticScaleEnabled App Service Plan. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kind`](#parameter-kind) | string | Kind of server OS. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -394,7 +395,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | [`targetWorkerCount`](#parameter-targetworkercount) | int | Scaling worker count. |
 | [`targetWorkerSize`](#parameter-targetworkersize) | int | The instance size of the hosting plan (small, medium, or large). |
 | [`workerTierName`](#parameter-workertiername) | string | Target worker tier assigned to the App Service plan. |
-| [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs). |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs). |
 
 ### Parameter: `name`
 
@@ -541,6 +542,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `elasticScaleEnabled`
+
+Enable/Disable ElasticScaleEnabled App Service Plan.
+
+- Required: No
+- Type: bool
+- Default: `[greater(parameters('maximumElasticWorkerCount'), 1)]`
 
 ### Parameter: `enableTelemetry`
 
@@ -758,7 +767,7 @@ Target worker tier assigned to the App Service plan.
 
 ### Parameter: `zoneRedundant`
 
-Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).
+Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).
 
 - Required: No
 - Type: bool

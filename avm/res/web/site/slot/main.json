@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "497999704181455009"
+      "version": "0.28.1.47646",
+      "templateHash": "15715280445379891193"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -472,11 +472,16 @@
         "functionapp,linux",
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
+        "functionapp,linux,container",
         "app,linux",
-        "app"
+        "app",
+        "linux,api",
+        "api",
+        "app,linux,container",
+        "app,container,windows"
       ],
       "metadata": {
-        "description": "Required. Type of slot to deploy."
+        "description": "Required. Type of site to deploy."
       }
     },
     "serverFarmResourceId": {
@@ -927,8 +932,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "16550727222833899283"
+              "version": "0.28.1.47646",
+              "templateHash": "7468244783040054160"
             },
             "name": "Site Slot App Settings",
             "description": "This module deploys a Site Slot App Setting.",
@@ -954,11 +959,16 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "functionapp,linux,container",
                 "app,linux",
-                "app"
+                "app",
+                "linux,api",
+                "api",
+                "app,linux,container",
+                "app,container,windows"
               ],
               "metadata": {
-                "description": "Required. Type of slot to deploy."
+                "description": "Required. Type of site to deploy."
               }
             },
             "storageAccountResourceId": {
@@ -1097,8 +1107,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "512112730780239094"
+              "version": "0.28.1.47646",
+              "templateHash": "10212981101211605812"
             },
             "name": "Site Slot Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1124,11 +1134,16 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "functionapp,linux,container",
                 "app,linux",
-                "app"
+                "app",
+                "linux,api",
+                "api",
+                "app,linux,container",
+                "app,container,windows"
               ],
               "metadata": {
-                "description": "Required. Type of slot to deploy."
+                "description": "Required. Type of site to deploy."
               }
             },
             "authSettingV2Configuration": {
@@ -1213,8 +1228,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4923254671011353973"
+              "version": "0.28.1.47646",
+              "templateHash": "16535586328125636135"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -1339,8 +1354,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "15033433727480709023"
+              "version": "0.28.1.47646",
+              "templateHash": "15454748136055010211"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",

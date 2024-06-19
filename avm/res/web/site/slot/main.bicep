@@ -11,14 +11,19 @@ param appName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Required. Type of slot to deploy.')
+@description('Required. Type of site to deploy.')
 @allowed([
   'functionapp' // function app windows os
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
+  'functionapp,linux,container' // function app linux container
   'app,linux' // linux web app
-  'app' // normal web app
+  'app' // windows web app
+  'linux,api' // linux api app
+  'api' // windows api app
+  'app,linux,container' // linux container app
+  'app,container,windows' // windows container app
 ])
 param kind string
 
@@ -234,30 +239,28 @@ resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
   }
 }
 
-module slot_appsettings 'config--appsettings/main.bicep' =
-  if (!empty(appSettingsKeyValuePairs)) {
-    name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
-    params: {
-      slotName: slot.name
-      appName: app.name
-      kind: kind
-      storageAccountResourceId: storageAccountResourceId
-      storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
-      appInsightResourceId: appInsightResourceId
-      appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    }
+module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
+  params: {
+    slotName: slot.name
+    appName: app.name
+    kind: kind
+    storageAccountResourceId: storageAccountResourceId
+    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
+    appInsightResourceId: appInsightResourceId
+    appSettingsKeyValuePairs: appSettingsKeyValuePairs
   }
+}
 
-module slot_authsettingsv2 'config--authsettingsv2/main.bicep' =
-  if (!empty(authSettingV2Configuration)) {
-    name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AuthSettingsV2'
-    params: {
-      slotName: slot.name
-      appName: app.name
-      kind: kind
-      authSettingV2Configuration: authSettingV2Configuration ?? {}
-    }
+module slot_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authSettingV2Configuration)) {
+  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AuthSettingsV2'
+  params: {
+    slotName: slot.name
+    appName: app.name
+    kind: kind
+    authSettingV2Configuration: authSettingV2Configuration ?? {}
   }
+}
 
 module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [
   for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
@@ -283,17 +286,16 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
   }
 ]
 
-resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: slot
+resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: slot
+}
 
 resource slot_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
