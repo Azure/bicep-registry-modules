@@ -51,6 +51,12 @@ module testDeployment '../../../main.bicep' = [
       administratorLoginPassword: password
       skuName: 'Standard_B1ms'
       tier: 'GeneralPurpose'
+      maintenanceWindow: {
+        customWindow: 'Enabled'
+        dayOfWeek: 'Sunday'
+        startHour: 0
+        startMinute: 0
+      }
     }
   }
 ]

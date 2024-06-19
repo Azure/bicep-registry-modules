@@ -57,6 +57,12 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     location: '<location>'
+    maintenanceWindow: {
+      customWindow: 'Enabled'
+      dayOfWeek: 'Sunday'
+      startHour: 0
+      startMinute: 0
+    }
   }
 }
 ```
@@ -92,6 +98,14 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceWindow": {
+      "value": {
+        "customWindow": "Enabled",
+        "dayOfWeek": "Sunday",
+        "startHour": 0,
+        "startMinute": 0
+      }
     }
   }
 }
@@ -545,6 +559,12 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceWindow: {
+      customWindow: 'Enabled'
+      dayOfWeek: 'Sunday'
+      startHour: 0
+      startMinute: 0
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -590,6 +610,14 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "maintenanceWindow": {
+      "value": {
+        "customWindow": "Enabled",
+        "dayOfWeek": "Sunday",
+        "startHour": 0,
+        "startMinute": 0
       }
     },
     "tags": {
