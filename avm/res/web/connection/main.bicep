@@ -80,7 +80,7 @@ param parameterValueSet object?
 param roleAssignments roleAssignmentType
 
 @description('Optional. Status of the connection.')
-param statuses array[]?
+param statuses array?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -97,7 +97,7 @@ param lock lockType
 param tags object?
 
 @description('Optional. Links to test the API connection.')
-param testLinks array[]?
+param testLinks array?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -143,11 +143,11 @@ resource connection 'Microsoft.Web/connections@2016-06-01' = {
     displayName: displayName
     customParameterValues: customParameterValues
     api: api
-    parameterValues: !empty(parameterValues) ? parameterValues : null
-    nonSecretParameterValues: !empty(nonSecretParameterValues) ? nonSecretParameterValues : null
+    parameterValues: parameterValues
+    nonSecretParameterValues: nonSecretParameterValues
     testLinks: testLinks
     statuses: statuses
-    #disable-next-line BCP037
+    #disable-next-line BCP037 // the parameterValueSet is not yet made available in the resource provider, which generates warnings. Disable the warning for now.
     parameterValueSet: parameterValueSet
   }
 }

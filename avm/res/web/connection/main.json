@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9402688204918471482"
+      "templateHash": "14422693215555410586"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection.",
@@ -178,9 +178,6 @@
     },
     "statuses": {
       "type": "array",
-      "items": {
-        "type": "array"
-      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Status of the connection."
@@ -202,9 +199,6 @@
     },
     "testLinks": {
       "type": "array",
-      "items": {
-        "type": "array"
-      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Links to test the API connection."
@@ -251,8 +245,8 @@
         "displayName": "[parameters('displayName')]",
         "customParameterValues": "[parameters('customParameterValues')]",
         "api": "[parameters('api')]",
-        "parameterValues": "[if(not(empty(parameters('parameterValues'))), parameters('parameterValues'), null())]",
-        "nonSecretParameterValues": "[if(not(empty(parameters('nonSecretParameterValues'))), parameters('nonSecretParameterValues'), null())]",
+        "parameterValues": "[parameters('parameterValues')]",
+        "nonSecretParameterValues": "[parameters('nonSecretParameterValues')]",
         "testLinks": "[parameters('testLinks')]",
         "statuses": "[parameters('statuses')]",
         "parameterValueSet": "[parameters('parameterValueSet')]"
