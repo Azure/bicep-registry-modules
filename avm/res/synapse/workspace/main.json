@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8395600145628095339"
+      "templateHash": "16827959448836859226"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
