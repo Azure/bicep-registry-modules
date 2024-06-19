@@ -193,7 +193,7 @@ configuration:
           - addLabel:
               label: "Type: Security Bug :lock:"
 
-      - description: "ITA25 - If a new PR is opened add inform module owners"
+      - description: "ITA25 - If a new PR is opened, inform module owners about the usage of the Needs Core Team label"
         if:
           - or:
               - payloadType: Pull_Request
