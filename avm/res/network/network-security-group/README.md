@@ -19,7 +19,6 @@ This module deploys a Network security Group (NSG).
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
-| `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups/securityRules) |
 
 ## Usage examples
 
@@ -174,19 +173,44 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
         properties: {
           access: 'Allow'
           description: 'Allow inbound access on TCP 8082'
-          destinationApplicationSecurityGroups: [
-            {
-              id: '<id>'
-            }
+          destinationApplicationSecurityGroupResourceIds: [
+            '<applicationSecurityGroupResourceId>'
           ]
           destinationPortRange: '8082'
           direction: 'Inbound'
           priority: 102
           protocol: '*'
-          sourceApplicationSecurityGroups: [
-            {
-              id: '<id>'
-            }
+          sourceApplicationSecurityGroupResourceIds: [
+            '<applicationSecurityGroupResourceId>'
+          ]
+          sourcePortRange: '*'
+        }
+      }
+      {
+        name: 'Deny-All-Inbound'
+        properties: {
+          access: 'Deny'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '*'
+          direction: 'Inbound'
+          priority: 4095
+          protocol: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+      {
+        name: 'Allow-AzureCloud-Tcp'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: 'AzureCloud'
+          destinationPortRange: '443'
+          direction: 'Outbound'
+          priority: 250
+          protocol: 'Tcp'
+          sourceAddressPrefixes: [
+            '10.10.10.0/24'
+            '192.168.1.0/24'
           ]
           sourcePortRange: '*'
         }
@@ -304,19 +328,44 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
           "properties": {
             "access": "Allow",
             "description": "Allow inbound access on TCP 8082",
-            "destinationApplicationSecurityGroups": [
-              {
-                "id": "<id>"
-              }
+            "destinationApplicationSecurityGroupResourceIds": [
+              "<applicationSecurityGroupResourceId>"
             ],
             "destinationPortRange": "8082",
             "direction": "Inbound",
             "priority": 102,
             "protocol": "*",
-            "sourceApplicationSecurityGroups": [
-              {
-                "id": "<id>"
-              }
+            "sourceApplicationSecurityGroupResourceIds": [
+              "<applicationSecurityGroupResourceId>"
+            ],
+            "sourcePortRange": "*"
+          }
+        },
+        {
+          "name": "Deny-All-Inbound",
+          "properties": {
+            "access": "Deny",
+            "destinationAddressPrefix": "*",
+            "destinationPortRange": "*",
+            "direction": "Inbound",
+            "priority": 4095,
+            "protocol": "*",
+            "sourceAddressPrefix": "*",
+            "sourcePortRange": "*"
+          }
+        },
+        {
+          "name": "Allow-AzureCloud-Tcp",
+          "properties": {
+            "access": "Allow",
+            "destinationAddressPrefix": "AzureCloud",
+            "destinationPortRange": "443",
+            "direction": "Outbound",
+            "priority": 250,
+            "protocol": "Tcp",
+            "sourceAddressPrefixes": [
+              "10.10.10.0/24",
+              "192.168.1.0/24"
             ],
             "sourcePortRange": "*"
           }
@@ -731,7 +780,182 @@ Array of Security Rules to deploy to the Network Security Group. When not provid
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-securityrulesname) | string | The name of the security rule. |
+| [`properties`](#parameter-securityrulesproperties) | object | The properties of the security rule. |
+
+### Parameter: `securityRules.name`
+
+The name of the security rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityRules.properties`
+
+The properties of the security rule.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-securityrulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
+| [`direction`](#parameter-securityrulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
+| [`priority`](#parameter-securityrulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-securityrulespropertiesprotocol) | string | Network protocol this rule applies to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-securityrulespropertiesdescription) | string | The description of the security rule. |
+| [`destinationAddressPrefix`](#parameter-securityrulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefixes`](#parameter-securityrulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
+| [`destinationApplicationSecurityGroupResourceIds`](#parameter-securityrulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
+| [`destinationPortRange`](#parameter-securityrulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`destinationPortRanges`](#parameter-securityrulespropertiesdestinationportranges) | array | The destination port ranges. |
+| [`sourceAddressPrefix`](#parameter-securityrulespropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
+| [`sourceAddressPrefixes`](#parameter-securityrulespropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
+| [`sourceApplicationSecurityGroupResourceIds`](#parameter-securityrulespropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
+| [`sourcePortRange`](#parameter-securityrulespropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`sourcePortRanges`](#parameter-securityrulespropertiessourceportranges) | array | The source port ranges. |
+
+### Parameter: `securityRules.properties.access`
+
+Whether network traffic is allowed or denied.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `securityRules.properties.direction`
+
+The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Inbound'
+    'Outbound'
+  ]
+  ```
+
+### Parameter: `securityRules.properties.priority`
+
+Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `securityRules.properties.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'Ah'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `securityRules.properties.description`
+
+The description of the security rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityRules.properties.destinationAddressPrefix`
+
+Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityRules.properties.destinationAddressPrefixes`
+
+The destination address prefixes. CIDR or destination IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityRules.properties.destinationApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as destination.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityRules.properties.destinationPortRange`
+
+The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityRules.properties.destinationPortRanges`
+
+The destination port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityRules.properties.sourceAddressPrefix`
+
+The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityRules.properties.sourceAddressPrefixes`
+
+The CIDR or source IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityRules.properties.sourceApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as source.
+
+- Required: No
+- Type: array
+
+### Parameter: `securityRules.properties.sourcePortRange`
+
+The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityRules.properties.sourcePortRanges`
+
+The source port ranges.
+
+- Required: No
+- Type: array
 
 ### Parameter: `tags`
 
