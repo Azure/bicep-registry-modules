@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "18089979917703174519"
+      "version": "0.28.1.47646",
+      "templateHash": "12791869385776671140"
     },
     "name": "Hosting Environment Custom DNS Suffix Configuration",
     "description": "This module deploys a Hosting Environment Custom DNS Suffix Configuration.",
