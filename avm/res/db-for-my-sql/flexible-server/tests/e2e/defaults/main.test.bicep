@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
       tier: 'GeneralPurpose'
       maintenanceWindow: {
         customWindow: 'Enabled'
-        dayOfWeek: 'Sunday'
+        dayOfWeek: 0
         startHour: 0
         startMinute: 0
       }

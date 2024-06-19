@@ -59,7 +59,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     location: '<location>'
     maintenanceWindow: {
       customWindow: 'Enabled'
-      dayOfWeek: 'Sunday'
+      dayOfWeek: 0
       startHour: 0
       startMinute: 0
     }
@@ -102,7 +102,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "maintenanceWindow": {
       "value": {
         "customWindow": "Enabled",
-        "dayOfWeek": "Sunday",
+        "dayOfWeek": 0,
         "startHour": 0,
         "startMinute": 0
       }
@@ -561,7 +561,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     }
     maintenanceWindow: {
       customWindow: 'Enabled'
-      dayOfWeek: 'Sunday'
+      dayOfWeek: 0
       startHour: 0
       startMinute: 0
     }
@@ -615,7 +615,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "maintenanceWindow": {
       "value": {
         "customWindow": "Enabled",
-        "dayOfWeek": "Sunday",
+        "dayOfWeek": 0,
         "startHour": 0,
         "startMinute": 0
       }
