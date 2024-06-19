@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "3135450909992165111"
+      "version": "0.28.1.47646",
+      "templateHash": "10906771261412134199"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -263,6 +263,13 @@
         "description": "Optional. If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan."
       }
     },
+    "elasticScaleEnabled": {
+      "type": "bool",
+      "defaultValue": "[greater(parameters('maximumElasticWorkerCount'), 1)]",
+      "metadata": {
+        "description": "Optional. Enable/Disable ElasticScaleEnabled App Service Plan."
+      }
+    },
     "maximumElasticWorkerCount": {
       "type": "int",
       "defaultValue": 1,
@@ -377,6 +384,7 @@
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentId'))), createObject('id', parameters('appServiceEnvironmentId')), null())]",
         "perSiteScaling": "[parameters('perSiteScaling')]",
         "maximumElasticWorkerCount": "[parameters('maximumElasticWorkerCount')]",
+        "elasticScaleEnabled": "[parameters('elasticScaleEnabled')]",
         "reserved": "[parameters('reserved')]",
         "targetWorkerCount": "[parameters('targetWorkerCount')]",
         "targetWorkerSizeId": "[parameters('targetWorkerSize')]",

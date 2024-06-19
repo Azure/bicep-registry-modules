@@ -165,7 +165,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
   properties: {
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
-      : '${subscription().id}/resourceGroups/${name}-rg'
+      : '${subscription().id}/resourceGroups/rg-${name}-managed'
     parameters: union(
       // Always added parameters
       {
