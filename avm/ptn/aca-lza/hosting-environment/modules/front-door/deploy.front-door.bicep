@@ -1,14 +1,8 @@
-targetScope = 'managementGroup'
+targetScope = 'resourceGroup'
 
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('The ID of the subscription to deploy the spoke resources to.')
-param subscriptionId string
-
-@description('The name of the resource group to deploy the spoke resources to.')
-param spokeResourceGroupName string
-
 @description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
@@ -19,7 +13,7 @@ param workloadName string
 param environment string
 
 @description('The location where the resources will be created.')
-param location string = deployment().location
+param location string = resourceGroup().location
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -68,9 +62,8 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01'
 
 module naming '../naming/naming.module.bicep' = {
   name: take('06-sharedNamingDeployment-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
   params: {
-    uniqueId: uniqueString(spokeResourceGroupName)
+    uniqueId: uniqueString(resourceGroup().id)
     environment: environment
     workloadName: workloadName
     location: location
@@ -78,8 +71,7 @@ module naming '../naming/naming.module.bicep' = {
 }
 
 module privateLinkService 'private-link-service.bicep' = {
-  name: 'privateLinkServiceFrontDoorDeployment-${uniqueString(spokeResourceGroupName)}'
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
+  name: 'privateLinkServiceFrontDoorDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
     tags: tags
@@ -91,8 +83,7 @@ module privateLinkService 'private-link-service.bicep' = {
 }
 
 module frontDoor 'br/public:avm/res/cdn/profile:0.3.0' = {
-  name: 'frontDoorDeployment-${uniqueString(spokeResourceGroupName)}'
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
+  name: 'frontDoorDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'

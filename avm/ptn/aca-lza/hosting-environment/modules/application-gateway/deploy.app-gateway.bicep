@@ -1,14 +1,8 @@
-targetScope = 'managementGroup'
+targetScope = 'resourceGroup'
 
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('The ID of the subscription to deploy the spoke resources to.')
-param subscriptionId string
-
-@description('The name of the resource group to deploy the spoke resources to.')
-param spokeResourceGroupName string
-
 @description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
@@ -19,7 +13,7 @@ param workloadName string
 param environment string
 
 @description('The location where the resources will be created. This needs to be the same region as the spoke.')
-param location string = deployment().location
+param location string = resourceGroup().location
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -76,9 +70,8 @@ var keyVaultName = keyVaultIdTokens[8]
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
   name: take('06-sharedNamingDeployment-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
   params: {
-    uniqueId: uniqueString(spokeResourceGroupName)
+    uniqueId: uniqueString(resourceGroup().id)
     environment: environment
     workloadName: workloadName
     location: location
@@ -88,8 +81,8 @@ module naming '../naming/naming.module.bicep' = {
 // TODO: Check if this is required if enableApplicationCertificate is false
 @description('A user-assigned managed identity that enables Application Gateway to access Key Vault for its TLS certs.')
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
-  name: take('appGwUserAssignedIdentity-Deployment-${uniqueString(spokeResourceGroupName)}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
+  name: take('appGwUserAssignedIdentity-Deployment-${uniqueString(resourceGroup().id)}', 64)
+
   params: {
     name: naming.outputs.resourcesNames.applicationGatewayUserAssignedIdentity
     location: location
@@ -105,7 +98,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 // @description('Adds the PFX file into Azure Key Vault for consumption by Application Gateway.')
 module appGatewayAddCertificates 'app-gateway-cert.bicep' = if (!empty(base64Certificate)) {
-  name: take('appGatewayAddCertificates-Deployment-${uniqueString(spokeResourceGroupName)}', 64)
+  name: take('appGatewayAddCertificates-Deployment-${uniqueString(resourceGroup().id)}', 64)
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
   params: {
     keyVaultName: keyVaultName
@@ -116,8 +109,7 @@ module appGatewayAddCertificates 'app-gateway-cert.bicep' = if (!empty(base64Cer
 }
 
 module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.4.1' = {
-  name: take('applicationGatewayPublicIp-Deployment-${uniqueString(spokeResourceGroupName)}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
+  name: take('applicationGatewayPublicIp-Deployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
     location: location
     name: naming.outputs.resourcesNames.applicationGatewayPip
@@ -152,8 +144,7 @@ module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0
 
 @description('The Application Gateway.')
 module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' = {
-  name: take('applicationGateway-Deployment-${uniqueString(spokeResourceGroupName)}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
+  name: take('applicationGateway-Deployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
     // Required parameters
     name: naming.outputs.resourcesNames.applicationGateway

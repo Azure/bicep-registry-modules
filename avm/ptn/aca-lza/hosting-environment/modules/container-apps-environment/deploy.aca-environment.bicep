@@ -1,14 +1,8 @@
-targetScope = 'managementGroup'
+targetScope = 'resourceGroup'
 
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('The ID of the subscription to deploy the spoke resources to.')
-param subscriptionId string
-
-@description('The name of the resource group to deploy the spoke resources to.')
-param spokeResourceGroupName string
-
 @description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
@@ -19,7 +13,7 @@ param workloadName string
 param environment string
 
 @description('The location where the resources will be created. This needs to be the same region as the spoke.')
-param location string = deployment().location
+param location string = resourceGroup().location
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -62,7 +56,6 @@ var workProfileName = 'general-purpose'
 @description('The existing spoke virtual network.')
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
   name: spokeVNetName
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
 
   resource infraSubnet 'subnets' existing = {
     name: spokeInfraSubnetName
@@ -76,7 +69,6 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
   name: take('04-sharedNamingDeployment-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
   params: {
     uniqueId: uniqueString(deployment().name)
     environment: environment
@@ -88,7 +80,6 @@ module naming '../naming/naming.module.bicep' = {
 @description('Azure Application Insights, the workload\' log & metric sink and APM tool')
 module applicationInsights 'br/public:avm/res/insights/component:0.3.0' = if (enableApplicationInsights) {
   name: take('applicationInsights-${uniqueString(deployment().name)}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
   params: {
     name: naming.outputs.resourcesNames.applicationInsights
     location: location
@@ -99,7 +90,6 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.0' = if (en
 
 @description('The Azure Container Apps (ACA) cluster.')
 module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1' = {
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
   name: take('acaenv-${uniqueString(deployment().name)}', 64)
   params: {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceId
@@ -129,7 +119,6 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1
 @description('The Private DNS zone containing the ACA load balancer IP')
 module containerAppsEnvironmentPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
   name: 'privateDnsZoneDeployment-${uniqueString(deployment().name)}'
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
   params: {
     name: containerAppsEnvironment.outputs.defaultDomain
     location: location

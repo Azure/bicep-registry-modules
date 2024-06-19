@@ -1,13 +1,8 @@
-targetScope = 'managementGroup'
+targetScope = 'resourceGroup'
 
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('The ID of the subscription to deploy the spoke resources to.')
-param subscriptionId string
-
-@description('The name of the resource group to deploy the spoke resources to.')
-param spokeResourceGroupName string
 
 @description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
@@ -19,7 +14,7 @@ param workloadName string
 param environment string
 
 @description('The location where the resources will be created. This needs to be the same region as the spoke.')
-param location string = deployment().location
+param location string = resourceGroup().location
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -48,9 +43,8 @@ param deployZoneRedundantResources bool = true
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
   name: take('03-sharedNamingDeployment-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
   params: {
-    uniqueId: uniqueString(spokeResourceGroupName)
+    uniqueId: uniqueString(resourceGroup().id)
     environment: environment
     workloadName: workloadName
     location: location
@@ -59,8 +53,7 @@ module naming '../naming/naming.module.bicep' = {
 
 @description('Azure Container Registry, where all workload images should be pulled from.')
 module containerRegistry 'modules/container-registry.module.bicep' = {
-  name: 'containerRegistry-${uniqueString(spokeResourceGroupName)}'
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
+  name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
     containerRegistryName: naming.outputs.resourcesNames.containerRegistry
     location: location
@@ -77,8 +70,7 @@ module containerRegistry 'modules/container-registry.module.bicep' = {
 
 @description('Azure Key Vault used to hold items like TLS certs and application secrets that your workload will need.')
 module keyVault 'modules/key-vault.bicep' = {
-  name: 'keyVault-${uniqueString(spokeResourceGroupName)}'
-  scope: resourceGroup(subscriptionId, spokeResourceGroupName)
+  name: 'keyVault-${uniqueString(resourceGroup().id)}'
   params: {
     keyVaultName: naming.outputs.resourcesNames.keyVault
     location: location

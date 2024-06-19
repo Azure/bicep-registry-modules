@@ -124,9 +124,21 @@ var rgSpokeName = !empty(spokeResourceGroupName)
 // ------------------
 // RESOURCES
 // ------------------
+@description('User-configured naming rules')
+module naming 'modules/naming/naming.module.bicep' = {
+  scope: resourceGroup(subscriptionId, rgSpokeName)
+  name: take('02-sharedNamingDeployment-${deployment().name}', 64)
+  params: {
+    uniqueId: uniqueString(spoke.outputs.spokeResourceGroupName)
+    environment: environment
+    workloadName: workloadName
+    location: location
+  }
+}
 
 module spoke 'modules/spoke/deploy.spoke.bicep' = {
   name: take('spoke-${deployment().name}-deployment', 64)
+  scope: subscription(subscriptionId)
   params: {
     spokeResourceGroupName: rgSpokeName.name
     location: location
@@ -147,15 +159,23 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
     vmJumpboxOSType: vmJumpboxOSType
     vmJumpBoxSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
     vmAuthenticationType: vmAuthenticationType
-    deployAzurePolicies: deployAzurePolicies
+  }
+}
+
+@description('Assign built-in and custom (container-apps related) policies to the spoke subscription.')
+module policiesDeployment 'modules/policy/policies-assignement.bicep' = if (deployAzurePolicies) {
+  name: take('policyAssignments-${deployment().name}', 64)
+  params: {
+    location: location
+    spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
+    containerRegistryName: naming.outputs.resourcesNames.containerRegistry
   }
 }
 
 module supportingServices 'modules/supporting-services/deploy.supporting-services.bicep' = {
   name: take('supportingServices-${deployment().name}-deployment', 64)
+  scope: resourceGroup(subscriptionId, rgSpokeName)
   params: {
-    subscriptionId: subscriptionId
-    spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
     location: location
     tags: tags
     spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointsSubnetName
@@ -169,15 +189,14 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
 
 module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-environment.bicep' = {
   name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
+  scope: resourceGroup(subscriptionId, rgSpokeName)
   params: {
     location: location
-    subscriptionId: subscriptionId
     tags: tags
     environment: environment
     workloadName: workloadName
     hubVNetId: hubVirtualNetworkResourceId
     spokeVNetName: spoke.outputs.spokeVNetName
-    spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
     spokeInfraSubnetName: spoke.outputs.spokeInfraSubnetName
     enableApplicationInsights: enableApplicationInsights
     enableDaprInstrumentation: enableDaprInstrumentation
@@ -200,9 +219,8 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
 
 module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep' = if (exposeContainerAppsWith == 'applicationGateway') {
   name: take('applicationGateway-${deployment().name}-deployment', 64)
+  scope: resourceGroup(subscriptionId, rgSpokeName)
   params: {
-    subscriptionId: subscriptionId
-    spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
     location: location
     tags: tags
     environment: environment
@@ -223,9 +241,8 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
 
 module frontDoor 'modules/front-door/deploy.front-door.bicep' = if (exposeContainerAppsWith == 'frontDoor') {
   name: take('frontDoor-${deployment().name}-deployment', 64)
+  scope: resourceGroup(subscriptionId, rgSpokeName)
   params: {
-    subscriptionId: subscriptionId
-    spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
     location: location
     tags: tags
     environment: environment

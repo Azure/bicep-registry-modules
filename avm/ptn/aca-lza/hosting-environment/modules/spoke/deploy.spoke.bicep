@@ -1,4 +1,4 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 // ------------------
 //    PARAMETERS
@@ -84,9 +84,6 @@ param vmJumpBoxSubnetAddressPrefix string
   'password'
 ])
 param vmAuthenticationType string = 'password'
-
-@description('Optional, default value is true. If true, Azure Policies will be deployed')
-param deployAzurePolicies bool = true
 
 // ------------------
 // VARIABLES
@@ -180,7 +177,6 @@ var spokeSubnets = vmJumpboxOSType != 'none'
 
 module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   name: take('rg-${deployment().name}', 64)
-  scope: subscription(subscriptionId)
   params: {
     name: rgSpokeName
     location: location
@@ -190,7 +186,7 @@ module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
 
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   name: take('02-sharedNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(spokeResourceGroup.outputs.resourceId)
@@ -203,7 +199,7 @@ module naming '../naming/naming.module.bicep' = {
 @description('The spoke virtual network in which the workload will run from. This virtual network would normally already be provisioned by your subscription vending process, and only the subnets would need to be configured.')
 module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
   name: take('vnetSpoke-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.vnetSpoke
     location: location
@@ -216,7 +212,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
 @description('The log sink for Azure Diagnostics')
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.3.4' = {
   name: take('logAnalyticsWs-${uniqueString(spokeResourceGroup.name)}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.logAnalyticsWorkspace
     location: location
@@ -227,7 +223,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 @description('Network security group rules for the Container Apps cluster.')
 module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-group:0.2.0' = {
   name: take('nsgContainerAppsEnvironment-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.containerAppsEnvironmentNsg
     location: location
@@ -245,7 +241,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
 @description('NSG Rules for the Application Gateway.')
 module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
   name: take('nsgAppGw-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.applicationGatewayNsg
     location: location
@@ -263,7 +259,7 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!
 @description('NSG Rules for the private enpoint subnet.')
 module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
   name: take('nsgPep-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.pepNsg
     location: location
@@ -282,7 +278,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
 @description('Spoke peering to regional hub network. This peering would normally already be provisioned by your subscription vending process.')
 module peerSpokeToHub '../networking/peering.bicep' = if (!empty(hubVNetId)) {
   name: take('${deployment().name}-peerSpokeToHubDeployment', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     localVnetName: vnetSpoke.outputs.name
     remoteSubscriptionId: hubSubscriptionId
@@ -294,7 +290,7 @@ module peerSpokeToHub '../networking/peering.bicep' = if (!empty(hubVNetId)) {
 @description('The Route Table deployment')
 module egressLockdownUdr 'br/public:avm/res/network/route-table:0.2.2' = if (!empty(hubVNetId) && !empty(networkApplianceIpAddress)) {
   name: take('egressLockdownUdr-${uniqueString(spokeResourceGroup.name)}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.routeTable
     location: location
@@ -315,7 +311,7 @@ module egressLockdownUdr 'br/public:avm/res/network/route-table:0.2.2' = if (!em
 @description('An optional Linux virtual machine deployment to act as a jump box.')
 module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linux') {
   name: take('vm-linux-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     location: location
     tags: tags
@@ -336,7 +332,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
 @description('An optional Windows virtual machine deployment to act as a jump box.')
 module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == 'windows') {
   name: take('vm-windows-${deployment().name}', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     location: location
     tags: tags
@@ -349,16 +345,6 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
     vmSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
     vmNetworkInterfaceName: naming.outputs.resourcesNames.vmJumpBoxNic
     vmNetworkSecurityGroupName: naming.outputs.resourcesNames.vmJumpBoxNsg
-  }
-}
-
-@description('Assign built-in and custom (container-apps related) policies to the spoke subscription.')
-module policiesDeployment '../policy/policies-assignement.bicep' = if (deployAzurePolicies) {
-  name: take('policyAssignments-${deployment().name}', 64)
-  params: {
-    location: location
-    spokeResourceGroupName: spokeResourceGroup.name
-    containerRegistryName: naming.outputs.resourcesNames.containerRegistry
   }
 }
 
