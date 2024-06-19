@@ -98,7 +98,7 @@ param dapr object = {}
 param maxInactiveRevisions int = 0
 
 @description('Required. List of container definitions for the Container App.')
-param containers array
+param containers container[]
 
 @description('Optional. List of specialized containers that run before app containers.')
 param initContainersTemplate array = []
@@ -309,3 +309,125 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type container = {
+  @description('Optional. Container start command arguments.')
+  args: string[]?
+
+  @description('Optional. Container start command.')
+  command: string[]?
+
+  @description('Optional. Container environment variables.')
+  env: environmentVar[]?
+
+  @description('Required. Container image tag.')
+  image: string
+
+  @description('Optional. Custom container name.')
+  name: string?
+
+  @description('Optional. List of probes for the container.')
+  probes: containerAppProbe[]?
+
+  @description('Required. Container resource requirements.')
+  resources: object
+
+  @description('Optional. Container volume mounts.')
+  volumeMounts: volumeMount[]?
+}
+
+type environmentVar = {
+  @description('Required. Environment variable name.')
+  name: string
+
+  @description('Optional. Name of the Container App secret from which to pull the environment variable value.')
+  secretRef: string?
+
+  @description('Optional. Non-secret environment variable value.')
+  value: string?
+}
+
+type containerAppProbe = {
+  @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
+  @minValue(1)
+  @maxValue(10)
+  failureThreshold: int?
+
+  @description('Optional. HTTPGet specifies the http request to perform.')
+  httpGet: containerAppProbeHttpGet?
+
+  @description('Optional. Number of seconds after the container has started before liveness probes are initiated.')
+  @minValue(1)
+  @maxValue(60)
+  initialDelaySeconds: int?
+
+  @description('Optional. How often (in seconds) to perform the probe. Default to 10 seconds.')
+  @minValue(1)
+  @maxValue(240)
+  periodSeconds: int?
+
+  @description('Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup.')
+  @minValue(1)
+  @maxValue(10)
+  successThreshold: int?
+
+  @description('Optional. TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.')
+  tcpSocket: containerAppProbeTcpSocket?
+
+  @description('Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod\'s terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour).')
+  terminationGracePeriodSeconds: int?
+
+  @description('Optional. Number of seconds after which the probe times out. Defaults to 1 second.')
+  @minValue(1)
+  @maxValue(240)
+  timeoutSeconds: int?
+
+  @description('Optional. The type of probe.')
+  type: ('Liveness' | 'Startup' | 'Readiness')?
+}
+
+type containerAppProbeHttpGet = {
+  @description('Optional. Host name to connect to. Defaults to the pod IP.')
+  host: string?
+
+  @description('Optional. HTTP headers to set in the request.')
+  httpHeaders: containerAppProbeHttpGetHeadersItem[]?
+
+  @description('Required. Path to access on the HTTP server.')
+  path: string
+
+  @description('Required. Name or number of the port to access on the container.')
+  port: int
+
+  @description('Optional. Scheme to use for connecting to the host. Defaults to HTTP.')
+  scheme: ('HTTP' | 'HTTPS')?
+}
+
+type containerAppProbeHttpGetHeadersItem = {
+  @description('Required. Name of the header.')
+  name: string
+
+  @description('Required. Value of the header.')
+  value: string
+}
+
+type containerAppProbeTcpSocket = {
+  @description('Optional. Host name to connect to, defaults to the pod IP.')
+  host: string?
+
+  @description('Required. Number of the port to access on the container. Name must be an IANA_SVC_NAME.')
+  @minValue(1)
+  @maxValue(65535)
+  port: int
+}
+
+type volumeMount = {
+  @description('Required. Path within the container at which the volume should be mounted.Must not contain \':\'.')
+  mountPath: string
+
+  @description('Optional. Path within the volume from which the container\'s volume should be mounted. Defaults to "" (volume\'s root).')
+  subPath: string?
+
+  @description('Required. This must match the Name of a Volume.')
+  volumeName: string
+}

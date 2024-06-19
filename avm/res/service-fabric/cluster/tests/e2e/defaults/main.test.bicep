@@ -45,6 +45,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       managementEndpoint: 'https://${namePrefix}${serviceShort}001.westeurope.cloudapp.azure.com:19080'
       reliabilityLevel: 'None'
+      certificate: {
+        thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      }
       nodeTypes: [
         {
           applicationPorts: {

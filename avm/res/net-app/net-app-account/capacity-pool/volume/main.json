@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "9587584861242006945"
+      "version": "0.28.1.47646",
+      "templateHash": "308407733537316660"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -172,7 +172,7 @@
     "netAppAccount::capacityPool": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
       "dependsOn": [
         "netAppAccount"
@@ -181,12 +181,12 @@
     "netAppAccount": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('netAppAccountName')]"
     },
     "volume": {
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -251,7 +251,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('volume', '2022-11-01', 'full').location]"
+      "value": "[reference('volume', '2023-11-01', 'full').location]"
     }
   }
 }
