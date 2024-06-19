@@ -21,7 +21,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-01-01' existi
   name: flexibleServerName
 }
 
-resource administrator 'Microsoft.DBforMySQL/flexibleServers/administrators@2022-01-01' = {
+resource administrator 'Microsoft.DBforMySQL/flexibleServers/administrators@2023-06-30' = {
   name: 'ActiveDirectory'
   parent: flexibleServer
   properties: {

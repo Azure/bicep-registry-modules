@@ -49,8 +49,14 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
+      maintenanceWindow: {
+        maintenanceWindow: 'Enabled'
+        dayOfWeek: 0
+        startHour: 0
+        startMinute: 0
+      }
       skuName: 'Standard_B1ms'
-      tier: 'Burstable'
+      tier: 'GeneralPurpose'
     }
   }
 ]

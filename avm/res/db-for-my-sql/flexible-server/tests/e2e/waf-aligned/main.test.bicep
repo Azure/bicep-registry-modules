@@ -54,6 +54,12 @@ module testDeployment '../../../main.bicep' = [
       administratorLoginPassword: password
       highAvailability: 'ZoneRedundant'
       highAvailabilityZone: '2'
+      maintenanceWindow: {
+        maintenanceWindow: 'Enabled'
+        dayOfWeek: 0
+        startHour: 0
+        startMinute: 0
+      }
       skuName: 'Standard_B1ms'
       tier: 'GeneralPurpose'
       storageAutoGrow: 'Enabled'
