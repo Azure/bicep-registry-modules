@@ -107,6 +107,9 @@ param deployAzurePolicies bool = true
 ])
 param exposeContainerAppsWith string = 'applicationGateway'
 
+@description('Optional. Deploy sample application to the container apps environment.')
+param deploySampleApplication bool = false
+
 @description('Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus')
 param enableDdosProtection bool = false
 
@@ -183,6 +186,18 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
   }
 }
 
+module sampleApplication 'modules/sample-application/deploy.sample-application.bicep' = if (deploySampleApplication) {
+  name: take('sampleApplication-${deployment().name}-deployment', 64)
+  scope: resourceGroup(subscriptionId, rgSpokeName)
+  params: {
+    location: location
+    tags: tags
+    containerAppsEnvironmentId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
+    workloadProfileName: containerAppsEnvironment.outputs.workloadProfileNames[0]
+    containerRegistryUserAssignedIdentityId: supportingServices.outputs.containerRegistryUserAssignedIdentityId
+  }
+}
+
 module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep' = if (exposeContainerAppsWith == 'applicationGateway') {
   name: take('applicationGateway-${deployment().name}-deployment', 64)
   params: {
@@ -194,7 +209,9 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
     workloadName: workloadName
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFqdn: applicationGatewayFqdn
-    applicationGatewayPrimaryBackendEndFqdn: ''
+    applicationGatewayPrimaryBackendEndFqdn: (deploySampleApplication)
+      ? sampleApplication.outputs.helloWorldAppFqdn
+      : ''
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     base64Certificate: base64Certificate
     keyVaultId: supportingServices.outputs.keyVaultId
@@ -214,7 +231,7 @@ module frontDoor 'modules/front-door/deploy.front-door.bicep' = if (exposeContai
     environment: environment
     workloadName: workloadName
     containerAppsEnvironmentId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
-    frontDoorOriginHostName: '' //appFQDN
+    frontDoorOriginHostName: (deploySampleApplication) ? sampleApplication.outputs.helloWorldAppFqdn : ''
     privateLinkSubnetId: spoke.outputs.spokeInfraSubnetId
   }
 }
@@ -291,6 +308,21 @@ output keyVaultId string = supportingServices.outputs.keyVaultId
 
 @description('The name of the key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
+
+// Application Gateway
+output applicationGatewayId string = (exposeContainerAppsWith == 'applicationGateway')
+  ? applicationGateway.outputs.applicationGatewayResourceId
+  : ''
+
+@description('The FQDN of the Azure Application Gateway.')
+output applicationGatewayFqdn string = (exposeContainerAppsWith == 'applicationGateway')
+  ? applicationGateway.outputs.applicationGatewayFqdn
+  : ''
+
+@description('The public IP address of the Azure Application Gateway.')
+output applicationGatewayPublicIp string = (exposeContainerAppsWith == 'applicationGateway')
+  ? applicationGateway.outputs.applicationGatewayPublicIp
+  : ''
 
 // Container Apps Environment
 @description('The resource ID of the container apps environment.')

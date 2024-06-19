@@ -158,37 +158,41 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
     // Required parameters
     name: naming.outputs.resourcesNames.applicationGateway
     // Non-required parameters
-    backendAddressPools: [
-      {
-        name: 'acaServiceBackend'
-        properties: {
-          backendAddresses: [
-            {
-              fqdn: applicationGatewayPrimaryBackendEndFqdn
+    backendAddressPools: (!empty(applicationGatewayPrimaryBackendEndFqdn))
+      ? [
+          {
+            name: 'acaServiceBackend'
+            properties: {
+              backendAddresses: [
+                {
+                  fqdn: applicationGatewayPrimaryBackendEndFqdn
+                }
+              ]
             }
-          ]
-        }
-      }
-    ]
-    backendHttpSettingsCollection: [
-      {
-        name: 'https'
-        properties: {
-          port: 443
-          protocol: 'Https'
-          cookieBasedAffinity: 'Disabled'
-          pickHostNameFromBackendAddress: true
-          requestTimeout: 20
-          probe: {
-            id: resourceId(
-              'Microsoft.Network/applicationGateways/probes',
-              naming.outputs.resourcesNames.applicationGateway,
-              'webProbe'
-            )
           }
-        }
-      }
-    ]
+        ]
+      : []
+    backendHttpSettingsCollection: (!empty(applicationGatewayPrimaryBackendEndFqdn))
+      ? [
+          {
+            name: 'https'
+            properties: {
+              port: 443
+              protocol: 'Https'
+              cookieBasedAffinity: 'Disabled'
+              pickHostNameFromBackendAddress: true
+              requestTimeout: 20
+              probe: {
+                id: resourceId(
+                  'Microsoft.Network/applicationGateways/probes',
+                  naming.outputs.resourcesNames.applicationGateway,
+                  'webProbe'
+                )
+              }
+            }
+          }
+        ]
+      : []
     diagnosticSettings: [
       {
         metricCategories: [
@@ -312,27 +316,29 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
         }
       }
     ]
-    requestRoutingRules: [
-      {
-        name: 'routingRules'
-        properties: {
-          ruleType: 'Basic'
-          priority: 100
-          httpListener: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
+    requestRoutingRules: (!empty(applicationGatewayPrimaryBackendEndFqdn))
+      ? [
+          {
+            name: 'routingRules'
+            properties: {
+              ruleType: 'Basic'
+              priority: 100
+              httpListener: {
+                #disable-next-line use-resource-id-functions
+                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
+              }
+              backendAddressPool: {
+                #disable-next-line use-resource-id-functions
+                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
+              }
+              backendHttpSettings: {
+                #disable-next-line use-resource-id-functions
+                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
+              }
+            }
           }
-          backendAddressPool: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
-          }
-          backendHttpSettings: {
-            #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
-          }
-        }
-      }
-    ]
+        ]
+      : []
     sku: 'WAF_v2'
     sslCertificates: (!empty(base64Certificate))
       ? [
@@ -368,6 +374,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
 // ------------------
 // OUTPUTS
 // ------------------
+
+@description('The resource ID of the Azure Application Gateway.')
+output applicationGatewayResourceId string = applicationGateway.outputs.resourceId
 
 @description('The FQDN of the Azure Application Gateway.')
 output applicationGatewayFqdn string = applicationGatewayFqdn

@@ -118,43 +118,45 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.3.0' = {
       isHttpsAllowed: true
       queryStringCachingBehavior: 'IgnoreQueryString'
     }
-    originGroups: [
-      {
-        name: frontDoorOriginGroupName
-        loadBalancingSettings: {
-          sampleSize: 4
-          successfulSamplesRequired: 3
-          additionalLatencyInMilliseconds: 50
-        }
-        healthProbeSettings: {
-          probePath: '/'
-          probeRequestType: 'HEAD'
-          probeProtocol: 'Https'
-          probeIntervalInSeconds: 100
-        }
-        sessionAffinityState: 'Disabled'
-        origins: [
+    originGroups: (!empty(frontDoorOriginHostName))
+      ? [
           {
-            name: frontDoorOriginName
-            hostName: frontDoorOriginHostName
-            httpPort: 80
-            httpsPort: 443
-            originHostHeader: frontDoorOriginHostName
-            priority: 1
-            weight: 1000
-            enabledState: 'Enabled'
-            sharedPrivateLinkResource: {
-              privateLink: {
-                id: privateLinkService.outputs.privateLinkServiceId
-              }
-              privateLinkLocation: location
-              requestMessage: 'frontdoor'
+            name: frontDoorOriginGroupName
+            loadBalancingSettings: {
+              sampleSize: 4
+              successfulSamplesRequired: 3
+              additionalLatencyInMilliseconds: 50
             }
-            enforceCertificateNameCheck: true
+            healthProbeSettings: {
+              probePath: '/'
+              probeRequestType: 'HEAD'
+              probeProtocol: 'Https'
+              probeIntervalInSeconds: 100
+            }
+            sessionAffinityState: 'Disabled'
+            origins: [
+              {
+                name: frontDoorOriginName
+                hostName: frontDoorOriginHostName
+                httpPort: 80
+                httpsPort: 443
+                originHostHeader: frontDoorOriginHostName
+                priority: 1
+                weight: 1000
+                enabledState: 'Enabled'
+                sharedPrivateLinkResource: {
+                  privateLink: {
+                    id: privateLinkService.outputs.privateLinkServiceId
+                  }
+                  privateLinkLocation: location
+                  requestMessage: 'frontdoor'
+                }
+                enforceCertificateNameCheck: true
+              }
+            ]
           }
         ]
-      }
-    ]
+      : []
     afdEndpoints: [
       {
         name: frontDoorEndpointName
@@ -187,14 +189,14 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.3.0' = {
 // OUTPUTS
 // ------------------
 
-// Outputs including the private link endpoint connection ID to approve
-output result object = {
-  //fqdn: frontDoor.outputs.fqdn not supported in this module
-  privateLinkServiceId: privateLinkService.outputs.privateLinkServiceId
-  privateLinkEndpointConnectionId: length(privateLinkService.outputs.privateEndpointConnections) > 0
-    ? filter(
-        privateLinkService.outputs.privateEndpointConnections,
-        (connection) => connection.properties.privateLinkServiceConnectionState.description == 'frontdoor'
-      )[0].id
-    : ''
-}
+@description('The ID of the front door resource.')
+output frontDoorResourceId string = frontDoor.outputs.resourceId
+@description('The ID of the private link service.')
+output privateLinkServiceId string = privateLinkService.outputs.privateLinkServiceId
+@description('The ID of the private link endpoint connection to approve.')
+output privateLinkEndpointConnectionId string = length(privateLinkService.outputs.privateEndpointConnections) > 0
+  ? filter(
+      privateLinkService.outputs.privateEndpointConnections,
+      (connection) => connection.properties.privateLinkServiceConnectionState.description == 'frontdoor'
+    )[0].id
+  : ''

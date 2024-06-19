@@ -53,6 +53,7 @@ param containerRegistryUserAssignedIdentityId string
 // ------------------
 // VARIABLES
 // ------------------
+var workProfileName = 'general-purpose'
 
 // ------------------
 // EXISTING RESOURCES
@@ -117,7 +118,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1
       {
         maximumCount: 3
         minimumCount: 0
-        name: 'general-purpose'
+        name: workProfileName
         workloadProfileType: 'D4'
       }
     ]
@@ -168,4 +169,8 @@ output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.reso
 @description('The name of the Container Apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.name
 
+@description('The name of the Application Insights instance.')
 output applicationInsightsName string = (enableApplicationInsights) ? applicationInsights.outputs.name : ''
+
+@description('The name of the workload profiles provisioned in the Container Apps environment.')
+output workloadProfileNames array = [workProfileName]
