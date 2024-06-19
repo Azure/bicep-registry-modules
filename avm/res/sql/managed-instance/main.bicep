@@ -200,24 +200,24 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' = {
   name: name
@@ -256,17 +256,16 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' = {
   }
 }
 
-resource managedInstance_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: managedInstance
+resource managedInstance_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: managedInstance
+}
 
 resource managedInstance_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -346,49 +345,47 @@ module managedInstance_databases 'database/main.bicep' = [
   }
 ]
 
-module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' =
-  if (!empty(securityAlertPoliciesObj)) {
-    name: '${uniqueString(deployment().name, location)}-SqlMi-SecAlertPol'
-    params: {
-      managedInstanceName: managedInstance.name
-      name: securityAlertPoliciesObj.name
-      emailAccountAdmins: contains(securityAlertPoliciesObj, 'emailAccountAdmins')
-        ? securityAlertPoliciesObj.emailAccountAdmins
-        : false
-      state: contains(securityAlertPoliciesObj, 'state') ? securityAlertPoliciesObj.state : 'Disabled'
-    }
+module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = if (!empty(securityAlertPoliciesObj)) {
+  name: '${uniqueString(deployment().name, location)}-SqlMi-SecAlertPol'
+  params: {
+    managedInstanceName: managedInstance.name
+    name: securityAlertPoliciesObj.name
+    emailAccountAdmins: contains(securityAlertPoliciesObj, 'emailAccountAdmins')
+      ? securityAlertPoliciesObj.emailAccountAdmins
+      : false
+    state: contains(securityAlertPoliciesObj, 'state') ? securityAlertPoliciesObj.state : 'Disabled'
   }
+}
 
-module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' =
-  if (!empty(vulnerabilityAssessmentsObj) && (managedIdentities.?systemAssigned ?? false)) {
-    name: '${uniqueString(deployment().name, location)}-SqlMi-VulnAssessm'
-    params: {
-      managedInstanceName: managedInstance.name
-      name: vulnerabilityAssessmentsObj.name
-      recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
-        ? vulnerabilityAssessmentsObj.recurringScansEmails
-        : []
-      recurringScansEmailSubscriptionAdmins: contains(
-          vulnerabilityAssessmentsObj,
-          'recurringScansEmailSubscriptionAdmins'
-        )
-        ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
-        : false
-      recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
-        ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
-        : false
-      storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-      useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
-        ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
-        : false
-      createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
-        ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
-        : true
-    }
-    dependsOn: [
-      managedInstance_securityAlertPolicy
-    ]
+module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessmentsObj) && (managedIdentities.?systemAssigned ?? false)) {
+  name: '${uniqueString(deployment().name, location)}-SqlMi-VulnAssessm'
+  params: {
+    managedInstanceName: managedInstance.name
+    name: vulnerabilityAssessmentsObj.name
+    recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
+      ? vulnerabilityAssessmentsObj.recurringScansEmails
+      : []
+    recurringScansEmailSubscriptionAdmins: contains(
+        vulnerabilityAssessmentsObj,
+        'recurringScansEmailSubscriptionAdmins'
+      )
+      ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
+      : false
+    recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
+      ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
+      : false
+    storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
+    useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
+      ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
+      : false
+    createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
+      ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
+      : true
   }
+  dependsOn: [
+    managedInstance_securityAlertPolicy
+  ]
+}
 
 module managedInstance_keys 'key/main.bicep' = [
   for (key, index) in keys: {
@@ -402,34 +399,32 @@ module managedInstance_keys 'key/main.bicep' = [
   }
 ]
 
-module managedInstance_encryptionProtector 'encryption-protector/main.bicep' =
-  if (!empty(encryptionProtectorObj)) {
-    name: '${uniqueString(deployment().name, location)}-SqlMi-EncryProtector'
-    params: {
-      managedInstanceName: managedInstance.name
-      serverKeyName: encryptionProtectorObj.serverKeyName
-      serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
-        ? encryptionProtectorObj.serverKeyType
-        : 'ServiceManaged'
-      autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
-        ? encryptionProtectorObj.autoRotationEnabled
-        : true
-    }
-    dependsOn: [
-      managedInstance_keys
-    ]
+module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtectorObj)) {
+  name: '${uniqueString(deployment().name, location)}-SqlMi-EncryProtector'
+  params: {
+    managedInstanceName: managedInstance.name
+    serverKeyName: encryptionProtectorObj.serverKeyName
+    serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
+      ? encryptionProtectorObj.serverKeyType
+      : 'ServiceManaged'
+    autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
+      ? encryptionProtectorObj.autoRotationEnabled
+      : true
   }
+  dependsOn: [
+    managedInstance_keys
+  ]
+}
 
-module managedInstance_administrator 'administrator/main.bicep' =
-  if (!empty(administratorsObj)) {
-    name: '${uniqueString(deployment().name, location)}-SqlMi-Admin'
-    params: {
-      managedInstanceName: managedInstance.name
-      login: administratorsObj.name
-      sid: administratorsObj.sid
-      tenantId: contains(administratorsObj, 'tenantId') ? administratorsObj.tenantId : ''
-    }
+module managedInstance_administrator 'administrator/main.bicep' = if (!empty(administratorsObj)) {
+  name: '${uniqueString(deployment().name, location)}-SqlMi-Admin'
+  params: {
+    managedInstanceName: managedInstance.name
+    login: administratorsObj.name
+    sid: administratorsObj.sid
+    tenantId: contains(administratorsObj, 'tenantId') ? administratorsObj.tenantId : ''
   }
+}
 
 @description('The name of the deployed managed instance.')
 output name string = managedInstance.name
