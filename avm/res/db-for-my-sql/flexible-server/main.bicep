@@ -251,7 +251,7 @@ resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdent
   )
 }
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview' = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
   name: name
   location: location
   tags: tags
