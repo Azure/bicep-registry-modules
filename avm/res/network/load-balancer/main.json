@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13683964905263959387"
+      "version": "0.28.1.47646",
+      "templateHash": "17024389124356297408"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -307,7 +307,8 @@
             "privateIPAllocationMethod": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'subnetId'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].subnetId))), if(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'privateIPAddress'), 'Static', 'Dynamic'), null())]",
             "gatewayLoadBalancer": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'gatewayLoadBalancer'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].gatewayLoadBalancer))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].gatewayLoadBalancer), null())]",
             "publicIPPrefix": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'publicIPPrefix'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPPrefix))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPPrefix), null())]"
-          }
+          },
+          "zones": "[if(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'zones'), map(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].zones, lambda('zone', string(lambdaVariables('zone')))), if(not(empty(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'subnetResourceId'))), createArray('1', '2', '3'), null()))]"
         }
       },
       {
@@ -524,8 +525,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17412878196552582226"
+              "version": "0.28.1.47646",
+              "templateHash": "12599435098613045377"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -661,8 +662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "7362889285586557037"
+              "version": "0.28.1.47646",
+              "templateHash": "18107219293143755407"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",

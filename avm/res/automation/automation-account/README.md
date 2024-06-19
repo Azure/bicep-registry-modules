@@ -18,6 +18,7 @@ This module deploys an Azure Automation Account.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automation/automationAccounts` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts) |
+| `Microsoft.Automation/automationAccounts/credentials` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials) |
 | `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
 | `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
 | `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
@@ -179,6 +180,19 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     // Required parameters
     name: 'aamax001'
     // Non-required parameters
+    credentials: [
+      {
+        description: 'Description of Credential01'
+        name: 'Credential01'
+        password: '<password>'
+        userName: 'userName01'
+      }
+      {
+        name: 'Credential02'
+        password: '<password>'
+        userName: 'username02'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -406,6 +420,21 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       "value": "aamax001"
     },
     // Non-required parameters
+    "credentials": {
+      "value": [
+        {
+          "description": "Description of Credential01",
+          "name": "Credential01",
+          "password": "<password>",
+          "userName": "userName01"
+        },
+        {
+          "name": "Credential02",
+          "password": "<password>",
+          "userName": "username02"
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1090,6 +1119,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`credentials`](#parameter-credentials) | array | List of credentials to be created in the automation account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable local authentication profile used within the resource. |
@@ -1116,6 +1146,56 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 Name of the Automation Account.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `credentials`
+
+List of credentials to be created in the automation account.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-credentialsname) | string | Name of the Automation Account credential. |
+| [`password`](#parameter-credentialspassword) | securestring | Password of the credential. |
+| [`userName`](#parameter-credentialsusername) | string | The user name associated to the credential. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-credentialsdescription) | string | Description of the credential. |
+
+### Parameter: `credentials.name`
+
+Name of the Automation Account credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentials.password`
+
+Password of the credential.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `credentials.userName`
+
+The user name associated to the credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `credentials.description`
+
+Description of the credential.
+
+- Required: No
 - Type: string
 
 ### Parameter: `customerManagedKey`

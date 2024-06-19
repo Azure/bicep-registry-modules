@@ -5,14 +5,147 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2708589601167951653"
+      "version": "0.28.1.47646",
+      "templateHash": "3456931451481989704"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "certificateType": {
+      "type": "object",
+      "properties": {
+        "thumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The thumbprint of the primary certificate."
+          }
+        },
+        "thumbprintSecondary": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The thumbprint of the secondary certificate."
+          }
+        },
+        "x509StoreName": {
+          "type": "string",
+          "allowedValues": [
+            "AddressBook",
+            "AuthRoot",
+            "CertificateAuthority",
+            "Disallowed",
+            "My",
+            "Root",
+            "TrustedPeople",
+            "TrustedPublisher"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local certificate store location."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "certificateCommonNameType": {
+      "type": "object",
+      "properties": {
+        "commonNames": {
+          "$ref": "#/definitions/serverCertificateCommonNameType",
+          "metadata": {
+            "description": "Required. The list of server certificates referenced by common name that are used to secure the cluster."
+          }
+        },
+        "x509StoreName": {
+          "type": "string",
+          "allowedValues": [
+            "AddressBook",
+            "AuthRoot",
+            "CertificateAuthority",
+            "Disallowed",
+            "My",
+            "Root",
+            "TrustedPeople",
+            "TrustedPublisher"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local certificate store location."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "serverCertificateCommonNameType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "certificateCommonName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The common name of the server certificate."
+            }
+          },
+          "certificateIssuerThumbprint": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The issuer thumbprint of the server certificate."
+            }
+          }
+        }
+      }
+    },
+    "clientCertificateCommonNameType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "certificateCommonName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The common name of the client certificate."
+            }
+          },
+          "certificateIssuerThumbprint": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The issuer thumbprint of the client certificate."
+            }
+          },
+          "isAdmin": {
+            "type": "bool",
+            "metadata": {
+              "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "clientCertificateThumbprintType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "certificateThumbprint": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The thumbprint of the client certificate."
+            }
+          },
+          "isAdmin": {
+            "type": "bool",
+            "metadata": {
+              "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -160,31 +293,27 @@
       }
     },
     "certificate": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/certificateType",
       "metadata": {
-        "description": "Optional. Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location."
+        "description": "Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used."
       }
     },
     "certificateCommonNames": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/certificateCommonNameType",
       "metadata": {
-        "description": "Optional. Describes a list of server certificates referenced by common name that are used to secure the cluster."
+        "description": "Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used."
       }
     },
     "clientCertificateCommonNames": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/clientCertificateCommonNameType",
       "metadata": {
-        "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster."
+        "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used."
       }
     },
     "clientCertificateThumbprints": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/clientCertificateThumbprintType",
       "metadata": {
-        "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster."
+        "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used."
       }
     },
     "clusterCodeVersion": {
@@ -373,19 +502,19 @@
     "copy": [
       {
         "name": "clientCertificateCommonNamesVar",
-        "count": "[length(parameters('clientCertificateCommonNames'))]",
+        "count": "[length(coalesce(parameters('clientCertificateCommonNames'), createArray()))]",
         "input": {
-          "certificateCommonName": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'certificateCommonName'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].certificateCommonName, null())]",
-          "certificateIssuerThumbprint": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'certificateIssuerThumbprint'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].certificateIssuerThumbprint, null())]",
-          "isAdmin": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'isAdmin'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].isAdmin, false())]"
+          "certificateCommonName": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].certificateCommonName]",
+          "certificateIssuerThumbprint": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].certificateIssuerThumbprint]",
+          "isAdmin": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].isAdmin]"
         }
       },
       {
         "name": "clientCertificateThumbprintsVar",
-        "count": "[length(parameters('clientCertificateThumbprints'))]",
+        "count": "[length(coalesce(parameters('clientCertificateThumbprints'), createArray()))]",
         "input": {
-          "certificateThumbprint": "[if(contains(parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')], 'certificateThumbprint'), parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')].certificateThumbprint, null())]",
-          "isAdmin": "[if(contains(parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')], 'isAdmin'), parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')].isAdmin, false())]"
+          "certificateThumbprint": "[coalesce(parameters('clientCertificateThumbprints'), createArray())[copyIndex('clientCertificateThumbprintsVar')].certificateThumbprint]",
+          "isAdmin": "[coalesce(parameters('clientCertificateThumbprints'), createArray())[copyIndex('clientCertificateThumbprintsVar')].isAdmin]"
         }
       },
       {
@@ -439,7 +568,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.servicefabric-cluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -468,10 +597,10 @@
           "maxUnusedVersionsToKeep": "[parameters('maxUnusedVersionsToKeep')]"
         },
         "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', if(contains(parameters('azureActiveDirectory'), 'clientApplication'), parameters('azureActiveDirectory').clientApplication, null()), 'clusterApplication', if(contains(parameters('azureActiveDirectory'), 'clusterApplication'), parameters('azureActiveDirectory').clusterApplication, null()), 'tenantId', if(contains(parameters('azureActiveDirectory'), 'tenantId'), parameters('azureActiveDirectory').tenantId, null())), null())]",
-        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', if(contains(parameters('certificate'), 'thumbprint'), parameters('certificate').thumbprint, null()), 'thumbprintSecondary', if(contains(parameters('certificate'), 'thumbprintSecondary'), parameters('certificate').thumbprintSecondary, null()), 'x509StoreName', if(contains(parameters('certificate'), 'x509StoreName'), parameters('certificate').x509StoreName, null())), null())]",
-        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', if(contains(parameters('certificateCommonNames'), 'commonNames'), parameters('certificateCommonNames').commonNames, null()), 'x509StoreName', if(contains(parameters('certificateCommonNames'), 'certificateCommonNamesx509StoreName'), parameters('certificateCommonNames').certificateCommonNamesx509StoreName, null())), null())]",
-        "clientCertificateCommonNames": "[if(not(empty(parameters('clientCertificateCommonNames'))), variables('clientCertificateCommonNamesVar'), null())]",
-        "clientCertificateThumbprints": "[if(not(empty(parameters('clientCertificateThumbprints'))), variables('clientCertificateThumbprintsVar'), null())]",
+        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', coalesce(tryGet(parameters('certificate'), 'thumbprintSecondary'), null()), 'x509StoreName', coalesce(tryGet(parameters('certificate'), 'x509StoreName'), null())), null())]",
+        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', coalesce(tryGet(parameters('certificateCommonNames'), 'commonNames'), createArray()), 'x509StoreName', coalesce(tryGet(parameters('certificateCommonNames'), 'x509StoreName'), null())), null())]",
+        "clientCertificateCommonNames": "[variables('clientCertificateCommonNamesVar')]",
+        "clientCertificateThumbprints": "[variables('clientCertificateThumbprintsVar')]",
         "clusterCodeVersion": "[parameters('clusterCodeVersion')]",
         "diagnosticsStorageAccountConfig": "[if(not(empty(parameters('diagnosticsStorageAccountConfig'))), createObject('blobEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'blobEndpoint'), parameters('diagnosticsStorageAccountConfig').blobEndpoint, null()), 'protectedAccountKeyName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName, null()), 'protectedAccountKeyName2', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName2'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName2, null()), 'queueEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'queueEndpoint'), parameters('diagnosticsStorageAccountConfig').queueEndpoint, null()), 'storageAccountName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'storageAccountName'), parameters('diagnosticsStorageAccountConfig').storageAccountName, null()), 'tableEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'tableEndpoint'), parameters('diagnosticsStorageAccountConfig').tableEndpoint, null())), null())]",
         "eventStoreServiceEnabled": "[parameters('eventStoreServiceEnabled')]",
@@ -561,8 +690,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4241007545422374207"
+              "version": "0.28.1.47646",
+              "templateHash": "10847125060034010702"
             },
             "name": "Service Fabric Cluster Application Types",
             "description": "This module deploys a Service Fabric Cluster Application Type.",

@@ -5,6 +5,12 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the NetApp account.')
 param name string
 
+@description('Optional. Enable AES encryption on the SMB Server.')
+param aesEncryption bool = false
+
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyType
+
 @description('Optional. Fully Qualified Active Directory DNS Domain Name (e.g. \'contoso.com\').')
 param domainName string = ''
 
@@ -33,6 +39,9 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@description('Optional. Specifies whether or not the LDAP traffic needs to be signed.')
+param ldapSigning bool = false
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -47,10 +56,12 @@ param enableTelemetry bool = true
 
 var activeDirectoryConnectionProperties = [
   {
+    aesEncryption: !empty(domainName) ? aesEncryption : false
     username: !empty(domainName) ? domainJoinUser : null
     password: !empty(domainName) ? domainJoinPassword : null
     domain: !empty(domainName) ? domainName : null
     dns: !empty(domainName) ? dnsServers : null
+    ldapSigning: !empty(domainName) ? ldapSigning : false
     smbServerName: !empty(domainName) ? smbServerNamePrefix : null
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
   }
@@ -83,46 +94,80 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' = {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
+
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' = {
   name: name
   tags: tags
   identity: identity
   location: location
   properties: {
     activeDirectories: !empty(domainName) ? activeDirectoryConnectionProperties : null
+    encryption: !empty(customerManagedKey)
+      ? {
+          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? {
+                userAssignedIdentity: cMKUserAssignedIdentity.id
+              }
+            : null
+          keySource: 'Microsoft.KeyVault'
+          keyVaultProperties: {
+            keyName: customerManagedKey!.keyName
+            keyVaultResourceId: cMKKeyVault.id
+            keyVaultUri: cMKKeyVault.properties.vaultUri
+          }
+        }
+      : null
   }
 }
 
-resource netAppAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: netAppAccount
+resource netAppAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: netAppAccount
+}
 
 resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -214,3 +259,17 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type customerManagedKeyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+
+  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
+  keyVersion: string?
+
+  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
+  userAssignedIdentityResourceId: string?
+}?

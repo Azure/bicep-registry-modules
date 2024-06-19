@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Certificate'
-metadata description = 'This instance deploys the module with a certificate.'
+metadata name = 'Test deploying apim v2 sku'
+metadata description = 'This instance deploys the module using a v2 SKU with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with a certificate.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-servicefabric.clusters-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sfccer'
+param serviceShort string = 'apisv2s'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -41,31 +41,11 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      managementEndpoint: 'https://${namePrefix}${serviceShort}001.westeurope.cloudapp.azure.com:19080'
-      reliabilityLevel: 'None'
-      certificate: {
-        thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        x509StoreName: 'My'
-      }
-      nodeTypes: [
-        {
-          applicationPorts: {
-            endPort: 30000
-            startPort: 20000
-          }
-          clientConnectionEndpointPort: 19000
-          durabilityLevel: 'Bronze'
-          ephemeralPorts: {
-            endPort: 65534
-            startPort: 49152
-          }
-          httpGatewayEndpointPort: 19080
-          isPrimary: true
-          name: 'Node01'
-        }
-      ]
+      location: resourceLocation
+      sku: 'BasicV2'
+      publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+      publisherName: '${namePrefix}-az-amorg-x-001'
     }
   }
 ]
