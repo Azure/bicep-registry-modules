@@ -206,3 +206,5 @@ configuration:
                 > If this is a module-related PR, being submitted by the sole owner of the module, the AVM core team must review and approve it (as module owners can't approve their on PRs).
                 >
                 > **To indicate this PR needs the core team''s attention, apply the "Needs: Core Team 🧞" label!**
+                >
+                > The core team will only review and approve PRs that have this label applied!
