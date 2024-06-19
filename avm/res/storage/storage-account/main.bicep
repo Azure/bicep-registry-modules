@@ -75,7 +75,7 @@ param networkAcls networkAclsType?
 param requireInfrastructureEncryption bool = true
 
 @description('Optional. Allow or disallow cross AAD tenant object replication.')
-param allowCrossTenantReplication bool = true
+param allowCrossTenantReplication bool = false
 
 @description('Optional. Sets the custom domain name assigned to the storage account. Name is the CNAME source.')
 param customDomainName string = ''
@@ -280,7 +280,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
