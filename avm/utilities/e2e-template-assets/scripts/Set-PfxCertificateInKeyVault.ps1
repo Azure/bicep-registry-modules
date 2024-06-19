@@ -26,20 +26,20 @@ Mandatory. The name of the Secret to store the Secret in
 Generate a Certificate and store it as the Secret 'pfxCertificatePassword' in the Key Vault 'vault-rg' of Resource Group 'storage-rg' alongside its password as the Secret 'pfxCertificatePassword'
 #>
 param(
-  [Parameter(Mandatory = $true)]
-  [string] $KeyVaultName,
+    [Parameter(Mandatory = $true)]
+    [string] $KeyVaultName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $ResourceGroupName,
+    [Parameter(Mandatory = $true)]
+    [string] $ResourceGroupName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $NamePrefix,
+    [Parameter(Mandatory = $true)]
+    [string] $NamePrefix,
 
-  [Parameter(Mandatory = $true)]
-  [string] $CertPWSecretName,
+    [Parameter(Mandatory = $true)]
+    [string] $CertPWSecretName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $CertSecretName
+    [Parameter(Mandatory = $true)]
+    [string] $CertSecretName
 )
 
 $password = "$ResourceGroupName/$KeyVaultName/$CertSecretName"
@@ -64,9 +64,9 @@ $pfxCertificate = ConvertTo-SecureString -String ([System.Convert]::ToBase64Stri
 
 # Set values
 @(
-  @{ name = $CertPWSecretName; secretValue = $pfxPassword }
-  @{ name = $CertSecretName; secretValue = $pfxCertificate }
+    @{ name = $CertPWSecretName; secretValue = $pfxPassword }
+    @{ name = $CertSecretName; secretValue = $pfxCertificate }
 ) | ForEach-Object {
-  $null = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $_.name -SecretValue $_.secretValue
-  Write-Verbose ('Added secret [{0}] to key vault [{1}]' -f $_.name, $keyVaultName) -Verbose
+    $null = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $_.name -SecretValue $_.secretValue
+    Write-Verbose ('Added secret [{0}] to key vault [{1}]' -f $_.name, $keyVaultName) -Verbose
 }

@@ -29,33 +29,33 @@ Returns 0
 
 function Get-ModuleTargetPatchVersion {
 
-  [CmdletBinding()]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string] $ModuleFolderPath,
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $ModuleFolderPath,
 
-    [Parameter(Mandatory = $true)]
-    [string] $MajMinVersion
-  )
+        [Parameter(Mandatory = $true)]
+        [string] $MajMinVersion
+    )
 
-  $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+    $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
 
-  # Get all released module tags (using upstream specifically to work in forks)
-  $existingTagList = git ls-remote --tag 'https://github.com/Azure/bicep-registry-modules.git' "$ModuleRelativeFolderPath/$MajMinVersion*"
-  if ( $existingTagList.count -eq 0 ) {
-    # If first module tag, reset patch
-    Write-Verbose "No existing tag for module [$ModuleRelativeFolderPath] starting with version [$MajMinVersion]" -Verbose
-    Write-Verbose 'Setting patch version to 0' -Verbose
-    $patch = 0
-  } else {
-    # Otherwise get latest patch
-    $patchList = $existingTagList | ForEach-Object { [int](($_ -split '\.')[-1]) }
-    $latestPatch = ($patchList | Measure-Object -Maximum).Maximum
-    Write-Verbose "Latest tag is [$ModuleRelativeFolderPath/$MajMinVersion.$latestPatch]. Bumping patch." -Verbose
-    # Increase patch count
-    $patch = $latestPatch + 1
-  }
+    # Get all released module tags (using upstream specifically to work in forks)
+    $existingTagList = git ls-remote --tag 'https://github.com/Azure/bicep-registry-modules.git' "$ModuleRelativeFolderPath/$MajMinVersion*"
+    if ( $existingTagList.count -eq 0 ) {
+        # If first module tag, reset patch
+        Write-Verbose "No existing tag for module [$ModuleRelativeFolderPath] starting with version [$MajMinVersion]" -Verbose
+        Write-Verbose 'Setting patch version to 0' -Verbose
+        $patch = 0
+    } else {
+        # Otherwise get latest patch
+        $patchList = $existingTagList | ForEach-Object { [int](($_ -split '\.')[-1]) }
+        $latestPatch = ($patchList | Measure-Object -Maximum).Maximum
+        Write-Verbose "Latest tag is [$ModuleRelativeFolderPath/$MajMinVersion.$latestPatch]. Bumping patch." -Verbose
+        # Increase patch count
+        $patch = $latestPatch + 1
+    }
 
-  # Return PATCH
-  return $patch
+    # Return PATCH
+    return $patch
 }

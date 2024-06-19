@@ -17,13 +17,13 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-  if ((Get-GitBranchName) -eq 'main') {
-    Write-Verbose 'Gathering modified files from the previous head' -Verbose
-    $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
-  }
-  $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
+    if ((Get-GitBranchName) -eq 'main') {
+        Write-Verbose 'Gathering modified files from the previous head' -Verbose
+        $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
+    }
+    $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
 
-  return $ModifiedFiles
+    return $ModifiedFiles
 }
 
 <#
@@ -39,18 +39,18 @@ Get-CurrentBranch
 Get the name of the current checked out branch.
 #>
 function Get-GitBranchName {
-  [CmdletBinding()]
-  param ()
+    [CmdletBinding()]
+    param ()
 
-  # Get branch name from Git
-  $BranchName = git branch --show-current
+    # Get branch name from Git
+    $BranchName = git branch --show-current
 
-  # If git could not get name, try GitHub variable
-  if ([string]::IsNullOrEmpty($BranchName) -and (Test-Path env:GITHUB_REF_NAME)) {
-    $BranchName = $env:GITHUB_REF_NAME
-  }
+    # If git could not get name, try GitHub variable
+    if ([string]::IsNullOrEmpty($BranchName) -and (Test-Path env:GITHUB_REF_NAME)) {
+        $BranchName = $env:GITHUB_REF_NAME
+    }
 
-  return $BranchName
+    return $BranchName
 }
 
 <#
@@ -75,47 +75,47 @@ the function would return the main.json file in the same folder.
 #>
 function Get-TemplateFileToPublish {
 
-  [CmdletBinding()]
-  param (
-    [Parameter(Mandatory)]
-    [string] $ModuleFolderPath,
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $ModuleFolderPath,
 
-    [Parameter(Mandatory)]
-    [string[]] $PathsToInclude = @()
-  )
+        [Parameter(Mandatory)]
+        [string[]] $PathsToInclude = @()
+    )
 
-  $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
-  $ModifiedFiles = Get-ModifiedFileList -Verbose
-  Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
-  $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
+    $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+    $ModifiedFiles = Get-ModifiedFileList -Verbose
+    Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
+    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
-  $relevantPaths = @()
-  $PathsToInclude += './version.json' # Add the file itself to be considered too
-  foreach ($modifiedFile in $modifiedModuleFiles) {
+    $relevantPaths = @()
+    $PathsToInclude += './version.json' # Add the file itself to be considered too
+    foreach ($modifiedFile in $modifiedModuleFiles) {
 
-    foreach ($path in  $PathsToInclude) {
-      if ($modifiedFile -eq (Resolve-Path (Join-Path (Split-Path $modifiedFile) $path) -ErrorAction 'SilentlyContinue')) {
-        $relevantPaths += $modifiedFile
-      }
+        foreach ($path in  $PathsToInclude) {
+            if ($modifiedFile -eq (Resolve-Path (Join-Path (Split-Path $modifiedFile) $path) -ErrorAction 'SilentlyContinue')) {
+                $relevantPaths += $modifiedFile
+            }
+        }
     }
-  }
 
-  $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
-    Find-TemplateFile -Path $_ -Verbose
-  } | Sort-Object -Culture 'en-US' -Unique -Descending
+    $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
+        Find-TemplateFile -Path $_ -Verbose
+    } | Sort-Object -Culture 'en-US' -Unique -Descending
 
-  if ($TemplateFilesToPublish.Count -eq 0) {
-    Write-Verbose 'No template file found in the modified module.' -Verbose
-  }
+    if ($TemplateFilesToPublish.Count -eq 0) {
+        Write-Verbose 'No template file found in the modified module.' -Verbose
+    }
 
-  Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
-  $TemplateFilesToPublish | ForEach-Object {
-    $RelPath = ('avm/{0}' -f ($_ -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
-    $RelPath = $RelPath.Split('/main.')[0]
-    Write-Verbose " - [$RelPath]" -Verbose
-  }
+    Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
+    $TemplateFilesToPublish | ForEach-Object {
+        $RelPath = ('avm/{0}' -f ($_ -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+        $RelPath = $RelPath.Split('/main.')[0]
+        Write-Verbose " - [$RelPath]" -Verbose
+    }
 
-  return $TemplateFilesToPublish
+    return $TemplateFilesToPublish
 }
 
 <#
@@ -141,25 +141,25 @@ la---          05.12.2021    22:45           1230 main.json
 Gets the closest main.json file to the current directory.
 #>
 function Find-TemplateFile {
-  [CmdletBinding()]
-  param (
-    [Parameter(Mandatory)]
-    [string] $Path
-  )
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $Path
+    )
 
-  $FolderPath = Split-Path $Path -Parent
-  $FolderName = Split-Path $Path -Leaf
-  if ($FolderName -eq 'modules') {
-    return $null
-  }
+    $FolderPath = Split-Path $Path -Parent
+    $FolderName = Split-Path $Path -Leaf
+    if ($FolderName -eq 'modules') {
+        return $null
+    }
 
-  $TemplateFilePath = Join-Path $FolderPath 'main.json'
+    $TemplateFilePath = Join-Path $FolderPath 'main.json'
 
-  if (-not (Test-Path $TemplateFilePath)) {
-    return Find-TemplateFile -Path $FolderPath
-  }
+    if (-not (Test-Path $TemplateFilePath)) {
+        return Find-TemplateFile -Path $FolderPath
+    }
 
-  return ($TemplateFilePath | Get-Item).FullName
+    return ($TemplateFilePath | Get-Item).FullName
 }
 #endregion
 
@@ -185,24 +185,24 @@ Could return paths like
 function Get-ModulesToPublish {
 
 
-  [CmdletBinding()]
-  param (
-    [Parameter(Mandatory)]
-    [string] $ModuleFolderPath
-  )
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $ModuleFolderPath
+    )
 
-  $versionFile = (Get-Content (Join-Path $ModuleFolderPath 'version.json') -Raw) | ConvertFrom-Json
-  $PathsToInclude = $versionFile.PathFilters
+    $versionFile = (Get-Content (Join-Path $ModuleFolderPath 'version.json') -Raw) | ConvertFrom-Json
+    $PathsToInclude = $versionFile.PathFilters
 
-  # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
-  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude
+    # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
+    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude
 
-  # Filter out any children (as they're currently not considered for publishing)
-  # $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
-  #   # e.g., res\network\private-endpoint\main.json
-  #   (($_ -split 'avm[\/|\\]')[1] -split '[\/|\\]').Count -le 4
-  # }
+    # Filter out any children (as they're currently not considered for publishing)
+    # $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
+    #   # e.g., res\network\private-endpoint\main.json
+    #   (($_ -split 'avm[\/|\\]')[1] -split '[\/|\\]').Count -le 4
+    # }
 
-  # Return the remaining template file(s)
-  return $TemplateFilesToPublish
+    # Return the remaining template file(s)
+    return $TemplateFilesToPublish
 }

@@ -20,30 +20,30 @@ Mandatory. The subscription ID wher the host pool resides.
 Output will be '<tokenValue>'.
 #>
 param(
-  [Parameter(Mandatory = $true)]
-  [string] $HostPoolName,
+    [Parameter(Mandatory = $true)]
+    [string] $HostPoolName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $HostPoolResourceGroupName,
+    [Parameter(Mandatory = $true)]
+    [string] $HostPoolResourceGroupName,
 
-  [Parameter(Mandatory = $true)]
-  [string] $SubscriptionId
+    [Parameter(Mandatory = $true)]
+    [string] $SubscriptionId
 )
 
-if ($null -eq (Get-InstalledModule -Name "Az.DesktopVirtualization" -ErrorAction 'SilentlyContinue')) {
-  Install-Module Az.DesktopVirtualization -Force -AllowClobber
+if ($null -eq (Get-InstalledModule -Name 'Az.DesktopVirtualization' -ErrorAction 'SilentlyContinue')) {
+    Install-Module Az.DesktopVirtualization -Force -AllowClobber
 }
 
 $parameters = @{
-  HostPoolName      = $HostPoolName
-  ResourceGroupName = $HostPoolResourceGroupName
-  SubscriptionId    = $SubscriptionId
-  ExpirationTime    = $((Get-Date).ToUniversalTime().AddHours(24).ToString('yyyy-MM-ddTHH:mm:ss.fffffffZ'))
+    HostPoolName      = $HostPoolName
+    ResourceGroupName = $HostPoolResourceGroupName
+    SubscriptionId    = $SubscriptionId
+    ExpirationTime    = $((Get-Date).ToUniversalTime().AddHours(24).ToString('yyyy-MM-ddTHH:mm:ss.fffffffZ'))
 }
 
 $registrationKey = New-AzWvdRegistrationInfo @parameters
 
 # Write into Deployment Script output stream
 $DeploymentScriptOutputs = @{
-  registrationInfoToken = $registrationKey.Token
+    registrationInfoToken = $registrationKey.Token
 }

@@ -26,6 +26,7 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "files.encoding": "utf8bom",
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "editor.detectIndentation": false
   }
 }

@@ -66,240 +66,240 @@ Generate a markdown file [C:/Pester-output.md], out of the Pester test results i
 #>
 function Set-PesterGitHubOutput {
 
-  [CmdletBinding(SupportsShouldProcess)]
-  param (
-    [Parameter(Mandatory = $true)]
-    [PSCustomObject] $PesterTestResults,
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory = $true)]
+        [PSCustomObject] $PesterTestResults,
 
-    [Parameter(Mandatory = $false)]
-    [string] $OutputFilePath = './output.md',
+        [Parameter(Mandatory = $false)]
+        [string] $OutputFilePath = './output.md',
 
-    [Parameter(Mandatory = $false)]
-    [string] $GitHubRepository,
+        [Parameter(Mandatory = $false)]
+        [string] $GitHubRepository,
 
-    [Parameter(Mandatory = $false)]
-    [string] $BranchName,
+        [Parameter(Mandatory = $false)]
+        [string] $BranchName,
 
-    [Parameter(Mandatory = $false)]
-    [string] $Title = 'Pester validation summary'
-  )
+        [Parameter(Mandatory = $false)]
+        [string] $Title = 'Pester validation summary'
+    )
 
-  $passedTests = $PesterTestResults.Passed
-  $failedTests = $PesterTestResults.Failed
-  $skippedTests = $PesterTestResults.Skipped
-  $testsWithWarnings = ($passedTests + $failedTests + $skippedTests) | Where-Object { $_.StandardOutput.Keys -eq 'Warning' }
+    $passedTests = $PesterTestResults.Passed
+    $failedTests = $PesterTestResults.Failed
+    $skippedTests = $PesterTestResults.Skipped
+    $testsWithWarnings = ($passedTests + $failedTests + $skippedTests) | Where-Object { $_.StandardOutput.Keys -eq 'Warning' }
 
-  Write-Verbose ('Formatting [{0}] passed tests' -f $passedTests.Count)
-  Write-Verbose ('Formatting [{0}] failed tests' -f $failedTests.Count)
-  Write-Verbose ('Formatting [{0}] skipped tests' -f $skippedTests.Count)
-  Write-Verbose ('Formatting [{0}] tests with explicit warnings' -f $warnings.Count)
+    Write-Verbose ('Formatting [{0}] passed tests' -f $passedTests.Count)
+    Write-Verbose ('Formatting [{0}] failed tests' -f $failedTests.Count)
+    Write-Verbose ('Formatting [{0}] skipped tests' -f $skippedTests.Count)
+    Write-Verbose ('Formatting [{0}] tests with explicit warnings' -f $warnings.Count)
 
-  ######################
-  # Set output content #
-  ######################
+    ######################
+    # Set output content #
+    ######################
 
-  # Header
-  $fileContent = [System.Collections.ArrayList]@(
-    "# $Title ",
-    ''
-  )
+    # Header
+    $fileContent = [System.Collections.ArrayList]@(
+        "# $Title ",
+        ''
+    )
 
-  ## Header table
-  $fileContent += [System.Collections.ArrayList]@(
-    '| Total No. of Processed Tests| Passed Tests :white_check_mark: | Failed Tests :x: | Skipped Tests :paperclip: | Tests with warnings :warning: |',
-    '| :-- | :-- | :-- | :-- | :-- |',
+    ## Header table
+    $fileContent += [System.Collections.ArrayList]@(
+        '| Total No. of Processed Tests| Passed Tests :white_check_mark: | Failed Tests :x: | Skipped Tests :paperclip: | Tests with warnings :warning: |',
+        '| :-- | :-- | :-- | :-- | :-- |',
     ('| {0} | {1} | {2} | {3} | {4} |' -f $PesterTestResults.TotalCount, $passedTests.count , $failedTests.count, $skippedTests.count, $testsWithWarnings.count),
-    ''
-  )
-
-  ######################
-  ##   Failed Tests   ##
-  ######################
-  Write-Verbose 'Adding failed tests'
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '<details>',
-    '<summary>List of failed Tests</summary>',
-    ''
-  )
-
-  if ($failedTests.Count -gt 0) {
-    $fileContent += [System.Collections.ArrayList]@(
-      '| Name | Error | Source |',
-      '| :-- | :-- | :-- |'
+        ''
     )
-    foreach ($failedTest in ($failedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName })) {
 
-      $intermediateNameElements = $failedTest.Path
-      $intermediateNameElements[-1] = '**{0}**' -f $failedTest.ExpandedName
-      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
-
-      $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
-      $errorFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-      $errorTestFile = ('avm/{0}/{1}' -f $errorFileIdentifier[1], $errorFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-      $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
-
-      $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
-
-      if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
-        # Creating URL to test file to enable users to 'click' on it
-        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$errorTestFile#L$errorTestLine)"
-      }
-
-      $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
-    }
-  } else {
-    $fileContent += ('No tests failed.')
-  }
-
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '</details>',
-    ''
-  )
-
-  ######################
-  ##   Passed Tests   ##
-  ######################
-  Write-Verbose 'Adding passed tests'
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '<details>',
-    '<summary>List of passed Tests</summary>',
-    ''
-  )
-
-  if (($passedTests.Count -gt 0)) {
-
+    ######################
+    ##   Failed Tests   ##
+    ######################
+    Write-Verbose 'Adding failed tests'
     $fileContent += [System.Collections.ArrayList]@(
-      '| Name | Source |',
-      '| :-- | :-- |'
+        '',
+        '<details>',
+        '<summary>List of failed Tests</summary>',
+        ''
     )
-    foreach ($passedTest in ($passedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
 
-      $intermediateNameElements = $passedTest.Path
-      $intermediateNameElements[-1] = '**{0}**' -f $passedTest.ExpandedName
-      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
+    if ($failedTests.Count -gt 0) {
+        $fileContent += [System.Collections.ArrayList]@(
+            '| Name | Error | Source |',
+            '| :-- | :-- | :-- |'
+        )
+        foreach ($failedTest in ($failedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName })) {
 
-      $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
-      $testFileIdentifier = $passedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-      $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            $intermediateNameElements = $failedTest.Path
+            $intermediateNameElements[-1] = '**{0}**' -f $failedTest.ExpandedName
+            $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
-      $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
-      if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
-        # Creating URL to test file to enable users to 'click' on it
-        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
-      }
+            $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
+            $errorFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+            $errorTestFile = ('avm/{0}/{1}' -f $errorFileIdentifier[1], $errorFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
-      $fileContent += '| {0} | <code>{1}</code> |' -f $testName, $testReference
-    }
-  } else {
-    $fileContent += ('No tests passed.')
-  }
+            $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
 
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '</details>',
-    ''
-  )
+            if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
+                # Creating URL to test file to enable users to 'click' on it
+                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$errorTestFile#L$errorTestLine)"
+            }
 
-  #######################
-  ##   Skipped Tests   ##
-  #######################
-
-  Write-Verbose 'Adding skipped tests'
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '<details>',
-    '<summary>List of skipped Tests</summary>',
-    ''
-  )
-
-  if ($skippedTests.Count -gt 0) {
-
-    $fileContent += [System.Collections.ArrayList]@(
-      '| Name | Reason | Source |',
-      '| :-- | :-- | :-- |'
-    )
-    foreach ($skippedTest in ($skippedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
-
-      $intermediateNameElements = $skippedTest.Path
-      $intermediateNameElements[-1] = '**{0}**' -f $skippedTest.ExpandedName
-      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
-
-      $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
-
-      $testLine = $skippedTest.ScriptBlock.StartPosition.StartLine
-      $testFileIdentifier = $skippedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-      $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-
-      $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
-      if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
-        # Creating URL to test file to enable users to 'click' on it
-        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
-      }
-
-      $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $reason, $testReference
-    }
-  } else {
-    $fileContent += ('No tests were skipped.')
-  }
-
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '</details>',
-    ''
-  )
-
-  ##################
-  ##   Warnings   ##
-  ##################
-
-  Write-Verbose 'Adding warnings'
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '<details>',
-    '<summary>List of explicit warnings</summary>',
-    ''
-  )
-
-  if ($testsWithWarnings.Count -gt 0) {
-
-    $fileContent += [System.Collections.ArrayList]@(
-      '| Name | Warning | Source |',
-      '| :-- | :-- | :-- |'
-    )
-    foreach ($test in ($testsWithWarnings | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
-      foreach ($warning in $test.StandardOutput.Warning) {
-        $intermediateNameElements = $test.Path
-        $intermediateNameElements[-1] = '**{0}**' -f $test.ExpandedName
-        $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
-
-        $testLine = $test.ScriptBlock.StartPosition.StartLine
-        $testFileIdentifier = $test.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-        $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-
-        $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
-        if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
-          # Creating URL to test file to enable users to 'click' on it
-          $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
+            $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
         }
-
-        $fileContent += ('| {0} | {1} | <code>{2}</code> |' -f $testName, $warning, $testReference)
-      }
+    } else {
+        $fileContent += ('No tests failed.')
     }
-  } else {
-    $fileContent += ('No tests with warnings.')
-  }
 
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '</details>',
-    ''
-  )
+    $fileContent += [System.Collections.ArrayList]@(
+        '',
+        '</details>',
+        ''
+    )
 
-  if ($PSCmdlet.ShouldProcess("Test results file in path [$OutputFilePath]", 'Create')) {
-    $null = New-Item -Path $OutputFilePath -Force -Value ($fileContent | Out-String)
-  }
-  Write-Verbose "Create results file [$outputFilePath]"
+    ######################
+    ##   Passed Tests   ##
+    ######################
+    Write-Verbose 'Adding passed tests'
+    $fileContent += [System.Collections.ArrayList]@(
+        '',
+        '<details>',
+        '<summary>List of passed Tests</summary>',
+        ''
+    )
+
+    if (($passedTests.Count -gt 0)) {
+
+        $fileContent += [System.Collections.ArrayList]@(
+            '| Name | Source |',
+            '| :-- | :-- |'
+        )
+        foreach ($passedTest in ($passedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
+
+            $intermediateNameElements = $passedTest.Path
+            $intermediateNameElements[-1] = '**{0}**' -f $passedTest.ExpandedName
+            $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
+
+            $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
+            $testFileIdentifier = $passedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+            $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+
+            $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
+            if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
+                # Creating URL to test file to enable users to 'click' on it
+                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
+            }
+
+            $fileContent += '| {0} | <code>{1}</code> |' -f $testName, $testReference
+        }
+    } else {
+        $fileContent += ('No tests passed.')
+    }
+
+    $fileContent += [System.Collections.ArrayList]@(
+        '',
+        '</details>',
+        ''
+    )
+
+    #######################
+    ##   Skipped Tests   ##
+    #######################
+
+    Write-Verbose 'Adding skipped tests'
+    $fileContent += [System.Collections.ArrayList]@(
+        '',
+        '<details>',
+        '<summary>List of skipped Tests</summary>',
+        ''
+    )
+
+    if ($skippedTests.Count -gt 0) {
+
+        $fileContent += [System.Collections.ArrayList]@(
+            '| Name | Reason | Source |',
+            '| :-- | :-- | :-- |'
+        )
+        foreach ($skippedTest in ($skippedTests | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
+
+            $intermediateNameElements = $skippedTest.Path
+            $intermediateNameElements[-1] = '**{0}**' -f $skippedTest.ExpandedName
+            $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
+
+            $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
+
+            $testLine = $skippedTest.ScriptBlock.StartPosition.StartLine
+            $testFileIdentifier = $skippedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+            $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+
+            $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
+            if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
+                # Creating URL to test file to enable users to 'click' on it
+                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
+            }
+
+            $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $reason, $testReference
+        }
+    } else {
+        $fileContent += ('No tests were skipped.')
+    }
+
+    $fileContent += [System.Collections.ArrayList]@(
+        '',
+        '</details>',
+        ''
+    )
+
+    ##################
+    ##   Warnings   ##
+    ##################
+
+    Write-Verbose 'Adding warnings'
+    $fileContent += [System.Collections.ArrayList]@(
+        '',
+        '<details>',
+        '<summary>List of explicit warnings</summary>',
+        ''
+    )
+
+    if ($testsWithWarnings.Count -gt 0) {
+
+        $fileContent += [System.Collections.ArrayList]@(
+            '| Name | Warning | Source |',
+            '| :-- | :-- | :-- |'
+        )
+        foreach ($test in ($testsWithWarnings | Sort-Object -Culture 'en-US' -Property { $PSItem.ExpandedName }) ) {
+            foreach ($warning in $test.StandardOutput.Warning) {
+                $intermediateNameElements = $test.Path
+                $intermediateNameElements[-1] = '**{0}**' -f $test.ExpandedName
+                $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
+
+                $testLine = $test.ScriptBlock.StartPosition.StartLine
+                $testFileIdentifier = $test.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+
+                $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
+                if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
+                    # Creating URL to test file to enable users to 'click' on it
+                    $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
+                }
+
+                $fileContent += ('| {0} | {1} | <code>{2}</code> |' -f $testName, $warning, $testReference)
+            }
+        }
+    } else {
+        $fileContent += ('No tests with warnings.')
+    }
+
+    $fileContent += [System.Collections.ArrayList]@(
+        '',
+        '</details>',
+        ''
+    )
+
+    if ($PSCmdlet.ShouldProcess("Test results file in path [$OutputFilePath]", 'Create')) {
+        $null = New-Item -Path $OutputFilePath -Force -Value ($fileContent | Out-String)
+    }
+    Write-Verbose "Create results file [$outputFilePath]"
 }
