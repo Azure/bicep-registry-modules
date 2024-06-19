@@ -22,9 +22,7 @@ param hubVirtualNetworkResourceId string = ''
 param networkApplianceIpAddress string = ''
 
 @description('Tags related to the Azure Container Apps deployment.')
-param tags object = {
-  environment: 'test'
-}
+param tags object = {}
 
 @description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
@@ -82,8 +80,8 @@ param enableApplicationInsights bool
 @description('Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored.')
 param enableDaprInstrumentation bool
 
-@description('The FQDN of the Application Gateway. Must match the TLS Certificate.')
-param applicationGatewayFqdn string
+@description('Optional. The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided.')
+param applicationGatewayFqdn string = ''
 
 @description('The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.')
 param base64Certificate string = ''
