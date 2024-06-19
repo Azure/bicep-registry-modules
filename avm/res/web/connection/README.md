@@ -309,7 +309,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 | [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource. |
 | [`parameterValueSet`](#parameter-parametervalueset) | object | Additional parameter Value Set used for authentication settings. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`statuses`](#parameter-statuses) | array | Status of the connection. |
+| [`statuses`](#parameter-statuses) | array | The status of the connection. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`testLinks`](#parameter-testlinks) | array | Links to test the API connection. |
 
@@ -505,7 +505,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `statuses`
 
-Status of the connection.
+The status of the connection.
 
 - Required: No
 - Type: array

@@ -79,7 +79,7 @@ param parameterValueSet object?
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. Status of the connection.')
+@description('Optional. The status of the connection.')
 param statuses object[]?
 
 @description('Optional. The lock settings of the service.')
