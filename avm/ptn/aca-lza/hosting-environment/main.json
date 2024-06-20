@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6699315444266008839"
+      "templateHash": "15568108529404488839"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -468,7 +468,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8842425132621303883"
+              "templateHash": "17354099591825485106"
             }
           },
           "parameters": {
@@ -19675,7 +19675,7 @@
             "vmJumpBoxName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the jump box virtual machine"
+                "description": "The name of the jump box virtual machine."
               },
               "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
             }
@@ -45280,7 +45280,7 @@
     "applicationInsightsName": {
       "type": "string",
       "metadata": {
-        "description": " The name of application Insights instance."
+        "description": "The name of application Insights instance."
       },
       "value": "[if(parameters('enableApplicationInsights'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('containerAppsEnvironment-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.applicationInsightsName.value, '')]"
     }

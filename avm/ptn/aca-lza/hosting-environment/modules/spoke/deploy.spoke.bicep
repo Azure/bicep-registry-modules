@@ -400,5 +400,5 @@ output spokeApplicationGatewaySubnetName string = (!empty(spokeApplicationGatewa
 @description('The resource ID of the Azure Log Analytics Workspace.')
 output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
 
-@description('The name of the jump box virtual machine')
+@description('The name of the jump box virtual machine.')
 output vmJumpBoxName string = naming.outputs.resourcesNames.vmJumpBox
