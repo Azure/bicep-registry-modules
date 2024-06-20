@@ -14,8 +14,9 @@ This module deploys an API Management Service API.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
-| `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
+| `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
+| `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
 
 ## Parameters
 
@@ -23,9 +24,9 @@ This module deploys an API Management Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`apiName`](#parameter-apiname) | string | API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number. |
+| [`apiPath`](#parameter-apipath) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 | [`displayName`](#parameter-displayname) | string | API name. Must be 1 to 300 characters long. |
-| [`name`](#parameter-name) | string | API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number. |
-| [`path`](#parameter-path) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 
 **Conditional parameters**
 
@@ -45,8 +46,10 @@ This module deploys an API Management Service API.
 | [`apiVersionDescription`](#parameter-apiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetId`](#parameter-apiversionsetid) | string | Indicates the Version identifier of the API version set. |
 | [`authenticationSettings`](#parameter-authenticationsettings) | object | Collection of authentication settings included into this API. |
+| [`diagnostics`](#parameter-diagnostics) | array | Array of diagnostics to apply to the Service API. |
 | [`format`](#parameter-format) | string | Format of the Content in which the API is getting imported. |
 | [`isCurrent`](#parameter-iscurrent) | bool | Indicates if API revision is current API revision. |
+| [`loggerName`](#parameter-loggername) | string | The name of the API management service logger. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service API. |
 | [`protocols`](#parameter-protocols) | array | Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS. |
 | [`serviceUrl`](#parameter-serviceurl) | string | Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long. |
@@ -57,23 +60,23 @@ This module deploys an API Management Service API.
 | [`value`](#parameter-value) | string | Content value when Importing an API. |
 | [`wsdlSelector`](#parameter-wsdlselector) | object | Criteria to limit import of WSDL to a subset of the document. |
 
-### Parameter: `displayName`
-
-API name. Must be 1 to 300 characters long.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `name`
+### Parameter: `apiName`
 
 API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `path`
+### Parameter: `apiPath`
 
 Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `displayName`
+
+API name. Must be 1 to 300 characters long.
 
 - Required: Yes
 - Type: string
@@ -151,6 +154,13 @@ Collection of authentication settings included into this API.
 - Required: No
 - Type: object
 
+### Parameter: `diagnostics`
+
+Array of diagnostics to apply to the Service API.
+
+- Required: No
+- Type: array
+
 ### Parameter: `format`
 
 Format of the Content in which the API is getting imported.
@@ -181,6 +191,14 @@ Indicates if API revision is current API revision.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `loggerName`
+
+The name of the API management service logger.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `policies`
 

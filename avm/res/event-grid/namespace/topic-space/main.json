@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "4931718668767892926"
+      "version": "0.28.1.47646",
+      "templateHash": "16208314286026284609"
     },
     "name": "Eventgrid Namespace Topic Spaces",
     "description": "This module deploys an Eventgrid Namespace Topic Space.",
