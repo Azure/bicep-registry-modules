@@ -27,6 +27,7 @@ This module deploys a Synapse Workspace.
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Synapse/workspaces` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces) |
+| `Microsoft.Synapse/workspaces/administrators` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators) |
 | `Microsoft.Synapse/workspaces/integrationRuntimes` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/integrationRuntimes) |
 | `Microsoft.Synapse/workspaces/keys` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys) |
 
@@ -346,6 +347,11 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     name: 'swmax001'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
+    administrator: {
+      administratorType: 'ServicePrincipal'
+      login: 'dep-msi-swmax'
+      sid: '<sid>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -469,6 +475,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "synwsadmin"
     },
     // Non-required parameters
+    "administrator": {
+      "value": {
+        "administratorType": "ServicePrincipal",
+        "login": "dep-msi-swmax",
+        "sid": "<sid>"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -758,6 +771,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accountUrl`](#parameter-accounturl) | string | The account URL of the data lake storage account. |
+| [`administrator`](#parameter-administrator) | object | The Entra ID administrator for the synapse workspace. |
 | [`allowedAadTenantIdsForLinking`](#parameter-allowedaadtenantidsforlinking) | array | Allowed AAD Tenant IDs For Linking. |
 | [`azureADOnlyAuthentication`](#parameter-azureadonlyauthentication) | bool | Enable or Disable AzureADOnlyAuthentication on All Workspace sub-resource. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -817,6 +831,55 @@ The account URL of the data lake storage account.
 - Required: No
 - Type: string
 - Default: `[format('https://{0}.dfs.{1}', last(split(parameters('defaultDataLakeStorageAccountResourceId'), '/')), environment().suffixes.storage)]`
+
+### Parameter: `administrator`
+
+The Entra ID administrator for the synapse workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`administratorType`](#parameter-administratoradministratortype) | string | Workspace active directory administrator type. |
+| [`login`](#parameter-administratorlogin) | securestring | Login of the workspace active directory administrator. |
+| [`sid`](#parameter-administratorsid) | securestring | Object ID of the workspace active directory administrator. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-administratortenantid) | securestring | Tenant ID of the workspace active directory administrator. |
+
+### Parameter: `administrator.administratorType`
+
+Workspace active directory administrator type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administrator.login`
+
+Login of the workspace active directory administrator.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `administrator.sid`
+
+Object ID of the workspace active directory administrator.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `administrator.tenantId`
+
+Tenant ID of the workspace active directory administrator.
+
+- Required: No
+- Type: securestring
 
 ### Parameter: `allowedAadTenantIdsForLinking`
 
