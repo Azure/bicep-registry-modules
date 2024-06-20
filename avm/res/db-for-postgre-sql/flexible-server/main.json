@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "8504084713028667860"
+      "templateHash": "4446411134346345202"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -421,7 +421,7 @@
     },
     "highAvailability": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "defaultValue": "ZoneRedundant",
       "allowedValues": [
         "Disabled",
         "SameZone",

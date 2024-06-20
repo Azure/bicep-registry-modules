@@ -100,7 +100,7 @@ param version string = '16'
   'ZoneRedundant'
 ])
 @description('Optional. The mode for high availability.')
-param highAvailability string = 'Disabled'
+param highAvailability string = 'ZoneRedundant'
 
 @allowed([
   'Create'
