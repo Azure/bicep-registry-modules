@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "122203085135098136"
+      "templateHash": "8172061214285347923"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -183,7 +183,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module. Default is true."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "deployZoneRedundantResources": {
@@ -197,7 +197,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional.If true, Azure Policies will be deployed. Default value is true."
+        "description": "Optional. If true, Azure Policies will be deployed. Default value is true."
       }
     },
     "exposeContainerAppsWith": {
@@ -236,7 +236,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.ptn.acalza-hostingenvironment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.acalza-hostingenvironment.{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",

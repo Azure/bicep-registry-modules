@@ -90,13 +90,13 @@ param base64Certificate string = ''
 @description('Required. The name of the certificate key to use for Application Gateway certificate.')
 param applicationGatewayCertificateKeyName string
 
-@description('Optional. Enable/Disable usage telemetry for module. Default is true.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true.')
 param deployZoneRedundantResources bool = true
 
-@description('Optional.If true, Azure Policies will be deployed. Default value is true.')
+@description('Optional. If true, Azure Policies will be deployed. Default value is true.')
 param deployAzurePolicies bool = true
 
 @description('Optional. Specify the way container apps is going to be exposed. Options are applicationGateway or frontDoor. Default is "applicationGateway".')
@@ -253,7 +253,7 @@ module frontDoor 'modules/front-door/deploy.front-door.bicep' = if (exposeContai
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.acalza-hostingenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.acalza-hostingenvironment.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
     mode: 'Incremental'
