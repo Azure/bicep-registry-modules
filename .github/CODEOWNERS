@@ -124,6 +124,7 @@
 /avm/res/network/vpn-site/ @Azure/avm-res-network-vpnsite-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/operational-insights/workspace/ @Azure/avm-res-operationalinsights-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/operations-management/solution/ @Azure/avm-res-operationsmanagement-solution-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/portal/dashboard/ @Azure/avm-res-portal-dashboard-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/power-bi-dedicated/capacity/ @Azure/avm-res-powerbidedicated-capacity-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/purview/account/ @Azure/avm-res-purview-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
