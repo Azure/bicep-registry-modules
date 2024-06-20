@@ -40,16 +40,18 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    skuName: 'Standard_B2s'
-    tier: 'Burstable'
-    geoRedundantBackup: 'Enabled'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      skuName: 'Standard_B2s'
+      tier: 'GeneralPurpose'
+      geoRedundantBackup: 'Enabled'
+    }
   }
-}]
+]
