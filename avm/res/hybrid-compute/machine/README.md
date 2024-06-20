@@ -28,12 +28,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/hybrid-compute/machine:<version>`.
 
-- [Creates only an Arc Machine](#example-1-creates-only-an-arc-machine)
+- [Creates an Arc Machine using only the defaults](#example-1-creates-an-arc-machine-using-only-the-defaults)
 - [Creates an Arc Machine with maximum configurations](#example-2-creates-an-arc-machine-with-maximum-configurations)
-- [Creates only an Arc Machine](#example-3-creates-only-an-arc-machine)
+- [Creates an VMWare machine using only the defaults](#example-3-creates-an-vmware-machine-using-only-the-defaults)
 - [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Creates only an Arc Machine_
+### Example 1: _Creates an Arc Machine using only the defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -47,15 +47,10 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   name: 'machineDeployment'
   params: {
     // Required parameters
-    kind: '<kind>'
+    kind: 'HCI'
     name: 'arcmachcimin'
     // Non-required parameters
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -74,7 +69,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "<kind>"
+      "value": "HCI"
     },
     "name": {
       "value": "arcmachcimin"
@@ -82,13 +77,6 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -99,7 +87,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 ### Example 2: _Creates an Arc Machine with maximum configurations_
 
-This instance deploys the module with the full set of required parameters.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -111,7 +99,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   name: 'machineDeployment'
   params: {
     // Required parameters
-    kind: '<kind>'
+    kind: 'HCI'
     name: 'arcmachcimx'
     // Non-required parameters
     guestConfiguration: {
@@ -165,7 +153,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "<kind>"
+      "value": "HCI"
     },
     "name": {
       "value": "arcmachcimx"
@@ -225,7 +213,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
-### Example 3: _Creates only an Arc Machine_
+### Example 3: _Creates an VMWare machine using only the defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -239,15 +227,10 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   name: 'machineDeployment'
   params: {
     // Required parameters
-    kind: '<kind>'
+    kind: 'VMware'
     name: 'arcmacvmwmin'
     // Non-required parameters
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -266,7 +249,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "<kind>"
+      "value": "VMware"
     },
     "name": {
       "value": "arcmacvmwmin"
@@ -274,13 +257,6 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -303,7 +279,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   name: 'machineDeployment'
   params: {
     // Required parameters
-    kind: '<kind>'
+    kind: 'HCI'
     name: 'arcmacwaf'
     // Non-required parameters
     location: '<location>'
@@ -330,7 +306,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "<kind>"
+      "value": "HCI"
     },
     "name": {
       "value": "arcmacwaf"
@@ -374,7 +350,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`clientPublicKey`](#parameter-clientpublickey) | string | The Public Key that the client provides to be used during initial resource onboarding. |
+| [`clientPublicKey`](#parameter-clientpublickey) | securestring | The Public Key that the client provides to be used during initial resource onboarding. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the Arc machine. Needs the Guest Configuration extension to be enabled. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -406,11 +382,9 @@ Required if you are providing OS-type specified configurations, such as patch se
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Linux'
     'Windows'
   ]
@@ -429,7 +403,7 @@ The resource ID of an Arc Private Link Scope which which to associate this machi
 The Public Key that the client provides to be used during initial resource onboarding.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `''`
 
 ### Parameter: `enableTelemetry`
@@ -521,11 +495,9 @@ VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'AutomaticByOS'
     'AutomaticByPlatform'
     'ImageDefault'

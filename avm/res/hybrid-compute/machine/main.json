@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "3659039300722515358"
+      "templateHash": "6825923126291924605"
     },
     "name": "Hybrid Compute Machines",
     "description": "This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.",
@@ -163,7 +163,7 @@
       }
     },
     "clientPublicKey": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. The Public Key that the client provides to be used during initial resource onboarding."
@@ -171,13 +171,12 @@
     },
     "patchMode": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "AutomaticByPlatform",
         "AutomaticByOS",
         "Manual",
-        "ImageDefault",
-        ""
+        "ImageDefault"
       ],
       "metadata": {
         "description": "Optional. VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only."
@@ -203,11 +202,10 @@
     },
     "osType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Windows",
-        "Linux",
-        ""
+        "Linux"
       ],
       "metadata": {
         "description": "Conditional. Required if you are providing OS-type specified configurations, such as patch settings. The chosen OS type, either Windows or Linux."
@@ -249,10 +247,10 @@
   },
   "variables": {
     "linuxConfiguration": {
-      "patchSettings": "[if(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault'))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
+      "patchSettings": "[if(or(equals(parameters('patchMode'), 'AutomaticByPlatform'), equals(parameters('patchMode'), 'ImageDefault')), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
     },
     "windowsConfiguration": {
-      "patchSettings": "[if(or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual'))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
+      "patchSettings": "[if(or(or(equals(parameters('patchMode'), 'AutomaticByPlatform'), equals(parameters('patchMode'), 'AutomaticByOS')), equals(parameters('patchMode'), 'Manual')), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
     },
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -305,7 +303,7 @@
         "parentClusterResourceId": "[parameters('parentClusterResourceId')]",
         "vmId": "[parameters('vmId')]",
         "clientPublicKey": "[parameters('clientPublicKey')]",
-        "privateLinkScopeResourceId": "[if(empty(parameters('privateLinkScopeResourceId')), null(), parameters('privateLinkScopeResourceId'))]"
+        "privateLinkScopeResourceId": "[if(not(empty(parameters('privateLinkScopeResourceId'))), parameters('privateLinkScopeResourceId'), null())]"
       }
     },
     "AzureWindowsBaseline": {
