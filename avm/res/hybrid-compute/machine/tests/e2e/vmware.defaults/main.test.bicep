@@ -44,11 +44,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       kind: 'VMware'
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
     }
   }
 ]
