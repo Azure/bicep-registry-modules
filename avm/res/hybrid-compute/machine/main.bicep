@@ -18,6 +18,7 @@ param parentClusterResourceId string = ''
 param vmId string = ''
 
 @description('Optional. The Public Key that the client provides to be used during initial resource onboarding.')
+@secure()
 param clientPublicKey string = ''
 
 @description('Optional. VM guest patching orchestration mode. \'AutomaticByOS\' & \'Manual\' are for Windows only, \'ImageDefault\' for Linux only.')
