@@ -250,11 +250,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_DS2_v2'
     zone: 0
     // Non-required parameters
-    bypassPlatformSafetyChecksOnUserSchedule: true
     disablePasswordAuthentication: true
     location: '<location>'
-    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
-    patchMode: 'AutomaticByPlatform'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -327,20 +324,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 0
     },
     // Non-required parameters
-    "bypassPlatformSafetyChecksOnUserSchedule": {
-      "value": true
-    },
     "disablePasswordAuthentication": {
       "value": true
     },
     "location": {
       "value": "<location>"
-    },
-    "maintenanceConfigurationResourceId": {
-      "value": "<maintenanceConfigurationResourceId>"
-    },
-    "patchMode": {
-      "value": "AutomaticByPlatform"
     },
     "publicKeys": {
       "value": [
@@ -1604,10 +1592,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    bypassPlatformSafetyChecksOnUserSchedule: true
     location: '<location>'
-    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
-    patchMode: 'AutomaticByPlatform'
   }
 }
 ```
@@ -1674,17 +1659,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminPassword": {
       "value": "<adminPassword>"
     },
-    "bypassPlatformSafetyChecksOnUserSchedule": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
-    },
-    "maintenanceConfigurationResourceId": {
-      "value": "<maintenanceConfigurationResourceId>"
-    },
-    "patchMode": {
-      "value": "AutomaticByPlatform"
     }
   }
 }

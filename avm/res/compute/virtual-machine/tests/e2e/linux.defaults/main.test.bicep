@@ -93,9 +93,6 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Linux'
       vmSize: 'Standard_DS2_v2'
       disablePasswordAuthentication: true
-      patchMode: 'AutomaticByPlatform'
-      bypassPlatformSafetyChecksOnUserSchedule: true
-      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       publicKeys: [
         {
           keyData: nestedDependencies.outputs.SSHKeyPublicKey
