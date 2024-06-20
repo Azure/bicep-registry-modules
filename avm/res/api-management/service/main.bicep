@@ -63,7 +63,7 @@ param restore bool = false
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. The pricing tier of this API Management service. Default is Premium.')
+@description('Optional. The pricing tier of this API Management service.')
 @allowed([
   'Consumption'
   'Developer'
@@ -75,7 +75,7 @@ param roleAssignments roleAssignmentType
 ])
 param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. If using Consumption, sku should = 0.')
+@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0.')
 @allowed([
   0
   1
@@ -259,8 +259,8 @@ module service_apis 'api/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       displayName: api.displayName
-      apiName: api.name
-      apiPath: api.path
+      name: api.name
+      path: api.path
       apiDescription: api.?apiDescription
       apiRevision: api.?apiRevision
       apiRevisionDescription: api.?apiRevisionDescription
@@ -383,7 +383,7 @@ module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
       apiManagementServiceName: service.name
       apiName: apidiagnostic.apiName
       loggerName: apidiagnostic.loggerName
-      diagnosticName: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : 'local'
+      name: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : 'local'
       alwaysLog: contains(apidiagnostic, 'alwaysLog') ? apidiagnostic.alwaysLog : 'allErrors'
       backend: contains(apidiagnostic, 'backend') ? apidiagnostic.backend : {}
       frontend: contains(apidiagnostic, 'frontend') ? apidiagnostic.frontend : {}
