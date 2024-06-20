@@ -302,7 +302,7 @@ output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplication
 @description('The resource ID of the Log Analytics workspace created in the spoke vnet.')
 output logAnalyticsWorkspaceId string = spoke.outputs.logAnalyticsWorkspaceId
 
-@description('The name of the jump box virtual machine')
+@description('The name of the jump box virtual machine.')
 output vmJumpBoxName string = spoke.outputs.vmJumpBoxName
 
 // Supporting Services
@@ -325,6 +325,7 @@ output keyVaultId string = supportingServices.outputs.keyVaultId
 output keyVaultName string = supportingServices.outputs.keyVaultName
 
 // Application Gateway
+@description('The resource ID of the Azure Application Gateway.')
 output applicationGatewayId string = (exposeContainerAppsWith == 'applicationGateway')
   ? applicationGateway.outputs.applicationGatewayResourceId
   : ''
