@@ -1,3 +1,5 @@
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Azure/bicep-registry-modules/badge)](https://scorecard.dev/viewer/?uri=github.com/Azure/bicep-registry-modules)
+
 <h1 style="color: steelblue;">⚠️ New standard for Bicep modules - AVM ⚠️</h1>
 
 To provide our customers with a unified experience, Azure Verified Modules ([AVM](https://aka.ms/AVM)) is now the single Microsoft standard for Bicep modules, published to the Public Bicep Registry, via this repository.
