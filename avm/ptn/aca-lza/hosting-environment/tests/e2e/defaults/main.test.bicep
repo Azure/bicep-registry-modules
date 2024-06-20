@@ -17,6 +17,9 @@ param resourceLocation string = deployment().location
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'acalzamin'
 
+@description('Optional. Test name prefix.')
+param namePrefix string = '#_namePrefix_#'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -32,6 +35,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     subscriptionId: subscriptionId
+    workloadName: namePrefix
     tags: {
       environment: 'test'
     }
