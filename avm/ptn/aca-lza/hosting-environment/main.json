@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5002772929506450663"
+      "templateHash": "6699315444266008839"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -43,9 +43,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {
-        "environment": "test"
-      },
+      "defaultValue": {},
       "metadata": {
         "description": "Tags related to the Azure Container Apps deployment."
       }
@@ -160,8 +158,9 @@
     },
     "applicationGatewayFqdn": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "The FQDN of the Application Gateway. Must match the TLS Certificate."
+        "description": "Optional. The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided."
       }
     },
     "base64Certificate": {
