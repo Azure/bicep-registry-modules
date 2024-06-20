@@ -113,6 +113,7 @@ var builtInRoleNames = {
   )
 }
 
+
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -165,7 +166,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
   properties: {
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
-      : '${subscription().id}/resourceGroups/${name}-rg'
+      : '${subscription().id}/resourceGroups/rg-${name}-managed'
     parameters: union(
       // Always added parameters
       {
@@ -266,7 +267,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
                     keyVaultUri: cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                      ? customerManagedKey!.keyVersion
+                      ? customerManagedKey!.keyVersion!
                       : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
                 }
@@ -278,7 +279,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
                     keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                      ? customerManagedKeyManagedDisk!.keyVersion
+                      ? customerManagedKeyManagedDisk!.keyVersion!
                       : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
                   rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
