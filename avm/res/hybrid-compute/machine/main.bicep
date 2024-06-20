@@ -27,9 +27,8 @@ param clientPublicKey string = ''
   'AutomaticByOS'
   'Manual'
   'ImageDefault'
-  ''
 ])
-param patchMode string = ''
+param patchMode string?
 
 @description('Optional. VM guest patching assessment mode. Set it to \'AutomaticByPlatform\' to enable automatically check for updates every 24 hours.')
 @allowed([
