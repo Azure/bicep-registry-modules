@@ -22,6 +22,7 @@ param description string?
 @sys.description('Optional. Applications to create.')
 param applications array?
 
+import { imageType } from 'image/main.bicep'
 @sys.description('Optional. Images to create.')
 param images imageType[]?
 
@@ -49,21 +50,12 @@ param sharingProfile object?
 param softDeletePolicy object?
 
 var builtInRoleNames = {
-  'Compute Gallery Sharing Admin': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '1ef6a3be-d0ac-425d-8c01-acb62866290b'
-  )
+  'Compute Gallery Sharing Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-  )
-  'User Access Administrator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-  )
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
+  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
 // ============== //
@@ -88,7 +80,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
+resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
   name: name
   location: location
   tags: tags
@@ -158,33 +150,7 @@ module galleries_images 'image/main.bicep' = [
       name: image.name
       location: image.?location ?? location
       galleryName: gallery.name
-      osType: image.?properties.osType ?? image.?osType ?? 'Linux' // osType is deprecated. Default to Linux for deprecation compatibility
-      osState: image.?properties.?osState ?? image.?osState ?? 'Generalized' // osState is deprecated
-      publisher: image.?properties.identifier.publisher ?? image.?publisher ?? '' // publisher is deprecated. Default to '' for deprecation compatibility
-      offer: image.?properties.identifier.offer ?? image.?offer ?? '' // offer is deprecated. Default to '' for deprecation compatibility
-      sku: image.?properties.identifier.sku ?? image.?sku ?? '' // sku is deprecated. Default to '' for deprecation compatibility
-      recommended: image.?recommended
-      minRecommendedvCPUs: image.?minRecommendedvCPUs // minRecommendedvCPUs is deprecated
-      maxRecommendedvCPUs: image.?maxRecommendedvCPUs // masRecommendedvCPUs is deprecated
-      minRecommendedMemory: image.?minRecommendedMemory // minRecommendedMemory is deprecated
-      maxRecommendedMemory: image.?maxRecommendedMemory // maxRecommendedMemory is deprecated
-      hyperVGeneration: (contains(image.?properties, 'hyperVGeneration') ? image.properties.hyperVGeneration : null) ?? (contains(
-          image,
-          'hyperVGeneration'
-        )
-        ? image.hyperVGeneration
-        : null) // hyperVGeneration is deprecated
-      securityType: image.?securityType ?? 'Standard'
-      isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported ?? true
-      description: image.?description
-      eula: contains(image, 'eula') ? image.eula : null
-      privacyStatementUri: contains(image.?properties, 'privacyStatementUri')
-        ? image.properties.privacyStatementUri
-        : null
-      releaseNoteUri: contains(image.?properties, 'releaseNoteUri') ? image.properties.releaseNoteUri : null
-      purchasePlan: contains(image.?properties, 'purchasePlan') ? image.properties.purchasePlan : null
-      endOfLife: contains(image.?properties, 'endOfLife') ? image.properties.endOfLife : null
-      excludedDiskTypes: contains(image.?properties, 'disallowed') ? image.properties.disallowed.dispTypes : []
+      galleryImage: image
       roleAssignments: image.?roleAssignments
       tags: image.?tags ?? tags
     }
@@ -246,144 +212,3 @@ type roleAssignmentType = {
   @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]
-
-type imageType = {
-  @sys.description('Required. The resource name.')
-  @minLength(1)
-  @maxLength(80)
-  name: string
-
-  @sys.description('Optional. The location of the resource. Defaults to the gallery resource location.')
-  location: string?
-
-  @sys.description('Optional. Tags for all resources. Defaults to the tags of the gallery.')
-  @metadata({
-    example: '''
-  {
-      key1: 'value1'
-      key2: 'value2'
-  }
-  '''
-  })
-  tags: object?
-
-  @sys.description('Optional. Describes the properties of a gallery image definition.')
-  properties: {
-    @sys.description('Optional. The description of this gallery image definition resource. This property is updatable.')
-    description: string?
-
-    @sys.description('Optional. Describes the disallowed disk types.')
-    disallowed: {
-      @sys.description('Required. A list of disk types.')
-      @metadata({ example: '''
-      [
-        'Standard_LRS'
-      ]''' })
-      diskTypes: string[]
-    }?
-
-    @sys.description('Optional. The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.')
-    endOfLife: string?
-
-    @sys.description('Optional. The Eula agreement for the gallery image definition.')
-    eula: string?
-
-    @sys.description('Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
-    hyperVGeneration: 'V1' | 'V2'?
-
-    @sys.description('Optional. This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.')
-    osState: 'Generalized' | 'Specialized'?
-
-    @sys.description('Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`.')
-    osType: 'Linux' | 'Windows'
-
-    @sys.description('Required. This is the gallery image definition identifier.')
-    identifier: {
-      @sys.description('Required. The name of the gallery image definition offer.')
-      publisher: string
-
-      @sys.description('Required. The name of the gallery image definition publisher.')
-      offer: string
-
-      @sys.description('Required. The name of the gallery image definition SKU.')
-      sku: string
-    }
-
-    @sys.description('Optional. The privacy statement uri.')
-    privacyStatementUri: string?
-
-    @sys.description('Optional. Describes the gallery image definition purchase plan. This is used by marketplace images.')
-    purchasePlan: {
-      @sys.description('Required. The plan ID.')
-      name: string
-
-      @sys.description('Required. The product ID.')
-      product: string
-
-      @sys.description('Required. The publisher ID.')
-      publisher: string
-    }?
-
-    @sys.description('Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable.')
-    recommended: {
-      @sys.description('Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.')
-      vCPUs: resourceRangeType?
-
-      @sys.description('Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.')
-      memory: resourceRangeType?
-    }?
-
-    @sys.description('Optional. The release note uri. Has to be a valid URL.')
-    releaseNoteUri: string?
-  }?
-
-  @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.')
-  securityType: ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
-
-  @sys.description('Optional. Specify if the image supports accelerated networking. Defaults to true.')
-  isAcceleratedNetworkSupported: bool?
-
-  @sys.description('Optional. Specifiy if the image supports hibernation.')
-  isHibernateSupported: bool?
-
-  @sys.description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.offer` instead.')
-  offer: string?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.publisher` instead.')
-  publisher: string?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding  `properties.identifier.sku` instead.')
-  sku: string?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.osType` instead.')
-  osType: 'Linux' | 'Windows'?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.hyperVGeneration` instead.')
-  hyperVGeneration: string?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.osState` instead.')
-  osState: 'Generalized' | 'Specialized'?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.min` instead.')
-  minRecommendedMemory: int?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.max` instead.')
-  maxRecommendedMemory: int?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.min` instead.')
-  minRecommendedvCPUs: int?
-
-  @sys.description('Optional. Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.max` instead.')
-  maxRecommendedvCPUs: int?
-}
-
-type resourceRangeType = {
-  @sys.description('Optional. The minimum number of the resource.')
-  min: int?
-
-  @sys.description('Optional. The minimum number of the resource.')
-  max: int?
-}

@@ -84,7 +84,21 @@ module testDeployment '../../../main.bicep' = [
               sku: '2022-datacenter-azure-edition'
             }
             osType: 'Windows'
+            osState: 'Generalized'
             eula: 'test Eula'
+            architecture: 'x64'
+            description: 'testDescription'
+            privacyStatementUri: 'https://testPrivacyStatementUri.com'
+            disallowed: {
+              diskTypes: ['Standard_LRS']
+            }
+            purchasePlan:{
+              name: 'testPlanName1'
+              product: 'testProduct1'
+              publisher: 'testPublisher1'
+            }
+            endOfLifeDate: '2033-01-01'
+            releaseNoteUri: 'https://testReleaseNoteUri.com'
           }
           roleAssignments: [
             {
@@ -128,11 +142,11 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-imgd-wdtl-003'
-          hyperVGeneration: 'V2'
           securityType: 'TrustedLaunch'
           properties: {
             osType: 'Windows'
             osState: 'Generalized'
+            hyperVGeneration: 'V2'
             identifier: {
               publisher: 'MicrosoftWindowsDesktop'
               offer: 'WindowsDesktop'
@@ -148,6 +162,11 @@ module testDeployment '../../../main.bicep' = [
                 max: 8
               }
             }
+            purchasePlan:{
+              name: 'testPlanName'
+              product: 'testProduct'
+              publisher: 'testPublisher'
+            }
           }
           roleAssignments: [
             {
@@ -159,10 +178,10 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-imgd-us-004'
-          hyperVGeneration: 'V2'
           properties: {
             osType: 'Linux'
             osState: 'Generalized'
+            hyperVGeneration: 'V2'
             identifier: {
               publisher: 'canonical'
               offer: '0001-com-ubuntu-minimal-focal'
@@ -183,10 +202,10 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-imgd-us-005'
-          hyperVGeneration: 'V2'
           properties: {
             osType: 'Linux'
             osState: 'Generalized'
+            hyperVGeneration: 'V2'
             identifier: {
               publisher: 'canonical'
               offer: '0001-com-ubuntu-minimal-focal'
@@ -210,6 +229,7 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             osType: 'Linux'
             osState: 'Generalized'
+            hyperVGeneration: 'V2'
             identifier: {
               publisher: 'canonical'
               offer: '0001-com-ubuntu-server-focal'
@@ -226,7 +246,6 @@ module testDeployment '../../../main.bicep' = [
               }
             }
           }
-          hyperVGeneration: 'V2'
           isAcceleratedNetworkSupported: false
         }
       ]

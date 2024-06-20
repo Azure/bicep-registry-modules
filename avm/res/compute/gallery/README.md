@@ -17,9 +17,9 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries) |
+| `Microsoft.Compute/galleries` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries) |
 | `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/images) |
+| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
 
 ## Usage examples
 
@@ -30,9 +30,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/gallery:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using deprecated parameters](#example-2-using-deprecated-parameters)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -82,89 +81,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using deprecated parameters_
-
-This instance deploys the module with deprecated parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: 'galleryDeployment'
-  params: {
-    // Required parameters
-    name: 'cgdep001'
-    // Non-required parameters
-    images: [
-      {
-        hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: true
-        maxRecommendedMemory: 32
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 1
-        name: 'az-imgd-us-001'
-        offer: '0001-com-ubuntu-server-focal'
-        osState: 'Generalized'
-        osType: 'Linux'
-        publisher: 'canonical'
-        sku: '20_04-lts-gen2'
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "cgdep001"
-    },
-    // Non-required parameters
-    "images": {
-      "value": [
-        {
-          "hyperVGeneration": "V2",
-          "isAcceleratedNetworkSupported": true,
-          "maxRecommendedMemory": 32,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 1,
-          "name": "az-imgd-us-001",
-          "offer": "0001-com-ubuntu-server-focal",
-          "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "canonical",
-          "sku": "20_04-lts-gen2"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -201,6 +118,14 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       {
         name: 'az-imgd-ws-001'
         properties: {
+          architecture: 'x64'
+          description: 'testDescription'
+          disallowed: {
+            diskTypes: [
+              'Standard_LRS'
+            ]
+          }
+          endOfLifeDate: '2033-01-01'
           eula: 'test Eula'
           hyperVGeneration: 'V1'
           identifier: {
@@ -208,7 +133,15 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             publisher: 'MicrosoftWindowsServer'
             sku: '2022-datacenter-azure-edition'
           }
+          osState: 'Generalized'
           osType: 'Windows'
+          privacyStatementUri: 'https://testPrivacyStatementUri.com'
+          purchasePlan: {
+            name: 'testPlanName1'
+            product: 'testProduct1'
+            publisher: 'testPublisher1'
+          }
+          releaseNoteUri: 'https://testReleaseNoteUri.com'
         }
         roleAssignments: [
           {
@@ -251,9 +184,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         ]
       }
       {
-        hyperVGeneration: 'V2'
         name: 'az-imgd-wdtl-003'
         properties: {
+          hyperVGeneration: 'V2'
           identifier: {
             offer: 'WindowsDesktop'
             publisher: 'MicrosoftWindowsDesktop'
@@ -261,6 +194,11 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           }
           osState: 'Generalized'
           osType: 'Windows'
+          purchasePlan: {
+            name: 'testPlanName'
+            product: 'testProduct'
+            publisher: 'testPublisher'
+          }
           recommended: {
             memory: {
               max: 16
@@ -282,10 +220,10 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         securityType: 'TrustedLaunch'
       }
       {
-        hyperVGeneration: 'V2'
         isAcceleratedNetworkSupported: false
         name: 'az-imgd-us-004'
         properties: {
+          hyperVGeneration: 'V2'
           identifier: {
             offer: '0001-com-ubuntu-minimal-focal'
             publisher: 'canonical'
@@ -306,10 +244,10 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       }
       {
-        hyperVGeneration: 'V2'
         isAcceleratedNetworkSupported: true
         name: 'az-imgd-us-005'
         properties: {
+          hyperVGeneration: 'V2'
           identifier: {
             offer: '0001-com-ubuntu-minimal-focal'
             publisher: 'canonical'
@@ -330,10 +268,10 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       }
       {
-        hyperVGeneration: 'V2'
         isAcceleratedNetworkSupported: false
         name: 'az-imgd-us-006'
         properties: {
+          hyperVGeneration: 'V2'
           identifier: {
             offer: '0001-com-ubuntu-server-focal'
             publisher: 'canonical'
@@ -426,6 +364,14 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         {
           "name": "az-imgd-ws-001",
           "properties": {
+            "architecture": "x64",
+            "description": "testDescription",
+            "disallowed": {
+              "diskTypes": [
+                "Standard_LRS"
+              ]
+            },
+            "endOfLifeDate": "2033-01-01",
             "eula": "test Eula",
             "hyperVGeneration": "V1",
             "identifier": {
@@ -433,7 +379,15 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
               "publisher": "MicrosoftWindowsServer",
               "sku": "2022-datacenter-azure-edition"
             },
-            "osType": "Windows"
+            "osState": "Generalized",
+            "osType": "Windows",
+            "privacyStatementUri": "https://testPrivacyStatementUri.com",
+            "purchasePlan": {
+              "name": "testPlanName1",
+              "product": "testProduct1",
+              "publisher": "testPublisher1"
+            },
+            "releaseNoteUri": "https://testReleaseNoteUri.com"
           },
           "roleAssignments": [
             {
@@ -476,9 +430,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           ]
         },
         {
-          "hyperVGeneration": "V2",
           "name": "az-imgd-wdtl-003",
           "properties": {
+            "hyperVGeneration": "V2",
             "identifier": {
               "offer": "WindowsDesktop",
               "publisher": "MicrosoftWindowsDesktop",
@@ -486,6 +440,11 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             },
             "osState": "Generalized",
             "osType": "Windows",
+            "purchasePlan": {
+              "name": "testPlanName",
+              "product": "testProduct",
+              "publisher": "testPublisher"
+            },
             "recommended": {
               "memory": {
                 "max": 16,
@@ -507,10 +466,10 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "securityType": "TrustedLaunch"
         },
         {
-          "hyperVGeneration": "V2",
           "isAcceleratedNetworkSupported": false,
           "name": "az-imgd-us-004",
           "properties": {
+            "hyperVGeneration": "V2",
             "identifier": {
               "offer": "0001-com-ubuntu-minimal-focal",
               "publisher": "canonical",
@@ -531,10 +490,10 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           }
         },
         {
-          "hyperVGeneration": "V2",
           "isAcceleratedNetworkSupported": true,
           "name": "az-imgd-us-005",
           "properties": {
+            "hyperVGeneration": "V2",
             "identifier": {
               "offer": "0001-com-ubuntu-minimal-focal",
               "publisher": "canonical",
@@ -555,10 +514,10 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           }
         },
         {
-          "hyperVGeneration": "V2",
           "isAcceleratedNetworkSupported": false,
           "name": "az-imgd-us-006",
           "properties": {
+            "hyperVGeneration": "V2",
             "identifier": {
               "offer": "0001-com-ubuntu-server-focal",
               "publisher": "canonical",
@@ -622,7 +581,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -653,6 +612,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             publisher: 'MicrosoftWindowsServer'
             sku: '2022-datacenter-azure-edition'
           }
+          osState: 'Generalized'
           osType: 'Windows'
         }
       }
@@ -702,6 +662,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
               "publisher": "MicrosoftWindowsServer",
               "sku": "2022-datacenter-azure-edition"
             },
+            "osState": "Generalized",
             "osType": "Windows"
           }
         }
@@ -789,27 +750,17 @@ Images to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-imagesname) | string | The resource name. |
+| [`properties`](#parameter-imagesproperties) | object | Describes the properties of a gallery image definition. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`hyperVGeneration`](#parameter-imageshypervgeneration) | string | Note: This is a deprecated property, please use the corresponding `properties.hyperVGeneration` instead. |
 | [`isAcceleratedNetworkSupported`](#parameter-imagesisacceleratednetworksupported) | bool | Specify if the image supports accelerated networking. Defaults to true. |
 | [`isHibernateSupported`](#parameter-imagesishibernatesupported) | bool | Specifiy if the image supports hibernation. |
 | [`location`](#parameter-imageslocation) | string | The location of the resource. Defaults to the gallery resource location. |
-| [`maxRecommendedMemory`](#parameter-imagesmaxrecommendedmemory) | int | Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.max` instead. |
-| [`maxRecommendedvCPUs`](#parameter-imagesmaxrecommendedvcpus) | int | Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.max` instead. |
-| [`minRecommendedMemory`](#parameter-imagesminrecommendedmemory) | int | Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.min` instead. |
-| [`minRecommendedvCPUs`](#parameter-imagesminrecommendedvcpus) | int | Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.min` instead. |
-| [`offer`](#parameter-imagesoffer) | string | Note: This is a deprecated property, please use the corresponding  `properties.identifier.offer` instead. |
-| [`osState`](#parameter-imagesosstate) | string | Note: This is a deprecated property, please use the corresponding `properties.osState` instead. |
-| [`osType`](#parameter-imagesostype) | string | Note: This is a deprecated property, please use the corresponding `properties.osType` instead. |
-| [`properties`](#parameter-imagesproperties) | object | Describes the properties of a gallery image definition. |
-| [`publisher`](#parameter-imagespublisher) | string | Note: This is a deprecated property, please use the corresponding  `properties.identifier.publisher` instead. |
 | [`roleAssignments`](#parameter-imagesroleassignments) | array | Array of role assignments to create. |
 | [`securityType`](#parameter-imagessecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`. |
-| [`sku`](#parameter-imagessku) | string | Note: This is a deprecated property, please use the corresponding  `properties.identifier.sku` instead. |
 | [`tags`](#parameter-imagestags) | object | Tags for all resources. Defaults to the tags of the gallery. |
 
 ### Parameter: `images.name`
@@ -819,102 +770,11 @@ The resource name.
 - Required: Yes
 - Type: string
 
-### Parameter: `images.hyperVGeneration`
-
-Note: This is a deprecated property, please use the corresponding `properties.hyperVGeneration` instead.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.isAcceleratedNetworkSupported`
-
-Specify if the image supports accelerated networking. Defaults to true.
-
-- Required: No
-- Type: bool
-
-### Parameter: `images.isHibernateSupported`
-
-Specifiy if the image supports hibernation.
-
-- Required: No
-- Type: bool
-
-### Parameter: `images.location`
-
-The location of the resource. Defaults to the gallery resource location.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.maxRecommendedMemory`
-
-Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.max` instead.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.maxRecommendedvCPUs`
-
-Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.max` instead.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.minRecommendedMemory`
-
-Note: This is a deprecated property, please use the corresponding `properties.recommended.memory.min` instead.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.minRecommendedvCPUs`
-
-Note: This is a deprecated property, please use the corresponding `properties.recommended.vCPUs.min` instead.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.offer`
-
-Note: This is a deprecated property, please use the corresponding  `properties.identifier.offer` instead.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.osState`
-
-Note: This is a deprecated property, please use the corresponding `properties.osState` instead.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Generalized'
-    'Specialized'
-  ]
-  ```
-
-### Parameter: `images.osType`
-
-Note: This is a deprecated property, please use the corresponding `properties.osType` instead.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
-
 ### Parameter: `images.properties`
 
 Describes the properties of a gallery image definition.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 **Required parameters**
@@ -922,18 +782,19 @@ Describes the properties of a gallery image definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`identifier`](#parameter-imagespropertiesidentifier) | object | This is the gallery image definition identifier. |
+| [`osState`](#parameter-imagespropertiesosstate) | string | This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`. |
 | [`osType`](#parameter-imagespropertiesostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`architecture`](#parameter-imagespropertiesarchitecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-imagespropertiesdescription) | string | The description of this gallery image definition resource. This property is updatable. |
 | [`disallowed`](#parameter-imagespropertiesdisallowed) | object | Describes the disallowed disk types. |
-| [`endOfLife`](#parameter-imagespropertiesendoflife) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
+| [`endOfLifeDate`](#parameter-imagespropertiesendoflifedate) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
 | [`eula`](#parameter-imagespropertieseula) | string | The Eula agreement for the gallery image definition. |
 | [`hyperVGeneration`](#parameter-imagespropertieshypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
-| [`osState`](#parameter-imagespropertiesosstate) | string | This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`. |
 | [`privacyStatementUri`](#parameter-imagespropertiesprivacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-imagespropertiespurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`recommended`](#parameter-imagespropertiesrecommended) | object | The properties describe the recommended machine configuration for this Image Definition. These properties are updatable. |
@@ -975,6 +836,20 @@ The name of the gallery image definition SKU.
 - Required: Yes
 - Type: string
 
+### Parameter: `images.properties.osState`
+
+This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Generalized'
+    'Specialized'
+  ]
+  ```
+
 ### Parameter: `images.properties.osType`
 
 This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`.
@@ -986,6 +861,20 @@ This property allows you to specify the type of the OS that is included in the d
   [
     'Linux'
     'Windows'
+  ]
+  ```
+
+### Parameter: `images.properties.architecture`
+
+The architecture of the image. Applicable to OS disks only.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Arm64'
+    'x64'
   ]
   ```
 
@@ -1016,7 +905,7 @@ A list of disk types.
 - Required: Yes
 - Type: array
 
-### Parameter: `images.properties.endOfLife`
+### Parameter: `images.properties.endOfLifeDate`
 
 The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.
 
@@ -1041,20 +930,6 @@ The hypervisor generation of the Virtual Machine. If this value is not specified
   [
     'V1'
     'V2'
-  ]
-  ```
-
-### Parameter: `images.properties.osState`
-
-This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Generalized'
-    'Specialized'
   ]
   ```
 
@@ -1178,9 +1053,23 @@ The release note uri. Has to be a valid URL.
 - Required: No
 - Type: string
 
-### Parameter: `images.publisher`
+### Parameter: `images.isAcceleratedNetworkSupported`
 
-Note: This is a deprecated property, please use the corresponding  `properties.identifier.publisher` instead.
+Specify if the image supports accelerated networking. Defaults to true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `images.isHibernateSupported`
+
+Specifiy if the image supports hibernation.
+
+- Required: No
+- Type: bool
+
+### Parameter: `images.location`
+
+The location of the resource. Defaults to the gallery resource location.
 
 - Required: No
 - Type: string
@@ -1289,13 +1178,6 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'TrustedLaunch'
   ]
   ```
-
-### Parameter: `images.sku`
-
-Note: This is a deprecated property, please use the corresponding  `properties.identifier.sku` instead.
-
-- Required: No
-- Type: string
 
 ### Parameter: `images.tags`
 

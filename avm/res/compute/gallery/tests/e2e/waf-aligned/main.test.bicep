@@ -59,6 +59,7 @@ module testDeployment '../../../main.bicep' = [
               sku: '2022-datacenter-azure-edition'
             }
             osType: 'Windows'
+            osState: 'Generalized'
           }
         }
       ]
