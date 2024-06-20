@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15568108529404488839"
+      "templateHash": "122203085135098136"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -15,7 +15,7 @@
     "subscriptionId": {
       "type": "string",
       "metadata": {
-        "description": "The id of the subscription to create the Azure Container Apps deployment."
+        "description": "Required. The id of the subscription to create the Azure Container Apps deployment."
       }
     },
     "workloadName": {
@@ -24,28 +24,28 @@
       "minLength": 2,
       "maxLength": 10,
       "metadata": {
-        "description": "The name of the workload that is being deployed. Up to 10 characters long."
+        "description": "Optional. The name of the workload that is being deployed. Up to 10 characters long."
       }
     },
     "hubVirtualNetworkResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The resource ID of the hub virtual network. If set, the spoke virtual network will be peered with the hub virtual network."
+        "description": "Optional. The resource ID of the hub virtual network. If set, the spoke virtual network will be peered with the hub virtual network. Default is empty."
       }
     },
     "networkApplianceIpAddress": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance."
+        "description": "Optional. If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty."
       }
     },
     "tags": {
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Tags related to the Azure Container Apps deployment."
+        "description": "Optional. Tags related to the Azure Container Apps deployment. Default is empty."
       }
     },
     "environment": {
@@ -53,38 +53,38 @@
       "defaultValue": "test",
       "maxLength": 8,
       "metadata": {
-        "description": "The name of the environment (e.g. \"dev\", \"test\", \"prod\", \"uat\", \"dr\", \"qa\"). Up to 8 characters long."
+        "description": "Optional. The name of the environment (e.g. \"dev\", \"test\", \"prod\", \"uat\", \"dr\", \"qa\"). Up to 8 characters long. Default is \"test\"."
       }
     },
     "location": {
       "type": "string",
       "defaultValue": "[deployment().location]",
       "metadata": {
-        "description": "Optional. The location of the Azure Container Apps deployment."
+        "description": "Optional. The location of the Azure Container Apps deployment. Default is the location of the deployment location."
       }
     },
     "vmSize": {
       "type": "string",
       "metadata": {
-        "description": "The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information."
+        "description": "Required. The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information."
       }
     },
     "vmAdminUsername": {
       "type": "string",
       "metadata": {
-        "description": "The username to use for the virtual machine."
+        "description": "Required. The username to use for the virtual machine."
       }
     },
     "vmAdminPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "The password to use for the virtual machine."
+        "description": "Required. The password to use for the virtual machine."
       }
     },
     "vmLinuxSshAuthorizedKey": {
       "type": "securestring",
       "metadata": {
-        "description": "The SSH public key to use for the virtual machine."
+        "description": "Required. The SSH public key to use for the virtual machine."
       }
     },
     "vmAuthenticationType": {
@@ -95,7 +95,7 @@
         "password"
       ],
       "metadata": {
-        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+        "description": "Optional. Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is \"password\"."
       }
     },
     "vmJumpboxOSType": {
@@ -105,96 +105,99 @@
         "linux",
         "windows",
         "none"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The operating system type of the virtual machine. Default is \"none\" which results in no VM deployment. Default is \"none\"."
+      }
     },
     "vmJumpBoxSubnetAddressPrefix": {
       "type": "string",
       "metadata": {
-        "description": "CIDR to use for the virtual machine subnet."
+        "description": "Required. CIDR to use for the virtual machine subnet."
       }
     },
     "spokeResourceGroupName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The name of the resource group to create the resources in. If set, it overrides the name generated by the template."
+        "description": "Optional. The name of the resource group to create the resources in. If set, it overrides the name generated by the template. Default is empty."
       }
     },
     "spokeVNetAddressPrefixes": {
       "type": "array",
       "metadata": {
-        "description": "CIDR of the Spoke Virtual Network."
+        "description": "Required. CIDR of the Spoke Virtual Network."
       }
     },
     "spokeInfraSubnetAddressPrefix": {
       "type": "string",
       "metadata": {
-        "description": "CIDR of the Spoke Infrastructure Subnet."
+        "description": "Required. CIDR of the Spoke Infrastructure Subnet."
       }
     },
     "spokePrivateEndpointsSubnetAddressPrefix": {
       "type": "string",
       "metadata": {
-        "description": "CIDR of the Spoke Private Endpoints Subnet."
+        "description": "Required. CIDR of the Spoke Private Endpoints Subnet."
       }
     },
     "spokeApplicationGatewaySubnetAddressPrefix": {
       "type": "string",
       "metadata": {
-        "description": "CIDR of the Spoke Application Gateway Subnet."
+        "description": "Required. CIDR of the Spoke Application Gateway Subnet."
       }
     },
     "enableApplicationInsights": {
       "type": "bool",
       "metadata": {
-        "description": "Enable or disable the createion of Application Insights."
+        "description": "Required. Enable or disable the createion of Application Insights."
       }
     },
     "enableDaprInstrumentation": {
       "type": "bool",
       "metadata": {
-        "description": "Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored."
+        "description": "Required. Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored."
       }
     },
     "applicationGatewayFqdn": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided."
+        "description": "Optional. The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty."
       }
     },
     "base64Certificate": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener."
+        "description": "Optional. The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty."
       }
     },
     "applicationGatewayCertificateKeyName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the certificate key to use for Application Gateway certificate."
+        "description": "Required. The name of the certificate key to use for Application Gateway certificate."
       }
     },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
+        "description": "Optional. Enable/Disable usage telemetry for module. Default is true."
       }
     },
     "deployZoneRedundantResources": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false."
+        "description": "Optional. Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true."
       }
     },
     "deployAzurePolicies": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional, default value is true. If true, Azure Policies will be deployed"
+        "description": "Optional.If true, Azure Policies will be deployed. Default value is true."
       }
     },
     "exposeContainerAppsWith": {
@@ -205,21 +208,21 @@
         "frontDoor"
       ],
       "metadata": {
-        "description": "Specify the way container apps is going to be exposed. Options are applicationGateway or frontDoor"
+        "description": "Optional. Specify the way container apps is going to be exposed. Options are applicationGateway or frontDoor. Default is \"applicationGateway\"."
       }
     },
     "deploySampleApplication": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Deploy sample application to the container apps environment."
+        "description": "Optional. Deploy sample application to the container apps environment. Default is false."
       }
     },
     "enableDdosProtection": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus"
+        "description": "Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is \"false\"."
       }
     }
   },
@@ -45199,7 +45202,7 @@
     "vmJumpBoxName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the jump box virtual machine"
+        "description": "The name of the jump box virtual machine."
       },
       "value": "[reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.vmJumpBoxName.value]"
     },
@@ -45247,6 +45250,9 @@
     },
     "applicationGatewayId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure Application Gateway."
+      },
       "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('applicationGateway-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.applicationGatewayResourceId.value, '')]"
     },
     "applicationGatewayFqdn": {
