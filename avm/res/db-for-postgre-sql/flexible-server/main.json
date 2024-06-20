@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "2214188265524935187"
+      "templateHash": "8504084713028667860"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -458,9 +458,14 @@
     },
     "maintenanceWindow": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "customWindow": "Enabled",
+        "dayOfWeek": "0",
+        "startHour": "1",
+        "startMinute": "0"
+      },
       "metadata": {
-        "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
+        "description": "Required. Default properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       }
     },
     "pointInTimeUTC": {
