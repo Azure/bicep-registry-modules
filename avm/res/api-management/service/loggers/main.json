@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.28.1.47646",
+      "templateHash": "11887059084876487326"
+    },
+    "name": "API Management Service Loggers",
+    "description": "This module deploys an API Management Service Logger.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource Name."
+      }
+    },
+    "loggerDescription": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. Logger description."
+      }
+    },
+    "isBuffered": {
+      "type": "bool",
+      "metadata": {
+        "description": "Optional. Whether records are buffered in the logger before publishing. Default is assumed to be true."
+      }
+    },
+    "loggerType": {
+      "type": "string",
+      "allowedValues": [
+        "applicationInsights",
+        "azureEventHub",
+        "azureMonitor"
+      ],
+      "metadata": {
+        "description": "Required. Logger type."
+      }
+    },
+    "targetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource)."
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "metadata": {
+        "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/loggers",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "credentials": "[parameters('credentials')]",
+        "description": "[parameters('loggerDescription')]",
+        "isBuffered": "[parameters('isBuffered')]",
+        "loggerType": "[parameters('loggerType')]",
+        "resourceId": "[parameters('targetResourceId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the logger."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the logger."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the named value was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
