@@ -158,6 +158,7 @@ body:
         - "avm/res/network/vpn-site"
         - "avm/res/operational-insights/workspace"
         - "avm/res/operations-management/solution"
+        - "avm/res/portal/dashboard"
         - "avm/res/power-bi-dedicated/capacity"
         - "avm/res/purview/account"
         - "avm/res/recovery-services/vault"
