@@ -1,9 +1,6 @@
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
-@description('Required. The name of the Maintenance Configuration to create.')
-param maintenanceConfigurationName string
-
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 

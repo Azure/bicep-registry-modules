@@ -41,7 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
   }
 }
 
