@@ -23,6 +23,7 @@ param customRules array?
 @description('Optional. The PolicySettings for policy.')
 param policySettings object?
 
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-appgwwebappfirewallpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {

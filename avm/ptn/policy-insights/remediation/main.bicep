@@ -59,6 +59,7 @@ param enableTelemetry bool = true
 // Resources        //
 // ================ //
 
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.ptn.policyinsights-remediation.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
