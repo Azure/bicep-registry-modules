@@ -7,9 +7,6 @@ metadata description = 'This instance deploys the module in alignment with the b
 // Parameters //
 // ========== //
 
-@description('Required. The kind of machine to deploy.')
-param kind string = 'HCI'
-
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-hybridCompute.machine-${serviceShort}-rg'
@@ -45,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
-      kind: kind
+      kind: 'HCI'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

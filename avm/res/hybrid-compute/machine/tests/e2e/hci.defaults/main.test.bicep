@@ -1,14 +1,11 @@
 targetScope = 'subscription'
 
-metadata name = 'Creates only an Arc Machine'
+metadata name = 'Creates an Arc Machine using only the defaults'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
-
-@description('Required. The kind of machine to deploy.')
-param kind string = 'HCI'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -45,12 +42,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
-      kind: kind
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
+      kind: 'HCI'
     }
   }
 ]

@@ -49,9 +49,8 @@ param guestConfiguration object = {}
 @allowed([
   'Windows'
   'Linux'
-  ''
 ])
-param osType string = ''
+param osType string?
 
 // Shared parameters
 @description('Optional. Location for all resources.')
@@ -70,7 +69,7 @@ param tags object?
 param enableTelemetry bool = true
 
 var linuxConfiguration = {
-  patchSettings: (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'ImageDefault')
+  patchSettings: (patchMode == 'AutomaticByPlatform' || patchMode == 'ImageDefault')
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
@@ -79,7 +78,7 @@ var linuxConfiguration = {
 }
 
 var windowsConfiguration = {
-  patchSettings: (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'AutomaticByOS' || patchMode =~ 'Manual')
+  patchSettings: (patchMode == 'AutomaticByPlatform' || patchMode == 'AutomaticByOS' || patchMode == 'Manual')
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
@@ -118,6 +117,7 @@ var builtInRoleNames = {
   )
 }
 
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.hybridcompute-machine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -152,7 +152,7 @@ resource machine 'Microsoft.HybridCompute/machines@2024-03-31-preview' = {
     parentClusterResourceId: parentClusterResourceId
     vmId: vmId
     clientPublicKey: clientPublicKey
-    privateLinkScopeResourceId: empty(privateLinkScopeResourceId) ? null : privateLinkScopeResourceId
+    privateLinkScopeResourceId: !empty(privateLinkScopeResourceId) ? privateLinkScopeResourceId : null
   }
 }
 

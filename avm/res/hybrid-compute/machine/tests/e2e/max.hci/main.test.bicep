@@ -1,14 +1,11 @@
 targetScope = 'subscription'
 
 metadata name = 'Creates an Arc Machine with maximum configurations'
-metadata description = 'This instance deploys the module with the full set of required parameters.'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
 // ========== //
-
-@description('Required. The kind of machine to deploy.')
-param kind string = 'HCI'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -54,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
-      kind: kind
+      kind: 'HCI'
       patchAssessmentMode: 'AutomaticByPlatform'
       patchMode: 'AutomaticByPlatform'
       privateLinkScopeResourceId: nestedDependencies.outputs.privateLinkScopeResourceId
