@@ -24,9 +24,9 @@ This module deploys an API Management Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiName`](#parameter-apiname) | string | API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number. |
-| [`apiPath`](#parameter-apipath) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 | [`displayName`](#parameter-displayname) | string | API name. Must be 1 to 300 characters long. |
+| [`name`](#parameter-name) | string | API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number. |
+| [`path`](#parameter-path) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 
 **Conditional parameters**
 
@@ -60,23 +60,23 @@ This module deploys an API Management Service API.
 | [`value`](#parameter-value) | string | Content value when Importing an API. |
 | [`wsdlSelector`](#parameter-wsdlselector) | object | Criteria to limit import of WSDL to a subset of the document. |
 
-### Parameter: `apiName`
+### Parameter: `displayName`
+
+API name. Must be 1 to 300 characters long.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
 
 API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `apiPath`
+### Parameter: `path`
 
 Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `displayName`
-
-API name. Must be 1 to 300 characters long.
 
 - Required: Yes
 - Type: string
