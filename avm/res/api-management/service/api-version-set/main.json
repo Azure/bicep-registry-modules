@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "14411287735172753559"
+      "version": "0.28.1.47646",
+      "templateHash": "2869637630248924190"
     },
     "name": "API Management Service API Version Sets",
     "description": "This module deploys an API Management Service API Version Set.",
@@ -36,7 +36,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/apiVersionSets",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": "[parameters('properties')]"
     }
