@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworks-${se
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvnwaf'
+param serviceShort string = 'nvnmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,11 +35,11 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkSecurityGroupBastionName: 'dep-${namePrefix}-nsg-bastion-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -95,6 +95,13 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Reader'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
       flowTimeoutInMinutes: 20
       subnets: [
         {
@@ -144,11 +151,18 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 4)
+          name: '${namePrefix}-az-subnet-x-004'
+          networkSecurityGroupResourceId: ''
+          natGatewayResourceId: ''
+          routeTableResourceId: ''
+        }
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 5)
           name: 'AzureBastionSubnet'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 5)
+          addressPrefix: cidrSubnet(addressPrefix, 24, 6)
           name: 'AzureFirewallSubnet'
         }
       ]

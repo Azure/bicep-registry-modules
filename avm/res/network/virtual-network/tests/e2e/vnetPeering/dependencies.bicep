@@ -1,31 +1,32 @@
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
-@description('Required. The name of the Route Table to create.')
-param routeTableName string
-
-@description('Required. The name of the Network Security Group to create.')
-param networkSecurityGroupName string
+@description('Required. The name of the Virtual Network to create.')
+param virtualNetworkName string
 
 @description('Required. The name of the Bastion Network Security Group to create.')
 param networkSecurityGroupBastionName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
-  location: location
-}
+var addressPrefix = '10.0.0.0/16'
 
-resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
-  name: routeTableName
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+  name: virtualNetworkName
   location: location
-}
-
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
-  name: networkSecurityGroupName
-  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        addressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: 'defaultSubnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+        }
+      }
+    ]
+  }
 }
 
 resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
@@ -150,14 +151,8 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
   }
 }
 
-@description('The resource ID of the created Route Table.')
-output routeTableResourceId string = routeTable.id
-
-@description('The resource ID of the created Network Security Group.')
-output networkSecurityGroupResourceId string = networkSecurityGroup.id
+@description('The resource ID of the created Virtual Network.')
+output virtualNetworkResourceId string = virtualNetwork.id
 
 @description('The resource ID of the created Bastion Network Security Group.')
 output networkSecurityGroupBastionResourceId string = networkSecurityGroupBastion.id
-
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
