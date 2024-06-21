@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14941226257686956543"
+      "templateHash": "16999467862575721006"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
