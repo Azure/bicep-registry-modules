@@ -131,7 +131,9 @@ jobs:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
         env:
+          ## used in legacy client secret authentication
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          # used in OIDC federated authentication
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
