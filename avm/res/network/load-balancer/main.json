@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17619281122741338588"
+      "templateHash": "9858776512961558884"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -663,7 +663,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8322972678670115355"
+              "templateHash": "7021606407674009495"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -684,7 +684,7 @@
             },
             "frontendPort": {
               "type": "int",
-              "minValue": 1,
+              "minValue": -1,
               "maxValue": 65534,
               "metadata": {
                 "description": "Required. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer."
@@ -693,7 +693,7 @@
             "backendPort": {
               "type": "int",
               "defaultValue": "[parameters('frontendPort')]",
-              "minValue": 1,
+              "minValue": -1,
               "maxValue": 65535,
               "metadata": {
                 "description": "Optional. The port used for the internal endpoint."
@@ -770,8 +770,8 @@
               "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
-                "frontendPort": "[parameters('frontendPort')]",
-                "backendPort": "[parameters('backendPort')]",
+                "frontendPort": "[if(not(equals(parameters('frontendPort'), -1)), parameters('frontendPort'), null())]",
+                "backendPort": "[if(not(equals(parameters('backendPort'), -1)), parameters('backendPort'), null())]",
                 "backendAddressPool": "[if(not(empty(parameters('backendAddressPoolName'))), createObject('id', format('{0}/backendAddressPools/{1}', resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), parameters('backendAddressPoolName'))), null())]",
                 "enableFloatingIP": "[parameters('enableFloatingIP')]",
                 "enableTcpReset": "[parameters('enableTcpReset')]",

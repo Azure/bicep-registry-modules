@@ -9,12 +9,12 @@ param loadBalancerName string
 param name string
 
 @description('Required. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer.')
-@minValue(1)
+@minValue(-1)
 @maxValue(65534)
 param frontendPort int
 
 @description('Optional. The port used for the internal endpoint.')
-@minValue(1)
+@minValue(-1)
 @maxValue(65535)
 param backendPort int = frontendPort
 
@@ -58,8 +58,8 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
 resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-11-01' = {
   name: name
   properties: {
-    frontendPort: frontendPort
-    backendPort: backendPort
+    frontendPort: frontendPort != -1 ? frontendPort : null
+    backendPort: backendPort != -1 ? backendPort : null
     backendAddressPool: !empty(backendAddressPoolName)
       ? {
           id: '${loadBalancer.id}/backendAddressPools/${backendAddressPoolName}'

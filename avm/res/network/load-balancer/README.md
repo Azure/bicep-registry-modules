@@ -1001,10 +1001,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         protocol: 'Tcp'
       }
       {
-        backendPort: 3389
-        frontendIPConfigurationName: 'privateIPConfig1'
-        frontendPort: 3389
+        backendAddressPoolName: 'backendAddressPool2'
+        backendPort: 5000
+        frontendIPConfigurationName: 'publicIPConfig1'
+        frontendPort: 5000
+        loadDistribution: 'Default'
         name: 'inboundNatRule2'
+        probeName: 'probe2'
       }
     ]
     loadBalancingRules: [
@@ -1109,10 +1112,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           "protocol": "Tcp"
         },
         {
-          "backendPort": 3389,
-          "frontendIPConfigurationName": "privateIPConfig1",
-          "frontendPort": 3389,
-          "name": "inboundNatRule2"
+          "backendAddressPoolName": "backendAddressPool2",
+          "backendPort": 5000,
+          "frontendIPConfigurationName": "publicIPConfig1",
+          "frontendPort": 5000,
+          "loadDistribution": "Default",
+          "name": "inboundNatRule2",
+          "probeName": "probe2"
         }
       ]
     },
