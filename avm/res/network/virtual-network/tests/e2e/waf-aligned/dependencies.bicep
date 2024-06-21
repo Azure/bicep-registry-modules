@@ -31,7 +31,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azPowerShellVersion: '9.7'
     retentionInterval: 'P1D'
-    scriptContent: 'Start-Sleep 180'
+    scriptContent: 'Start-Sleep 180; throw "Oh no!"'
   }
 }
 
