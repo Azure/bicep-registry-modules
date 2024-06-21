@@ -26,10 +26,25 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: 'nonExistend'
+// resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+//   name: resourceGroupName
+//   location: resourceLocation
+// }
+
+// TODO: REMOVE DUMMY CHANGE
+// =========================
+
+resource initialRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: 'shouldNotFail'
+  properties: {
+    principalId: '0ad0db9c-014b-4255-acff-2f13178a4eb0'
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'acdd72a7-3385-48ef-bd42-f606fba81addd'
+    )
+  }
 }
+// =========================
 
 // module nestedDependencies 'dependencies.bicep' = {
 //   scope: resourceGroup
