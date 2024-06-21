@@ -12,7 +12,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the scope connection.')
-param description string = ''
+param description string?
 
 @sys.description('Required. Enter the subscription or management group resource ID that you want to add to this network manager\'s scope.')
 param resourceId string
@@ -28,7 +28,7 @@ resource scopeConnection 'Microsoft.Network/networkManagers/scopeConnections@202
   name: name
   parent: networkManager
   properties: {
-    description: description
+    description: description ?? ''
     resourceId: resourceId
     tenantId: tenantId
   }

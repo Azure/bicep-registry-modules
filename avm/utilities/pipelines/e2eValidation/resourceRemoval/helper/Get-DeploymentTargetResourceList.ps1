@@ -70,7 +70,7 @@ function Get-DeploymentTargetResourceListInner {
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
-                [array]$resultSet = $resultSet | Where-Object { $_ -notmatch "\/resourceGroups\/$resourceGroupName\/" }
+                return $resultSet | Where-Object { $_ -notmatch "\/resourceGroups\/$resourceGroupName\/" } | Select-Object -Unique
             }
             break
         }

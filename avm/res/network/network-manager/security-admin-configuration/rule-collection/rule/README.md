@@ -135,7 +135,6 @@ A description of the rule.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `destinationPortRanges`
 
@@ -143,7 +142,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `destinations`
 
@@ -151,7 +149,34 @@ The destnations filter can be an IP Address or a service tag. Each filter contai
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-destinationsaddressprefix) | string | Address prefix. |
+| [`addressPrefixType`](#parameter-destinationsaddressprefixtype) | string | Address prefix type. |
+
+### Parameter: `destinations.addressPrefix`
+
+Address prefix.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `destinations.addressPrefixType`
+
+Address prefix type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPPrefix'
+    'ServiceTag'
+  ]
+  ```
 
 ### Parameter: `sourcePortRanges`
 
@@ -159,7 +184,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `sources`
 
@@ -167,7 +191,34 @@ The source filter can be an IP Address or a service tag. Each filter contains th
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-sourcesaddressprefix) | string | Address prefix. |
+| [`addressPrefixType`](#parameter-sourcesaddressprefixtype) | string | Address prefix type. |
+
+### Parameter: `sources.addressPrefix`
+
+Address prefix.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sources.addressPrefixType`
+
+Address prefix type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPPrefix'
+    'ServiceTag'
+  ]
+  ```
 
 
 ## Outputs
