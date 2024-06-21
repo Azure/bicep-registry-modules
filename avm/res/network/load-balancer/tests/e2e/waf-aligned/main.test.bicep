@@ -109,7 +109,7 @@ module testDeployment '../../../main.bicep' = [
           protocol: 'Tcp'
         }
         {
-          backendAddressPoolName: 'backendAddressPool2'
+          backendAddressPoolName: 'servers'
           backendPort: 5000
           frontendIPConfigurationName: 'publicIPConfig1'
           frontendPort: 5000

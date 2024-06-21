@@ -1001,7 +1001,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         protocol: 'Tcp'
       }
       {
-        backendAddressPoolName: 'backendAddressPool2'
+        backendAddressPoolName: 'servers'
         backendPort: 5000
         frontendIPConfigurationName: 'publicIPConfig1'
         frontendPort: 5000
@@ -1112,7 +1112,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           "protocol": "Tcp"
         },
         {
-          "backendAddressPoolName": "backendAddressPool2",
+          "backendAddressPoolName": "servers",
           "backendPort": 5000,
           "frontendIPConfigurationName": "publicIPConfig1",
           "frontendPort": 5000,
