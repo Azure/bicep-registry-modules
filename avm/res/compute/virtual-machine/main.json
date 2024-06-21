@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6494891476736650921
+      "templateHash": "16930314737085588338"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
