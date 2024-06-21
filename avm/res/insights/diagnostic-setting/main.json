@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5981394739767783762"
+      "version": "0.28.1.47646",
+      "templateHash": "16859145857534727275"
     },
     "name": "Diagnostic Settings (Activity Logs) for Azure Subscriptions",
     "description": "This module deploys a Subscription wide export of the Activity Log.",
@@ -161,7 +161,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.insights-diagnosticsetting.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {

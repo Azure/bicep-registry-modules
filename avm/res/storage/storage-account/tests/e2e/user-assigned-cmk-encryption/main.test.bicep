@@ -51,45 +51,47 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
-    privateEndpoints: [
-      {
-        service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      networkAcls: {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
       }
-    ]
-    blobServices: {
-      containers: [
+      privateEndpoints: [
         {
-          name: '${namePrefix}container'
-          publicAccess: 'None'
+          service: 'blob'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
         }
       ]
+      blobServices: {
+        containers: [
+          {
+            name: '${namePrefix}container'
+            publicAccess: 'None'
+          }
+        ]
+      }
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      }
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

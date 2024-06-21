@@ -2,7 +2,7 @@ metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Additional datacenter locations of the API Management service.')
+@description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
 
 @description('Required. The name of the API Management service.')
@@ -16,7 +16,16 @@ param certificates array = []
 param enableTelemetry bool = true
 
 @description('Optional. Custom properties of the API Management service.')
-param customProperties object = {}
+param customProperties object = {
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
+}
 
 @description('Optional. Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region.')
 param disableGateway bool = false
@@ -37,7 +46,7 @@ param location string = resourceGroup().location
 param lock lockType
 
 @description('Optional. Limit control plane API calls to API Management service with version equal to or newer than this value.')
-param minApiVersion string = ''
+param minApiVersion string?
 
 @description('Optional. The notification sender email address for the service.')
 param notificationSenderEmail string = 'apimgmt-noreply@mail.windowsazure.com'
@@ -54,7 +63,7 @@ param restore bool = false
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. The pricing tier of this API Management service.')
+@description('Optional. The pricing tier of this API Management service. Default is Premium.')
 @allowed([
   'Consumption'
   'Developer'
@@ -64,18 +73,19 @@ param roleAssignments roleAssignmentType
   'StandardV2'
   'BasicV2'
 ])
-param sku string = 'Developer'
+param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service.')
+@description('Optional. The instance size of this API Management service. Default is 2. Not supported with V2 SKUs. If using Consumption, sku should = 0.')
 @allowed([
   0
   1
   2
+  3
 ])
-param skuCount int = 1
+param skuCount int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
-param subnetResourceId string = ''
+param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -91,8 +101,8 @@ param virtualNetworkType string = 'None'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+@description('Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.')
+param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
 param newGuidValue string = newGuid()
@@ -113,8 +123,14 @@ param backends array = []
 @description('Optional. Caches.')
 param caches array = []
 
+@description('Optional. API Diagnostics.')
+param apiDiagnostics array = []
+
 @description('Optional. Identity providers.')
 param identityProviders array = []
+
+@description('Optional. Loggers.')
+param loggers array = []
 
 @description('Optional. Named values.')
 param namedValues array = []
@@ -130,6 +146,9 @@ param products array = []
 
 @description('Optional. Subscriptions.')
 param subscriptions array = []
+
+@description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
+param publicIpAddressResourceId string?
 
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
@@ -178,41 +197,40 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: sku
-    capacity: skuCount
+    capacity: contains(sku, 'V2') ? 1 : contains(sku, 'Consumption') ? 0 : skuCount
   }
-  zones: zones
+  zones: contains(sku, 'V2') ? null : zones
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: additionalLocations
+    additionalLocations: contains(sku, 'V2') ? null : additionalLocations
     customProperties: customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
@@ -223,11 +241,14 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' = {
           subnetResourceId: subnetResourceId
         }
       : null
+    publicIpAddressId: !empty(publicIpAddressResourceId) ? publicIpAddressResourceId : null
     apiVersionConstraint: !empty(minApiVersion)
       ? {
           minApiVersion: minApiVersion
         }
-      : null
+      : {
+          minApiVersion: '2021-08-01'
+        }
     restore: restore
   }
 }
@@ -238,8 +259,8 @@ module service_apis 'api/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       displayName: api.displayName
-      name: api.name
-      path: api.path
+      apiName: api.name
+      apiPath: api.path
       apiDescription: api.?apiDescription
       apiRevision: api.?apiRevision
       apiRevisionDescription: api.?apiRevisionDescription
@@ -355,6 +376,33 @@ module service_caches 'cache/main.bicep' = [
   }
 ]
 
+module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
+  for (apidiagnostic, index) in apiDiagnostics: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
+    params: {
+      apiManagementServiceName: service.name
+      apiName: apidiagnostic.apiName
+      loggerName: apidiagnostic.loggerName
+      diagnosticName: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : 'local'
+      alwaysLog: contains(apidiagnostic, 'alwaysLog') ? apidiagnostic.alwaysLog : 'allErrors'
+      backend: contains(apidiagnostic, 'backend') ? apidiagnostic.backend : {}
+      frontend: contains(apidiagnostic, 'frontend') ? apidiagnostic.frontend : {}
+      httpCorrelationProtocol: contains(apidiagnostic, 'httpCorrelationProtocol')
+        ? apidiagnostic.httpCorrelationProtocol
+        : 'Legacy'
+      logClientIp: contains(apidiagnostic, 'logClientIp') ? apidiagnostic.logClientIp : false
+      metrics: contains(apidiagnostic, 'metrics') ? apidiagnostic.metrics : false
+      operationNameFormat: contains(apidiagnostic, 'operationNameFormat') ? apidiagnostic.operationNameFormat : 'Name'
+      samplingPercentage: contains(apidiagnostic, 'samplingPercentage') ? apidiagnostic.samplingPercentage : 100
+      verbosity: contains(apidiagnostic, 'verbosity') ? apidiagnostic.verbosity : 'error'
+    }
+    dependsOn: [
+      service_apis
+      service_loggers
+    ]
+  }
+]
+
 module service_identityProviders 'identity-provider/main.bicep' = [
   for (identityProvider, index) in identityProviders: {
     name: '${uniqueString(deployment().name, location)}-Apim-IdentityProvider-${index}'
@@ -375,6 +423,21 @@ module service_identityProviders 'identity-provider/main.bicep' = [
       signInTenant: contains(identityProvider, 'signInTenant') ? identityProvider.signInTenant : ''
       signUpPolicyName: contains(identityProvider, 'signUpPolicyName') ? identityProvider.signUpPolicyName : ''
       type: contains(identityProvider, 'type') ? identityProvider.type : 'aad'
+    }
+  }
+]
+
+module service_loggers 'loggers/main.bicep' = [
+  for (logger, index) in loggers: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
+    params: {
+      name: logger.name
+      apiManagementServiceName: service.name
+      credentials: contains(logger, 'credentials') ? logger.credentials : {}
+      isBuffered: contains(logger, 'isBuffered') ? logger.isBuffered : true
+      loggerDescription: contains(logger, 'loggerDescription') ? logger.loggerDescription : ''
+      loggerType: contains(logger, 'loggerType') ? logger.loggerType : 'azureMonitor'
+      targetResourceId: contains(logger, 'targetResourceId') ? logger.targetResourceId : ''
     }
   }
 ]
@@ -453,17 +516,16 @@ module service_subscriptions 'subscription/main.bicep' = [
   }
 ]
 
-resource service_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: service
+resource service_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: service
+}
 
 resource service_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

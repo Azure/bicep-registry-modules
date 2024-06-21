@@ -50,11 +50,11 @@ param name string
 
 var isAadB2C = (type == 'aadB2C')
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2021-08-01' = {
+resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2022-08-01' = {
   name: name
   parent: service
   properties: {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "10463460824316688291"
+      "version": "0.28.1.47646",
+      "templateHash": "16865717026433728292"
     },
     "name": "Service Bus Namespace Queue",
     "description": "This module deploys a Service Bus Namespace Queue.",
@@ -379,8 +379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "10634119713895385684"
+              "version": "0.28.1.47646",
+              "templateHash": "15391519662555721522"
             },
             "name": "Service Bus Namespace Queue Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",

@@ -83,17 +83,16 @@ resource iotConnector 'Microsoft.HealthcareApis/workspaces/iotconnectors@2022-06
   }
 }
 
-resource iotConnector_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: iotConnector
+resource iotConnector_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: iotConnector
+}
 
 resource iotConnector_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -124,19 +123,18 @@ resource iotConnector_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
   }
 ]
 
-module fhir_destination 'fhirdestination/main.bicep' =
-  if (!empty(fhirdestination)) {
-    name: '${deployment().name}-FhirDestination'
-    params: {
-      name: '${uniqueString(workspaceName, iotConnector.name)}-map'
-      iotConnectorName: iotConnector.name
-      resourceIdentityResolutionType: fhirdestination.?resourceIdentityResolutionType
-      fhirServiceResourceId: fhirdestination.fhirServiceResourceId
-      destinationMapping: fhirdestination.?destinationMapping
-      location: location
-      workspaceName: workspaceName
-    }
+module fhir_destination 'fhirdestination/main.bicep' = if (!empty(fhirdestination)) {
+  name: '${deployment().name}-FhirDestination'
+  params: {
+    name: '${uniqueString(workspaceName, iotConnector.name)}-map'
+    iotConnectorName: iotConnector.name
+    resourceIdentityResolutionType: fhirdestination.?resourceIdentityResolutionType
+    fhirServiceResourceId: fhirdestination.fhirServiceResourceId
+    destinationMapping: fhirdestination.?destinationMapping
+    location: location
+    workspaceName: workspaceName
   }
+}
 
 @description('The name of the medtech service.')
 output name string = iotConnector.name
@@ -148,7 +146,7 @@ output resourceId string = iotConnector.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string =  iotConnector.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string = iotConnector.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = iotConnector.location

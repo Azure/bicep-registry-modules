@@ -38,11 +38,11 @@ param tls object = {
 @sys.description('Required. Runtime URL of the Backend.')
 param url string
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource backend 'Microsoft.ApiManagement/service/backends@2021-08-01' = {
+resource backend 'Microsoft.ApiManagement/service/backends@2022-08-01' = {
   name: name
   parent: service
   properties: {

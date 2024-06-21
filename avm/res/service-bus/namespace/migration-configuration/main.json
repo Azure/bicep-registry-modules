@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "16322713515483912947"
+      "version": "0.28.1.47646",
+      "templateHash": "1979996026271958468"
     },
     "name": "Service Bus Namespace Migration Configuration",
     "description": "This module deploys a Service Bus Namespace Migration Configuration.",

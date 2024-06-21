@@ -26,11 +26,11 @@ param value string = newGuid()
 
 var keyVaultEmpty = empty(keyVault)
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource namedValue 'Microsoft.ApiManagement/service/namedValues@2021-08-01' = {
+resource namedValue 'Microsoft.ApiManagement/service/namedValues@2022-08-01' = {
   name: name
   parent: service
   properties: {

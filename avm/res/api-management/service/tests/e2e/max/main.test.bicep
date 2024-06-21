@@ -11,8 +11,11 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
+@description('Optional. The location to deploy primary resources to.')
 param resourceLocation string = deployment().location
+
+@description('Optional. Location to deploy secondary resources to for APIM additionalLocations.')
+param locationRegion2 string = 'westus'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'apismax'
@@ -40,7 +43,12 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
+    locationRegion1: resourceLocation
+    locationRegion2: locationRegion2
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
+    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
+    networkSecurityGroupName: 'nsg'
+    virtualNetworkName: 'vnet'
   }
 }
 
@@ -72,6 +80,23 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      additionalLocations: [
+        {
+          location: '${locationRegion2}'
+          sku: {
+            name: 'Premium'
+            capacity: 1
+          }
+          disableGateway: false
+          publicIpAddressId: nestedDependencies.outputs.publicIPResourceIdRegion2
+          virtualNetworkConfiguration: {
+            subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion2
+          }
+        }
+      ]
+      virtualNetworkType: 'Internal'
+      subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
+      publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion1
       apis: [
         {
           apiVersionSet: {
@@ -120,6 +145,14 @@ module testDeployment '../../../main.bicep' = [
           useFromLocation: 'westeurope'
         }
       ]
+      apiDiagnostics: [
+        {
+          loggerName: 'logger'
+          apiName: 'echo-api'
+          metrics: true
+          diagnosticName: 'applicationinsights'
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -144,6 +177,18 @@ module testDeployment '../../../main.bicep' = [
           allowedTenants: [
             'mytenant.onmicrosoft.com'
           ]
+        }
+      ]
+      loggers: [
+        {
+          name: 'logger'
+          loggerType: 'applicationInsights'
+          isBuffered: false
+          description: 'Logger to Azure Application Insights'
+          credentials: {
+            instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
+          }
+          resourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
       lock: {

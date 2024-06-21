@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6528716876560144579"
+      "version": "0.28.1.47646",
+      "templateHash": "535385624688793699"
     },
     "name": "API Management Service Portal Settings",
     "description": "This module deploys an API Management Service Portal Setting.",
@@ -39,7 +39,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/portalsettings",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": "[parameters('properties')]"
     }

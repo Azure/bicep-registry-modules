@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13773232964847117245"
+      "version": "0.28.1.47646",
+      "templateHash": "13111143124589719202"
     },
     "name": "Resource Groups",
     "description": "This module deploys a Resource Group.",
@@ -150,7 +150,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -202,8 +202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1401075311163527928"
+              "version": "0.28.1.47646",
+              "templateHash": "3101694150158706009"
             }
           },
           "definitions": {
@@ -288,8 +288,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "5825198357776663348"
+              "version": "0.28.1.47646",
+              "templateHash": "8717205010771951354"
             }
           },
           "definitions": {

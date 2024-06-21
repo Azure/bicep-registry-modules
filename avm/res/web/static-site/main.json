@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "3783648850162384991"
+      "version": "0.28.1.47646",
+      "templateHash": "9983026640972925367"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App.",
@@ -502,7 +502,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.web-staticSite.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -603,8 +603,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15307923419105312167"
+              "version": "0.28.1.47646",
+              "templateHash": "7945079053497234244"
             },
             "name": "Static Web App Site Linked Backends",
             "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",
@@ -705,8 +705,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4029344815380998105"
+              "version": "0.28.1.47646",
+              "templateHash": "2343320964001139856"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config.",
@@ -800,8 +800,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4029344815380998105"
+              "version": "0.28.1.47646",
+              "templateHash": "2343320964001139856"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config.",
@@ -896,8 +896,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "9170296310450777701"
+              "version": "0.28.1.47646",
+              "templateHash": "3789549854358718812"
             },
             "name": "Static Web App Site Custom Domains",
             "description": "This module deploys a Static Web App Site Custom Domain.",

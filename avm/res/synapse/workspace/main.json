@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "9840642184886177634"
+      "version": "0.28.1.47646",
+      "templateHash": "16827959448836859226"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -434,6 +434,37 @@
         }
       },
       "nullable": true
+    },
+    "adminType": {
+      "type": "object",
+      "properties": {
+        "administratorType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Workspace active directory administrator type."
+          }
+        },
+        "login": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. Login of the workspace active directory administrator."
+          }
+        },
+        "sid": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. Object ID of the workspace active directory administrator."
+          }
+        },
+        "tenantId": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tenant ID of the workspace active directory administrator."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -496,6 +527,12 @@
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace's primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account."
+      }
+    },
+    "administrator": {
+      "$ref": "#/definitions/adminType",
+      "metadata": {
+        "description": "Optional. The Entra ID administrator for the synapse workspace."
       }
     },
     "customerManagedKey": {
@@ -663,7 +700,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.synapse-workspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -818,8 +855,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "12068224449891293218"
+              "version": "0.28.1.47646",
+              "templateHash": "12071965359188483950"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -916,8 +953,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "23966606142695564"
+              "version": "0.28.1.47646",
+              "templateHash": "15762141115882405712"
             }
           },
           "parameters": {
@@ -1004,8 +1041,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "15295521192306502787"
+              "version": "0.28.1.47646",
+              "templateHash": "17207449952619386820"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
@@ -1077,6 +1114,121 @@
         "cMKKeyVault",
         "workspace",
         "workspace_cmk_rbac"
+      ]
+    },
+    "workspace_administrator": {
+      "condition": "[not(empty(parameters('administrator')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-administrator', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "administratorType": {
+            "value": "[parameters('administrator').administratorType]"
+          },
+          "login": {
+            "value": "[parameters('administrator').login]"
+          },
+          "sid": {
+            "value": "[parameters('administrator').sid]"
+          },
+          "tenantId": {
+            "value": "[tryGet(parameters('administrator'), 'tenantId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "351030244990389212"
+            },
+            "name": "Synapse Workspaces Administrators",
+            "description": "This module deploys Synapse Workspaces Administrators.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "administratorType": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Workspace active directory administrator type."
+              }
+            },
+            "login": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. Login of the workspace active directory administrator."
+              }
+            },
+            "sid": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. Object ID of the workspace active directory administrator."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "defaultValue": "[tenant().tenantId]",
+              "metadata": {
+                "description": "Optional. Tenant ID of the workspace active directory administrator."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Synapse/workspaces/administrators",
+              "apiVersion": "2021-06-01",
+              "name": "[format('{0}/{1}', parameters('workspaceName'), 'activeDirectory')]",
+              "properties": {
+                "administratorType": "[parameters('administratorType')]",
+                "login": "[parameters('login')]",
+                "sid": "[parameters('sid')]",
+                "tenantId": "[parameters('tenantId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed administrator."
+              },
+              "value": "activeDirectory"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed administrator."
+              },
+              "value": "[resourceId('Microsoft.Synapse/workspaces/administrators', parameters('workspaceName'), 'activeDirectory')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed administrator."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspace"
       ]
     },
     "workspace_privateEndpoints": {
