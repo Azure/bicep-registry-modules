@@ -10,12 +10,11 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
   properties: {
     workloadProfiles: [
       {
-        workloadProfileType: 'D4'
-        name: 'WorkloadProfile'
-        minimumCount: 1
-        maximumCount: 3
+        workloadProfileType: 'Consumption'
+        name: 'Consumption'
       }
     ]
+    zoneRedundant: false
   }
 }
 

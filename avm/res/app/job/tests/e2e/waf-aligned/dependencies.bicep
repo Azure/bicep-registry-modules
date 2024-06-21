@@ -22,6 +22,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
         minimumCount: 1
       }
     ]
+    zoneRedundant: true
   }
 }
 
