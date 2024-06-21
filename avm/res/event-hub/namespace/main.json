@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10058273912362518894"
+      "templateHash": "16523092096774737174"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace.",
@@ -738,7 +738,7 @@
     },
     "eventHubNamespace": {
       "type": "Microsoft.EventHub/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1082,7 +1082,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5745450341554942810"
+              "templateHash": "1981984107360604362"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub.",
@@ -1413,7 +1413,7 @@
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('namespaceName')]"
             },
             "eventHub": {
@@ -2542,14 +2542,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('eventHubNamespace', '2022-10-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('eventHubNamespace', '2024-01-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('eventHubNamespace', '2022-10-01-preview', 'full').location]"
+      "value": "[reference('eventHubNamespace', '2024-01-01', 'full').location]"
     },
     "eventHubResourceIds": {
       "type": "array",
