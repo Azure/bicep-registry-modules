@@ -191,7 +191,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
   name: automationAccountName
 }
 
-resource softwareUpdateConfiguration 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2019-06-01' = {
+resource softwareUpdateConfiguration 'Microsoft.Automation/automationAccounts/softwareUpdateConfigurations@2023-05-15-preview' = {
   name: name
   parent: automationAccount
   properties: {

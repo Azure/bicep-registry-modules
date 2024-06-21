@@ -14,7 +14,7 @@ This module deploys an Azure Automation Account Software Update Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/softwareUpdateConfigurations` | [2019-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2019-06-01/automationAccounts/softwareUpdateConfigurations) |
+| `Microsoft.Automation/automationAccounts/softwareUpdateConfigurations` | [2023-05-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-05-15-preview/automationAccounts/softwareUpdateConfigurations) |
 
 ## Parameters
 

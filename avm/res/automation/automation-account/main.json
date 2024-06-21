@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9253206103047535758"
+      "templateHash": "12270626629246727154"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -2107,7 +2107,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5046214814278705138"
+              "templateHash": "12867013451121220146"
             },
             "name": "Automation Account Software Update Configurations",
             "description": "This module deploys an Azure Automation Account Software Update Configuration.",
@@ -2427,7 +2427,7 @@
           "resources": [
             {
               "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
-              "apiVersion": "2019-06-01",
+              "apiVersion": "2023-05-15-preview",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "properties": {
                 "updateConfiguration": {
