@@ -70,7 +70,7 @@ param vmPriority string = 'Regular'
 param enableEvictionPolicy bool = false
 
 @description('Optional. Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.')
-param maxPriceForLowPriorityVm string = ''
+param maxPriceForLowPriorityVm int?
 
 @description('Optional. Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.')
 @allowed([
@@ -100,7 +100,7 @@ param extensionMonitoringAgentConfig object = {
 }
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
-param monitoringWorkspaceId string = ''
+param monitoringWorkspaceResourceId string = ''
 
 @description('Optional. The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionDependencyAgentConfig object = {
@@ -319,13 +319,11 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
-
-var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -539,7 +537,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
       licenseType: empty(licenseType) ? null : licenseType
       priority: vmPriority
       evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
-      billingProfile: !empty(vmPriority) && !empty(maxPriceForLowPriorityVm)
+      billingProfile: !empty(vmPriority) && null != maxPriceForLowPriorityVm
         ? {
             maxPrice: maxPriceForLowPriorityVm
           }
@@ -611,11 +609,11 @@ module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extension
   ]
 }
 
-resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceId)) {
-  name: last(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : 'law'), '/'))!
+resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceResourceId)) {
+  name: last(split((!empty(monitoringWorkspaceResourceId) ? monitoringWorkspaceResourceId : 'law'), '/'))!
   scope: az.resourceGroup(
-    split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '//'), '/')[2],
-    split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '////'), '/')[4]
+    split((!empty(monitoringWorkspaceResourceId) ? monitoringWorkspaceResourceId : '//'), '/')[2],
+    split((!empty(monitoringWorkspaceResourceId) ? monitoringWorkspaceResourceId : '////'), '/')[4]
   )
 }
 
@@ -636,13 +634,11 @@ module vmss_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMon
       ? extensionMonitoringAgentConfig.enableAutomaticUpgrade
       : false
     settings: {
-      workspaceId: !empty(monitoringWorkspaceId)
-        ? reference(vmss_logAnalyticsWorkspace.id, vmss_logAnalyticsWorkspace.apiVersion).customerId
-        : ''
+      workspaceId: !empty(monitoringWorkspaceResourceId) ? vmss_logAnalyticsWorkspace.properties.customerId : ''
       GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
     }
     protectedSettings: {
-      workspaceKey: !empty(monitoringWorkspaceId) ? vmss_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
+      workspaceKey: !empty(monitoringWorkspaceResourceId) ? vmss_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
     }
   }
   dependsOn: [
