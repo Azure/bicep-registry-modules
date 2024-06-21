@@ -30,7 +30,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '9.7'
-    retentionInterval: 'P1H'
+    retentionInterval: 'P1D'
     scriptContent: 'Start-Sleep 180'
   }
 }
