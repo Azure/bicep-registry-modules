@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17024389124356297408"
+      "templateHash": "17619281122741338588"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -412,7 +412,7 @@
     },
     "loadBalancer": {
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -526,7 +526,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12599435098613045377"
+              "templateHash": "1736731506120599540"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -582,7 +582,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/loadBalancers/backendAddressPools",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "loadBalancerBackendAddresses": "[parameters('loadBalancerBackendAddresses')]",
@@ -663,7 +663,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "18107219293143755407"
+              "templateHash": "8322972678670115355"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -767,7 +767,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "frontendPort": "[parameters('frontendPort')]",
@@ -850,7 +850,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('loadBalancer', '2023-04-01', 'full').location]"
+      "value": "[reference('loadBalancer', '2023-11-01', 'full').location]"
     }
   }
 }

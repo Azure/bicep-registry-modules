@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "18107219293143755407"
+      "templateHash": "8322972678670115355"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -109,7 +109,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
       "properties": {
         "frontendPort": "[parameters('frontendPort')]",
