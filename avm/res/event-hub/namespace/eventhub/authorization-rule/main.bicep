@@ -27,7 +27,7 @@ resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   }
 }
 
-resource authorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2022-10-01-preview' = {
+resource authorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2024-01-01' = {
   name: name
   parent: namespace::eventhub
   properties: {

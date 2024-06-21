@@ -22,7 +22,7 @@ resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   }
 }
 
-resource consumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2022-10-01-preview' = {
+resource consumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2024-01-01' = {
   name: name
   parent: namespace::eventhub
   properties: {
