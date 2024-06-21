@@ -1,6 +1,8 @@
-name: "avm.res.kusto.cluster"
+name: "avm.res.hybrid-compute.machine"
 
 on:
+  schedule:
+    - cron: "0 12 1/15 * *" # Bi-Weekly Test (on 1st & 15th of month)
   workflow_dispatch:
     inputs:
       staticValidation:
@@ -28,15 +30,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.kusto.cluster.yml"
-      - "avm/res/kusto/cluster/**"
+      - ".github/workflows/avm.res.hybrid-compute.machine.yml"
+      - "avm/res/hybrid-compute/machine/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/kusto/cluster"
-  workflowPath: ".github/workflows/avm.res.kusto.cluster.yml"
+  modulePath: "avm/res/hybrid-compute/machine"
+  workflowPath: ".github/workflows/avm.res.hybrid-compute.machine.yml"
 
 concurrency:
   group: ${{ github.workflow }}
