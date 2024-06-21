@@ -696,7 +696,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
-| [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. |
+| [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. Leave empty to use a consumption based profile. |
 
 ### Parameter: `containers`
 
@@ -1862,11 +1862,10 @@ Name of the Container App secret from which to pull the secret value.
 
 ### Parameter: `workloadProfileName`
 
-The name of the workload profile to use.
+The name of the workload profile to use. Leave empty to use a consumption based profile.
 
 - Required: No
 - Type: string
-- Default: `'Consumption'`
 
 
 ## Outputs
