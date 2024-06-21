@@ -18,35 +18,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-// TODO: REMOVE DUMMY CHANGE
-// =========================
-
-resource initialRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: 'shouldNotFail'
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-    )
-  }
-}
-resource roleAssignmentToFail 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: 'shouldFail'
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-    )
-  }
-  dependsOn: [
-    initialRoleAssignment
-  ]
-}
-
-// =========================
-
 resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
   name: routeTableName
   location: location
