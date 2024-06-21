@@ -111,7 +111,7 @@ module testDeployment '../../../main.bicep' = [
         {
           backendAddressPoolName: 'servers'
           backendPort: 5000
-          frontendIPConfigurationName: 'publicIPConfig1'
+          frontendIPConfigurationName: 'privateIPConfig1'
           frontendPort: 5000
           loadDistribution: 'Default'
           name: 'inboundNatRule2'
