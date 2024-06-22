@@ -382,19 +382,17 @@ module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       apiName: apidiagnostic.apiName
-      loggerName: apidiagnostic.loggerName
-      name: contains(apidiagnostic, 'diagnosticName') ? apidiagnostic.diagnosticName : 'local'
-      alwaysLog: contains(apidiagnostic, 'alwaysLog') ? apidiagnostic.alwaysLog : 'allErrors'
-      backend: contains(apidiagnostic, 'backend') ? apidiagnostic.backend : {}
-      frontend: contains(apidiagnostic, 'frontend') ? apidiagnostic.frontend : {}
-      httpCorrelationProtocol: contains(apidiagnostic, 'httpCorrelationProtocol')
-        ? apidiagnostic.httpCorrelationProtocol
-        : 'Legacy'
-      logClientIp: contains(apidiagnostic, 'logClientIp') ? apidiagnostic.logClientIp : false
-      metrics: contains(apidiagnostic, 'metrics') ? apidiagnostic.metrics : false
-      operationNameFormat: contains(apidiagnostic, 'operationNameFormat') ? apidiagnostic.operationNameFormat : 'Name'
-      samplingPercentage: contains(apidiagnostic, 'samplingPercentage') ? apidiagnostic.samplingPercentage : 100
-      verbosity: contains(apidiagnostic, 'verbosity') ? apidiagnostic.verbosity : 'error'
+      loggerName: apidiagnostic.?loggerName
+      name: apidiagnostic.?name
+      alwaysLog: apidiagnostic.?alwaysLog
+      backend: apidiagnostic.?backend
+      frontend: apidiagnostic.?frontend
+      httpCorrelationProtocol: apidiagnostic.?httpCorrelationProtocol
+      logClientIp: apidiagnostic.?logClientIp
+      metrics: apidiagnostic.?metrics
+      operationNameFormat: apidiagnostic.?operationNameFormat
+      samplingPercentage: apidiagnostic.?samplingPercentage
+      verbosity: apidiagnostic.?verbosity
     }
     dependsOn: [
       service_apis

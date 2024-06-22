@@ -66,7 +66,7 @@ param format string = 'openapi'
 @description('Optional. Indicates if API revision is current API revision.')
 param isCurrent bool = true
 
-@description('Optional. The name of the API management service logger.')
+@description('Conditional. The name of the API management service logger. Required if using api/diagnostics.')
 param loggerName string = ''
 
 @description('Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.')
@@ -152,7 +152,7 @@ module diagnostic 'diagnostics/main.bicep' = [
   for (diagnostic, index) in diagnostics ?? []: {
     name: '${deployment().name}-diagnostics-${index}'
     params: {
-      name: diagnostic.?diagnosticName ?? 'local'
+      name: diagnostic.?name
       apiManagementServiceName: apiManagementServiceName
       apiName: api.name
       loggerName: loggerName
