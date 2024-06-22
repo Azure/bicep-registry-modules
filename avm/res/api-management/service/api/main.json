@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4824789112099248380"
+      "templateHash": "4127687153063244658"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -138,7 +138,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The name of the API management service logger."
+        "description": "Conditional. The name of the API management service logger. Required if using api/diagnostics."
       }
     },
     "path": {
@@ -383,7 +383,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'diagnosticName'), 'local')]"
+            "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'name')]"
           },
           "apiManagementServiceName": {
             "value": "[parameters('apiManagementServiceName')]"

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4578492776651794656"
+      "templateHash": "14490799655987897540"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -784,7 +784,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "4824789112099248380"
+              "templateHash": "4127687153063244658"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -916,7 +916,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. The name of the API management service logger."
+                "description": "Conditional. The name of the API management service logger. Required if using api/diagnostics."
               }
             },
             "path": {
@@ -1161,7 +1161,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'diagnosticName'), 'local')]"
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'name')]"
                   },
                   "apiManagementServiceName": {
                     "value": "[parameters('apiManagementServiceName')]"
@@ -2094,18 +2094,38 @@
             "value": "[parameters('apiDiagnostics')[copyIndex()].apiName]"
           },
           "loggerName": {
-            "value": "[parameters('apiDiagnostics')[copyIndex()].loggerName]"
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'loggerName')]"
           },
-          "name": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'diagnosticName'), createObject('value', parameters('apiDiagnostics')[copyIndex()].diagnosticName), createObject('value', 'local'))]",
-          "alwaysLog": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'alwaysLog'), createObject('value', parameters('apiDiagnostics')[copyIndex()].alwaysLog), createObject('value', 'allErrors'))]",
-          "backend": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'backend'), createObject('value', parameters('apiDiagnostics')[copyIndex()].backend), createObject('value', createObject()))]",
-          "frontend": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'frontend'), createObject('value', parameters('apiDiagnostics')[copyIndex()].frontend), createObject('value', createObject()))]",
-          "httpCorrelationProtocol": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'httpCorrelationProtocol'), createObject('value', parameters('apiDiagnostics')[copyIndex()].httpCorrelationProtocol), createObject('value', 'Legacy'))]",
-          "logClientIp": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'logClientIp'), createObject('value', parameters('apiDiagnostics')[copyIndex()].logClientIp), createObject('value', false()))]",
-          "metrics": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'metrics'), createObject('value', parameters('apiDiagnostics')[copyIndex()].metrics), createObject('value', false()))]",
-          "operationNameFormat": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'operationNameFormat'), createObject('value', parameters('apiDiagnostics')[copyIndex()].operationNameFormat), createObject('value', 'Name'))]",
-          "samplingPercentage": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'samplingPercentage'), createObject('value', parameters('apiDiagnostics')[copyIndex()].samplingPercentage), createObject('value', 100))]",
-          "verbosity": "[if(contains(parameters('apiDiagnostics')[copyIndex()], 'verbosity'), createObject('value', parameters('apiDiagnostics')[copyIndex()].verbosity), createObject('value', 'error'))]"
+          "name": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'name')]"
+          },
+          "alwaysLog": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'alwaysLog')]"
+          },
+          "backend": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'backend')]"
+          },
+          "frontend": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'frontend')]"
+          },
+          "httpCorrelationProtocol": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'httpCorrelationProtocol')]"
+          },
+          "logClientIp": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'logClientIp')]"
+          },
+          "metrics": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'metrics')]"
+          },
+          "operationNameFormat": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'operationNameFormat')]"
+          },
+          "samplingPercentage": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'samplingPercentage')]"
+          },
+          "verbosity": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'verbosity')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
