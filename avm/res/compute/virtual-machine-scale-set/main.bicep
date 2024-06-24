@@ -214,7 +214,7 @@ param enableAutomaticUpdates bool = true
   'ImageDefault'
   ''
 ])
-param patchMode string = ''
+param patchMode string = 'AutomaticByPlatform'
 
 @description('Optional. Enables customer to schedule patching without accidental upgrades.')
 param bypassPlatformSafetyChecksOnUserSchedule bool = true
