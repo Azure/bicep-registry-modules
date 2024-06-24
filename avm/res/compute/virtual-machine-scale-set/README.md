@@ -1624,11 +1624,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maxBatchInstancePercent`](#parameter-maxbatchinstancepercent) | int | The maximum percent of total virtual machine instances that will be upgraded simultaneously by the rolling upgrade in one batch. As this is a maximum, unhealthy instances in previous or future batches can cause the percentage of instances in a batch to decrease to ensure higher reliability. |
-| [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
+| [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | int | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
 | [`maxSurge`](#parameter-maxsurge) | bool | Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch. |
 | [`maxUnhealthyInstancePercent`](#parameter-maxunhealthyinstancepercent) | int | The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch. |
 | [`maxUnhealthyUpgradedInstancePercent`](#parameter-maxunhealthyupgradedinstancepercent) | int | The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch. |
-| [`monitoringWorkspaceId`](#parameter-monitoringworkspaceid) | string | Resource ID of the monitoring log analytics workspace. |
+| [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
 | [`orchestrationMode`](#parameter-orchestrationmode) | string | Specifies the orchestration mode for the virtual machine scale set. |
 | [`overprovision`](#parameter-overprovision) | bool | Specifies whether the Virtual Machine Scale Set should be overprovisioned. |
 | [`pauseTimeBetweenBatches`](#parameter-pausetimebetweenbatches) | string | The wait time between completing the update for all virtual machines in one batch and starting the next batch. The time duration should be specified in ISO 8601 format. |
@@ -2195,8 +2195,7 @@ The maximum percent of total virtual machine instances that will be upgraded sim
 Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: int
 
 ### Parameter: `maxSurge`
 
@@ -2222,7 +2221,7 @@ The maximum percentage of the total virtual machine instances in the scale set t
 - Type: int
 - Default: `20`
 
-### Parameter: `monitoringWorkspaceId`
+### Parameter: `monitoringWorkspaceResourceId`
 
 Resource ID of the monitoring log analytics workspace.
 
