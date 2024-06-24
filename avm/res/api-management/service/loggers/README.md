@@ -30,14 +30,14 @@ This module deploys an API Management Service Logger.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
-| [`credentials`](#parameter-credentials) | object | Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. |
+| [`credentials`](#parameter-credentials) | secureObject | Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. |
 | [`targetResourceId`](#parameter-targetresourceid) | string | Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isBuffered`](#parameter-isbuffered) | bool | Whether records are buffered in the logger before publishing. Default is assumed to be true. |
+| [`isBuffered`](#parameter-isbuffered) | bool | Whether records are buffered in the logger before publishing. |
 | [`loggerDescription`](#parameter-loggerdescription) | string | Logger description. |
 
 ### Parameter: `loggerType`
@@ -74,7 +74,7 @@ The name of the parent API Management service. Required if the template is used 
 Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger.
 
 - Required: Yes
-- Type: object
+- Type: secureObject
 
 ### Parameter: `targetResourceId`
 
@@ -85,10 +85,11 @@ Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id
 
 ### Parameter: `isBuffered`
 
-Whether records are buffered in the logger before publishing. Default is assumed to be true.
+Whether records are buffered in the logger before publishing.
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `True`
 
 ### Parameter: `loggerDescription`
 
