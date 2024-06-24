@@ -139,7 +139,7 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
   name: take('spoke-${deployment().name}-deployment', 64)
   scope: subscription(subscriptionId)
   params: {
-    spokeResourceGroupName: rgSpokeName.name
+    spokeResourceGroupName: rgSpokeName
     location: location
     tags: tags
     environment: environment

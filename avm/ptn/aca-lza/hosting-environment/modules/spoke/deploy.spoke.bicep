@@ -115,32 +115,24 @@ var hubVNetName = hubVNetResourceIdTokens[8]
 var defaultSubnets = [
   {
     name: spokeInfraSubnetName
-    properties: {
-      addressPrefix: spokeInfraSubnetAddressPrefix
-      networkSecurityGroup: {
-        id: nsgContainerAppsEnvironment.outputs.resourceId
-      }
-      routeTable: {
-        id: egressLockdownUdr.outputs.resourceId
-      }
-      delegations: [
-        {
-          name: 'envdelegation'
-          properties: {
-            serviceName: 'Microsoft.App/environments'
-          }
+    addressPrefix: spokeInfraSubnetAddressPrefix
+    networkSecurityGroupResourceId: nsgContainerAppsEnvironment.outputs.resourceId
+    routeTableResourceId: (!empty(hubVNetId) && !empty(networkApplianceIpAddress))
+      ? egressLockdownUdr.outputs.resourceId
+      : null
+    delegations: [
+      {
+        name: 'envdelegation'
+        properties: {
+          serviceName: 'Microsoft.App/environments'
         }
-      ]
-    }
+      }
+    ]
   }
   {
     name: spokePrivateEndpointsSubnetName
-    properties: {
-      addressPrefix: spokePrivateEndpointsSubnetAddressPrefix
-      networkSecurityGroup: {
-        id: nsgPep.outputs.resourceId
-      }
-    }
+    addressPrefix: spokePrivateEndpointsSubnetAddressPrefix
+    networkSecurityGroupResourceId: nsgPep.outputs.resourceId
   }
 ]
 
@@ -149,12 +141,8 @@ var appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix)
   ? concat(defaultSubnets, [
       {
         name: spokeApplicationGatewaySubnetName
-        properties: {
-          addressPrefix: spokeApplicationGatewaySubnetAddressPrefix
-          networkSecurityGroup: {
-            id: nsgAppGw.outputs.resourceId
-          }
-        }
+        addressPrefix: spokeApplicationGatewaySubnetAddressPrefix
+        networkSecurityGroupResourceId: nsgAppGw.outputs.resourceId
       }
     ])
   : defaultSubnets
@@ -164,9 +152,7 @@ var spokeSubnets = vmJumpboxOSType != 'none'
   ? concat(appGwAndDefaultSubnets, [
       {
         name: vmSubnetName
-        properties: {
-          addressPrefix: vmJumpBoxSubnetAddressPrefix
-        }
+        addressPrefix: vmJumpBoxSubnetAddressPrefix
       }
     ])
   : appGwAndDefaultSubnets
