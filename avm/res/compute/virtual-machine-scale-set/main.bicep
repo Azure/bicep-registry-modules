@@ -595,6 +595,26 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
             : null
         }
       }
+      extensionProfile: extensionHealthConfig.enabled
+        ? {
+            extensions: [
+              {
+                name: 'HealthExtension'
+                properties: {
+                  publisher: 'Microsoft.ManagedServices'
+                  type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
+                  typeHandlerVersion: '1.0'
+                  autoUpgradeMinorVersion: false
+                  settings: {
+                    protocol: extensionHealthConfig.protocol
+                    port: extensionHealthConfig.port
+                    requestPath: extensionHealthConfig.requestPath
+                  }
+                }
+              }
+            ]
+          }
+        : null
       licenseType: empty(licenseType) ? null : licenseType
       priority: vmPriority
       evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
@@ -830,29 +850,6 @@ module vmss_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionA
   }
   dependsOn: [
     vmss_customScriptExtension
-  ]
-}
-
-module vmss_healthExtension 'extension/main.bicep' = if (extensionHealthConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-HealthConfiguration'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'HealthExtension'
-    publisher: 'Microsoft.ManagedServices'
-    type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
-    typeHandlerVersion: contains(extensionHealthConfig, 'typeHandlerVersion')
-      ? extensionHealthConfig.typeHandlerVersion
-      : '1.0'
-    autoUpgradeMinorVersion: contains(extensionHealthConfig, 'autoUpgradeMinorVersion')
-      ? extensionHealthConfig.autoUpgradeMinorVersion
-      : false
-    enableAutomaticUpgrade: contains(extensionHealthConfig, 'enableAutomaticUpgrade')
-      ? extensionHealthConfig.enableAutomaticUpgrade
-      : false
-    settings: contains(extensionHealthConfig, 'settings') ? extensionHealthConfig.settings : {}
-  }
-  dependsOn: [
-    vmss_azureDiskEncryptionExtension
   ]
 }
 
