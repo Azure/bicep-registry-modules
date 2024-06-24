@@ -2311,7 +2311,7 @@ VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'AutomaticByPlatform'`
 - Allowed:
   ```Bicep
   [

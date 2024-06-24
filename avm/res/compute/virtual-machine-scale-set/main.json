@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "16748503698533910254"
+      "templateHash": "10295605328469554609"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -626,7 +626,7 @@
     },
     "patchMode": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "AutomaticByPlatform",
       "allowedValues": [
         "AutomaticByPlatform",
         "AutomaticByOS",
