@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "10295605328469554609"
+      "templateHash": "11003878324165177397"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -443,10 +443,15 @@
     "extensionHealthConfig": {
       "type": "object",
       "defaultValue": {
-        "enabled": false
+        "enabled": true,
+        "settings": {
+          "protocol": "http",
+          "port": 80,
+          "requestPath": "/"
+        }
       },
       "metadata": {
-        "description": "Optional. The configuration for the [Application Health Monitoring] extension. Must at least contain the [\"enabled\": true] property to be executed."
+        "description": "Optional. Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
     },
     "extensionDSCConfig": {
@@ -578,7 +583,7 @@
     },
     "automaticRepairsPolicyEnabled": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies whether automatic repairs should be enabled on the virtual machine scale set."
       }

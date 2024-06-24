@@ -116,9 +116,14 @@ param extensionAzureDiskEncryptionConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.')
+@description('Optional. Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionHealthConfig object = {
-  enabled: false
+  enabled: true
+  settings: {
+    protocol: 'http'
+    port: 80
+    requestPath: '/'
+  }
 }
 
 @description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
@@ -183,7 +188,7 @@ param enableAutomaticOSUpgrade bool = false
 param disableAutomaticRollback bool = false
 
 @description('Optional. Specifies whether automatic repairs should be enabled on the virtual machine scale set.')
-param automaticRepairsPolicyEnabled bool = false
+param automaticRepairsPolicyEnabled bool = true
 
 @description('Optional. The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M).')
 param gracePeriod string = 'PT30M'
