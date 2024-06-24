@@ -606,9 +606,11 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
                   typeHandlerVersion: '1.0'
                   autoUpgradeMinorVersion: false
                   settings: {
-                    protocol: extensionHealthConfig.protocol
-                    port: extensionHealthConfig.port
-                    requestPath: extensionHealthConfig.requestPath
+                    protocol: contains(extensionHealthConfig, 'protocol') ? extensionHealthConfig.protocol : 'http'
+                    port: contains(extensionHealthConfig, 'port') ? extensionHealthConfig.port : '80'
+                    requestPath: contains(extensionHealthConfig, 'requestPath')
+                      ? extensionHealthConfig.requestPath
+                      : '/'
                   }
                 }
               }

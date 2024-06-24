@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18247658641300154911"
+      "templateHash": "7681617210377316368"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -1007,7 +1007,7 @@
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
-          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', '1.0', 'autoUpgradeMinorVersion', false(), 'settings', createObject('protocol', parameters('extensionHealthConfig').protocol, 'port', parameters('extensionHealthConfig').port, 'requestPath', parameters('extensionHealthConfig').requestPath))))), null())]",
+          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', '1.0', 'autoUpgradeMinorVersion', false(), 'settings', createObject('protocol', if(contains(parameters('extensionHealthConfig'), 'protocol'), parameters('extensionHealthConfig').protocol, 'http'), 'port', if(contains(parameters('extensionHealthConfig'), 'port'), parameters('extensionHealthConfig').port, '80'), 'requestPath', if(contains(parameters('extensionHealthConfig'), 'requestPath'), parameters('extensionHealthConfig').requestPath, '/')))))), null())]",
           "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
