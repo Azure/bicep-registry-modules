@@ -95,10 +95,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/aca-lza/hosting-environment:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Using only defaults.](#example-1-using-only-defaults)
+- [Using all the available options in WAF aligned values.](#example-2-using-all-the-available-options-in-waf-aligned-values)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults._
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -109,8 +112,29 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
-    location: '<location>'
-    name: 'alhedef001'
+    applicationGatewayCertificateKeyName: 'appgwcert'
+    enableApplicationInsights: true
+    enableDaprInstrumentation: false
+    spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
+    spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
+    spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
+    spokeVNetAddressPrefixes: [
+      '10.1.0.0/22'
+    ]
+    subscriptionId: '<subscriptionId>'
+    vmAdminPassword: 'P@ssw0rd1234!'
+    vmAdminUsername: 'vmadmin'
+    vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
+    vmLinuxSshAuthorizedKey: ''
+    vmSize: 'Standard_B1s'
+    // Non-required parameters
+    deploySampleApplication: true
+    tags: {
+      environment: 'test'
+    }
+    vmAuthenticationType: 'password'
+    vmJumpboxOSType: 'linux'
+    workloadName: '<workloadName>'
   }
 }
 ```
@@ -128,11 +152,64 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "location": {
-      "value": "<location>"
+    "applicationGatewayCertificateKeyName": {
+      "value": "appgwcert"
     },
-    "name": {
-      "value": "alhedef001"
+    "enableApplicationInsights": {
+      "value": true
+    },
+    "enableDaprInstrumentation": {
+      "value": false
+    },
+    "spokeApplicationGatewaySubnetAddressPrefix": {
+      "value": "10.1.3.0/24"
+    },
+    "spokeInfraSubnetAddressPrefix": {
+      "value": "10.1.0.0/23"
+    },
+    "spokePrivateEndpointsSubnetAddressPrefix": {
+      "value": "10.1.2.0/27"
+    },
+    "spokeVNetAddressPrefixes": {
+      "value": [
+        "10.1.0.0/22"
+      ]
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    },
+    "vmAdminPassword": {
+      "value": "P@ssw0rd1234!"
+    },
+    "vmAdminUsername": {
+      "value": "vmadmin"
+    },
+    "vmJumpBoxSubnetAddressPrefix": {
+      "value": "10.1.2.32/27"
+    },
+    "vmLinuxSshAuthorizedKey": {
+      "value": ""
+    },
+    "vmSize": {
+      "value": "Standard_B1s"
+    },
+    // Non-required parameters
+    "deploySampleApplication": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "environment": "test"
+      }
+    },
+    "vmAuthenticationType": {
+      "value": "password"
+    },
+    "vmJumpboxOSType": {
+      "value": "linux"
+    },
+    "workloadName": {
+      "value": "<workloadName>"
     }
   }
 }
@@ -141,7 +218,10 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _Using all the available options in WAF aligned values._
+
+This instance deploys the module with the all the available parameters in WAF aligned values.
+
 
 <details>
 
@@ -152,8 +232,38 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
+    applicationGatewayCertificateKeyName: 'appgwcert'
+    enableApplicationInsights: true
+    enableDaprInstrumentation: false
+    spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
+    spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
+    spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
+    spokeVNetAddressPrefixes: [
+      '10.1.0.0/22'
+    ]
+    subscriptionId: '<subscriptionId>'
+    vmAdminPassword: 'P@ssw0rd1234!'
+    vmAdminUsername: 'vmadmin'
+    vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
+    vmLinuxSshAuthorizedKey: ''
+    vmSize: 'Standard_B1s'
+    // Non-required parameters
+    applicationGatewayFqdn: 'acahello.demoapp.com'
+    deployAzurePolicies: true
+    deploySampleApplication: true
+    deployZoneRedundantResources: true
+    enableDdosProtection: true
+    environment: 'dev'
+    exposeContainerAppsWith: 'applicationGateway'
+    hubVirtualNetworkResourceId: '<hubVirtualNetworkResourceId>'
     location: '<location>'
-    name: 'alhewaf001'
+    networkApplianceIpAddress: '<networkApplianceIpAddress>'
+    tags: {
+      environment: 'test'
+    }
+    vmAuthenticationType: 'password'
+    vmJumpboxOSType: 'linux'
+    workloadName: '<workloadName>'
   }
 }
 ```
@@ -171,11 +281,91 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "applicationGatewayCertificateKeyName": {
+      "value": "appgwcert"
+    },
+    "enableApplicationInsights": {
+      "value": true
+    },
+    "enableDaprInstrumentation": {
+      "value": false
+    },
+    "spokeApplicationGatewaySubnetAddressPrefix": {
+      "value": "10.1.3.0/24"
+    },
+    "spokeInfraSubnetAddressPrefix": {
+      "value": "10.1.0.0/23"
+    },
+    "spokePrivateEndpointsSubnetAddressPrefix": {
+      "value": "10.1.2.0/27"
+    },
+    "spokeVNetAddressPrefixes": {
+      "value": [
+        "10.1.0.0/22"
+      ]
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    },
+    "vmAdminPassword": {
+      "value": "P@ssw0rd1234!"
+    },
+    "vmAdminUsername": {
+      "value": "vmadmin"
+    },
+    "vmJumpBoxSubnetAddressPrefix": {
+      "value": "10.1.2.32/27"
+    },
+    "vmLinuxSshAuthorizedKey": {
+      "value": ""
+    },
+    "vmSize": {
+      "value": "Standard_B1s"
+    },
+    // Non-required parameters
+    "applicationGatewayFqdn": {
+      "value": "acahello.demoapp.com"
+    },
+    "deployAzurePolicies": {
+      "value": true
+    },
+    "deploySampleApplication": {
+      "value": true
+    },
+    "deployZoneRedundantResources": {
+      "value": true
+    },
+    "enableDdosProtection": {
+      "value": true
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "exposeContainerAppsWith": {
+      "value": "applicationGateway"
+    },
+    "hubVirtualNetworkResourceId": {
+      "value": "<hubVirtualNetworkResourceId>"
+    },
     "location": {
       "value": "<location>"
     },
-    "name": {
-      "value": "alhewaf001"
+    "networkApplianceIpAddress": {
+      "value": "<networkApplianceIpAddress>"
+    },
+    "tags": {
+      "value": {
+        "environment": "test"
+      }
+    },
+    "vmAuthenticationType": {
+      "value": "password"
+    },
+    "vmJumpboxOSType": {
+      "value": "linux"
+    },
+    "workloadName": {
+      "value": "<workloadName>"
     }
   }
 }
@@ -187,10 +377,294 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 
 ## Parameters
 
-**OptionalThe id of the subscription to create the Azure Container Apps deployment The name of the workload that is being deployed Tags related to the Azure Container Apps deployment The name of the environment (e The size of the virtual machine to create The username to use for the virtual machine The password to use for the virtual machine The SSH public key to use for the virtual machine Type of authentication to use on the Virtual Machine CIDR to use for the virtual machine subnet CIDR of the Spoke Virtual Network CIDR of the Spoke Infrastructure Subnet CIDR of the Spoke Private Endpoints Subnet CIDR of the Spoke Application Gateway Subnet Enable or disable the createion of Application Insights Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry The FQDN of the Application Gateway The base64 encoded certificate to use for Application Gateway certificate The name of the certificate key to use for Application Gateway certificate Optional, default value is true Specify the way container apps is going to be exposed parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`applicationGatewayCertificateKeyName`](#parameter-applicationgatewaycertificatekeyname) | string | The name of the certificate key to use for Application Gateway certificate. |
+| [`enableApplicationInsights`](#parameter-enableapplicationinsights) | bool | Enable or disable the createion of Application Insights. |
+| [`enableDaprInstrumentation`](#parameter-enabledaprinstrumentation) | bool | Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored. |
+| [`spokeApplicationGatewaySubnetAddressPrefix`](#parameter-spokeapplicationgatewaysubnetaddressprefix) | string | CIDR of the Spoke Application Gateway Subnet. |
+| [`spokeInfraSubnetAddressPrefix`](#parameter-spokeinfrasubnetaddressprefix) | string | CIDR of the Spoke Infrastructure Subnet. |
+| [`spokePrivateEndpointsSubnetAddressPrefix`](#parameter-spokeprivateendpointssubnetaddressprefix) | string | CIDR of the Spoke Private Endpoints Subnet. |
+| [`spokeVNetAddressPrefixes`](#parameter-spokevnetaddressprefixes) | array | CIDR of the Spoke Virtual Network. |
+| [`subscriptionId`](#parameter-subscriptionid) | string | The id of the subscription to create the Azure Container Apps deployment. |
+| [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | The password to use for the virtual machine. |
+| [`vmAdminUsername`](#parameter-vmadminusername) | string | The username to use for the virtual machine. |
+| [`vmJumpBoxSubnetAddressPrefix`](#parameter-vmjumpboxsubnetaddressprefix) | string | CIDR to use for the virtual machine subnet. |
+| [`vmLinuxSshAuthorizedKey`](#parameter-vmlinuxsshauthorizedkey) | securestring | The SSH public key to use for the virtual machine. |
+| [`vmSize`](#parameter-vmsize) | string | The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationGatewayFqdn`](#parameter-applicationgatewayfqdn) | string | The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty. |
+| [`base64Certificate`](#parameter-base64certificate) | string | The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty. |
+| [`deployAzurePolicies`](#parameter-deployazurepolicies) | bool | If true, Azure Policies will be deployed. Default value is true. |
+| [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
+| [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
+| [`enableDdosProtection`](#parameter-enableddosprotection) | bool | DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false". |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`environment`](#parameter-environment) | string | The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long. Default is "test". |
+| [`exposeContainerAppsWith`](#parameter-exposecontainerappswith) | string | Specify the way container apps is going to be exposed. Options are applicationGateway or frontDoor. Default is "applicationGateway". |
+| [`hubVirtualNetworkResourceId`](#parameter-hubvirtualnetworkresourceid) | string | The resource ID of the hub virtual network. If set, the spoke virtual network will be peered with the hub virtual network. Default is empty. |
+| [`location`](#parameter-location) | string | The location of the Azure Container Apps deployment. Default is the location of the deployment location. |
+| [`networkApplianceIpAddress`](#parameter-networkapplianceipaddress) | string | If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty. |
+| [`spokeResourceGroupName`](#parameter-spokeresourcegroupname) | string | The name of the resource group to create the resources in. If set, it overrides the name generated by the template. Default is empty. |
+| [`tags`](#parameter-tags) | object | Tags related to the Azure Container Apps deployment. Default is empty. |
+| [`vmAuthenticationType`](#parameter-vmauthenticationtype) | string | Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password". |
+| [`vmJumpboxOSType`](#parameter-vmjumpboxostype) | string | The operating system type of the virtual machine. Default is "none" which results in no VM deployment. Default is "none". |
+| [`workloadName`](#parameter-workloadname) | string | The name of the workload that is being deployed. Up to 10 characters long. |
+
+### Parameter: `applicationGatewayCertificateKeyName`
+
+The name of the certificate key to use for Application Gateway certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `enableApplicationInsights`
+
+Enable or disable the createion of Application Insights.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `enableDaprInstrumentation`
+
+Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `spokeApplicationGatewaySubnetAddressPrefix`
+
+CIDR of the Spoke Application Gateway Subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `spokeInfraSubnetAddressPrefix`
+
+CIDR of the Spoke Infrastructure Subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `spokePrivateEndpointsSubnetAddressPrefix`
+
+CIDR of the Spoke Private Endpoints Subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `spokeVNetAddressPrefixes`
+
+CIDR of the Spoke Virtual Network.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `subscriptionId`
+
+The id of the subscription to create the Azure Container Apps deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vmAdminPassword`
+
+The password to use for the virtual machine.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `vmAdminUsername`
+
+The username to use for the virtual machine.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vmJumpBoxSubnetAddressPrefix`
+
+CIDR to use for the virtual machine subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vmLinuxSshAuthorizedKey`
+
+The SSH public key to use for the virtual machine.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `vmSize`
+
+The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applicationGatewayFqdn`
+
+The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `base64Certificate`
+
+The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `deployAzurePolicies`
+
+If true, Azure Policies will be deployed. Default value is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `deploySampleApplication`
+
+Deploy sample application to the container apps environment. Default is false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `deployZoneRedundantResources`
+
+Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableDdosProtection`
+
+DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false".
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `environment`
+
+The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long. Default is "test".
+
+- Required: No
+- Type: string
+- Default: `'test'`
+
+### Parameter: `exposeContainerAppsWith`
+
+Specify the way container apps is going to be exposed. Options are applicationGateway or frontDoor. Default is "applicationGateway".
+
+- Required: No
+- Type: string
+- Default: `'applicationGateway'`
+- Allowed:
+  ```Bicep
+  [
+    'applicationGateway'
+    'frontDoor'
+  ]
+  ```
+
+### Parameter: `hubVirtualNetworkResourceId`
+
+The resource ID of the hub virtual network. If set, the spoke virtual network will be peered with the hub virtual network. Default is empty.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `location`
+
+The location of the Azure Container Apps deployment. Default is the location of the deployment location.
+
+- Required: No
+- Type: string
+- Default: `[deployment().location]`
+
+### Parameter: `networkApplianceIpAddress`
+
+If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `spokeResourceGroupName`
+
+The name of the resource group to create the resources in. If set, it overrides the name generated by the template. Default is empty.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `tags`
+
+Tags related to the Azure Container Apps deployment. Default is empty.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `vmAuthenticationType`
+
+Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password".
+
+- Required: No
+- Type: string
+- Default: `'password'`
+- Allowed:
+  ```Bicep
+  [
+    'password'
+    'sshPublicKey'
+  ]
+  ```
+
+### Parameter: `vmJumpboxOSType`
+
+The operating system type of the virtual machine. Default is "none" which results in no VM deployment. Default is "none".
+
+- Required: No
+- Type: string
+- Default: `'none'`
+- Allowed:
+  ```Bicep
+  [
+    'linux'
+    'none'
+    'windows'
+  ]
+  ```
+
+### Parameter: `workloadName`
+
+The name of the workload that is being deployed. Up to 10 characters long.
+
+- Required: No
+- Type: string
+- Default: `'aca-lza'`
 
 
 ## Outputs
@@ -198,9 +672,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `applicationGatewayFqdn` | string | The FQDN of the Azure Application Gateway. |
-| `applicationGatewayId` | string | The FQDN of the Azure Application Gateway. |
+| `applicationGatewayId` | string | The resource ID of the Azure Application Gateway. |
 | `applicationGatewayPublicIp` | string | The public IP address of the Azure Application Gateway. |
-| `applicationInsightsName` | string |  The name of application Insights instance. |
+| `applicationInsightsName` | string | The name of application Insights instance. |
 | `containerAppsEnvironmentId` | string | The resource ID of the container apps environment. |
 | `containerAppsEnvironmentName` | string | The name of the container apps environment. |
 | `containerRegistryId` | string | The resource ID of the container registry. |
@@ -218,7 +692,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 | `spokeResourceGroupName` | string | The name of the Spoke resource group. |
 | `spokeVNetId` | string | The  resource ID of the Spoke Virtual Network. |
 | `spokeVnetName` | string | The name of the Spoke Virtual Network. |
-| `vmJumpBoxName` | string | The name of the jump box virtual machine |
+| `vmJumpBoxName` | string | The name of the jump box virtual machine. |
 
 ## Cross-referenced modules
 

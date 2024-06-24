@@ -74,7 +74,6 @@ module testDeployment '../../../main.bicep' = {
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     applicationGatewayFqdn: 'acahello.demoapp.com'
-    base64Certificate: loadFileAsBase64('acahello.demoapp.com.pfx')
     applicationGatewayCertificateKeyName: 'appgwcert'
     deployZoneRedundantResources: true
     deployAzurePolicies: true
