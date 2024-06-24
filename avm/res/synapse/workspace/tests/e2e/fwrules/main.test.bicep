@@ -55,7 +55,6 @@ module testDeployment '../../../main.bicep' = [
       defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
       sqlAdministratorLogin: 'synwsadmin'
-      trustedServiceBypassEnabled: true
       firewallRules: [
         {
           name: 'fwrule01'

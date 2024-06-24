@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2444729852043147776"
+      "templateHash": "10691666195971609449"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -602,13 +602,6 @@
         "description": "Optional. Enable or Disable public network access to workspace."
       }
     },
-    "trustedServiceBypassEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enable or Disable trusted service bypass to workspace."
-      }
-    },
     "firewallRules": {
       "type": "array",
       "defaultValue": [],
@@ -770,7 +763,6 @@
         "managedVirtualNetwork": "[if(parameters('managedVirtualNetwork'), 'default', null())]",
         "managedVirtualNetworkSettings": "[if(parameters('managedVirtualNetwork'), createObject('allowedAadTenantIdsForLinking', parameters('allowedAadTenantIdsForLinking'), 'linkedAccessCheckOnTargetResource', parameters('linkedAccessCheckOnTargetResource'), 'preventDataExfiltration', parameters('preventDataExfiltration')), null())]",
         "publicNetworkAccess": "[if(parameters('managedVirtualNetwork'), parameters('publicNetworkAccess'), null())]",
-        "trustedServiceBypassEnabled": "[parameters('trustedServiceBypassEnabled')]",
         "purviewConfiguration": "[if(not(empty(parameters('purviewResourceID'))), createObject('purviewResourceId', parameters('purviewResourceID')), null())]",
         "sqlAdministratorLogin": "[parameters('sqlAdministratorLogin')]",
         "sqlAdministratorLoginPassword": "[if(not(empty(parameters('sqlAdministratorLoginPassword'))), parameters('sqlAdministratorLoginPassword'), null())]",

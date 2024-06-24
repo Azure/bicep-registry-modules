@@ -66,9 +66,6 @@ param preventDataExfiltration bool = false
 @description('Optional. Enable or Disable public network access to workspace.')
 param publicNetworkAccess string = 'Enabled'
 
-@description('Optional. Enable or Disable trusted service bypass to workspace.')
-param trustedServiceBypassEnabled bool = false
-
 @description('Optional. List of firewall rules to be created in the workspace.')
 param firewallRules array = []
 
@@ -226,7 +223,6 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
         }
       : null
     publicNetworkAccess: managedVirtualNetwork ? publicNetworkAccess : null
-    trustedServiceBypassEnabled: trustedServiceBypassEnabled
     purviewConfiguration: !empty(purviewResourceID)
       ? {
           purviewResourceId: purviewResourceID

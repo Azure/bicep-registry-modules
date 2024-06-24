@@ -288,7 +288,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       }
     ]
     location: '<location>'
-    trustedServiceBypassEnabled: true
   }
 }
 ```
@@ -337,9 +336,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "trustedServiceBypassEnabled": {
-      "value": true
     }
   }
 }
@@ -891,7 +887,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | securestring | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`trustedServiceBypassEnabled`](#parameter-trustedservicebypassenabled) | bool | Enable or Disable trusted service bypass to workspace. |
 | [`workspaceRepositoryConfiguration`](#parameter-workspacerepositoryconfiguration) | object | Git integration settings. |
 
 ### Parameter: `defaultDataLakeStorageAccountResourceId`
@@ -1761,14 +1756,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `trustedServiceBypassEnabled`
-
-Enable or Disable trusted service bypass to workspace.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `workspaceRepositoryConfiguration`
 
