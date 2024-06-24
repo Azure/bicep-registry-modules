@@ -116,6 +116,11 @@ param extensionAzureDiskEncryptionConfig object = {
   enabled: false
 }
 
+@description('Optional. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionHealthConfig object = {
+  enabled: false
+}
+
 @description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionDSCConfig object = {
   enabled: false
@@ -767,6 +772,29 @@ module vmss_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionA
   }
   dependsOn: [
     vmss_customScriptExtension
+  ]
+}
+
+module vmss_healthExtension 'extension/main.bicep' = if (extensionHealthConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VMSS-HealthConfiguration'
+  params: {
+    virtualMachineScaleSetName: vmss.name
+    name: 'HealthExtension'
+    publisher: 'Microsoft.ManagedServices'
+    type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
+    typeHandlerVersion: contains(extensionHealthConfig, 'typeHandlerVersion')
+      ? extensionHealthConfig.typeHandlerVersion
+      : '1.0'
+    autoUpgradeMinorVersion: contains(extensionHealthConfig, 'autoUpgradeMinorVersion')
+      ? extensionHealthConfig.autoUpgradeMinorVersion
+      : false
+    enableAutomaticUpgrade: contains(extensionHealthConfig, 'enableAutomaticUpgrade')
+      ? extensionHealthConfig.enableAutomaticUpgrade
+      : false
+    settings: contains(extensionHealthConfig, 'settings') ? extensionHealthConfig.settings : {}
+  }
+  dependsOn: [
+    vmss_azureDiskEncryptionExtension
   ]
 }
 

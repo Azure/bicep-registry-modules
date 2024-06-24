@@ -997,6 +997,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     extensionDSCConfig: {
       enabled: true
     }
+    extensionHealthConfig: {
+      enabled: true
+      settings: {
+        port: 80
+        protocol: 'http'
+        requestPath: '/'
+      }
+    }
     extensionMonitoringAgentConfig: {
       enabled: true
     }
@@ -1176,6 +1184,16 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "extensionDSCConfig": {
       "value": {
         "enabled": true
+      }
+    },
+    "extensionHealthConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "port": 80,
+          "protocol": "http",
+          "requestPath": "/"
+        }
       }
     },
     "extensionMonitoringAgentConfig": {
@@ -1616,6 +1634,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 | [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | secureObject | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
 | [`extensionDSCConfig`](#parameter-extensiondscconfig) | object | The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionHealthConfig`](#parameter-extensionhealthconfig) | object | The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`gracePeriod`](#parameter-graceperiod) | string | The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M). |
@@ -2044,6 +2063,19 @@ Required if name is specified. Password of the user specified in user parameter.
 ### Parameter: `extensionDSCConfig`
 
 The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
+
+### Parameter: `extensionHealthConfig`
+
+The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.
 
 - Required: No
 - Type: object
