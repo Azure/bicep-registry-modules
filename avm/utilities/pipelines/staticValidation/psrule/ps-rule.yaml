@@ -81,4 +81,4 @@ rule:
     - Azure.VM.UseHybridUseBenefit
     - Azure.Storage.UseReplication
     - Azure.AppConfig.PurgeProtect
-    - Azure.APIM.MultiRegion
+    - Azure.APIM.MultiRegion # Team agreed this is too expensive for most use cases and is safe to ignore.
