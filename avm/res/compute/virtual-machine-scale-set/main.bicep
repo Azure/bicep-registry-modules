@@ -56,7 +56,7 @@ param scaleSetFaultDomain int = 1
 param proximityPlacementGroupResourceId string = ''
 
 @description('Required. Configures NICs and PIPs.')
-param nicConfigurations array = []
+param nicConfigurations array
 
 @description('Optional. Specifies the priority for the virtual machine.')
 @allowed([

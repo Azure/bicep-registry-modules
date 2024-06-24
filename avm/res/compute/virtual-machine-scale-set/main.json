@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "7041078491413360342"
+      "version": "0.26.54.24096",
+      "templateHash": "11596793190769753774"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -332,7 +332,6 @@
     },
     "nicConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
         "description": "Required. Configures NICs and PIPs."
       }
@@ -383,10 +382,8 @@
       }
     },
     "extensionDomainJoinConfig": {
-      "type": "object",
-      "defaultValue": {
-        "enabled": false
-      },
+      "type": "secureObject",
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The configuration for the [Domain Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
@@ -1049,7 +1046,7 @@
       ]
     },
     "vmss_domainJoinExtension": {
-      "condition": "[parameters('extensionDomainJoinConfig').enabled]",
+      "condition": "[and(contains(parameters('extensionDomainJoinConfig'), 'enabled'), parameters('extensionDomainJoinConfig').enabled)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-VMSS-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
@@ -1089,8 +1086,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1251,8 +1248,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1420,8 +1417,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1579,8 +1576,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1737,8 +1734,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1899,8 +1896,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2067,8 +2064,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2229,8 +2226,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17283728898456477586"
+              "version": "0.26.54.24096",
+              "templateHash": "1737879623418595926"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
