@@ -7,9 +7,6 @@ targetScope = 'managementGroup'
 // Parameters //
 // ========== //
 
-@description('The id of the subscription to create the Azure Container Apps deployment.')
-param subscriptionId string
-
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
@@ -19,6 +16,12 @@ param serviceShort string = 'acalzawaf'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
+
+// ================= //
+// Variables Section //
+// ================= //
+//The id of the subscription to create the Azure Container Apps deployment.'
+var subscriptionId = 'ff6a9a5a-6711-42ba-a06e-8fa7c84e9f06'
 
 // ============ //
 // Dependencies //
