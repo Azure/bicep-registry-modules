@@ -28,6 +28,7 @@ This module deploys a Synapse Workspace.
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Synapse/workspaces` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces) |
 | `Microsoft.Synapse/workspaces/administrators` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators) |
+| `Microsoft.Synapse/workspaces/firewallRules` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/firewallRules) |
 | `Microsoft.Synapse/workspaces/integrationRuntimes` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/integrationRuntimes) |
 | `Microsoft.Synapse/workspaces/keys` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys) |
 
@@ -42,9 +43,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using managed Vnet](#example-4-using-managed-vnet)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using firewall rules](#example-4-using-firewall-rules)
+- [Using managed Vnet](#example-5-using-managed-vnet)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -252,7 +254,101 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using managed Vnet_
+### Example 4: _Using firewall rules_
+
+This instance deploys the module with the configuration of firewall rules.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swfwr001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    firewallRules: [
+      {
+        endIpAddress: '87.14.134.20'
+        name: 'fwrule01'
+        startIpAddress: '87.14.134.20'
+        workspaceName: 'swfwr001'
+      }
+      {
+        endIpAddress: '87.14.134.21'
+        name: 'fwrule02'
+        startIpAddress: '87.14.134.22'
+        workspaceName: 'swfwr001'
+      }
+    ]
+    location: '<location>'
+    trustedServiceBypassEnabled: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swfwr001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "87.14.134.20",
+          "name": "fwrule01",
+          "startIpAddress": "87.14.134.20",
+          "workspaceName": "swfwr001"
+        },
+        {
+          "endIpAddress": "87.14.134.21",
+          "name": "fwrule02",
+          "startIpAddress": "87.14.134.22",
+          "workspaceName": "swfwr001"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "trustedServiceBypassEnabled": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using managed Vnet_
 
 This instance deploys the module using a managed Vnet.
 
@@ -328,7 +424,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -598,7 +694,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -779,6 +875,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionActivateWorkspace`](#parameter-encryptionactivateworkspace) | bool | Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace. |
+| [`firewallRules`](#parameter-firewallrules) | array | List of firewall rules to be created in the workspace. |
 | [`initialWorkspaceAdminObjectID`](#parameter-initialworkspaceadminobjectid) | string | AAD object ID of initial workspace admin. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | The Integration Runtimes to create. |
 | [`linkedAccessCheckOnTargetResource`](#parameter-linkedaccesscheckontargetresource) | bool | Linked Access Check On Target Resource. |
@@ -794,6 +891,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | securestring | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`trustedServiceBypassEnabled`](#parameter-trustedservicebypassenabled) | bool | Enable or Disable trusted service bypass to workspace. |
 | [`workspaceRepositoryConfiguration`](#parameter-workspacerepositoryconfiguration) | object | Git integration settings. |
 
 ### Parameter: `defaultDataLakeStorageAccountResourceId`
@@ -1073,6 +1171,14 @@ Activate workspace by adding the system managed identity in the KeyVault contain
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `firewallRules`
+
+List of firewall rules to be created in the workspace.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `initialWorkspaceAdminObjectID`
 
@@ -1655,6 +1761,14 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `trustedServiceBypassEnabled`
+
+Enable or Disable trusted service bypass to workspace.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `workspaceRepositoryConfiguration`
 

@@ -66,6 +66,12 @@ param preventDataExfiltration bool = false
 @description('Optional. Enable or Disable public network access to workspace.')
 param publicNetworkAccess string = 'Enabled'
 
+@description('Optional. Enable or Disable trusted service bypass to workspace.')
+param trustedServiceBypassEnabled bool = false
+
+@description('Optional. List of firewall rules to be created in the workspace.')
+param firewallRules array = []
+
 @description('Optional. Purview Resource ID.')
 param purviewResourceID string = ''
 
@@ -220,6 +226,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
         }
       : null
     publicNetworkAccess: managedVirtualNetwork ? publicNetworkAccess : null
+    trustedServiceBypassEnabled: trustedServiceBypassEnabled
     purviewConfiguration: !empty(purviewResourceID)
       ? {
           purviewResourceId: purviewResourceID
@@ -319,6 +326,19 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: workspace
+  }
+]
+
+// Firewall Rules
+module workspace_firewall_rules 'firewall-rules/main.bicep' = [
+  for (rule, index) in firewallRules: {
+    name: '${uniqueString(deployment().name, location)}-workspace-FirewallRule-${index}'
+    params: {
+      name: rule.name
+      endIpAddress: rule.endIpAddress
+      startIpAddress: rule.startIpAddress
+      workspaceName: workspace.name
+    }
   }
 ]
 

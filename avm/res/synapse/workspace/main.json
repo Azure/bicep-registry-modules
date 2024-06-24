@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16827959448836859226"
+      "templateHash": "2444729852043147776"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -602,6 +602,20 @@
         "description": "Optional. Enable or Disable public network access to workspace."
       }
     },
+    "trustedServiceBypassEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable or Disable trusted service bypass to workspace."
+      }
+    },
+    "firewallRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of firewall rules to be created in the workspace."
+      }
+    },
     "purviewResourceID": {
       "type": "string",
       "defaultValue": "",
@@ -756,6 +770,7 @@
         "managedVirtualNetwork": "[if(parameters('managedVirtualNetwork'), 'default', null())]",
         "managedVirtualNetworkSettings": "[if(parameters('managedVirtualNetwork'), createObject('allowedAadTenantIdsForLinking', parameters('allowedAadTenantIdsForLinking'), 'linkedAccessCheckOnTargetResource', parameters('linkedAccessCheckOnTargetResource'), 'preventDataExfiltration', parameters('preventDataExfiltration')), null())]",
         "publicNetworkAccess": "[if(parameters('managedVirtualNetwork'), parameters('publicNetworkAccess'), null())]",
+        "trustedServiceBypassEnabled": "[parameters('trustedServiceBypassEnabled')]",
         "purviewConfiguration": "[if(not(empty(parameters('purviewResourceID'))), createObject('purviewResourceId', parameters('purviewResourceID')), null())]",
         "sqlAdministratorLogin": "[parameters('sqlAdministratorLogin')]",
         "sqlAdministratorLoginPassword": "[if(not(empty(parameters('sqlAdministratorLoginPassword'))), parameters('sqlAdministratorLoginPassword'), null())]",
@@ -1221,6 +1236,112 @@
               "type": "string",
               "metadata": {
                 "description": "The resource group of the deployed administrator."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspace"
+      ]
+    },
+    "workspace_firewall_rules": {
+      "copy": {
+        "name": "workspace_firewall_rules",
+        "count": "[length(parameters('firewallRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-workspace-FirewallRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('firewallRules')[copyIndex()].name]"
+          },
+          "endIpAddress": {
+            "value": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
+          },
+          "startIpAddress": {
+            "value": "[parameters('firewallRules')[copyIndex()].startIpAddress]"
+          },
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "662931178579526673"
+            },
+            "name": "Synapse Workspaces Firewall Rules",
+            "description": "This module deploys Synapse Workspaces Firewall Rules.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the firewall rule."
+              }
+            },
+            "startIpAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The start IP address of the firewall rule. Must be IPv4 format."
+              }
+            },
+            "endIpAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Synapse/workspaces/firewallRules",
+              "apiVersion": "2021-06-01",
+              "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
+              "properties": {
+                "startIpAddress": "[parameters('startIpAddress')]",
+                "endIpAddress": "[parameters('endIpAddress')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed firewall rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed firewall rule."
+              },
+              "value": "[resourceId('Microsoft.Synapse/workspaces/firewallRules', parameters('workspaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed firewall rule."
               },
               "value": "[resourceGroup().name]"
             }
