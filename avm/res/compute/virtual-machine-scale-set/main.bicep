@@ -85,9 +85,8 @@ param licenseType string = ''
 param extensionDomainJoinPassword string = ''
 
 @description('Optional. The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDomainJoinConfig object = {
-  enabled: false
-}
+@secure()
+param extensionDomainJoinConfig object = {}
 
 @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionAntiMalwareConfig object = {
@@ -562,7 +561,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
   plan: !empty(plan) ? plan : null
 }
 
-module vmss_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinConfig.enabled) {
+module vmss_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDomainJoinConfig, 'enabled') && extensionDomainJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VMSS-DomainJoin'
   params: {
     virtualMachineScaleSetName: vmss.name
