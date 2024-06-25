@@ -23,84 +23,16 @@ resource serverFarm 'Microsoft.Web/serverfarms@2022-03-01' = {
   properties: {}
 }
 
-module apiManagement '../../../../../api-management/service/main.bicep' = {
+resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: apiManagementName
-  params: {
-    name: apiManagementName
+  location: location
+  sku: {
+    name: 'Consumption'
+    capacity: 0
+  }
+  properties: {
     publisherEmail: 'noreply@microsoft.com'
     publisherName: 'n/a'
-    location: location
-    sku: 'Consumption'
-    skuCount: 0
-    customProperties: {}
-    zones: []
-    apiDiagnostics: [
-      {
-        apiName: 'todo-api'
-        alwaysLog: 'allErrors'
-        backend: {
-          request: {
-            body: {
-              bytes: 1024
-            }
-          }
-          response: {
-            body: {
-              bytes: 1024
-            }
-          }
-        }
-        frontend: {
-          request: {
-            body: {
-              bytes: 1024
-            }
-          }
-          response: {
-            body: {
-              bytes: 1024
-            }
-          }
-        }
-        httpCorrelationProtocol: 'W3C'
-        logClientIp: true
-        loggerName: 'app-insights-logger'
-        metrics: true
-        verbosity: 'verbose'
-        name: 'applicationinsights'
-      }
-    ]
-    loggers: [
-      {
-        name: 'app-insights-logger'
-        credentials: {
-          instrumentationKey: applicationInsights.properties.InstrumentationKey
-        }
-        loggerDescription: 'Logger to Azure Application Insights'
-        isBuffered: false
-        loggerType: 'applicationInsights'
-        targetResourceId: applicationInsights.id
-      }
-    ]
-    apis: [
-      {
-        name: 'todo-api'
-        path: 'todo'
-        displayName: 'Simple Todo API'
-        apiDescription: 'This is a simple Todo API'
-        serviceUrl: 'https://www.baidu.com'
-        subscriptionRequired: false
-        protocols: ['https']
-        type: 'http'
-        value: ''
-        policies: [
-          {
-            value: ''
-            format: 'rawxml'
-          }
-        ]
-      }
-    ]
   }
 }
 
@@ -114,7 +46,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 @description('The resource ID of the created api management.')
-output apiManagementId string = apiManagement.outputs.resourceId
+output apiManagementId string = apiManagement.id
 
 @description('The resource ID of the created application insights.')
 output applicationInsigtsId string = applicationInsights.id
