@@ -1,8 +1,14 @@
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
+@description('Required. The location to deploy the replica to.')
+param replicaLocation string
+
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
+
+@description('Required. The name of the Virtual Network to create, which is used by the replica.')
+param replicaVirtualNetworkName string
 
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
@@ -19,7 +25,12 @@ param certDeploymentScriptName string
 var certPWSecretName = 'pfxCertificatePassword'
 var certSecretName = 'pfxBase64Certificate'
 var addressPrefix = '10.0.0.0/16'
+var replicaAddressPrefix = '192.168.0.0/16'
 var aadsSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 1)
+var replicaAadsSubnetAddressPrefix = cidrSubnet(replicaAddressPrefix, 24, 1)
+
+// Networking resources
+// =================
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
@@ -51,6 +62,65 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         }
       }
     ]
+  }
+}
+resource replicaVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+  name: replicaVirtualNetworkName
+  location: replicaLocation
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        replicaAddressPrefix
+      ]
+    }
+    dhcpOptions: {
+      // set the DNS servers to the 4th and 5th addresses in the subnet
+      dnsServers: [for i in range(3, 2): cidrHost(replicaAadsSubnetAddressPrefix, i)]
+    }
+    subnets: [
+      {
+        name: 'defaultSubnet'
+        properties: {
+          addressPrefix: cidrSubnet(replicaAddressPrefix, 24, 0)
+        }
+      }
+      {
+        name: 'aadds-subnet'
+        properties: {
+          addressPrefix: replicaAadsSubnetAddressPrefix
+          networkSecurityGroup: {
+            id: replicaNsgAaddSubnet.id
+          }
+        }
+      }
+    ]
+  }
+}
+
+resource virtualNetworkPeeringToReplica 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = {
+  name: 'aadds-vnetpeering-${replicaVirtualNetworkName}'
+  parent: virtualNetwork
+  properties: {
+    allowForwardedTraffic: false
+    allowGatewayTransit: false
+    allowVirtualNetworkAccess: true
+    useRemoteGateways: false
+    remoteVirtualNetwork: {
+      id: replicaVirtualNetwork.id
+    }
+  }
+}
+resource virtualNetworkPeeringFromReplica 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = {
+  name: 'aadds-vnetpeering-${virtualNetworkName}'
+  parent: replicaVirtualNetwork
+  properties: {
+    allowForwardedTraffic: false
+    allowGatewayTransit: false
+    allowVirtualNetworkAccess: true
+    useRemoteGateways: false
+    remoteVirtualNetwork: {
+      id: virtualNetwork.id
+    }
   }
 }
 
@@ -101,6 +171,57 @@ resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
     ]
   }
 }
+
+resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
+  name: '${replicaVirtualNetworkName}-aadds-subnet-nsg'
+  location: replicaLocation
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowSyncWithAzureAD'
+        properties: {
+          access: 'Allow'
+          priority: 101
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'AzureActiveDirectoryDomainServices'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowPSRemoting'
+        properties: {
+          access: 'Allow'
+          priority: 301
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'AzureActiveDirectoryDomainServices'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '5986'
+        }
+      }
+      {
+        name: 'AllowLDAPs'
+        properties: {
+          access: 'Allow'
+          priority: 401
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '636'
+        }
+      }
+    ]
+  }
+}
+
+// General resources
+// =================
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
@@ -158,6 +279,9 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01'
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[1].id
+
+@description('The resource ID of the created Virtual Network Subnet, used by the replica.')
+output replicaSubnetResourceId string = replicaVirtualNetwork.properties.subnets[1].id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id

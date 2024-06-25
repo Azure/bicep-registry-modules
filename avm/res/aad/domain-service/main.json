@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "11541389602215050557"
+      "version": "0.28.1.47646",
+      "templateHash": "11350246214376689372"
     },
     "name": "Azure Active Directory Domain Services",
     "description": "This module deploys an Azure Active Directory Domain Services (AADDS) instance.",
@@ -274,21 +274,21 @@
     "domainName": {
       "type": "string",
       "metadata": {
-        "example": "  - 'contoso.onmicrosoft.com'\n  - 'aaddscontoso.com'\n  ",
+        "example": "  - 'contoso.onmicrosoft.com'\r\n  - 'aaddscontoso.com'\r\n  ",
         "description": "Required. The domain name specific to the Azure ADDS service."
       },
       "minLength": 1
     },
     "sku": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Enterprise",
       "allowedValues": [
         "Standard",
         "Enterprise",
         "Premium"
       ],
       "metadata": {
-        "description": "Optional. The name of the SKU specific to Azure ADDS Services."
+        "description": "Optional. The name of the SKU specific to Azure ADDS Services. For replica set support, this defaults to Enterprise."
       }
     },
     "replicaSets": {
@@ -315,7 +315,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "example": "  - ['john@doh.org']\n  - ['john@doh.org','jane@doh.org']\n  ",
+        "example": "  - ['john@doh.org']\r\n  - ['john@doh.org','jane@doh.org']\r\n  ",
         "description": "Optional. The email recipient value to receive alerts."
       }
     },
@@ -451,6 +451,17 @@
         "description": "Optional. A flag to determine whether or not Secure LDAP is enabled or disabled."
       }
     },
+    "syncScope": {
+      "type": "string",
+      "defaultValue": "All",
+      "allowedValues": [
+        "All",
+        "CloudOnly"
+      ],
+      "metadata": {
+        "description": "Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All."
+      }
+    },
     "diagnosticSettings": {
       "$ref": "#/definitions/diagnosticSettingType",
       "metadata": {
@@ -461,7 +472,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
+        "example": "  {\r\n      \"key1\": \"value1\",\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
@@ -538,7 +549,8 @@
           "kerberosRc4Encryption": "[parameters('kerberosRc4Encryption')]",
           "kerberosArmoring": "[parameters('kerberosArmoring')]"
         },
-        "sku": "[parameters('sku')]"
+        "sku": "[parameters('sku')]",
+        "syncScope": "[parameters('syncScope')]"
       }
     },
     "domainservice_diagnosticSettings": {

@@ -27,13 +27,13 @@ param enableTelemetry bool = true
 @description('Required. The domain name specific to the Azure ADDS service.')
 param domainName string
 
-@description('Optional. The name of the SKU specific to Azure ADDS Services.')
+@description('Optional. The name of the SKU specific to Azure ADDS Services. For replica set support, this defaults to Enterprise.')
 @allowed([
   'Standard'
   'Enterprise'
   'Premium'
 ])
-param sku string = 'Standard'
+param sku string = 'Enterprise'
 
 @description('Optional. Additional replica set for the managed domain.')
 param replicaSets replicaSetType
@@ -141,6 +141,10 @@ param externalAccess string = 'Enabled'
 ])
 param ldaps string = 'Enabled'
 
+@description('Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.')
+@allowed(['All', 'CloudOnly'])
+param syncScope string = 'All'
+
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
@@ -227,6 +231,7 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
       kerberosArmoring: kerberosArmoring
     }
     sku: sku
+    syncScope: syncScope
   }
 }
 
