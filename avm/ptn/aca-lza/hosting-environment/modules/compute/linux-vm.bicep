@@ -82,6 +82,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
         name: vmNetworkInterfaceName
         ipConfigurations: [
           {
+            name: 'ipConfig01'
             privateIPAllocationMethod: 'Dynamic'
             subnetResourceId: vmSubnet.id
           }
