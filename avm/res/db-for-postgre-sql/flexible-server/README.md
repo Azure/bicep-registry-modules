@@ -53,7 +53,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
-    skuName: 'GP_Standard_D4ds_v4'
+    skuName: 'Standard_D4s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -81,7 +81,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "dfpsfsmin001"
     },
     "skuName": {
-      "value": "GP_Standard_D4ds_v4"
+      "value": "Standard_D4s_v3"
     },
     "tier": {
       "value": "GeneralPurpose"
