@@ -24,11 +24,13 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
   kind: ''
-  properties: {}
+  properties: {
+    Application_Type: 'web'
+  }
 }
 
-@description('The resource ID of the created Server Farm.')
-output applicationInsigtsId string = serverFarm.id
+@description('The resource ID of the created application insights.')
+output applicationInsigtsId string = applicationInsights.id
 
 @description('The resource ID of the created Server Farm.')
 output serverFarmResourceId string = serverFarm.id

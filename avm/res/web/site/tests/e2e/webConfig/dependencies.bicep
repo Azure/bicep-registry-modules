@@ -102,9 +102,6 @@ module apiManagement '../../../../../api-management/service/main.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    applicationInsights
-  ]
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
@@ -120,7 +117,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 output apiManagementId string = apiManagement.outputs.resourceId
 
 @description('The resource ID of the created application insights.')
-output applicationInsigtsId string = serverFarm.id
+output applicationInsigtsId string = applicationInsights.id
 
 @description('The resource ID of the created Server Farm.')
 output serverFarmResourceId string = serverFarm.id
