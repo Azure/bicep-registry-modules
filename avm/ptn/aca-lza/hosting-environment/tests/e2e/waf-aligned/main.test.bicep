@@ -20,15 +20,12 @@ param namePrefix string = '#_namePrefix_#'
 // ================= //
 // Variables Section //
 // ================= //
-//The id of the subscription to create the Azure Container Apps deployment.'
-var subscriptionId = 'ff6a9a5a-6711-42ba-a06e-8fa7c84e9f06'
 
 // ============ //
 // Dependencies //
 // ============ //
 module hubdeployment 'deploy.hub.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-hub-${serviceShort}'
-  scope: subscription(subscriptionId)
   params: {
     location: resourceLocation
     tags: {

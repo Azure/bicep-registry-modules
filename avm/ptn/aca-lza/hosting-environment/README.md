@@ -18,8 +18,6 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.App/containerApps` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/containerApps) |
 | `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/policyAssignments` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-06-01/policyAssignments) |
-| `Microsoft.Authorization/policyDefinitions` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2021-06-01/policyDefinitions) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.Cdn/profiles` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles) |
@@ -71,10 +69,10 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
@@ -121,7 +119,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     spokeVNetAddressPrefixes: [
       '10.1.0.0/22'
     ]
-    subscriptionId: '<subscriptionId>'
     vmAdminPassword: 'P@ssw0rd1234!'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
@@ -174,9 +171,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": [
         "10.1.0.0/22"
       ]
-    },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
     },
     "vmAdminPassword": {
       "value": "P@ssw0rd1234!"
@@ -241,7 +235,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     spokeVNetAddressPrefixes: [
       '10.1.0.0/22'
     ]
-    subscriptionId: '<subscriptionId>'
     vmAdminPassword: 'P@ssw0rd1234!'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
@@ -249,7 +242,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmSize: 'Standard_B1s'
     // Non-required parameters
     applicationGatewayFqdn: 'acahello.demoapp.com'
-    deployAzurePolicies: true
     deploySampleApplication: true
     deployZoneRedundantResources: true
     enableDdosProtection: true
@@ -304,9 +296,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
         "10.1.0.0/22"
       ]
     },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
-    },
     "vmAdminPassword": {
       "value": "P@ssw0rd1234!"
     },
@@ -325,9 +314,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Non-required parameters
     "applicationGatewayFqdn": {
       "value": "acahello.demoapp.com"
-    },
-    "deployAzurePolicies": {
-      "value": true
     },
     "deploySampleApplication": {
       "value": true
@@ -388,7 +374,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 | [`spokeInfraSubnetAddressPrefix`](#parameter-spokeinfrasubnetaddressprefix) | string | CIDR of the Spoke Infrastructure Subnet. |
 | [`spokePrivateEndpointsSubnetAddressPrefix`](#parameter-spokeprivateendpointssubnetaddressprefix) | string | CIDR of the Spoke Private Endpoints Subnet. |
 | [`spokeVNetAddressPrefixes`](#parameter-spokevnetaddressprefixes) | array | CIDR of the Spoke Virtual Network. |
-| [`subscriptionId`](#parameter-subscriptionid) | string | The id of the subscription to create the Azure Container Apps deployment. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | The password to use for the virtual machine. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | string | The username to use for the virtual machine. |
 | [`vmJumpBoxSubnetAddressPrefix`](#parameter-vmjumpboxsubnetaddressprefix) | string | CIDR to use for the virtual machine subnet. |
@@ -401,7 +386,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 | :-- | :-- | :-- |
 | [`applicationGatewayFqdn`](#parameter-applicationgatewayfqdn) | string | The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty. |
 | [`base64Certificate`](#parameter-base64certificate) | string | The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty. |
-| [`deployAzurePolicies`](#parameter-deployazurepolicies) | bool | If true, Azure Policies will be deployed. Default value is true. |
 | [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
 | [`enableDdosProtection`](#parameter-enableddosprotection) | bool | DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false". |
@@ -466,13 +450,6 @@ CIDR of the Spoke Virtual Network.
 - Required: Yes
 - Type: array
 
-### Parameter: `subscriptionId`
-
-The id of the subscription to create the Azure Container Apps deployment.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `vmAdminPassword`
 
 The password to use for the virtual machine.
@@ -523,14 +500,6 @@ The base64 encoded certificate to use for Application Gateway certificate. If th
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `deployAzurePolicies`
-
-If true, Azure Policies will be deployed. Default value is true.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `deploySampleApplication`
 
@@ -700,7 +669,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/policy-assignment:0.1.0` | Remote reference |
 | `br/public:avm/res/app/container-app:0.4.0` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.5.1` | Remote reference |
 | `br/public:avm/res/cdn/profile:0.3.0` | Remote reference |
