@@ -20,6 +20,7 @@ This module deploys a Data Factory.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DataFactory/factories` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories) |
 | `Microsoft.DataFactory/factories/integrationRuntimes` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/integrationRuntimes) |
+| `Microsoft.DataFactory/factories/linkedservices` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/linkedservices) |
 | `Microsoft.DataFactory/factories/managedVirtualNetworks` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks) |
 | `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -489,6 +490,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 | [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
+| [`linkedServices`](#parameter-linkedservices) | array | An array of objects for the configuration of Linked Services. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -808,6 +810,14 @@ List of Global Parameters for the factory.
 ### Parameter: `integrationRuntimes`
 
 An array of objects for the configuration of an Integration Runtime.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `linkedServices`
+
+An array of objects for the configuration of Linked Services.
 
 - Required: No
 - Type: array

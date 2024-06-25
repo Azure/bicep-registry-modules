@@ -14,6 +14,9 @@ param managedPrivateEndpoints array = []
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
 param integrationRuntimes array = []
 
+@description('Optional. An array of objects for the configuration of Linked Services.')
+param linkedServices array = []
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -229,6 +232,21 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
     dependsOn: [
       dataFactory_managedVirtualNetwork
     ]
+  }
+]
+
+module dataFactory_linkedServices 'linked-service/main.bicep' = [
+  for (linkedService, index) in linkedServices: {
+    name: '${uniqueString(deployment().name, location)}-DataFactory-LinkedServices-${index}'
+    params: {
+      dataFactoryName: dataFactory.name
+      name: linkedService.name
+      typeName: linkedService.type
+      typeProperties: contains(linkedService, 'typeProperties') ? linkedService.typeProperties : {}
+      IRname: contains(linkedService, 'IRName') ? linkedService.IRName : 'none'
+      customizedParameter: contains(linkedService, 'parameters') ? linkedService.parameters : {}
+      linkedServiceDescription: linkedService.?linkedServiceDescription ?? 'Linked Service created by avm-res-datafactory-factories'
+    }
   }
 ]
 
