@@ -103,13 +103,13 @@ var rgSpokeName = !empty(spokeResourceGroupName)
 var hubVNetResourceIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
 
 @description('The ID of the subscription containing the hub virtual network.')
-var hubSubscriptionId = hubVNetResourceIdTokens[2]
+var hubSubscriptionId = !empty(hubVNetId) ? hubVNetResourceIdTokens[2] : ''
 
 @description('The name of the resource group containing the hub virtual network.')
-var hubResourceGroupName = hubVNetResourceIdTokens[4]
+var hubResourceGroupName = !empty(hubVNetId) ? hubVNetResourceIdTokens[4] : ''
 
 @description('The name of the hub virtual network.')
-var hubVNetName = hubVNetResourceIdTokens[8]
+var hubVNetName = !empty(hubVNetId) ? hubVNetResourceIdTokens[8] : ''
 
 // Subnet definition taking in consideration feature flags
 var defaultSubnets = [

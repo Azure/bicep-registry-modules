@@ -49,7 +49,7 @@ module hubdeployment 'deploy.hub.bicep' = {
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    workloadName: namePrefix
+    workloadName: 'acalzaavmw'
     hubVirtualNetworkResourceId: hubdeployment.outputs.hubVNetId
     networkApplianceIpAddress: hubdeployment.outputs.networkApplianceIpAddress
     tags: {

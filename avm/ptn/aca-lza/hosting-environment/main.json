@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13269885708732341881"
+      "templateHash": "12864740668239791780"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -453,7 +453,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1059128829081150948"
+              "templateHash": "7732476905452752609"
             }
           },
           "parameters": {
@@ -677,9 +677,9 @@
             "namingRules": "[json(variables('$fxv#2'))]",
             "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-spoke-{2}-{3}', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]",
             "hubVNetResourceIdTokens": "[if(not(empty(parameters('hubVNetId'))), split(parameters('hubVNetId'), '/'), array(''))]",
-            "hubSubscriptionId": "[variables('hubVNetResourceIdTokens')[2]]",
-            "hubResourceGroupName": "[variables('hubVNetResourceIdTokens')[4]]",
-            "hubVNetName": "[variables('hubVNetResourceIdTokens')[8]]"
+            "hubSubscriptionId": "[if(not(empty(parameters('hubVNetId'))), variables('hubVNetResourceIdTokens')[2], '')]",
+            "hubResourceGroupName": "[if(not(empty(parameters('hubVNetId'))), variables('hubVNetResourceIdTokens')[4], '')]",
+            "hubVNetName": "[if(not(empty(parameters('hubVNetId'))), variables('hubVNetResourceIdTokens')[8], '')]"
           },
           "resources": [
             {
@@ -7117,7 +7117,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "10804777339895275029"
+                      "templateHash": "788122930366564354"
                     }
                   },
                   "parameters": {
@@ -7924,6 +7924,7 @@
                                 "name": "[parameters('vmNetworkInterfaceName')]",
                                 "ipConfigurations": [
                                   {
+                                    "name": "ipConfig01",
                                     "privateIPAllocationMethod": "Dynamic",
                                     "subnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"
                                   }
@@ -13383,7 +13384,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "8835288359095186161"
+                      "templateHash": "8102762750797496473"
                     }
                   },
                   "parameters": {
@@ -14180,6 +14181,7 @@
                                 "name": "[parameters('vmNetworkInterfaceName')]",
                                 "ipConfigurations": [
                                   {
+                                    "name": "ipconfig1",
                                     "privateIPAllocationMethod": "Dynamic",
                                     "subnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"
                                   }

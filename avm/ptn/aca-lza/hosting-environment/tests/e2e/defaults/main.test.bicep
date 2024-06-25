@@ -35,7 +35,7 @@ param namePrefix string = '#_namePrefix_#'
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    workloadName: namePrefix
+    workloadName: 'acalzaavm'
     tags: {
       environment: 'test'
     }
