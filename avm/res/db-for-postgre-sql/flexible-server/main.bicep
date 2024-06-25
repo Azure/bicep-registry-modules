@@ -260,7 +260,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: highAvailability == 'SameZone' ? availabilityZone : null
+      standbyAvailabilityZone: highAvailability != 'Disabled' ? availabilityZone : null
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {

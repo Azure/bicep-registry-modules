@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
-      skuName: 'Standard_B2s'
+      skuName: 'GP_Standard_D4ds_v4'
       tier: 'GeneralPurpose'
       geoRedundantBackup: 'Enabled'
     }
