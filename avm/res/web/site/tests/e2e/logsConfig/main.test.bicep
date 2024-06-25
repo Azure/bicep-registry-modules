@@ -66,10 +66,6 @@ module testDeployment '../../../main.bicep' = [
         systemAssigned: true
       }
       siteConfig: {
-        cors: {
-          allowedOrigins: ['https://portal.azure.com', 'https://ms.portal.azure.com']
-        }
-        linuxFxVersion: 'java|17-java17'
         alwaysOn: true
         appCommandLine: ''
       }

@@ -46,49 +46,34 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module prepareDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-prepare-${serviceShort}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    kind: 'app'
-    serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-    appInsightResourceId: nestedDependencies.outputs.applicationInsigtsId
-    managedIdentities: {
-      systemAssigned: true
-    }
-    siteConfig: {
-      cors: {
-        allowedOrigins: ['https://portal.azure.com', 'https://ms.portal.azure.com']
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-prepare-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      kind: 'app'
+      serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
+      appInsightResourceId: nestedDependencies.outputs.applicationInsigtsId
+      apiManagementConfiguration: {
+        id: '${nestedDependencies.outputs.apiManagementId}/apis/todo-api'
       }
-      linuxFxVersion: 'dotnetcore|8.0'
-      alwaysOn: true
-      appCommandLine: ''
+      managedIdentities: {
+        systemAssigned: true
+      }
+      siteConfig: {
+        alwaysOn: true
+        appCommandLine: ''
+      }
+      appSettingsKeyValuePairs: {
+        SCM_DO_BUILD_DURING_DEPLOYMENT: 'False'
+        ENABLE_ORYX_BUILD: 'True'
+      }
     }
-    appSettingsKeyValuePairs: {
-      SCM_DO_BUILD_DURING_DEPLOYMENT: 'False'
-      ENABLE_ORYX_BUILD: 'True'
-    }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}
-
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    name: prepareDeployment.outputs.name
-    location: resourceLocation
-    kind: 'app'
-    serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-    apiManagementConfiguration: {
-      id: '${nestedDependencies.outputs.apiManagementId}/apis/todo-api'
-    }
-  }
-  dependsOn: [
-    prepareDeployment
-  ]
-}
+]

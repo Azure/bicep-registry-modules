@@ -23,7 +23,7 @@ resource serverFarm 'Microsoft.Web/serverfarms@2022-03-01' = {
   properties: {}
 }
 
-module apiManagement 'br/public:avm/res/api-management/service:0.2.0' = {
+module apiManagement '../../../../../api-management/service/main.bicep' = {
   name: apiManagementName
   params: {
     name: apiManagementName
@@ -102,13 +102,18 @@ module apiManagement 'br/public:avm/res/api-management/service:0.2.0' = {
       }
     ]
   }
+  dependsOn: [
+    applicationInsights
+  ]
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
   kind: ''
-  properties: {}
+  properties: {
+    Application_Type: 'web'
+  }
 }
 
 @description('The resource ID of the created api management.')
