@@ -143,6 +143,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      // Please do not change the name of the managed resource group as the CI's removal logic relies on it
       managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
