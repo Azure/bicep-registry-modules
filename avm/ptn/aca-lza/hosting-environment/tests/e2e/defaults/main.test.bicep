@@ -1,7 +1,7 @@
 metadata name = 'Using only defaults.'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 // ========== //
 // Parameters //
@@ -20,8 +20,6 @@ param namePrefix string = '#_namePrefix_#'
 // ================= //
 // Variables Section //
 // ================= //
-//The id of the subscription to create the Azure Container Apps deployment.'
-var subscriptionId = 'ff6a9a5a-6711-42ba-a06e-8fa7c84e9f06'
 
 // ============ //
 // Dependencies //
@@ -37,7 +35,6 @@ var subscriptionId = 'ff6a9a5a-6711-42ba-a06e-8fa7c84e9f06'
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    subscriptionId: subscriptionId
     workloadName: namePrefix
     tags: {
       environment: 'test'

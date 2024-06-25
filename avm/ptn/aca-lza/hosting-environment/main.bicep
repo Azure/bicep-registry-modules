@@ -1,4 +1,4 @@
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 metadata name = 'Container Apps Landing Zone Accelerator'
 metadata description = 'This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework'
@@ -7,8 +7,8 @@ metadata owner = 'Azure/module-maintainers'
 // ------------------
 //    PARAMETERS
 // ------------------
-@description('Required. The id of the subscription to create the Azure Container Apps deployment.')
-param subscriptionId string
+// @description('Required. The id of the subscription to create the Azure Container Apps deployment.')
+// param subscriptionId string
 
 @description('Optional. The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
@@ -96,8 +96,8 @@ param enableTelemetry bool = true
 @description('Optional. Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true.')
 param deployZoneRedundantResources bool = true
 
-@description('Optional. If true, Azure Policies will be deployed. Default value is true.')
-param deployAzurePolicies bool = true
+// @description('Optional. If true, Azure Policies will be deployed. Default value is true.')
+// param deployAzurePolicies bool = true
 
 @description('Optional. Specify the way container apps is going to be exposed. Options are applicationGateway or frontDoor. Default is "applicationGateway".')
 @allowed([
@@ -125,7 +125,7 @@ var rgSpokeName = !empty(spokeResourceGroupName)
 // ------------------
 @description('User-configured naming rules')
 module naming 'modules/naming/naming.module.bicep' = {
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   name: take('02-sharedNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(spoke.outputs.spokeResourceGroupName)
@@ -137,13 +137,13 @@ module naming 'modules/naming/naming.module.bicep' = {
 
 module spoke 'modules/spoke/deploy.spoke.bicep' = {
   name: take('spoke-${deployment().name}-deployment', 64)
-  scope: subscription(subscriptionId)
+  scope: subscription()
   params: {
     spokeResourceGroupName: rgSpokeName
     location: location
     tags: tags
     environment: environment
-    subscriptionId: subscriptionId
+    //subscriptionId: subscriptionId
     workloadName: workloadName
     hubVNetId: hubVirtualNetworkResourceId
     spokeApplicationGatewaySubnetAddressPrefix: spokeApplicationGatewaySubnetAddressPrefix
@@ -161,19 +161,20 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
   }
 }
 
-@description('Assign built-in and custom (container-apps related) policies to the spoke subscription.')
-module policiesDeployment 'modules/policy/policies-assignement.bicep' = if (deployAzurePolicies) {
-  name: take('policyAssignments-${deployment().name}', 64)
-  params: {
-    location: location
-    spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
-    containerRegistryName: naming.outputs.resourcesNames.containerRegistry
-  }
-}
+// Policy assignement requires a management group scope
+// @description('Assign built-in and custom (container-apps related) policies to the spoke subscription.')
+// module policiesDeployment 'modules/policy/policies-assignement.bicep' = if (deployAzurePolicies) {
+//   name: take('policyAssignments-${deployment().name}', 64)
+//   params: {
+//     location: location
+//     spokeResourceGroupName: spoke.outputs.spokeResourceGroupName
+//     containerRegistryName: naming.outputs.resourcesNames.containerRegistry
+//   }
+// }
 
 module supportingServices 'modules/supporting-services/deploy.supporting-services.bicep' = {
   name: take('supportingServices-${deployment().name}-deployment', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     location: location
     tags: tags
@@ -188,7 +189,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
 
 module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-environment.bicep' = {
   name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     location: location
     tags: tags
@@ -206,7 +207,7 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
 
 module sampleApplication 'modules/sample-application/deploy.sample-application.bicep' = if (deploySampleApplication) {
   name: take('sampleApplication-${deployment().name}-deployment', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     location: location
     tags: tags
@@ -218,7 +219,7 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
 
 module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep' = if (exposeContainerAppsWith == 'applicationGateway') {
   name: take('applicationGateway-${deployment().name}-deployment', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     location: location
     tags: tags
@@ -240,7 +241,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
 
 module frontDoor 'modules/front-door/deploy.front-door.bicep' = if (exposeContainerAppsWith == 'frontDoor') {
   name: take('frontDoor-${deployment().name}-deployment', 64)
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     location: location
     tags: tags

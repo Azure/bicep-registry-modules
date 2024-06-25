@@ -4,8 +4,8 @@ targetScope = 'subscription'
 //    PARAMETERS
 // ------------------
 
-@description('The ID of the subscription to deploy the spoke resources to.')
-param subscriptionId string
+// @description('The ID of the subscription to deploy the spoke resources to.')
+// param subscriptionId string
 
 @description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
@@ -340,7 +340,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
 
 resource vnetSpokeCreated 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
   name: vnetSpoke.outputs.name
-  scope: resourceGroup(subscriptionId, rgSpokeName)
+  scope: resourceGroup(rgSpokeName)
 
   resource spokeInfraSubnet 'subnets' existing = {
     name: spokeInfraSubnetName

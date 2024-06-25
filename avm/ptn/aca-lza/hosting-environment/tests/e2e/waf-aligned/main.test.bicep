@@ -1,7 +1,7 @@
 metadata name = 'Using all the available options in WAF aligned values.'
 metadata description = 'This instance deploys the module with the all the available parameters in WAF aligned values.'
 
-targetScope = 'managementGroup'
+targetScope = 'subscription'
 
 // ========== //
 // Parameters //
@@ -52,7 +52,6 @@ module hubdeployment 'deploy.hub.bicep' = {
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    subscriptionId: subscriptionId
     workloadName: namePrefix
     hubVirtualNetworkResourceId: hubdeployment.outputs.hubVNetId
     networkApplianceIpAddress: hubdeployment.outputs.networkApplianceIpAddress
@@ -79,7 +78,6 @@ module testDeployment '../../../main.bicep' = {
     applicationGatewayFqdn: 'acahello.demoapp.com'
     applicationGatewayCertificateKeyName: 'appgwcert'
     deployZoneRedundantResources: true
-    deployAzurePolicies: true
     exposeContainerAppsWith: 'applicationGateway'
     deploySampleApplication: true
     enableDdosProtection: true
