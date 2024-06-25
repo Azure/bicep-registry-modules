@@ -24,6 +24,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
@@ -230,7 +231,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           {
             name: 'ipconfig01'
             pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
+              name: 'pip-01'
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -295,7 +296,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01"
+                "name": "pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
@@ -1039,6 +1040,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
+    bypassPlatformSafetyChecksOnUserSchedule: true
     computerName: 'winvm1'
     dataDisks: [
       {
@@ -1166,6 +1168,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1334,6 +1337,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "backupVaultResourceGroup": {
       "value": "<backupVaultResourceGroup>"
     },
+    "bypassPlatformSafetyChecksOnUserSchedule": {
+      "value": true
+    },
     "computerName": {
       "value": "winvm1"
     },
@@ -1490,6 +1496,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "maintenanceConfigurationResourceId": {
+      "value": "<maintenanceConfigurationResourceId>"
     },
     "managedIdentities": {
       "value": {
@@ -3123,7 +3132,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionCustomScriptProtectedSetting`](#parameter-extensioncustomscriptprotectedsetting) | secureObject | An object that contains the extension specific protected settings. |
 | [`extensionDependencyAgentConfig`](#parameter-extensiondependencyagentconfig) | object | The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | object | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | secureObject | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
 | [`extensionDSCConfig`](#parameter-extensiondscconfig) | object | The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionGuestConfigurationExtension`](#parameter-extensionguestconfigurationextension) | object | The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
@@ -3132,10 +3141,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`galleryApplications`](#parameter-galleryapplications) | array | Specifies the gallery applications that should be made available to the VM/VMSS. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationresourceid) | string | The resource Id of a maintenance configuration for this VM. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
 | [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
 | [`patchAssessmentMode`](#parameter-patchassessmentmode) | string | VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours. |
@@ -3743,13 +3754,8 @@ The configuration for the [Dependency Agent] extension. Must at least contain th
 The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed.
 
 - Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      enabled: false
-  }
-  ```
+- Type: secureObject
+- Default: `{}`
 
 ### Parameter: `extensionDomainJoinPassword`
 
@@ -3845,6 +3851,14 @@ The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least c
   }
   ```
 
+### Parameter: `galleryApplications`
+
+Specifies the gallery applications that should be made available to the VM/VMSS.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `guestConfiguration`
 
 The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.
@@ -3914,6 +3928,14 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `maintenanceConfigurationResourceId`
+
+The resource Id of a maintenance configuration for this VM.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `managedIdentities`
 
@@ -4235,7 +4257,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.2.4` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.4.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
 
 ## Notes
 
