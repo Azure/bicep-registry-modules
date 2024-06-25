@@ -7922,7 +7922,7 @@
                             "value": [
                               {
                                 "name": "[parameters('vmNetworkInterfaceName')]",
-                                "ipconfigurations": [
+                                "ipConfigurations": [
                                   {
                                     "privateIPAllocationMethod": "Dynamic",
                                     "subnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"
@@ -14178,7 +14178,7 @@
                             "value": [
                               {
                                 "name": "[parameters('vmNetworkInterfaceName')]",
-                                "ipconfigurations": [
+                                "ipConfigurations": [
                                   {
                                     "privateIPAllocationMethod": "Dynamic",
                                     "subnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"

@@ -63,7 +63,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
     nicConfigurations: [
       {
         name: vmNetworkInterfaceName
-        ipconfigurations: [
+        ipConfigurations: [
           {
             privateIPAllocationMethod: 'Dynamic'
             subnetResourceId: vmSubnet.id
