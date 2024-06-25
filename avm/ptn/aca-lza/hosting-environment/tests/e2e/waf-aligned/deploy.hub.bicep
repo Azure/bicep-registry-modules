@@ -58,21 +58,15 @@ var bastionSubnetName = 'AzureBastionSubnet'
 var defaultSubnets = [
   {
     name: gatewaySubnetName
-    properties: {
-      addressPrefix: gatewaySubnetAddressPrefix
-    }
+    addressPrefix: gatewaySubnetAddressPrefix
   }
   {
     name: azureFirewallSubnetName
-    properties: {
-      addressPrefix: azureFirewallSubnetAddressPrefix
-    }
+    addressPrefix: azureFirewallSubnetAddressPrefix
   }
   {
     name: AzureFirewallManagementSubnetName
-    properties: {
-      addressPrefix: azureFirewallSubnetManagementAddressPrefix
-    }
+    addressPrefix: azureFirewallSubnetManagementAddressPrefix
   }
 ]
 
@@ -81,9 +75,7 @@ var vnetSubnets = enableBastion
   ? concat(defaultSubnets, [
       {
         name: bastionSubnetName
-        properties: {
-          addressPrefix: bastionSubnetAddressPrefix
-        }
+        addressPrefix: bastionSubnetAddressPrefix
       }
     ])
   : defaultSubnets
