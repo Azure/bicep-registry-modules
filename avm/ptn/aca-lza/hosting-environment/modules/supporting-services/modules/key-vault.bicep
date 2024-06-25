@@ -28,24 +28,6 @@ param keyVaultPrivateEndpointName string = ''
 @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
 param diagnosticWorkspaceId string = ''
 
-@description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource.')
-@allowed([
-  'allLogs'
-  'AuditEvent'
-  'AzurePolicyEvaluationDetails'
-])
-param diagnosticLogCategoriesToEnable array = [
-  'allLogs'
-]
-
-@description('Optional. The name of metrics that will be streamed.')
-@allowed([
-  'AllMetrics'
-])
-param diagnosticMetricsToEnable array = [
-  'AllMetrics'
-]
-
 @description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
 param diagnosticSettingsName string = ''
 
@@ -124,8 +106,14 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
       {
         name: diagnosticSettingsName
         workspaceResourceId: diagnosticWorkspaceId
-        logCategoriesAndGroups: diagnosticLogCategoriesToEnable
-        metricCategories: diagnosticMetricsToEnable
+        logCategoriesAndGroups: [
+          { category: 'allLogs' }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
       }
     ]
   }

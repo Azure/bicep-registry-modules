@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12864740668239791780"
+      "templateHash": "8257167378101499254"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -19707,7 +19707,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "15355975832788098275"
+              "templateHash": "11275152424525971217"
             }
           },
           "parameters": {
@@ -25648,7 +25648,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "17605444387583257066"
+                      "templateHash": "8273981602923627667"
                     }
                   },
                   "parameters": {
@@ -25702,32 +25702,6 @@
                       "defaultValue": "",
                       "metadata": {
                         "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                      }
-                    },
-                    "diagnosticLogCategoriesToEnable": {
-                      "type": "array",
-                      "defaultValue": [
-                        "allLogs"
-                      ],
-                      "allowedValues": [
-                        "allLogs",
-                        "AuditEvent",
-                        "AzurePolicyEvaluationDetails"
-                      ],
-                      "metadata": {
-                        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource."
-                      }
-                    },
-                    "diagnosticMetricsToEnable": {
-                      "type": "array",
-                      "defaultValue": [
-                        "AllMetrics"
-                      ],
-                      "allowedValues": [
-                        "AllMetrics"
-                      ],
-                      "metadata": {
-                        "description": "Optional. The name of metrics that will be streamed."
                       }
                     },
                     "diagnosticSettingsName": {
@@ -28690,8 +28664,16 @@
                               {
                                 "name": "[parameters('diagnosticSettingsName')]",
                                 "workspaceResourceId": "[parameters('diagnosticWorkspaceId')]",
-                                "logCategoriesAndGroups": "[parameters('diagnosticLogCategoriesToEnable')]",
-                                "metricCategories": "[parameters('diagnosticMetricsToEnable')]"
+                                "logCategoriesAndGroups": [
+                                  {
+                                    "category": "allLogs"
+                                  }
+                                ],
+                                "metricCategories": [
+                                  {
+                                    "category": "AllMetrics"
+                                  }
+                                ]
                               }
                             ]
                           }
