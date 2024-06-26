@@ -96,24 +96,15 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       integrationRuntimes: [
-        {
-          managedVirtualNetworkName: 'default'
-          name: 'AutoResolveIntegrationRuntime'
-          type: 'Managed'
-          typeProperties: {
-            computeProperties: {
-              location: 'AutoResolve'
-            }
-          }
-        }
+        // The AutoResolveIntegrationRuntime is the default integration runtime and does not need to be defined. It is not a virtual network managed integration runtime by default
         {
           name: 'TestRuntime'
           type: 'SelfHosted'
         }
         {
-          // Creating a second integration runtime with a custom name. The name can be anything, but it must be unique within the data factory. We will connect a linked service to this integration runtime.
+          // Creating a second integration runtime with a custom name and has a managed virtual network. The name can be anything, but it must be unique within the data factory. We will connect a linked service to this integration runtime.
           managedVirtualNetworkName: 'default'
-          name: 'IRmanaged2'
+          name: 'IRvnetManaged'
           type: 'Managed'
           typeProperties: {
             computeProperties: {
@@ -129,14 +120,14 @@ module testDeployment '../../../main.bicep' = [
           type: 'AzureSQLDatabase'
           typeProperties: {
             // An example of a connection string to an Azure SQL Database
-            connectionString: 'Server=tcp:myserver.${environment().suffixes.sqlServerHostname},1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;'
+            connectionString: 'integrated security=False;encrypt=True;connection timeout=30;data source=mydatabase.${environment().suffixes.sqlServerHostname};initial catalog=mydatabase;user id=myuser.${environment().suffixes.storageEndpoint}'
           }
         }
         {
-          // This will connect to the IRmanaged2 integration runtime as it is specifically defined
+          // This will connect to the IRvnetManaged integration runtime as it is specifically defined
           name: 'LakeStoreLinkedservice'
-          integrationRuntimeName: 'IRmanaged2'
-          linkedServiceDescription: 'This is a description for the linked service using the IRmanaged2 integration runtime.'
+          integrationRuntimeName: 'IRvnetManaged'
+          linkedServiceDescription: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
           parameters: {
             storageAccountName: {
               type: 'String'
@@ -145,7 +136,7 @@ module testDeployment '../../../main.bicep' = [
           }
           type: 'AzureBlobFS'
           typeProperties: {
-            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.windows.net\')}'
+            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.${environment().suffixes.azureDatalakeStoreFileSystem}\')}'
           }
         }
       ]

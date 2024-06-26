@@ -36,7 +36,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Max](#example-2-max)
 - [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -87,10 +87,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Max_
 
 <details>
 
@@ -131,22 +128,12 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     }
     integrationRuntimes: [
       {
-        managedVirtualNetworkName: 'default'
-        name: 'AutoResolveIntegrationRuntime'
-        type: 'Managed'
-        typeProperties: {
-          computeProperties: {
-            location: 'AutoResolve'
-          }
-        }
-      }
-      {
         name: 'TestRuntime'
         type: 'SelfHosted'
       }
       {
         managedVirtualNetworkName: 'default'
-        name: 'IRmanaged2'
+        name: 'IRvnetManaged'
         type: 'Managed'
         typeProperties: {
           computeProperties: {
@@ -164,8 +151,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       }
       {
-        integrationRuntimeName: 'IRmanaged2'
-        linkedServiceDescription: 'This is a description for the linked service using the IRmanaged2 integration runtime.'
+        integrationRuntimeName: 'IRvnetManaged'
+        linkedServiceDescription: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
         name: 'LakeStoreLinkedservice'
         parameters: {
           storageAccountName: {
@@ -175,7 +162,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
         type: 'AzureBlobFS'
         typeProperties: {
-          url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.windows.net\')}'
+          url: '<url>'
         }
       }
     ]
@@ -299,22 +286,12 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "integrationRuntimes": {
       "value": [
         {
-          "managedVirtualNetworkName": "default",
-          "name": "AutoResolveIntegrationRuntime",
-          "type": "Managed",
-          "typeProperties": {
-            "computeProperties": {
-              "location": "AutoResolve"
-            }
-          }
-        },
-        {
           "name": "TestRuntime",
           "type": "SelfHosted"
         },
         {
           "managedVirtualNetworkName": "default",
-          "name": "IRmanaged2",
+          "name": "IRvnetManaged",
           "type": "Managed",
           "typeProperties": {
             "computeProperties": {
@@ -334,8 +311,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           }
         },
         {
-          "integrationRuntimeName": "IRmanaged2",
-          "linkedServiceDescription": "This is a description for the linked service using the IRmanaged2 integration runtime.",
+          "integrationRuntimeName": "IRvnetManaged",
+          "linkedServiceDescription": "This is a description for the linked service using the IRvnetManaged integration runtime.",
           "name": "LakeStoreLinkedservice",
           "parameters": {
             "storageAccountName": {
@@ -345,7 +322,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           },
           "type": "AzureBlobFS",
           "typeProperties": {
-            "url": "@{concat(\"https://\", linkedService().storageAccountName, \".dfs.windows.net\")}"
+            "url": "<url>"
           }
         }
       ]
