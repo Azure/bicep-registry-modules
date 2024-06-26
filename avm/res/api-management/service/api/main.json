@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8244071930603774060"
+      "templateHash": "4127687153063244658"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
-    "apiName": {
+    "name": {
       "type": "string",
       "metadata": {
         "description": "Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number."
@@ -138,10 +138,10 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The name of the API management service logger."
+        "description": "Conditional. The name of the API management service logger. Required if using api/diagnostics."
       }
     },
-    "apiPath": {
+    "path": {
       "type": "string",
       "metadata": {
         "description": "Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API."
@@ -223,7 +223,7 @@
     "api": {
       "type": "Microsoft.ApiManagement/service/apis",
       "apiVersion": "2022-08-01",
-      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiName'))]",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "apiRevision": "[parameters('apiRevision')]",
         "apiRevisionDescription": "[parameters('apiRevisionDescription')]",
@@ -236,7 +236,7 @@
         "displayName": "[parameters('displayName')]",
         "format": "[if(not(empty(parameters('value'))), parameters('format'), null())]",
         "isCurrent": "[parameters('isCurrent')]",
-        "path": "[parameters('apiPath')]",
+        "path": "[parameters('path')]",
         "protocols": "[parameters('protocols')]",
         "serviceUrl": "[parameters('serviceUrl')]",
         "sourceApiId": "[parameters('sourceApiId')]",
@@ -268,7 +268,7 @@
             "value": "[parameters('apiManagementServiceName')]"
           },
           "apiName": {
-            "value": "[parameters('apiName')]"
+            "value": "[parameters('name')]"
           },
           "format": "[if(contains(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), createObject('value', coalesce(parameters('policies'), createArray())[copyIndex()].format), createObject('value', 'xml'))]",
           "value": {
@@ -382,12 +382,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "diagnosticName": "[if(not(empty(coalesce(parameters('diagnostics'), createArray())[copyIndex()].diagnosticName)), createObject('value', coalesce(parameters('diagnostics'), createArray())[copyIndex()].diagnosticName), createObject('value', format('{0}-diagnostics-{1}', parameters('apiName'), copyIndex())))]",
+          "name": {
+            "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'name')]"
+          },
           "apiManagementServiceName": {
             "value": "[parameters('apiManagementServiceName')]"
           },
           "apiName": {
-            "value": "[parameters('apiName')]"
+            "value": "[parameters('name')]"
           },
           "loggerName": {
             "value": "[parameters('loggerName')]"
@@ -427,7 +429,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "10754963300235270688"
+              "templateHash": "15990218139655805007"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -452,7 +454,7 @@
                 "description": "Required. The name of the logger."
               }
             },
-            "diagnosticName": {
+            "name": {
               "type": "string",
               "defaultValue": "local",
               "allowedValues": [
@@ -461,7 +463,7 @@
                 "local"
               ],
               "metadata": {
-                "description": "Optional. Type of diagnostic resource. Default is local."
+                "description": "Optional. Type of diagnostic resource."
               }
             },
             "alwaysLog": {
@@ -494,21 +496,21 @@
                 "W3C"
               ],
               "metadata": {
-                "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights."
+                "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights."
               }
             },
             "logClientIp": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Log the ClientIP. Default is false."
+                "description": "Optional. Log the ClientIP."
               }
             },
             "metrics": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Conditional. Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights."
+                "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
               }
             },
             "operationNameFormat": {
@@ -519,14 +521,14 @@
                 "URI"
               ],
               "metadata": {
-                "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights."
+                "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
               }
             },
             "samplingPercentage": {
               "type": "int",
               "defaultValue": 100,
               "metadata": {
-                "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100."
+                "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
               }
             },
             "verbosity": {
@@ -538,7 +540,7 @@
                 "verbose"
               ],
               "metadata": {
-                "description": "Optional. The verbosity level applied to traces emitted by trace policies. Default is \"error\"."
+                "description": "Optional. The verbosity level applied to traces emitted by trace policies."
               }
             }
           },
@@ -546,7 +548,7 @@
             {
               "type": "Microsoft.ApiManagement/service/apis/diagnostics",
               "apiVersion": "2022-08-01",
-              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('diagnosticName'))]",
+              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
               "properties": {
                 "alwaysLog": "[parameters('alwaysLog')]",
                 "backend": "[parameters('backend')]",
@@ -570,14 +572,14 @@
               "metadata": {
                 "description": "The resource ID of the API diagnostic."
               },
-              "value": "[resourceId('Microsoft.ApiManagement/service/apis/diagnostics', parameters('apiManagementServiceName'), parameters('apiName'), parameters('diagnosticName'))]"
+              "value": "[resourceId('Microsoft.ApiManagement/service/apis/diagnostics', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]"
             },
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The name of the API diagnostic."
               },
-              "value": "[parameters('diagnosticName')]"
+              "value": "[parameters('name')]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -600,14 +602,14 @@
       "metadata": {
         "description": "The name of the API management service API."
       },
-      "value": "[parameters('apiName')]"
+      "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the API management service API."
       },
-      "value": "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apiManagementServiceName'), parameters('apiName'))]"
+      "value": "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apiManagementServiceName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
