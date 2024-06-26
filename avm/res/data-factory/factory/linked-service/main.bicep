@@ -17,7 +17,7 @@ param typeProperties object = {}
 @description('Optional. The name of the Integration Runtime to use.')
 param integrationRuntimeName string
 
-@description('Optional. The description of the Integration Runtime.')
+@description('Optional. Use this to add parameters for a linked service connection string.')
 param customizedParameter object = {}
 
 @description('Optional. The description of the Integration Runtime.')

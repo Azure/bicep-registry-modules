@@ -166,7 +166,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       {
         integrationRuntimeName: 'IRmanaged2'
         linkedServiceDescription: 'This is a description for the linked service using the IRmanaged2 integration runtime.'
-        name: 'linkedservice'
+        name: 'LakeStoreLinkedservice'
         parameters: {
           storageAccountName: {
             defaultValue: 'madeupstorageaccname'
@@ -336,7 +336,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         {
           "integrationRuntimeName": "IRmanaged2",
           "linkedServiceDescription": "This is a description for the linked service using the IRmanaged2 integration runtime.",
-          "name": "linkedservice",
+          "name": "LakeStoreLinkedservice",
           "parameters": {
             "storageAccountName": {
               "defaultValue": "madeupstorageaccname",
