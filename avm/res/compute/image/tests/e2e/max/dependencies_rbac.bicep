@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 @description('Required. The resource ID of the created Managed Identity.')
 param managedIdentityResourceId string
@@ -8,6 +8,7 @@ param managedIdentityPrincipalId string
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscription().subscriptionId, 'Contributor', managedIdentityResourceId)
+  scope: resourceGroup()
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',

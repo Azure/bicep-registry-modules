@@ -53,7 +53,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 
 module roleAssignment 'dependencies_rbac.bicep' = {
   name: '${deployment().name}-MSI-roleAssignment'
-  scope: subscription()
+  scope: resourceGroup()
   params: {
     managedIdentityPrincipalId: managedIdentity.properties.principalId
     managedIdentityResourceId: managedIdentity.id
@@ -172,8 +172,24 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
+resource keyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault.name}-${location}-${managedIdentity.id}-KeyVault-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '21090545-7ca7-4776-b22c-e363652d74d2'
+    ) // Key Vault Reader
+    principalType: 'ServicePrincipal'
+  }
+  dependsOn: [
+    roleAssignment
+  ]
+}
+
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-RoleAssignment')
   scope: keyVault::key
   properties: {
     principalId: managedIdentity.properties.principalId
@@ -183,6 +199,9 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     ) // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
+  dependsOn: [
+    keyVaultPermissions
+  ]
 }
 
 resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
