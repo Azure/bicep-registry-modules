@@ -8,7 +8,7 @@ param dataFactoryName string
 @description('Required. The name of the Linked Service.')
 param name string
 
-@description('Required. The type of Linked Service.')
+@description('Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.')
 param typeName string
 
 @description('Optional. Used to add connection properties for your linked services.')
