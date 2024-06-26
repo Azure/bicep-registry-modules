@@ -3210,6 +3210,7 @@ Tags of the resource.
 | `resourceGroupName` | string | The resource group of the deployed storage account. |
 | `resourceId` | string | The resource ID of the deployed storage account. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `serviceEndpoints` | object | All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint. |
 
 ## Cross-referenced modules
 

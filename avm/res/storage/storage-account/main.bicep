@@ -633,6 +633,9 @@ output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalI
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
 
+@description('All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint.')
+output serviceEndpoints object = storageAccount.properties.primaryEndpoints
+
 // =============== //
 //   Definitions   //
 // =============== //
