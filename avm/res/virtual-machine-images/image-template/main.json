@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "16618215702378872010"
+      "version": "0.28.1.47646",
+      "templateHash": "11550984052424921620"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -552,7 +552,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.virtualmachineimages-imagetemplate.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",

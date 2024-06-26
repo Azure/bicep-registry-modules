@@ -152,6 +152,29 @@ function Invoke-ResourcePostRemoval {
             $null = Set-AzRecoveryServicesVaultProperty -VaultId $vaultId -SoftDeleteFeatureState $softDeleteStatus.TrimEnd('d')
             break
         }
+        'Microsoft.Databricks/workspaces' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            # If the `managedResourceGroupResourceId` parameter was set during deployment, we should look for that resource group and remove it as it is not automatically removed
+            # NOTE: This requires that the provided value uses the prefix `rg-` and suffix '-managed'
+            $managedResourceGroupName = "rg-$resourceGroupName-managed"
+            if (Get-AzResourceGroup -Name $managedResourceGroupName -ErrorAction 'SilentlyContinue') {
+                Write-Verbose ('[*] Removing managed resource group [{0}] of workspace [{1}]' -f $managedResourceGroupName, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Managed resource group [{0}]' -f $managedResourceGroupName), 'Remove')) {
+                    $null = Remove-AzResourceGroup -Name $managedResourceGroupName -Force
+                }
+            }
+            # If the `managedResourceGroupResourceId` parameter was NOT set during deployment, we should look for a resource group with the default name and remove it as it is not automatically removed
+            # NOTE: This requires that the default value uses the prefix 'rg-'
+            $defaultManagedResourceGroupName = "rg-$resourceName-managed"
+            if (Get-AzResourceGroup -Name $defaultManagedResourceGroupName -ErrorAction 'SilentlyContinue') {
+                Write-Verbose ('[*] Removing managed resource group [{0}] of workspace [{1}]' -f $defaultManagedResourceGroupName, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Managed resource group [{0}]' -f $defaultManagedResourceGroupName), 'Remove')) {
+                    $null = Remove-AzResourceGroup -Name $defaultManagedResourceGroupName -Force
+                }
+            }
+            break
+        }
         ### CODE LOCATION: Add custom post-removal operation here
     }
 }

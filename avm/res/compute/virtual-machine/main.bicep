@@ -103,6 +103,9 @@ param virtualMachineScaleSetResourceId string = ''
 @description('Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set.')
 param availabilitySetResourceId string = ''
 
+@description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
+param galleryApplications array = []
+
 @description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
 @allowed([
   0
@@ -128,6 +131,9 @@ param backupPolicyName string = 'DefaultPolicy'
 @description('Optional. The configuration for auto-shutdown.')
 param autoShutdownConfig object = {}
 
+@description('Optional. The resource Id of a maintenance configuration for this VM.')
+param maintenanceConfigurationResourceId string = ''
+
 // Child resources
 @description('Optional. Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine.')
 param allowExtensionOperations bool = true
@@ -137,9 +143,8 @@ param allowExtensionOperations bool = true
 param extensionDomainJoinPassword string = ''
 
 @description('Optional. The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDomainJoinConfig object = {
-  enabled: false
-}
+@secure()
+param extensionDomainJoinConfig object = {}
 
 @description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000".')
 param extensionAadJoinConfig object = {
@@ -305,10 +310,12 @@ var linuxConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
-        automaticByPlatformSettings: {
-          bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
-          rebootSetting: rebootSetting
-        }
+        automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
+          ? {
+              bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+              rebootSetting: rebootSetting
+            }
+          : null
       }
     : null
 }
@@ -320,10 +327,12 @@ var windowsConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
-        automaticByPlatformSettings: {
-          bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
-          rebootSetting: rebootSetting
-        }
+        automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
+          ? {
+              bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+              rebootSetting: rebootSetting
+            }
+          : null
       }
     : null
   timeZone: empty(timeZone) ? null : timeZone
@@ -425,24 +434,23 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 module vm_nic 'modules/nic-configuration.bicep' = [
   for (nicConfiguration, index) in nicConfigurations: {
@@ -519,7 +527,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           caching: dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             storageAccountType: dataDisk.managedDisk.storageAccountType
-            diskEncryptionSet: dataDisk.?managedDisk.?diskEncryptionSet ?? null
+            diskEncryptionSet: {
+              id: dataDisk.managedDisk.?diskEncryptionSetResourceId
+            }
           }
         }
       ]
@@ -560,6 +570,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           : null
       }
     }
+    applicationProfile: !empty(galleryApplications)
+      ? {
+          galleryApplications: galleryApplications
+        }
+      : null
     availabilitySet: !empty(availabilitySetResourceId)
       ? {
           id: availabilitySetResourceId
@@ -595,470 +610,458 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   ]
 }
 
-resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' =
-  if (!empty(configurationProfile)) {
-    name: 'default'
-    properties: {
-      configurationProfile: configurationProfile
-    }
-    scope: vm
+resource vm_configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(maintenanceConfigurationResourceId)) {
+  name: '${vm.name}assignment'
+  location: location
+  properties: {
+    maintenanceConfigurationId: maintenanceConfigurationResourceId
+    resourceId: vm.id
   }
+  scope: vm
+}
 
-resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' =
-  if (!empty(autoShutdownConfig)) {
-    name: 'shutdown-computevm-${vm.name}'
+resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' = if (!empty(configurationProfile)) {
+  name: 'default'
+  properties: {
+    configurationProfile: configurationProfile
+  }
+  scope: vm
+}
+
+resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' = if (!empty(autoShutdownConfig)) {
+  name: 'shutdown-computevm-${vm.name}'
+  location: location
+  properties: {
+    status: contains(autoShutdownConfig, 'status') ? autoShutdownConfig.status : 'Disabled'
+    targetResourceId: vm.id
+    taskType: 'ComputeVmShutdownTask'
+    dailyRecurrence: {
+      time: contains(autoShutdownConfig, 'dailyRecurrenceTime') ? autoShutdownConfig.dailyRecurrenceTime : '19:00'
+    }
+    timeZoneId: contains(autoShutdownConfig, 'timeZone') ? autoShutdownConfig.timeZone : 'UTC'
+    notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
+      ? {
+          status: contains(autoShutdownConfig, 'notificationStatus')
+            ? autoShutdownConfig.notificationStatus
+            : 'Disabled'
+          emailRecipient: contains(autoShutdownConfig, 'notificationEmail') ? autoShutdownConfig.notificationEmail : ''
+          notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
+            ? autoShutdownConfig.notificationLocale
+            : 'en'
+          webhookUrl: contains(autoShutdownConfig, 'notificationWebhookUrl')
+            ? autoShutdownConfig.notificationWebhookUrl
+            : ''
+          timeInMinutes: contains(autoShutdownConfig, 'notificationTimeInMinutes')
+            ? autoShutdownConfig.notificationTimeInMinutes
+            : 30
+        }
+      : null
+  }
+}
+
+module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
+  params: {
+    virtualMachineName: vm.name
+    name: 'AADLogin'
     location: location
-    properties: {
-      status: contains(autoShutdownConfig, 'status') ? autoShutdownConfig.status : 'Disabled'
-      targetResourceId: vm.id
-      taskType: 'ComputeVmShutdownTask'
-      dailyRecurrence: {
-        time: contains(autoShutdownConfig, 'time') ? autoShutdownConfig.dailyRecurrenceTime : '19:00'
-      }
-      timeZoneId: contains(autoShutdownConfig, 'timeZone') ? autoShutdownConfig.timeZone : 'UTC'
-      notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
-        ? {
-            status: contains(autoShutdownConfig, 'notificationStatus')
-              ? autoShutdownConfig.notificationStatus
-              : 'Disabled'
-            emailRecipient: contains(autoShutdownConfig, 'notificationEmail')
-              ? autoShutdownConfig.notificationEmail
-              : ''
-            notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
-              ? autoShutdownConfig.notificationLocale
-              : 'en'
-            webhookUrl: contains(autoShutdownConfig, 'notificationWebhookUrl')
-              ? autoShutdownConfig.notificationWebhookUrl
-              : ''
-            timeInMinutes: contains(autoShutdownConfig, 'notificationTimeInMinutes')
-              ? autoShutdownConfig.notificationTimeInMinutes
-              : 30
-          }
-        : null
+    publisher: 'Microsoft.Azure.ActiveDirectory'
+    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
+    typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion')
+      ? extensionAadJoinConfig.typeHandlerVersion
+      : (osType == 'Windows' ? '2.0' : '1.0')
+    autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion')
+      ? extensionAadJoinConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade')
+      ? extensionAadJoinConfig.enableAutomaticUpgrade
+      : false
+    settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
+    supressFailures: extensionAadJoinConfig.?supressFailures ?? false
+    tags: extensionAadJoinConfig.?tags ?? tags
+  }
+}
+
+module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDomainJoinConfig, 'enabled') && extensionDomainJoinConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
+  params: {
+    virtualMachineName: vm.name
+    name: 'DomainJoin'
+    location: location
+    publisher: 'Microsoft.Compute'
+    type: 'JsonADDomainExtension'
+    typeHandlerVersion: contains(extensionDomainJoinConfig, 'typeHandlerVersion')
+      ? extensionDomainJoinConfig.typeHandlerVersion
+      : '1.3'
+    autoUpgradeMinorVersion: contains(extensionDomainJoinConfig, 'autoUpgradeMinorVersion')
+      ? extensionDomainJoinConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionDomainJoinConfig, 'enableAutomaticUpgrade')
+      ? extensionDomainJoinConfig.enableAutomaticUpgrade
+      : false
+    settings: extensionDomainJoinConfig.settings
+    supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
+    tags: extensionDomainJoinConfig.?tags ?? tags
+    protectedSettings: {
+      Password: extensionDomainJoinPassword
     }
   }
+  dependsOn: [
+    vm_aadJoinExtension
+  ]
+}
 
-module vm_aadJoinExtension 'extension/main.bicep' =
-  if (extensionAadJoinConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
-    params: {
-      virtualMachineName: vm.name
-      name: 'AADLogin'
-      location: location
-      publisher: 'Microsoft.Azure.ActiveDirectory'
-      type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
-      typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion')
-        ? extensionAadJoinConfig.typeHandlerVersion
-        : (osType == 'Windows' ? '2.0' : '1.0')
-      autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion')
-        ? extensionAadJoinConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade')
-        ? extensionAadJoinConfig.enableAutomaticUpgrade
-        : false
-      settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
-      supressFailures: extensionAadJoinConfig.?supressFailures ?? false
-      tags: extensionAadJoinConfig.?tags ?? tags
-    }
+module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAntiMalwareConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
+  params: {
+    virtualMachineName: vm.name
+    name: 'MicrosoftAntiMalware'
+    location: location
+    publisher: 'Microsoft.Azure.Security'
+    type: 'IaaSAntimalware'
+    typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion')
+      ? extensionAntiMalwareConfig.typeHandlerVersion
+      : '1.3'
+    autoUpgradeMinorVersion: contains(extensionAntiMalwareConfig, 'autoUpgradeMinorVersion')
+      ? extensionAntiMalwareConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade')
+      ? extensionAntiMalwareConfig.enableAutomaticUpgrade
+      : false
+    settings: extensionAntiMalwareConfig.settings
+    supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
+    tags: extensionAntiMalwareConfig.?tags ?? tags
   }
+  dependsOn: [
+    vm_domainJoinExtension
+  ]
+}
 
-module vm_domainJoinExtension 'extension/main.bicep' =
-  if (extensionDomainJoinConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
-    params: {
-      virtualMachineName: vm.name
-      name: 'DomainJoin'
-      location: location
-      publisher: 'Microsoft.Compute'
-      type: 'JsonADDomainExtension'
-      typeHandlerVersion: contains(extensionDomainJoinConfig, 'typeHandlerVersion')
-        ? extensionDomainJoinConfig.typeHandlerVersion
-        : '1.3'
-      autoUpgradeMinorVersion: contains(extensionDomainJoinConfig, 'autoUpgradeMinorVersion')
-        ? extensionDomainJoinConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionDomainJoinConfig, 'enableAutomaticUpgrade')
-        ? extensionDomainJoinConfig.enableAutomaticUpgrade
-        : false
-      settings: extensionDomainJoinConfig.settings
-      supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
-      tags: extensionDomainJoinConfig.?tags ?? tags
-      protectedSettings: {
-        Password: extensionDomainJoinPassword
-      }
-    }
-    dependsOn: [
-      vm_aadJoinExtension
-    ]
-  }
-
-module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
-  if (extensionAntiMalwareConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
-    params: {
-      virtualMachineName: vm.name
-      name: 'MicrosoftAntiMalware'
-      location: location
-      publisher: 'Microsoft.Azure.Security'
-      type: 'IaaSAntimalware'
-      typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion')
-        ? extensionAntiMalwareConfig.typeHandlerVersion
-        : '1.3'
-      autoUpgradeMinorVersion: contains(extensionAntiMalwareConfig, 'autoUpgradeMinorVersion')
-        ? extensionAntiMalwareConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade')
-        ? extensionAntiMalwareConfig.enableAutomaticUpgrade
-        : false
-      settings: extensionAntiMalwareConfig.settings
-      supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
-      tags: extensionAntiMalwareConfig.?tags ?? tags
-    }
-    dependsOn: [
-      vm_domainJoinExtension
-    ]
-  }
-
-resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
-  if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
-    name: last(split(
+resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
+  name: last(split(
+    (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+      ? extensionMonitoringAgentConfig.monitoringWorkspaceId
+      : 'law'),
+    '/'
+  ))!
+  scope: az.resourceGroup(
+    split(
       (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
         ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : 'law'),
+        : '//'),
       '/'
-    ))!
-    scope: az.resourceGroup(
-      split(
-        (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-          : '//'),
-        '/'
-      )[2],
-      split(
-        (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-          : '////'),
-        '/'
-      )[4]
-    )
-  }
+    )[2],
+    split(
+      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
+        : '////'),
+      '/'
+    )[4]
+  )
+}
 
-module vm_azureMonitorAgentExtension 'extension/main.bicep' =
-  if (extensionMonitoringAgentConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
-    params: {
-      virtualMachineName: vm.name
-      name: 'AzureMonitorAgent'
-      location: location
-      publisher: 'Microsoft.Azure.Monitor'
-      type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-      typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
-      autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
-      enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
-      settings: {
-        workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? vm_logAnalyticsWorkspace.properties.customerId
-          : ''
-        GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
-      }
-      supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
-      tags: extensionMonitoringAgentConfig.?tags ?? tags
-      protectedSettings: {
-        workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey
-          : ''
-      }
-    }
-    dependsOn: [
-      vm_microsoftAntiMalwareExtension
-    ]
-  }
-
-module vm_dependencyAgentExtension 'extension/main.bicep' =
-  if (extensionDependencyAgentConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
-    params: {
-      virtualMachineName: vm.name
-      name: 'DependencyAgent'
-      location: location
-      publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-      type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-      typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
-        ? extensionDependencyAgentConfig.typeHandlerVersion
-        : '9.10'
-      autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
-        ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
-        ? extensionDependencyAgentConfig.enableAutomaticUpgrade
-        : true
-      settings: {
-        enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA')
-          ? extensionDependencyAgentConfig.enableAMA
-          : true
-      }
-      supressFailures: extensionDependencyAgentConfig.?supressFailures ?? false
-      tags: extensionDependencyAgentConfig.?tags ?? tags
-    }
-    dependsOn: [
-      vm_azureMonitorAgentExtension
-    ]
-  }
-
-module vm_networkWatcherAgentExtension 'extension/main.bicep' =
-  if (extensionNetworkWatcherAgentConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
-    params: {
-      virtualMachineName: vm.name
-      name: 'NetworkWatcherAgent'
-      location: location
-      publisher: 'Microsoft.Azure.NetworkWatcher'
-      type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
-      typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion')
-        ? extensionNetworkWatcherAgentConfig.typeHandlerVersion
-        : '1.4'
-      autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion')
-        ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
-        ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
-        : false
-      supressFailures: extensionNetworkWatcherAgentConfig.?supressFailures ?? false
-      tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
-    }
-    dependsOn: [
-      vm_dependencyAgentExtension
-    ]
-  }
-
-module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
-  if (extensionDSCConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
-    params: {
-      virtualMachineName: vm.name
-      name: 'DesiredStateConfiguration'
-      location: location
-      publisher: 'Microsoft.Powershell'
-      type: 'DSC'
-      typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion')
-        ? extensionDSCConfig.typeHandlerVersion
-        : '2.77'
-      autoUpgradeMinorVersion: contains(extensionDSCConfig, 'autoUpgradeMinorVersion')
-        ? extensionDSCConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionDSCConfig, 'enableAutomaticUpgrade')
-        ? extensionDSCConfig.enableAutomaticUpgrade
-        : false
-      settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
-      supressFailures: extensionDSCConfig.?supressFailures ?? false
-      tags: extensionDSCConfig.?tags ?? tags
-      protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
-    }
-    dependsOn: [
-      vm_networkWatcherAgentExtension
-    ]
-  }
-
-module vm_customScriptExtension 'extension/main.bicep' =
-  if (extensionCustomScriptConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
-    params: {
-      virtualMachineName: vm.name
-      name: 'CustomScriptExtension'
-      location: location
-      publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
-      type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
-      typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion')
-        ? extensionCustomScriptConfig.typeHandlerVersion
-        : (osType == 'Windows' ? '1.10' : '2.1')
-      autoUpgradeMinorVersion: contains(extensionCustomScriptConfig, 'autoUpgradeMinorVersion')
-        ? extensionCustomScriptConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionCustomScriptConfig, 'enableAutomaticUpgrade')
-        ? extensionCustomScriptConfig.enableAutomaticUpgrade
-        : false
-      settings: {
-        fileUris: [
-          for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
-            ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
-            : fileData.uri
-        ]
-      }
-      supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
-      tags: extensionCustomScriptConfig.?tags ?? tags
-      protectedSettings: extensionCustomScriptProtectedSetting
-    }
-    dependsOn: [
-      vm_desiredStateConfigurationExtension
-    ]
-  }
-
-module vm_azureDiskEncryptionExtension 'extension/main.bicep' =
-  if (extensionAzureDiskEncryptionConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
-    params: {
-      virtualMachineName: vm.name
-      name: 'AzureDiskEncryption'
-      location: location
-      publisher: 'Microsoft.Azure.Security'
-      type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
-      typeHandlerVersion: contains(extensionAzureDiskEncryptionConfig, 'typeHandlerVersion')
-        ? extensionAzureDiskEncryptionConfig.typeHandlerVersion
-        : (osType == 'Windows' ? '2.2' : '1.1')
-      autoUpgradeMinorVersion: contains(extensionAzureDiskEncryptionConfig, 'autoUpgradeMinorVersion')
-        ? extensionAzureDiskEncryptionConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionAzureDiskEncryptionConfig, 'enableAutomaticUpgrade')
-        ? extensionAzureDiskEncryptionConfig.enableAutomaticUpgrade
-        : false
-      forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag')
-        ? extensionAzureDiskEncryptionConfig.forceUpdateTag
-        : '1.0'
-      settings: extensionAzureDiskEncryptionConfig.?settings ?? {}
-      supressFailures: extensionAzureDiskEncryptionConfig.?supressFailures ?? false
-      tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
-    }
-    dependsOn: [
-      vm_customScriptExtension
-    ]
-  }
-
-module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' =
-  if (extensionNvidiaGpuDriverWindows.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
-    params: {
-      virtualMachineName: vm.name
-      name: 'NvidiaGpuDriverWindows'
-      location: location
-      publisher: 'Microsoft.HpcCompute'
-      type: 'NvidiaGpuDriverWindows'
-      typeHandlerVersion: contains(extensionNvidiaGpuDriverWindows, 'typeHandlerVersion')
-        ? extensionNvidiaGpuDriverWindows.typeHandlerVersion
-        : '1.4'
-      autoUpgradeMinorVersion: contains(extensionNvidiaGpuDriverWindows, 'autoUpgradeMinorVersion')
-        ? extensionNvidiaGpuDriverWindows.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionNvidiaGpuDriverWindows, 'enableAutomaticUpgrade')
-        ? extensionNvidiaGpuDriverWindows.enableAutomaticUpgrade
-        : false
-      supressFailures: extensionNvidiaGpuDriverWindows.?supressFailures ?? false
-      tags: extensionNvidiaGpuDriverWindows.?tags ?? tags
-    }
-    dependsOn: [
-      vm_azureDiskEncryptionExtension
-    ]
-  }
-
-module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
-  if (extensionHostPoolRegistration.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
-    params: {
-      virtualMachineName: vm.name
-      name: 'HostPoolRegistration'
-      location: location
-      publisher: 'Microsoft.PowerShell'
-      type: 'DSC'
-      typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion')
-        ? extensionHostPoolRegistration.typeHandlerVersion
-        : '2.77'
-      autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion')
-        ? extensionHostPoolRegistration.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionHostPoolRegistration, 'enableAutomaticUpgrade')
-        ? extensionHostPoolRegistration.enableAutomaticUpgrade
-        : false
-      settings: {
-        modulesUrl: extensionHostPoolRegistration.modulesUrl
-        configurationFunction: extensionHostPoolRegistration.configurationFunction
-        properties: {
-          hostPoolName: extensionHostPoolRegistration.hostPoolName
-          registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
-          aadJoin: true
-        }
-        supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
-      }
-      tags: extensionHostPoolRegistration.?tags ?? tags
-    }
-    dependsOn: [
-      vm_nvidiaGpuDriverWindowsExtension
-    ]
-  }
-
-module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
-  if (extensionGuestConfigurationExtension.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
-    params: {
-      virtualMachineName: vm.name
-      name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
-      location: location
-      publisher: 'Microsoft.GuestConfiguration'
-      type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
-      typeHandlerVersion: contains(extensionGuestConfigurationExtension, 'typeHandlerVersion')
-        ? extensionGuestConfigurationExtension.typeHandlerVersion
-        : (osType == 'Windows' ? '1.0' : '1.0')
-      autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion')
-        ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade')
-        ? extensionGuestConfigurationExtension.enableAutomaticUpgrade
-        : true
-      forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag')
-        ? extensionGuestConfigurationExtension.forceUpdateTag
-        : '1.0'
-      settings: contains(extensionGuestConfigurationExtension, 'settings')
-        ? extensionGuestConfigurationExtension.settings
-        : {}
-      supressFailures: extensionGuestConfigurationExtension.?supressFailures ?? false
-      protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
-      tags: extensionGuestConfigurationExtension.?tags ?? tags
-    }
-    dependsOn: [
-      vm_hostPoolRegistrationExtension
-    ]
-  }
-
-resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' =
-  if (!empty(guestConfiguration)) {
-    name: 'AzureWindowsBaseline'
-    scope: vm
-    dependsOn: [
-      vm_azureGuestConfigurationExtension
-    ]
+module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
+  params: {
+    virtualMachineName: vm.name
+    name: 'AzureMonitorAgent'
     location: location
-    properties: {
-      guestConfiguration: guestConfiguration
+    publisher: 'Microsoft.Azure.Monitor'
+    type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
+    typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
+    autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
+    enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+    settings: {
+      workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+        ? vm_logAnalyticsWorkspace.properties.customerId
+        : ''
+      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
+    }
+    supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
+    tags: extensionMonitoringAgentConfig.?tags ?? tags
+    protectedSettings: {
+      workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+        ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey
+        : ''
     }
   }
+  dependsOn: [
+    vm_microsoftAntiMalwareExtension
+  ]
+}
 
-module vm_backup 'modules/protected-item.bicep' =
-  if (!empty(backupVaultName)) {
-    name: '${uniqueString(deployment().name, location)}-VM-Backup'
-    params: {
-      name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
-      location: location
-      policyId: az.resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', backupVaultName, backupPolicyName)
-      protectedItemType: 'Microsoft.Compute/virtualMachines'
-      protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
-      recoveryVaultName: backupVaultName
-      sourceResourceId: vm.id
+module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
+  params: {
+    virtualMachineName: vm.name
+    name: 'DependencyAgent'
+    location: location
+    publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+    type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
+    typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
+      ? extensionDependencyAgentConfig.typeHandlerVersion
+      : '9.10'
+    autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
+      ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
+      ? extensionDependencyAgentConfig.enableAutomaticUpgrade
+      : true
+    settings: {
+      enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA') ? extensionDependencyAgentConfig.enableAMA : true
     }
-    scope: az.resourceGroup(backupVaultResourceGroup)
-    dependsOn: [
-      vm_azureGuestConfigurationExtension
-    ]
+    supressFailures: extensionDependencyAgentConfig.?supressFailures ?? false
+    tags: extensionDependencyAgentConfig.?tags ?? tags
   }
+  dependsOn: [
+    vm_azureMonitorAgentExtension
+  ]
+}
 
-resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: vm
+module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNetworkWatcherAgentConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
+  params: {
+    virtualMachineName: vm.name
+    name: 'NetworkWatcherAgent'
+    location: location
+    publisher: 'Microsoft.Azure.NetworkWatcher'
+    type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
+    typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion')
+      ? extensionNetworkWatcherAgentConfig.typeHandlerVersion
+      : '1.4'
+    autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion')
+      ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
+      ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
+      : false
+    supressFailures: extensionNetworkWatcherAgentConfig.?supressFailures ?? false
+    tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
   }
+  dependsOn: [
+    vm_dependencyAgentExtension
+  ]
+}
+
+module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extensionDSCConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
+  params: {
+    virtualMachineName: vm.name
+    name: 'DesiredStateConfiguration'
+    location: location
+    publisher: 'Microsoft.Powershell'
+    type: 'DSC'
+    typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion')
+      ? extensionDSCConfig.typeHandlerVersion
+      : '2.77'
+    autoUpgradeMinorVersion: contains(extensionDSCConfig, 'autoUpgradeMinorVersion')
+      ? extensionDSCConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionDSCConfig, 'enableAutomaticUpgrade')
+      ? extensionDSCConfig.enableAutomaticUpgrade
+      : false
+    settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
+    supressFailures: extensionDSCConfig.?supressFailures ?? false
+    tags: extensionDSCConfig.?tags ?? tags
+    protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
+  }
+  dependsOn: [
+    vm_networkWatcherAgentExtension
+  ]
+}
+
+module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScriptConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
+  params: {
+    virtualMachineName: vm.name
+    name: 'CustomScriptExtension'
+    location: location
+    publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
+    type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
+    typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion')
+      ? extensionCustomScriptConfig.typeHandlerVersion
+      : (osType == 'Windows' ? '1.10' : '2.1')
+    autoUpgradeMinorVersion: contains(extensionCustomScriptConfig, 'autoUpgradeMinorVersion')
+      ? extensionCustomScriptConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionCustomScriptConfig, 'enableAutomaticUpgrade')
+      ? extensionCustomScriptConfig.enableAutomaticUpgrade
+      : false
+    settings: {
+      fileUris: [
+        for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
+          ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
+          : fileData.uri
+      ]
+    }
+    supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
+    tags: extensionCustomScriptConfig.?tags ?? tags
+    protectedSettings: extensionCustomScriptProtectedSetting
+  }
+  dependsOn: [
+    vm_desiredStateConfigurationExtension
+  ]
+}
+
+module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
+  params: {
+    virtualMachineName: vm.name
+    name: 'AzureDiskEncryption'
+    location: location
+    publisher: 'Microsoft.Azure.Security'
+    type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
+    typeHandlerVersion: contains(extensionAzureDiskEncryptionConfig, 'typeHandlerVersion')
+      ? extensionAzureDiskEncryptionConfig.typeHandlerVersion
+      : (osType == 'Windows' ? '2.2' : '1.1')
+    autoUpgradeMinorVersion: contains(extensionAzureDiskEncryptionConfig, 'autoUpgradeMinorVersion')
+      ? extensionAzureDiskEncryptionConfig.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionAzureDiskEncryptionConfig, 'enableAutomaticUpgrade')
+      ? extensionAzureDiskEncryptionConfig.enableAutomaticUpgrade
+      : false
+    forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag')
+      ? extensionAzureDiskEncryptionConfig.forceUpdateTag
+      : '1.0'
+    settings: extensionAzureDiskEncryptionConfig.?settings ?? {}
+    supressFailures: extensionAzureDiskEncryptionConfig.?supressFailures ?? false
+    tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
+  }
+  dependsOn: [
+    vm_customScriptExtension
+  ]
+}
+
+module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extensionNvidiaGpuDriverWindows.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
+  params: {
+    virtualMachineName: vm.name
+    name: 'NvidiaGpuDriverWindows'
+    location: location
+    publisher: 'Microsoft.HpcCompute'
+    type: 'NvidiaGpuDriverWindows'
+    typeHandlerVersion: contains(extensionNvidiaGpuDriverWindows, 'typeHandlerVersion')
+      ? extensionNvidiaGpuDriverWindows.typeHandlerVersion
+      : '1.4'
+    autoUpgradeMinorVersion: contains(extensionNvidiaGpuDriverWindows, 'autoUpgradeMinorVersion')
+      ? extensionNvidiaGpuDriverWindows.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionNvidiaGpuDriverWindows, 'enableAutomaticUpgrade')
+      ? extensionNvidiaGpuDriverWindows.enableAutomaticUpgrade
+      : false
+    supressFailures: extensionNvidiaGpuDriverWindows.?supressFailures ?? false
+    tags: extensionNvidiaGpuDriverWindows.?tags ?? tags
+  }
+  dependsOn: [
+    vm_azureDiskEncryptionExtension
+  ]
+}
+
+module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
+  params: {
+    virtualMachineName: vm.name
+    name: 'HostPoolRegistration'
+    location: location
+    publisher: 'Microsoft.PowerShell'
+    type: 'DSC'
+    typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion')
+      ? extensionHostPoolRegistration.typeHandlerVersion
+      : '2.77'
+    autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion')
+      ? extensionHostPoolRegistration.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionHostPoolRegistration, 'enableAutomaticUpgrade')
+      ? extensionHostPoolRegistration.enableAutomaticUpgrade
+      : false
+    settings: {
+      modulesUrl: extensionHostPoolRegistration.modulesUrl
+      configurationFunction: extensionHostPoolRegistration.configurationFunction
+      properties: {
+        hostPoolName: extensionHostPoolRegistration.hostPoolName
+        registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
+        aadJoin: true
+      }
+      supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
+    }
+    tags: extensionHostPoolRegistration.?tags ?? tags
+  }
+  dependsOn: [
+    vm_nvidiaGpuDriverWindowsExtension
+  ]
+}
+
+module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensionGuestConfigurationExtension.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
+  params: {
+    virtualMachineName: vm.name
+    name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
+    location: location
+    publisher: 'Microsoft.GuestConfiguration'
+    type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
+    typeHandlerVersion: contains(extensionGuestConfigurationExtension, 'typeHandlerVersion')
+      ? extensionGuestConfigurationExtension.typeHandlerVersion
+      : (osType == 'Windows' ? '1.0' : '1.0')
+    autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion')
+      ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion
+      : true
+    enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade')
+      ? extensionGuestConfigurationExtension.enableAutomaticUpgrade
+      : true
+    forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag')
+      ? extensionGuestConfigurationExtension.forceUpdateTag
+      : '1.0'
+    settings: contains(extensionGuestConfigurationExtension, 'settings')
+      ? extensionGuestConfigurationExtension.settings
+      : {}
+    supressFailures: extensionGuestConfigurationExtension.?supressFailures ?? false
+    protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
+    tags: extensionGuestConfigurationExtension.?tags ?? tags
+  }
+  dependsOn: [
+    vm_hostPoolRegistrationExtension
+  ]
+}
+
+resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
+  name: 'AzureWindowsBaseline'
+  scope: vm
+  dependsOn: [
+    vm_azureGuestConfigurationExtension
+  ]
+  location: location
+  properties: {
+    guestConfiguration: guestConfiguration
+  }
+}
+
+module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
+  name: '${uniqueString(deployment().name, location)}-VM-Backup'
+  params: {
+    name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
+    location: location
+    policyId: az.resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', backupVaultName, backupPolicyName)
+    protectedItemType: 'Microsoft.Compute/virtualMachines'
+    protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
+    recoveryVaultName: backupVaultName
+    sourceResourceId: vm.id
+  }
+  scope: az.resourceGroup(backupVaultResourceGroup)
+  dependsOn: [
+    vm_azureGuestConfigurationExtension
+  ]
+}
+
+resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: vm
+}
 
 resource vm_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -1143,7 +1146,6 @@ type osDiskType = {
   name: string?
 
   @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  @maxValue(1023)
   diskSizeGB: int
 
   @description('Optional. Specifies how the virtual machine should be created.')
@@ -1180,7 +1182,6 @@ type dataDisksType = {
   lun: int?
 
   @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  @maxValue(1023)
   diskSizeGB: int
 
   @description('Optional. Specifies how the virtual machine should be created.')
