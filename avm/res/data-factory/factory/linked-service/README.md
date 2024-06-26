@@ -22,7 +22,6 @@ This module deploys a Data Factory Linked Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`IRname`](#parameter-irname) | string | The name of the Integration Runtime to use. |
 | [`name`](#parameter-name) | string | The name of the Linked Service. |
 | [`typeName`](#parameter-typename) | string | The type of Linked Service. |
 
@@ -37,15 +36,9 @@ This module deploys a Data Factory Linked Service.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customizedParameter`](#parameter-customizedparameter) | object | The description of the Integration Runtime. |
+| [`integrationRuntimeName`](#parameter-integrationruntimename) | string | The name of the Integration Runtime to use. |
 | [`linkedServiceDescription`](#parameter-linkedservicedescription) | string | The description of the Integration Runtime. |
 | [`typeProperties`](#parameter-typeproperties) | object | Used to add connection properties for your linked services. |
-
-### Parameter: `IRname`
-
-The name of the Integration Runtime to use.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `name`
 
@@ -75,6 +68,13 @@ The description of the Integration Runtime.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `integrationRuntimeName`
+
+The name of the Integration Runtime to use.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `linkedServiceDescription`
 

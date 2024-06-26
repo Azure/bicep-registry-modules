@@ -243,7 +243,9 @@ module dataFactory_linkedServices 'linked-service/main.bicep' = [
       name: linkedService.name
       typeName: linkedService.type
       typeProperties: contains(linkedService, 'typeProperties') ? linkedService.typeProperties : {}
-      IRname: contains(linkedService, 'IRName') ? linkedService.IRName : 'none'
+      integrationRuntimeName: contains(linkedService, 'integrationRuntimeName')
+        ? linkedService.integrationRuntimeName
+        : 'none'
       customizedParameter: contains(linkedService, 'parameters') ? linkedService.parameters : {}
       linkedServiceDescription: linkedService.?linkedServiceDescription ?? 'Linked Service created by avm-res-datafactory-factories'
     }

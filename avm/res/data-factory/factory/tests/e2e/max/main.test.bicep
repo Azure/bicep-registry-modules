@@ -135,7 +135,7 @@ module testDeployment '../../../main.bicep' = [
         {
           // This will connect to the IRmanaged2 integration runtime as it is specifically defined
           name: 'linkedservice'
-          IRName: 'IRmanaged2'
+          integrationRuntimeName: 'IRmanaged2'
           linkedServiceDescription: 'This is a description for the linked service using the IRmanaged2 integration runtime.'
           parameters: {
             storageAccountName: {

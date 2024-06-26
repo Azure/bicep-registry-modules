@@ -14,8 +14,8 @@ param typeName string
 @description('Optional. Used to add connection properties for your linked services.')
 param typeProperties object = {}
 
-@description('Required. The name of the Integration Runtime to use.')
-param IRname string
+@description('Optional. The name of the Integration Runtime to use.')
+param integrationRuntimeName string
 
 @description('Optional. The description of the Integration Runtime.')
 param customizedParameter object = {}
@@ -34,11 +34,11 @@ resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-0
   properties: {
     annotations: []
     description: linkedServiceDescription
-    connectVia: contains(IRname, 'none')
+    connectVia: contains(integrationRuntimeName, 'none')
       ? null
       : {
           parameters: {}
-          referenceName: IRname
+          referenceName: integrationRuntimeName
           type: 'IntegrationRuntimeReference'
         }
     type: typeName

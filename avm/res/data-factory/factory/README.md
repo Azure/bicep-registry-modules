@@ -164,7 +164,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       }
       {
-        IRName: 'IRmanaged2'
+        integrationRuntimeName: 'IRmanaged2'
         linkedServiceDescription: 'This is a description for the linked service using the IRmanaged2 integration runtime.'
         name: 'linkedservice'
         parameters: {
@@ -334,7 +334,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           }
         },
         {
-          "IRName": "IRmanaged2",
+          "integrationRuntimeName": "IRmanaged2",
           "linkedServiceDescription": "This is a description for the linked service using the IRmanaged2 integration runtime.",
           "name": "linkedservice",
           "parameters": {

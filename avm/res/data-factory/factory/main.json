@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7950844561702322004"
+      "templateHash": "17586174883946528800"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1193,7 +1193,7 @@
             "value": "[parameters('linkedServices')[copyIndex()].type]"
           },
           "typeProperties": "[if(contains(parameters('linkedServices')[copyIndex()], 'typeProperties'), createObject('value', parameters('linkedServices')[copyIndex()].typeProperties), createObject('value', createObject()))]",
-          "IRname": "[if(contains(parameters('linkedServices')[copyIndex()], 'IRName'), createObject('value', parameters('linkedServices')[copyIndex()].IRName), createObject('value', 'none'))]",
+          "integrationRuntimeName": "[if(contains(parameters('linkedServices')[copyIndex()], 'integrationRuntimeName'), createObject('value', parameters('linkedServices')[copyIndex()].integrationRuntimeName), createObject('value', 'none'))]",
           "customizedParameter": "[if(contains(parameters('linkedServices')[copyIndex()], 'parameters'), createObject('value', parameters('linkedServices')[copyIndex()].parameters), createObject('value', createObject()))]",
           "linkedServiceDescription": {
             "value": "[coalesce(tryGet(parameters('linkedServices')[copyIndex()], 'linkedServiceDescription'), 'Linked Service created by avm-res-datafactory-factories')]"
@@ -1206,7 +1206,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "14829588429379677263"
+              "templateHash": "16706003756779103350"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service.",
@@ -1238,10 +1238,10 @@
                 "description": "Optional. Used to add connection properties for your linked services."
               }
             },
-            "IRname": {
+            "integrationRuntimeName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the Integration Runtime to use."
+                "description": "Optional. The name of the Integration Runtime to use."
               }
             },
             "customizedParameter": {
@@ -1266,7 +1266,7 @@
               "properties": {
                 "annotations": [],
                 "description": "[parameters('linkedServiceDescription')]",
-                "connectVia": "[if(contains(parameters('IRname'), 'none'), null(), createObject('parameters', createObject(), 'referenceName', parameters('IRname'), 'type', 'IntegrationRuntimeReference'))]",
+                "connectVia": "[if(contains(parameters('integrationRuntimeName'), 'none'), null(), createObject('parameters', createObject(), 'referenceName', parameters('integrationRuntimeName'), 'type', 'IntegrationRuntimeReference'))]",
                 "type": "[parameters('typeName')]",
                 "typeProperties": "[parameters('typeProperties')]",
                 "parameters": "[parameters('customizedParameter')]"
