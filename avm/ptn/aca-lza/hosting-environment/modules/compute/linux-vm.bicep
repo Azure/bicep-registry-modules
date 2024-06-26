@@ -69,6 +69,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
     adminUsername: vmAdminUsername
     adminPassword: ((vmAuthenticationType == 'password') ? vmAdminPassword : null)
     disablePasswordAuthentication: ((vmAuthenticationType == 'password') ? false : true)
+    encryptionAtHost: false
     publicKeys: ((vmAuthenticationType == 'sshPublicKey')
       ? [
           {
@@ -80,6 +81,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
     nicConfigurations: [
       {
         name: vmNetworkInterfaceName
+        enableAcceleratedNetworking: false
         ipConfigurations: [
           {
             name: 'ipConfig01'

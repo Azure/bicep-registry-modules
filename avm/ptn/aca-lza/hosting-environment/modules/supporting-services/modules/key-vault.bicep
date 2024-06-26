@@ -22,25 +22,40 @@ param spokeVNetId string
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
-@description('Optional.The name of the private endpoint to be created for Key Vault.')
-param keyVaultPrivateEndpointName string = ''
+@description('Optional. The name of the private endpoint to be created for Key Vault. If left empty, it defaults to "<resourceName>-pep')
+param keyVaultPrivateEndpointName string = 'keyvault-pep'
 
-@description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-param diagnosticWorkspaceId string = ''
+@description('Required. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace.')
+param diagnosticWorkspaceId string
 
 @description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
-param diagnosticSettingsName string = ''
+param diagnosticSettingsName string = 'keyvault-diagnosticSettings'
 
 // ------------------
 // VARIABLES
 // ------------------
 
-var privateDnsZoneNames = 'privatelink.vaultcore.azure.net'
+var vaultDnsZoneName = 'privatelink.vaultcore.azure.net'
 var spokeVNetIdTokens = split(spokeVNetId, '/')
 var spokeSubscriptionId = spokeVNetIdTokens[2]
 var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
-
+var virtualNetworkLinks = concat(
+  [
+    {
+      virtualNetworkResourceId: spokeVNetId
+      registrationEnabled: false
+    }
+  ],
+  (!empty(hubVNetId))
+    ? [
+        {
+          virtualNetworkResourceId: hubVNetId
+          registrationEnabled: false
+        }
+      ]
+    : []
+)
 // ------------------
 // RESOURCES
 // ------------------
@@ -56,23 +71,12 @@ resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2
 }
 
 module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
-  name: 'privateDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
+  name: 'keyvaultDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
-    name: privateDnsZoneNames
-    location: location
+    name: vaultDnsZoneName
+    location: 'global'
     tags: tags
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: spokeVNetId
-        registrationEnabled: true
-      }
-      (!empty(hubVNetId))
-        ? {
-            virtualNetworkResourceId: hubVNetId
-            registrationEnabled: true
-          }
-        : {}
-    ]
+    virtualNetworkLinks: virtualNetworkLinks
   }
 }
 
@@ -107,7 +111,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
         name: diagnosticSettingsName
         workspaceResourceId: diagnosticWorkspaceId
         logCategoriesAndGroups: [
-          { category: 'allLogs' }
+          { categoryGroup: 'allLogs' }
         ]
         metricCategories: [
           {

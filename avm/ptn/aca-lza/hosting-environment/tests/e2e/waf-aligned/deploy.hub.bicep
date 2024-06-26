@@ -90,7 +90,7 @@ var rgHubName = '${namingRules.resourceTypeAbbreviations.resourceGroup}-${worklo
 @description('User-configured naming rules')
 module naming '../../../modules/naming/naming.module.bicep' = {
   scope: resourceGroup(rgHubName)
-  name: take('02-sharedNamingDeployment-${deployment().name}', 64)
+  name: take('hubNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(hubResourceGroup.outputs.resourceId)
     environment: environment

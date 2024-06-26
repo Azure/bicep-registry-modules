@@ -60,9 +60,11 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
     computerName: vmName
     adminUsername: vmAdminUsername
     adminPassword: vmAdminPassword
+    encryptionAtHost: false
     nicConfigurations: [
       {
         name: vmNetworkInterfaceName
+        enableAcceleratedNetworking: false
         ipConfigurations: [
           {
             name: 'ipconfig1'

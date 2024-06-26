@@ -99,7 +99,7 @@ var namingRules = json(loadTextContent('../naming/naming-rules.jsonc'))
 
 var rgSpokeName = !empty(spokeResourceGroupName)
   ? spokeResourceGroupName
-  : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
+  : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-${environment}-${namingRules.regionAbbreviations[toLower(location)]}-spoke'
 var hubVNetResourceIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
 
 @description('The ID of the subscription containing the hub virtual network.')
@@ -173,7 +173,7 @@ module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
   scope: resourceGroup(rgSpokeName)
-  name: take('02-sharedNamingDeployment-${deployment().name}', 64)
+  name: take('spokeNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(spokeResourceGroup.outputs.resourceId)
     environment: environment
@@ -197,7 +197,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
 
 @description('The log sink for Azure Diagnostics')
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.3.4' = {
-  name: take('logAnalyticsWs-${uniqueString(spokeResourceGroup.name)}', 64)
+  name: take('logAnalyticsWs-${deployment().name}', 64)
   scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.logAnalyticsWorkspace
@@ -218,7 +218,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
     diagnosticSettings: [
       {
         name: 'logAnalyticsSettings'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
   }
@@ -236,7 +236,7 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!
     diagnosticSettings: [
       {
         name: 'logAnalyticsSettings'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
   }
@@ -254,7 +254,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
     diagnosticSettings: [
       {
         name: 'logAnalyticsSettings'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
   }
@@ -275,7 +275,7 @@ module peerSpokeToHub '../networking/peering.bicep' = if (!empty(hubVNetId)) {
 
 @description('The Route Table deployment')
 module egressLockdownUdr 'br/public:avm/res/network/route-table:0.2.2' = if (!empty(hubVNetId) && !empty(networkApplianceIpAddress)) {
-  name: take('egressLockdownUdr-${uniqueString(spokeResourceGroup.name)}', 64)
+  name: take('egressLockdownUdr-${deployment().name}', 64)
   scope: resourceGroup(rgSpokeName)
   params: {
     name: naming.outputs.resourcesNames.routeTable
@@ -384,7 +384,7 @@ output spokeApplicationGatewaySubnetName string = (!empty(spokeApplicationGatewa
   : ''
 
 @description('The resource ID of the Azure Log Analytics Workspace.')
-output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.resourceId
 
 @description('The name of the jump box virtual machine.')
 output vmJumpBoxName string = naming.outputs.resourcesNames.vmJumpBox

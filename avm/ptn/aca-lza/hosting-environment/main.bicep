@@ -126,7 +126,7 @@ var rgSpokeName = !empty(spokeResourceGroupName)
 @description('User-configured naming rules')
 module naming 'modules/naming/naming.module.bicep' = {
   scope: resourceGroup(rgSpokeName)
-  name: take('02-sharedNamingDeployment-${deployment().name}', 64)
+  name: take('sharedNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(spoke.outputs.spokeResourceGroupName)
     environment: environment

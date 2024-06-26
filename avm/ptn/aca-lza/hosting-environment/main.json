@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8257167378101499254"
+      "templateHash": "18260693055833400670"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -243,7 +243,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)]",
+      "name": "[take(format('sharedNamingDeployment-{0}', deployment().name), 64)]",
       "resourceGroup": "[variables('rgSpokeName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -271,7 +271,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "2960393066385852493"
+              "templateHash": "4604170362536258560"
             }
           },
           "parameters": {
@@ -320,12 +320,12 @@
               "applicationGatewayPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
               "applicationGatewayUserAssignedIdentity": "[format('{0}-{1}-KeyVaultSecretUser', variables('naming').resourceTypeAbbreviations.managedIdentity, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
               "applicationGatewayNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
-              "pepNsg": "[format('{0}-pep', variables('naming').resourceTypeAbbreviations.networkSecurityGroup)]",
+              "pepNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.privateEndpoint))]",
               "applicationInsights": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationInsights)]",
               "azureFirewall": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall)]",
               "azureFirewallPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall))]",
               "bastion": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion)]",
-              "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
+              "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
               "bastionPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
               "containerAppsEnvironment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment)]",
               "containerAppsEnvironmentNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment))]",
@@ -348,7 +348,7 @@
               "storageAccount": "[toLower(take(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount), '-', ''), 24))]",
               "storageAccountPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount)))]",
               "vmJumpBox": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine)]",
-              "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
+              "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
               "vmJumpBoxNic": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkInterface, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
               "frontDoor": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
               "azureAISearch": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureAISearch)]",
@@ -453,7 +453,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "7732476905452752609"
+              "templateHash": "4151051989069056337"
             }
           },
           "parameters": {
@@ -611,7 +611,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\n    //security rules (as of 2023-march-10): https://learn.microsoft.com/azure/container-apps/firewall-integration#nsg-allow-rules\n    //Inbound rules are not required, if we leave the default inbound rules 65000 and 65001\n    \"securityRules\": [\n        // {\n        //     \"name\": \"Allow_communication_between_IPs_in_the_infra_subnet\",\n        //     \"properties\": {\n        //         \"description\": \"Allow communication between IPs in the infrastructure subnet. This address is passed as a parameter when you create an environment. For example, 10.0.0.0/21.\",\n        //         \"protocol\": \"*\",\n        //         \"sourceAddressPrefix\": \"10.0.0.0/21\",\n        //         \"sourcePortRange\": \"*\",\n        //         \"destinationAddressPrefix\": \"10.0.0.0/21\",\n        //         \"destinationPortRange\": \"*\",\n        //         \"access\": \"Allow\",\n        //         \"priority\": 100,\n        //         \"direction\": \"Inbound\"\n        //     }\n        // },\n        // {\n        //     \"name\": \"Allow_Azure_Loadbalancer_To_Communicate_with_the_Environment\",\n        //     \"properties\": {\n        //         \"description\": \"Allow the Azure infrastructure load balancer to communicate with your environment.\",\n        //         \"protocol\": \"*\",\n        //         \"sourceAddressPrefix\": \"AzureLoadBalancer\",\n        //         \"sourcePortRange\": \"*\",\n        //         \"destinationAddressPrefix\": \"10.0.0.0/21\",\n        //         \"destinationPortRange\": \"*\",\n        //         \"access\": \"Allow\",\n        //         \"priority\": 110,\n        //         \"direction\": \"Inbound\"\n        //     }\n        // },\n        {\n            \"name\": \"Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP\",\n            \"properties\": {\n                \"description\": \"internal AKS secure connection between underlying nodes and control plane..\",\n                \"protocol\": \"UDP\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"1194\",\n                \"access\": \"Allow\",\n                \"priority\": 100,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP\",\n            \"properties\": {\n                \"description\": \"internal AKS secure connection between underlying nodes and control plane..\",\n                \"protocol\": \"TCP\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"9000\",\n                \"access\": \"Allow\",\n                \"priority\": 110,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Azure_Monitor\",\n            \"properties\": {\n                \"description\": \"Allows outbound calls to Azure Monitor.\",\n                \"protocol\": \"TCP\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"443\",\n                \"access\": \"Allow\",\n                \"priority\": 120,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Outbound_443\",\n            \"properties\": {\n                \"description\": \"Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don't have a static IP\",\n                \"protocol\": \"TCP\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRange\": \"443\",\n                \"access\": \"Allow\",\n                \"priority\": 130,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_NTP_Server\",\n            \"properties\": {\n                \"description\": \"NTP server\",\n                \"protocol\": \"UDP\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRange\": \"123\",\n                \"access\": \"Allow\",\n                \"priority\": 140,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Container_Apps_control_plane\",\n            \"properties\": {\n                \"description\": \"Container Apps control plane\",\n                \"protocol\": \"TCP\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRanges\": [\n                    \"5671\",\n                    \"5672\"\n                ],\n                \"access\": \"Allow\",\n                \"priority\": 150,\n                \"direction\": \"Outbound\"\n            }\n        }\n    ]\n}",
+            "$fxv#0": "{\n    //security rules (as of 2023-march-10): https://learn.microsoft.com/azure/container-apps/firewall-integration#nsg-allow-rules\n    //Inbound rules are not required, if we leave the default inbound rules 65000 and 65001\n    \"securityRules\": [\n        // {\n        //     \"name\": \"Allow_communication_between_IPs_in_the_infra_subnet\",\n        //     \"properties\": {\n        //         \"description\": \"Allow communication between IPs in the infrastructure subnet. This address is passed as a parameter when you create an environment. For example, 10.0.0.0/21.\",\n        //         \"protocol\": \"*\",\n        //         \"sourceAddressPrefix\": \"10.0.0.0/21\",\n        //         \"sourcePortRange\": \"*\",\n        //         \"destinationAddressPrefix\": \"10.0.0.0/21\",\n        //         \"destinationPortRange\": \"*\",\n        //         \"access\": \"Allow\",\n        //         \"priority\": 100,\n        //         \"direction\": \"Inbound\"\n        //     }\n        // },\n        // {\n        //     \"name\": \"Allow_Azure_Loadbalancer_To_Communicate_with_the_Environment\",\n        //     \"properties\": {\n        //         \"description\": \"Allow the Azure infrastructure load balancer to communicate with your environment.\",\n        //         \"protocol\": \"*\",\n        //         \"sourceAddressPrefix\": \"AzureLoadBalancer\",\n        //         \"sourcePortRange\": \"*\",\n        //         \"destinationAddressPrefix\": \"10.0.0.0/21\",\n        //         \"destinationPortRange\": \"*\",\n        //         \"access\": \"Allow\",\n        //         \"priority\": 110,\n        //         \"direction\": \"Inbound\"\n        //     }\n        // },\n        {\n            \"name\": \"Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP\",\n            \"properties\": {\n                \"description\": \"internal AKS secure connection between underlying nodes and control plane..\",\n                \"protocol\": \"Udp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"1194\",\n                \"access\": \"Allow\",\n                \"priority\": 100,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP\",\n            \"properties\": {\n                \"description\": \"internal AKS secure connection between underlying nodes and control plane..\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"9000\",\n                \"access\": \"Allow\",\n                \"priority\": 110,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Azure_Monitor\",\n            \"properties\": {\n                \"description\": \"Allows outbound calls to Azure Monitor.\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"443\",\n                \"access\": \"Allow\",\n                \"priority\": 120,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Outbound_443\",\n            \"properties\": {\n                \"description\": \"Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don't have a static IP\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRange\": \"443\",\n                \"access\": \"Allow\",\n                \"priority\": 130,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_NTP_Server\",\n            \"properties\": {\n                \"description\": \"NTP server\",\n                \"protocol\": \"Udp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRange\": \"123\",\n                \"access\": \"Allow\",\n                \"priority\": 140,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Container_Apps_control_plane\",\n            \"properties\": {\n                \"description\": \"Container Apps control plane\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRanges\": [\n                    \"5671\",\n                    \"5672\"\n                ],\n                \"access\": \"Allow\",\n                \"priority\": 150,\n                \"direction\": \"Outbound\"\n            }\n        }\n    ]\n}",
             "$fxv#1": [
               {
                 "name": "HealthProbes",
@@ -675,7 +675,7 @@
             "nsgCaeRules": "[json(replace(variables('$fxv#0'), '<location>', variables('locationVar')))]",
             "nsgAppGwRules": "[variables('$fxv#1')]",
             "namingRules": "[json(variables('$fxv#2'))]",
-            "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-spoke-{2}-{3}', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]",
+            "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-{2}-{3}-spoke', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]",
             "hubVNetResourceIdTokens": "[if(not(empty(parameters('hubVNetId'))), split(parameters('hubVNetId'), '/'), array(''))]",
             "hubSubscriptionId": "[if(not(empty(parameters('hubVNetId'))), variables('hubVNetResourceIdTokens')[2], '')]",
             "hubResourceGroupName": "[if(not(empty(parameters('hubVNetId'))), variables('hubVNetResourceIdTokens')[4], '')]",
@@ -1143,7 +1143,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)]",
+              "name": "[take(format('spokeNamingDeployment-{0}', deployment().name), 64)]",
               "resourceGroup": "[variables('rgSpokeName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1171,7 +1171,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "2960393066385852493"
+                      "templateHash": "4604170362536258560"
                     }
                   },
                   "parameters": {
@@ -1220,12 +1220,12 @@
                       "applicationGatewayPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayUserAssignedIdentity": "[format('{0}-{1}-KeyVaultSecretUser', variables('naming').resourceTypeAbbreviations.managedIdentity, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
-                      "pepNsg": "[format('{0}-pep', variables('naming').resourceTypeAbbreviations.networkSecurityGroup)]",
+                      "pepNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.privateEndpoint))]",
                       "applicationInsights": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationInsights)]",
                       "azureFirewall": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall)]",
                       "azureFirewallPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall))]",
                       "bastion": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion)]",
-                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
+                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "bastionPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "containerAppsEnvironment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment)]",
                       "containerAppsEnvironmentNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment))]",
@@ -1248,7 +1248,7 @@
                       "storageAccount": "[toLower(take(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount), '-', ''), 24))]",
                       "storageAccountPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount)))]",
                       "vmJumpBox": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine)]",
-                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
+                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "vmJumpBoxNic": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkInterface, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "frontDoor": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
                       "azureAISearch": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureAISearch)]",
@@ -1292,7 +1292,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vnetSpoke]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vnetSpoke]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -1303,7 +1303,7 @@
                   "addressPrefixes": {
                     "value": "[parameters('spokeVNetAddressPrefixes')]"
                   },
-                  "subnets": "[if(not(equals(parameters('vmJumpboxOSType'), 'none')), createObject('value', concat(if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgAppGw-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value))), createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value))), createArray(createObject('name', parameters('vmSubnetName'), 'addressPrefix', parameters('vmJumpBoxSubnetAddressPrefix'))))), if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), createObject('value', concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgAppGw-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)))), createObject('value', createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)))))]"
+                  "subnets": "[if(not(equals(parameters('vmJumpboxOSType'), 'none')), createObject('value', concat(if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgAppGw-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value))), createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value))), createArray(createObject('name', parameters('vmSubnetName'), 'addressPrefix', parameters('vmJumpBoxSubnetAddressPrefix'))))), if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), createObject('value', concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgAppGw-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)))), createObject('value', createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, null()), 'delegations', createArray(createObject('name', 'envdelegation', 'properties', createObject('serviceName', 'Microsoft.App/environments')))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2466,8 +2466,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('egressLockdownUdr-{0}', deployment().name), 64))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgAppGw-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgContainerAppsEnvironment-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64))]"
@@ -2479,7 +2479,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)]",
+              "name": "[take(format('logAnalyticsWs-{0}', deployment().name), 64)]",
               "resourceGroup": "[variables('rgSpokeName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2488,7 +2488,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.logAnalyticsWorkspace]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.logAnalyticsWorkspace]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -4451,8 +4451,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]",
-                "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('rg-{0}', deployment().name), 64))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]"
               ],
               "metadata": {
                 "description": "The log sink for Azure Diagnostics"
@@ -4470,7 +4469,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerAppsEnvironmentNsg]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerAppsEnvironmentNsg]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -4485,7 +4484,7 @@
                     "value": [
                       {
                         "name": "logAnalyticsSettings",
-                        "workspaceResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+                        "workspaceResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value]"
                       }
                     ]
                   }
@@ -5165,8 +5164,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]"
               ],
               "metadata": {
                 "description": "Network security group rules for the Container Apps cluster."
@@ -5185,7 +5184,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGatewayNsg]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGatewayNsg]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -5200,7 +5199,7 @@
                     "value": [
                       {
                         "name": "logAnalyticsSettings",
-                        "workspaceResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+                        "workspaceResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value]"
                       }
                     ]
                   }
@@ -5880,8 +5879,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]"
               ],
               "metadata": {
                 "description": "NSG Rules for the Application Gateway."
@@ -5899,7 +5898,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.pepNsg]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.pepNsg]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -5914,7 +5913,7 @@
                     "value": [
                       {
                         "name": "logAnalyticsSettings",
-                        "workspaceResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+                        "workspaceResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value]"
                       }
                     ]
                   }
@@ -6594,8 +6593,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]"
               ],
               "metadata": {
                 "description": "NSG Rules for the private enpoint subnet."
@@ -6691,7 +6690,7 @@
               "condition": "[and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('egressLockdownUdr-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)]",
+              "name": "[take(format('egressLockdownUdr-{0}', deployment().name), 64)]",
               "resourceGroup": "[variables('rgSpokeName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -6700,7 +6699,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.routeTable]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.routeTable]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -7051,8 +7050,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]",
-                "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('rg-{0}', deployment().name), 64))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]"
               ],
               "metadata": {
                 "description": "The Route Table deployment"
@@ -7077,7 +7075,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "vmName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
                   },
                   "vmAdminUsername": {
                     "value": "[parameters('vmAdminUsername')]"
@@ -7101,10 +7099,10 @@
                     "value": "[parameters('vmJumpBoxSubnetAddressPrefix')]"
                   },
                   "vmNetworkInterfaceName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNic]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNic]"
                   },
                   "vmNetworkSecurityGroupName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNsg]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNsg]"
                   },
                   "vmAuthenticationType": {
                     "value": "[parameters('vmAuthenticationType')]"
@@ -7117,7 +7115,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "788122930366564354"
+                      "templateHash": "3719483118920391574"
                     }
                   },
                   "parameters": {
@@ -7917,11 +7915,15 @@
                           },
                           "adminPassword": "[if(equals(parameters('vmAuthenticationType'), 'password'), createObject('value', parameters('vmAdminPassword')), createObject('value', null()))]",
                           "disablePasswordAuthentication": "[if(equals(parameters('vmAuthenticationType'), 'password'), createObject('value', false()), createObject('value', true()))]",
+                          "encryptionAtHost": {
+                            "value": false
+                          },
                           "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', parameters('vmSshPublicKey'), 'path', '/home/localAdminUser/.ssh/authorized_keys'))), createObject('value', createArray()))]",
                           "nicConfigurations": {
                             "value": [
                               {
                                 "name": "[parameters('vmNetworkInterfaceName')]",
+                                "enableAcceleratedNetworking": false,
                                 "ipConfigurations": [
                                   {
                                     "name": "ipConfig01",
@@ -13324,7 +13326,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('vnetSpoke-{0}', deployment().name), 64))]"
               ],
               "metadata": {
@@ -13350,7 +13352,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "vmName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
                   },
                   "vmAdminUsername": {
                     "value": "[parameters('vmAdminUsername')]"
@@ -13371,10 +13373,10 @@
                     "value": "[parameters('vmJumpBoxSubnetAddressPrefix')]"
                   },
                   "vmNetworkInterfaceName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNic]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNic]"
                   },
                   "vmNetworkSecurityGroupName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNsg]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNsg]"
                   }
                 },
                 "template": {
@@ -13384,7 +13386,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "8102762750797496473"
+                      "templateHash": "2054058223881252134"
                     }
                   },
                   "parameters": {
@@ -14175,10 +14177,14 @@
                           "adminPassword": {
                             "value": "[parameters('vmAdminPassword')]"
                           },
+                          "encryptionAtHost": {
+                            "value": false
+                          },
                           "nicConfigurations": {
                             "value": [
                               {
                                 "name": "[parameters('vmNetworkInterfaceName')]",
+                                "enableAcceleratedNetworking": false,
                                 "ipConfigurations": [
                                   {
                                     "name": "ipconfig1",
@@ -19581,7 +19587,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('vnetSpoke-{0}', deployment().name), 64))]"
               ],
               "metadata": {
@@ -19651,14 +19657,14 @@
               "metadata": {
                 "description": "The resource ID of the Azure Log Analytics Workspace."
               },
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', uniqueString(take(format('rg-{0}', deployment().name), 64))), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value]"
             },
             "vmJumpBoxName": {
               "type": "string",
               "metadata": {
                 "description": "The name of the jump box virtual machine."
               },
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('02-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
             }
           }
         }
@@ -19707,7 +19713,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11275152424525971217"
+              "templateHash": "10028696704699525183"
             }
           },
           "parameters": {
@@ -19777,7 +19783,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)]",
+              "name": "[take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -19804,7 +19810,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "2960393066385852493"
+                      "templateHash": "4604170362536258560"
                     }
                   },
                   "parameters": {
@@ -19853,12 +19859,12 @@
                       "applicationGatewayPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayUserAssignedIdentity": "[format('{0}-{1}-KeyVaultSecretUser', variables('naming').resourceTypeAbbreviations.managedIdentity, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
-                      "pepNsg": "[format('{0}-pep', variables('naming').resourceTypeAbbreviations.networkSecurityGroup)]",
+                      "pepNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.privateEndpoint))]",
                       "applicationInsights": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationInsights)]",
                       "azureFirewall": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall)]",
                       "azureFirewallPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall))]",
                       "bastion": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion)]",
-                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
+                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "bastionPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "containerAppsEnvironment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment)]",
                       "containerAppsEnvironmentNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment))]",
@@ -19881,7 +19887,7 @@
                       "storageAccount": "[toLower(take(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount), '-', ''), 24))]",
                       "storageAccountPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount)))]",
                       "vmJumpBox": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine)]",
-                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
+                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "vmJumpBoxNic": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkInterface, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "frontDoor": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
                       "azureAISearch": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureAISearch)]",
@@ -19913,7 +19919,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('containerRegistry-{0}', uniqueString(resourceGroup().id))]",
+              "name": "[format('containerRegistryModule-{0}', uniqueString(resourceGroup().id))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -19921,7 +19927,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "containerRegistryName": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerRegistry]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerRegistry]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -19939,10 +19945,10 @@
                     "value": "[parameters('spokePrivateEndpointSubnetName')]"
                   },
                   "containerRegistryPrivateEndpointName": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerRegistryPep]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerRegistryPep]"
                   },
                   "containerRegistryUserAssignedIdentityName": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerRegistryUserAssignedIdentity]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerRegistryUserAssignedIdentity]"
                   },
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('logAnalyticsWorkspaceId')]"
@@ -19958,7 +19964,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "9529261528741954083"
+                      "templateHash": "10210683455433803471"
                     }
                   },
                   "parameters": {
@@ -20003,8 +20009,9 @@
                     },
                     "containerRegistryPrivateEndpointName": {
                       "type": "string",
+                      "defaultValue": "acr-pep",
                       "metadata": {
-                        "description": "The name of the private endpoint to be created for Azure Container Registry."
+                        "description": "Optional. The name of the private endpoint to be created for Azure Container Registry. If left empty, it defaults to \"<resourceName>-pep"
                       }
                     },
                     "containerRegistryUserAssignedIdentityName": {
@@ -20015,9 +20022,8 @@
                     },
                     "diagnosticWorkspaceId": {
                       "type": "string",
-                      "defaultValue": "",
                       "metadata": {
-                        "description": "Optional. Resource ID of the diagnostic log analytics workspace."
+                        "description": "Required. Resource ID of the diagnostic log analytics workspace."
                       }
                     },
                     "deployZoneRedundantResources": {
@@ -20029,12 +20035,13 @@
                     }
                   },
                   "variables": {
-                    "privateDnsZoneNames": "privatelink.azurecr.io",
+                    "acrDnsZoneName": "privatelink.azurecr.io",
                     "spokeVNetIdTokens": "[split(parameters('spokeVNetId'), '/')]",
                     "spokeSubscriptionId": "[variables('spokeVNetIdTokens')[2]]",
                     "spokeResourceGroupName": "[variables('spokeVNetIdTokens')[4]]",
                     "spokeVNetName": "[variables('spokeVNetIdTokens')[8]]",
-                    "containerRegistryPullRoleGuid": "7f951dda-4ed3-4680-a7ca-43fe172d538d"
+                    "containerRegistryPullRoleGuid": "7f951dda-4ed3-4680-a7ca-43fe172d538d",
+                    "virtualNetworkLinks": "[concat(createArray(createObject('virtualNetworkResourceId', parameters('spokeVNetId'), 'registrationEnabled', false())), if(not(empty(parameters('hubVNetId'))), createArray(createObject('virtualNetworkResourceId', parameters('hubVNetId'), 'registrationEnabled', false())), createArray()))]"
                   },
                   "resources": [
                     {
@@ -20491,7 +20498,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('privateDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))]",
+                      "name": "[format('acrDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -20499,22 +20506,16 @@
                         "mode": "Incremental",
                         "parameters": {
                           "name": {
-                            "value": "[variables('privateDnsZoneNames')]"
+                            "value": "[variables('acrDnsZoneName')]"
                           },
                           "location": {
-                            "value": "[parameters('location')]"
+                            "value": "global"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
                           "virtualNetworkLinks": {
-                            "value": [
-                              {
-                                "virtualNetworkResourceId": "[parameters('spokeVNetId')]",
-                                "registrationEnabled": true
-                              },
-                              "[if(not(empty(parameters('hubVNetId'))), createObject('virtualNetworkResourceId', parameters('hubVNetId'), 'registrationEnabled', true()), createObject())]"
-                            ]
+                            "value": "[variables('virtualNetworkLinks')]"
                           }
                         },
                         "template": {
@@ -23406,6 +23407,11 @@
                             "value": [
                               {
                                 "name": "acr-log-analytics",
+                                "logCategoriesAndGroups": [
+                                  {
+                                    "categoryGroup": "allLogs"
+                                  }
+                                ],
                                 "metricCategories": [
                                   {
                                     "category": "AllMetrics"
@@ -23420,7 +23426,7 @@
                               {
                                 "name": "[parameters('containerRegistryPrivateEndpointName')]",
                                 "privateDnsZoneResourceIds": [
-                                  "[reference(resourceId('Microsoft.Resources/deployments', format('privateDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]"
+                                  "[reference(resourceId('Microsoft.Resources/deployments', format('acrDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]"
                                 ],
                                 "subnetResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('spokeSubscriptionId'), variables('spokeResourceGroupName')), 'Microsoft.Network/virtualNetworks/subnets', variables('spokeVNetName'), parameters('spokePrivateEndpointSubnetName'))]"
                               }
@@ -25562,7 +25568,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('privateDnsZoneDeployment-{0}', uniqueString(resourceGroup().id)))]",
+                        "[resourceId('Microsoft.Resources/deployments', format('acrDnsZoneDeployment-{0}', uniqueString(resourceGroup().id)))]",
                         "[resourceId('Microsoft.Resources/deployments', parameters('containerRegistryUserAssignedIdentityName'))]"
                       ]
                     }
@@ -25600,7 +25606,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64))]"
               ],
               "metadata": {
                 "description": "Azure Container Registry, where all workload images should be pulled from."
@@ -25617,7 +25623,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "keyVaultName": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.keyVault]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.keyVault]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -25635,7 +25641,7 @@
                     "value": "[parameters('spokePrivateEndpointSubnetName')]"
                   },
                   "keyVaultPrivateEndpointName": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.keyVaultPep]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.keyVaultPep]"
                   },
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('logAnalyticsWorkspaceId')]"
@@ -25648,7 +25654,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "8273981602923627667"
+                      "templateHash": "8075333369301967039"
                     }
                   },
                   "parameters": {
@@ -25692,38 +25698,38 @@
                     },
                     "keyVaultPrivateEndpointName": {
                       "type": "string",
-                      "defaultValue": "",
+                      "defaultValue": "keyvault-pep",
                       "metadata": {
-                        "description": "Optional.The name of the private endpoint to be created for Key Vault."
+                        "description": "Optional. The name of the private endpoint to be created for Key Vault. If left empty, it defaults to \"<resourceName>-pep"
                       }
                     },
                     "diagnosticWorkspaceId": {
                       "type": "string",
-                      "defaultValue": "",
                       "metadata": {
-                        "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                        "description": "Required. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace."
                       }
                     },
                     "diagnosticSettingsName": {
                       "type": "string",
-                      "defaultValue": "",
+                      "defaultValue": "keyvault-diagnosticSettings",
                       "metadata": {
                         "description": "Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to \"<resourceName>-diagnosticSettings\"."
                       }
                     }
                   },
                   "variables": {
-                    "privateDnsZoneNames": "privatelink.vaultcore.azure.net",
+                    "vaultDnsZoneName": "privatelink.vaultcore.azure.net",
                     "spokeVNetIdTokens": "[split(parameters('spokeVNetId'), '/')]",
                     "spokeSubscriptionId": "[variables('spokeVNetIdTokens')[2]]",
                     "spokeResourceGroupName": "[variables('spokeVNetIdTokens')[4]]",
-                    "spokeVNetName": "[variables('spokeVNetIdTokens')[8]]"
+                    "spokeVNetName": "[variables('spokeVNetIdTokens')[8]]",
+                    "virtualNetworkLinks": "[concat(createArray(createObject('virtualNetworkResourceId', parameters('spokeVNetId'), 'registrationEnabled', false())), if(not(empty(parameters('hubVNetId'))), createArray(createObject('virtualNetworkResourceId', parameters('hubVNetId'), 'registrationEnabled', false())), createArray()))]"
                   },
                   "resources": [
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('privateDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))]",
+                      "name": "[format('keyvaultDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -25731,22 +25737,16 @@
                         "mode": "Incremental",
                         "parameters": {
                           "name": {
-                            "value": "[variables('privateDnsZoneNames')]"
+                            "value": "[variables('vaultDnsZoneName')]"
                           },
                           "location": {
-                            "value": "[parameters('location')]"
+                            "value": "global"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
                           "virtualNetworkLinks": {
-                            "value": [
-                              {
-                                "virtualNetworkResourceId": "[parameters('spokeVNetId')]",
-                                "registrationEnabled": true
-                              },
-                              "[if(not(empty(parameters('hubVNetId'))), createObject('virtualNetworkResourceId', parameters('hubVNetId'), 'registrationEnabled', true()), createObject())]"
-                            ]
+                            "value": "[variables('virtualNetworkLinks')]"
                           }
                         },
                         "template": {
@@ -28653,7 +28653,7 @@
                               {
                                 "name": "[parameters('keyVaultPrivateEndpointName')]",
                                 "privateDnsZoneResourceIds": [
-                                  "[reference(resourceId('Microsoft.Resources/deployments', format('privateDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]"
+                                  "[reference(resourceId('Microsoft.Resources/deployments', format('keyvaultDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]"
                                 ],
                                 "subnetResourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('spokeSubscriptionId'), variables('spokeResourceGroupName')), 'Microsoft.Network/virtualNetworks/subnets', variables('spokeVNetName'), parameters('spokePrivateEndpointSubnetName'))]"
                               }
@@ -28666,7 +28666,7 @@
                                 "workspaceResourceId": "[parameters('diagnosticWorkspaceId')]",
                                 "logCategoriesAndGroups": [
                                   {
-                                    "category": "allLogs"
+                                    "categoryGroup": "allLogs"
                                   }
                                 ],
                                 "metricCategories": [
@@ -31407,7 +31407,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('privateDnsZoneDeployment-{0}', uniqueString(resourceGroup().id)))]"
+                        "[resourceId('Microsoft.Resources/deployments', format('keyvaultDnsZoneDeployment-{0}', uniqueString(resourceGroup().id)))]"
                       ]
                     }
                   ],
@@ -31430,7 +31430,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('supportingServicesNamingDeployment-{0}', deployment().name), 64))]"
               ],
               "metadata": {
                 "description": "Azure Key Vault used to hold items like TLS certs and application secrets that your workload will need."
@@ -31443,28 +31443,28 @@
               "metadata": {
                 "description": "The resource ID of the Azure Container Registry."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistry-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistryModule-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryId.value]"
             },
             "containerRegistryName": {
               "type": "string",
               "metadata": {
                 "description": "The name of the Azure Container Registry."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistry-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryName.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistryModule-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryName.value]"
             },
             "containerRegistryLoginServer": {
               "type": "string",
               "metadata": {
                 "description": "The name of the container registry login server."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistry-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryLoginServer.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistryModule-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryLoginServer.value]"
             },
             "containerRegistryUserAssignedIdentityId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the user-assigned managed identity for the Azure Container Registry to be able to pull images from it."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistry-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryUserAssignedIdentityId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistryModule-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryUserAssignedIdentityId.value]"
             },
             "keyVaultId": {
               "type": "string",
@@ -31539,7 +31539,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11270991035555013295"
+              "templateHash": "16209784974293953355"
             }
           },
           "parameters": {
@@ -31623,13 +31623,14 @@
             }
           },
           "variables": {
-            "workProfileName": "general-purpose"
+            "workProfileName": "general-purpose",
+            "virtualNetworkLinks": "[concat(createArray(createObject('virtualNetworkResourceId', resourceId('Microsoft.Network/virtualNetworks', parameters('spokeVNetName')), 'registrationEnabled', false())), if(not(empty(parameters('hubVNetId'))), createArray(createObject('virtualNetworkResourceId', parameters('hubVNetId'), 'registrationEnabled', false())), createArray()))]"
           },
           "resources": [
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('04-sharedNamingDeployment-{0}', deployment().name), 64)]",
+              "name": "[take(format('acaNamingDeployment-{0}', resourceGroup().id), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -31637,7 +31638,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "uniqueId": {
-                    "value": "[uniqueString(deployment().name)]"
+                    "value": "[uniqueString(resourceGroup().id)]"
                   },
                   "environment": {
                     "value": "[parameters('environment')]"
@@ -31656,7 +31657,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "2960393066385852493"
+                      "templateHash": "4604170362536258560"
                     }
                   },
                   "parameters": {
@@ -31705,12 +31706,12 @@
                       "applicationGatewayPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayUserAssignedIdentity": "[format('{0}-{1}-KeyVaultSecretUser', variables('naming').resourceTypeAbbreviations.managedIdentity, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
-                      "pepNsg": "[format('{0}-pep', variables('naming').resourceTypeAbbreviations.networkSecurityGroup)]",
+                      "pepNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.privateEndpoint))]",
                       "applicationInsights": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationInsights)]",
                       "azureFirewall": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall)]",
                       "azureFirewallPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall))]",
                       "bastion": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion)]",
-                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
+                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "bastionPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "containerAppsEnvironment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment)]",
                       "containerAppsEnvironmentNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment))]",
@@ -31733,7 +31734,7 @@
                       "storageAccount": "[toLower(take(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount), '-', ''), 24))]",
                       "storageAccountPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount)))]",
                       "vmJumpBox": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine)]",
-                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
+                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "vmJumpBoxNic": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkInterface, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "frontDoor": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
                       "azureAISearch": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureAISearch)]",
@@ -31766,7 +31767,7 @@
               "condition": "[parameters('enableApplicationInsights')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('applicationInsights-{0}', uniqueString(deployment().name)), 64)]",
+              "name": "[take(format('applicationInsights-{0}', uniqueString(resourceGroup().id)), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -31774,7 +31775,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('04-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationInsights]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationInsights]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -32381,7 +32382,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('04-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('acaNamingDeployment-{0}', resourceGroup().id), 64))]"
               ],
               "metadata": {
                 "description": "Azure Application Insights, the workload' log & metric sink and APM tool"
@@ -32390,7 +32391,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('acaenv-{0}', uniqueString(deployment().name)), 64)]",
+              "name": "[take(format('acaenv-{0}', uniqueString(resourceGroup().id)), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -32401,7 +32402,7 @@
                     "value": "[parameters('logAnalyticsWorkspaceId')]"
                   },
                   "name": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('04-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.containerAppsEnvironment]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.containerAppsEnvironment]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -32419,7 +32420,7 @@
                       ]
                     }
                   },
-                  "daprAIInstrumentationKey": "[if(parameters('enableDaprInstrumentation'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(deployment().name)), 64)), '2022-09-01').outputs.instrumentationKey.value), createObject('value', ''))]",
+                  "daprAIInstrumentationKey": "[if(parameters('enableDaprInstrumentation'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.instrumentationKey.value), createObject('value', ''))]",
                   "infrastructureSubnetId": {
                     "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('spokeVNetName'), parameters('spokeInfraSubnetName'))]"
                   },
@@ -32887,8 +32888,8 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(deployment().name)), 64))]",
-                "[resourceId('Microsoft.Resources/deployments', take(format('04-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(resourceGroup().id)), 64))]",
+                "[resourceId('Microsoft.Resources/deployments', take(format('acaNamingDeployment-{0}', resourceGroup().id), 64))]"
               ],
               "metadata": {
                 "description": "The Azure Container Apps (ACA) cluster."
@@ -32897,7 +32898,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('privateDnsZoneDeployment-{0}', uniqueString(deployment().name))]",
+              "name": "[format('acaDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -32905,7 +32906,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(deployment().name)), 64)), '2022-09-01').outputs.defaultDomain.value]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.defaultDomain.value]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -32914,13 +32915,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "virtualNetworkLinks": {
-                    "value": [
-                      {
-                        "virtualNetworkResourceId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('spokeVNetName'))]",
-                        "registrationEnabled": false
-                      },
-                      "[if(not(empty(parameters('hubVNetId'))), createObject('virtualNetworkResourceId', parameters('hubVNetId'), 'registrationEnabled', false()), createObject())]"
-                    ]
+                    "value": "[variables('virtualNetworkLinks')]"
                   },
                   "a": {
                     "value": [
@@ -32928,7 +32923,7 @@
                         "name": "*",
                         "aRecords": [
                           {
-                            "ipv4Address": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(deployment().name)), 64)), '2022-09-01').outputs.staticIp.value]"
+                            "ipv4Address": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.staticIp.value]"
                           }
                         ]
                       }
@@ -35788,7 +35783,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(deployment().name)), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(resourceGroup().id)), 64))]"
               ],
               "metadata": {
                 "description": "The Private DNS zone containing the ACA load balancer IP"
@@ -35801,21 +35796,21 @@
               "metadata": {
                 "description": "The resource ID of the Container Apps environment."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(deployment().name)), 64)), '2022-09-01').outputs.resourceId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.resourceId.value]"
             },
             "containerAppsEnvironmentName": {
               "type": "string",
               "metadata": {
                 "description": "The name of the Container Apps environment."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(deployment().name)), 64)), '2022-09-01').outputs.name.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('acaenv-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.name.value]"
             },
             "applicationInsightsName": {
               "type": "string",
               "metadata": {
                 "description": "The name of the Application Insights instance."
               },
-              "value": "[if(parameters('enableApplicationInsights'), reference(resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(deployment().name)), 64)), '2022-09-01').outputs.name.value, '')]"
+              "value": "[if(parameters('enableApplicationInsights'), reference(resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.name.value, '')]"
             },
             "workloadProfileNames": {
               "type": "array",
@@ -36886,7 +36881,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "14856392438963708505"
+              "templateHash": "9797197626547407467"
             }
           },
           "parameters": {
@@ -36995,7 +36990,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)]",
+              "name": "[take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -37022,7 +37017,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "2960393066385852493"
+                      "templateHash": "4604170362536258560"
                     }
                   },
                   "parameters": {
@@ -37071,12 +37066,12 @@
                       "applicationGatewayPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayUserAssignedIdentity": "[format('{0}-{1}-KeyVaultSecretUser', variables('naming').resourceTypeAbbreviations.managedIdentity, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
-                      "pepNsg": "[format('{0}-pep', variables('naming').resourceTypeAbbreviations.networkSecurityGroup)]",
+                      "pepNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.privateEndpoint))]",
                       "applicationInsights": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationInsights)]",
                       "azureFirewall": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall)]",
                       "azureFirewallPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall))]",
                       "bastion": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion)]",
-                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
+                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "bastionPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "containerAppsEnvironment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment)]",
                       "containerAppsEnvironmentNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment))]",
@@ -37099,7 +37094,7 @@
                       "storageAccount": "[toLower(take(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount), '-', ''), 24))]",
                       "storageAccountPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount)))]",
                       "vmJumpBox": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine)]",
-                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
+                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "vmJumpBoxNic": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkInterface, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "frontDoor": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
                       "azureAISearch": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureAISearch)]",
@@ -37139,7 +37134,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGatewayUserAssignedIdentity]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGatewayUserAssignedIdentity]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -37579,7 +37574,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64))]"
               ],
               "metadata": {
                 "description": "A user-assigned managed identity that enables Application Gateway to access Key Vault for its TLS certs."
@@ -37692,7 +37687,7 @@
                     "value": "[parameters('location')]"
                   },
                   "name": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGatewayPip]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGatewayPip]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -38325,7 +38320,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64))]"
               ]
             },
             {
@@ -38339,10 +38334,10 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway]"
                   },
                   "backendAddressPools": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'acaServiceBackend', 'properties', createObject('backendAddresses', createArray(createObject('fqdn', parameters('applicationGatewayPrimaryBackendEndFqdn'))))))), createObject('value', createArray()))]",
-                  "backendHttpSettingsCollection": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'https', 'properties', createObject('port', 443, 'protocol', 'Https', 'cookieBasedAffinity', 'Disabled', 'pickHostNameFromBackendAddress', true(), 'requestTimeout', 20, 'probe', createObject('id', resourceId('Microsoft.Network/applicationGateways/probes', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway, 'webProbe')))))), createObject('value', createArray()))]",
+                  "backendHttpSettingsCollection": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'https', 'properties', createObject('port', 443, 'protocol', 'Https', 'cookieBasedAffinity', 'Disabled', 'pickHostNameFromBackendAddress', true(), 'requestTimeout', 20, 'probe', createObject('id', resourceId('Microsoft.Network/applicationGateways/probes', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway, 'webProbe')))))), createObject('value', createArray()))]",
                   "diagnosticSettings": {
                     "value": [
                       {
@@ -38385,7 +38380,7 @@
                       }
                     ]
                   },
-                  "httpListeners": "[if(empty(parameters('base64Certificate')), createObject('value', createArray(createObject('name', 'httpListener', 'properties', createObject('frontendIPConfiguration', createObject('id', format('{0}/frontendIPConfigurations/appGwPublicFrontendIp', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'frontendPort', createObject('id', format('{0}/frontendPorts/port_80', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'protocol', 'Http', 'hostnames', createArray(), 'requireServerNameIndication', false())))), createObject('value', createArray(createObject('name', 'httpsListener', 'properties', createObject('frontendIPConfiguration', createObject('id', format('{0}/frontendIPConfigurations/appGwPublicFrontendIp', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'frontendPort', createObject('id', format('{0}/frontendPorts/port_443', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'protocol', 'Https', 'sslCertificate', createObject('id', format('{0}/sslCertificates/{1}', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway), parameters('applicationGatewayFqdn'))), 'hostnames', createArray(), 'requireServerNameIndication', false())))))]",
+                  "httpListeners": "[if(empty(parameters('base64Certificate')), createObject('value', createArray(createObject('name', 'httpListener', 'properties', createObject('frontendIPConfiguration', createObject('id', format('{0}/frontendIPConfigurations/appGwPublicFrontendIp', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'frontendPort', createObject('id', format('{0}/frontendPorts/port_80', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'protocol', 'Http', 'hostnames', createArray(), 'requireServerNameIndication', false())))), createObject('value', createArray(createObject('name', 'httpsListener', 'properties', createObject('frontendIPConfiguration', createObject('id', format('{0}/frontendIPConfigurations/appGwPublicFrontendIp', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'frontendPort', createObject('id', format('{0}/frontendPorts/port_443', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'protocol', 'Https', 'sslCertificate', createObject('id', format('{0}/sslCertificates/{1}', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway), parameters('applicationGatewayFqdn'))), 'hostnames', createArray(), 'requireServerNameIndication', false())))))]",
                   "location": {
                     "value": "[parameters('location')]"
                   },
@@ -38418,7 +38413,7 @@
                       }
                     ]
                   },
-                  "requestRoutingRules": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'routingRules', 'properties', createObject('ruleType', 'Basic', 'priority', 100, 'httpListener', createObject('id', format('{0}/httpListeners/httpListener', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendAddressPool', createObject('id', format('{0}/backendAddressPools/acaServiceBackend', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendHttpSettings', createObject('id', format('{0}/backendHttpSettingsCollection/https', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))))))), createObject('value', createArray()))]",
+                  "requestRoutingRules": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'routingRules', 'properties', createObject('ruleType', 'Basic', 'priority', 100, 'httpListener', createObject('id', format('{0}/httpListeners/httpListener', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendAddressPool', createObject('id', format('{0}/backendAddressPools/acaServiceBackend', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendHttpSettings', createObject('id', format('{0}/backendHttpSettingsCollection/https', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))))))), createObject('value', createArray()))]",
                   "sku": {
                     "value": "WAF_v2"
                   },
@@ -40089,7 +40084,7 @@
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('keyVaultSubscriptionId'), variables('keyVaultResourceGroupName')), 'Microsoft.Resources/deployments', take(format('appGatewayAddCertificates-Deployment-{0}', uniqueString(resourceGroup().id)), 64))]",
                 "[resourceId('Microsoft.Resources/deployments', take(format('applicationGatewayPublicIp-Deployment-{0}', uniqueString(resourceGroup().id)), 64))]",
-                "[resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64))]",
+                "[resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', resourceGroup().id), 64))]",
                 "[resourceId('Microsoft.Resources/deployments', take(format('appGwUserAssignedIdentity-Deployment-{0}', uniqueString(resourceGroup().id)), 64))]"
               ],
               "metadata": {
@@ -40167,7 +40162,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "6189475261343426160"
+              "templateHash": "15764921372495061660"
             }
           },
           "parameters": {
@@ -40257,7 +40252,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)]",
+              "name": "[take(format('frontDoorNamingDeployment-{0}', resourceGroup().id), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -40284,7 +40279,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "2960393066385852493"
+                      "templateHash": "4604170362536258560"
                     }
                   },
                   "parameters": {
@@ -40333,12 +40328,12 @@
                       "applicationGatewayPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayUserAssignedIdentity": "[format('{0}-{1}-KeyVaultSecretUser', variables('naming').resourceTypeAbbreviations.managedIdentity, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
                       "applicationGatewayNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationGateway))]",
-                      "pepNsg": "[format('{0}-pep', variables('naming').resourceTypeAbbreviations.networkSecurityGroup)]",
+                      "pepNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.privateEndpoint))]",
                       "applicationInsights": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.applicationInsights)]",
                       "azureFirewall": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall)]",
                       "azureFirewallPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureFirewall))]",
                       "bastion": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion)]",
-                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
+                      "bastionNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "bastionPip": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.publicIpAddress, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.bastion))]",
                       "containerAppsEnvironment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment)]",
                       "containerAppsEnvironmentNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerAppsEnvironment))]",
@@ -40361,7 +40356,7 @@
                       "storageAccount": "[toLower(take(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount), '-', ''), 24))]",
                       "storageAccountPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.storageAccount)))]",
                       "vmJumpBox": "[replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine)]",
-                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
+                      "vmJumpBoxNsg": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkSecurityGroup, replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "vmJumpBoxNic": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.networkInterface, replace(variables('namingBaseNoWorkloadName'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.virtualMachine))]",
                       "frontDoor": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
                       "azureAISearch": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.azureAISearch)]",
@@ -40410,7 +40405,7 @@
                     "value": "[variables('containerAppsEnvironmentSubscriptionId')]"
                   },
                   "privateLinkServiceName": {
-                    "value": "[format('{0}-{1}', reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceTypeAbbreviations.value.privateLinkService, reference(resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.frontDoor)]"
+                    "value": "[format('{0}-{1}', reference(resourceId('Microsoft.Resources/deployments', take(format('frontDoorNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourceTypeAbbreviations.value.privateLinkService, reference(resourceId('Microsoft.Resources/deployments', take(format('frontDoorNamingDeployment-{0}', resourceGroup().id), 64)), '2022-09-01').outputs.resourcesNames.value.frontDoor)]"
                   },
                   "privateLinkSubnetId": {
                     "value": "[parameters('privateLinkSubnetId')]"
@@ -40513,7 +40508,7 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', take(format('06-sharedNamingDeployment-{0}', deployment().name), 64))]"
+                "[resourceId('Microsoft.Resources/deployments', take(format('frontDoorNamingDeployment-{0}', resourceGroup().id), 64))]"
               ]
             },
             {

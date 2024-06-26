@@ -35,7 +35,7 @@ var namingBaseNoWorkloadName = '${resourceTypeToken}-${environment}-${naming.reg
 
 var resourceTypeAbbreviations = naming.resourceTypeAbbreviations
 
-var keyVaultName = take( replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault ), 24 )
+var keyVaultName = take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault), 24)
 
 var resourceNames = {
   vnetSpoke: '${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-spoke'
@@ -44,44 +44,73 @@ var resourceNames = {
   applicationGatewayPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}'
   applicationGatewayUserAssignedIdentity: '${naming.resourceTypeAbbreviations.managedIdentity}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}-KeyVaultSecretUser'
   applicationGatewayNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}'
-  pepNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-pep'
+  pepNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.privateEndpoint)}'
   applicationInsights: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationInsights)
-  azureFirewall: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)  
-  azureFirewallPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)}'  
+  azureFirewall: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)
+  azureFirewallPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)}'
   bastion: replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.bastion)
-  bastionNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.bastion)}'
+  bastionNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.bastion)}'
   bastionPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.bastion)}'
-  containerAppsEnvironment: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.containerAppsEnvironment)
+  containerAppsEnvironment: replace(
+    namingBase,
+    resourceTypeToken,
+    naming.resourceTypeAbbreviations.containerAppsEnvironment
+  )
   containerAppsEnvironmentNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.containerAppsEnvironment)}'
-  containerRegistry: take ( toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.containerRegistry), '-', '' ) ), 50 )
-  containerRegistryPep:  '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.containerRegistry), '-', '' ) )}'
-  containerRegistryUserAssignedIdentity:  '${naming.resourceTypeAbbreviations.managedIdentity}-${toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.containerRegistry), '-', '' ) )}-AcrPull'
+  containerRegistry: take(
+    toLower(replace(
+      replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.containerRegistry),
+      '-',
+      ''
+    )),
+    50
+  )
+  containerRegistryPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.containerRegistry), '-', '' ) )}'
+  containerRegistryUserAssignedIdentity: '${naming.resourceTypeAbbreviations.managedIdentity}-${toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.containerRegistry), '-', '' ) )}-AcrPull'
   redisCache: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.redisCache)
   redisCachePep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.redisCache )}'
-  openAiAccount: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cognitiveAccount )
-  openAiDeployment: replace ( namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.openAiDeployment )
-  cosmosDbNoSql: toLower( take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cosmosDbNoSql), 44) )
+  openAiAccount: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cognitiveAccount)
+  openAiDeployment: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.openAiDeployment)
+  cosmosDbNoSql: toLower(take(
+    replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cosmosDbNoSql),
+    44
+  ))
   cosmosDbNoSqlPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cosmosDbNoSql), 44) )}'
-  frontDoorProfile:  replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.frontDoor)
-  keyVault: endsWith( keyVaultName, '-') ? take( keyVaultName, 23 ) : keyVaultName
-  keyVaultPep:  '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault )}'
+  frontDoorProfile: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.frontDoor)
+  keyVault: endsWith(keyVaultName, '-') ? take(keyVaultName, 23) : keyVaultName
+  keyVaultPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault )}'
   logAnalyticsWorkspace: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.logAnalyticsWorkspace)
   routeTable: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.routeTable)
   serviceBus: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)
   serviceBusPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)}'
-  storageAccount: toLower(take( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount), '-', ''), 24))
+  storageAccount: toLower(take(
+    replace(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount), '-', ''),
+    24
+  ))
   storageAccountPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount))}'
   vmJumpBox: replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)
-  vmJumpBoxNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
+  vmJumpBoxNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
   vmJumpBoxNic: '${naming.resourceTypeAbbreviations.networkInterface}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
   frontDoor: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.frontDoor)
-  azureAISearch: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.azureAISearch )
+  azureAISearch: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.azureAISearch)
   azureAISearchPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.azureAISearch )}'
-  documentIntelligence: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.documentIntelligence )
+  documentIntelligence: replace(
+    namingBaseUnique,
+    resourceTypeToken,
+    naming.resourceTypeAbbreviations.documentIntelligence
+  )
   documentIntelligencePep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.documentIntelligence )}'
-  eventGridSystemTopic: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSystemTopic )
+  eventGridSystemTopic: replace(
+    namingBaseUnique,
+    resourceTypeToken,
+    naming.resourceTypeAbbreviations.eventGridSystemTopic
+  )
   eventGridSystemTopicPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSystemTopic)}'
-  eventGridSubscription: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSubscription )
+  eventGridSubscription: replace(
+    namingBaseUnique,
+    resourceTypeToken,
+    naming.resourceTypeAbbreviations.eventGridSubscription
+  )
 }
 
 output resourcesNames object = resourceNames

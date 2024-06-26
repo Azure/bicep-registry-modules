@@ -48,6 +48,22 @@ param containerRegistryUserAssignedIdentityId string
 // VARIABLES
 // ------------------
 var workProfileName = 'general-purpose'
+var virtualNetworkLinks = concat(
+  [
+    {
+      virtualNetworkResourceId: spokeVNet.id
+      registrationEnabled: false
+    }
+  ],
+  (!empty(hubVNetId))
+    ? [
+        {
+          virtualNetworkResourceId: hubVNetId
+          registrationEnabled: false
+        }
+      ]
+    : []
+)
 
 // ------------------
 // EXISTING RESOURCES
@@ -68,9 +84,9 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
 
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
-  name: take('04-sharedNamingDeployment-${deployment().name}', 64)
+  name: take('acaNamingDeployment-${deployment().name}', 64)
   params: {
-    uniqueId: uniqueString(deployment().name)
+    uniqueId: uniqueString(resourceGroup().id)
     environment: environment
     workloadName: workloadName
     location: location
@@ -79,7 +95,7 @@ module naming '../naming/naming.module.bicep' = {
 
 @description('Azure Application Insights, the workload\' log & metric sink and APM tool')
 module applicationInsights 'br/public:avm/res/insights/component:0.3.0' = if (enableApplicationInsights) {
-  name: take('applicationInsights-${uniqueString(deployment().name)}', 64)
+  name: take('applicationInsights-${uniqueString(resourceGroup().id)}', 64)
   params: {
     name: naming.outputs.resourcesNames.applicationInsights
     location: location
@@ -90,7 +106,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.0' = if (en
 
 @description('The Azure Container Apps (ACA) cluster.')
 module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1' = {
-  name: take('acaenv-${uniqueString(deployment().name)}', 64)
+  name: take('acaenv-${uniqueString(resourceGroup().id)}', 64)
   params: {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceId
     name: naming.outputs.resourcesNames.containerAppsEnvironment
@@ -118,23 +134,12 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1
 
 @description('The Private DNS zone containing the ACA load balancer IP')
 module containerAppsEnvironmentPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
-  name: 'privateDnsZoneDeployment-${uniqueString(deployment().name)}'
+  name: 'acaDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerAppsEnvironment.outputs.defaultDomain
-    location: location
+    location: 'global'
     tags: tags
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: spokeVNet.id
-        registrationEnabled: false
-      }
-      (!empty(hubVNetId))
-        ? {
-            virtualNetworkResourceId: hubVNetId
-            registrationEnabled: false
-          }
-        : {}
-    ]
+    virtualNetworkLinks: virtualNetworkLinks
     a: [
       {
         name: '*'

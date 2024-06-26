@@ -69,7 +69,7 @@ var keyVaultName = keyVaultIdTokens[8]
 
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
-  name: take('06-sharedNamingDeployment-${deployment().name}', 64)
+  name: take('agwNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(resourceGroup().id)
     environment: environment

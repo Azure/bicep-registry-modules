@@ -34,7 +34,7 @@
             "name": "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",
             "properties": {
                 "description": "internal AKS secure connection between underlying nodes and control plane..",
-                "protocol": "UDP",
+                "protocol": "Udp",
                 "sourceAddressPrefix": "VirtualNetwork",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "AzureCloud.<location>",
@@ -48,7 +48,7 @@
             "name": "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP",
             "properties": {
                 "description": "internal AKS secure connection between underlying nodes and control plane..",
-                "protocol": "TCP",
+                "protocol": "Tcp",
                 "sourceAddressPrefix": "VirtualNetwork",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "AzureCloud.<location>",
@@ -62,7 +62,7 @@
             "name": "Allow_Azure_Monitor",
             "properties": {
                 "description": "Allows outbound calls to Azure Monitor.",
-                "protocol": "TCP",
+                "protocol": "Tcp",
                 "sourceAddressPrefix": "VirtualNetwork",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "AzureCloud.<location>",
@@ -76,7 +76,7 @@
             "name": "Allow_Outbound_443",
             "properties": {
                 "description": "Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don't have a static IP",
-                "protocol": "TCP",
+                "protocol": "Tcp",
                 "sourceAddressPrefix": "VirtualNetwork",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "*",
@@ -90,7 +90,7 @@
             "name": "Allow_NTP_Server",
             "properties": {
                 "description": "NTP server",
-                "protocol": "UDP",
+                "protocol": "Udp",
                 "sourceAddressPrefix": "VirtualNetwork",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "*",
@@ -104,7 +104,7 @@
             "name": "Allow_Container_Apps_control_plane",
             "properties": {
                 "description": "Container Apps control plane",
-                "protocol": "TCP",
+                "protocol": "Tcp",
                 "sourceAddressPrefix": "VirtualNetwork",
                 "sourcePortRange": "*",
                 "destinationAddressPrefix": "*",

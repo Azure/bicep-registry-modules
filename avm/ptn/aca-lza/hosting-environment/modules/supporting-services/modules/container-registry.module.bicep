@@ -22,14 +22,14 @@ param spokeVNetId string
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
-@description('The name of the private endpoint to be created for Azure Container Registry.')
-param containerRegistryPrivateEndpointName string
+@description('Optional. The name of the private endpoint to be created for Azure Container Registry. If left empty, it defaults to "<resourceName>-pep')
+param containerRegistryPrivateEndpointName string = 'acr-pep'
 
 @description('The name of the user assigned identity to be created to pull image from Azure Container Registry.')
 param containerRegistryUserAssignedIdentityName string
 
-@description('Optional. Resource ID of the diagnostic log analytics workspace.')
-param diagnosticWorkspaceId string = ''
+@description('Required. Resource ID of the diagnostic log analytics workspace.')
+param diagnosticWorkspaceId string
 
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
@@ -38,13 +38,28 @@ param deployZoneRedundantResources bool = true
 // VARIABLES
 // ------------------
 
-var privateDnsZoneNames = 'privatelink.azurecr.io'
+var acrDnsZoneName = 'privatelink.azurecr.io'
 var spokeVNetIdTokens = split(spokeVNetId, '/')
 var spokeSubscriptionId = spokeVNetIdTokens[2]
 var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 var containerRegistryPullRoleGuid = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-
+var virtualNetworkLinks = concat(
+  [
+    {
+      virtualNetworkResourceId: spokeVNetId
+      registrationEnabled: false
+    }
+  ],
+  (!empty(hubVNetId))
+    ? [
+        {
+          virtualNetworkResourceId: hubVNetId
+          registrationEnabled: false
+        }
+      ]
+    : []
+)
 // ------------------
 // RESOURCES
 // ------------------
@@ -68,23 +83,12 @@ module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
 }
 
 module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
-  name: 'privateDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
+  name: 'acrDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
-    name: privateDnsZoneNames
-    location: location
+    name: acrDnsZoneName
+    location: 'global'
     tags: tags
-    virtualNetworkLinks: [
-      {
-        virtualNetworkResourceId: spokeVNetId
-        registrationEnabled: true
-      }
-      (!empty(hubVNetId))
-        ? {
-            virtualNetworkResourceId: hubVNetId
-            registrationEnabled: true
-          }
-        : {}
-    ]
+    virtualNetworkLinks: virtualNetworkLinks
   }
 }
 
@@ -102,6 +106,11 @@ module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
     diagnosticSettings: [
       {
         name: 'acr-log-analytics'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
         metricCategories: [
           {
             category: 'AllMetrics'

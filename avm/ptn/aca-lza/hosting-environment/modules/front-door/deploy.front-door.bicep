@@ -61,7 +61,7 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01'
 }
 
 module naming '../naming/naming.module.bicep' = {
-  name: take('06-sharedNamingDeployment-${deployment().name}', 64)
+  name: take('frontDoorNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(resourceGroup().id)
     environment: environment

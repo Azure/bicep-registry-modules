@@ -42,7 +42,7 @@ param deployZoneRedundantResources bool = true
 
 @description('User-configured naming rules')
 module naming '../naming/naming.module.bicep' = {
-  name: take('03-sharedNamingDeployment-${deployment().name}', 64)
+  name: take('supportingServicesNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(resourceGroup().id)
     environment: environment
@@ -53,7 +53,7 @@ module naming '../naming/naming.module.bicep' = {
 
 @description('Azure Container Registry, where all workload images should be pulled from.')
 module containerRegistry 'modules/container-registry.module.bicep' = {
-  name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
+  name: 'containerRegistryModule-${uniqueString(resourceGroup().id)}'
   params: {
     containerRegistryName: naming.outputs.resourcesNames.containerRegistry
     location: location
