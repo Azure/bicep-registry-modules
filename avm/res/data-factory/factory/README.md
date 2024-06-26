@@ -144,6 +144,40 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         name: 'TestRuntime'
         type: 'SelfHosted'
       }
+      {
+        managedVirtualNetworkName: 'default'
+        name: 'IRmanaged2'
+        type: 'Managed'
+        typeProperties: {
+          computeProperties: {
+            location: 'AutoResolve'
+          }
+        }
+      }
+    ]
+    linkedServices: [
+      {
+        name: 'SQLdbLinkedservice'
+        type: 'AzureSQLDatabase'
+        typeProperties: {
+          connectionString: 'Server=tcp:myserver.database.windows.net,1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;'
+        }
+      }
+      {
+        IRName: 'IRmanaged2'
+        linkedServiceDescription: 'This is a description for the linked service using the IRmanaged2 integration runtime.'
+        name: 'linkedservice'
+        parameters: {
+          storageAccountName: {
+            defaultValue: 'madeupstorageaccname'
+            type: 'String'
+          }
+        }
+        type: 'AzureBlobFS'
+        typeProperties: {
+          url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.windows.net\')}'
+        }
+      }
     ]
     location: '<location>'
     lock: {
@@ -277,6 +311,42 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         {
           "name": "TestRuntime",
           "type": "SelfHosted"
+        },
+        {
+          "managedVirtualNetworkName": "default",
+          "name": "IRmanaged2",
+          "type": "Managed",
+          "typeProperties": {
+            "computeProperties": {
+              "location": "AutoResolve"
+            }
+          }
+        }
+      ]
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "SQLdbLinkedservice",
+          "type": "AzureSQLDatabase",
+          "typeProperties": {
+            "connectionString": "Server=tcp:myserver.database.windows.net,1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;"
+          }
+        },
+        {
+          "IRName": "IRmanaged2",
+          "linkedServiceDescription": "This is a description for the linked service using the IRmanaged2 integration runtime.",
+          "name": "linkedservice",
+          "parameters": {
+            "storageAccountName": {
+              "defaultValue": "madeupstorageaccname",
+              "type": "String"
+            }
+          },
+          "type": "AzureBlobFS",
+          "typeProperties": {
+            "url": "@{concat(\"https://\", linkedService().storageAccountName, \".dfs.windows.net\")}"
+          }
         }
       ]
     },
