@@ -160,7 +160,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         name: 'SQLdbLinkedservice'
         type: 'AzureSQLDatabase'
         typeProperties: {
-          connectionString: 'Server=tcp:myserver.database.windows.net,1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;'
+          connectionString: '<connectionString>'
         }
       }
       {
@@ -330,7 +330,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "name": "SQLdbLinkedservice",
           "type": "AzureSQLDatabase",
           "typeProperties": {
-            "connectionString": "Server=tcp:myserver.database.windows.net,1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;"
+            "connectionString": "<connectionString>"
           }
         },
         {

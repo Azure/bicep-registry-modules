@@ -129,7 +129,7 @@ module testDeployment '../../../main.bicep' = [
           type: 'AzureSQLDatabase'
           typeProperties: {
             // An example of a connection string to an Azure SQL Database
-            connectionString: 'Server=tcp:myserver.database.windows.net,1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;'
+            connectionString: 'Server=tcp:myserver.${environment().suffixes.sqlServerHostname},1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;'
           }
         }
         {
