@@ -77,7 +77,7 @@ param activeActive bool = true
 param enableBgp bool = true
 
 @description('Optional. BGP Settings')
-param bgpParams bgpParamsType
+param bgpSettings bgpSettingType
 
 @description('Optional. The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network.')
 param vpnClientAddressPoolPrefix string = ''
@@ -550,30 +550,35 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
-type bgpParamsType = {
+type bgpType = {
+  activeActive: 'false'
+  
   @description('Optional. The Autonomous System Number value.')
   @minValue(0)
   @maxValue(4294967295)
   asn: int? 
 
-  @description('Optional. The BGP peering address and BGP identifier of this BGP speaker.')
-  bgpPeeringAddress: string?
-
-  // @description('Optional. BGP peering address with IP configuration ID for virtual network gateway.')
-  // bgpPeeringAddresses: {
-  //   @description('Required. The list of custom BGP peering addresses which belong to IP configuration.')
-  //   customBgpIpAddresses: string[]
-
-  //  @description('Required. The ID of IP configuration which belongs to gateway.')
-  //  ipconfigurationId: string
-  // }[]?
-
-  @description('Optional. Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled.')
-  primaryCustomBgpIPs: string[]? 
-
-  @description('Optional. Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled.')
-  secondaryCustomBgpIPs: string[]?
-
-  @description('Optional. The weight added to routes learned from this BGP speaker.')
-  peerWeight: int?
+  @description('Required. The list of custom BGP peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]
 }?
+
+type bgpApipaType = {
+  activeActive: 'true'
+  
+  @description('Optional. The Autonomous System Number value.')
+  @minValue(0)
+  @maxValue(4294967295)
+  asn: int? 
+
+  @description('Required. The list of custom BGP peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]
+
+  
+  @description('Required. The list of the second custom BGP peering addresses which belong to IP configuration.')
+  secondCustomBgpIpAddresses: string[]
+}?
+
+@discriminator('activeActive')
+type bgpSettingType = bgpType | bgpApipaType
+
+
