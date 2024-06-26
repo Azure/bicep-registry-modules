@@ -621,13 +621,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     siteConfig: {
       alwaysOn: true
       appCommandLine: ''
-      cors: {
-        allowedOrigins: [
-          'https://ms.portal.azure.com'
-          'https://portal.azure.com'
-        ]
-      }
-      linuxFxVersion: 'java|17-java17'
     }
   }
 }
@@ -699,14 +692,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "siteConfig": {
       "value": {
         "alwaysOn": true,
-        "appCommandLine": "",
-        "cors": {
-          "allowedOrigins": [
-            "https://ms.portal.azure.com",
-            "https://portal.azure.com"
-          ]
-        },
-        "linuxFxVersion": "java|17-java17"
+        "appCommandLine": ""
       }
     }
   }
@@ -1877,13 +1863,25 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app'
-    name: '<name>'
+    name: 'wswc001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     apiManagementConfiguration: {
       id: '<id>'
     }
+    appInsightResourceId: '<appInsightResourceId>'
+    appSettingsKeyValuePairs: {
+      ENABLE_ORYX_BUILD: 'True'
+      SCM_DO_BUILD_DURING_DEPLOYMENT: 'False'
+    }
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    siteConfig: {
+      alwaysOn: true
+      appCommandLine: ''
+    }
   }
 }
 ```
@@ -1905,7 +1903,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app"
     },
     "name": {
-      "value": "<name>"
+      "value": "wswc001"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -1916,8 +1914,28 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "id": "<id>"
       }
     },
+    "appInsightResourceId": {
+      "value": "<appInsightResourceId>"
+    },
+    "appSettingsKeyValuePairs": {
+      "value": {
+        "ENABLE_ORYX_BUILD": "True",
+        "SCM_DO_BUILD_DURING_DEPLOYMENT": "False"
+      }
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "appCommandLine": ""
+      }
     }
   }
 }
