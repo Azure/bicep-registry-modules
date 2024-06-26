@@ -943,6 +943,11 @@ The CPU limit of the container in cores.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '0.25'
+  '1'
+  ```
 
 ### Parameter: `containers.resources.memory`
 
@@ -950,6 +955,12 @@ The required memory.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '250Mb'
+  '1.5Gi'
+  '1500Mi'
+  ```
 
 ### Parameter: `containers.volumeMounts`
 
@@ -1084,6 +1095,24 @@ Scaling rules for the job.
 
 - Required: Yes
 - Type: array
+- Example:
+  ```Bicep
+  [
+    // for type azure-queue
+    {
+      name: 'myrule'
+      type: 'azure-queue'
+      metadata: {
+        queueName: 'default'
+        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+      }
+      auth: {
+        secretRef: 'mysecret'
+        triggerParameter: 'queueName'
+      }
+    }
+  ]
+  ```
 
 **Required parameters**
 
@@ -1140,6 +1169,16 @@ Metadata properties to describe the scale rule.
 
 - Required: Yes
 - Type: object
+- Example:
+  ```Bicep
+  {
+    "// for type azure-queue
+    {
+      queueName: 'default'
+      storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+    }"
+  }
+  ```
 
 ### Parameter: `eventTriggerConfig.scale.rules.type`
 
@@ -1147,6 +1186,12 @@ The type of the rule.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  "azure-servicebus"
+  "azure-queue"
+  "redis"
+  ```
 
 ### Parameter: `eventTriggerConfig.parallelism`
 
@@ -1216,6 +1261,11 @@ Cron formatted repeating schedule ("* * * * *") of a Cron Job. It supports the s
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '* * * * *' // Every minute, every hour, every day
+  '0 0 * * *' // at 00:00 UTC every day
+  ```
 
 ### Parameter: `scheduleTriggerConfig.parallelism`
 
@@ -1302,6 +1352,11 @@ The CPU limit of the container in cores.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '0.25'
+  '1'
+  ```
 
 ### Parameter: `initContainers.resources.memory`
 
@@ -1309,6 +1364,12 @@ The required memory.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '250Mb'
+  '1.5Gi'
+  '1500Mi'
+  ```
 
 ### Parameter: `initContainers.args`
 
@@ -1330,6 +1391,19 @@ The environment variables to set in the container.
 
 - Required: No
 - Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      name: 'AZURE_STORAGE_QUEUE_NAME'
+      value: '<storage-queue-name>'
+    }
+    {
+      name: 'AZURE_STORAGE_CONNECTION_STRING'
+      secretRef: 'connection-string'
+    }
+  ]
+  ```
 
 **Required parameters**
 
@@ -1456,6 +1530,18 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+    systemAssigned: true,
+    userAssignedResourceIds: [
+      '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+    ]
+  }
+  {
+    systemAssigned: true
+  }
+  ```
 
 **Optional parameters**
 
@@ -1484,6 +1570,24 @@ Collection of private container registry credentials for containers used by the 
 
 - Required: No
 - Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      server: 'myregistry.azurecr.io'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+    }
+    {
+      server: 'myregistry2.azurecr.io'
+      identity: 'system'
+    }
+    {
+      server: 'myregistry3.azurecr.io'
+      username: 'myusername'
+      passwordSecretRef: 'secret-name'
+    }
+  ]
+  ```
 
 **Required parameters**
 
@@ -1510,6 +1614,7 @@ The FQDN name of the container registry.
 
 - Required: Yes
 - Type: string
+- Example: `myregistry.azurecr.io`
 
 ### Parameter: `registries.passwordSecretRef`
 
@@ -1524,6 +1629,11 @@ The resource ID of the (user) managed identity, which is used to access the Azur
 
 - Required: No
 - Type: string
+- Example:
+  ```Bicep
+  user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
+  system-assigned identity: system
+  ```
 
 ### Parameter: `registries.username`
 
@@ -1643,6 +1753,29 @@ The secrets of the Container App.
 
 - Required: No
 - Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      name: 'mysecret'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      name: 'mysecret'
+      identity: 'system'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      name: 'mysecret'
+      value: 'mysecretvalue'
+    }
+    {
+      name: 'connection-string'
+      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value
+    }
+  ]
+  ```
 
 **Conditional parameters**
 
@@ -1664,6 +1797,7 @@ Azure Key Vault URL pointing to the secret referenced by the Container App Job. 
 
 - Required: No
 - Type: string
+- Example: `https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret`
 
 ### Parameter: `secrets.value`
 
@@ -1692,6 +1826,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  ```
 
 ### Parameter: `volumes`
 

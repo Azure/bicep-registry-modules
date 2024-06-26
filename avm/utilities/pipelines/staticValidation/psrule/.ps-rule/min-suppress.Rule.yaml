@@ -31,6 +31,7 @@ spec:
     - Azure.ContainerApp.PublicAccess
     # Azure Virtual Machine
     - Azure.VM.AMA
+    - Azure.VM.MaintenanceConfig # Excluded as it requires user input
     - Azure.VM.Standalone
     # Azure App Service
     - Azure.AppService.WebProbe # Supressed as the probe path is specific to the app

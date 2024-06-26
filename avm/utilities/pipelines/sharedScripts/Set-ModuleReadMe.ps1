@@ -330,6 +330,7 @@ function Set-DefinitionSection {
 
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
             $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
+            $example = ($parameter.ContainsKey('metadata') -and $parameter['metadata'].ContainsKey('example')) ? $parameter['metadata']['example'] : $null
 
             #####################
             #   Table content   #
@@ -412,6 +413,29 @@ function Set-DefinitionSection {
                 $formattedAllowedValues = $null
             }
 
+            # Format example
+            # ==============
+            if (-not [String]::IsNullOrEmpty($example)) {
+                # allign content to the left by removing trailing whitespaces
+                $leadingSpacesToTrim = ($example -match '^(\s+).+') ? $matches[1].Length : 0
+                $exampleLines = $example -split '\n'
+                # Removing excess leading spaces
+                $example = ($exampleLines | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" -replace "^\s{$leadingSpacesToTrim}" } | Out-String).TrimEnd()
+
+                if ($exampleLines.count -eq 1) {
+                    $formattedExample = '- Example: `{0}`' -f $example.TrimStart()
+                } else {
+                    $formattedExample = @(
+                        '- Example:',
+                        '  ```Bicep',
+                        $example,
+                        '  ```'
+                    )
+                }
+            } else {
+                $formattedExample = $null
+            }
+
             # Build list item
             # ===============
             $listSectionContent += @(
@@ -422,7 +446,8 @@ function Set-DefinitionSection {
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null)
+            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null)
                 ''
             ) | Where-Object { $null -ne $_ }
 

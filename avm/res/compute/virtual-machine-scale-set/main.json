@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "9133361224761516270"
+      "version": "0.27.1.19265",
+      "templateHash": "7041078491413360342"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -357,8 +357,8 @@
       }
     },
     "maxPriceForLowPriorityVm": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "int",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars."
       }
@@ -409,7 +409,7 @@
         "description": "Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
     },
-    "monitoringWorkspaceId": {
+    "monitoringWorkspaceResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -808,8 +808,7 @@
       "signedProtocol": "https"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "enableReferencedModulesTelemetry": false,
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
@@ -953,7 +952,7 @@
           "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
-          "billingProfile": "[if(and(not(empty(parameters('vmPriority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', parameters('maxPriceForLowPriorityVm')), null())]",
+          "billingProfile": "[if(and(not(empty(parameters('vmPriority'))), not(equals(null(), parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', parameters('maxPriceForLowPriorityVm')), null())]",
           "scheduledEventsProfile": "[parameters('scheduledEventsProfile')]"
         },
         "overprovision": "[if(equals(parameters('orchestrationMode'), 'Uniform'), parameters('overprovision'), null())]",
@@ -973,13 +972,13 @@
       "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]"
     },
     "vmss_logAnalyticsWorkspace": {
-      "condition": "[not(empty(parameters('monitoringWorkspaceId')))]",
+      "condition": "[not(empty(parameters('monitoringWorkspaceResourceId')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2021-06-01",
-      "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]]",
-      "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))]"
+      "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), 'law'), '/'))]"
     },
     "vmss_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1090,8 +1089,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1252,8 +1251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1405,13 +1404,13 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionMonitoringAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
             "value": {
-              "workspaceId": "[if(not(empty(parameters('monitoringWorkspaceId'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').customerId, '')]",
+              "workspaceId": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), reference('vmss_logAnalyticsWorkspace').customerId, '')]",
               "GCS_AUTO_CONFIG": "[if(equals(parameters('osType'), 'Linux'), true(), null())]"
             }
           },
           "protectedSettings": {
             "value": {
-              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
+              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
             }
           }
         },
@@ -1421,8 +1420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1580,8 +1579,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1738,8 +1737,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1900,8 +1899,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2068,8 +2067,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2230,8 +2229,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1737879623418595926"
+              "version": "0.27.1.19265",
+              "templateHash": "17283728898456477586"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",

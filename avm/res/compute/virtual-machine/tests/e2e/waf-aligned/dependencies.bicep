@@ -1,6 +1,9 @@
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
+@description('Required. The name of the Maintenance Configuration to create.')
+param maintenanceConfigurationName string
+
 @description('Required. The name of the Application Security Group to create.')
 param applicationSecurityGroupName string
 
@@ -51,6 +54,39 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         }
       }
     ]
+  }
+}
+
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
+  name: maintenanceConfigurationName
+  location: location
+  properties: {
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
   }
 }
 
@@ -275,7 +311,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   properties: {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
-    arguments: '-StorageAccountName "${storageAccount.name}" -ResourceGroupName "${resourceGroup().name}" -ContainerName "${storageAccount::blobService::container.name}" -FileName "${storageAccountCSEFileName}"'
+    arguments: '-StorageAccountName ${storageAccount.name} -ResourceGroupName ${resourceGroup().name} -ContainerName ${storageAccount::blobService::container.name} -FileName ${storageAccountCSEFileName}'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
   }
   dependsOn: [
@@ -290,6 +326,9 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The resource ID of the maintenance configuration.')
+output maintenanceConfigurationResourceId string = maintenanceConfiguration.id
 
 @description('The resource ID of the created Application Security Group.')
 output applicationSecurityGroupResourceId string = applicationSecurityGroup.id

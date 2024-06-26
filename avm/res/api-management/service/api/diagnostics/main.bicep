@@ -16,8 +16,8 @@ param loggerName string
   'applicationinsights'
   'local'
 ])
-@description('Optional. Type of diagnostic resource. Default is local.')
-param diagnosticName string = 'local'
+@description('Optional. Type of diagnostic resource.')
+param name string = 'local'
 
 @description('Optional. Specifies for what type of messages sampling settings should not apply.')
 param alwaysLog string = 'allErrors'
@@ -33,23 +33,23 @@ param frontend object = {}
   'None'
   'W3C'
 ])
-@description('Conditional. Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights.')
+@description('Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.')
 param httpCorrelationProtocol string = 'Legacy'
 
-@description('Optional. Log the ClientIP. Default is false.')
+@description('Optional. Log the ClientIP.')
 param logClientIp bool = false
 
-@description('Conditional. Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights.')
+@description('Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights.')
 param metrics bool = false
 
 @allowed([
   'Name'
   'URI'
 ])
-@description('Conditional. The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights.')
+@description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
 param operationNameFormat string = 'Name'
 
-@description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100.')
+@description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.')
 param samplingPercentage int = 100
 
 @allowed([
@@ -57,7 +57,7 @@ param samplingPercentage int = 100
   'information'
   'verbose'
 ])
-@description('Optional. The verbosity level applied to traces emitted by trace policies. Default is "error".')
+@description('Optional. The verbosity level applied to traces emitted by trace policies.')
 param verbosity string = 'error'
 
 resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
@@ -73,7 +73,7 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
 }
 
 resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2022-08-01' = {
-  name: diagnosticName
+  name: name
   parent: service::api
   properties: {
     alwaysLog: alwaysLog

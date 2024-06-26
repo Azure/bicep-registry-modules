@@ -1,27 +1,35 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "17283728898456477586"
+      "version": "0.28.1.47646",
+      "templateHash": "16938870032761436213"
     },
-    "name": "Virtual Machine Scale Set Extensions",
-    "description": "This module deploys a Virtual Machine Scale Set Extension.",
+    "name": "Arc Machine Extensions",
+    "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
-    "virtualMachineScaleSetName": {
+    "arcMachineName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent virtual machine scale set that extension is provisioned for. Required if the template is used in a standalone deployment."
+        "description": "Required. The name of the parent Arc Machine that extension is provisioned for."
       }
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the virtual machine scale set extension."
+        "description": "Required. The name of the Arc Machine extension."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location the extension is deployed to."
       }
     },
     "publisher": {
@@ -69,25 +77,33 @@
         "description": "Optional. Any object that contains the extension specific protected settings."
       }
     },
-    "supressFailures": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
-      }
-    },
     "enableAutomaticUpgrade": {
       "type": "bool",
       "metadata": {
         "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
       }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
     }
   },
-  "resources": [
-    {
-      "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-      "apiVersion": "2023-09-01",
-      "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
+  "resources": {
+    "machine": {
+      "existing": true,
+      "type": "Microsoft.HybridCompute/machines",
+      "apiVersion": "2024-03-31-preview",
+      "name": "[parameters('arcMachineName')]"
+    },
+    "extension": {
+      "type": "Microsoft.HybridCompute/machines/extensions",
+      "apiVersion": "2024-03-31-preview",
+      "name": "[format('{0}/{1}', parameters('arcMachineName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
       "properties": {
         "publisher": "[parameters('publisher')]",
         "type": "[parameters('type')]",
@@ -96,11 +112,13 @@
         "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
         "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
         "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-        "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-        "suppressFailures": "[parameters('supressFailures')]"
-      }
+        "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]"
+      },
+      "dependsOn": [
+        "machine"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
@@ -112,9 +130,9 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The ResourceId of the extension."
+        "description": "The resource ID of the extension."
       },
-      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('virtualMachineScaleSetName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.HybridCompute/machines/extensions', parameters('arcMachineName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -122,6 +140,13 @@
         "description": "The name of the Resource Group the extension was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('extension', '2024-03-31-preview', 'full').location]"
     }
   }
 }
