@@ -106,10 +106,47 @@ module testDeployment '../../../main.bicep' = [
             }
           }
         }
-
         {
           name: 'TestRuntime'
           type: 'SelfHosted'
+        }
+        {
+          // Creating a second integration runtime with a custom name. The name can be anything, but it must be unique within the data factory. We will connect a linked service to this integration runtime.
+          managedVirtualNetworkName: 'default'
+          name: 'IRmanaged2'
+          type: 'Managed'
+          typeProperties: {
+            computeProperties: {
+              location: 'AutoResolve'
+            }
+          }
+        }
+      ]
+      linkedServices: [
+        {
+          // This will connect to the AutoResolveIntegrationRuntime as it does not have a specific integration runtime defined and by default uses the AutoResolveIntegrationRuntime
+          name: 'SQLdbLinkedservice'
+          type: 'AzureSQLDatabase'
+          typeProperties: {
+            // An example of a connection string to an Azure SQL Database
+            connectionString: 'Server=tcp:myserver.database.windows.net,1433;Database=mydatabase;User ID=myuser;Password=mypassword;Encrypt=true;Connection Timeout=30;'
+          }
+        }
+        {
+          // This will connect to the IRmanaged2 integration runtime as it is specifically defined
+          name: 'linkedservice'
+          IRName: 'IRmanaged2'
+          linkedServiceDescription: 'This is a description for the linked service using the IRmanaged2 integration runtime.'
+          parameters: {
+            storageAccountName: {
+              type: 'String'
+              defaultValue: 'madeupstorageaccname'
+            }
+          }
+          type: 'AzureBlobFS'
+          typeProperties: {
+            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.windows.net\')}'
+          }
         }
       ]
       lock: {
