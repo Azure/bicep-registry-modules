@@ -75,14 +75,8 @@ param roleAssignments roleAssignmentType
 ])
 param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0.')
-@allowed([
-  0
-  1
-  2
-  3
-])
-param skuCount int = 2
+@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.')
+param skuUnits int?
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string?
@@ -221,7 +215,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: contains(sku, 'V2') ? 1 : contains(sku, 'Consumption') ? 0 : skuCount
+    capacity: contains(sku, 'Consumption') ? 0 ?? skuUnits : 1
   }
   zones: contains(sku, 'V2') ? null : zones
   identity: identity
