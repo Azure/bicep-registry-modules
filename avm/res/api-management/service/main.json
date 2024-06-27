@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14490799655987897540"
+      "templateHash": "416476392930569388"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -388,17 +388,11 @@
         "description": "Optional. The pricing tier of this API Management service."
       }
     },
-    "skuCount": {
+    "skuUnits": {
       "type": "int",
-      "defaultValue": 2,
-      "allowedValues": [
-        0,
-        1,
-        2,
-        3
-      ],
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0."
+        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU."
       }
     },
     "subnetResourceId": {
@@ -594,7 +588,7 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[if(contains(parameters('sku'), 'V2'), 1, if(contains(parameters('sku'), 'Consumption'), 0, parameters('skuCount')))]"
+        "capacity": "[if(contains(parameters('sku'), 'Consumption'), coalesce(0, parameters('skuUnits')), 1)]"
       },
       "zones": "[if(contains(parameters('sku'), 'V2'), null(), parameters('zones'))]",
       "identity": "[variables('identity')]",

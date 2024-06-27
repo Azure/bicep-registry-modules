@@ -45,12 +45,77 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Test deploying apim v2 sku](#example-3-test-deploying-apim-v2-sku)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults with a Basic SKU](#example-1-using-only-defaults-with-a-basic-sku)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Test deploying apim v2 sku](#example-4-test-deploying-apim-v2-sku)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using only defaults with a Basic SKU_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apissku001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    sku: 'Basic'
+    skuUnits: 2
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apissku001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    "skuUnits": {
+      "value": 2
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -106,7 +171,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -598,7 +663,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Test deploying apim v2 sku_
+### Example 4: _Test deploying apim v2 sku_
 
 This instance deploys the module using a v2 SKU with the minimum set of required parameters.
 
@@ -658,7 +723,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1147,7 +1212,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. |
+| [`skuUnits`](#parameter-skuunits) | int | The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1704,22 +1769,12 @@ The pricing tier of this API Management service.
   ]
   ```
 
-### Parameter: `skuCount`
+### Parameter: `skuUnits`
 
-The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0.
+The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.
 
 - Required: No
 - Type: int
-- Default: `2`
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `subnetResourceId`
 
