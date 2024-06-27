@@ -59,7 +59,7 @@ resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-11
   name: name
   properties: {
     frontendPort: frontendPort != -1 ? frontendPort : null
-    backendPort: backendPort != -1 ? backendPort : null
+    backendPort: backendPort != -1 ? backendPort : frontendPortRangeStart != -1 ? frontendPortRangeStart : null
     backendAddressPool: !empty(backendAddressPoolName)
       ? {
           id: '${loadBalancer.id}/backendAddressPools/${backendAddressPoolName}'

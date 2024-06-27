@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6651499995376602796"
+      "templateHash": "2674851459240960435"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -686,7 +686,7 @@
           "frontendIPConfigurationName": {
             "value": "[parameters('inboundNatRules')[copyIndex()].frontendIPConfigurationName]"
           },
-          "frontendPort": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPort'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPort), createObject('value', false()))]",
+          "frontendPort": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPort'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPort), createObject('value', -1))]",
           "backendPort": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendPort'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendPort), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPort))]",
           "backendAddressPoolName": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendAddressPoolName'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendAddressPoolName), createObject('value', ''))]",
           "enableFloatingIP": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'enableFloatingIP'), createObject('value', parameters('inboundNatRules')[copyIndex()].enableFloatingIP), createObject('value', false()))]",
@@ -703,7 +703,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "9551848694281313578"
+              "templateHash": "9290854906973084324"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -811,7 +811,7 @@
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "frontendPort": "[if(not(equals(parameters('frontendPort'), -1)), parameters('frontendPort'), null())]",
-                "backendPort": "[if(not(equals(parameters('backendPort'), -1)), parameters('backendPort'), null())]",
+                "backendPort": "[if(not(equals(parameters('backendPort'), -1)), parameters('backendPort'), if(not(equals(parameters('frontendPortRangeStart'), -1)), parameters('frontendPortRangeStart'), null()))]",
                 "backendAddressPool": "[if(not(empty(parameters('backendAddressPoolName'))), createObject('id', format('{0}/backendAddressPools/{1}', resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), parameters('backendAddressPoolName'))), null())]",
                 "enableFloatingIP": "[parameters('enableFloatingIP')]",
                 "enableTcpReset": "[parameters('enableTcpReset')]",
