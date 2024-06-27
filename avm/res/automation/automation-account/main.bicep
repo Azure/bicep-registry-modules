@@ -25,6 +25,15 @@ param credentials credentialType = []
 @description('Optional. List of modules to be created in the automation account.')
 param modules array = []
 
+@description('Optional. List of powershell72 modules to be created in the automation account.')
+param powershell72Modules array = []
+
+@description('Optional. List of python 3 packages to be created in the automation account.')
+param python3Packages array = []
+
+@description('Optional. List of python 2 packages to be created in the automation account.')
+param python2Packages array = []
+
 @description('Optional. List of runbooks to be created in the automation account.')
 param runbooks array = []
 
@@ -212,6 +221,46 @@ module automationAccount_modules 'module/main.bicep' = [
       uri: module.uri
       location: location
       tags: module.?tags ?? tags
+    }
+  }
+]
+
+module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
+  for (pwsh72module, index) in powershell72Modules: {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Pwsh72Module-${index}'
+    params: {
+      name: pwsh72module.name
+      automationAccountName: automationAccount.name
+      version: pwsh72module.version
+      uri: pwsh72module.uri
+      location: location
+      tags: pwsh72module.?tags ?? tags
+    }
+  }
+]
+
+module automationAccount_python3packages 'python3-packages/main.bicep' = [
+  for (python3package, index) in python3Packages: {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python3Package-${index}'
+    params: {
+      name: python3package.name
+      automationAccountName: automationAccount.name
+      version: python3package.version
+      uri: python3package.uri
+      tags: python3package.?tags ?? tags
+    }
+  }
+]
+
+module automationAccount_python2packages 'python2-packages/main.bicep' = [
+  for (python2package, index) in python2Packages: {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python2Package-${index}'
+    params: {
+      name: python2package.name
+      automationAccountName: automationAccount.name
+      version: python2package.version
+      uri: python2package.uri
+      tags: python2package.?tags ?? tags
     }
   }
 ]
