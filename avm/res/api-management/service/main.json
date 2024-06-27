@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "3693902911218762891"
+      "templateHash": "13857658593436078732"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -388,11 +388,11 @@
         "description": "Optional. The pricing tier of this API Management service."
       }
     },
-    "skuUnits": {
+    "skuCapacity": {
       "type": "int",
-      "defaultValue": 1,
+      "defaultValue": 2,
       "metadata": {
-        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU."
+        "description": "Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/."
       }
     },
     "subnetResourceId": {
@@ -434,7 +434,7 @@
         2
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs."
+        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku."
       }
     },
     "newGuidValue": {
@@ -588,7 +588,7 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[if(or(contains(parameters('sku'), 'Consumption'), contains(parameters('sku'), 'V2')), 0, parameters('skuUnits'))]"
+        "capacity": "[if(contains(parameters('sku'), 'Consumption'), 0, if(contains(parameters('sku'), 'Developer'), 1, parameters('skuCapacity')))]"
       },
       "zones": "[if(contains(parameters('sku'), 'Premium'), parameters('zones'), null())]",
       "identity": "[variables('identity')]",

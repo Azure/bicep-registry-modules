@@ -1315,6 +1315,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`publisherEmail`](#parameter-publisheremail) | string | The email address of the owner of the service. |
 | [`publisherName`](#parameter-publishername) | string | The name of the owner of the service. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -1349,12 +1355,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`skuUnits`](#parameter-skuunits) | int | The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku. |
 
 ### Parameter: `name`
 
@@ -1376,6 +1381,14 @@ The name of the owner of the service.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `skuCapacity`
+
+The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.
+
+- Required: No
+- Type: int
+- Default: `2`
 
 ### Parameter: `additionalLocations`
 
@@ -1906,14 +1919,6 @@ The pricing tier of this API Management service.
   ]
   ```
 
-### Parameter: `skuUnits`
-
-The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.
-
-- Required: No
-- Type: int
-- Default: `1`
-
 ### Parameter: `subnetResourceId`
 
 The full resource ID of a subnet in a virtual network to deploy the API Management service in.
@@ -1954,7 +1959,7 @@ The type of VPN in which API Management service needs to be configured in. None 
 
 ### Parameter: `zones`
 
-A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.
+A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.
 
 - Required: No
 - Type: array

@@ -73,10 +73,10 @@ param roleAssignments roleAssignmentType
   'StandardV2'
   'BasicV2'
 ])
-param sku string = 'Premium'
+param sku string = 'Premium' // Note: the default is set to Premium so that a default deployment will align with Microsoft's WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
-@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.')
-param skuUnits int = 1
+@description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
+param skuCapacity int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string?
@@ -95,7 +95,7 @@ param virtualNetworkType string = 'None'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.')
+@description('Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.')
 param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
@@ -215,7 +215,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: contains(sku, 'Consumption') || contains(sku, 'V2') ? 0 : skuUnits
+    capacity: contains(sku, 'Consumption') ? 0 : contains(sku, 'Developer') ? 1 : skuCapacity
   }
   zones: contains(sku, 'Premium') ? zones : null
   identity: identity
