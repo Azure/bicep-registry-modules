@@ -72,9 +72,9 @@ module testDeployment '../../../main.bicep' = [
           name: 'privateIPConfig1'
           subnetId: nestedDependencies.outputs.subnetResourceId
           zones: [
-            '1'
-            '2'
-            '3'
+            1
+            2
+            3
           ]
         }
       ]
@@ -151,9 +151,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "13463643567330956322"
+      "version": "0.28.1.47646",
+      "templateHash": "9968483765145852087"
     },
     "name": "SQL Managed Instance Encryption Protector",
     "description": "This module deploys a SQL Managed Instance Encryption Protector.",
