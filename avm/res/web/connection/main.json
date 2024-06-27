@@ -167,7 +167,7 @@
       "nullable": true,
       "metadata": {
         "example": "  // for a Service Bus connection\n  {\n    name: 'managedIdentityAuth'\n    values: {\n      namespaceEndpoint: {\n        value: 'sb://${dependency.outputs.serviceBusEndpoint}'\n      }\n    }\n  }\n",
-        "description": "Optional. Additional parameter Value Set used for authentication settings."
+        "description": "Optional. Additional parameter value set used for authentication settings."
       }
     },
     "roleAssignments": {
