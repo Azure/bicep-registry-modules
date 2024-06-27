@@ -8,15 +8,15 @@ param loadBalancerName string
 @description('Required. The name of the inbound NAT rule.')
 param name string
 
-@description('Required. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer.')
+@description('Conditional. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified.')
 @minValue(-1)
 @maxValue(65534)
-param frontendPort int
+param frontendPort int = -1
 
-@description('Optional. The port used for the internal endpoint.')
+@description('Required. The port used for the internal endpoint.')
 @minValue(-1)
 @maxValue(65535)
-param backendPort int = frontendPort
+param backendPort int
 
 @description('Optional. Name of the backend address pool.')
 param backendAddressPoolName string = ''
