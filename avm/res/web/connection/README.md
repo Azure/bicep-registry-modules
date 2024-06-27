@@ -304,10 +304,10 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 | [`customParameterValues`](#parameter-customparametervalues) | object | Dictionary of custom parameter values for specific connections. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location of the deployment. |
-| [`lock`](#parameter-lock) | object | The lock configuration of the service. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`nonSecretParameterValues`](#parameter-nonsecretparametervalues) | object | Dictionary of nonsecret parameter values. |
 | [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource. |
-| [`parameterValueSet`](#parameter-parametervalueset) | object | Additional parameter Value Set used for authentication settings. |
+| [`parameterValueSet`](#parameter-parametervalueset) | object | Additional parameter value set used for authentication settings. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`statuses`](#parameter-statuses) | array | The status of the connection. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -367,7 +367,7 @@ Location of the deployment.
 
 ### Parameter: `lock`
 
-The lock configuration of the service.
+The lock settings of the service.
 
 - Required: No
 - Type: object
@@ -435,7 +435,7 @@ Connection strings or access keys for connection. Example: `accountName` and `ac
 
 ### Parameter: `parameterValueSet`
 
-Additional parameter Value Set used for authentication settings.
+Additional parameter value set used for authentication settings.
 
 - Required: No
 - Type: object

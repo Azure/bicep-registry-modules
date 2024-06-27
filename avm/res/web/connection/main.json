@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11675303428304792917"
+      "templateHash": "4760344619510029018"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection.",
@@ -167,7 +167,7 @@
       "nullable": true,
       "metadata": {
         "example": "  // for a Service Bus connection\n  {\n    name: 'managedIdentityAuth'\n    values: {\n      namespaceEndpoint: {\n        value: 'sb://${dependency.outputs.serviceBusEndpoint}'\n      }\n    }\n  }\n",
-        "description": "Optional. Additional parameter Value Set used for authentication settings."
+        "description": "Optional. Additional parameter value set used for authentication settings."
       }
     },
     "roleAssignments": {
@@ -189,7 +189,7 @@
     "lock": {
       "$ref": "#/definitions/lockType",
       "metadata": {
-        "description": "Optional. The lock configuration of the service."
+        "description": "Optional. The lock settings of the service."
       }
     },
     "tags": {

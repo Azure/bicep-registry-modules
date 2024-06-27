@@ -60,7 +60,7 @@ param nonSecretParameterValues object?
 })
 param parameterValues object?
 
-@description('Optional. Additional parameter Value Set used for authentication settings.')
+@description('Optional. Additional parameter value set used for authentication settings.')
 @metadata({
   example: '''
   // for a Service Bus connection
@@ -82,7 +82,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. The status of the connection.')
 param statuses object[]?
 
-@description('Optional. The lock configuration of the service.')
+@description('Optional. The lock settings of the service.')
 param lock lockType
 
 @metadata({
