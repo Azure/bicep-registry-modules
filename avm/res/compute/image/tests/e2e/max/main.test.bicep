@@ -47,6 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     imageTemplateNamePrefix: 'dep-${namePrefix}-imgt-${serviceShort}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'
+    serviceShort: serviceShort
   }
 }
 
@@ -56,6 +57,7 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
+    dependsOn: [nestedDependencies]
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {

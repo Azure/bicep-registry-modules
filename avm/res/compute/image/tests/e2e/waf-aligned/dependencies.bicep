@@ -25,6 +25,9 @@ param triggerImageDeploymentScriptName string
 @description('Required. The name of the Deployment Script to copy the VHD to a destination storage account.')
 param copyVhdDeploymentScriptName string
 
+@description('Requried. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'ciwaf'
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -51,12 +54,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-module roleAssignment 'dependencies_rbac.bicep' = {
-  name: '${deployment().name}-MSI-roleAssignment'
+resource resourceGroupContributorRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().subscriptionId, 'Contributor', managedIdentity.id)
   scope: resourceGroup()
-  params: {
-    managedIdentityPrincipalId: managedIdentity.properties.principalId
-    managedIdentityResourceId: managedIdentity.id
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -120,7 +127,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     forceUpdateTag: baseTime
   }
   dependsOn: [
-    roleAssignment
+    resourceGroupContributorRole
   ]
 }
 
@@ -143,7 +150,9 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }
-  dependsOn: [triggerImageDeploymentScript]
+  dependsOn: [
+    triggerImageDeploymentScript
+  ]
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
@@ -172,21 +181,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource keyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault.name}-${location}-${managedIdentity.id}-KeyVault-Reader-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '21090545-7ca7-4776-b22c-e363652d74d2'
-    ) // Key Vault Reader
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
+resource keyVaultKeyCryptoRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-RoleAssignment')
   scope: keyVault::key
   properties: {
     principalId: managedIdentity.properties.principalId
@@ -198,7 +194,24 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
+module waitForDeployment 'main.wait.bicep' = {
+  dependsOn: [keyVaultKeyCryptoRole]
+  scope: resourceGroup()
+  name: '${uniqueString(deployment().name, location)}-waitForDeployment'
+  params: {
+    serviceShort: serviceShort
+    resourceLocation: location
+    waitTimeInSeconds: '15'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2023-10-02' = {
+  dependsOn: [waitForDeployment]
   name: diskEncryptionSetName
   location: location
   identity: {
@@ -216,10 +229,6 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
     }
     encryptionType: 'EncryptionAtRestWithCustomerKey'
   }
-  dependsOn: [
-    keyPermissions
-    keyVaultPermissions
-  ]
 }
 
 @description('The URI of the created VHD.')
