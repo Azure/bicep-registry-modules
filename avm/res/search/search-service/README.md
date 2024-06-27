@@ -50,7 +50,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: 'searchServiceDeployment'
   params: {
     // Required parameters
-    name: 'sssmin001'
+    name: 'sssmin002'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +71,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sssmin001"
+      "value": "sssmin002"
     },
     // Non-required parameters
     "location": {
