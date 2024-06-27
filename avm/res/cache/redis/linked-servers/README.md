@@ -75,6 +75,9 @@ The role of the linked server. Possible values include: "Primary", "Secondary". 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `geoReplicatedPrimaryHostName` | string | The hostname of the linked server. |
+| `name` | string | The name of the deployed job schedule. |
+| `resourceGroupName` | string | The resource group of the deployed credential. |
+| `resourceId` | string | The resource ID of the deployed job schedule. |
 
 ## Cross-referenced modules
 

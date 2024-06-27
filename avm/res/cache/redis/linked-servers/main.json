@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10224524216004835435"
+      "templateHash": "11890727786416870561"
     },
     "name": "Redis Cache Linked Servers",
     "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",
@@ -57,12 +57,33 @@
     }
   ],
   "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed job schedule."
+      },
+      "value": "[format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed job schedule."
+      },
+      "value": "[resourceId('Microsoft.Cache/redis/linkedServers', split(format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName')), '/')[0], split(format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName')), '/')[1])]"
+    },
     "geoReplicatedPrimaryHostName": {
       "type": "string",
       "metadata": {
         "description": "The hostname of the linked server."
       },
       "value": "[reference(resourceId('Microsoft.Cache/redis/linkedServers', split(format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName')), '/')[0], split(format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName')), '/')[1]), '2024-03-01').geoReplicatedPrimaryHostName]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed credential."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

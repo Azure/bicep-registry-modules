@@ -26,5 +26,14 @@ resource redisLinkedServer 'Microsoft.Cache/redis/linkedServers@2024-03-01' = {
   }
 }
 
+@description('The name of the deployed job schedule.')
+output name string = redisLinkedServer.name
+
+@description('The resource ID of the deployed job schedule.')
+output resourceId string = redisLinkedServer.id
+
 @description('The hostname of the linked server.')
 output geoReplicatedPrimaryHostName string = redisLinkedServer.properties.geoReplicatedPrimaryHostName
+
+@description('The resource group of the deployed credential.')
+output resourceGroupName string = resourceGroup().name
