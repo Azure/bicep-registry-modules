@@ -21,6 +21,9 @@ This module deploys an Azure Automation Account.
 | `Microsoft.Automation/automationAccounts/credentials` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials) |
 | `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
 | `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
+| `Microsoft.Automation/automationAccounts/powerShell72Modules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules) |
+| `Microsoft.Automation/automationAccounts/python2Packages` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python2Packages) |
+| `Microsoft.Automation/automationAccounts/python3Packages` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python3Packages) |
 | `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
 | `Microsoft.Automation/automationAccounts/schedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/schedules) |
 | `Microsoft.Automation/automationAccounts/softwareUpdateConfigurations` | [2019-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2019-06-01/automationAccounts/softwareUpdateConfigurations) |
@@ -262,6 +265,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         version: 'latest'
       }
     ]
+    powershell72Modules: [
+      {
+        name: 'powershell-yaml'
+        uri: 'https://www.powershellgallery.com/api/v2/package'
+        version: 'latest'
+      }
+    ]
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -310,6 +320,20 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+    ]
+    python2Packages: [
+      {
+        name: 'pycx2-1.0.3-py2-none-any.whl'
+        uri: 'https://files.pythonhosted.org/packages/59/8c/40f66c4ac7564a68edd629a7836536af53d10b2d89f78c63e77cfcd9d460'
+        version: 'latest'
+      }
+    ]
+    python3Packages: [
+      {
+        name: 'geniz-0.0.1-py3-none-any.whl'
+        uri: 'https://files.pythonhosted.org/packages/8f/4b/c61bb7b176b34dd0c9ab0f3d821234c1e9f81f3ba5a609a1cf9032c852e7'
+        version: 'latest'
       }
     ]
     roleAssignments: [
@@ -538,6 +562,15 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       ]
     },
+    "powershell72Modules": {
+      "value": [
+        {
+          "name": "powershell-yaml",
+          "uri": "https://www.powershellgallery.com/api/v2/package",
+          "version": "latest"
+        }
+      ]
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -587,6 +620,24 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        }
+      ]
+    },
+    "python2Packages": {
+      "value": [
+        {
+          "name": "pycx2-1.0.3-py2-none-any.whl",
+          "uri": "https://files.pythonhosted.org/packages/59/8c/40f66c4ac7564a68edd629a7836536af53d10b2d89f78c63e77cfcd9d460",
+          "version": "latest"
+        }
+      ]
+    },
+    "python3Packages": {
+      "value": [
+        {
+          "name": "geniz-0.0.1-py3-none-any.whl",
+          "uri": "https://files.pythonhosted.org/packages/8f/4b/c61bb7b176b34dd0c9ab0f3d821234c1e9f81f3ba5a609a1cf9032c852e7",
+          "version": "latest"
         }
       ]
     },
@@ -804,6 +855,13 @@ param modules = [
     version: 'latest'
   }
 ]
+powershell72Modules: [
+  {
+    name: 'powershell-yaml'
+    uri: 'https://www.powershellgallery.com/api/v2/package'
+    version: 'latest'
+  }
+]
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -852,6 +910,20 @@ param privateEndpoints = [
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+  }
+]
+python2Packages: [
+  {
+    name: 'pycx2-1.0.3-py2-none-any.whl'
+    uri: 'https://files.pythonhosted.org/packages/59/8c/40f66c4ac7564a68edd629a7836536af53d10b2d89f78c63e77cfcd9d460'
+    version: 'latest'
+  }
+]
+python3Packages: [
+  {
+    name: 'geniz-0.0.1-py3-none-any.whl'
+    uri: 'https://files.pythonhosted.org/packages/8f/4b/c61bb7b176b34dd0c9ab0f3d821234c1e9f81f3ba5a609a1cf9032c852e7'
+    version: 'latest'
   }
 ]
 param roleAssignments = [
@@ -1651,8 +1723,11 @@ param variables = [
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`modules`](#parameter-modules) | array | List of modules to be created in the automation account. |
+| [`powershell72Modules`](#parameter-powershell72modules) | array | List of powershell72 modules to be created in the automation account. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`python2Packages`](#parameter-python2packages) | array | List of python 2 packages to be created in the automation account. |
+| [`python3Packages`](#parameter-python3packages) | array | List of python 3 packages to be created in the automation account. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runbooks`](#parameter-runbooks) | array | List of runbooks to be created in the automation account. |
 | [`schedules`](#parameter-schedules) | array | List of schedules to be created in the automation account. |
@@ -2086,6 +2161,69 @@ List of modules to be created in the automation account.
 - Type: array
 - Default: `[]`
 
+### Parameter: `powershell72Modules`
+
+List of powershell72 modules to be created in the automation account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-powershell72modulesname) | string | Name of the Powershell72 Automation Account module. |
+| [`uri`](#parameter-powershell72modulesuri) | string | Module package URI, e.g. https://www.powershellgallery.com/api/v2/package. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-powershell72moduleslocation) | string | The location to deploy the module to. |
+| [`tags`](#parameter-powershell72modulestags) | object | Tags of the Powershell 72 module resource. |
+| [`version`](#parameter-powershell72modulesversion) | string | Module version or specify latest to get the latest version. |
+
+### Parameter: `powershell72Modules.name`
+
+Name of the Powershell72 Automation Account module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `powershell72Modules.uri`
+
+Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `powershell72Modules.location`
+
+The location to deploy the module to.
+
+- Required: No
+- Type: string
+
+### Parameter: `powershell72Modules.tags`
+
+Tags of the Powershell 72 module resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `powershell72Modules.version`
+
+Module version or specify latest to get the latest version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'latest'
+  ]
+  ```
+
 ### Parameter: `privateEndpoints`
 
 Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
@@ -2510,6 +2648,116 @@ Whether or not public network access is allowed for this resource. For security 
     ''
     'Disabled'
     'Enabled'
+  ]
+  ```
+
+### Parameter: `python2Packages`
+
+List of python 2 packages to be created in the automation account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-python2packagesname) | string | Name of the Python3 Automation Account package. |
+| [`uri`](#parameter-python2packagesuri) | string | Module package URI, e.g. https://www.powershellgallery.com/api/v2/package. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tags`](#parameter-python2packagestags) | object | Tags of the Python3 package resource. |
+| [`version`](#parameter-python2packagesversion) | string | Module version or specify latest to get the latest version. |
+
+### Parameter: `python2Packages.name`
+
+Name of the Python3 Automation Account package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python2Packages.uri`
+
+Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python2Packages.tags`
+
+Tags of the Python3 package resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `python2Packages.version`
+
+Module version or specify latest to get the latest version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'latest'
+  ]
+  ```
+
+### Parameter: `python3Packages`
+
+List of python 3 packages to be created in the automation account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-python3packagesname) | string | Name of the Python3 Automation Account package. |
+| [`uri`](#parameter-python3packagesuri) | string | Module package URI, e.g. https://www.powershellgallery.com/api/v2/package. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tags`](#parameter-python3packagestags) | object | Tags of the Python3 package resource. |
+| [`version`](#parameter-python3packagesversion) | string | Module version or specify latest to get the latest version. |
+
+### Parameter: `python3Packages.name`
+
+Name of the Python3 Automation Account package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python3Packages.uri`
+
+Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python3Packages.tags`
+
+Tags of the Python3 package resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `python3Packages.version`
+
+Module version or specify latest to get the latest version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'latest'
   ]
   ```
 
