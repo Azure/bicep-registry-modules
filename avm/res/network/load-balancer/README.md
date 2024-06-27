@@ -661,6 +661,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -808,6 +813,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs"
+            }
+          ],
           "metricCategories": [
             {
               "category": "AllMetrics"
