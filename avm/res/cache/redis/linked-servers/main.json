@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.28.1.47646",
+      "templateHash": "10224524216004835435"
+    },
+    "name": "Redis Cache Linked Servers",
+    "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "primaryRedisCacheName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Primary Redis cache name."
+      }
+    },
+    "secondaryRedisCacheName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the secondary Redis cache. If not provided, the primary Redis cache name is used."
+      }
+    },
+    "linkedRedisCacheId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the linked server. If not provided, the resource ID of the primary Redis cache is used."
+      }
+    },
+    "linkedRedisCacheLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The location of the linked server. If not provided, the location of the primary Redis cache is used."
+      }
+    },
+    "serverRole": {
+      "type": "string",
+      "defaultValue": "Secondary",
+      "metadata": {
+        "description": "Optional. The role of the linked server. Possible values include: \"Primary\", \"Secondary\". Default value is \"Secondary\"."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Cache/redis/linkedServers",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName'))]",
+      "properties": {
+        "linkedRedisCacheId": "[parameters('linkedRedisCacheId')]",
+        "linkedRedisCacheLocation": "[parameters('linkedRedisCacheLocation')]",
+        "serverRole": "[parameters('serverRole')]"
+      }
+    }
+  ],
+  "outputs": {
+    "geoReplicatedPrimaryHostName": {
+      "type": "string",
+      "metadata": {
+        "description": "The hostname of the linked server."
+      },
+      "value": "[reference(resourceId('Microsoft.Cache/redis/linkedServers', split(format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName')), '/')[0], split(format('{0}/{1}', parameters('primaryRedisCacheName'), parameters('secondaryRedisCacheName')), '/')[1]), '2024-03-01').geoReplicatedPrimaryHostName]"
+    }
+  }
+}
