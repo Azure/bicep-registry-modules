@@ -15,7 +15,7 @@ param certificates array = []
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Custom properties of the API Management service.')
+@description('Optional. Custom properties of the API Management service. Not supported if SKU is Consumption.')
 param customProperties object = {
   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
@@ -75,8 +75,8 @@ param roleAssignments roleAssignmentType
 ])
 param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.')
-param skuUnits int?
+@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.')
+param skuUnits int = 1
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string?
@@ -215,17 +215,17 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: contains(sku, 'Consumption') ? 0 ?? skuUnits : 1
+    capacity: contains(sku, 'Consumption') || contains(sku, 'V2') ? 0 : skuUnits
   }
-  zones: contains(sku, 'V2') ? null : zones
+  zones: contains(sku, 'Premium') ? zones : null
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: contains(sku, 'V2') ? null : additionalLocations
-    customProperties: customProperties
+    additionalLocations: contains(sku, 'Premium') ? additionalLocations : null
+    customProperties: contains(sku, 'Consumption') ? null : customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
     disableGateway: disableGateway

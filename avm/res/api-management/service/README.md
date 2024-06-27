@@ -70,8 +70,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
-    sku: 'Basic'
-    skuUnits: 2
+    sku: 'Consumption'
   }
 }
 ```
@@ -103,10 +102,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "<location>"
     },
     "sku": {
-      "value": "Basic"
-    },
-    "skuUnits": {
-      "value": 2
+      "value": "Consumption"
     }
   }
 }
@@ -1212,7 +1208,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`skuUnits`](#parameter-skuunits) | int | The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU. |
+| [`skuUnits`](#parameter-skuunits) | int | The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1771,10 +1767,11 @@ The pricing tier of this API Management service.
 
 ### Parameter: `skuUnits`
 
-The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.
+The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU.
 
 - Required: No
 - Type: int
+- Default: `1`
 
 ### Parameter: `subnetResourceId`
 

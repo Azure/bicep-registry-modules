@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "416476392930569388"
+      "templateHash": "3693902911218762891"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -290,7 +290,7 @@
         "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256": "False"
       },
       "metadata": {
-        "description": "Optional. Custom properties of the API Management service."
+        "description": "Optional. Custom properties of the API Management service. Not supported if SKU is Consumption."
       }
     },
     "disableGateway": {
@@ -390,9 +390,9 @@
     },
     "skuUnits": {
       "type": "int",
-      "nullable": true,
+      "defaultValue": 1,
       "metadata": {
-        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU."
+        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, skuUnits should = 0. Reference https://azure.microsoft.com/en-us/pricing/details/api-management/ for number of available Units per SKU."
       }
     },
     "subnetResourceId": {
@@ -588,17 +588,17 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[if(contains(parameters('sku'), 'Consumption'), coalesce(0, parameters('skuUnits')), 1)]"
+        "capacity": "[if(or(contains(parameters('sku'), 'Consumption'), contains(parameters('sku'), 'V2')), 0, parameters('skuUnits'))]"
       },
-      "zones": "[if(contains(parameters('sku'), 'V2'), null(), parameters('zones'))]",
+      "zones": "[if(contains(parameters('sku'), 'Premium'), parameters('zones'), null())]",
       "identity": "[variables('identity')]",
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[if(contains(parameters('sku'), 'V2'), null(), parameters('additionalLocations'))]",
-        "customProperties": "[parameters('customProperties')]",
+        "additionalLocations": "[if(contains(parameters('sku'), 'Premium'), parameters('additionalLocations'), null())]",
+        "customProperties": "[if(contains(parameters('sku'), 'Consumption'), null(), parameters('customProperties'))]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
         "disableGateway": "[parameters('disableGateway')]",
