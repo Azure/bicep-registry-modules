@@ -46,6 +46,14 @@ module testDeployment '../../../main.bicep' = [
       sku: 'BasicV2'
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
+      managedIdentities: {
+        systemAssigned: true
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]
