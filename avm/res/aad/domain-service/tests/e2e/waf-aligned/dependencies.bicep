@@ -47,7 +47,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     }
     subnets: [
       {
-        name: 'defaultSubnet'
+        name: 'gateway-subnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
         }
@@ -59,6 +59,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
           networkSecurityGroup: {
             id: nsgAaddSubnet.id
           }
+        }
+      }
+      {
+        name: 'workload-subnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 2)
         }
       }
     ]
@@ -79,7 +85,7 @@ resource replicaVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = 
     }
     subnets: [
       {
-        name: 'defaultSubnet'
+        name: 'gateway-subnet'
         properties: {
           addressPrefix: cidrSubnet(replicaAddressPrefix, 24, 0)
         }
@@ -93,6 +99,12 @@ resource replicaVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = 
           }
         }
       }
+      {
+        name: 'workload-subnet'
+        properties: {
+          addressPrefix: cidrSubnet(replicaAddressPrefix, 24, 2)
+        }
+      }
     ]
   }
 }
@@ -101,7 +113,7 @@ resource virtualNetworkPeeringToReplica 'Microsoft.Network/virtualNetworks/virtu
   name: 'aadds-vnetpeering-${replicaVirtualNetworkName}'
   parent: virtualNetwork
   properties: {
-    allowForwardedTraffic: false
+    allowForwardedTraffic: true
     allowGatewayTransit: false
     allowVirtualNetworkAccess: true
     useRemoteGateways: false
@@ -114,7 +126,7 @@ resource virtualNetworkPeeringFromReplica 'Microsoft.Network/virtualNetworks/vir
   name: 'aadds-vnetpeering-${virtualNetworkName}'
   parent: replicaVirtualNetwork
   properties: {
-    allowForwardedTraffic: false
+    allowForwardedTraffic: true
     allowGatewayTransit: false
     allowVirtualNetworkAccess: true
     useRemoteGateways: false
@@ -140,6 +152,19 @@ resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
           destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowRDP'
+        properties: {
+          priority: 201
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'CorpNetSaw'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '3389'
         }
       }
       {
@@ -171,7 +196,6 @@ resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
     ]
   }
 }
-
 resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
   name: '${replicaVirtualNetworkName}-aadds-subnet-nsg'
   location: replicaLocation
@@ -180,8 +204,8 @@ resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-0
       {
         name: 'AllowSyncWithAzureAD'
         properties: {
-          access: 'Allow'
           priority: 101
+          access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourceAddressPrefix: 'AzureActiveDirectoryDomainServices'
@@ -190,11 +214,25 @@ resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-0
           destinationPortRange: '443'
         }
       }
+      // Optional. Debugging for support
+      {
+        name: 'AllowRDP'
+        properties: {
+          priority: 201
+          access: 'Allow'
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'CorpNetSaw'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '3389'
+        }
+      }
       {
         name: 'AllowPSRemoting'
         properties: {
-          access: 'Allow'
           priority: 301
+          access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourceAddressPrefix: 'AzureActiveDirectoryDomainServices'
@@ -206,8 +244,8 @@ resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-0
       {
         name: 'AllowLDAPs'
         properties: {
-          access: 'Allow'
           priority: 401
+          access: 'Allow'
           direction: 'Inbound'
           protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
@@ -291,6 +329,3 @@ output certPWSecretName string = certPWSecretName
 
 @description('The name of the certification secret.')
 output certSecretName string = certSecretName
-
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
