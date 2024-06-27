@@ -46,10 +46,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
 
 - [Using only defaults with a Basic SKU](#example-1-using-only-defaults-with-a-basic-sku)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Test deploying apim v2 sku](#example-4-test-deploying-apim-v2-sku)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using only defaults with a Basic SKU](#example-2-using-only-defaults-with-a-basic-sku)
+- [Test deploying apim v2 sku](#example-3-test-deploying-apim-v2-sku)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults with a Basic SKU_
 
@@ -65,7 +66,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apissku001'
+    name: 'apiscon001'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -89,7 +90,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apissku001"
+      "value": "apiscon001"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -111,7 +112,127 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using only defaults with a Basic SKU_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apisdev001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    sku: 'Developer'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apisdev001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sku": {
+      "value": "Developer"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Test deploying apim v2 sku_
+
+This instance deploys the module using a v2 SKU with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apisv2s001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    sku: 'BasicV2'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apisv2s001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sku": {
+      "value": "BasicV2"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -167,7 +288,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -659,67 +780,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 4: _Test deploying apim v2 sku_
-
-This instance deploys the module using a v2 SKU with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
-  params: {
-    // Required parameters
-    name: 'apisv2s001'
-    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-    publisherName: 'az-amorg-x-001'
-    // Non-required parameters
-    location: '<location>'
-    sku: 'BasicV2'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "apisv2s001"
-    },
-    "publisherEmail": {
-      "value": "apimgmt-noreply@mail.windowsazure.com"
-    },
-    "publisherName": {
-      "value": "az-amorg-x-001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "sku": {
-      "value": "BasicV2"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1186,7 +1247,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`backends`](#parameter-backends) | array | Backends. |
 | [`caches`](#parameter-caches) | array | Caches. |
 | [`certificates`](#parameter-certificates) | array | List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10. |
-| [`customProperties`](#parameter-customproperties) | object | Custom properties of the API Management service. |
+| [`customProperties`](#parameter-customproperties) | object | Custom properties of the API Management service. Not supported if SKU is Consumption. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableGateway`](#parameter-disablegateway) | bool | Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region. |
 | [`enableClientCertificate`](#parameter-enableclientcertificate) | bool | Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway. |
@@ -1302,7 +1363,7 @@ List of Certificates that need to be installed in the API Management service. Ma
 
 ### Parameter: `customProperties`
 
-Custom properties of the API Management service.
+Custom properties of the API Management service. Not supported if SKU is Consumption.
 
 - Required: No
 - Type: object
