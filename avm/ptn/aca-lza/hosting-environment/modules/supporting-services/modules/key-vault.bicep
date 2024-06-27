@@ -91,7 +91,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
     }
-    enableSoftDelete: false
+    enableSoftDelete: true
     softDeleteRetentionInDays: 7
     enablePurgeProtection: null
     publicNetworkAccess: 'Disabled'

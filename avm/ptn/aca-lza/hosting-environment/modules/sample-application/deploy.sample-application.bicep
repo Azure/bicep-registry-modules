@@ -51,7 +51,7 @@ module sampleApplication 'br/public:avm/res/app/container-app:0.4.0' = {
         }
       }
     ]
-    scaleMinReplicas: 1
+    scaleMinReplicas: 2
     scaleMaxReplicas: 10
     activeRevisionsMode: 'Single'
     ingressExternal: true

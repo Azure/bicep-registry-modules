@@ -35,6 +35,9 @@ param location string = deployment().location
 @description('Required. The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
 
+@description('Optional. The storage account type to use for the jump box. Defaults to Standard_LRS.')
+param storageAccountType string = 'Standard_LRS'
+
 @description('Required. The username to use for the virtual machine.')
 param vmAdminUsername string
 
@@ -152,6 +155,8 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
     spokeVNetAddressPrefixes: spokeVNetAddressPrefixes
     networkApplianceIpAddress: networkApplianceIpAddress
     vmSize: vmSize
+    vmZone: (deployZoneRedundantResources) ? 2 : 0
+    storageAccountType: storageAccountType
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmLinuxSshAuthorizedKey: vmLinuxSshAuthorizedKey

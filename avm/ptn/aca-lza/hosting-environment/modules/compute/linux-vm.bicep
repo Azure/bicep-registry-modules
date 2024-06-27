@@ -6,7 +6,8 @@ targetScope = 'resourceGroup'
 
 param vmName string
 param vmSize string
-
+param storageAccountType string = 'Standard_LRS'
+param vmZone int = 0
 param vmVnetName string
 param vmSubnetName string
 param vmSubnetAddressPrefix string
@@ -57,8 +58,34 @@ resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
     }
   }
 }
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
+  name: 'dep-mc-${vmName}'
+  location: location
+  properties: {
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
+  }
+}
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
   name: 'vmDeployment'
   params: {
     name: vmName
@@ -70,6 +97,10 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
     adminPassword: ((vmAuthenticationType == 'password') ? vmAdminPassword : null)
     disablePasswordAuthentication: ((vmAuthenticationType == 'password') ? false : true)
     encryptionAtHost: false
+    enableAutomaticUpdates: true
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    maintenanceConfigurationResourceId: maintenanceConfiguration.id
     publicKeys: ((vmAuthenticationType == 'sshPublicKey')
       ? [
           {
@@ -97,10 +128,10 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.0' = {
       deleteOption: 'Delete'
       diskSizeGB: 128
       managedDisk: {
-        storageAccountType: 'Standard_LRS'
+        storageAccountType: storageAccountType
       }
     }
-    zone: 0
+    zone: vmZone
     vmSize: vmSize
     imageReference: {
       publisher: 'canonical'

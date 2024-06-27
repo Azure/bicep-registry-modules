@@ -342,16 +342,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
         ]
       : []
     tags: tags
-    webApplicationFirewallConfiguration: {
-      enabled: true
-      firewallMode: 'Prevention'
-      ruleSetType: 'OWASP'
-      ruleSetVersion: '3.2'
-      disabledRuleGroups: []
-      requestBodyCheck: true
-      maxRequestBodySizeInKb: 128
-      fileUploadLimitInMb: 100
-    }
+    firewallPolicyId: appGwWafPolicy.outputs.resourceId
     sslPolicyType: 'Predefined'
     sslPolicyName: 'AppGwSslPolicy20220101'
     zones: [
@@ -359,6 +350,33 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
       '2'
       '3'
     ]
+  }
+}
+
+module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.0' = {
+  name: take('appGwWafPolicy-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  params: {
+    name: '${naming.outputs.resourcesNames.applicationGateway}Policy001'
+    location: location
+    policySettings: {
+      fileUploadLimitInMb: 10
+      state: 'Enabled'
+      mode: 'Prevention'
+    }
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'OWASP'
+          ruleSetVersion: '3.2'
+          ruleGroupOverrides: []
+        }
+        {
+          ruleSetType: 'Microsoft_BotManagerRuleSet'
+          ruleSetVersion: '0.1'
+        }
+      ]
+    }
+    tags: tags
   }
 }
 

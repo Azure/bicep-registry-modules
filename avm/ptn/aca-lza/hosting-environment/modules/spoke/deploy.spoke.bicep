@@ -57,6 +57,12 @@ param networkApplianceIpAddress string
 @description('The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
 
+@description('Optional. The zone to create the jump box in. Defaults to 0.')
+param vmZone int = 0
+
+@description('Optional. The storage account type to use for the jump box. Defaults to Standard_LRS.')
+param storageAccountType string = 'Standard_LRS'
+
 @description('The username to use for the jump box.')
 param vmAdminUsername string
 
@@ -306,6 +312,8 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
     vmAdminPassword: vmAdminPassword
     vmSshPublicKey: vmLinuxSshAuthorizedKey
     vmSize: vmSize
+    vmZone: vmZone
+    storageAccountType: storageAccountType
     vmVnetName: vnetSpoke.outputs.name
     vmSubnetName: vmSubnetName
     vmSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
@@ -326,6 +334,8 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmSize: vmSize
+    vmZone: vmZone
+    storageAccountType: storageAccountType
     vmVnetName: vnetSpoke.outputs.name
     vmSubnetName: vmSubnetName
     vmSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
