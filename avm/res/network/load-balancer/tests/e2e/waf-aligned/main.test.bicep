@@ -112,8 +112,8 @@ module testDeployment '../../../main.bicep' = [
           backendAddressPoolName: 'servers'
           backendPort: 3389
           frontendIPConfigurationName: 'privateIPConfig1'
-          frontPortRangeStart: 5000
-          frontPortRangeEnd: 5010
+          frontendPortRangeStart: 5000
+          frontendPortRangeEnd: 5010
           frontendPort: -1
           loadDistribution: 'Default'
           name: 'inboundNatRule2'

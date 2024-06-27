@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10053184666608280228"
+      "templateHash": "11870013568583974540"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -644,9 +644,7 @@
           "frontendIPConfigurationName": {
             "value": "[parameters('inboundNatRules')[copyIndex()].frontendIPConfigurationName]"
           },
-          "frontendPort": {
-            "value": "[parameters('inboundNatRules')[copyIndex()].frontendPort]"
-          },
+          "frontendPort": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPort'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPort), createObject('value', false()))]",
           "backendPort": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendPort'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendPort), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPort))]",
           "backendAddressPoolName": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendAddressPoolName'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendAddressPoolName), createObject('value', ''))]",
           "enableFloatingIP": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'enableFloatingIP'), createObject('value', parameters('inboundNatRules')[copyIndex()].enableFloatingIP), createObject('value', false()))]",
