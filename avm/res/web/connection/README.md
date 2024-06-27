@@ -304,7 +304,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 | [`customParameterValues`](#parameter-customparametervalues) | object | Dictionary of custom parameter values for specific connections. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location of the deployment. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`lock`](#parameter-lock) | object | The lock configuration of the service. |
 | [`nonSecretParameterValues`](#parameter-nonsecretparametervalues) | object | Dictionary of nonsecret parameter values. |
 | [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource. |
 | [`parameterValueSet`](#parameter-parametervalueset) | object | Additional parameter Value Set used for authentication settings. |
@@ -333,6 +333,14 @@ Specific values for some API connections.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  // for a Service Bus connection
+  {
+    type: 'Microsoft.Web/locations/managedApis'
+    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')
+  }
+  ```
 
 ### Parameter: `customParameterValues`
 
@@ -359,7 +367,7 @@ Location of the deployment.
 
 ### Parameter: `lock`
 
-The lock settings of the service.
+The lock configuration of the service.
 
 - Required: No
 - Type: object
@@ -406,6 +414,24 @@ Connection strings or access keys for connection. Example: `accountName` and `ac
 
 - Required: No
 - Type: secureObject
+- Example:
+  ```Bicep
+  {
+    connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'
+  }
+  {
+    rootfolder: fileshareConnection.rootfolder
+    authType: fileshareConnection.authType
+    // to add an object, use the any() function
+    gateway: any({
+      name: fileshareConnection.odgw.name
+      id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)
+      type: 'Microsoft.Web/connectionGateways'
+    })
+    username: username
+    password: password
+  }
+  ```
 
 ### Parameter: `parameterValueSet`
 
@@ -413,6 +439,18 @@ Additional parameter Value Set used for authentication settings.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  // for a Service Bus connection
+  {
+    name: 'managedIdentityAuth'
+    values: {
+      namespaceEndpoint: {
+        value: 'sb://${dependency.outputs.serviceBusEndpoint}'
+      }
+    }
+  }
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -516,6 +554,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  ```
 
 ### Parameter: `testLinks`
 

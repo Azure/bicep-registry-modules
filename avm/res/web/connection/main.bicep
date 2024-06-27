@@ -82,7 +82,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. The status of the connection.')
 param statuses object[]?
 
-@description('Optional. The lock settings of the service.')
+@description('Optional. The lock configuration of the service.')
 param lock lockType
 
 @metadata({

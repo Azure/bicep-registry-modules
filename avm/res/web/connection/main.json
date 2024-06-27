@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4760344619510029018"
+      "templateHash": "11675303428304792917"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection.",
@@ -189,7 +189,7 @@
     "lock": {
       "$ref": "#/definitions/lockType",
       "metadata": {
-        "description": "Optional. The lock settings of the service."
+        "description": "Optional. The lock configuration of the service."
       }
     },
     "tags": {
