@@ -114,7 +114,6 @@ module testDeployment '../../../main.bicep' = [
           frontendIPConfigurationName: 'privateIPConfig1'
           frontendPortRangeStart: 5000
           frontendPortRangeEnd: 5010
-          frontendPort: -1
           loadDistribution: 'Default'
           name: 'inboundNatRule2'
           probeName: 'probe2'

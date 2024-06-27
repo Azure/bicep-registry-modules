@@ -996,7 +996,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         backendAddressPoolName: 'servers'
         backendPort: 3389
         frontendIPConfigurationName: 'privateIPConfig1'
-        frontendPort: -1
         frontendPortRangeEnd: 5010
         frontendPortRangeStart: 5000
         loadDistribution: 'Default'
@@ -1109,7 +1108,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           "backendAddressPoolName": "servers",
           "backendPort": 3389,
           "frontendIPConfigurationName": "privateIPConfig1",
-          "frontendPort": -1,
           "frontendPortRangeEnd": 5010,
           "frontendPortRangeStart": 5000,
           "loadDistribution": "Default",
