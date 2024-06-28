@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the NetApp account.')
 param name string
 
-@description('Optional. Name of the active directory host as part of Kerberos Realm used for Kerberos authentication')
+@description('Optional. Name of the active directory host as part of Kerberos Realm used for Kerberos authentication.')
 param adName string = ''
 
 @description('Optional. Enable AES encryption on the SMB Server.')
@@ -30,7 +30,7 @@ param domainJoinOU string = ''
 @description('Optional. Required if domainName is specified. Comma separated list of DNS server IP addresses (IPv4 only) required for the Active Directory (AD) domain join and SMB authentication operations to succeed.')
 param dnsServers string = ''
 
-@description('Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only')
+@description('Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only.')
 param encryptDCConnections bool = false
 
 @description('Optional. Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes.')

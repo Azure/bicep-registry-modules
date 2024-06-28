@@ -649,7 +649,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication |
+| [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -659,7 +659,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 | [`domainJoinUser`](#parameter-domainjoinuser) | string | Required if domainName is specified. Username of Active Directory domain administrator, with permissions to create SMB server machine account in the AD domain. |
 | [`domainName`](#parameter-domainname) | string | Fully Qualified Active Directory DNS Domain Name (e.g. 'contoso.com'). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`encryptDCConnections`](#parameter-encryptdcconnections) | bool | Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only |
+| [`encryptDCConnections`](#parameter-encryptdcconnections) | bool | Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only. |
 | [`kdcIP`](#parameter-kdcip) | string | Kerberos Key Distribution Center (KDC) as part of Kerberos Realm used for Kerberos authentication. |
 | [`ldapOverTLS`](#parameter-ldapovertls) | bool | Specifies whether to use TLS when NFS (with/without Kerberos) and SMB volumes communicate with an LDAP server. A server root CA certificate must be uploaded if enabled (serverRootCACertificate). |
 | [`ldapSigning`](#parameter-ldapsigning) | bool | Specifies whether or not the LDAP traffic needs to be signed. |
@@ -680,7 +680,7 @@ The name of the NetApp account.
 
 ### Parameter: `adName`
 
-Name of the active directory host as part of Kerberos Realm used for Kerberos authentication
+Name of the active directory host as part of Kerberos Realm used for Kerberos authentication.
 
 - Required: No
 - Type: string
@@ -801,7 +801,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `encryptDCConnections`
 
-Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only
+Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only.
 
 - Required: No
 - Type: bool

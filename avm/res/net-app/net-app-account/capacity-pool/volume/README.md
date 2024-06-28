@@ -50,8 +50,8 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
 | [`backupVaultLocation`](#parameter-backupvaultlocation) | string | The location of the backup vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | The name of the backup vault. |
-| [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes |
-| [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read) |
+| [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
+| [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
@@ -60,7 +60,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`dailySnapshotsToKeep`](#parameter-dailysnapshotstokeep) | int | Daily snapshot count to keep. |
 | [`dailyUsedBytes`](#parameter-dailyusedbytes) | int | Daily snapshot used bytes. |
 | [`daysOfMonth`](#parameter-daysofmonth) | string | The monthly snapshot day. |
-| [`endpointType`](#parameter-endpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst) |
+| [`endpointType`](#parameter-endpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
 | [`hourlyMinute`](#parameter-hourlyminute) | int | The hourly snapshot minute. |
 | [`hourlySnapshotsToKeep`](#parameter-hourlysnapshotstokeep) | int | Hourly snapshot count to keep. |
@@ -79,7 +79,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
 | [`snapshotName`](#parameter-snapshotname) | string | The name of the snapshot. |
-| [`snapshotPolicyId`](#parameter-snapshotpolicyid) | string | Snapshot Policy ResourceId |
+| [`snapshotPolicyId`](#parameter-snapshotpolicyid) | string | Snapshot Policy ResourceId. |
 | [`snapshotPolicyLocation`](#parameter-snapshotpolicylocation) | string | The location of the snapshot policy. |
 | [`snapshotPolicyName`](#parameter-snapshotpolicyname) | string | The name of the snapshot policy. |
 | [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Indicates whether to use an existing snapshot. |
@@ -90,7 +90,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`weeklyMinute`](#parameter-weeklyminute) | int | The weekly snapshot minute. |
 | [`weeklySnapshotsToKeep`](#parameter-weeklysnapshotstokeep) | int | Weekly snapshot count to keep. |
 | [`weeklyUsedBytes`](#parameter-weeklyusedbytes) | int | Weekly snapshot used bytes. |
-| [`zones`](#parameter-zones) | array | Availability Zone |
+| [`zones`](#parameter-zones) | array | Availability Zone. |
 
 ### Parameter: `name`
 
@@ -191,14 +191,14 @@ The name of the backup vault.
 
 ### Parameter: `coolAccess`
 
-If enabled (true) the pool can contain cool Access enabled volumes
+If enabled (true) the pool can contain cool Access enabled volumes.
 
 - Required: Yes
 - Type: bool
 
 ### Parameter: `coolAccessRetrievalPolicy`
 
-determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)
+determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).
 
 - Required: No
 - Type: string
@@ -263,7 +263,7 @@ The monthly snapshot day.
 
 ### Parameter: `endpointType`
 
-Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)
+Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).
 
 - Required: Yes
 - Type: string
@@ -492,7 +492,7 @@ The name of the snapshot.
 
 ### Parameter: `snapshotPolicyId`
 
-Snapshot Policy ResourceId
+Snapshot Policy ResourceId.
 
 - Required: Yes
 - Type: string
@@ -570,7 +570,7 @@ Weekly snapshot used bytes.
 
 ### Parameter: `zones`
 
-Availability Zone
+Availability Zone.
 
 - Required: Yes
 - Type: array

@@ -8,19 +8,19 @@ param netAppAccountName string
 @description('Conditional. The name of the parent capacity pool. Required if the template is used in a standalone deployment.')
 param capacityPoolName string
 
-@description('Optional. If enabled (true) the pool can contain cool Access enabled volumes')
+@description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
 param coolAccess bool
 
 @description('Optional. Specifies the number of days after which data that is not accessed by clients will be tiered.')
 param coolnessPeriod int
 
-@description('Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)')
+@description('Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).')
 param coolAccessRetrievalPolicy string = 'None'
 
-@description('Optional. Availability Zone')
+@description('Optional. Availability Zone.')
 param zones string[]
 
-@description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)')
+@description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
 param endpointType string
 
 @description('Optional. The remote region for the other end of the Volume Replication.')
@@ -32,7 +32,7 @@ param remoteVolumeResourceId string
 @description('Optional. The replication schedule for the volume.')
 param replicationSchedule string
 
-@description('Optional. Snapshot Policy ResourceId')
+@description('Optional. Snapshot Policy ResourceId.')
 param snapshotPolicyId string
 
 @description('Optional. The name of the snapshot policy.')

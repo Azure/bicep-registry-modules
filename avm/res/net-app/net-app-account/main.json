@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16483537317196447239"
+      "templateHash": "11892526193332235973"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -163,7 +163,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Name of the active directory host as part of Kerberos Realm used for Kerberos authentication"
+        "description": "Optional. Name of the active directory host as part of Kerberos Realm used for Kerberos authentication."
       }
     },
     "aesEncryption": {
@@ -218,7 +218,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only"
+        "description": "Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only."
       }
     },
     "smbServerNamePrefix": {
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "15614118792587567338"
+              "templateHash": "8715475472163591129"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -798,7 +798,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "8418592200923271192"
+                      "templateHash": "17196269466824837027"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -888,7 +888,7 @@
                     "coolAccess": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes"
+                        "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
                       }
                     },
                     "coolnessPeriod": {
@@ -901,7 +901,7 @@
                       "type": "string",
                       "defaultValue": "None",
                       "metadata": {
-                        "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)"
+                        "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
                       }
                     },
                     "zones": {
@@ -910,13 +910,13 @@
                         "type": "string"
                       },
                       "metadata": {
-                        "description": "Optional. Availability Zone"
+                        "description": "Optional. Availability Zone."
                       }
                     },
                     "endpointType": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)"
+                        "description": "Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)."
                       }
                     },
                     "remoteVolumeRegion": {
@@ -940,7 +940,7 @@
                     "snapshotPolicyId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. Snapshot Policy ResourceId"
+                        "description": "Optional. Snapshot Policy ResourceId."
                       }
                     },
                     "snapshotPolicyName": {
