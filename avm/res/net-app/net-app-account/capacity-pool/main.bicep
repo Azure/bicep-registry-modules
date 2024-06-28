@@ -181,8 +181,7 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = capacityPool.location
 
-@description('The resource IDs of the volumes created in the capacity pool.')
-output volumeResourceIds array = [for (volume, index) in volumes: capacityPool_volumes[index].outputs.resourceId]
+@description('The resource IDs of the volume created in the capacity pool.')
 output volumeResourceId string = capacityPool_volumes[0].outputs.resourceId
 
 // =============== //

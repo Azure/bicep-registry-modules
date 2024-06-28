@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2951045154498815398"
+      "templateHash": "16483537317196447239"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "14244180659582165252"
+              "templateHash": "15614118792587567338"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -1422,18 +1422,11 @@
               },
               "value": "[reference('capacityPool', '2023-11-01', 'full').location]"
             },
-            "volumeResourceIds": {
-              "type": "array",
-              "metadata": {
-                "description": "The resource IDs of the volumes created in the capacity pool."
-              },
-              "copy": {
-                "count": "[length(parameters('volumes'))]",
-                "input": "[reference(format('capacityPool_volumes[{0}]', copyIndex())).outputs.resourceId.value]"
-              }
-            },
             "volumeResourceId": {
               "type": "string",
+              "metadata": {
+                "description": "The resource IDs of the volume created in the capacity pool."
+              },
               "value": "[reference(format('capacityPool_volumes[{0}]', 0)).outputs.resourceId.value]"
             }
           }
@@ -1473,15 +1466,11 @@
       },
       "value": "[reference('netAppAccount', '2023-11-01', 'full').location]"
     },
-    "volumeResourceIds": {
-      "type": "array",
-      "copy": {
-        "count": "[length(parameters('capacityPools'))]",
-        "input": "[reference(format('netAppAccount_capacityPools[{0}]', copyIndex())).outputs.volumeResourceIds.value]"
-      }
-    },
     "volumeResourceId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource IDs of the volume created in the capacity pool."
+      },
       "value": "[reference(format('netAppAccount_capacityPools[{0}]', 0)).outputs.volumeResourceId.value]"
     }
   }

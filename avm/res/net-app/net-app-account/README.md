@@ -1016,8 +1016,7 @@ Tags for all resources.
 | `name` | string | The name of the NetApp account. |
 | `resourceGroupName` | string | The name of the Resource Group the NetApp account was created in. |
 | `resourceId` | string | The Resource ID of the NetApp account. |
-| `volumeResourceId` | string | The Resource ID of the NetApp account. |
-| `volumeResourceIds` | array | The Resource ID of the NetApp account. |
+| `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
 
 ## Cross-referenced modules
 

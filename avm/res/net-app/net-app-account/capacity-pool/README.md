@@ -256,8 +256,7 @@ List of volumnes to create in the capacity pool.
 | `name` | string | The name of the Capacity Pool. |
 | `resourceGroupName` | string | The name of the Resource Group the Capacity Pool was created in. |
 | `resourceId` | string | The resource ID of the Capacity Pool. |
-| `volumeResourceId` | string | The resource ID of the Capacity Pool. |
-| `volumeResourceIds` | array | The resource IDs of the volumes created in the capacity pool. |
+| `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
 
 ## Cross-referenced modules
 
