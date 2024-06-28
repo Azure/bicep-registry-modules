@@ -36,7 +36,7 @@ module nestedDependencies1 'dependencies1.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies1'
   params: {
     location: resourceLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
@@ -48,15 +48,6 @@ module nestedDependencies2 'dependencies2.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-sec-${serviceShort}'
     location: nestedDependencies1.outputs.pairedRegionName
     redisName: 'dep-${namePrefix}-redis-sec-${serviceShort}'
-  }
-}
-
-module nestedDependencies3 'dependencies3.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies3'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-pri-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -121,18 +112,18 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
-          nestedDependencies3.outputs.managedIdentityResourceId
+          nestedDependencies1.outputs.managedIdentityResourceId
         ]
       }
       roleAssignments: [
         {
           roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies3.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies3.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
@@ -140,7 +131,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.Authorization/roleDefinitions',
             'acdd72a7-3385-48ef-bd42-f606fba81ae7'
           )
-          principalId: nestedDependencies3.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
       ]
@@ -149,9 +140,5 @@ module testDeployment '../../../main.bicep' = [
         resourceType: 'Redis Cache'
       }
     }
-    dependsOn: [
-      nestedDependencies3
-      diagnosticDependencies
-    ]
   }
 ]

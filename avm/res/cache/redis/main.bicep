@@ -307,9 +307,9 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1'
 module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicationObject)) {
   name: '${uniqueString(deployment().name, location)}-redis-LinkedServer'
   params: {
-    primaryRedisCacheName: redis.name
-    secondaryRedisCacheName: geoReplicationObject.secondaryRedisCacheName
-    linkedRedisCacheId: geoReplicationObject.linkedRedisCacheId
+    redisCacheName: redis.name
+    name: geoReplicationObject.secondaryRedisCacheName
+    linkedRedisCacheResourceId: geoReplicationObject.linkedRedisCacheId
     linkedRedisCacheLocation: geoReplicationObject.linkedRedisCacheLocation
   }
   dependsOn: redis_privateEndpoints

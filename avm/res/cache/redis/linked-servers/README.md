@@ -22,20 +22,35 @@ This module connects a primary and secondary Redis Cache together for geo-replic
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`linkedRedisCacheId`](#parameter-linkedrediscacheid) | string | The resource ID of the linked server. If not provided, the resource ID of the primary Redis cache is used. |
-| [`linkedRedisCacheLocation`](#parameter-linkedrediscachelocation) | string | The location of the linked server. If not provided, the location of the primary Redis cache is used. |
-| [`primaryRedisCacheName`](#parameter-primaryrediscachename) | string | Primary Redis cache name. |
-| [`secondaryRedisCacheName`](#parameter-secondaryrediscachename) | string | The name of the secondary Redis cache. If not provided, the primary Redis cache name is used. |
+| [`linkedRedisCacheResourceId`](#parameter-linkedrediscacheresourceid) | string | The resource ID of the linked server. |
+| [`name`](#parameter-name) | string | The name of the secondary Redis cache. If not provided, the primary Redis cache name is used. |
+| [`redisCacheName`](#parameter-rediscachename) | string | Primary Redis cache name. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`linkedRedisCacheLocation`](#parameter-linkedrediscachelocation) | string | The location of the linked server. If not provided, the location of the primary Redis cache is used. |
 | [`serverRole`](#parameter-serverrole) | string | The role of the linked server. Possible values include: "Primary", "Secondary". Default value is "Secondary". |
 
-### Parameter: `linkedRedisCacheId`
+### Parameter: `linkedRedisCacheResourceId`
 
-The resource ID of the linked server. If not provided, the resource ID of the primary Redis cache is used.
+The resource ID of the linked server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.
+
+- Required: No
+- Type: string
+- Default: `[parameters('redisCacheName')]`
+
+### Parameter: `redisCacheName`
+
+Primary Redis cache name.
 
 - Required: Yes
 - Type: string
@@ -44,22 +59,9 @@ The resource ID of the linked server. If not provided, the resource ID of the pr
 
 The location of the linked server. If not provided, the location of the primary Redis cache is used.
 
-- Required: Yes
+- Required: No
 - Type: string
-
-### Parameter: `primaryRedisCacheName`
-
-Primary Redis cache name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `secondaryRedisCacheName`
-
-The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.
-
-- Required: Yes
-- Type: string
+- Default: `''`
 
 ### Parameter: `serverRole`
 
@@ -74,10 +76,10 @@ The role of the linked server. Possible values include: "Primary", "Secondary". 
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `geoReplicatedPrimaryHostName` | string | The hostname of the linked server. |
-| `name` | string | The name of the deployed job schedule. |
-| `resourceGroupName` | string | The resource group of the deployed credential. |
-| `resourceId` | string | The resource ID of the deployed job schedule. |
+| `geoReplicatedPrimaryHostName` | string | The hostname of the linkedServer. |
+| `name` | string | The name of the linkedServer resource. |
+| `resourceGroupName` | string | The resource group of the deployed linkedServer. |
+| `resourceId` | string | The resource ID of the linkedServer. |
 
 ## Cross-referenced modules
 
