@@ -23,6 +23,9 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
+@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
+param networkFeatures string = 'Standard'
+
 @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
 param size int
 
@@ -91,12 +94,57 @@ module capacityPool_volumes 'volume/main.bicep' = [
       name: volume.name
       location: location
       serviceLevel: serviceLevel
+      networkFeatures: networkFeatures
       creationToken: contains(volume, 'creationToken') ? volume.creationToken : volume.name
       usageThreshold: volume.usageThreshold
       protocolTypes: contains(volume, 'protocolTypes') ? volume.protocolTypes : []
       subnetResourceId: volume.subnetResourceId
       exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
+      zones: contains(volume, 'zones') ? volume.zones : []
       roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
+      coolAccess: contains(volume, 'coolAccess') ? volume.coolAccess : false
+      coolAccessRetrievalPolicy: contains(volume, 'coolAccessRetrievalPolicy')
+        ? volume.coolAccessRetrievalPolicy
+        : 'None'
+      coolnessPeriod: contains(volume, 'coolnessPeriod') ? volume.coolnessPeriod : 0
+      endpointType: contains(volume, 'endpointType') ? volume.endpointType : ''
+      remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
+      remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
+      replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
+      snapshotPolicyId: contains(volume, 'snapshotPolicyId') ? volume.snapshotPolicyId : ''
+      snapshotPolicyName: contains(volume, 'snapshotPolicyName') ? volume.snapshotPolicyName : ''
+      snapshotPolicyLocation: contains(volume, 'snapshotPolicyLocation') ? volume.snapshotPolicyLocation : ''
+      snapEnabled: contains(volume, 'snapEnabled') ? volume.snapEnabled : false
+      dailyHour: contains(volume, 'dailyHour') ? volume.dailyHour : 0
+      dailyMinute: contains(volume, 'dailyMinute') ? volume.dailyMinute : 0
+      dailySnapshotsToKeep: contains(volume, 'dailySnapshotsToKeep') ? volume.dailySnapshotsToKeep : 0
+      dailyUsedBytes: contains(volume, 'dailyUsedBytes') ? volume.dailyUsedBytes : 0
+      hourlyMinute: contains(volume, 'hourlyMinute') ? volume.hourlyMinute : 0
+      hourlySnapshotsToKeep: contains(volume, 'hourlySnapshotsToKeep') ? volume.hourlySnapshotsToKeep : 0
+      hourlyUsedBytes: contains(volume, 'hourlyUsedBytes') ? volume.hourlyUsedBytes : 0
+      daysOfMonth: contains(volume, 'daysOfMonth') ? volume.daysOfMonth : ''
+      monthlyHour: contains(volume, 'monthlyHour') ? volume.monthlyHour : 0
+      monthlyMinute: contains(volume, 'monthlyMinute') ? volume.monthlyMinute : 0
+      monthlySnapshotsToKeep: contains(volume, 'monthlySnapshotsToKeep') ? volume.monthlySnapshotsToKeep : 0
+      monthlyUsedBytes: contains(volume, 'monthlyUsedBytes') ? volume.monthlyUsedBytes : 0
+      weeklyDay: contains(volume, 'weeklyDay') ? volume.weeklyDay : ''
+      weeklyHour: contains(volume, 'weeklyHour') ? volume.weeklyHour : 0
+      weeklyMinute: contains(volume, 'weeklyMinute') ? volume.weeklyMinute : 0
+      weeklySnapshotsToKeep: contains(volume, 'weeklySnapshotsToKeep') ? volume.weeklySnapshotsToKeep : 0
+      weeklyUsedBytes: contains(volume, 'weeklyUsedBytes') ? volume.weeklyUsedBytes : 0
+      backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : ''
+      backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
+      dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0
+      backupEnabled: contains(volume, 'backupEnabled') ? volume.backupEnabled : false
+      monthlyBackupsToKeep: contains(volume, 'monthlyBackupsToKeep') ? volume.monthlyBackupsToKeep : 0
+      weeklyBackupsToKeep: contains(volume, 'weeklyBackupsToKeep') ? volume.weeklyBackupsToKeep : 0
+      backupVaultName: contains(volume, 'backupVaultName') ? volume.backupVaultName : ''
+      backupVaultLocation: contains(volume, 'backupVaultLocation') ? volume.backupVaultLocation : ''
+      backupName: contains(volume, 'backupName') ? volume.backupName : ''
+      backupLabel: contains(volume, 'backupLabel') ? volume.backupLabel : ''
+      snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : ''
+      useExistingSnapshot: contains(volume, 'useExistingSnapshot') ? volume.useExistingSnapshot : false
+      volumeResourceId: contains(volume, 'volumeResourceId') ? volume.volumeResourceId : ''
     }
   }
 ]
@@ -132,6 +180,10 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = capacityPool.location
+
+@description('The resource IDs of the volumes created in the capacity pool.')
+output volumeResourceIds array = [for (volume, index) in volumes: capacityPool_volumes[index].outputs.resourceId]
+output volumeResourceId string = capacityPool_volumes[0].outputs.resourceId
 
 // =============== //
 //   Definitions   //
