@@ -362,20 +362,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     name: 'crpgeo001'
     // Non-required parameters
     capacity: 2
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     enableNonSslPort: true
     geoReplicationObject: {
       linkedRedisCacheId: '<linkedRedisCacheId>'
@@ -444,22 +430,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Non-required parameters
     "capacity": {
       "value": 2
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
     },
     "enableNonSslPort": {
       "value": true
