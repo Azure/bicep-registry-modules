@@ -101,9 +101,17 @@ param tags object?
 //   Variables   //
 // ============= //
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 var identity = !empty(managedIdentities)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : 'None'
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : '')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
 
@@ -156,7 +164,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource searchService 'Microsoft.Search/searchServices@2023-11-01' = {
+resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
   location: location
   name: name
   sku: {
@@ -338,6 +346,9 @@ output location string = searchService.location
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
+  userAssignedResourceIds: string[]?
 }?
 
 type lockType = {
