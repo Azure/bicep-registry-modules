@@ -293,7 +293,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-02-01-preview
           geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
           primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
             ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
-            : cMKKeyVault::cMKKey.properties.keyUri
+            : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
         }
       : null
