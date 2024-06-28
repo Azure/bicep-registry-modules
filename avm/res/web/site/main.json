@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1115653198241027677"
+      "templateHash": "14941226257686956543"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -782,7 +782,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.web-site.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
