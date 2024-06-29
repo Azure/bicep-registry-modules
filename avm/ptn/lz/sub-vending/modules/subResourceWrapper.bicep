@@ -537,7 +537,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' 
     location: deploymentScriptLocation
     name: deploymentScriptStorageAccountName
     kind: 'StorageV2'
-    skuName: 'Standard_ZRS'
+    skuName: 'Standard_LRS'
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
