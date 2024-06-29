@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults with a Basic SKU'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using only defaults with a Developer SKU'
+metadata description = 'This instance deploys the module using a Developer SKU with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apiscon'
+param serviceShort string = 'apisdev'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -45,14 +45,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
-      sku: 'Consumption'
+      sku: 'Developer'
       managedIdentities: {
         systemAssigned: true
-      }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
       }
     }
   }

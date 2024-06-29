@@ -1,5 +1,5 @@
 metadata name = 'API Management Services'
-metadata description = 'This module deploys an API Management Service.'
+metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
@@ -73,7 +73,7 @@ param roleAssignments roleAssignmentType
   'StandardV2'
   'BasicV2'
 ])
-param sku string = 'Premium' // Note: the default is set to Premium so that a default deployment will align with Microsoft's WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
+param sku string = 'Premium'
 
 @description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
 param skuCapacity int = 2
