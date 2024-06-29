@@ -1,6 +1,6 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
-This module deploys an API Management Service.
+This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
 ## Navigation
 
@@ -45,16 +45,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
 
-- [Using only defaults with a Basic SKU](#example-1-using-only-defaults-with-a-basic-sku)
-- [Using only defaults with a Basic SKU](#example-2-using-only-defaults-with-a-basic-sku)
-- [Test deploying apim v2 sku](#example-3-test-deploying-apim-v2-sku)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using only defaults with a Consumption SKU](#example-1-using-only-defaults-with-a-consumption-sku)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using only defaults with a Developer SKU](#example-3-using-only-defaults-with-a-developer-sku)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Test deploying apim v2 sku](#example-5-test-deploying-apim-v2-sku)
 - [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults with a Basic SKU_
+### Example 1: _Using only defaults with a Consumption SKU_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module using a Consumption SKU with the minimum set of required parameters.
 
 
 <details>
@@ -75,11 +75,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       systemAssigned: true
     }
     sku: 'Consumption'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -117,13 +112,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "sku": {
       "value": "Consumption"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -132,167 +120,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults with a Basic SKU_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
-  params: {
-    // Required parameters
-    name: 'apisdev001'
-    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-    publisherName: 'az-amorg-x-001'
-    // Non-required parameters
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    sku: 'Developer'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "apisdev001"
-    },
-    "publisherEmail": {
-      "value": "apimgmt-noreply@mail.windowsazure.com"
-    },
-    "publisherName": {
-      "value": "az-amorg-x-001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "sku": {
-      "value": "Developer"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Test deploying apim v2 sku_
-
-This instance deploys the module using a v2 SKU with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
-  params: {
-    // Required parameters
-    name: 'apisv2s001'
-    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-    publisherName: 'az-amorg-x-001'
-    // Non-required parameters
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    sku: 'BasicV2'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "apisv2s001"
-    },
-    "publisherEmail": {
-      "value": "apimgmt-noreply@mail.windowsazure.com"
-    },
-    "publisherName": {
-      "value": "az-amorg-x-001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "sku": {
-      "value": "BasicV2"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using only defaults_
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -368,7 +196,75 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 3: _Using only defaults with a Developer SKU_
+
+This instance deploys the module using a Developer SKU with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apisdev001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    sku: 'Developer'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apisdev001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "sku": {
+      "value": "Developer"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -852,6 +748,74 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "virtualNetworkType": {
       "value": "Internal"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Test deploying apim v2 sku_
+
+This instance deploys the module using a v2 SKU with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apisv2s001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    sku: 'BasicV2'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apisv2s001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "sku": {
+      "value": "BasicV2"
     }
   }
 }
