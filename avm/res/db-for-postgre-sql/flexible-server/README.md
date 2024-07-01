@@ -61,6 +61,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     geoRedundantBackup: 'Enabled'
+    highAvailability: 'SameZone'
     location: '<location>'
   }
 }
@@ -97,6 +98,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "geoRedundantBackup": {
       "value": "Enabled"
+    },
+    "highAvailability": {
+      "value": "SameZone"
     },
     "location": {
       "value": "<location>"
@@ -699,6 +703,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     geoRedundantBackup: 'Enabled'
+    highAvailability: 'SameZone'
     location: '<location>'
     privateDnsZoneArmResourceId: '<privateDnsZoneArmResourceId>'
     tags: {
@@ -783,6 +788,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "geoRedundantBackup": {
       "value": "Enabled"
+    },
+    "highAvailability": {
+      "value": "SameZone"
     },
     "location": {
       "value": "<location>"
