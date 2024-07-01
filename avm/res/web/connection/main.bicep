@@ -2,46 +2,102 @@ metadata name = 'API Connections'
 metadata description = 'This module deploys an Azure API Connection.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Specific values for some API connections.')
-param api object?
-
-@description('Required. Connection name for connection. Example: \'azureblob\' when using blobs. It can change depending on the resource.')
+@description('Required. Connection name for connection. It can change depending on the resource.')
 param name string
+
+@description('Optional. Location of the deployment.')
+param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+// ============ //
+// Parameters   //
+// ============ //
+
+@description('Optional. Specific values for some API connections.')
+@metadata({
+  example: '''
+  // for a Service Bus connection
+  {
+    type: 'Microsoft.Web/locations/managedApis'
+    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')
+  }
+'''
+})
+param api object?
+
 @description('Optional. Dictionary of custom parameter values for specific connections.')
 param customParameterValues object?
 
-@description('Required. Display name connection. Example: \'blobconnection\' when using blobs. It can change depending on the resource.')
+@description('Required. Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource.')
 param displayName string
-
-@description('Optional. Location of the deployment.')
-param location string = resourceGroup().location
 
 @description('Optional. Dictionary of nonsecret parameter values.')
 #disable-next-line secure-secrets-in-params // Not a secret
 param nonSecretParameterValues object?
 
-@description('Optional. Connection strings or access keys for connection. Example: \'accountName\' and \'accessKey\' when using blobs.  It can change depending on the resource.')
+@description('Optional. Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource.')
 @secure()
+@metadata({
+  example: '''
+    {
+      connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'
+    }
+    {
+      rootfolder: fileshareConnection.rootfolder
+      authType: fileshareConnection.authType
+      // to add an object, use the any() function
+      gateway: any({
+        name: fileshareConnection.odgw.name
+        id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)
+        type: 'Microsoft.Web/connectionGateways'
+      })
+      username: username
+      password: password
+    }
+  '''
+})
 param parameterValues object?
+
+@description('Optional. Additional parameter value set used for authentication settings.')
+@metadata({
+  example: '''
+  // for a Service Bus connection
+  {
+    name: 'managedIdentityAuth'
+    values: {
+      namespaceEndpoint: {
+        value: 'sb://${dependency.outputs.serviceBusEndpoint}'
+      }
+    }
+  }
+'''
+})
+param parameterValueSet object?
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. Status of the connection.')
-param statuses array?
+@description('Optional. The status of the connection.')
+param statuses object[]?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
+@metadata({
+  example: '''
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  '''
+})
 @description('Optional. Tags of the resource.')
 param tags object?
 
 @description('Optional. Links to test the API connection.')
-param testLinks array?
+param testLinks object[]?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -56,6 +112,10 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+// ============== //
+// Resources      //
+// ============== //
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -88,6 +148,8 @@ resource connection 'Microsoft.Web/connections@2016-06-01' = {
     nonSecretParameterValues: nonSecretParameterValues
     testLinks: testLinks
     statuses: statuses
+    #disable-next-line BCP037 // the parameterValueSet is not yet made available in the resource provider, which generates warnings. Disable the warning for now.
+    parameterValueSet: parameterValueSet
   }
 }
 
@@ -121,6 +183,10 @@ resource connection_roleAssignments 'Microsoft.Authorization/roleAssignments@202
     scope: connection
   }
 ]
+
+// ============ //
+// Outputs      //
+// ============ //
 
 @description('The resource ID of the connection.')
 output resourceId string = connection.id
