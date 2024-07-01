@@ -29,10 +29,10 @@ param modules array = []
 param powershell72Modules pwsh72ModulesType
 
 @description('Optional. List of python 3 packages to be created in the automation account.')
-param python3Packages python3PackagesType
+param python3Packages python23PackagesType
 
 @description('Optional. List of python 2 packages to be created in the automation account.')
-param python2Packages python2PackagesType
+param python2Packages python23PackagesType
 
 @description('Optional. List of runbooks to be created in the automation account.')
 param runbooks array = []
@@ -649,25 +649,11 @@ type pwsh72ModulesType = {
   version: 'latest'?
 }[]?
 
-type python3PackagesType = {
+type python23PackagesType = {
   @description('Required. Name of the Python3 Automation Account package.')
   name: string
 
   @description('Optional. Tags of the Python3 package resource.')
-  tags: object?
-
-  @description('Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.')
-  uri: string
-
-  @description('Optional. Module version or specify latest to get the latest version.')
-  version: 'latest'?
-}[]?
-
-type python2PackagesType = {
-  @description('Required. Name of the Python2 Automation Account package.')
-  name: string
-
-  @description('Optional. Tags of the Python2 package resource.')
   tags: object?
 
   @description('Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.')

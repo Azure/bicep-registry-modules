@@ -2000,19 +2000,19 @@ List of python 2 packages to be created in the automation account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-python2packagesname) | string | Name of the Python2 Automation Account package. |
+| [`name`](#parameter-python2packagesname) | string | Name of the Python3 Automation Account package. |
 | [`uri`](#parameter-python2packagesuri) | string | Module package URI, e.g. https://www.powershellgallery.com/api/v2/package. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`tags`](#parameter-python2packagestags) | object | Tags of the Python2 package resource. |
+| [`tags`](#parameter-python2packagestags) | object | Tags of the Python3 package resource. |
 | [`version`](#parameter-python2packagesversion) | string | Module version or specify latest to get the latest version. |
 
 ### Parameter: `python2Packages.name`
 
-Name of the Python2 Automation Account package.
+Name of the Python3 Automation Account package.
 
 - Required: Yes
 - Type: string
@@ -2026,7 +2026,7 @@ Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
 
 ### Parameter: `python2Packages.tags`
 
-Tags of the Python2 package resource.
+Tags of the Python3 package resource.
 
 - Required: No
 - Type: object

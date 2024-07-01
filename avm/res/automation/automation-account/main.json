@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4027525789249067724"
+      "templateHash": "9668583394347320858"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -172,7 +172,7 @@
       },
       "nullable": true
     },
-    "python3PackagesType": {
+    "python23PackagesType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -188,44 +188,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags of the Python3 package resource."
-            }
-          },
-          "uri": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
-            }
-          },
-          "version": {
-            "type": "string",
-            "allowedValues": [
-              "latest"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Module version or specify latest to get the latest version."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "python2PackagesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the Python2 Automation Account package."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags of the Python2 package resource."
             }
           },
           "uri": {
@@ -687,13 +649,13 @@
       }
     },
     "python3Packages": {
-      "$ref": "#/definitions/python3PackagesType",
+      "$ref": "#/definitions/python23PackagesType",
       "metadata": {
         "description": "Optional. List of python 3 packages to be created in the automation account."
       }
     },
     "python2Packages": {
-      "$ref": "#/definitions/python2PackagesType",
+      "$ref": "#/definitions/python23PackagesType",
       "metadata": {
         "description": "Optional. List of python 2 packages to be created in the automation account."
       }
