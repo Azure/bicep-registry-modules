@@ -58,7 +58,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
 resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-11-01' = {
   name: name
   properties: {
-    frontendPort: frontendPort
+    frontendPort: frontendPort != -1 ? frontendPort : null
     backendPort: backendPort ?? frontendPortRangeStart
     backendAddressPool: !empty(backendAddressPoolName)
       ? {
