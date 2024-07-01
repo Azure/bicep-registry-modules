@@ -75,7 +75,7 @@ var builtInRoleNames = {
   )
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' existing = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
   name: virtualNetworkName
 }
 
