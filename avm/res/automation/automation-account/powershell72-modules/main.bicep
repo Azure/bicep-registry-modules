@@ -17,7 +17,7 @@ param version string = 'latest'
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Tags of the Automation Account resource.')
+@description('Optional. Tags of the Powershell 72 module resource.')
 param tags object?
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {

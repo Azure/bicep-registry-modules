@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "179728908258115803"
+      "templateHash": "849556923664889988"
     },
     "name": "Automation Account Powershell72 Modules",
     "description": "This module deploys a Powershell72 Module in the Automation Account.",
@@ -49,7 +49,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags of the Automation Account resource."
+        "description": "Optional. Tags of the Powershell 72 module resource."
       }
     }
   },

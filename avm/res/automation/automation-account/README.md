@@ -1573,7 +1573,62 @@ List of powershell72 modules to be created in the automation account.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-powershell72modulesname) | string | Name of the Powershell72 Automation Account module. |
+| [`uri`](#parameter-powershell72modulesuri) | string | Module package URI, e.g. https://www.powershellgallery.com/api/v2/package. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-powershell72moduleslocation) | string | The location to deploy the module to. |
+| [`tags`](#parameter-powershell72modulestags) | object | Tags of the Powershell 72 module resource. |
+| [`version`](#parameter-powershell72modulesversion) | string | Module version or specify latest to get the latest version. |
+
+### Parameter: `powershell72Modules.name`
+
+Name of the Powershell72 Automation Account module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `powershell72Modules.uri`
+
+Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `powershell72Modules.location`
+
+The location to deploy the module to.
+
+- Required: No
+- Type: string
+
+### Parameter: `powershell72Modules.tags`
+
+Tags of the Powershell 72 module resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `powershell72Modules.version`
+
+Module version or specify latest to get the latest version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'latest'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -1940,7 +1995,54 @@ List of python 2 packages to be created in the automation account.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-python2packagesname) | string | Name of the Python2 Automation Account package. |
+| [`uri`](#parameter-python2packagesuri) | string | Module package URI, e.g. https://www.powershellgallery.com/api/v2/package. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tags`](#parameter-python2packagestags) | object | Tags of the Python2 package resource. |
+| [`version`](#parameter-python2packagesversion) | string | Module version or specify latest to get the latest version. |
+
+### Parameter: `python2Packages.name`
+
+Name of the Python2 Automation Account package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python2Packages.uri`
+
+Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python2Packages.tags`
+
+Tags of the Python2 package resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `python2Packages.version`
+
+Module version or specify latest to get the latest version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'latest'
+  ]
+  ```
 
 ### Parameter: `python3Packages`
 
@@ -1948,7 +2050,54 @@ List of python 3 packages to be created in the automation account.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-python3packagesname) | string | Name of the Python3 Automation Account package. |
+| [`uri`](#parameter-python3packagesuri) | string | Module package URI, e.g. https://www.powershellgallery.com/api/v2/package. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tags`](#parameter-python3packagestags) | object | Tags of the Python3 package resource. |
+| [`version`](#parameter-python3packagesversion) | string | Module version or specify latest to get the latest version. |
+
+### Parameter: `python3Packages.name`
+
+Name of the Python3 Automation Account package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python3Packages.uri`
+
+Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `python3Packages.tags`
+
+Tags of the Python3 package resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `python3Packages.version`
+
+Module version or specify latest to get the latest version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'latest'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10700112479809767700"
+      "templateHash": "4027525789249067724"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -121,6 +121,127 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "pwsh72ModulesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the Powershell72 Automation Account module."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The location to deploy the module to."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags of the Powershell 72 module resource."
+            }
+          },
+          "uri": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+            }
+          },
+          "version": {
+            "type": "string",
+            "allowedValues": [
+              "latest"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Module version or specify latest to get the latest version."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "python3PackagesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the Python3 Automation Account package."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags of the Python3 package resource."
+            }
+          },
+          "uri": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+            }
+          },
+          "version": {
+            "type": "string",
+            "allowedValues": [
+              "latest"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Module version or specify latest to get the latest version."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "python2PackagesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the Python2 Automation Account package."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags of the Python2 package resource."
+            }
+          },
+          "uri": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+            }
+          },
+          "version": {
+            "type": "string",
+            "allowedValues": [
+              "latest"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Module version or specify latest to get the latest version."
             }
           }
         }
@@ -560,22 +681,19 @@
       }
     },
     "powershell72Modules": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/pwsh72ModulesType",
       "metadata": {
         "description": "Optional. List of powershell72 modules to be created in the automation account."
       }
     },
     "python3Packages": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/python3PackagesType",
       "metadata": {
         "description": "Optional. List of python 3 packages to be created in the automation account."
       }
     },
     "python2Packages": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/python2PackagesType",
       "metadata": {
         "description": "Optional. List of python 2 packages to be created in the automation account."
       }
@@ -1151,7 +1269,7 @@
     "automationAccount_powershell72modules": {
       "copy": {
         "name": "automationAccount_powershell72modules",
-        "count": "[length(parameters('powershell72Modules'))]"
+        "count": "[length(coalesce(parameters('powershell72Modules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1163,22 +1281,22 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('powershell72Modules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].name]"
           },
           "automationAccountName": {
             "value": "[parameters('name')]"
           },
           "version": {
-            "value": "[parameters('powershell72Modules')[copyIndex()].version]"
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].version]"
           },
           "uri": {
-            "value": "[parameters('powershell72Modules')[copyIndex()].uri]"
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].uri]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[tryGet(coalesce(parameters('powershell72Modules'), createArray())[copyIndex()], 'location')]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('powershell72Modules')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('powershell72Modules'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -1189,7 +1307,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "179728908258115803"
+              "templateHash": "849556923664889988"
             },
             "name": "Automation Account Powershell72 Modules",
             "description": "This module deploys a Powershell72 Module in the Automation Account.",
@@ -1232,7 +1350,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Tags of the Automation Account resource."
+                "description": "Optional. Tags of the Powershell 72 module resource."
               }
             }
           },
@@ -1299,7 +1417,7 @@
     "automationAccount_python3packages": {
       "copy": {
         "name": "automationAccount_python3packages",
-        "count": "[length(parameters('python3Packages'))]"
+        "count": "[length(coalesce(parameters('python3Packages'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1311,19 +1429,19 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('python3Packages')[copyIndex()].name]"
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].name]"
           },
           "automationAccountName": {
             "value": "[parameters('name')]"
           },
           "version": {
-            "value": "[parameters('python3Packages')[copyIndex()].version]"
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].version]"
           },
           "uri": {
-            "value": "[parameters('python3Packages')[copyIndex()].uri]"
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].uri]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('python3Packages')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('python3Packages'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -1436,7 +1554,7 @@
     "automationAccount_python2packages": {
       "copy": {
         "name": "automationAccount_python2packages",
-        "count": "[length(parameters('python2Packages'))]"
+        "count": "[length(coalesce(parameters('python2Packages'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1448,19 +1566,19 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('python2Packages')[copyIndex()].name]"
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].name]"
           },
           "automationAccountName": {
             "value": "[parameters('name')]"
           },
           "version": {
-            "value": "[parameters('python2Packages')[copyIndex()].version]"
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].version]"
           },
           "uri": {
-            "value": "[parameters('python2Packages')[copyIndex()].uri]"
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].uri]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('python2Packages')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('python2Packages'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {

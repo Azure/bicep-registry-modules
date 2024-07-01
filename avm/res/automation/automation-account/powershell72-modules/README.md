@@ -36,7 +36,7 @@ This module deploys a Powershell72 Module in the Automation Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
+| [`tags`](#parameter-tags) | object | Tags of the Powershell 72 module resource. |
 | [`version`](#parameter-version) | string | Module version or specify latest to get the latest version. |
 
 ### Parameter: `name`
@@ -70,7 +70,7 @@ Location for all resources.
 
 ### Parameter: `tags`
 
-Tags of the Automation Account resource.
+Tags of the Powershell 72 module resource.
 
 - Required: No
 - Type: object

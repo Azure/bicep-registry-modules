@@ -26,13 +26,13 @@ param credentials credentialType = []
 param modules array = []
 
 @description('Optional. List of powershell72 modules to be created in the automation account.')
-param powershell72Modules array = []
+param powershell72Modules pwsh72ModulesType
 
 @description('Optional. List of python 3 packages to be created in the automation account.')
-param python3Packages array = []
+param python3Packages python3PackagesType
 
 @description('Optional. List of python 2 packages to be created in the automation account.')
-param python2Packages array = []
+param python2Packages python2PackagesType
 
 @description('Optional. List of runbooks to be created in the automation account.')
 param runbooks array = []
@@ -226,21 +226,21 @@ module automationAccount_modules 'module/main.bicep' = [
 ]
 
 module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
-  for (pwsh72module, index) in powershell72Modules: {
+  for (pwsh72module, index) in (powershell72Modules ?? []): {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Pwsh72Module-${index}'
     params: {
       name: pwsh72module.name
       automationAccountName: automationAccount.name
       version: pwsh72module.version
       uri: pwsh72module.uri
-      location: location
+      location: pwsh72module.?location
       tags: pwsh72module.?tags ?? tags
     }
   }
 ]
 
 module automationAccount_python3packages 'python3-packages/main.bicep' = [
-  for (python3package, index) in python3Packages: {
+  for (python3package, index) in (python3Packages ?? []): {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Python3Package-${index}'
     params: {
       name: python3package.name
@@ -253,7 +253,7 @@ module automationAccount_python3packages 'python3-packages/main.bicep' = [
 ]
 
 module automationAccount_python2packages 'python2-packages/main.bicep' = [
-  for (python2package, index) in python2Packages: {
+  for (python2package, index) in (python2Packages ?? []): {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Python2Package-${index}'
     params: {
       name: python2package.name
@@ -630,6 +630,51 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type pwsh72ModulesType = {
+  @description('Required. Name of the Powershell72 Automation Account module.')
+  name: string
+
+  @description('Optional. The location to deploy the module to.')
+  location: string?
+
+  @description('Optional. Tags of the Powershell 72 module resource.')
+  tags: object?
+
+  @description('Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.')
+  uri: string
+
+  @description('Optional. Module version or specify latest to get the latest version.')
+  version: 'latest'?
+}[]?
+
+type python3PackagesType = {
+  @description('Required. Name of the Python3 Automation Account package.')
+  name: string
+
+  @description('Optional. Tags of the Python3 package resource.')
+  tags: object?
+
+  @description('Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.')
+  uri: string
+
+  @description('Optional. Module version or specify latest to get the latest version.')
+  version: 'latest'?
+}[]?
+
+type python2PackagesType = {
+  @description('Required. Name of the Python2 Automation Account package.')
+  name: string
+
+  @description('Optional. Tags of the Python2 package resource.')
+  tags: object?
+
+  @description('Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.')
+  uri: string
+
+  @description('Optional. Module version or specify latest to get the latest version.')
+  version: 'latest'?
 }[]?
 
 type privateEndpointType = {
