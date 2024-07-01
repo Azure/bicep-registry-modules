@@ -271,7 +271,7 @@ module loadBalancer_inboundNATRules 'inbound-nat-rule/main.bicep' = [
       loadBalancerName: loadBalancer.name
       name: inboundNATRule.name
       frontendIPConfigurationName: inboundNATRule.frontendIPConfigurationName
-      frontendPort: contains(inboundNATRule, 'frontendPort') ? inboundNATRule.frontendPort : -1
+      frontendPort: inboundNATRule.?frontendPort
       backendPort: contains(inboundNATRule, 'backendPort') ? inboundNATRule.backendPort : inboundNATRule.frontendPort
       backendAddressPoolName: contains(inboundNATRule, 'backendAddressPoolName')
         ? inboundNATRule.backendAddressPoolName
