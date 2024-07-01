@@ -17,6 +17,8 @@ spec:
     - Azure.Automation.ManagedIdentity
     - Azure.Automation.AuditLogs # Diagnostic Settings cannot be set by default, but require user input
     - Azure.Automation.PlatformLogs # Diagnostic Settings cannot be set by default, but require user input
+      # Event Hub specific
+    - Azure.EventHub.Firewall
       # Key Vault specific
     - Azure.KeyVault.Logs
     - Azure.KeyVault.Firewall
@@ -29,6 +31,7 @@ spec:
     - Azure.ContainerApp.PublicAccess
     # Azure Virtual Machine
     - Azure.VM.AMA
+    - Azure.VM.MaintenanceConfig # Excluded as it requires user input
     - Azure.VM.Standalone
     # Azure App Service
     - Azure.AppService.WebProbe # Supressed as the probe path is specific to the app

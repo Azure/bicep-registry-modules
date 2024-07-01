@@ -481,10 +481,12 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 | [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
 | [`gitDisablePublish`](#parameter-gitdisablepublish) | bool | Disable manual publish operation in ADF studio to favor automated publish. |
 | [`gitHostName`](#parameter-githostname) | string | The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'. |
+| [`gitLastCommitId`](#parameter-gitlastcommitid) | string | Add the last commit id from your git repo. |
 | [`gitProjectName`](#parameter-gitprojectname) | string | The project name. Only relevant for 'FactoryVSTSConfiguration'. |
 | [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
 | [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
 | [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
+| [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -747,6 +749,14 @@ The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 
 - Type: string
 - Default: `''`
 
+### Parameter: `gitLastCommitId`
+
+Add the last commit id from your git repo.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `gitProjectName`
 
 The project name. Only relevant for 'FactoryVSTSConfiguration'.
@@ -778,6 +788,14 @@ The root folder path name. Default is '/'.
 - Required: No
 - Type: string
 - Default: `'/'`
+
+### Parameter: `gitTenantId`
+
+Add the tenantId of your Azure subscription.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `globalParameters`
 
