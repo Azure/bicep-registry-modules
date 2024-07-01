@@ -53,6 +53,12 @@ module testDeployment '../../../main.bicep' = [
       tier: 'GeneralPurpose'
       geoRedundantBackup: 'Enabled'
       highAvailability: 'ZoneRedundant'
+      maintenanceWindow: {
+        customWindow: 'Enabled'
+        dayOfWeek: '0'
+        startHour: '1'
+        startMinute: '0'
+      }
     }
   }
 ]
