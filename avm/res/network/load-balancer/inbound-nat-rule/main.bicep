@@ -11,7 +11,7 @@ param name string
 @description('Conditional. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified.')
 @minValue(-1)
 @maxValue(65534)
-param frontendPort int
+param frontendPort int = -1
 
 @description('Required. The port used for the internal endpoint.')
 @minValue(-1)
@@ -58,7 +58,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
 resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-11-01' = {
   name: name
   properties: {
-    frontendPort: frontendPort ?? frontendPort
+    frontendPort: frontendPort != -1 ? frontendPort : null
     backendPort: backendPort ?? frontendPortRangeStart
     backendAddressPool: !empty(backendAddressPoolName)
       ? {
