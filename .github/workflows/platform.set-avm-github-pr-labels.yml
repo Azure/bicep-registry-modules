@@ -7,6 +7,7 @@ on:
 
 jobs:
   SetAvmGitHubPrLabels:
+    if: github.repository == 'Azure/bicep-registry-modules'
     name: Set-AvmGitHubPrLabels
     runs-on: ubuntu-latest
     permissions:
