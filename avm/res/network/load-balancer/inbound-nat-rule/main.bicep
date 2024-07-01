@@ -11,7 +11,7 @@ param name string
 @description('Conditional. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified.')
 @minValue(-1)
 @maxValue(65534)
-param frontendPort int = -1
+param frontendPort int
 
 @description('Required. The port used for the internal endpoint.')
 @minValue(-1)

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5362493110734521748"
+      "templateHash": "4259493746700528378"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -26,7 +26,6 @@
     },
     "frontendPort": {
       "type": "int",
-      "defaultValue": -1,
       "minValue": -1,
       "maxValue": 65534,
       "metadata": {

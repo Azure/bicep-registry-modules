@@ -70,9 +70,8 @@ The name of the inbound NAT rule.
 
 The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified.
 
-- Required: No
+- Required: Yes
 - Type: int
-- Default: `-1`
 
 ### Parameter: `loadBalancerName`
 
