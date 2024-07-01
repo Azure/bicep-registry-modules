@@ -62,6 +62,7 @@
 /avm/res/event-hub/namespace/ @Azure/avm-res-eventhub-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/hybrid-compute/machine/ @Azure/avm-res-hybridcompute-machine-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -123,6 +124,7 @@
 /avm/res/network/vpn-site/ @Azure/avm-res-network-vpnsite-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/operational-insights/workspace/ @Azure/avm-res-operationalinsights-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/operations-management/solution/ @Azure/avm-res-operationsmanagement-solution-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/portal/dashboard/ @Azure/avm-res-portal-dashboard-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/power-bi-dedicated/capacity/ @Azure/avm-res-powerbidedicated-capacity-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/purview/account/ @Azure/avm-res-purview-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
