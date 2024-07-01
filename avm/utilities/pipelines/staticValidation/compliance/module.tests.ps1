@@ -532,18 +532,19 @@ Describe 'Module tests' -Tag 'Module' {
           return
         }
 
-        # workaround for Azure Stack HCI cluster deployment settings resource, where property names have underscores - https://github.com/Azure/Azure-Verified-Modules/issues/1029
-        if ($moduleFolderPath -match 'azure-stack-hci.cluster.deployment-settings') {
-          Set-ItResult -Skipped -Because 'the module path matches "azure-stack-hci.cluster.deployment-settings" which is a special case--underscores in property names.'
-          return
-        }
-
         $incorrectParameters = @()
         foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
           # Parameters in the object are formatted like
           # - tags
           # - customerManagedKey.keyVaultResourceId
           $paramName = ($parameter -split '\.')[-1]
+
+          # workaround for Azure Stack HCI cluster deployment settings resource, where property names have underscores - https://github.com/Azure/Azure-Verified-Modules/issues/1029
+          if ($moduleFolderPath -match 'azure-stack-hci[/\\]cluster[/\\]deployment-settings' -and $paramName -in ('bandwidthPercentage_SMB', 'priorityValue8021Action_Cluster', 'priorityValue8021Action_SMB')) {
+            Set-ItResult -Skipped -Because 'the module path matches "azure-stack-hci/cluster/deployment-settings" and the parameter name is in list [bandwidthPercentage_SMB, priorityValue8021Action_Cluster, priorityValue8021Action_SMB], which have underscores in the API spec.'
+            return
+          }
+
           if ($paramName.substring(0, 1) -cnotmatch '[a-z]' -or $paramName -match '-' -or $paramName -match '_') {
             $incorrectParameters += @() + $parameter
           }
