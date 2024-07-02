@@ -383,6 +383,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | :-- | :-- | :-- |
 | [`appServiceEnvironmentId`](#parameter-appserviceenvironmentid) | string | The Resource ID of the App Service Environment to use for the App Service Plan. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`elasticScaleEnabled`](#parameter-elasticscaleenabled) | bool | Enable/Disable ElasticScaleEnabled App Service Plan. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kind`](#parameter-kind) | string | Kind of server OS. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -416,6 +417,13 @@ The name of the SKU will Determine the tier, size, family of the App Service Pla
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  'F1'
+  'B1'
+  'P1v3'
+  'I1v2'
+  ```
 
 ### Parameter: `reserved`
 
@@ -541,6 +549,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `elasticScaleEnabled`
+
+Enable/Disable ElasticScaleEnabled App Service Plan.
+
+- Required: No
+- Type: bool
+- Default: `[greater(parameters('maximumElasticWorkerCount'), 1)]`
 
 ### Parameter: `enableTelemetry`
 
