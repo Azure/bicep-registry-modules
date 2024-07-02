@@ -38,7 +38,8 @@ The following section provides usage examples for the module, which were used to
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
 - [Private access](#example-3-private-access)
 - [Public access](#example-4-public-access)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Public access](#example-5-public-access)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -63,6 +64,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     geoRedundantBackup: 'Enabled'
     highAvailability: 'ZoneRedundant'
     location: '<location>'
+    maintenanceWindow: {
+      customWindow: 'Enabled'
+      dayOfWeek: '0'
+      startHour: '1'
+      startMinute: '0'
+    }
   }
 }
 ```
@@ -104,6 +111,14 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceWindow": {
+      "value": {
+        "customWindow": "Enabled",
+        "dayOfWeek": "0",
+        "startHour": "1",
+        "startMinute": "0"
+      }
     }
   }
 }
@@ -479,6 +494,280 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     geoRedundantBackup: 'Disabled'
     highAvailability: 'SameZone'
     location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'sqlServer'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    storageSizeGB: 1024
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    version: '14'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dfpsfsp001"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": [
+        {
+          "objectId": "<objectId>",
+          "principalName": "<principalName>",
+          "principalType": "ServicePrincipal"
+        }
+      ]
+    },
+    "backupRetentionDays": {
+      "value": 20
+    },
+    "configurations": {
+      "value": [
+        {
+          "name": "log_min_messages",
+          "source": "user-override",
+          "value": "INFO"
+        }
+      ]
+    },
+    "databases": {
+      "value": [
+        {
+          "charset": "UTF8",
+          "collation": "en_US.utf8",
+          "name": "testdb1"
+        },
+        {
+          "name": "testdb2"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "0.0.0.0",
+          "name": "AllowAllWindowsAzureIps",
+          "startIpAddress": "0.0.0.0"
+        },
+        {
+          "endIpAddress": "10.10.10.10",
+          "name": "test-rule1",
+          "startIpAddress": "10.10.10.1"
+        },
+        {
+          "endIpAddress": "100.100.100.10",
+          "name": "test-rule2",
+          "startIpAddress": "100.100.100.1"
+        }
+      ]
+    },
+    "geoRedundantBackup": {
+      "value": "Disabled"
+    },
+    "highAvailability": {
+      "value": "SameZone"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "sqlServer",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "storageSizeGB": {
+      "value": 1024
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "version": {
+      "value": "14"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Public access_
+
+This instance deploys the module with public access.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  name: 'flexibleServerDeployment'
+  params: {
+    // Required parameters
+    name: 'dfpsfsp001'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administrators: [
+      {
+        objectId: '<objectId>'
+        principalName: '<principalName>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    backupRetentionDays: 20
+    configurations: [
+      {
+        name: 'log_min_messages'
+        source: 'user-override'
+        value: 'INFO'
+      }
+    ]
+    databases: [
+      {
+        charset: 'UTF8'
+        collation: 'en_US.utf8'
+        name: 'testdb1'
+      }
+      {
+        name: 'testdb2'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    firewallRules: [
+      {
+        endIpAddress: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIpAddress: '0.0.0.0'
+      }
+      {
+        endIpAddress: '10.10.10.10'
+        name: 'test-rule1'
+        startIpAddress: '10.10.10.1'
+      }
+      {
+        endIpAddress: '100.100.100.10'
+        name: 'test-rule2'
+        startIpAddress: '100.100.100.1'
+      }
+    ]
+    geoRedundantBackup: 'Disabled'
+    highAvailability: 'SameZone'
+    location: '<location>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -646,7 +935,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
