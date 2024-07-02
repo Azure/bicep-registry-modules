@@ -20,14 +20,23 @@ param location string = resourceGroup().location
 ])
 param sku string
 
-@sys.description('Required. The resource ID of the associated Storage Account.')
-param associatedStorageAccountResourceId string
+@sys.description('Optional. The type of Azure Machine Learning workspace to create.')
+@allowed([
+  'Default'
+  'Project'
+  'Hub'
+  'FeatureStore'
+])
+param kind string = 'Default'
 
-@sys.description('Required. The resource ID of the associated Key Vault.')
-param associatedKeyVaultResourceId string
+@sys.description('Optional. The resource ID of the associated Storage Account.')
+param associatedStorageAccountResourceId string?
 
-@sys.description('Required. The resource ID of the associated Application Insights.')
-param associatedApplicationInsightsResourceId string
+@sys.description('Optional. The resource ID of the associated Key Vault.')
+param associatedKeyVaultResourceId string?
+
+@sys.description('Optional. The resource ID of the associated Application Insights.')
+param associatedApplicationInsightsResourceId string?
 
 @sys.description('Optional. The resource ID of the associated Container Registry.')
 param associatedContainerRegistryResourceId string?
@@ -40,6 +49,9 @@ param hbiWorkspace bool = false
 
 @sys.description('Optional. The flag to indicate whether to allow public access when behind VNet.')
 param allowPublicAccessWhenBehindVnet bool = false
+
+@sys.description('Optional. The resource ID of the hub to associate with the workspace.')
+param hubResourceId string?
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -60,6 +72,9 @@ param enableTelemetry bool = true
 param managedIdentities managedIdentitiesType = {
   systemAssigned: true
 }
+
+@sys.description('Optional. Settngs for feature store type workspaces.')
+param featureStoreSettings featureStoreSettingsType
 
 // Diagnostic Settings
 
@@ -185,7 +200,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
   name: name
   location: location
   tags: tags
@@ -228,6 +243,8 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         ? any(publicNetworkAccess)
         : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
       serviceManagedResourcesSettings: serviceManagedResourcesSettings
+      featureStoreSettings: featureStoreSettings
+      hubResourceId: hubResourceId
     },
     // Parameters only added if not empty
     !empty(sharedPrivateLinkResources)
@@ -236,6 +253,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         }
       : {}
   )
+  kind: kind
 }
 
 module workspace_computes 'compute/main.bicep' = [
@@ -514,6 +532,20 @@ type privateEndpointType = {
   @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
   resourceGroupName: string?
 }[]?
+
+type featureStoreSettingsType = {
+  @sys.description('Optional. Compute runtime config for feature store type workspace.')
+  computeRuntime: {
+    @sys.description('Optional. The spark runtime version.')
+    sparkRuntimeVersion: string?
+  }?
+
+  @sys.description('Optional. The offline store connection name.')
+  offlineStoreConnectionName: string?
+
+  @sys.description('Optional. The online store connection name.')
+  onlineStoreConnectionName: string?
+}?
 
 type diagnosticSettingType = {
   @sys.description('Optional. The name of diagnostic setting.')
