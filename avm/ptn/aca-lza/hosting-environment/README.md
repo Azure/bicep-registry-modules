@@ -45,11 +45,14 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
+| `Microsoft.Maintenance/maintenanceConfigurations` | [2023-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/maintenanceConfigurations) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/applicationGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/applicationGateways) |
+| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/ApplicationGatewayWebApplicationFirewallPolicies) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
 | `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups/securityRules) |
@@ -69,10 +72,10 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
@@ -125,13 +128,12 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmLinuxSshAuthorizedKey: ''
     vmSize: 'Standard_B1s'
     // Non-required parameters
-    deploySampleApplication: true
     tags: {
       environment: 'test'
     }
     vmAuthenticationType: 'password'
     vmJumpboxOSType: 'linux'
-    workloadName: '<workloadName>'
+    workloadName: 'acalzaavm'
   }
 }
 ```
@@ -188,9 +190,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "Standard_B1s"
     },
     // Non-required parameters
-    "deploySampleApplication": {
-      "value": true
-    },
     "tags": {
       "value": {
         "environment": "test"
@@ -203,7 +202,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "linux"
     },
     "workloadName": {
-      "value": "<workloadName>"
+      "value": "acalzaavm"
     }
   }
 }
@@ -238,11 +237,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmAdminPassword: 'P@ssw0rd1234!'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: ''
+    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
     vmSize: 'Standard_B1s'
     // Non-required parameters
-    applicationGatewayFqdn: 'acahello.demoapp.com'
-    deploySampleApplication: true
     deployZoneRedundantResources: true
     enableDdosProtection: true
     environment: 'dev'
@@ -250,12 +247,13 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     hubVirtualNetworkResourceId: '<hubVirtualNetworkResourceId>'
     location: '<location>'
     networkApplianceIpAddress: '<networkApplianceIpAddress>'
+    storageAccountType: 'Premium_LRS'
     tags: {
       environment: 'test'
     }
-    vmAuthenticationType: 'password'
+    vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
-    workloadName: '<workloadName>'
+    workloadName: 'acalzaavmw'
   }
 }
 ```
@@ -306,18 +304,12 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmLinuxSshAuthorizedKey": {
-      "value": ""
+      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
     },
     "vmSize": {
       "value": "Standard_B1s"
     },
     // Non-required parameters
-    "applicationGatewayFqdn": {
-      "value": "acahello.demoapp.com"
-    },
-    "deploySampleApplication": {
-      "value": true
-    },
     "deployZoneRedundantResources": {
       "value": true
     },
@@ -339,19 +331,22 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     "networkApplianceIpAddress": {
       "value": "<networkApplianceIpAddress>"
     },
+    "storageAccountType": {
+      "value": "Premium_LRS"
+    },
     "tags": {
       "value": {
         "environment": "test"
       }
     },
     "vmAuthenticationType": {
-      "value": "password"
+      "value": "sshPublicKey"
     },
     "vmJumpboxOSType": {
       "value": "linux"
     },
     "workloadName": {
-      "value": "<workloadName>"
+      "value": "acalzaavmw"
     }
   }
 }
@@ -396,6 +391,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 | [`location`](#parameter-location) | string | The location of the Azure Container Apps deployment. Default is the location of the deployment location. |
 | [`networkApplianceIpAddress`](#parameter-networkapplianceipaddress) | string | If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty. |
 | [`spokeResourceGroupName`](#parameter-spokeresourcegroupname) | string | The name of the resource group to create the resources in. If set, it overrides the name generated by the template. Default is empty. |
+| [`storageAccountType`](#parameter-storageaccounttype) | string | The storage account type to use for the jump box. Defaults to Standard_LRS. |
 | [`tags`](#parameter-tags) | object | Tags related to the Azure Container Apps deployment. Default is empty. |
 | [`vmAuthenticationType`](#parameter-vmauthenticationtype) | string | Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password". |
 | [`vmJumpboxOSType`](#parameter-vmjumpboxostype) | string | The operating system type of the virtual machine. Default is "none" which results in no VM deployment. Default is "none". |
@@ -588,6 +584,14 @@ The name of the resource group to create the resources in. If set, it overrides 
 - Type: string
 - Default: `''`
 
+### Parameter: `storageAccountType`
+
+The storage account type to use for the jump box. Defaults to Standard_LRS.
+
+- Required: No
+- Type: string
+- Default: `'Standard_LRS'`
+
 ### Parameter: `tags`
 
 Tags related to the Azure Container Apps deployment. Default is empty.
@@ -672,11 +676,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app/container-app:0.4.0` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.5.1` | Remote reference |
 | `br/public:avm/res/cdn/profile:0.3.0` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.5.0` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.5.1` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.3.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.3.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.2.1` | Remote reference |
+| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.0` | Remote reference |
 | `br/public:avm/res/network/application-gateway:0.1.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.2.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |
