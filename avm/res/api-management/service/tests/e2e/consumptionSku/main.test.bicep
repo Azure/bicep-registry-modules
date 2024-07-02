@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults with a Consumption SKU'
-metadata description = 'This instance deploys the module using a Consumption SKU with the minimum set of required parameters.'
+metadata name = 'Deploying a Consumption SKU'
+metadata description = 'This instance deploys the module using a Consumption SKU.'
 
 // ========== //
 // Parameters //

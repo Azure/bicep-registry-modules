@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults with a Developer SKU'
-metadata description = 'This instance deploys the module using a Developer SKU with the minimum set of required parameters.'
+metadata name = 'Deploying a Developer SKU'
+metadata description = 'This instance deploys the module using a Developer SKU.'
 
 // ========== //
 // Parameters //

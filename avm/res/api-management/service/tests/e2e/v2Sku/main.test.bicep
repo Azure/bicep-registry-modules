@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Test deploying apim v2 sku'
-metadata description = 'This instance deploys the module using a v2 SKU with the minimum set of required parameters.'
+metadata name = 'Deploying an APIM v2 sku.'
+metadata description = 'This instance deploys the module using a v2 SKU.'
 
 // ========== //
 // Parameters //
