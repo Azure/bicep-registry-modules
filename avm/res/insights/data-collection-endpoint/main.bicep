@@ -6,36 +6,39 @@ metadata owner = 'Azure/module-maintainers'
 //   Parameters   //
 // ============== //
 
-@description('Required. The name of the data collection endpoint. The name is case insensitive.')
+@sys.description('Required. The name of the data collection endpoint. The name is case insensitive.')
 param name string
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@sys.description('Optional. Description of the data collection endpoint.')
+param description string?
+
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The kind of the resource.')
+@sys.description('Optional. The kind of the resource.')
 @allowed([
   'Linux'
   'Windows'
 ])
 param kind string = 'Linux'
 
-@description('Optional. Location for all Resources.')
+@sys.description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The lock settings of the service.')
+@sys.description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignments to create.')
+@sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. The configuration to set whether network access from public internet to the endpoints are allowed.')
+@sys.description('Optional. The configuration to set whether network access from public internet to the endpoints are allowed.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
 param publicNetworkAccess string = 'Disabled'
 
-@description('Optional. Resource tags.')
+@sys.description('Optional. Resource tags.')
 param tags object?
 
 var builtInRoleNames = {
@@ -75,7 +78,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2021-04-01' = {
+resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2023-03-11' = {
   kind: kind
   location: location
   name: name
@@ -84,6 +87,7 @@ resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2021
     networkAcls: {
       publicNetworkAccess: publicNetworkAccess
     }
+    description: description
   }
 }
 
@@ -122,16 +126,16 @@ resource dataCollectionEndpoint_roleAssignments 'Microsoft.Authorization/roleAss
 //   Outputs   //
 // =========== //
 
-@description('The name of the dataCollectionEndpoint.')
+@sys.description('The name of the dataCollectionEndpoint.')
 output name string = dataCollectionEndpoint.name
 
-@description('The resource ID of the dataCollectionEndpoint.')
+@sys.description('The resource ID of the dataCollectionEndpoint.')
 output resourceId string = dataCollectionEndpoint.id
 
-@description('The name of the resource group the dataCollectionEndpoint was created in.')
+@sys.description('The name of the resource group the dataCollectionEndpoint was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The location the resource was deployed into.')
+@sys.description('The location the resource was deployed into.')
 output location string = dataCollectionEndpoint.location
 
 // =============== //
@@ -139,32 +143,32 @@ output location string = dataCollectionEndpoint.location
 // =============== //
 
 type lockType = {
-  @description('Optional. Specify the name of lock.')
+  @sys.description('Optional. Specify the name of lock.')
   name: string?
 
-  @description('Optional. Specify the type of lock.')
+  @sys.description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
 type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
   principalId: string
 
-  @description('Optional. The principal type of the assigned principal ID.')
+  @sys.description('Optional. The principal type of the assigned principal ID.')
   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
-  @description('Optional. The description of the role assignment.')
+  @sys.description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
-  @description('Optional. Version of the condition.')
+  @sys.description('Optional. Version of the condition.')
   conditionVersion: '2.0'?
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
+  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
