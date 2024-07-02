@@ -1038,6 +1038,7 @@ Do not provide a value! This date value is used to make sure the script run ever
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `deploymentScriptLogs` | array | The logs of the deployment script. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployment script. |
 | `outputs` | object | The output of the deployment script. |
