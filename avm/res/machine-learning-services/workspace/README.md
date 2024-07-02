@@ -19,7 +19,7 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces) |
+| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -32,14 +32,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/machine-learning-services/workspace:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Creating Azure AI Studio resources](#example-1-creating-azure-ai-studio-resources)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
+- [Creating Azure AI Studio resources](#example-4-creating-azure-ai-studio-resources)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Creating Azure AI Studio resources_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys an Azure AI hub workspace.
 
 
 <details>
@@ -51,12 +53,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
+    name: 'mlswai001'
+    sku: 'Basic'
+    // Non-required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
     associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
     associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
-    name: 'mlswmin001'
-    sku: 'Basic'
-    // Non-required parameters
+    kind: 'Hub'
     location: '<location>'
   }
 }
@@ -75,6 +78,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswai001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -84,13 +94,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswmin001"
+    "kind": {
+      "value": "Hub"
     },
-    "sku": {
-      "value": "Basic"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -101,7 +107,71 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'mlswmin001'
+    sku: 'Basic'
+    // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlswmin001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
+    "associatedApplicationInsightsResourceId": {
+      "value": "<associatedApplicationInsightsResourceId>"
+    },
+    "associatedKeyVaultResourceId": {
+      "value": "<associatedKeyVaultResourceId>"
+    },
+    "associatedStorageAccountResourceId": {
+      "value": "<associatedStorageAccountResourceId>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -115,12 +185,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
-    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
-    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswecr001'
     sku: 'Basic'
     // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -151,6 +221,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswecr001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -160,13 +237,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswecr001"
-    },
-    "sku": {
-      "value": "Basic"
-    },
-    // Non-required parameters
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -195,7 +265,87 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Creating Azure AI Studio resources_
+
+This instance deploys an Azure AI Feature Store workspace.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'mlswfs001'
+    sku: 'Basic'
+    // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
+    featureStoreSettings: {
+      computeRuntime: {
+        sparkRuntimeVersion: '3.3'
+      }
+    }
+    kind: 'FeatureStore'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlswfs001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
+    "associatedApplicationInsightsResourceId": {
+      "value": "<associatedApplicationInsightsResourceId>"
+    },
+    "associatedKeyVaultResourceId": {
+      "value": "<associatedKeyVaultResourceId>"
+    },
+    "associatedStorageAccountResourceId": {
+      "value": "<associatedStorageAccountResourceId>"
+    },
+    "featureStoreSettings": {
+      "value": {
+        "computeRuntime": {
+          "sparkRuntimeVersion": "3.3"
+        }
+      }
+    },
+    "kind": {
+      "value": "FeatureStore"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -209,12 +359,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
-    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
-    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswmax001'
     sku: 'Premium'
     // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     computes: [
       {
         computeLocation: '<computeLocation>'
@@ -262,6 +412,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     ]
     discoveryUrl: 'http://example.com'
     imageBuildCompute: 'testcompute'
+    kind: 'Default'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -332,6 +483,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswmax001"
+    },
+    "sku": {
+      "value": "Premium"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -341,13 +499,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswmax001"
-    },
-    "sku": {
-      "value": "Premium"
-    },
-    // Non-required parameters
     "computes": {
       "value": [
         {
@@ -404,6 +555,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "imageBuildCompute": {
       "value": "testcompute"
+    },
+    "kind": {
+      "value": "Default"
     },
     "location": {
       "value": "<location>"
@@ -479,7 +633,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -493,12 +647,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
-    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
-    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswwaf001'
     sku: 'Standard'
     // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -543,6 +697,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswwaf001"
+    },
+    "sku": {
+      "value": "Standard"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -552,13 +713,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswwaf001"
-    },
-    "sku": {
-      "value": "Standard"
-    },
-    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -608,9 +762,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. |
-| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. |
-| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. |
 | [`name`](#parameter-name) | string | The name of the machine learning workspace. |
 | [`sku`](#parameter-sku) | string | Specifies the SKU, also referred as 'edition' of the Azure Machine Learning workspace. |
 
@@ -625,15 +776,21 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowPublicAccessWhenBehindVnet`](#parameter-allowpublicaccesswhenbehindvnet) | bool | The flag to indicate whether to allow public access when behind VNet. |
+| [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. |
 | [`associatedContainerRegistryResourceId`](#parameter-associatedcontainerregistryresourceid) | string | The resource ID of the associated Container Registry. |
+| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. |
+| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. |
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settngs for feature store type workspaces. |
 | [`hbiWorkspace`](#parameter-hbiworkspace) | bool | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
+| [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. |
 | [`imageBuildCompute`](#parameter-imagebuildcompute) | string | The compute name for image build. |
+| [`kind`](#parameter-kind) | string | The type of Azure Machine Learning workspace to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. At least one identity type is required. |
@@ -643,27 +800,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`serviceManagedResourcesSettings`](#parameter-servicemanagedresourcessettings) | object | The service managed resource settings. |
 | [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The list of shared private link resources in this workspace. Note: This property is not idempotent. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
-
-### Parameter: `associatedApplicationInsightsResourceId`
-
-The resource ID of the associated Application Insights.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `associatedKeyVaultResourceId`
-
-The resource ID of the associated Key Vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `associatedStorageAccountResourceId`
-
-The resource ID of the associated Storage Account.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `name`
 
@@ -703,9 +839,30 @@ The flag to indicate whether to allow public access when behind VNet.
 - Type: bool
 - Default: `False`
 
+### Parameter: `associatedApplicationInsightsResourceId`
+
+The resource ID of the associated Application Insights.
+
+- Required: No
+- Type: string
+
 ### Parameter: `associatedContainerRegistryResourceId`
 
 The resource ID of the associated Container Registry.
+
+- Required: No
+- Type: string
+
+### Parameter: `associatedKeyVaultResourceId`
+
+The resource ID of the associated Key Vault.
+
+- Required: No
+- Type: string
+
+### Parameter: `associatedStorageAccountResourceId`
+
+The resource ID of the associated Storage Account.
 
 - Required: No
 - Type: string
@@ -934,6 +1091,55 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `featureStoreSettings`
+
+Settngs for feature store type workspaces.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`computeRuntime`](#parameter-featurestoresettingscomputeruntime) | object | Compute runtime config for feature store type workspace. |
+| [`offlineStoreConnectionName`](#parameter-featurestoresettingsofflinestoreconnectionname) | string | The offline store connection name. |
+| [`onlineStoreConnectionName`](#parameter-featurestoresettingsonlinestoreconnectionname) | string | The online store connection name. |
+
+### Parameter: `featureStoreSettings.computeRuntime`
+
+Compute runtime config for feature store type workspace.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sparkRuntimeVersion`](#parameter-featurestoresettingscomputeruntimesparkruntimeversion) | string | The spark runtime version. |
+
+### Parameter: `featureStoreSettings.computeRuntime.sparkRuntimeVersion`
+
+The spark runtime version.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings.offlineStoreConnectionName`
+
+The offline store connection name.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings.onlineStoreConnectionName`
+
+The online store connection name.
+
+- Required: No
+- Type: string
+
 ### Parameter: `hbiWorkspace`
 
 The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.
@@ -942,12 +1148,36 @@ The flag to signal HBI data in the workspace and reduce diagnostic data collecte
 - Type: bool
 - Default: `False`
 
+### Parameter: `hubResourceId`
+
+The resource ID of the hub to associate with the workspace.
+
+- Required: No
+- Type: string
+
 ### Parameter: `imageBuildCompute`
 
 The compute name for image build.
 
 - Required: No
 - Type: string
+
+### Parameter: `kind`
+
+The type of Azure Machine Learning workspace to create.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'FeatureStore'
+    'Hub'
+    'Project'
+  ]
+  ```
 
 ### Parameter: `location`
 
