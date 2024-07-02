@@ -50,14 +50,11 @@ var storageAccountName = '${take(safeHubName, 24 - length(storageAccountSuffix))
 var ftkVersion = '0.3'
 
 // Add cm-resource-parent to group resources in Cost Management
-var resourceTags = union(
-  tags ?? {},
-  {
-    'cm-resource-parent': '${resourceGroup().id}/providers/Microsoft.Cloud/hubs/${hubName}'
-    'ftk-version': ftkVersion
-    'ftk-tool': 'FinOps hubs'
-  }
-)
+var resourceTags = union(tags ?? {}, {
+  'cm-resource-parent': '${resourceGroup().id}/providers/Microsoft.Cloud/hubs/${hubName}'
+  'ftk-version': ftkVersion
+  'ftk-tool': 'FinOps hubs'
+})
 
 // Generate globally unique Data Factory name: 3-63 chars; letters, numbers, non-repeating dashes
 var uniqueSuffix = uniqueString(hubName, resourceGroup().id)
@@ -158,43 +155,42 @@ module keyVault 'modules/keyVault.bicep' = {
   }
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.ptn.finopstoolkit-finopshub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.finopstoolkit-finopshub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        metadata: {
-          _generator: {
-            name: 'FinOps toolkit'
-            version: '0.3'
-          }
+resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      metadata: {
+        _generator: {
+          name: 'FinOps toolkit'
+          version: '0.3'
         }
-        resources: []
       }
+      resources: []
     }
   }
+}
 
 //==============================================================================
 // Outputs

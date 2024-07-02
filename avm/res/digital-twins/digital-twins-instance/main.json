@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16174863317053860668"
+      "version": "0.28.1.47646",
+      "templateHash": "6681425649721370761"
     },
     "name": "Digital Twins Instances",
     "description": "This module deploys an Azure Digital Twins Instance.",
@@ -556,7 +556,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.digitaltwins-digitaltwinsinstance.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -695,8 +695,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "1964184668152537300"
+              "version": "0.28.1.47646",
+              "templateHash": "13720195975702696848"
             },
             "name": "Digital Twins Instance EventHub Endpoint",
             "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
@@ -893,8 +893,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11981298053277690078"
+              "version": "0.28.1.47646",
+              "templateHash": "17105935055209854005"
             },
             "name": "Digital Twins Instance Event Grid Endpoints",
             "description": "This module deploys a Digital Twins Instance Event Grid Endpoint.",
@@ -1020,8 +1020,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "16761257324786961037"
+              "version": "0.28.1.47646",
+              "templateHash": "13764805272277592098"
             },
             "name": "Digital Twins Instance ServiceBus Endpoint",
             "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",

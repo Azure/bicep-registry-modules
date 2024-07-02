@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "3360936249154372689"
+      "version": "0.28.1.47646",
+      "templateHash": "7625867886550880091"
     },
     "name": "Role Assignments (All scopes)",
     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -110,7 +110,7 @@
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -164,8 +164,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "13749459126745145624"
+              "version": "0.28.1.47646",
+              "templateHash": "8906093264527258150"
             },
             "name": "Role Assignments (Management Group scope)",
             "description": "This module deploys a Role Assignment at a Management Group scope.",
@@ -328,8 +328,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4516670639800961845"
+              "version": "0.28.1.47646",
+              "templateHash": "707244099707019442"
             },
             "name": "Role Assignments (Subscription scope)",
             "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -500,8 +500,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "7241874480439813582"
+              "version": "0.28.1.47646",
+              "templateHash": "14591941439222880522"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment at a Resource Group scope.",

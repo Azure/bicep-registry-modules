@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5215368682061207752"
+      "version": "0.28.1.47646",
+      "templateHash": "16141221102197296370"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.",
@@ -274,7 +274,7 @@
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.ptn.security-securitycenter.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[parameters('location')]",
       "properties": {
@@ -372,8 +372,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11694037879563074763"
+              "version": "0.28.1.47646",
+              "templateHash": "11308208185474356622"
             }
           },
           "parameters": {

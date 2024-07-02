@@ -100,44 +100,43 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.network-bastionhost.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-bastionhost.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.4.0' =
-  if (empty(bastionSubnetPublicIpResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
-    params: {
-      name: publicIPAddressObject.name
-      enableTelemetry: enableTelemetry
-      location: location
-      lock: lock
-      diagnosticSettings: publicIPAddressObject.?diagnosticSettings
-      publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
-      publicIPAllocationMethod: publicIPAddressObject.?publicIPAllocationMethod
-      publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
-      roleAssignments: publicIPAddressObject.?roleAssignments
-      skuName: publicIPAddressObject.?skuName
-      skuTier: publicIPAddressObject.?skuTier
-      tags: publicIPAddressObject.?tags ?? tags
-      zones: publicIPAddressObject.?zones
-    }
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.4.0' = if (empty(bastionSubnetPublicIpResourceId)) {
+  name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
+  params: {
+    name: publicIPAddressObject.name
+    enableTelemetry: enableTelemetry
+    location: location
+    lock: lock
+    diagnosticSettings: publicIPAddressObject.?diagnosticSettings
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
+    publicIPAllocationMethod: publicIPAddressObject.?publicIPAllocationMethod
+    publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
+    roleAssignments: publicIPAddressObject.?roleAssignments
+    skuName: publicIPAddressObject.?skuName
+    skuTier: publicIPAddressObject.?skuTier
+    tags: publicIPAddressObject.?tags ?? tags
+    zones: publicIPAddressObject.?zones
   }
+}
 
 var bastionpropertiesVar = union(
   {
@@ -166,17 +165,16 @@ resource azureBastion 'Microsoft.Network/bastionHosts@2022-11-01' = {
   properties: bastionpropertiesVar
 }
 
-resource azureBastion_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: azureBastion
+resource azureBastion_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: azureBastion
+}
 
 resource azureBastion_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

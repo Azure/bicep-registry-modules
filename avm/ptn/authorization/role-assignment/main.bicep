@@ -51,25 +51,25 @@ param principalType string = ''
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.ptn.authorization-roleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.authorization-roleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
-    location:location
   }
+  location: location
+}
 
 module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-MG-Module'
@@ -80,7 +80,9 @@ module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscripti
     managementGroupId: managementGroupId
     description: !empty(description) ? description : ''
     principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : ''
+    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
+      ? delegatedManagedIdentityResourceId
+      : ''
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
   }
@@ -95,7 +97,9 @@ module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscription
     subscriptionId: subscriptionId
     description: !empty(description) ? description : ''
     principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : ''
+    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
+      ? delegatedManagedIdentityResourceId
+      : ''
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
   }
@@ -111,17 +115,31 @@ module roleAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceGro
     resourceGroupName: resourceGroupName
     description: !empty(description) ? description : ''
     principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : ''
+    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
+      ? delegatedManagedIdentityResourceId
+      : ''
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
   }
 }
 
 @sys.description('The GUID of the Role Assignment.')
-output name string = empty(subscriptionId) && empty(resourceGroupName) ? roleAssignment_mg.outputs.name : (!empty(subscriptionId) && empty(resourceGroupName) ? roleAssignment_sub.outputs.name : roleAssignment_rg.outputs.name)
+output name string = empty(subscriptionId) && empty(resourceGroupName)
+  ? roleAssignment_mg.outputs.name
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? roleAssignment_sub.outputs.name
+      : roleAssignment_rg.outputs.name)
 
 @sys.description('The resource ID of the Role Assignment.')
-output resourceId string = empty(subscriptionId) && empty(resourceGroupName) ? roleAssignment_mg.outputs.resourceId : (!empty(subscriptionId) && empty(resourceGroupName) ? roleAssignment_sub.outputs.resourceId : roleAssignment_rg.outputs.resourceId)
+output resourceId string = empty(subscriptionId) && empty(resourceGroupName)
+  ? roleAssignment_mg.outputs.resourceId
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? roleAssignment_sub.outputs.resourceId
+      : roleAssignment_rg.outputs.resourceId)
 
 @sys.description('The scope this Role Assignment applies to.')
-output scope string = empty(subscriptionId) && empty(resourceGroupName) ? roleAssignment_mg.outputs.scope : (!empty(subscriptionId) && empty(resourceGroupName) ? roleAssignment_sub.outputs.scope : roleAssignment_rg.outputs.scope)
+output scope string = empty(subscriptionId) && empty(resourceGroupName)
+  ? roleAssignment_mg.outputs.scope
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? roleAssignment_sub.outputs.scope
+      : roleAssignment_rg.outputs.scope)

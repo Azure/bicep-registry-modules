@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "9453655433534463092"
+      "version": "0.28.1.47646",
+      "templateHash": "12849012008844484104"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher.",
@@ -176,7 +176,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-networkwatcher.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -272,8 +272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "14911705346376844157"
+              "version": "0.28.1.47646",
+              "templateHash": "10444358838090684247"
             },
             "name": "Network Watchers Connection Monitors",
             "description": "This module deploys a Network Watcher Connection Monitor.",
@@ -434,8 +434,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "3648590963487326602"
+              "version": "0.28.1.47646",
+              "templateHash": "3763497651222221236"
             },
             "name": "NSG Flow Logs",
             "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**",

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "3274497359181095240"
+      "version": "0.28.1.47646",
+      "templateHash": "7409207305186624461"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -158,7 +158,7 @@
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[parameters('location')]",
       "properties": {
@@ -226,8 +226,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "15016174258473942920"
+              "version": "0.28.1.47646",
+              "templateHash": "10754608594936413857"
             },
             "name": "Policy Assignments (Management Group scope)",
             "description": "This module deploys a Policy Assignment at a Management Group scope.",
@@ -481,8 +481,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "977404313320239280"
+              "version": "0.28.1.47646",
+              "templateHash": "14066444680843928013"
             },
             "name": "Policy Assignments (Subscription scope)",
             "description": "This module deploys a Policy Assignment at a Subscription scope.",
@@ -736,8 +736,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17106923564853756802"
+              "version": "0.28.1.47646",
+              "templateHash": "17693268287104969526"
             },
             "name": "Policy Assignments (Resource Group scope)",
             "description": "This module deploys a Policy Assignment at a Resource Group scope.",

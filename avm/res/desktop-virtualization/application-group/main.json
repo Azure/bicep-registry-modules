@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11461831707158104939"
+      "version": "0.28.1.47646",
+      "templateHash": "7666140066506377288"
     },
     "name": "Azure Virtual Desktop Application Group",
     "description": "This module deploys an Azure Virtual Desktop Application Group.",
@@ -315,7 +315,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.desktopvirtualization-appgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -459,8 +459,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11159515031632739969"
+              "version": "0.28.1.47646",
+              "templateHash": "13159129056123729816"
             },
             "name": "Azure Virtual Desktop Application Group Application",
             "description": "This module deploys an Azure Virtual Desktop Application Group Application.",

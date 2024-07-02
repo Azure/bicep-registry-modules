@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16246563114829739207"
+      "version": "0.28.1.47646",
+      "templateHash": "926318145633714589"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway.",
@@ -126,7 +126,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.res.network-vpngateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -235,8 +235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15540036539979482149"
+              "version": "0.28.1.47646",
+              "templateHash": "7845337943961022453"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule.",
@@ -417,8 +417,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "13703101435058090684"
+              "version": "0.28.1.47646",
+              "templateHash": "15901314411176214938"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection.",

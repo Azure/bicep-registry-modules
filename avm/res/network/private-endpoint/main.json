@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2264842680766745282"
+      "version": "0.28.1.47646",
+      "templateHash": "6936556431546043466"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -370,7 +370,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -476,8 +476,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "13696906123248879101"
+              "version": "0.28.1.47646",
+              "templateHash": "8661907155223407544"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
             "description": "This module deploys a Private Endpoint Private DNS Zone Group.",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5759664010024104092"
+      "version": "0.28.1.47646",
+      "templateHash": "9391039096512506977"
     },
     "name": "Application Gateway Web Application Firewall (WAF) Policies",
     "description": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy.",
@@ -65,7 +65,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-appgwwebappfirewallpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",

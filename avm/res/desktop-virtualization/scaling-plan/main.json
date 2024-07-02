@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12551745482202425473"
+      "templateHash": "2173334947824258553"
     },
     "name": "Azure Virtual Desktop Scaling Plan",
     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -327,7 +327,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.desktopvirtualization-scalingplan.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",

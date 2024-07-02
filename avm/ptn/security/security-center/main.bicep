@@ -178,28 +178,28 @@ var pricings = [
   }
 ]
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: take(
-      '46d3xbcp.ptn.security-securitycenter.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
-      64
-    )
-    location: location
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.ptn.security-securitycenter.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
+  location: location
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 @batchSize(1)
 resource pricingTiers 'Microsoft.Security/pricings@2018-06-01' = [
@@ -218,36 +218,33 @@ resource autoProvisioningSettings 'Microsoft.Security/autoProvisioningSettings@2
   }
 }
 
-resource deviceSecurityGroups 'Microsoft.Security/deviceSecurityGroups@2019-08-01' =
-  if (!empty(deviceSecurityGroupProperties)) {
-    name: 'deviceSecurityGroups'
-    properties: {
-      thresholdRules: deviceSecurityGroupProperties.thresholdRules
-      timeWindowRules: deviceSecurityGroupProperties.timeWindowRules
-      allowlistRules: deviceSecurityGroupProperties.allowlistRules
-      denylistRules: deviceSecurityGroupProperties.denylistRules
-    }
+resource deviceSecurityGroups 'Microsoft.Security/deviceSecurityGroups@2019-08-01' = if (!empty(deviceSecurityGroupProperties)) {
+  name: 'deviceSecurityGroups'
+  properties: {
+    thresholdRules: deviceSecurityGroupProperties.thresholdRules
+    timeWindowRules: deviceSecurityGroupProperties.timeWindowRules
+    allowlistRules: deviceSecurityGroupProperties.allowlistRules
+    denylistRules: deviceSecurityGroupProperties.denylistRules
   }
+}
 
-module iotSecuritySolutions 'modules/iotSecuritySolutions.bicep' =
-  if (!empty(ioTSecuritySolutionProperties)) {
-    name: '${uniqueString(deployment().name)}-ASC-IotSecuritySolutions'
-    scope: resourceGroup(empty(ioTSecuritySolutionProperties) ? 'dummy' : ioTSecuritySolutionProperties.resourceGroup)
-    params: {
-      ioTSecuritySolutionProperties: ioTSecuritySolutionProperties
-    }
+module iotSecuritySolutions 'modules/iotSecuritySolutions.bicep' = if (!empty(ioTSecuritySolutionProperties)) {
+  name: '${uniqueString(deployment().name)}-ASC-IotSecuritySolutions'
+  scope: resourceGroup(empty(ioTSecuritySolutionProperties) ? 'dummy' : ioTSecuritySolutionProperties.resourceGroup)
+  params: {
+    ioTSecuritySolutionProperties: ioTSecuritySolutionProperties
   }
+}
 
-resource securityContacts 'Microsoft.Security/securityContacts@2017-08-01-preview' =
-  if (!empty(securityContactProperties)) {
-    name: 'default'
-    properties: {
-      email: securityContactProperties.email
-      phone: securityContactProperties.phone
-      alertNotifications: securityContactProperties.alertNotifications
-      alertsToAdmins: securityContactProperties.alertsToAdmins
-    }
+resource securityContacts 'Microsoft.Security/securityContacts@2017-08-01-preview' = if (!empty(securityContactProperties)) {
+  name: 'default'
+  properties: {
+    email: securityContactProperties.email
+    phone: securityContactProperties.phone
+    alertNotifications: securityContactProperties.alertNotifications
+    alertsToAdmins: securityContactProperties.alertsToAdmins
   }
+}
 
 resource workspaceSettings 'Microsoft.Security/workspaceSettings@2017-08-01-preview' = {
   name: 'default'
