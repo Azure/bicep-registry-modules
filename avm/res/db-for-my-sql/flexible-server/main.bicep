@@ -432,6 +432,9 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = flexibleServer.location
 
+@description('The FQDN of the MySQL Flexible server.')
+output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+
 // =============== //
 //   Definitions   //
 // =============== //

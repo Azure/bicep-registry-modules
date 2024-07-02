@@ -1349,6 +1349,7 @@ MySQL Server version.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fqdn` | string | The FQDN of the MySQL Flexible server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed MySQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed MySQL Flexible server. |
