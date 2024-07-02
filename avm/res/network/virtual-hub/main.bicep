@@ -27,6 +27,15 @@ param expressRouteGatewayId string = ''
 @description('Optional. Resource ID of the Point-to-Site VPN Gateway to link to.')
 param p2SVpnGatewayId string = ''
 
+@description('Optional. The preferred routing preference for this virtual hub.')
+@allowed([
+  'ASPath'
+  'ExpressRoute'
+  'VpnGateway'
+  ''
+])
+param hubRoutingPreference string = ''
+
 @description('Optional. The preferred routing gateway types.')
 @allowed([
   'ExpressRoute'
@@ -101,7 +110,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -123,6 +132,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
           id: p2SVpnGatewayId
         }
       : null
+    hubRoutingPreference: !empty(hubRoutingPreference) ? any(hubRoutingPreference) : null
     preferredRoutingGateway: !empty(preferredRoutingGateway) ? any(preferredRoutingGateway) : null
     routeTable: !empty(routeTableRoutes)
       ? {

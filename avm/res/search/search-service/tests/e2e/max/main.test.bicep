@@ -78,6 +78,9 @@ module testDeployment '../../../main.bicep' = {
     semanticSearch: 'standard'
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
     }
     lock: {
       kind: 'CanNotDelete'
