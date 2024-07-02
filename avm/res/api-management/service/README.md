@@ -45,16 +45,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
 
-- [Using only defaults with a Consumption SKU](#example-1-using-only-defaults-with-a-consumption-sku)
+- [Deploying a Consumption SKU](#example-1-deploying-a-consumption-sku)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using only defaults with a Developer SKU](#example-3-using-only-defaults-with-a-developer-sku)
+- [Deploying a Developer SKU](#example-3-deploying-a-developer-sku)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Test deploying apim v2 sku](#example-5-test-deploying-apim-v2-sku)
+- [Deploying an APIM v2 sku.](#example-5-deploying-an-apim-v2-sku)
 - [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults with a Consumption SKU_
+### Example 1: _Deploying a Consumption SKU_
 
-This instance deploys the module using a Consumption SKU with the minimum set of required parameters.
+This instance deploys the module using a Consumption SKU.
 
 
 <details>
@@ -196,9 +196,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults with a Developer SKU_
+### Example 3: _Deploying a Developer SKU_
 
-This instance deploys the module using a Developer SKU with the minimum set of required parameters.
+This instance deploys the module using a Developer SKU.
 
 
 <details>
@@ -756,9 +756,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 5: _Test deploying apim v2 sku_
+### Example 5: _Deploying an APIM v2 sku._
 
-This instance deploys the module using a v2 SKU with the minimum set of required parameters.
+This instance deploys the module using a v2 SKU.
 
 
 <details>
