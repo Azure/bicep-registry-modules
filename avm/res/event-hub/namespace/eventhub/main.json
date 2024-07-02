@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5745450341554942810"
+      "templateHash": "10950140258950515541"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub.",
@@ -337,7 +337,7 @@
     "namespace": {
       "existing": true,
       "type": "Microsoft.EventHub/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('namespaceName')]"
     },
     "eventHub": {
@@ -417,7 +417,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "10439838475562052342"
+              "templateHash": "8005690025378324644"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
@@ -453,7 +453,7 @@
           "resources": [
             {
               "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
               "properties": {
                 "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"
@@ -521,7 +521,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "13970780399709322534"
+              "templateHash": "4404779525744622109"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
@@ -562,7 +562,7 @@
           "resources": [
             {
               "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"
