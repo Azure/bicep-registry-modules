@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9023775947522532486"
+      "templateHash": "5877646031628493512"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -653,7 +653,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "9397210340148497295"
+              "templateHash": "6925745500465566450"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -8511,7 +8511,7 @@
                     "value": "StorageV2"
                   },
                   "skuName": {
-                    "value": "Standard_ZRS"
+                    "value": "Standard_LRS"
                   },
                   "networkAcls": {
                     "value": {
