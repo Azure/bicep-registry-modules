@@ -35,7 +35,7 @@ The following section provides usage examples for the module, which were used to
 - [Creating Azure AI Studio resources](#example-1-creating-azure-ai-studio-resources)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Creating Azure AI Studio resources](#example-4-creating-azure-ai-studio-resources)
+- [Creating Azure ML managed feature store](#example-4-creating-azure-ml-managed-feature-store)
 - [Using large parameter set](#example-5-using-large-parameter-set)
 - [WAF-aligned](#example-6-waf-aligned)
 
@@ -265,9 +265,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-### Example 4: _Creating Azure AI Studio resources_
+### Example 4: _Creating Azure ML managed feature store_
 
-This instance deploys an Azure AI Feature Store workspace.
+This instance deploys an Azure ML managed feature store.
 
 
 <details>

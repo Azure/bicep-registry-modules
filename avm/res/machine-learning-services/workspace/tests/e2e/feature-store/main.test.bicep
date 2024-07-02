@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Creating Azure AI Studio resources'
-metadata description = 'This instance deploys an Azure AI Feature Store workspace.'
+metadata name = 'Creating Azure ML managed feature store'
+metadata description = 'This instance deploys an Azure ML managed feature store.'
 
 // ========== //
 // Parameters //
