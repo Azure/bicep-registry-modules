@@ -272,18 +272,14 @@ module loadBalancer_inboundNATRules 'inbound-nat-rule/main.bicep' = [
       name: inboundNATRule.name
       frontendIPConfigurationName: inboundNATRule.frontendIPConfigurationName
       frontendPort: inboundNATRule.?frontendPort
-      backendPort: contains(inboundNATRule, 'backendPort') ? inboundNATRule.backendPort : inboundNATRule.frontendPort
-      backendAddressPoolName: contains(inboundNATRule, 'backendAddressPoolName')
-        ? inboundNATRule.backendAddressPoolName
-        : ''
-      enableFloatingIP: contains(inboundNATRule, 'enableFloatingIP') ? inboundNATRule.enableFloatingIP : false
-      enableTcpReset: contains(inboundNATRule, 'enableTcpReset') ? inboundNATRule.enableTcpReset : false
-      frontendPortRangeEnd: contains(inboundNATRule, 'frontendPortRangeEnd') ? inboundNATRule.frontendPortRangeEnd : -1
-      frontendPortRangeStart: contains(inboundNATRule, 'frontendPortRangeStart')
-        ? inboundNATRule.frontendPortRangeStart
-        : -1
-      idleTimeoutInMinutes: contains(inboundNATRule, 'idleTimeoutInMinutes') ? inboundNATRule.idleTimeoutInMinutes : 4
-      protocol: contains(inboundNATRule, 'protocol') ? inboundNATRule.protocol : 'Tcp'
+      backendPort: inboundNATRule.backendPort
+      backendAddressPoolName: inboundNATRule.?backendAddressPoolName
+      enableFloatingIP: inboundNATRule.?enableFloatingIP
+      enableTcpReset: inboundNATRule.?enableTcpReset
+      frontendPortRangeEnd: inboundNATRule.?frontendPortRangeEnd
+      frontendPortRangeStart: inboundNATRule.?frontendPortRangeStart
+      idleTimeoutInMinutes: inboundNATRule.?idleTimeoutInMinutes
+      protocol: inboundNATRule.?protocol
     }
     dependsOn: [
       loadBalancer_backendAddressPools
