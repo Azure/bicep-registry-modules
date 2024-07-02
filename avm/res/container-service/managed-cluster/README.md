@@ -1457,7 +1457,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
-| [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | string | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | string | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxGracefulTerminationSec`](#parameter-autoscalerprofilemaxgracefulterminationsec) | string | Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster. |
@@ -1471,8 +1471,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`autoScalerProfileScaleDownUnneededTime`](#parameter-autoscalerprofilescaledownunneededtime) | string | Specifies the scale down unneeded time of the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileScaleDownUnreadyTime`](#parameter-autoscalerprofilescaledownunreadytime) | string | Specifies the scale down unready time of the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileScanInterval`](#parameter-autoscalerprofilescaninterval) | string | Specifies the scan interval of the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileSkipNodesWithLocalStorage`](#parameter-autoscalerprofileskipnodeswithlocalstorage) | string | Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileSkipNodesWithSystemPods`](#parameter-autoscalerprofileskipnodeswithsystempods) | string | Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileSkipNodesWithLocalStorage`](#parameter-autoscalerprofileskipnodeswithlocalstorage) | bool | Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileSkipNodesWithSystemPods`](#parameter-autoscalerprofileskipnodeswithsystempods) | bool | Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileUtilizationThreshold`](#parameter-autoscalerprofileutilizationthreshold) | string | Specifies the utilization threshold of the auto-scaler of the AKS cluster. |
 | [`autoUpgradeProfileUpgradeChannel`](#parameter-autoupgradeprofileupgradechannel) | string | Auto-upgrade channel on the AKS cluster. |
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
@@ -1487,7 +1487,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
-| [`enableAppMonitoring`](#parameter-enableappmonitoring) | bool | Indicates if Application Monitoring of the kubenetes cluster is enabled. |
 | [`enableAppMonitoringOpenTelemetryMetrics`](#parameter-enableappmonitoringopentelemetrymetrics) | bool | Indicates if Application Monitoring Open Telemetry Metrics is enabled. |
 | [`enableAzureDefender`](#parameter-enableazuredefender) | bool | Whether to enable Azure Defender. |
 | [`enableAzureMonitorProfileLogs`](#parameter-enableazuremonitorprofilelogs) | bool | Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled. |
@@ -1501,7 +1500,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`enablePrivateCluster`](#parameter-enableprivatecluster) | bool | Specifies whether to create the cluster as a private cluster or not. |
 | [`enablePrivateClusterPublicFQDN`](#parameter-enableprivateclusterpublicfqdn) | bool | Whether to create additional public FQDN for private cluster or not. |
 | [`enableRBAC`](#parameter-enablerbac) | bool | Whether to enable Kubernetes Role-Based Access Control. |
-| [`enableSecretRotation`](#parameter-enablesecretrotation) | string | Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation. |
+| [`enableSecretRotation`](#parameter-enablesecretrotation) | bool | Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation. |
 | [`enableStorageProfileBlobCSIDriver`](#parameter-enablestorageprofileblobcsidriver) | bool | Whether the AzureBlob CSI Driver for the storage profile is enabled. |
 | [`enableStorageProfileDiskCSIDriver`](#parameter-enablestorageprofilediskcsidriver) | bool | Whether the AzureDisk CSI Driver for the storage profile is enabled. |
 | [`enableStorageProfileFileCSIDriver`](#parameter-enablestorageprofilefilecsidriver) | bool | Whether the AzureFile CSI Driver for the storage profile is enabled. |
@@ -2025,15 +2024,8 @@ IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is 
 Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.
 
 - Required: No
-- Type: string
-- Default: `'false'`
-- Allowed:
-  ```Bicep
-  [
-    'false'
-    'true'
-  ]
-  ```
+- Type: bool
+- Default: `False`
 
 ### Parameter: `autoScalerProfileExpander`
 
@@ -2153,30 +2145,16 @@ Specifies the scan interval of the auto-scaler of the AKS cluster.
 Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.
 
 - Required: No
-- Type: string
-- Default: `'true'`
-- Allowed:
-  ```Bicep
-  [
-    'false'
-    'true'
-  ]
-  ```
+- Type: bool
+- Default: `True`
 
 ### Parameter: `autoScalerProfileSkipNodesWithSystemPods`
 
 Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster.
 
 - Required: No
-- Type: string
-- Default: `'true'`
-- Allowed:
-  ```Bicep
-  [
-    'false'
-    'true'
-  ]
-  ```
+- Type: bool
+- Default: `True`
 
 ### Parameter: `autoScalerProfileUtilizationThreshold`
 
@@ -2490,14 +2468,6 @@ Specifies the resource ID of connected DNS zone. It will be ignored if `webAppli
 - Required: No
 - Type: string
 
-### Parameter: `enableAppMonitoring`
-
-Indicates if Application Monitoring of the kubenetes cluster is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableAppMonitoringOpenTelemetryMetrics`
 
 Indicates if Application Monitoring Open Telemetry Metrics is enabled.
@@ -2607,15 +2577,8 @@ Whether to enable Kubernetes Role-Based Access Control.
 Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation.
 
 - Required: No
-- Type: string
-- Default: `'false'`
-- Allowed:
-  ```Bicep
-  [
-    'false'
-    'true'
-  ]
-  ```
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableStorageProfileBlobCSIDriver`
 

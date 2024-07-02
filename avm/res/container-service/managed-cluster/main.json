@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "12963223629809121473"
+      "version": "0.28.1.47646",
+      "templateHash": "17567540546063214995"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1060,12 +1060,8 @@
       }
     },
     "enableSecretRotation": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation."
       }
@@ -1127,12 +1123,8 @@
       }
     },
     "autoScalerProfileBalanceSimilarNodeGroups": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster."
       }
@@ -1186,23 +1178,15 @@
       }
     },
     "autoScalerProfileSkipNodesWithLocalStorage": {
-      "type": "string",
-      "defaultValue": "true",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster."
       }
     },
     "autoScalerProfileSkipNodesWithSystemPods": {
-      "type": "string",
-      "defaultValue": "true",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster."
       }
@@ -1431,13 +1415,6 @@
         "description": "Optional. Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled."
       }
     },
-    "enableAppMonitoring": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Indicates if Application Monitoring of the kubenetes cluster is enabled."
-      }
-    },
     "enableWindowsHostLogs": {
       "type": "bool",
       "defaultValue": false,
@@ -1600,7 +1577,7 @@
           },
           "azureKeyvaultSecretsProvider": {
             "enabled": "[parameters('enableKeyvaultSecretsProvider')]",
-            "config": "[if(parameters('enableKeyvaultSecretsProvider'), createObject('enableSecretRotation', parameters('enableSecretRotation')), null())]"
+            "config": "[if(parameters('enableKeyvaultSecretsProvider'), createObject('enableSecretRotation', toLower(string(parameters('enableSecretRotation')))), null())]"
           }
         },
         "oidcIssuerProfile": "[if(parameters('enableOidcIssuerProfile'), createObject('enabled', parameters('enableOidcIssuerProfile')), null())]",
@@ -1640,7 +1617,7 @@
           "tenantID": "[parameters('aadProfileTenantId')]"
         },
         "autoScalerProfile": {
-          "balance-similar-node-groups": "[parameters('autoScalerProfileBalanceSimilarNodeGroups')]",
+          "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
           "expander": "[parameters('autoScalerProfileExpander')]",
           "max-empty-bulk-delete": "[parameters('autoScalerProfileMaxEmptyBulkDelete')]",
           "max-graceful-termination-sec": "[parameters('autoScalerProfileMaxGracefulTerminationSec')]",
@@ -1655,8 +1632,8 @@
           "scale-down-unready-time": "[parameters('autoScalerProfileScaleDownUnreadyTime')]",
           "scale-down-utilization-threshold": "[parameters('autoScalerProfileUtilizationThreshold')]",
           "scan-interval": "[parameters('autoScalerProfileScanInterval')]",
-          "skip-nodes-with-local-storage": "[parameters('autoScalerProfileSkipNodesWithLocalStorage')]",
-          "skip-nodes-with-system-pods": "[parameters('autoScalerProfileSkipNodesWithSystemPods')]"
+          "skip-nodes-with-local-storage": "[toLower(string(parameters('autoScalerProfileSkipNodesWithLocalStorage')))]",
+          "skip-nodes-with-system-pods": "[toLower(string(parameters('autoScalerProfileSkipNodesWithSystemPods')))]"
         },
         "autoUpgradeProfile": {
           "upgradeChannel": "[parameters('autoUpgradeProfileUpgradeChannel')]"
@@ -1669,7 +1646,7 @@
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
         "azureMonitorProfile": {
-          "logs": "[if(parameters('enableAzureMonitorProfileLogs'), createObject('appMonitoring', createObject('enabled', parameters('enableAppMonitoring')), 'containerInsights', createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'windowsHostLogs', createObject('enabled', parameters('enableWindowsHostLogs')))), null())]",
+          "logs": "[if(parameters('enableAzureMonitorProfileLogs'), createObject('containerInsights', createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'windowsHostLogs', createObject('enabled', parameters('enableWindowsHostLogs')))), null())]",
           "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'appMonitoringOpenTelemetryMetrics', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryMetrics')), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
         },
         "podIdentityProfile": {
@@ -1930,8 +1907,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4264461851737541966"
+              "version": "0.28.1.47646",
+              "templateHash": "799879925814961597"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
