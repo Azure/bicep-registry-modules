@@ -70,6 +70,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      kind: 'Default'
       associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
       associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId

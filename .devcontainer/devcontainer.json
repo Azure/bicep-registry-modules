@@ -10,6 +10,7 @@
         "github.vscode-pull-request-github",
         "microsoft-dciborow.align-bicep",
         "ms-azuretools.vscode-bicep",
+        "ms-vscode.azure-account",
         "ms-vsliveshare.vsliveshare",
         "ms-vscode-remote.remote-containers",
         "zokugun.explicit-folding",
