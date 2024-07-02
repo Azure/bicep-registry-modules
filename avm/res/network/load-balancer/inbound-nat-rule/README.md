@@ -72,7 +72,6 @@ The port for the external endpoint. Port numbers for each rule must be unique wi
 
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `loadBalancerName`
 

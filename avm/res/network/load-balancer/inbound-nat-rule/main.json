@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1694242668742291512"
+      "templateHash": "366948492655043633"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -26,7 +27,7 @@
     },
     "frontendPort": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "minValue": -1,
       "maxValue": 65534,
       "metadata": {
@@ -106,13 +107,19 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "loadBalancer": {
+      "existing": true,
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2023-11-01",
+      "name": "[parameters('loadBalancerName')]"
+    },
+    "inboundNatRule": {
       "type": "Microsoft.Network/loadBalancers/inboundNatRules",
       "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
       "properties": {
-        "frontendPort": "[if(not(equals(parameters('frontendPort'), -1)), parameters('frontendPort'), null())]",
+        "frontendPort": "[parameters('frontendPort')]",
         "backendPort": "[coalesce(parameters('backendPort'), parameters('frontendPortRangeStart'))]",
         "backendAddressPool": "[if(not(empty(parameters('backendAddressPoolName'))), createObject('id', format('{0}/backendAddressPools/{1}', resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), parameters('backendAddressPoolName'))), null())]",
         "enableFloatingIP": "[parameters('enableFloatingIP')]",
@@ -124,9 +131,12 @@
         "frontendPortRangeEnd": "[if(not(equals(parameters('frontendPortRangeEnd'), -1)), parameters('frontendPortRangeEnd'), null())]",
         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
         "protocol": "[parameters('protocol')]"
-      }
+      },
+      "dependsOn": [
+        "loadBalancer"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
