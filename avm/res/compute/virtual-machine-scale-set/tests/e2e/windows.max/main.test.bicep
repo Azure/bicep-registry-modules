@@ -161,6 +161,14 @@ module testDeployment '../../../main.bicep' = [
       extensionNetworkWatcherAgentConfig: {
         enabled: true
       }
+      extensionHealthConfig: {
+        enabled: true
+        settings: {
+          protocol: 'http'
+          port: 80
+          requestPath: '/'
+        }
+      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
