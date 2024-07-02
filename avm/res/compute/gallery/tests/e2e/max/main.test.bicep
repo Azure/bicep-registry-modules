@@ -75,12 +75,31 @@ module testDeployment '../../../main.bicep' = [
       ]
       images: [
         {
-          hyperVGeneration: 'V1'
           name: '${namePrefix}-az-imgd-ws-001'
-          offer: 'WindowsServer'
-          osType: 'Windows'
-          publisher: 'MicrosoftWindowsServer'
-          sku: '2022-datacenter-azure-edition'
+          properties: {
+            hyperVGeneration: 'V1'
+            identifier: {
+              publisher: 'MicrosoftWindowsServer'
+              offer: 'WindowsServer'
+              sku: '2022-datacenter-azure-edition'
+            }
+            osType: 'Windows'
+            osState: 'Generalized'
+            eula: 'test Eula'
+            architecture: 'x64'
+            description: 'testDescription'
+            privacyStatementUri: 'https://testPrivacyStatementUri.com'
+            disallowed: {
+              diskTypes: ['Standard_LRS']
+            }
+            purchasePlan:{
+              name: 'testPlanName1'
+              product: 'testProduct1'
+              publisher: 'testPublisher1'
+            }
+            endOfLifeDate: '2033-01-01'
+            releaseNoteUri: 'https://testReleaseNoteUri.com'
+          }
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -90,18 +109,29 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          hyperVGeneration: 'V2'
+          name: '${namePrefix}-az-imgd-ws-002'
+          properties: {
+            hyperVGeneration: 'V2'
+            identifier: {
+              publisher: 'MicrosoftWindowsServer'
+              offer: 'WindowsServer'
+              sku: '2022-datacenter-azure-edition-hibernate'
+            }
+            osType: 'Windows'
+            recommended: {
+              memory: {
+                min: 4
+                max: 16
+              }
+              vCPUs: {
+                min: 2
+                max: 8
+              }
+            }
+            osState: 'Generalized'
+          }
           isHibernateSupported: true
           isAcceleratedNetworkSupported: false
-          maxRecommendedMemory: 16
-          maxRecommendedvCPUs: 8
-          minRecommendedMemory: 4
-          minRecommendedvCPUs: 2
-          name: '${namePrefix}-az-imgd-ws-002'
-          offer: 'WindowsServer'
-          osState: 'Generalized'
-          osType: 'Windows'
-          publisher: 'MicrosoftWindowsServer'
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -109,20 +139,35 @@ module testDeployment '../../../main.bicep' = [
               principalType: 'ServicePrincipal'
             }
           ]
-          sku: '2022-datacenter-azure-edition-hibernate'
         }
         {
-          hyperVGeneration: 'V2'
+          name: '${namePrefix}-az-imgd-wdtl-003'
           securityType: 'TrustedLaunch'
-          maxRecommendedMemory: 16
-          maxRecommendedvCPUs: 4
-          minRecommendedMemory: 4
-          minRecommendedvCPUs: 2
-          name: '${namePrefix}-az-imgd-wdtl-001'
-          offer: 'WindowsDesktop'
-          osState: 'Generalized'
-          osType: 'Windows'
-          publisher: 'MicrosoftWindowsDesktop'
+          properties: {
+            osType: 'Windows'
+            osState: 'Generalized'
+            hyperVGeneration: 'V2'
+            identifier: {
+              publisher: 'MicrosoftWindowsDesktop'
+              offer: 'WindowsDesktop'
+              sku: 'Win11-21H2'
+            }
+            recommended: {
+              memory: {
+                min: 4
+                max: 16
+              }
+              vCPUs: {
+                min: 2
+                max: 8
+              }
+            }
+            purchasePlan:{
+              name: 'testPlanName'
+              product: 'testProduct'
+              publisher: 'testPublisher'
+            }
+          }
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -130,20 +175,78 @@ module testDeployment '../../../main.bicep' = [
               principalType: 'ServicePrincipal'
             }
           ]
-          sku: 'Win11-21H2'
         }
         {
-          hyperVGeneration: 'V2'
-          maxRecommendedMemory: 32
-          maxRecommendedvCPUs: 4
-          minRecommendedMemory: 4
-          minRecommendedvCPUs: 1
-          name: '${namePrefix}-az-imgd-us-001'
-          offer: '0001-com-ubuntu-server-focal'
-          osState: 'Generalized'
-          osType: 'Linux'
-          publisher: 'canonical'
-          sku: '20_04-lts-gen2'
+          name: '${namePrefix}-az-imgd-us-004'
+          properties: {
+            osType: 'Linux'
+            osState: 'Generalized'
+            hyperVGeneration: 'V2'
+            identifier: {
+              publisher: 'canonical'
+              offer: '0001-com-ubuntu-minimal-focal'
+              sku: '22_04-lts-gen2'
+            }
+            recommended: {
+              memory: {
+                min: 4
+                max: 32
+              }
+              vCPUs: {
+                min: 1
+                max: 4
+              }
+            }
+          }
+          isAcceleratedNetworkSupported: false
+        }
+        {
+          name: '${namePrefix}-az-imgd-us-005'
+          properties: {
+            osType: 'Linux'
+            osState: 'Generalized'
+            hyperVGeneration: 'V2'
+            identifier: {
+              publisher: 'canonical'
+              offer: '0001-com-ubuntu-minimal-focal'
+              sku: '20_04-lts-gen2'
+            }
+            recommended: {
+              memory: {
+                min: 4
+                max: 32
+              }
+              vCPUs: {
+                min: 1
+                max: 4
+              }
+            }
+          }
+          isAcceleratedNetworkSupported: true
+        }
+        {
+          name: '${namePrefix}-az-imgd-us-006'
+          properties: {
+            osType: 'Linux'
+            osState: 'Generalized'
+            hyperVGeneration: 'V2'
+            identifier: {
+              publisher: 'canonical'
+              offer: '0001-com-ubuntu-server-focal'
+              sku: '20_04-lts-gen2'
+            }
+            recommended: {
+              memory: {
+                min: 4
+                max: 32
+              }
+              vCPUs: {
+                min: 1
+                max: 4
+              }
+            }
+          }
+          isAcceleratedNetworkSupported: false
         }
       ]
       roleAssignments: [

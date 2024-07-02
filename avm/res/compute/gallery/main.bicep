@@ -9,26 +9,39 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+// ============ //
+// Parameters   //
+// ============ //
+
 @sys.description('Optional. Description of the Azure Shared Image Gallery.')
 param description string?
 
 @sys.description('Optional. Applications to create.')
 param applications array?
 
+import { imageType } from 'image/main.bicep'
 @sys.description('Optional. Images to create.')
-param images array?
+param images imageType[]?
 
 @sys.description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType?
 
 @sys.description('Optional. Tags for all resources.')
+@metadata({
+  example: '''
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  '''
+})
 param tags object?
-
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
 
 @sys.description('Optional. Profile for gallery sharing to subscription or tenant.')
 param sharingProfile object?
@@ -54,26 +67,29 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.compute-gallery.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+// ============== //
+// Resources      //
+// ============== //
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.compute-gallery.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
+resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
   name: name
   location: location
   tags: tags
@@ -85,17 +101,16 @@ resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
   }
 }
 
-resource gallery_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: gallery
+resource gallery_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: gallery
+}
 
 resource gallery_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -141,35 +156,19 @@ module galleries_images 'image/main.bicep' = [
   for (image, index) in (images ?? []): {
     name: '${uniqueString(deployment().name, location)}-Gallery-Image-${index}'
     params: {
-      location: location
       name: image.name
+      location: image.?location ?? location
       galleryName: gallery.name
-      osType: image.osType
-      osState: image.?osState
-      publisher: image.publisher
-      offer: image.offer
-      sku: image.sku
-      minRecommendedvCPUs: image.?minRecommendedvCPUs
-      maxRecommendedvCPUs: image.?maxRecommendedvCPUs
-      minRecommendedMemory: image.?minRecommendedMemory
-      maxRecommendedMemory: image.?maxRecommendedMemory
-      hyperVGeneration: image.?hyperVGeneration
-      securityType: image.?securityType
-      isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported
-      description: image.?description
-      eula: image.?eula
-      privacyStatementUri: image.?privacyStatementUri
-      releaseNoteUri: image.?releaseNoteUri
-      productName: image.?productName
-      planName: image.?planName
-      planPublisherName: image.?planPublisherName
-      endOfLife: image.?endOfLife
-      excludedDiskTypes: image.?excludedDiskTypes
+      galleryImage: image
       roleAssignments: image.?roleAssignments
       tags: image.?tags ?? tags
     }
   }
 ]
+
+// ============ //
+// Outputs      //
+// ============ //
 
 @sys.description('The resource ID of the deployed image gallery.')
 output resourceId string = gallery.id
@@ -198,7 +197,7 @@ type lockType = {
 
   @sys.description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+}
 
 type roleAssignmentType = {
   @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
@@ -221,4 +220,4 @@ type roleAssignmentType = {
 
   @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
-}[]?
+}[]
