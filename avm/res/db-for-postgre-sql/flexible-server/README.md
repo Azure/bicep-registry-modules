@@ -53,8 +53,8 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
-    skuName: 'Standard_B2s'
-    tier: 'Burstable'
+    skuName: 'Standard_D4s_v3'
+    tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -81,10 +81,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "dfpsfsmin001"
     },
     "skuName": {
-      "value": "Standard_B2s"
+      "value": "Standard_D4s_v3"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -809,6 +809,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Default properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
 | [`name`](#parameter-name) | string | The name of the PostgreSQL flexible server. |
 | [`skuName`](#parameter-skuname) | string | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3. |
 | [`tier`](#parameter-tier) | string | The tier of the particular SKU. Tier must align with the 'skuName' property. Example, tier cannot be 'Burstable' if skuName is 'Standard_D4s_v3'. |
@@ -843,7 +844,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 | [`highAvailability`](#parameter-highavailability) | string | The mode for high availability. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
 | [`passwordAuth`](#parameter-passwordauth) | string | If Enabled, password authentication is enabled. |
 | [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be lined to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -851,6 +851,22 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantId`](#parameter-tenantid) | string | Tenant id of the server. |
 | [`version`](#parameter-version) | string | PostgreSQL Server version. |
+
+### Parameter: `maintenanceWindow`
+
+Default properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      customWindow: 'Enabled'
+      dayOfWeek: '0'
+      startHour: '1'
+      startMinute: '0'
+  }
+  ```
 
 ### Parameter: `name`
 
@@ -1254,7 +1270,7 @@ The mode for high availability.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
   [
@@ -1307,14 +1323,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
-### Parameter: `maintenanceWindow`
-
-Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'.
-
-- Required: No
-- Type: object
-- Default: `{}`
 
 ### Parameter: `passwordAuth`
 
@@ -1472,7 +1480,7 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'15'`
+- Default: `'16'`
 - Allowed:
   ```Bicep
   [
@@ -1481,6 +1489,7 @@ PostgreSQL Server version.
     '13'
     '14'
     '15'
+    '16'
   ]
   ```
 

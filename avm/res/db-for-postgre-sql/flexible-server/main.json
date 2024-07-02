@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "43938432995769188"
+      "templateHash": "16110015211835872087"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -406,13 +406,14 @@
     },
     "version": {
       "type": "string",
-      "defaultValue": "15",
+      "defaultValue": "16",
       "allowedValues": [
         "11",
         "12",
         "13",
         "14",
-        "15"
+        "15",
+        "16"
       ],
       "metadata": {
         "description": "Optional. PostgreSQL Server version."
@@ -420,7 +421,7 @@
     },
     "highAvailability": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "defaultValue": "ZoneRedundant",
       "allowedValues": [
         "Disabled",
         "SameZone",
@@ -457,9 +458,14 @@
     },
     "maintenanceWindow": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "customWindow": "Enabled",
+        "dayOfWeek": "0",
+        "startHour": "1",
+        "startMinute": "0"
+      },
       "metadata": {
-        "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
+        "description": "Required. Default properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       }
     },
     "pointInTimeUTC": {
@@ -634,7 +640,7 @@
         "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), 'type', 'AzureKeyVault'), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",
-          "standbyAvailabilityZone": "[if(equals(parameters('highAvailability'), 'SameZone'), parameters('availabilityZone'), null())]"
+          "standbyAvailabilityZone": "[if(not(equals(parameters('highAvailability'), 'Disabled')), parameters('availabilityZone'), null())]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
         "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneArmResourceId', parameters('privateDnsZoneArmResourceId')), null())]",

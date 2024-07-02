@@ -89,9 +89,10 @@ param storageSizeGB int = 32
   '13'
   '14'
   '15'
+  '16'
 ])
 @description('Optional. PostgreSQL Server version.')
-param version string = '15'
+param version string = '16'
 
 @allowed([
   'Disabled'
@@ -99,7 +100,7 @@ param version string = '15'
   'ZoneRedundant'
 ])
 @description('Optional. The mode for high availability.')
-param highAvailability string = 'Disabled'
+param highAvailability string = 'ZoneRedundant'
 
 @allowed([
   'Create'
@@ -116,8 +117,13 @@ param managedIdentities managedIdentitiesType
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
-@description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow object = {}
+@description('Required. Default properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
+param maintenanceWindow object = {
+  customWindow: 'Enabled'
+  dayOfWeek: '0'
+  startHour: '1'
+  startMinute: '0'
+}
 
 @description('Conditional. Required if \'createMode\' is set to \'PointInTimeRestore\'.')
 param pointInTimeUTC string = ''
@@ -182,47 +188,43 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.dbforpostgresql-flexibleserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.dbforpostgresql-flexibleserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-07-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   name: name
@@ -258,7 +260,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: highAvailability == 'SameZone' ? availabilityZone : null
+      standbyAvailabilityZone: highAvailability != 'Disabled' ? availabilityZone : null
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
@@ -283,17 +285,16 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
   }
 }
 
-resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: flexibleServer
+resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: flexibleServer
+}
 
 resource flexibleServer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
