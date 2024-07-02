@@ -341,6 +341,9 @@ output systemAssignedMIPrincipalId string = configurationStore.?identity.?princi
 @description('The location the resource was deployed into.')
 output location string = configurationStore.location
 
+@description('The endpoint of the app configuration.')
+output endpoint string = configurationStore.properties.endpoint
+
 // =============== //
 //   Definitions   //
 // =============== //
