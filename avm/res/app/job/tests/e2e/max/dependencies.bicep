@@ -13,7 +13,7 @@ param workloadProfileName string
 @description('Required. The name of the storage account to create.')
 param storageAccountName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: managedEnvironmentName
   location: location
   properties: {
