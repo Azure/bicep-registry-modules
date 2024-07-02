@@ -90,20 +90,17 @@ function Remove-Deployment {
 
             # Fetch deployments
             # =================
-
-            foreach ($deploymentName in $DeploymentNames) {
-                $deploymentsInputObject = @{
-                    Name  = $deploymentName
-                    Scope = $deploymentScope
-                }
-                if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
-                    $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
-                }
-                if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-                    $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
-                }
-                $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
+            $deploymentsInputObject = @{
+                DeploymentNames = $DeploymentNames
+                Scope           = $deploymentScope
             }
+            if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+                $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
+            }
+            if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+                $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
+            }
+            $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
 
             if ($deployedTargetResources.Count -eq 0) {
                 throw 'No deployment target resources found.'
