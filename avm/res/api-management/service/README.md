@@ -1,6 +1,6 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
-This module deploys an API Management Service.
+This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
 ## Navigation
 
@@ -45,12 +45,82 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Test deploying apim v2 sku](#example-3-test-deploying-apim-v2-sku)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults with a Consumption SKU](#example-1-using-only-defaults-with-a-consumption-sku)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using only defaults with a Developer SKU](#example-3-using-only-defaults-with-a-developer-sku)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Test deploying apim v2 sku](#example-5-test-deploying-apim-v2-sku)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using only defaults with a Consumption SKU_
+
+This instance deploys the module using a Consumption SKU with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apiscon001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    sku: 'Consumption'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apiscon001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "sku": {
+      "value": "Consumption"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -69,6 +139,14 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -98,6 +176,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -106,7 +196,75 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using only defaults with a Developer SKU_
+
+This instance deploys the module using a Developer SKU with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apisdev001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    sku: 'Developer'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apisdev001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "sku": {
+      "value": "Developer"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -598,7 +756,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Test deploying apim v2 sku_
+### Example 5: _Test deploying apim v2 sku_
 
 This instance deploys the module using a v2 SKU with the minimum set of required parameters.
 
@@ -617,6 +775,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     sku: 'BasicV2'
   }
 }
@@ -648,6 +809,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
     "sku": {
       "value": "BasicV2"
     }
@@ -658,7 +824,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1113,6 +1279,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`publisherEmail`](#parameter-publisheremail) | string | The email address of the owner of the service. |
 | [`publisherName`](#parameter-publishername) | string | The name of the owner of the service. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -1125,7 +1297,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`backends`](#parameter-backends) | array | Backends. |
 | [`caches`](#parameter-caches) | array | Caches. |
 | [`certificates`](#parameter-certificates) | array | List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10. |
-| [`customProperties`](#parameter-customproperties) | object | Custom properties of the API Management service. |
+| [`customProperties`](#parameter-customproperties) | object | Custom properties of the API Management service. Not supported if SKU is Consumption. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableGateway`](#parameter-disablegateway) | bool | Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region. |
 | [`enableClientCertificate`](#parameter-enableclientcertificate) | bool | Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway. |
@@ -1147,12 +1319,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku. |
 
 ### Parameter: `name`
 
@@ -1174,6 +1345,14 @@ The name of the owner of the service.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `skuCapacity`
+
+The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.
+
+- Required: No
+- Type: int
+- Default: `2`
 
 ### Parameter: `additionalLocations`
 
@@ -1241,7 +1420,7 @@ List of Certificates that need to be installed in the API Management service. Ma
 
 ### Parameter: `customProperties`
 
-Custom properties of the API Management service.
+Custom properties of the API Management service. Not supported if SKU is Consumption.
 
 - Required: No
 - Type: object
@@ -1704,23 +1883,6 @@ The pricing tier of this API Management service.
   ]
   ```
 
-### Parameter: `skuCount`
-
-The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0.
-
-- Required: No
-- Type: int
-- Default: `2`
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
-  ]
-  ```
-
 ### Parameter: `subnetResourceId`
 
 The full resource ID of a subnet in a virtual network to deploy the API Management service in.
@@ -1761,7 +1923,7 @@ The type of VPN in which API Management service needs to be configured in. None 
 
 ### Parameter: `zones`
 
-A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.
+A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.
 
 - Required: No
 - Type: array

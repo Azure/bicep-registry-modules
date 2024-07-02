@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14490799655987897540"
+      "templateHash": "16993991074257188116"
     },
     "name": "API Management Services",
-    "description": "This module deploys an API Management Service.",
+    "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -290,7 +290,7 @@
         "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256": "False"
       },
       "metadata": {
-        "description": "Optional. Custom properties of the API Management service."
+        "description": "Optional. Custom properties of the API Management service. Not supported if SKU is Consumption."
       }
     },
     "disableGateway": {
@@ -388,17 +388,11 @@
         "description": "Optional. The pricing tier of this API Management service."
       }
     },
-    "skuCount": {
+    "skuCapacity": {
       "type": "int",
       "defaultValue": 2,
-      "allowedValues": [
-        0,
-        1,
-        2,
-        3
-      ],
       "metadata": {
-        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0."
+        "description": "Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/."
       }
     },
     "subnetResourceId": {
@@ -440,7 +434,7 @@
         2
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs."
+        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku."
       }
     },
     "newGuidValue": {
@@ -594,17 +588,17 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[if(contains(parameters('sku'), 'V2'), 1, if(contains(parameters('sku'), 'Consumption'), 0, parameters('skuCount')))]"
+        "capacity": "[if(contains(parameters('sku'), 'Consumption'), 0, if(contains(parameters('sku'), 'Developer'), 1, parameters('skuCapacity')))]"
       },
-      "zones": "[if(contains(parameters('sku'), 'V2'), null(), parameters('zones'))]",
+      "zones": "[if(contains(parameters('sku'), 'Premium'), parameters('zones'), null())]",
       "identity": "[variables('identity')]",
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[if(contains(parameters('sku'), 'V2'), null(), parameters('additionalLocations'))]",
-        "customProperties": "[parameters('customProperties')]",
+        "additionalLocations": "[if(contains(parameters('sku'), 'Premium'), parameters('additionalLocations'), null())]",
+        "customProperties": "[if(contains(parameters('sku'), 'Consumption'), null(), parameters('customProperties'))]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
         "disableGateway": "[parameters('disableGateway')]",
