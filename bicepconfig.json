@@ -6,11 +6,7 @@
     },
     "analyzers": {
         "core": {
-            "rules": {
-                "no-deployments-resources": {
-                    "level": "off" // Reason: The telemetry resource only has a single output and is self-contained in a deployment
-                }
-            }
+            "rules": {}
         }
     }
 }
