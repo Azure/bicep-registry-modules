@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5922198770832880671"
+      "templateHash": "4858897614510907922"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -402,6 +402,13 @@
         "description": "Optional. The diagnostic settings of the service."
       }
     },
+    "useDeployedWorkspaceForDiagnosticSettings": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings."
+      }
+    },
     "forceCmkForQuery": {
       "type": "bool",
       "defaultValue": true,
@@ -530,7 +537,7 @@
           }
         ],
         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
-        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "workspaceId": "[if(parameters('useDeployedWorkspaceForDiagnosticSettings'), resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId'))]",
         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",

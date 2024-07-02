@@ -175,6 +175,7 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
+      useDeployedWorkspaceForDiagnosticSettings: true
       gallerySolutions: [
         {
           name: 'AzureAutomation'
