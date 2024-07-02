@@ -60,9 +60,8 @@ module testDeployment '../../../main.bicep' = {
     vmSize: 'Standard_B1s'
     storageAccountType: 'Premium_LRS'
     vmAdminUsername: 'vmadmin'
-    vmAdminPassword: 'P@ssw0rd1234!'
-    vmLinuxSshAuthorizedKey: ''
-    vmAuthenticationType: 'password'
+    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+    vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     spokeVNetAddressPrefixes: [
@@ -73,11 +72,9 @@ module testDeployment '../../../main.bicep' = {
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
-    applicationGatewayFqdn: 'acahello.demoapp.com'
     applicationGatewayCertificateKeyName: 'appgwcert'
     deployZoneRedundantResources: true
     exposeContainerAppsWith: 'applicationGateway'
-    deploySampleApplication: true
     enableDdosProtection: true
   }
 }

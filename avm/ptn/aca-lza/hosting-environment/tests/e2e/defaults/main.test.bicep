@@ -55,7 +55,6 @@ module testDeployment '../../../main.bicep' = {
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     applicationGatewayCertificateKeyName: 'appgwcert'
-    deploySampleApplication: true
   }
 }
 

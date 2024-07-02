@@ -1,0 +1,20 @@
+{
+    "securityRules": [
+        {
+            "name": "deny-hop-outbound",
+            "properties": {
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRanges": [
+                    "3389",
+                    "22"
+                ],
+                "access": "Deny",
+                "priority": 200,
+                "direction": "Outbound",
+                "sourceAddressPrefix": "VirtualNetwork",
+                "destinationAddressPrefix": "*"
+            }
+        }
+    ]
+}

@@ -101,6 +101,7 @@ var locationVar = location == 'francecentral' ? 'centralfrance' : location
 // load as text (and not as Json) to replace <location> placeholder in the nsg rules
 var nsgCaeRules = json(replace(loadTextContent('./nsgContainerAppsEnvironment.jsonc'), '<location>', locationVar))
 var nsgAppGwRules = loadJsonContent('./nsgAppGwRules.jsonc', 'securityRules')
+var nsgPepRules = loadJsonContent('./nsgPepRules.jsonc', 'securityRules')
 var namingRules = json(loadTextContent('../naming/naming-rules.jsonc'))
 
 var rgSpokeName = !empty(spokeResourceGroupName)
@@ -256,7 +257,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
     name: naming.outputs.resourcesNames.pepNsg
     location: location
     tags: tags
-    securityRules: []
+    securityRules: nsgPepRules
     diagnosticSettings: [
       {
         name: 'logAnalyticsSettings'

@@ -26,6 +26,11 @@ param tags object = {}
 param location string = resourceGroup().location
 
 // ------------------
+// VARIABLES
+// ------------------
+var nsgVmRules = loadJsonContent('./nsgJumpBox.jsonc', 'securityRules')
+
+// ------------------
 // RESOURCES
 // ------------------
 
@@ -35,7 +40,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
     name: vmNetworkSecurityGroupName
     location: location
     tags: tags
-    securityRules: []
+    securityRules: nsgVmRules
   }
 }
 
