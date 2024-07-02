@@ -81,7 +81,3 @@ rule:
     - Azure.VM.UseHybridUseBenefit
     - Azure.Storage.UseReplication
     - Azure.AppConfig.PurgeProtect
-    - Azure.APIM.MultiRegion # Team agreed this is too expensive for most use cases and is safe to ignore.
-    # - Azure.APIM.AvailabilityZone # Only available for Premium SKU
-    # - Azure.APIM.Ciphers # Not available for Consumption SKU
-    # - Azure.APIM.ManagedIdentity # Only available for Premium SKU
