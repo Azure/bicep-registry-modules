@@ -72,7 +72,6 @@ module testDeployment '../../../main.bicep' = [
           ]
           osDiskSizeGB: 0
           osType: 'Linux'
-          serviceCidr: ''
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
           vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
