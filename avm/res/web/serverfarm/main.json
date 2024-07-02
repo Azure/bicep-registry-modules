@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "5846778493081554072"
+      "version": "0.28.1.47646",
+      "templateHash": "16609348340052214807"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -263,6 +263,13 @@
         "description": "Optional. If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan."
       }
     },
+    "elasticScaleEnabled": {
+      "type": "bool",
+      "defaultValue": "[greater(parameters('maximumElasticWorkerCount'), 1)]",
+      "metadata": {
+        "description": "Optional. Enable/Disable ElasticScaleEnabled App Service Plan."
+      }
+    },
     "maximumElasticWorkerCount": {
       "type": "int",
       "defaultValue": 1,
@@ -293,7 +300,7 @@
       "type": "bool",
       "defaultValue": "[if(or(startsWith(parameters('skuName'), 'P'), startsWith(parameters('skuName'), 'EP')), true(), false())]",
       "metadata": {
-        "description": "Optional. Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs)."
+        "description": "Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs)."
       }
     },
     "lock": {
@@ -344,7 +351,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.web-serverfarm.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -377,6 +384,7 @@
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentId'))), createObject('id', parameters('appServiceEnvironmentId')), null())]",
         "perSiteScaling": "[parameters('perSiteScaling')]",
         "maximumElasticWorkerCount": "[parameters('maximumElasticWorkerCount')]",
+        "elasticScaleEnabled": "[parameters('elasticScaleEnabled')]",
         "reserved": "[parameters('reserved')]",
         "targetWorkerCount": "[parameters('targetWorkerCount')]",
         "targetWorkerSizeId": "[parameters('targetWorkerSize')]",

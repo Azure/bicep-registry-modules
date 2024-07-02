@@ -74,14 +74,14 @@ param filteredSync string = 'Enabled'
   'Enabled'
   'Disabled'
 ])
-param tlsV1 string = 'Enabled'
+param tlsV1 string = 'Disabled'
 
 @description('Optional. The value is to enable clients making request using NTLM v1.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
-param ntlmV1 string = 'Enabled'
+param ntlmV1 string = 'Disabled'
 
 @description('Optional. The value is to enable synchronized users to use NTLM authentication.')
 @allowed([
@@ -104,7 +104,7 @@ param syncOnPremPasswords string = 'Enabled'
   'Enabled'
   'Disabled'
 ])
-param kerberosRc4Encryption string = 'Enabled'
+param kerberosRc4Encryption string = 'Disabled'
 
 @description('Optional. The value is to enable to provide a protected channel between the Kerberos client and the KDC.')
 @allowed([
@@ -180,24 +180,23 @@ var builtInRoleNames = {
 // Resources      //
 // ============== //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.aad-domainservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.aad-domainservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
   name: name
@@ -260,17 +259,16 @@ resource domainservice_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
   }
 ]
 
-resource domainservice_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: domainservice
+resource domainservice_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: domainservice
+}
 
 resource domainservice_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {

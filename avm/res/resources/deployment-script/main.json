@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6519455487255292674"
+      "version": "0.28.1.47646",
+      "templateHash": "2448764791611861482"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -391,7 +391,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -434,6 +434,15 @@
       "dependsOn": [
         "storageAccount"
       ]
+    },
+    "deploymentScriptLogs": {
+      "existing": true,
+      "type": "Microsoft.Resources/deploymentScripts/logs",
+      "apiVersion": "2023-08-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+      "dependsOn": [
+        "deploymentScript"
+      ]
     }
   },
   "outputs": {
@@ -471,6 +480,16 @@
         "description": "The output of the deployment script."
       },
       "value": "[if(contains(reference('deploymentScript'), 'outputs'), reference('deploymentScript').outputs, createObject())]"
+    },
+    "deploymentScriptLogs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The logs of the deployment script."
+      },
+      "value": "[split(reference('deploymentScriptLogs').log, '\n')]"
     }
   }
 }

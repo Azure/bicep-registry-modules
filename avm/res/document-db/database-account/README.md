@@ -24,6 +24,8 @@ This module deploys a DocumentDB Database Account.
 | `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/mongodbDatabases/collections) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases/containers) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
@@ -47,8 +49,9 @@ The following section provides usage examples for the module, which were used to
 - [Deploying multiple regions](#example-8-deploying-multiple-regions)
 - [Plain](#example-9-plain)
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
-- [SQL Database](#example-11-sql-database)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
+- [SQL Database](#example-12-sql-database)
+- [WAF-aligned](#example-13-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -1486,7 +1489,75 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 11: _SQL Database_
+### Example 11: _Deploying with a sql role definision and assignment_
+
+This instance deploys the module with sql role definision and assignment
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'role-ref'
+    // Non-required parameters
+    location: '<location>'
+    sqlRoleAssignmentsPrincipalIds: [
+      '<identityPrincipalId>'
+    ]
+    sqlRoleDefinitions: [
+      {
+        name: 'cosmos-sql-role-test'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "role-ref"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sqlRoleAssignmentsPrincipalIds": {
+      "value": [
+        "<identityPrincipalId>"
+      ]
+    },
+    "sqlRoleDefinitions": {
+      "value": [
+        {
+          "name": "cosmos-sql-role-test"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 12: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -1741,6 +1812,14 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             paths: [
               'myPartitionKey1'
             ]
+          }
+          {
+            kind: 'Hash'
+            name: 'container-005'
+            paths: [
+              'myPartitionKey1'
+            ]
+            version: 2
           }
         ]
         name: 'all-partition-key-types'
@@ -2020,6 +2099,14 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "paths": [
                 "myPartitionKey1"
               ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-005",
+              "paths": [
+                "myPartitionKey1"
+              ],
+              "version": 2
             }
           ],
           "name": "all-partition-key-types"
@@ -2040,7 +2127,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2235,6 +2322,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`secretsKeyVault`](#parameter-secretskeyvault) | object | Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account. |
 | [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
+| [`sqlRoleAssignmentsPrincipalIds`](#parameter-sqlroleassignmentsprincipalids) | array | SQL Role Definitions configurations. |
+| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
 ### Parameter: `name`
@@ -2582,6 +2671,40 @@ Default to the location where the account is deployed. Locations enabled for the
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPriority`](#parameter-locationsfailoverpriority) | int | The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. |
+| [`locationName`](#parameter-locationslocationname) | string | The name of the region. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
+
+### Parameter: `locations.failoverPriority`
+
+The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `locations.locationName`
+
+The name of the region.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `locations.isZoneRedundant`
+
+Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `lock`
 
@@ -3296,6 +3419,278 @@ SQL Databases configurations.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqldatabasesname) | string | Name of the SQL database . |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
+| [`containers`](#parameter-sqldatabasescontainers) | array | Array of containers to deploy in the SQL database. |
+| [`throughput`](#parameter-sqldatabasesthroughput) | int | Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+
+### Parameter: `sqlDatabases.name`
+
+Name of the SQL database .
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers`
+
+Array of containers to deploy in the SQL database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqldatabasescontainersname) | string | Name of the container. |
+| [`paths`](#parameter-sqldatabasescontainerspaths) | array | List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`analyticalStorageTtl`](#parameter-sqldatabasescontainersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
+| [`conflictResolutionPolicy`](#parameter-sqldatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
+| [`defaultTtl`](#parameter-sqldatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
+| [`indexingPolicy`](#parameter-sqldatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
+| [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
+| [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+| [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
+
+### Parameter: `sqlDatabases.containers.name`
+
+Name of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlDatabases.containers.paths`
+
+List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlDatabases.containers.analyticalStorageTtl`
+
+Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy`
+
+The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mode`](#parameter-sqldatabasescontainersconflictresolutionpolicymode) | string | Indicates the conflict resolution mode. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conflictResolutionPath`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionpath) | string | The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'. |
+| [`conflictResolutionProcedure`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionprocedure) | string | The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'. |
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.mode`
+
+Indicates the conflict resolution mode.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Custom'
+    'LastWriterWins'
+  ]
+  ```
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
+
+The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
+
+The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlDatabases.containers.defaultTtl`
+
+Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.indexingPolicy`
+
+Indexing policy of the container.
+
+- Required: No
+- Type: object
+
+### Parameter: `sqlDatabases.containers.kind`
+
+Default to Hash. Indicates the kind of algorithm used for partitioning.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Hash'
+    'MultiHash'
+  ]
+  ```
+
+### Parameter: `sqlDatabases.containers.throughput`
+
+Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
+
+The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
+
+List of paths must be unique for each document in the Azure Cosmos DB service.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlDatabases.containers.version`
+
+Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
+
+- Required: No
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+  ]
+  ```
+
+### Parameter: `sqlDatabases.throughput`
+
+Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlRoleAssignmentsPrincipalIds`
+
+SQL Role Definitions configurations.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `sqlRoleDefinitions`
+
+SQL Role Definitions configurations.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlroledefinitionsname) | string | Name of the SQL Role Definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataAction`](#parameter-sqlroledefinitionsdataaction) | array | An array of data actions that are allowed. |
+| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
+| [`roleType`](#parameter-sqlroledefinitionsroletype) | string | Indicates whether the Role Definition was built-in or user created. |
+
+### Parameter: `sqlRoleDefinitions.name`
+
+Name of the SQL Role Definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.dataAction`
+
+An array of data actions that are allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `sqlRoleDefinitions.roleName`
+
+A user-friendly name for the Role Definition. Must be unique for the database account.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.roleType`
+
+Indicates whether the Role Definition was built-in or user created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'BuiltInRole'
+    'CustomRole'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the Database Account resource.
@@ -3308,6 +3703,7 @@ Tags of the Database Account resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoint` | string | The endpoint of the database account. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |

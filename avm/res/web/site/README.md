@@ -40,11 +40,13 @@ The following section provides usage examples for the module, which were used to
 
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
-- [Web App, using only defaults](#example-4-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-5-web-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-3-web-app-using-only-defaults)
+- [WAF-aligned](#example-4-waf-aligned)
+- [Web App, using only defaults](#example-5-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-6-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
+- [Windows Web App for Containers, using only defaults](#example-9-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -490,7 +492,83 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Web App, using only defaults_
+
+This instance deploys the module as a Linux Web App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app,linux,container'
+    name: 'wslwamin001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    location: '<location>'
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+          value: 'false'
+        }
+      ]
+      linuxFxVersion: 'DOCKER|mcr.microsoft.com/appsvc/staticsite:latest'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app,linux,container"
+    },
+    "name": {
+      "value": "wslwamin001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "siteConfig": {
+      "value": {
+        "appSettings": [
+          {
+            "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+            "value": "false"
+          }
+        ],
+        "linuxFxVersion": "DOCKER|mcr.microsoft.com/appsvc/staticsite:latest"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -632,7 +710,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 4: _Web App, using only defaults_
+### Example 5: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -688,7 +766,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 5: _Web App, using large parameter set_
+### Example 6: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -1134,7 +1212,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 6: _Web App, using only defaults_
+### Example 7: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -1190,7 +1268,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 7: _Web App, using large parameter set_
+### Example 8: _Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -1636,6 +1714,82 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
+### Example 9: _Windows Web App for Containers, using only defaults_
+
+This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app,container,windows'
+    name: 'wswcamin001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    location: '<location>'
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+          value: 'false'
+        }
+      ]
+      windowsFxVersion: 'DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app,container,windows"
+    },
+    "name": {
+      "value": "wswcamin001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "siteConfig": {
+      "value": {
+        "appSettings": [
+          {
+            "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+            "value": "false"
+          }
+        ],
+        "windowsFxVersion": "DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -1700,12 +1854,17 @@ Type of site to deploy.
 - Allowed:
   ```Bicep
   [
+    'api'
     'app'
+    'app,container,windows'
     'app,linux'
+    'app,linux,container'
     'functionapp'
     'functionapp,linux'
+    'functionapp,linux,container'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
+    'linux,api'
   ]
   ```
 

@@ -485,6 +485,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     ]
     exportPolicyStatus: 'enabled'
     location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
     quarantinePolicyStatus: 'enabled'
     replications: [
       {
@@ -545,6 +553,16 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
     },
     "quarantinePolicyStatus": {
       "value": "enabled"
@@ -611,7 +629,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 | [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'. |
-| [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. |
+| [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`replications`](#parameter-replications) | array | All replications to create. |
 | [`retentionPolicyDays`](#parameter-retentionpolicydays) | int | The number of days to retain an untagged manifest after which it gets purged. |
 | [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
@@ -619,7 +637,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 | [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
 | [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. |
+| [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
 | [`zoneRedundancy`](#parameter-zoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
 
@@ -1048,6 +1066,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
+| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -1243,6 +1263,20 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 - Required: No
 - Type: array
 
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.roleAssignments`
 
 Array of role assignments to create.
@@ -1362,7 +1396,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 ### Parameter: `quarantinePolicyStatus`
 
-The value that indicates whether the quarantine policy is enabled or not.
+The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'.
 
 - Required: No
 - Type: string
@@ -1526,7 +1560,7 @@ Tags of the resource.
 
 ### Parameter: `trustPolicyStatus`
 
-The value that indicates whether the trust policy is enabled or not.
+The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'.
 
 - Required: No
 - Type: string
@@ -1579,7 +1613,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 
 ## Data Collection
 
