@@ -1,4 +1,4 @@
-# Sub-vending `[Microsoft.lz/subvending]`
+# Sub-vending `[Lz/SubVending]`
 
 This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).
 

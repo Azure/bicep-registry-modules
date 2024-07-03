@@ -33,9 +33,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cache/redis:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using EntraID authentication](#example-2-using-entraid-authentication)
 - [Passive Geo-Replicated Redis Cache](#example-3-passive-geo-replicated-redis-cache)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -85,7 +86,63 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using EntraID authentication_
+
+This instance deploys the module with EntraID authentication.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  name: 'redisDeployment'
+  params: {
+    // Required parameters
+    name: 'crentrid001'
+    // Non-required parameters
+    location: '<location>'
+    redisConfiguration: {
+      'aad-enabled': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crentrid001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "redisConfiguration": {
+      "value": {
+        "aad-enabled": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
