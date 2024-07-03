@@ -45,7 +45,6 @@ module nestedDependencies2 'dependencies2.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies2'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-sec-${serviceShort}'
     location: nestedDependencies1.outputs.pairedRegionName
     redisName: 'dep-${namePrefix}-redis-sec-${serviceShort}'
   }
@@ -81,36 +80,6 @@ module testDeployment '../../../main.bicep' = [
       redisVersion: '6'
       shardCount: 1
       skuName: 'Premium'
-      managedIdentities: {
-        systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies1.outputs.managedIdentityResourceId
-        ]
-      }
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        resourceType: 'Redis Cache'
-      }
     }
   }
 ]

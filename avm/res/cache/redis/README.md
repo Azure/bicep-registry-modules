@@ -373,39 +373,12 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     minimumTlsVersion: '1.2'
     redisVersion: '6'
     replicasPerMaster: 1
     replicasPerPrimary: 1
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     shardCount: 1
     skuName: 'Premium'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      resourceType: 'Redis Cache'
-    }
     zoneRedundant: false
   }
 }
@@ -450,14 +423,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "minimumTlsVersion": {
       "value": "1.2"
     },
@@ -470,36 +435,11 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     "replicasPerPrimary": {
       "value": 1
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
     "shardCount": {
       "value": 1
     },
     "skuName": {
       "value": "Premium"
-    },
-    "tags": {
-      "value": {
-        "hidden-title": "This is visible in the resource name",
-        "resourceType": "Redis Cache"
-      }
     },
     "zoneRedundant": {
       "value": false

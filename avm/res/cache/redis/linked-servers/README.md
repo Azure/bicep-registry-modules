@@ -61,7 +61,6 @@ The location of the linked server. If not provided, the location of the primary 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `serverRole`
 

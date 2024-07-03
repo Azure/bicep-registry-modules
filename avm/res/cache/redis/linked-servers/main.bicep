@@ -12,7 +12,7 @@ param name string = redisCacheName
 param linkedRedisCacheResourceId string
 
 @description('Optional. The location of the linked server. If not provided, the location of the primary Redis cache is used.')
-param linkedRedisCacheLocation string = ''
+param linkedRedisCacheLocation string?
 
 @description('Optional. The role of the linked server. Possible values include: "Primary", "Secondary". Default value is "Secondary".')
 param serverRole string = 'Secondary'

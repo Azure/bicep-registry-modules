@@ -309,8 +309,8 @@ module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicat
   params: {
     redisCacheName: redis.name
     name: geoReplicationObject.secondaryRedisCacheName
-    linkedRedisCacheResourceId: geoReplicationObject.linkedRedisCacheId
-    linkedRedisCacheLocation: geoReplicationObject.linkedRedisCacheLocation
+    linkedRedisCacheResourceId: geoReplicationObject.linkedRedisCacheResourceId
+    linkedRedisCacheLocation: geoReplicationObject.?linkedRedisCacheLocation
   }
   dependsOn: redis_privateEndpoints
 }
