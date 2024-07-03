@@ -29,10 +29,10 @@ param sku string
 ])
 param kind string = 'Default'
 
-@sys.description('Optional. The resource ID of the associated Storage Account.')
+@sys.description('Conditional. The resource ID of the associated Storage Account. Required if \'kind\' is not \'Project\'.')
 param associatedStorageAccountResourceId string?
 
-@sys.description('Optional. The resource ID of the associated Key Vault.')
+@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is not \'Project\'.')
 param associatedKeyVaultResourceId string?
 
 @sys.description('Optional. The resource ID of the associated Application Insights.')
@@ -50,7 +50,7 @@ param hbiWorkspace bool = false
 @sys.description('Optional. The flag to indicate whether to allow public access when behind VNet.')
 param allowPublicAccessWhenBehindVnet bool = false
 
-@sys.description('Optional. The resource ID of the hub to associate with the workspace.')
+@sys.description('Conditional. The resource ID of the hub to associate with the workspace. Required if \'kind\' is set to \'Project\'.')
 param hubResourceId string?
 
 @sys.description('Optional. Array of role assignments to create.')
@@ -73,7 +73,7 @@ param managedIdentities managedIdentitiesType = {
   systemAssigned: true
 }
 
-@sys.description('Optional. Settings for feature store type workspaces.')
+@sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
 param featureStoreSettings featureStoreSettingsType
 
 // Diagnostic Settings

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6372069484075554653"
+      "templateHash": "14505881484435892837"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace.",
@@ -555,14 +555,14 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The resource ID of the associated Storage Account."
+        "description": "Conditional. The resource ID of the associated Storage Account. Required if 'kind' is not 'Project'."
       }
     },
     "associatedKeyVaultResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The resource ID of the associated Key Vault."
+        "description": "Conditional. The resource ID of the associated Key Vault. Required if 'kind' is not 'Project'."
       }
     },
     "associatedApplicationInsightsResourceId": {
@@ -603,7 +603,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The resource ID of the hub to associate with the workspace."
+        "description": "Conditional. The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'."
       }
     },
     "roleAssignments": {
@@ -651,7 +651,7 @@
     "featureStoreSettings": {
       "$ref": "#/definitions/featureStoreSettingsType",
       "metadata": {
-        "description": "Optional. Settings for feature store type workspaces."
+        "description": "Conditional. Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'."
       }
     },
     "diagnosticSettings": {

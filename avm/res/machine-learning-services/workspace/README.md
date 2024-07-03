@@ -769,6 +769,10 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is not 'Project'. |
+| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. Required if 'kind' is not 'Project'. |
+| [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'. |
+| [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'. |
 | [`primaryUserAssignedIdentity`](#parameter-primaryuserassignedidentity) | string | The user assigned identity resource ID that represents the workspace identity. Required if 'userAssignedIdentities' is not empty and may not be used if 'systemAssignedIdentity' is enabled. |
 
 **Optional parameters**
@@ -778,17 +782,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`allowPublicAccessWhenBehindVnet`](#parameter-allowpublicaccesswhenbehindvnet) | bool | The flag to indicate whether to allow public access when behind VNet. |
 | [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. |
 | [`associatedContainerRegistryResourceId`](#parameter-associatedcontainerregistryresourceid) | string | The resource ID of the associated Container Registry. |
-| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. |
-| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. |
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settings for feature store type workspaces. |
 | [`hbiWorkspace`](#parameter-hbiworkspace) | bool | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
-| [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. |
 | [`imageBuildCompute`](#parameter-imagebuildcompute) | string | The compute name for image build. |
 | [`kind`](#parameter-kind) | string | The type of Azure Machine Learning workspace to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -824,6 +824,76 @@ Specifies the SKU, also referred as 'edition' of the Azure Machine Learning work
   ]
   ```
 
+### Parameter: `associatedKeyVaultResourceId`
+
+The resource ID of the associated Key Vault. Required if 'kind' is not 'Project'.
+
+- Required: No
+- Type: string
+
+### Parameter: `associatedStorageAccountResourceId`
+
+The resource ID of the associated Storage Account. Required if 'kind' is not 'Project'.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings`
+
+Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`computeRuntime`](#parameter-featurestoresettingscomputeruntime) | object | Compute runtime config for feature store type workspace. |
+| [`offlineStoreConnectionName`](#parameter-featurestoresettingsofflinestoreconnectionname) | string | The offline store connection name. |
+| [`onlineStoreConnectionName`](#parameter-featurestoresettingsonlinestoreconnectionname) | string | The online store connection name. |
+
+### Parameter: `featureStoreSettings.computeRuntime`
+
+Compute runtime config for feature store type workspace.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sparkRuntimeVersion`](#parameter-featurestoresettingscomputeruntimesparkruntimeversion) | string | The spark runtime version. |
+
+### Parameter: `featureStoreSettings.computeRuntime.sparkRuntimeVersion`
+
+The spark runtime version.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings.offlineStoreConnectionName`
+
+The offline store connection name.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings.onlineStoreConnectionName`
+
+The online store connection name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubResourceId`
+
+The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'.
+
+- Required: No
+- Type: string
+
 ### Parameter: `primaryUserAssignedIdentity`
 
 The user assigned identity resource ID that represents the workspace identity. Required if 'userAssignedIdentities' is not empty and may not be used if 'systemAssignedIdentity' is enabled.
@@ -849,20 +919,6 @@ The resource ID of the associated Application Insights.
 ### Parameter: `associatedContainerRegistryResourceId`
 
 The resource ID of the associated Container Registry.
-
-- Required: No
-- Type: string
-
-### Parameter: `associatedKeyVaultResourceId`
-
-The resource ID of the associated Key Vault.
-
-- Required: No
-- Type: string
-
-### Parameter: `associatedStorageAccountResourceId`
-
-The resource ID of the associated Storage Account.
 
 - Required: No
 - Type: string
@@ -1091,55 +1147,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `featureStoreSettings`
-
-Settings for feature store type workspaces.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`computeRuntime`](#parameter-featurestoresettingscomputeruntime) | object | Compute runtime config for feature store type workspace. |
-| [`offlineStoreConnectionName`](#parameter-featurestoresettingsofflinestoreconnectionname) | string | The offline store connection name. |
-| [`onlineStoreConnectionName`](#parameter-featurestoresettingsonlinestoreconnectionname) | string | The online store connection name. |
-
-### Parameter: `featureStoreSettings.computeRuntime`
-
-Compute runtime config for feature store type workspace.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`sparkRuntimeVersion`](#parameter-featurestoresettingscomputeruntimesparkruntimeversion) | string | The spark runtime version. |
-
-### Parameter: `featureStoreSettings.computeRuntime.sparkRuntimeVersion`
-
-The spark runtime version.
-
-- Required: No
-- Type: string
-
-### Parameter: `featureStoreSettings.offlineStoreConnectionName`
-
-The offline store connection name.
-
-- Required: No
-- Type: string
-
-### Parameter: `featureStoreSettings.onlineStoreConnectionName`
-
-The online store connection name.
-
-- Required: No
-- Type: string
-
 ### Parameter: `hbiWorkspace`
 
 The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.
@@ -1147,13 +1154,6 @@ The flag to signal HBI data in the workspace and reduce diagnostic data collecte
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `hubResourceId`
-
-The resource ID of the hub to associate with the workspace.
-
-- Required: No
-- Type: string
 
 ### Parameter: `imageBuildCompute`
 
