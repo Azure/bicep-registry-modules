@@ -100,7 +100,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -219,7 +219,7 @@ type ipConfigurationsType = {
 
   @description('Required. Properties of private endpoint IP configurations.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Optional. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
     groupId: string
 
     @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
@@ -237,7 +237,7 @@ type manualPrivateLinkServiceConnectionsType = {
   @description('Required. Properties of private link service connection.')
   properties: {
     @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupIds: array
+    groupIds: string[]
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string
@@ -254,7 +254,7 @@ type privateLinkServiceConnectionsType = {
   @description('Required. Properties of private link service connection.')
   properties: {
     @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupIds: array
+    groupIds: string[]
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string
