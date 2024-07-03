@@ -222,6 +222,11 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
 }
 
+resource deploymentScriptLogs 'Microsoft.Resources/deploymentScripts/logs@2023-08-01' existing = {
+  name: 'default'
+  parent: deploymentScript
+}
+
 // ================ //
 // Outputs          //
 // ================ //
@@ -240,6 +245,9 @@ output location string = deploymentScript.location
 
 @description('The output of the deployment script.')
 output outputs object = contains(deploymentScript.properties, 'outputs') ? deploymentScript.properties.outputs : {}
+
+@description('The logs of the deployment script.')
+output deploymentScriptLogs string[] = split(deploymentScriptLogs.properties.log, '\n')
 
 // ================ //
 // Definitions      //
