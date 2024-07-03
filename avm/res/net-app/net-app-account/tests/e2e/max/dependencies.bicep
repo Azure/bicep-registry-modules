@@ -1,5 +1,7 @@
-@description('Optional. The location to deploy to.')
-param location string = resourceGroup().location
+// @description('Optional. The location to deploy resources to.')
+// param resourceLocation string = deployment().location
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'australiaeast'
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
@@ -11,7 +13,7 @@ var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
-  location: location
+  location: enforcedLocation
   properties: {
     addressSpace: {
       addressPrefixes: [
@@ -39,7 +41,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
-  location: location
+  location: enforcedLocation
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
