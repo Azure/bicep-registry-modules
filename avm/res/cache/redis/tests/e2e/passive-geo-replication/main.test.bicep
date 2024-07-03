@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
       replicasPerPrimary: 1
       replicasPerMaster: 1
       geoReplicationObject: {
-        linkedRedisCacheId: nestedDependencies2.outputs.redisResourceId
+        linkedRedisCacheResourceId: nestedDependencies2.outputs.redisResourceId
         linkedRedisCacheLocation: nestedDependencies2.outputs.redisLocation
         secondaryRedisCacheName: nestedDependencies2.outputs.redisName
       }

@@ -34,8 +34,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using EntraID authentication](#example-2-using-entraid-authentication)
-- [Passive Geo-Replicated Redis Cache](#example-3-passive-geo-replicated-redis-cache)
-- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Passive Geo-Replicated Redis Cache](#example-4-passive-geo-replicated-redis-cache)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -402,7 +402,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 </details>
 <p>
 
-### Example 3: _Passive Geo-Replicated Redis Cache_
+### Example 4: _Passive Geo-Replicated Redis Cache_
 
 This instance deploys the module with geo-replication enabled.
 
@@ -421,8 +421,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     capacity: 2
     enableNonSslPort: true
     geoReplicationObject: {
-      linkedRedisCacheId: '<linkedRedisCacheId>'
       linkedRedisCacheLocation: '<linkedRedisCacheLocation>'
+      linkedRedisCacheResourceId: '<linkedRedisCacheResourceId>'
       secondaryRedisCacheName: '<secondaryRedisCacheName>'
     }
     location: '<location>'
@@ -466,8 +466,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "geoReplicationObject": {
       "value": {
-        "linkedRedisCacheId": "<linkedRedisCacheId>",
         "linkedRedisCacheLocation": "<linkedRedisCacheLocation>",
+        "linkedRedisCacheResourceId": "<linkedRedisCacheResourceId>",
         "secondaryRedisCacheName": "<secondaryRedisCacheName>"
       }
     },
@@ -508,7 +508,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
