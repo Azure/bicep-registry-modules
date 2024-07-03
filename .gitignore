@@ -4,3 +4,4 @@ moduleIndex.json
 last-moduleIndex.json
 generated-moduleIndex.json
 .DS_Store
+.vscode/settings.json
