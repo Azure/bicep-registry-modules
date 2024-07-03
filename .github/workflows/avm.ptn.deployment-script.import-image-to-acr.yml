@@ -31,13 +31,13 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.deployment-script.import-image-to-acr.yml"
-      - "avm/ptn/authorization/policy-assignment/**"
+      - "avm/ptn/deployment-script/import-image-to-acr/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/authorization/policy-assignment"
+  modulePath: "avm/ptn/deployment-script/import-image-to-acr"
   workflowPath: ".github/workflows/avm.ptn.deployment-script.import-image-to-acr.yml"
 
 concurrency:
