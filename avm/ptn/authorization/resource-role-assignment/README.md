@@ -1,4 +1,4 @@
-# Resource-scoped role assignment `[Microsoft.Authorization/resourceroleassignment]`
+# Resource-scoped role assignment `[Authorization/ResourceRoleAssignment]`
 
 This module deploys a Role Assignment for a specific resource.
 
