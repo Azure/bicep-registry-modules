@@ -103,6 +103,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
     acrAdminUserEnabled: false
     networkRuleBypassOptions: 'AzureServices'
     zoneRedundancy: deployZoneRedundantResources ? 'Enabled' : 'Disabled'
+    trustPolicyStatus: 'enabled'
     diagnosticSettings: [
       {
         name: 'acr-log-analytics'
