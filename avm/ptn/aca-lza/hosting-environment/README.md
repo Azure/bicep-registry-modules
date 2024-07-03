@@ -122,7 +122,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     spokeVNetAddressPrefixes: [
       '10.1.0.0/22'
     ]
-    vmAdminPassword: 'P@ssw0rd1234!'
+    vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
@@ -175,7 +175,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       ]
     },
     "vmAdminPassword": {
-      "value": "P@ssw0rd1234!"
+      "value": "<vmAdminPassword>"
     },
     "vmAdminUsername": {
       "value": "vmadmin"
@@ -234,7 +234,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     spokeVNetAddressPrefixes: [
       '10.1.0.0/22'
     ]
-    vmAdminPassword: 'P@ssw0rd1234!'
+    vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
@@ -295,7 +295,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       ]
     },
     "vmAdminPassword": {
-      "value": "P@ssw0rd1234!"
+      "value": "<vmAdminPassword>"
     },
     "vmAdminUsername": {
       "value": "vmadmin"
@@ -669,27 +669,7 @@ The name of the workload that is being deployed. Up to 10 characters long.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/res/app/container-app:0.4.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.5.1` | Remote reference |
-| `br/public:avm/res/cdn/profile:0.3.0` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.5.1` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.3.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.3.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.6.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.1` | Remote reference |
-| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.0` | Remote reference |
-| `br/public:avm/res/network/application-gateway:0.1.0` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.2.0` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
-| `br/public:avm/res/network/route-table:0.2.2` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.1.6` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.3.4` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.2.3` | Remote reference |
+_None_
 
 ## Data Collection
 

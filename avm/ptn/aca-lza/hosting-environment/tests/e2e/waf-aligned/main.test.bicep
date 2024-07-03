@@ -17,6 +17,10 @@ param serviceShort string = 'acalzawaf'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 // ================= //
 // Variables Section //
 // ================= //
@@ -60,7 +64,7 @@ module testDeployment '../../../main.bicep' = {
     vmSize: 'Standard_B1s'
     storageAccountType: 'Premium_LRS'
     vmAdminUsername: 'vmadmin'
-    vmAdminPassword: 'P@ssw0rd1234!'
+    vmAdminPassword: password
     vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
