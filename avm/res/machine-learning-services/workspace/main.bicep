@@ -38,9 +38,6 @@ param lock lockType
 @sys.description('Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.')
 param hbiWorkspace bool = false
 
-@sys.description('Optional. The flag to indicate whether to allow public access when behind VNet.')
-param allowPublicAccessWhenBehindVnet bool = false
-
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
@@ -87,12 +84,12 @@ param serviceManagedResourcesSettings object?
 @sys.description('Optional. The list of shared private link resources in this workspace. Note: This property is not idempotent.')
 param sharedPrivateLinkResources array?
 
-@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
+@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string?
+param publicNetworkAccess string = 'Disabled'
 
 // ================//
 // Variables       //
@@ -203,7 +200,6 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
       applicationInsights: associatedApplicationInsightsResourceId
       containerRegistry: associatedContainerRegistryResourceId
       hbiWorkspace: hbiWorkspace
-      allowPublicAccessWhenBehindVnet: allowPublicAccessWhenBehindVnet
       description: description
       discoveryUrl: discoveryUrl
       encryption: !empty(customerManagedKey)
@@ -224,9 +220,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         : null
       imageBuildCompute: imageBuildCompute
       primaryUserAssignedIdentity: primaryUserAssignedIdentity
-      publicNetworkAccess: !empty(publicNetworkAccess)
-        ? any(publicNetworkAccess)
-        : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+      publicNetworkAccess: publicNetworkAccess
       serviceManagedResourcesSettings: serviceManagedResourcesSettings
     },
     // Parameters only added if not empty

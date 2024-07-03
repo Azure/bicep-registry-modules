@@ -624,7 +624,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowPublicAccessWhenBehindVnet`](#parameter-allowpublicaccesswhenbehindvnet) | bool | The flag to indicate whether to allow public access when behind VNet. |
 | [`associatedContainerRegistryResourceId`](#parameter-associatedcontainerregistryresourceid) | string | The resource ID of the associated Container Registry. |
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -638,7 +637,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. At least one identity type is required. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceManagedResourcesSettings`](#parameter-servicemanagedresourcessettings) | object | The service managed resource settings. |
 | [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The list of shared private link resources in this workspace. Note: This property is not idempotent. |
@@ -694,14 +693,6 @@ The user assigned identity resource ID that represents the workspace identity. R
 
 - Required: No
 - Type: string
-
-### Parameter: `allowPublicAccessWhenBehindVnet`
-
-The flag to indicate whether to allow public access when behind VNet.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `associatedContainerRegistryResourceId`
 
@@ -1372,10 +1363,11 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled.
 
 - Required: No
 - Type: string
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
