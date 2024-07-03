@@ -97,11 +97,6 @@ param vmAuthenticationType string = 'password'
 
 //Destination Service Tag for AzureCloud for Central France is centralfrance, but location is francecentral
 var locationVar = location == 'francecentral' ? 'centralfrance' : location
-
-// load as text (and not as Json) to replace <location> placeholder in the nsg rules
-var nsgCaeRules = json(replace(loadTextContent('./nsgContainerAppsEnvironment.jsonc'), '<location>', locationVar))
-var nsgAppGwRules = loadJsonContent('./nsgAppGwRules.jsonc', 'securityRules')
-var nsgPepRules = loadJsonContent('./nsgPepRules.jsonc', 'securityRules')
 var namingRules = json(loadTextContent('../naming/naming-rules.jsonc'))
 
 var rgSpokeName = !empty(spokeResourceGroupName)
@@ -221,7 +216,111 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
     name: naming.outputs.resourcesNames.containerAppsEnvironmentNsg
     location: location
     tags: tags
-    securityRules: nsgCaeRules.securityRules
+    securityRules: [
+      {
+        name: 'Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP'
+        properties: {
+          description: 'internal AKS secure connection between underlying nodes and control plane..'
+          protocol: 'Udp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationPortRange: '1194'
+          access: 'Allow'
+          priority: 100
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP'
+        properties: {
+          description: 'internal AKS secure connection between underlying nodes and control plane..'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationPortRange: '9000'
+          access: 'Allow'
+          priority: 110
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Allow_Azure_Monitor'
+        properties: {
+          description: 'Allows outbound calls to Azure Monitor.'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationPortRange: '443'
+          access: 'Allow'
+          priority: 120
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Allow_Outbound_443'
+        properties: {
+          description: 'Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don\'t have a static IP'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+          access: 'Allow'
+          priority: 130
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Allow_NTP_Server'
+        properties: {
+          description: 'NTP server'
+          protocol: 'Udp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '123'
+          access: 'Allow'
+          priority: 140
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Allow_Container_Apps_control_plane'
+        properties: {
+          description: 'Container Apps control plane'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRanges: [
+            '5671'
+            '5672'
+          ]
+          access: 'Allow'
+          priority: 150
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'deny-hop-outbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '3389'
+            '22'
+          ]
+          access: 'Deny'
+          priority: 200
+          direction: 'Outbound'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
     diagnosticSettings: [
       {
         name: 'logAnalyticsSettings'
@@ -239,7 +338,80 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!
     name: naming.outputs.resourcesNames.applicationGatewayNsg
     location: location
     tags: tags
-    securityRules: nsgAppGwRules
+    securityRules: [
+      {
+        name: 'HealthProbes'
+        properties: {
+          description: 'Sllow HealthProbes from gateway Manager.'
+          protocol: '*'
+          sourceAddressPrefix: 'GatewayManager'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '65200-65535'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'Allow_TLS'
+        properties: {
+          description: 'allow https incoming connections'
+          protocol: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+          access: 'Allow'
+          priority: 110
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'Allow_HTTP'
+        properties: {
+          description: 'allow http incoming connections'
+          protocol: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '80'
+          access: 'Allow'
+          priority: 120
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'Allow_AzureLoadBalancer'
+        properties: {
+          description: 'allow AzureLoadBalancer incoming connections'
+          protocol: '*'
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '80'
+          access: 'Allow'
+          priority: 130
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'deny-hop-outbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '3389'
+            '22'
+          ]
+          access: 'Deny'
+          priority: 200
+          direction: 'Outbound'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
     diagnosticSettings: [
       {
         name: 'logAnalyticsSettings'
@@ -257,7 +429,24 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
     name: naming.outputs.resourcesNames.pepNsg
     location: location
     tags: tags
-    securityRules: nsgPepRules
+    securityRules: [
+      {
+        name: 'deny-hop-outbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '3389'
+            '22'
+          ]
+          access: 'Deny'
+          priority: 200
+          direction: 'Outbound'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
     diagnosticSettings: [
       {
         name: 'logAnalyticsSettings'
