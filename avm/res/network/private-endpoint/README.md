@@ -17,7 +17,7 @@ This module deploys a Private Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
@@ -30,7 +30,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using private link service](#example-3-using-private-link-service)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -352,7 +353,119 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using private link service_
+
+This instance deploys the module with a private link service to test the application of an empty list of string for `groupIds`.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
+  name: 'privateEndpointDeployment'
+  params: {
+    // Required parameters
+    name: 'npepls001'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    applicationSecurityGroupResourceIds: []
+    customDnsConfigs: []
+    customNetworkInterfaceName: ''
+    ipConfigurations: []
+    location: '<location>'
+    lock: {}
+    manualPrivateLinkServiceConnections: []
+    privateDnsZoneGroupName: ''
+    privateDnsZoneResourceIds: []
+    privateLinkServiceConnections: [
+      {
+        name: 'npepls001'
+        properties: {
+          groupIds: []
+          privateLinkServiceId: '<privateLinkServiceId>'
+        }
+      }
+    ]
+    roleAssignments: []
+    tags: {}
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "npepls001"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    // Non-required parameters
+    "applicationSecurityGroupResourceIds": {
+      "value": []
+    },
+    "customDnsConfigs": {
+      "value": []
+    },
+    "customNetworkInterfaceName": {
+      "value": ""
+    },
+    "ipConfigurations": {
+      "value": []
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {}
+    },
+    "manualPrivateLinkServiceConnections": {
+      "value": []
+    },
+    "privateDnsZoneGroupName": {
+      "value": ""
+    },
+    "privateDnsZoneResourceIds": {
+      "value": []
+    },
+    "privateLinkServiceConnections": {
+      "value": [
+        {
+          "name": "npepls001",
+          "properties": {
+            "groupIds": [],
+            "privateLinkServiceId": "<privateLinkServiceId>"
+          }
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": []
+    },
+    "tags": {
+      "value": {}
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -628,16 +741,14 @@ Properties of private endpoint IP configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
-### Parameter: `ipConfigurations.properties.groupId`
+**Optional parameters**
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
-
-- Required: Yes
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 
 ### Parameter: `ipConfigurations.properties.memberName`
 
@@ -649,6 +760,13 @@ The member name of a group obtained from the remote resource that this private e
 ### Parameter: `ipConfigurations.properties.privateIPAddress`
 
 A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
 
 - Required: Yes
 - Type: string

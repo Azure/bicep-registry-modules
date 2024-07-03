@@ -121,7 +121,7 @@
               "groupId": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Optional. The ID of a group obtained from the remote resource that this private endpoint should connect to."
                 }
               },
               "memberName": {
@@ -161,6 +161,9 @@
             "properties": {
               "groupIds": {
                 "type": "array",
+                "items": {
+                  "type": "string"
+                },
                 "metadata": {
                   "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
                 }
@@ -202,6 +205,9 @@
             "properties": {
               "groupIds": {
                 "type": "array",
+                "items": {
+                  "type": "string"
+                },
                 "metadata": {
                   "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
                 }
@@ -389,7 +395,7 @@
     },
     "privateEndpoint": {
       "type": "Microsoft.Network/privateEndpoints",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -587,7 +593,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+      "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
     },
     "groupId": {
       "type": "string",
