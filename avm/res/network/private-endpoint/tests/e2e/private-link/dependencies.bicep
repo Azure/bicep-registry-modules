@@ -31,6 +31,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 
 resource privateLinkService 'Microsoft.Network/privateLinkServices@2023-11-01' = {
   name: privateLinkServiceName
+  location: location
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
