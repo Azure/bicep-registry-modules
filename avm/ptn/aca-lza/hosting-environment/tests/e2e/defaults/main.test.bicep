@@ -42,8 +42,8 @@ module testDeployment '../../../main.bicep' = {
     vmSize: 'Standard_B1s'
     vmAdminUsername: 'vmadmin'
     vmAdminPassword: 'P@ssw0rd1234!'
-    vmLinuxSshAuthorizedKey: ''
-    vmAuthenticationType: 'password'
+    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+    vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
     spokeVNetAddressPrefixes: [

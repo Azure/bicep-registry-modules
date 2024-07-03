@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11973747348635034906"
+      "templateHash": "5520064678023179424"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -464,7 +464,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16564509096194175636"
+              "templateHash": "5915541403466610553"
             }
           },
           "parameters": {
@@ -7172,6 +7172,9 @@
                   },
                   "vmAuthenticationType": {
                     "value": "[parameters('vmAuthenticationType')]"
+                  },
+                  "logAnalyticsWorkspaceResourceId": {
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value]"
                   }
                 },
                 "template": {
@@ -7181,7 +7184,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "4855343261942416644"
+                      "templateHash": "8699888205145131880"
                     }
                   },
                   "parameters": {
@@ -7212,6 +7215,9 @@
                       "type": "string"
                     },
                     "vmNetworkInterfaceName": {
+                      "type": "string"
+                    },
+                    "logAnalyticsWorkspaceResourceId": {
                       "type": "string"
                     },
                     "vmAdminUsername": {
@@ -8091,6 +8097,13 @@
                               "sku": "20_04-lts-gen2",
                               "version": "latest"
                             }
+                          },
+                          "extensionMonitoringAgentConfig": {
+                            "value": {
+                              "enabled": true,
+                              "tags": "[parameters('tags')]",
+                              "monitoringWorkspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                            }
                           }
                         },
                         "template": {
@@ -13482,6 +13495,7 @@
                 }
               },
               "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('vnetSpoke-{0}', deployment().name), 64))]"
               ],
@@ -13539,6 +13553,9 @@
                   },
                   "vmNetworkSecurityGroupName": {
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBoxNsg]"
+                  },
+                  "logAnalyticsWorkspaceResourceId": {
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value]"
                   }
                 },
                 "template": {
@@ -13548,7 +13565,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "17630106299059585981"
+                      "templateHash": "2616742565679120099"
                     }
                   },
                   "parameters": {
@@ -13583,6 +13600,9 @@
                       "type": "string"
                     },
                     "vmNetworkInterfaceName": {
+                      "type": "string"
+                    },
+                    "logAnalyticsWorkspaceResourceId": {
                       "type": "string"
                     },
                     "vmAdminUsername": {
@@ -14448,6 +14468,13 @@
                               "sku": "[parameters('vmWindowsOSVersion')]",
                               "version": "latest"
                             }
+                          },
+                          "extensionMonitoringAgentConfig": {
+                            "value": {
+                              "enabled": true,
+                              "tags": "[parameters('tags')]",
+                              "monitoringWorkspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                            }
                           }
                         },
                         "template": {
@@ -19839,6 +19866,7 @@
                 }
               },
               "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('logAnalyticsWs-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('vnetSpoke-{0}', deployment().name), 64))]"
               ],

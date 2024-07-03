@@ -14,6 +14,7 @@ param vmSubnetName string
 param vmSubnetAddressPrefix string
 param vmNetworkSecurityGroupName string
 param vmNetworkInterfaceName string
+param logAnalyticsWorkspaceResourceId string
 
 param vmAdminUsername string
 
@@ -126,6 +127,11 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
       offer: 'WindowsServer'
       sku: vmWindowsOSVersion
       version: 'latest'
+    }
+    extensionMonitoringAgentConfig: {
+      enabled: true
+      tags: tags
+      monitoringWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     }
   }
 }

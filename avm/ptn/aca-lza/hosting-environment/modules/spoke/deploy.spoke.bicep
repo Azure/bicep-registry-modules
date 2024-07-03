@@ -321,6 +321,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
     vmNetworkInterfaceName: naming.outputs.resourcesNames.vmJumpBoxNic
     vmNetworkSecurityGroupName: naming.outputs.resourcesNames.vmJumpBoxNsg
     vmAuthenticationType: vmAuthenticationType
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
   }
 }
 
@@ -342,6 +343,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
     vmSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
     vmNetworkInterfaceName: naming.outputs.resourcesNames.vmJumpBoxNic
     vmNetworkSecurityGroupName: naming.outputs.resourcesNames.vmJumpBoxNsg
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
   }
 }
 

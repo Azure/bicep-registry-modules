@@ -13,6 +13,7 @@ param vmSubnetName string
 param vmSubnetAddressPrefix string
 param vmNetworkSecurityGroupName string
 param vmNetworkInterfaceName string
+param logAnalyticsWorkspaceResourceId string
 
 param vmAdminUsername string
 
@@ -143,6 +144,11 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
       offer: '0001-com-ubuntu-server-focal'
       sku: '20_04-lts-gen2'
       version: 'latest'
+    }
+    extensionMonitoringAgentConfig: {
+      enabled: true
+      tags: tags
+      monitoringWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     }
   }
 }
