@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
         startHour: 0
         startMinute: 0
       }
-      skuName: 'Standard_B1ms'
+      skuName: 'Standard_D2ads_v5'
       tier: 'GeneralPurpose'
     }
   }

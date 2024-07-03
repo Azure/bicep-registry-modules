@@ -51,7 +51,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     name: 'dfmsfsmin001'
-    skuName: 'Standard_B1ms'
+    skuName: 'Standard_D2ads_v5'
     tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -84,7 +84,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "dfmsfsmin001"
     },
     "skuName": {
-      "value": "Standard_B1ms"
+      "value": "Standard_D2ads_v5"
     },
     "tier": {
       "value": "GeneralPurpose"
