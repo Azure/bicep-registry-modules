@@ -11,31 +11,20 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-// ============ //
-// Parameters   //
-// ============ //
-
 @description('Required. The name of the Azure Container Registry.')
 param acrName string
 
 @description('Optional. How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time.')
-param forceUpdateTag string = utcNow()
+param runOnce bool = false
 
-@description('Optional. Azure RoleId that are required for the DeploymentScript resource to import images. Default is AcrPush, which is needed to import into an ACR.')
-// param rbacRoleNeeded string = '8311e382-0749-4cb8-b61a-304f252e45ec' // AcrPush
-param rbacRoleNeeded string = 'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
+@description('Optional. The RoleDefinitionId required for the DeploymentScript resource to import images. If not set, an existing managed identity should have the appropriate role assigned. Defaults to Contributor.')
+param rbacRole string = 'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
 
-@description('Optional. Does the Managed Identity already exists, or should be created. Default is false.')
-param useExistingManagedIdentity bool = false
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentitiesType?
 
-@description('Conditional. Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`.')
-param managedIdentityName string = 'id-ContainerRegistryImport'
-
-@description('Conditional. For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Required if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription.')
-param existingManagedIdentitySubId string = subscription().subscriptionId
-
-@description('Conditional. For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group.')
-param existingManagedIdentityResourceGroupName string = resourceGroup().name
+@description('Conditional. Name of the Managed Identity resource to create. Required if `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`.')
+param managedIdentityName string?
 
 @description('Required. A fully qualified image name to import.')
 @metadata({
@@ -60,11 +49,11 @@ param retryMax int = 3
 @description('Optional. When the script resource is cleaned up. Default is OnExpiration and the cleanup time is after 1h.')
 param cleanupPreference string = 'OnExpiration'
 
-@description('Optional. The name of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script.')
-param storageAccountName string = ''
+@description('Optional. The resource id of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script.')
+param storageAccountResourceId string = ''
 
-@description('Optional. The subnet id to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script.')
-param subnetId string = ''
+@description('Optional. The subnet ids to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script.')
+param subnetIds string[]?
 
 @description('Optional. Tags of the resource.')
 @metadata({
@@ -77,33 +66,17 @@ param subnetId string = ''
 })
 param tags object?
 
-// the following settings are only needed if the deployment script is using PrivateLink
-// they must only be added if they contain values. Conditional values for the properties does not work and ARM throws an error
-var storageSettings = !empty(storageAccountName)
-  ? {
-      storageAccountSettings: {
-        storageAccountName: storageAccountName
-      }
-    }
-  : {}
-var containerSettings = !empty(subnetId)
-  ? {
-      containerSettings: {
-        // an existing subnet is needed, if PrivateLink is going to be used
-        subnetIds: [
-          {
-            id: subnetId
-          }
-        ]
-        containerGroupName: '${resourceGroup().name}-infrastructure'
-      }
-    }
-  : {}
+// ============== //
+// Variables      //
+// ============== //
+
+var useExistingManagedIdentity = length(managedIdentities.?userAssignedResourcesIds ?? []) > 0
 
 // ============== //
 // Resources      //
 // ============== //
 
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.deploymentscript-importimagetoacr.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -126,48 +99,57 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: acrName
 }
 
+// needed to "convert" resourceids to objectids
+resource existingManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = [
+  for resourceId in (managedIdentities.?userAssignedResourcesIds ?? []): {
+    name: last(split(resourceId, '/'))
+  }
+]
+
 resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!useExistingManagedIdentity) {
-  name: managedIdentityName
+  name: managedIdentityName ?? 'id-ContainerRegistryImport'
   location: location
   tags: tags
 }
 
-resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (useExistingManagedIdentity) {
-  name: managedIdentityName
-  scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
-}
-
-resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if (!empty(rbacRoleNeeded)) {
-  name: guid(acr.id, rbacRoleNeeded, useExistingManagedIdentity ? existingManagedIdentity.id : newManagedIdentity.id)
-  scope: acr
-  properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRoleNeeded)
-    principalId: useExistingManagedIdentity
-      ? existingManagedIdentity.properties.principalId
-      : newManagedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource importImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: 'ACR-Import-${name}-${last(split(replace(image,':','-'),'/'))}'
-  location: location
-  tags: tags
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${useExistingManagedIdentity ? existingManagedIdentity.id : newManagedIdentity.id}': {}
+// rbac assignment for existing managed identities
+resource deploymentScript_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (resourceId, i) in (useExistingManagedIdentity && !empty(rbacRole)
+    ? (managedIdentities.?userAssignedResourcesIds ?? [])
+    : []): {
+    name: guid(resourceId, rbacRole)
+    properties: {
+      roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', rbacRole)
+      principalId: existingManagedIdentities[i].properties.principalId
     }
+    scope: resourceGroup()
   }
-  kind: 'AzureCLI'
-  dependsOn: [rbac]
-  properties: union(
-    {
-      forceUpdateTag: forceUpdateTag
-      azCliVersion: '2.59.0'
-      timeout: 'PT30M' // set timeout to 30m
-      retentionInterval: 'PT1H' // cleanup after 1h
-      environmentVariables: [
+]
+
+module imageImport 'br/public:avm/res/resources/deployment-script:0.2.1' = {
+  name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
+  scope: resourceGroup()
+  params: {
+    // assign new managed identities rbac roles here, as we have the objectid
+    roleAssignments: !useExistingManagedIdentity && !empty(rbacRole)
+      ? [
+          {
+            principalId: newManagedIdentity.id
+            roleDefinitionIdOrName: rbacRole
+          }
+        ]
+      : []
+    name: name
+    location: location
+    tags: tags
+    managedIdentities: managedIdentities
+    kind: 'AzureCLI'
+    runOnce: runOnce
+    azCliVersion: '2.59.0'
+    timeout: 'PT30M' // set timeout to 30m
+    retentionInterval: 'PT1H' // cleanup after 1h
+    environmentVariables: {
+      secureList: [
         {
           name: 'acrName'
           value: acrName
@@ -193,7 +175,12 @@ resource importImage 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
           value: '5s'
         }
       ]
-      scriptContent: '''#!/bin/bash
+    }
+    cleanupPreference: cleanupPreference
+    storageAccountResourceId: storageAccountResourceId
+    containerGroupName: '${resourceGroup().name}-infrastructure'
+    subnetResourceIds: subnetIds
+    scriptContent: '''#!/bin/bash
 set -e
 
 echo "Waiting on RBAC replication ($initialDelay)\n"
@@ -215,12 +202,11 @@ do
 done
 
 echo "done\n"'''
-      cleanupPreference: cleanupPreference
-    },
-    storageSettings,
-    containerSettings
-  )
+  }
+}
 
+resource imageImportScript 'Microsoft.Resources/deploymentScripts@2023-08-01' existing = {
+  name: imageImport.name
   resource logs 'logs' existing = {
     name: 'default'
   }
@@ -234,7 +220,7 @@ echo "done\n"'''
 output resourceGroupName string = resourceGroup().name
 
 @description('The script output of each image import.')
-output deploymentScriptOutput string[] = split(importImage::logs.properties.log, '\n')
+output deploymentScriptOutput string[] = split(imageImportScript::logs.properties.log, '\n')
 
 @description('An array of the imported images.')
 output importedImage importedImageType = {
@@ -247,9 +233,14 @@ output importedImage importedImageType = {
 // ================ //
 
 type importedImageType = {
-  @description('The original image name.')
+  @description('Required. The original image name.')
   originalImage: string
 
-  @description('The image name in the Azure Container Registry.')
+  @description('Required. The image name in the Azure Container Registry.')
   acrHostedImage: string
 }
+
+type managedIdentitiesType = {
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourcesIds: string[]
+}?

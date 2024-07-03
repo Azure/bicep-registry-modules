@@ -1,4 +1,4 @@
-# import-image-to-acr `[Microsoft.deploymentscript/importimagetoacr]`
+# import-image-to-acr `[DeploymentScript/ImportImageToAcr]`
 
 This modules deployes an image to an Azure Container Registry.
 
@@ -16,7 +16,8 @@ This modules deployes an image to an Azure Container Registry.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2020-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/roleAssignments) |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
@@ -28,13 +29,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/deployment-script/import-image-to-acr:<version>`.
 
-- [min](#example-1-min)
-- [max](#example-2-max)
-- [waf-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _min_
+### Example 1: _Using only defaults_
 
-This instance deployes the module with default parameters.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -92,9 +93,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
-### Example 2: _max_
+### Example 2: _Using large parameter set_
 
-This instance deployes the module with most parameters and Private Link enabled.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -111,18 +112,15 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     name: 'dsiitamax001'
     // Non-required parameters
     cleanupPreference: 'OnExpiration'
-    existingManagedIdentityResourceGroupName: '<existingManagedIdentityResourceGroupName>'
-    existingManagedIdentitySubId: '<existingManagedIdentitySubId>'
     location: '<location>'
-    managedIdentityName: '<managedIdentityName>'
+    managedIdentities: '<managedIdentities>'
     overwriteExistingImage: true
-    storageAccountName: '<storageAccountName>'
-    subnetId: '<subnetId>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    subnetIds: '<subnetIds>'
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
     }
-    useExistingManagedIdentity: true
   }
 }
 ```
@@ -153,35 +151,26 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "cleanupPreference": {
       "value": "OnExpiration"
     },
-    "existingManagedIdentityResourceGroupName": {
-      "value": "<existingManagedIdentityResourceGroupName>"
-    },
-    "existingManagedIdentitySubId": {
-      "value": "<existingManagedIdentitySubId>"
-    },
     "location": {
       "value": "<location>"
     },
-    "managedIdentityName": {
-      "value": "<managedIdentityName>"
+    "managedIdentities": {
+      "value": "<managedIdentities>"
     },
     "overwriteExistingImage": {
       "value": true
     },
-    "storageAccountName": {
-      "value": "<storageAccountName>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetIds": {
+      "value": "<subnetIds>"
     },
     "tags": {
       "value": {
         "Env": "test",
         "hidden-title": "This is visible in the resource name"
       }
-    },
-    "useExistingManagedIdentity": {
-      "value": true
     }
   }
 }
@@ -190,9 +179,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
-### Example 3: _waf-aligned_
+### Example 3: _WAF-aligned_
 
-This instance deployes the module in a WAF-aligned way.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -208,12 +197,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     name: 'dsiitawaf001'
     // Non-required parameters
-    existingManagedIdentityResourceGroupName: '<existingManagedIdentityResourceGroupName>'
-    existingManagedIdentitySubId: '<existingManagedIdentitySubId>'
     location: '<location>'
-    managedIdentityName: '<managedIdentityName>'
+    managedIdentities: '<managedIdentities>'
     overwriteExistingImage: true
-    useExistingManagedIdentity: true
   }
 }
 ```
@@ -241,22 +227,13 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       "value": "dsiitawaf001"
     },
     // Non-required parameters
-    "existingManagedIdentityResourceGroupName": {
-      "value": "<existingManagedIdentityResourceGroupName>"
-    },
-    "existingManagedIdentitySubId": {
-      "value": "<existingManagedIdentitySubId>"
-    },
     "location": {
       "value": "<location>"
     },
-    "managedIdentityName": {
-      "value": "<managedIdentityName>"
+    "managedIdentities": {
+      "value": "<managedIdentities>"
     },
     "overwriteExistingImage": {
-      "value": true
-    },
-    "useExistingManagedIdentity": {
       "value": true
     }
   }
@@ -281,9 +258,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`existingManagedIdentityResourceGroupName`](#parameter-existingmanagedidentityresourcegroupname) | string | For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group. |
-| [`existingManagedIdentitySubId`](#parameter-existingmanagedidentitysubid) | string | For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Required if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription. |
-| [`managedIdentityName`](#parameter-managedidentityname) | string | Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`. |
+| [`managedIdentityName`](#parameter-managedidentityname) | string | Name of the Managed Identity resource to create. Required if `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`. |
 
 **Optional parameters**
 
@@ -291,16 +266,16 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 | :-- | :-- | :-- |
 | [`cleanupPreference`](#parameter-cleanuppreference) | string | When the script resource is cleaned up. Default is OnExpiration and the cleanup time is after 1h. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`forceUpdateTag`](#parameter-forceupdatetag) | string | How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time. |
 | [`initialScriptDelay`](#parameter-initialscriptdelay) | int | A delay in seconds before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate. Default is 30s. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The image will be overwritten if it already exists in the ACR with the same tag. Default is false. |
-| [`rbacRoleNeeded`](#parameter-rbacroleneeded) | string | Azure RoleId that are required for the DeploymentScript resource to import images. Default is AcrPush, which is needed to import into an ACR. |
+| [`rbacRole`](#parameter-rbacrole) | string | The RoleDefinitionId required for the DeploymentScript resource to import images. If not set, an existing managed identity should have the appropriate role assigned. Defaults to Contributor. |
 | [`retryMax`](#parameter-retrymax) | int | The maximum number of retries for the script import operation. Default is 3. |
-| [`storageAccountName`](#parameter-storageaccountname) | string | The name of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script. |
-| [`subnetId`](#parameter-subnetid) | string | The subnet id to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script. |
+| [`runOnce`](#parameter-runonce) | bool | How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time. |
+| [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource id of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script. |
+| [`subnetIds`](#parameter-subnetids) | array | The subnet ids to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`useExistingManagedIdentity`](#parameter-useexistingmanagedidentity) | bool | Does the Managed Identity already exists, or should be created. Default is false. |
 
 ### Parameter: `acrName`
 
@@ -315,6 +290,7 @@ A fully qualified image name to import.
 
 - Required: Yes
 - Type: string
+- Example: `mcr.microsoft.com/k8se/quickstart-jobs:latest`
 
 ### Parameter: `name`
 
@@ -323,29 +299,12 @@ The name of the deployment script resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `existingManagedIdentityResourceGroupName`
-
-For an existing Managed Identity, the Resource Group it is located in. Default is the current resource group. Required if `useExistingManagedIdentity` is `true`. Defaults to the current resource group.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().name]`
-
-### Parameter: `existingManagedIdentitySubId`
-
-For an existing Managed Identity, the Subscription Id it is located in. Default is the current subscription. Required if `useExistingManagedIdentity` is `true`. Defaults to the curent subscription.
-
-- Required: No
-- Type: string
-- Default: `[subscription().subscriptionId]`
-
 ### Parameter: `managedIdentityName`
 
-Name of the Managed Identity resource to create. Required if `useExistingManagedIdentity` is `true`. Defaults to `id-ContainerRegistryImport`.
+Name of the Managed Identity resource to create. Required if `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`.
 
 - Required: No
 - Type: string
-- Default: `'id-ContainerRegistryImport'`
 
 ### Parameter: `cleanupPreference`
 
@@ -371,14 +330,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `forceUpdateTag`
-
-How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time.
-
-- Required: No
-- Type: string
-- Default: `[utcNow()]`
-
 ### Parameter: `initialScriptDelay`
 
 A delay in seconds before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate. Default is 30s.
@@ -395,6 +346,26 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.userAssignedResourcesIds`
+
+The resource ID(s) to assign to the resource.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `overwriteExistingImage`
 
 The image will be overwritten if it already exists in the ACR with the same tag. Default is false.
@@ -403,9 +374,9 @@ The image will be overwritten if it already exists in the ACR with the same tag.
 - Type: bool
 - Default: `False`
 
-### Parameter: `rbacRoleNeeded`
+### Parameter: `rbacRole`
 
-Azure RoleId that are required for the DeploymentScript resource to import images. Default is AcrPush, which is needed to import into an ACR.
+The RoleDefinitionId required for the DeploymentScript resource to import images. If not set, an existing managed identity should have the appropriate role assigned. Defaults to Contributor.
 
 - Required: No
 - Type: string
@@ -419,21 +390,28 @@ The maximum number of retries for the script import operation. Default is 3.
 - Type: int
 - Default: `3`
 
-### Parameter: `storageAccountName`
+### Parameter: `runOnce`
 
-The name of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script.
+How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `storageAccountResourceId`
+
+The resource id of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script.
 
 - Required: No
 - Type: string
 - Default: `''`
 
-### Parameter: `subnetId`
+### Parameter: `subnetIds`
 
-The subnet id to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script.
+The subnet ids to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: array
 
 ### Parameter: `tags`
 
@@ -441,14 +419,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `useExistingManagedIdentity`
-
-Does the Managed Identity already exists, or should be created. Default is false.
-
-- Required: No
-- Type: bool
-- Default: `False`
+- Example:
+  ```Bicep
+  {
+      "key1": "value1"
+      "key2": "value2"
+  }
+  ```
 
 
 ## Outputs
@@ -461,7 +438,11 @@ Does the Managed Identity already exists, or should be created. Default is false
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/resources/deployment-script:0.2.1` | Remote reference |
 
 ## Notes
 

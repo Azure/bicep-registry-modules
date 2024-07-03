@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'max'
-metadata description = 'This instance deployes the module with most parameters and Private Link enabled.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -9,14 +9,12 @@ metadata description = 'This instance deployes the module with most parameters a
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-deploymentscript-importimagetoacr-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'dsiitamax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
@@ -30,10 +28,10 @@ module dependencies 'dependencies.bicep' = {
   name: 'dependencies'
   scope: resourceGroup
   params: {
-    virtualNetworkName: '${uniqueString(resourceGroupName, resourceLocation)}-vnet'
-    acrName: uniqueString(resourceGroupName, resourceLocation, 'acr')
-    storageAccountName: '${uniqueString(resourceGroupName, resourceLocation)}sa'
-    managedIdentityName: '${uniqueString(resourceGroupName, resourceLocation)}-mi'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    acrName: 'dep${namePrefix}acr${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }
 
@@ -63,13 +61,10 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       cleanupPreference: 'OnExpiration'
-      useExistingManagedIdentity: true
-      managedIdentityName: dependencies.outputs.managedIdentityName
-      existingManagedIdentityResourceGroupName: resourceGroupName
-      existingManagedIdentitySubId: subscription().subscriptionId
+      managedIdentities: { userAssignedResourcesIds: [dependencies.outputs.managedIdentityResourceId] }
       overwriteExistingImage: true
-      storageAccountName: dependencies.outputs.storageAccountName
-      subnetId: dependencies.outputs.deploymentscriptSubnetResourceId
+      storageAccountResourceId: dependencies.outputs.storageAccountResourceId
+      subnetIds: [dependencies.outputs.deploymentScriptSubnetResourceId]
     }
   }
 ]

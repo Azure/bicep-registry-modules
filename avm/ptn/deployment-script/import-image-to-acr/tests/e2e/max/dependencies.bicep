@@ -13,15 +13,13 @@ param acrName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
-var registryRbacRoles = ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-4cb8-b61a-304f252e45ec'] // ArcPull, AcrPush
-var storageAccountRbacRole = '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+var ipRange = '10.0.0.0'
 
 module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
     location: location
-    enableTelemetry: false
   }
 }
 
@@ -31,20 +29,20 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   location: location
   properties: {
     addressSpace: {
-      addressPrefixes: ['10.0.0.0/16']
+      addressPrefixes: [cidrSubnet(ipRange, 16, 0)]
     }
   }
   resource subnet_privateendpoints 'subnets@2023-11-01' = {
     name: 'privateendpoints-subnet'
     properties: {
-      addressPrefix: '10.0.0.0/24'
+      addressPrefix: cidrSubnet(ipRange, 24, 0)
     }
   }
   resource subnet_deploymentscript 'subnets@2023-11-01' = {
     name: 'deploymentscript-subnet'
     dependsOn: [subnet_privateendpoints]
     properties: {
-      addressPrefix: '10.0.1.0/24'
+      addressPrefix: cidrSubnet(ipRange, 24, 1)
       serviceEndpoints: [
         {
           service: 'Microsoft.Storage'
@@ -126,10 +124,9 @@ module storage 'br/public:avm/res/storage/storage-account:0.9.0' = {
       {
         principalId: identity.outputs.principalId
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: storageAccountRbacRole
+        roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
       }
     ]
-    enableTelemetry: false
   }
 }
 
@@ -142,7 +139,8 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     roleAssignments: [
-      for registryRole in registryRbacRoles: {
+      // assign ArcPull and AcrPush
+      for registryRole in ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-4cb8-b61a-304f252e45ec']: {
         principalId: identity.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: registryRole
@@ -154,7 +152,14 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
   }
 }
 
-output managedIdentityName string = identity.outputs.name
+@description('The resource id of the created managed identity.')
+output managedIdentityResourceId string = identity.outputs.resourceId
+
+@description('The name of the created Azure Container Registry.')
 output acrName string = acr.outputs.name
-output storageAccountName string = storage.outputs.name
-output deploymentscriptSubnetResourceId string = vnet::subnet_deploymentscript.id
+
+@description('The resource id of the created Storage Account.')
+output storageAccountResourceId string = storage.outputs.resourceId
+
+@description('The resource ID of the created subnet designated for the Deployment Script.')
+output deploymentScriptSubnetResourceId string = vnet::subnet_deploymentscript.id

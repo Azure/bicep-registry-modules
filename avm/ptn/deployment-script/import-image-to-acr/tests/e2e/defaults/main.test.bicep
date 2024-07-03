@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'min'
-metadata description = 'This instance deployes the module with default parameters.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,14 +9,12 @@ metadata description = 'This instance deployes the module with default parameter
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-deploymentscript-importimagetoacr-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'dsiitamin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
@@ -30,7 +28,7 @@ module dependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
   scope: resourceGroup
   params: {
-    acrName: uniqueString(resourceGroupName, resourceLocation, 'acr')
+    acrName: 'dep${namePrefix}acr${serviceShort}'
   }
 }
 
