@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12631842226127295825"
+      "templateHash": "14715447017778325457"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -464,7 +464,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5915541403466610553"
+              "templateHash": "3355935987564412436"
             }
           },
           "parameters": {
@@ -636,105 +636,9 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\n    //security rules (as of 2023-march-10): https://learn.microsoft.com/azure/container-apps/firewall-integration#nsg-allow-rules\n    //Inbound rules are not required, if we leave the default inbound rules 65000 and 65001\n    \"securityRules\": [\n        // {\n        //     \"name\": \"Allow_communication_between_IPs_in_the_infra_subnet\",\n        //     \"properties\": {\n        //         \"description\": \"Allow communication between IPs in the infrastructure subnet. This address is passed as a parameter when you create an environment. For example, 10.0.0.0/21.\",\n        //         \"protocol\": \"*\",\n        //         \"sourceAddressPrefix\": \"10.0.0.0/21\",\n        //         \"sourcePortRange\": \"*\",\n        //         \"destinationAddressPrefix\": \"10.0.0.0/21\",\n        //         \"destinationPortRange\": \"*\",\n        //         \"access\": \"Allow\",\n        //         \"priority\": 100,\n        //         \"direction\": \"Inbound\"\n        //     }\n        // },\n        // {\n        //     \"name\": \"Allow_Azure_Loadbalancer_To_Communicate_with_the_Environment\",\n        //     \"properties\": {\n        //         \"description\": \"Allow the Azure infrastructure load balancer to communicate with your environment.\",\n        //         \"protocol\": \"*\",\n        //         \"sourceAddressPrefix\": \"AzureLoadBalancer\",\n        //         \"sourcePortRange\": \"*\",\n        //         \"destinationAddressPrefix\": \"10.0.0.0/21\",\n        //         \"destinationPortRange\": \"*\",\n        //         \"access\": \"Allow\",\n        //         \"priority\": 110,\n        //         \"direction\": \"Inbound\"\n        //     }\n        // },\n        {\n            \"name\": \"Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP\",\n            \"properties\": {\n                \"description\": \"internal AKS secure connection between underlying nodes and control plane..\",\n                \"protocol\": \"Udp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"1194\",\n                \"access\": \"Allow\",\n                \"priority\": 100,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP\",\n            \"properties\": {\n                \"description\": \"internal AKS secure connection between underlying nodes and control plane..\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"9000\",\n                \"access\": \"Allow\",\n                \"priority\": 110,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Azure_Monitor\",\n            \"properties\": {\n                \"description\": \"Allows outbound calls to Azure Monitor.\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"AzureCloud.<location>\",\n                \"destinationPortRange\": \"443\",\n                \"access\": \"Allow\",\n                \"priority\": 120,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Outbound_443\",\n            \"properties\": {\n                \"description\": \"Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don't have a static IP\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRange\": \"443\",\n                \"access\": \"Allow\",\n                \"priority\": 130,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_NTP_Server\",\n            \"properties\": {\n                \"description\": \"NTP server\",\n                \"protocol\": \"Udp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRange\": \"123\",\n                \"access\": \"Allow\",\n                \"priority\": 140,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"Allow_Container_Apps_control_plane\",\n            \"properties\": {\n                \"description\": \"Container Apps control plane\",\n                \"protocol\": \"Tcp\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"sourcePortRange\": \"*\",\n                \"destinationAddressPrefix\": \"*\",\n                \"destinationPortRanges\": [\n                    \"5671\",\n                    \"5672\"\n                ],\n                \"access\": \"Allow\",\n                \"priority\": 150,\n                \"direction\": \"Outbound\"\n            }\n        },\n        {\n            \"name\": \"deny-hop-outbound\",\n            \"properties\": {\n                \"protocol\": \"*\",\n                \"sourcePortRange\": \"*\",\n                \"destinationPortRanges\": [\n                    \"3389\",\n                    \"22\"\n                ],\n                \"access\": \"Deny\",\n                \"priority\": 200,\n                \"direction\": \"Outbound\",\n                \"sourceAddressPrefix\": \"VirtualNetwork\",\n                \"destinationAddressPrefix\": \"*\"\n            }\n        }\n    ]\n}",
-            "$fxv#1": [
-              {
-                "name": "HealthProbes",
-                "properties": {
-                  "description": "Sllow HealthProbes from gateway Manager.",
-                  "protocol": "*",
-                  "sourceAddressPrefix": "GatewayManager",
-                  "sourcePortRange": "*",
-                  "destinationAddressPrefix": "*",
-                  "destinationPortRange": "65200-65535",
-                  "access": "Allow",
-                  "priority": 100,
-                  "direction": "Inbound"
-                }
-              },
-              {
-                "name": "Allow_TLS",
-                "properties": {
-                  "description": "allow https incoming connections",
-                  "protocol": "*",
-                  "sourceAddressPrefix": "*",
-                  "sourcePortRange": "*",
-                  "destinationAddressPrefix": "*",
-                  "destinationPortRange": "443",
-                  "access": "Allow",
-                  "priority": 110,
-                  "direction": "Inbound"
-                }
-              },
-              {
-                "name": "Allow_HTTP",
-                "properties": {
-                  "description": "allow http incoming connections",
-                  "protocol": "*",
-                  "sourceAddressPrefix": "*",
-                  "sourcePortRange": "*",
-                  "destinationAddressPrefix": "*",
-                  "destinationPortRange": "80",
-                  "access": "Allow",
-                  "priority": 120,
-                  "direction": "Inbound"
-                }
-              },
-              {
-                "name": "Allow_AzureLoadBalancer",
-                "properties": {
-                  "description": "allow AzureLoadBalancer incoming connections",
-                  "protocol": "*",
-                  "sourceAddressPrefix": "AzureLoadBalancer",
-                  "sourcePortRange": "*",
-                  "destinationAddressPrefix": "*",
-                  "destinationPortRange": "80",
-                  "access": "Allow",
-                  "priority": 130,
-                  "direction": "Inbound"
-                }
-              },
-              {
-                "name": "deny-hop-outbound",
-                "properties": {
-                  "protocol": "*",
-                  "sourcePortRange": "*",
-                  "destinationPortRanges": [
-                    "3389",
-                    "22"
-                  ],
-                  "access": "Deny",
-                  "priority": 200,
-                  "direction": "Outbound",
-                  "sourceAddressPrefix": "VirtualNetwork",
-                  "destinationAddressPrefix": "*"
-                }
-              }
-            ],
-            "$fxv#2": [
-              {
-                "name": "deny-hop-outbound",
-                "properties": {
-                  "protocol": "*",
-                  "sourcePortRange": "*",
-                  "destinationPortRanges": [
-                    "3389",
-                    "22"
-                  ],
-                  "access": "Deny",
-                  "priority": 200,
-                  "direction": "Outbound",
-                  "sourceAddressPrefix": "VirtualNetwork",
-                  "destinationAddressPrefix": "*"
-                }
-              }
-            ],
-            "$fxv#3": "{\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n    \"resourceTypeAbbreviations\" : {\n        \"applicationGateway\": \"agw\",\n        \"applicationInsights\": \"appi\",\n        \"appService\": \"app\",\n        \"azureFirewall\": \"azfw\",\n        \"bastion\": \"bas\",\n        \"containerAppsEnvironment\": \"cae\",\n        \"containerRegistry\": \"cr\",\n        \"cosmosDbNoSql\": \"cosno\",\n        \"frontDoor\": \"afd\",\n        \"frontDoorEndpoint\": \"fde\",\n        \"frontDoorWaf\": \"fdfp\",\n        \"keyVault\": \"kv\",\n        \"logAnalyticsWorkspace\": \"log\",\n        \"managedIdentity\": \"id\",\n        \"networkInterface\": \"nic\",\n        \"networkSecurityGroup\": \"nsg\",\n        \"privateEndpoint\": \"pep\",\n        \"privateLinkService\": \"pls\",\n        \"publicIpAddress\": \"pip\",\n        \"resourceGroup\": \"rg\",\n        \"routeTable\": \"rt\",\n        \"serviceBus\": \"sb\",\n        \"serviceBusQueue\": \"sbq\",\n        \"serviceBusTopic\": \"sbt\",\n        \"storageAccount\": \"st\",\n        \"virtualMachine\": \"vm\",\n        \"virtualNetwork\": \"vnet\",\n        \"redisCache\": \"redis\",\n        \"cognitiveAccount\": \"cog\",\n        \"openAiDeployment\": \"oaidep\",\n        \"azureAISearch\": \"srch\",\n        \"documentIntelligence\": \"di\",\n        \"eventGridSystemTopic\": \"egst\",\n        \"eventGridSubscription\": \"evgs\"\n    },\n\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n    \"regionAbbreviations\" : {\n        \"australiacentral\": \"auc\",\n        \"australiacentral2\": \"auc2\",\n        \"australiaeast\": \"aue\",\n        \"australiasoutheast\": \"ause\",\n        \"brazilsouth\": \"brs\",\n        \"brazilsoutheast\": \"brse\",\n        \"canadacentral\": \"canc\",\n        \"canadaeast\": \"cane\",\n        \"centralindia\": \"cin\",\n        \"centralus\": \"cus\",\n        \"centraluseuap\": \"cuseuap\",\n        \"eastasia\": \"ea\",\n        \"eastus\": \"eus\",\n        \"eastus2\": \"eus2\",\n        \"eastus2euap\": \"eus2euap\",\n        \"francecentral\": \"frc\",\n        \"francesouth\": \"frs\",\n        \"germanynorth\": \"gern\",\n        \"germanywestcentral\": \"gerwc\",\n        \"japaneast\": \"jae\",\n        \"japanwest\": \"jaw\",\n        \"jioindiacentral\": \"jioinc\",\n        \"jioindiawest\": \"jioinw\",\n        \"koreacentral\": \"koc\",\n        \"koreasouth\": \"kors\",\n        \"northcentralus\": \"ncus\",\n        \"northeurope\": \"neu\",\n        \"norwayeast\": \"nore\",\n        \"norwaywest\": \"norw\",\n        \"southafricanorth\": \"san\",\n        \"southafricawest\": \"saw\",\n        \"southcentralus\": \"scus\",\n        \"southeastasia\": \"sea\",\n        \"southindia\": \"sin\",\n        \"swedencentral\": \"swc\",\n        \"switzerlandnorth\": \"swn\",\n        \"switzerlandwest\": \"sww\",\n        \"uaecentral\": \"uaec\",\n        \"uaenorth\": \"uaen\",\n        \"uksouth\": \"uks\",\n        \"ukwest\": \"ukw\",\n        \"westcentralus\": \"wcus\",\n        \"westeurope\": \"weu\",\n        \"westindia\": \"win\",\n        \"westus\": \"wus\",\n        \"westus2\": \"wus2\",\n        \"westus3\": \"wus3\"\n    }\n}",
+            "$fxv#0": "{\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n    \"resourceTypeAbbreviations\" : {\n        \"applicationGateway\": \"agw\",\n        \"applicationInsights\": \"appi\",\n        \"appService\": \"app\",\n        \"azureFirewall\": \"azfw\",\n        \"bastion\": \"bas\",\n        \"containerAppsEnvironment\": \"cae\",\n        \"containerRegistry\": \"cr\",\n        \"cosmosDbNoSql\": \"cosno\",\n        \"frontDoor\": \"afd\",\n        \"frontDoorEndpoint\": \"fde\",\n        \"frontDoorWaf\": \"fdfp\",\n        \"keyVault\": \"kv\",\n        \"logAnalyticsWorkspace\": \"log\",\n        \"managedIdentity\": \"id\",\n        \"networkInterface\": \"nic\",\n        \"networkSecurityGroup\": \"nsg\",\n        \"privateEndpoint\": \"pep\",\n        \"privateLinkService\": \"pls\",\n        \"publicIpAddress\": \"pip\",\n        \"resourceGroup\": \"rg\",\n        \"routeTable\": \"rt\",\n        \"serviceBus\": \"sb\",\n        \"serviceBusQueue\": \"sbq\",\n        \"serviceBusTopic\": \"sbt\",\n        \"storageAccount\": \"st\",\n        \"virtualMachine\": \"vm\",\n        \"virtualNetwork\": \"vnet\",\n        \"redisCache\": \"redis\",\n        \"cognitiveAccount\": \"cog\",\n        \"openAiDeployment\": \"oaidep\",\n        \"azureAISearch\": \"srch\",\n        \"documentIntelligence\": \"di\",\n        \"eventGridSystemTopic\": \"egst\",\n        \"eventGridSubscription\": \"evgs\"\n    },\n\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n    \"regionAbbreviations\" : {\n        \"australiacentral\": \"auc\",\n        \"australiacentral2\": \"auc2\",\n        \"australiaeast\": \"aue\",\n        \"australiasoutheast\": \"ause\",\n        \"brazilsouth\": \"brs\",\n        \"brazilsoutheast\": \"brse\",\n        \"canadacentral\": \"canc\",\n        \"canadaeast\": \"cane\",\n        \"centralindia\": \"cin\",\n        \"centralus\": \"cus\",\n        \"centraluseuap\": \"cuseuap\",\n        \"eastasia\": \"ea\",\n        \"eastus\": \"eus\",\n        \"eastus2\": \"eus2\",\n        \"eastus2euap\": \"eus2euap\",\n        \"francecentral\": \"frc\",\n        \"francesouth\": \"frs\",\n        \"germanynorth\": \"gern\",\n        \"germanywestcentral\": \"gerwc\",\n        \"japaneast\": \"jae\",\n        \"japanwest\": \"jaw\",\n        \"jioindiacentral\": \"jioinc\",\n        \"jioindiawest\": \"jioinw\",\n        \"koreacentral\": \"koc\",\n        \"koreasouth\": \"kors\",\n        \"northcentralus\": \"ncus\",\n        \"northeurope\": \"neu\",\n        \"norwayeast\": \"nore\",\n        \"norwaywest\": \"norw\",\n        \"southafricanorth\": \"san\",\n        \"southafricawest\": \"saw\",\n        \"southcentralus\": \"scus\",\n        \"southeastasia\": \"sea\",\n        \"southindia\": \"sin\",\n        \"swedencentral\": \"swc\",\n        \"switzerlandnorth\": \"swn\",\n        \"switzerlandwest\": \"sww\",\n        \"uaecentral\": \"uaec\",\n        \"uaenorth\": \"uaen\",\n        \"uksouth\": \"uks\",\n        \"ukwest\": \"ukw\",\n        \"westcentralus\": \"wcus\",\n        \"westeurope\": \"weu\",\n        \"westindia\": \"win\",\n        \"westus\": \"wus\",\n        \"westus2\": \"wus2\",\n        \"westus3\": \"wus3\"\n    }\n}",
             "locationVar": "[if(equals(parameters('location'), 'francecentral'), 'centralfrance', parameters('location'))]",
-            "nsgCaeRules": "[json(replace(variables('$fxv#0'), '<location>', variables('locationVar')))]",
-            "nsgAppGwRules": "[variables('$fxv#1')]",
-            "nsgPepRules": "[variables('$fxv#2')]",
-            "namingRules": "[json(variables('$fxv#3'))]",
+            "namingRules": "[json(variables('$fxv#0'))]",
             "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-{2}-{3}-spoke', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]",
             "hubVNetResourceIdTokens": "[if(not(empty(parameters('hubVNetId'))), split(parameters('hubVNetId'), '/'), array(''))]",
             "hubSubscriptionId": "[if(not(empty(parameters('hubVNetId'))), variables('hubVNetResourceIdTokens')[2], '')]",
@@ -4538,7 +4442,111 @@
                     "value": "[parameters('tags')]"
                   },
                   "securityRules": {
-                    "value": "[variables('nsgCaeRules').securityRules]"
+                    "value": [
+                      {
+                        "name": "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",
+                        "properties": {
+                          "description": "internal AKS secure connection between underlying nodes and control plane..",
+                          "protocol": "Udp",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('locationVar'))]",
+                          "destinationPortRange": "1194",
+                          "access": "Allow",
+                          "priority": 100,
+                          "direction": "Outbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP",
+                        "properties": {
+                          "description": "internal AKS secure connection between underlying nodes and control plane..",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('locationVar'))]",
+                          "destinationPortRange": "9000",
+                          "access": "Allow",
+                          "priority": 110,
+                          "direction": "Outbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_Azure_Monitor",
+                        "properties": {
+                          "description": "Allows outbound calls to Azure Monitor.",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('locationVar'))]",
+                          "destinationPortRange": "443",
+                          "access": "Allow",
+                          "priority": 120,
+                          "direction": "Outbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_Outbound_443",
+                        "properties": {
+                          "description": "Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don't have a static IP",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRange": "443",
+                          "access": "Allow",
+                          "priority": 130,
+                          "direction": "Outbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_NTP_Server",
+                        "properties": {
+                          "description": "NTP server",
+                          "protocol": "Udp",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRange": "123",
+                          "access": "Allow",
+                          "priority": 140,
+                          "direction": "Outbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_Container_Apps_control_plane",
+                        "properties": {
+                          "description": "Container Apps control plane",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRanges": [
+                            "5671",
+                            "5672"
+                          ],
+                          "access": "Allow",
+                          "priority": 150,
+                          "direction": "Outbound"
+                        }
+                      },
+                      {
+                        "name": "deny-hop-outbound",
+                        "properties": {
+                          "protocol": "*",
+                          "sourcePortRange": "*",
+                          "destinationPortRanges": [
+                            "3389",
+                            "22"
+                          ],
+                          "access": "Deny",
+                          "priority": 200,
+                          "direction": "Outbound",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "destinationAddressPrefix": "*"
+                        }
+                      }
+                    ]
                   },
                   "diagnosticSettings": {
                     "value": [
@@ -5253,7 +5261,80 @@
                     "value": "[parameters('tags')]"
                   },
                   "securityRules": {
-                    "value": "[variables('nsgAppGwRules')]"
+                    "value": [
+                      {
+                        "name": "HealthProbes",
+                        "properties": {
+                          "description": "Sllow HealthProbes from gateway Manager.",
+                          "protocol": "*",
+                          "sourceAddressPrefix": "GatewayManager",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRange": "65200-65535",
+                          "access": "Allow",
+                          "priority": 100,
+                          "direction": "Inbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_TLS",
+                        "properties": {
+                          "description": "allow https incoming connections",
+                          "protocol": "*",
+                          "sourceAddressPrefix": "*",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRange": "443",
+                          "access": "Allow",
+                          "priority": 110,
+                          "direction": "Inbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_HTTP",
+                        "properties": {
+                          "description": "allow http incoming connections",
+                          "protocol": "*",
+                          "sourceAddressPrefix": "*",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRange": "80",
+                          "access": "Allow",
+                          "priority": 120,
+                          "direction": "Inbound"
+                        }
+                      },
+                      {
+                        "name": "Allow_AzureLoadBalancer",
+                        "properties": {
+                          "description": "allow AzureLoadBalancer incoming connections",
+                          "protocol": "*",
+                          "sourceAddressPrefix": "AzureLoadBalancer",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRange": "80",
+                          "access": "Allow",
+                          "priority": 130,
+                          "direction": "Inbound"
+                        }
+                      },
+                      {
+                        "name": "deny-hop-outbound",
+                        "properties": {
+                          "protocol": "*",
+                          "sourcePortRange": "*",
+                          "destinationPortRanges": [
+                            "3389",
+                            "22"
+                          ],
+                          "access": "Deny",
+                          "priority": 200,
+                          "direction": "Outbound",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "destinationAddressPrefix": "*"
+                        }
+                      }
+                    ]
                   },
                   "diagnosticSettings": {
                     "value": [
@@ -5967,7 +6048,24 @@
                     "value": "[parameters('tags')]"
                   },
                   "securityRules": {
-                    "value": "[variables('nsgPepRules')]"
+                    "value": [
+                      {
+                        "name": "deny-hop-outbound",
+                        "properties": {
+                          "protocol": "*",
+                          "sourcePortRange": "*",
+                          "destinationPortRanges": [
+                            "3389",
+                            "22"
+                          ],
+                          "access": "Deny",
+                          "priority": 200,
+                          "direction": "Outbound",
+                          "sourceAddressPrefix": "VirtualNetwork",
+                          "destinationAddressPrefix": "*"
+                        }
+                      }
+                    ]
                   },
                   "diagnosticSettings": {
                     "value": [
@@ -7184,7 +7282,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "8699888205145131880"
+                      "templateHash": "14974856184041153660"
                     }
                   },
                   "parameters": {
@@ -7252,25 +7350,6 @@
                       "defaultValue": "[resourceGroup().location]"
                     }
                   },
-                  "variables": {
-                    "$fxv#0": [
-                      {
-                        "name": "allow-bastion-inbound",
-                        "properties": {
-                          "description": "Allow inbound traffic from Bastion to the JumpBox",
-                          "protocol": "*",
-                          "sourceAddressPrefix": "Bastion",
-                          "sourcePortRange": "*",
-                          "destinationAddressPrefix": "*",
-                          "destinationPortRange": "*",
-                          "access": "Allow",
-                          "priority": 100,
-                          "direction": "Inbound"
-                        }
-                      }
-                    ],
-                    "nsgVmRules": "[variables('$fxv#0')]"
-                  },
                   "resources": [
                     {
                       "type": "Microsoft.Network/virtualNetworks/subnets",
@@ -7334,7 +7413,22 @@
                             "value": "[parameters('tags')]"
                           },
                           "securityRules": {
-                            "value": "[variables('nsgVmRules')]"
+                            "value": [
+                              {
+                                "name": "allow-bastion-inbound",
+                                "properties": {
+                                  "description": "Allow inbound traffic from Bastion to the JumpBox",
+                                  "protocol": "*",
+                                  "sourceAddressPrefix": "Bastion",
+                                  "sourcePortRange": "*",
+                                  "destinationAddressPrefix": "*",
+                                  "destinationPortRange": "*",
+                                  "access": "Allow",
+                                  "priority": 100,
+                                  "direction": "Inbound"
+                                }
+                              }
+                            ]
                           }
                         },
                         "template": {
@@ -13565,7 +13659,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "2616742565679120099"
+                      "templateHash": "3589741566202977384"
                     }
                   },
                   "parameters": {
@@ -13622,25 +13716,6 @@
                       "type": "string",
                       "defaultValue": "[resourceGroup().location]"
                     }
-                  },
-                  "variables": {
-                    "$fxv#0": [
-                      {
-                        "name": "allow-bastion-inbound",
-                        "properties": {
-                          "description": "Allow inbound traffic from Bastion to the JumpBox",
-                          "protocol": "*",
-                          "sourceAddressPrefix": "Bastion",
-                          "sourcePortRange": "*",
-                          "destinationAddressPrefix": "*",
-                          "destinationPortRange": "*",
-                          "access": "Allow",
-                          "priority": 100,
-                          "direction": "Inbound"
-                        }
-                      }
-                    ],
-                    "nsgVmRules": "[variables('$fxv#0')]"
                   },
                   "resources": [
                     {
@@ -13705,7 +13780,22 @@
                             "value": "[parameters('tags')]"
                           },
                           "securityRules": {
-                            "value": "[variables('nsgVmRules')]"
+                            "value": [
+                              {
+                                "name": "allow-bastion-inbound",
+                                "properties": {
+                                  "description": "Allow inbound traffic from Bastion to the JumpBox",
+                                  "protocol": "*",
+                                  "sourceAddressPrefix": "Bastion",
+                                  "sourcePortRange": "*",
+                                  "destinationAddressPrefix": "*",
+                                  "destinationPortRange": "*",
+                                  "access": "Allow",
+                                  "priority": 100,
+                                  "direction": "Inbound"
+                                }
+                              }
+                            ]
                           }
                         },
                         "template": {
