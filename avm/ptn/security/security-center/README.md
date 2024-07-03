@@ -1,4 +1,4 @@
-# Azure Security Center (Defender for Cloud) `[Microsoft.Security/securitycenter]`
+# Azure Security Center (Defender for Cloud) `[Security/SecurityCenter]`
 
 This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 
