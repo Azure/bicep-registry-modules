@@ -130,11 +130,11 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.1' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
-    // assign new managed identities rbac roles here, as we have the objectid
+    // assign new managed identity rbac roles here, as the principalId is available
     roleAssignments: !useExistingManagedIdentity && !empty(rbacRole)
       ? [
           {
-            principalId: newManagedIdentity.id
+            principalId: newManagedIdentity.properties.principalId
             roleDefinitionIdOrName: rbacRole
           }
         ]
@@ -243,4 +243,4 @@ type importedImageType = {
 type managedIdentitiesType = {
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourcesIds: string[]
-}?
+}

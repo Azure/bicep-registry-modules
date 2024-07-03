@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6911445186100697191"
+      "templateHash": "11693859778610248645"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -42,8 +42,7 @@
             "description": "Optional. The resource ID(s) to assign to the resource."
           }
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -259,7 +258,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "roleAssignments": "[if(and(not(variables('useExistingManagedIdentity')), not(empty(parameters('rbacRole')))), createObject('value', createArray(createObject('principalId', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport')), 'roleDefinitionIdOrName', parameters('rbacRole')))), createObject('value', createArray()))]",
+          "roleAssignments": "[if(and(not(variables('useExistingManagedIdentity')), not(empty(parameters('rbacRole')))), createObject('value', createArray(createObject('principalId', reference('newManagedIdentity').principalId, 'roleDefinitionIdOrName', parameters('rbacRole')))), createObject('value', createArray()))]",
           "name": {
             "value": "[parameters('name')]"
           },
