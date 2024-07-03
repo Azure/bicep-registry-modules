@@ -73,7 +73,7 @@ param managedIdentities managedIdentitiesType = {
   systemAssigned: true
 }
 
-@sys.description('Optional. Settngs for feature store type workspaces.')
+@sys.description('Optional. Settings for feature store type workspaces.')
 param featureStoreSettings featureStoreSettingsType
 
 // Diagnostic Settings

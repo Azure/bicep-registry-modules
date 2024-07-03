@@ -786,7 +786,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settngs for feature store type workspaces. |
+| [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settings for feature store type workspaces. |
 | [`hbiWorkspace`](#parameter-hbiworkspace) | bool | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
 | [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. |
 | [`imageBuildCompute`](#parameter-imagebuildcompute) | string | The compute name for image build. |
@@ -1093,7 +1093,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `featureStoreSettings`
 
-Settngs for feature store type workspaces.
+Settings for feature store type workspaces.
 
 - Required: No
 - Type: object
