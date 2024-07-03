@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "10235230031944796617"
+      "version": "0.28.1.47646",
+      "templateHash": "5605182857227977981"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -801,8 +801,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4987655092014889247"
+              "version": "0.28.1.47646",
+              "templateHash": "1895784594394176994"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value.",
@@ -922,8 +922,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "3867721314598368740"
+              "version": "0.28.1.47646",
+              "templateHash": "15490063653423076927"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica.",
@@ -1686,6 +1686,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('configurationStore', '2023-03-01', 'full').location]"
+    },
+    "endpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint of the app configuration."
+      },
+      "value": "[reference('configurationStore').endpoint]"
     }
   }
 }
