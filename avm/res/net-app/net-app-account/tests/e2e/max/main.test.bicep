@@ -76,7 +76,7 @@ module testDeployment '../../../main.bicep' = {
               }
             ]
             name: '${namePrefix}-${serviceShort}-vol-001'
-            zones: ['1', '2', '3']
+            zones: ['1']
             networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv4.1'
@@ -103,7 +103,7 @@ module testDeployment '../../../main.bicep' = {
               }
             ]
             name: '${namePrefix}-${serviceShort}-vol-002'
-            zones: ['1', '2', '3']
+            zones: ['1']
             networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv4.1'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13973488824347011933"
+      "templateHash": "11383737705536174478"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -266,7 +266,7 @@
           "exportPolicyRules": "[if(contains(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createObject('value', parameters('volumes')[copyIndex()].exportPolicyRules), createObject('value', createArray()))]",
           "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
           "networkFeatures": "[if(contains(parameters('volumes')[copyIndex()], 'networkFeatures'), createObject('value', parameters('volumes')[copyIndex()].networkFeatures), createObject('value', 'Standard'))]",
-          "zones": "[if(contains(parameters('volumes')[copyIndex()], 'zones'), createObject('value', parameters('volumes')[copyIndex()].zones), createObject('value', createArray('1', '2', '3')))]"
+          "zones": "[if(contains(parameters('volumes')[copyIndex()], 'zones'), createObject('value', parameters('volumes')[copyIndex()].zones), createObject('value', createArray('1')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -276,7 +276,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16117152358105160199"
+              "templateHash": "1750388407131447050"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -379,12 +379,10 @@
             "zones": {
               "type": "array",
               "defaultValue": [
-                "1",
-                "2",
-                "3"
+                "1"
               ],
               "metadata": {
-                "description": "Optional. Use zones for high availability."
+                "description": "Optional. Zone where the volume will be placed."
               }
             },
             "serviceLevel": {

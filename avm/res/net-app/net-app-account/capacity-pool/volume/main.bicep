@@ -14,8 +14,8 @@ param name string
 @description('Optional. Location of the pool volume.')
 param location string = resourceGroup().location
 
-@description('Optional. Use zones for high availability.')
-param zones array = ['1', '2', '3']
+@description('Optional. Zone where the volume will be placed.')
+param zones array = ['1']
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16117152358105160199"
+      "templateHash": "1750388407131447050"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -109,12 +109,10 @@
     "zones": {
       "type": "array",
       "defaultValue": [
-        "1",
-        "2",
-        "3"
+        "1"
       ],
       "metadata": {
-        "description": "Optional. Use zones for high availability."
+        "description": "Optional. Zone where the volume will be placed."
       }
     },
     "serviceLevel": {

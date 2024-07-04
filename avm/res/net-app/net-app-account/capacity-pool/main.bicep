@@ -98,7 +98,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
       roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
       networkFeatures: contains(volume, 'networkFeatures') ? volume.networkFeatures : 'Standard'
-      zones: contains(volume, 'zones') ? volume.zones : ['1', '2', '3']
+      zones: contains(volume, 'zones') ? volume.zones : ['1']
     }
   }
 ]

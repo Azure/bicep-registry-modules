@@ -138,8 +138,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             usageThreshold: 107374182400
             zones: [
               '1'
-              '2'
-              '3'
             ]
           }
           {
@@ -162,8 +160,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             usageThreshold: 107374182400
             zones: [
               '1'
-              '2'
-              '3'
             ]
           }
         ]
@@ -275,9 +271,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
-                "1",
-                "2",
-                "3"
+                "1"
               ]
             },
             {
@@ -299,9 +293,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
-                "1",
-                "2",
-                "3"
+                "1"
               ]
             }
           ]
@@ -424,8 +416,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             usageThreshold: 107374182400
             zones: [
               '1'
-              '2'
-              '3'
             ]
           }
           {
@@ -438,8 +428,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             usageThreshold: 107374182400
             zones: [
               '1'
-              '2'
-              '3'
             ]
           }
         ]
@@ -550,9 +538,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
-                "1",
-                "2",
-                "3"
+                "1"
               ]
             },
             {
@@ -564,9 +550,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
               "zones": [
-                "1",
-                "2",
-                "3"
+                "1"
               ]
             }
           ]

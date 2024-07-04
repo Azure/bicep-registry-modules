@@ -45,7 +45,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
-| [`zones`](#parameter-zones) | array | Use zones for high availability. |
+| [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `name`
 
@@ -239,7 +239,7 @@ The pool service level. Must match the one of the parent capacity pool.
 
 ### Parameter: `zones`
 
-Use zones for high availability.
+Zone where the volume will be placed.
 
 - Required: No
 - Type: array
@@ -247,8 +247,6 @@ Use zones for high availability.
   ```Bicep
   [
     '1'
-    '2'
-    '3'
   ]
   ```
 
