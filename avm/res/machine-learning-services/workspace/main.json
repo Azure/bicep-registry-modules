@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1383473757909771573"
+      "templateHash": "17821708534553004575"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace.",
@@ -555,21 +555,21 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The resource ID of the associated Storage Account. Required if 'kind' is not 'Project'."
+        "description": "Conditional. The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'."
       }
     },
     "associatedKeyVaultResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The resource ID of the associated Key Vault. Required if 'kind' is not 'Project'."
+        "description": "Conditional. The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'."
       }
     },
     "associatedApplicationInsightsResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The resource ID of the associated Application Insights."
+        "description": "Conditional. The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'."
       }
     },
     "associatedContainerRegistryResourceId": {

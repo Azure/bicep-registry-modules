@@ -29,13 +29,13 @@ param sku string
 ])
 param kind string = 'Default'
 
-@sys.description('Conditional. The resource ID of the associated Storage Account. Required if \'kind\' is not \'Project\'.')
+@sys.description('Conditional. The resource ID of the associated Storage Account. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
 param associatedStorageAccountResourceId string?
 
-@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is not \'Project\'.')
+@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
 param associatedKeyVaultResourceId string?
 
-@sys.description('Optional. The resource ID of the associated Application Insights.')
+@sys.description('Conditional. The resource ID of the associated Application Insights. Required if \'kind\' is \'Default\' or \'FeatureStore\'.')
 param associatedApplicationInsightsResourceId string?
 
 @sys.description('Optional. The resource ID of the associated Container Registry.')

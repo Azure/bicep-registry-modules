@@ -769,8 +769,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is not 'Project'. |
-| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. Required if 'kind' is not 'Project'. |
+| [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'. |
+| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
+| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
 | [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'. |
 | [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'. |
 | [`primaryUserAssignedIdentity`](#parameter-primaryuserassignedidentity) | string | The user assigned identity resource ID that represents the workspace identity. Required if 'userAssignedIdentities' is not empty and may not be used if 'systemAssignedIdentity' is enabled. |
@@ -780,7 +781,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowPublicAccessWhenBehindVnet`](#parameter-allowpublicaccesswhenbehindvnet) | bool | The flag to indicate whether to allow public access when behind VNet. |
-| [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. |
 | [`associatedContainerRegistryResourceId`](#parameter-associatedcontainerregistryresourceid) | string | The resource ID of the associated Container Registry. |
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -824,16 +824,23 @@ Specifies the SKU, also referred as 'edition' of the Azure Machine Learning work
   ]
   ```
 
+### Parameter: `associatedApplicationInsightsResourceId`
+
+The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'.
+
+- Required: No
+- Type: string
+
 ### Parameter: `associatedKeyVaultResourceId`
 
-The resource ID of the associated Key Vault. Required if 'kind' is not 'Project'.
+The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'.
 
 - Required: No
 - Type: string
 
 ### Parameter: `associatedStorageAccountResourceId`
 
-The resource ID of the associated Storage Account. Required if 'kind' is not 'Project'.
+The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'.
 
 - Required: No
 - Type: string
@@ -908,13 +915,6 @@ The flag to indicate whether to allow public access when behind VNet.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `associatedApplicationInsightsResourceId`
-
-The resource ID of the associated Application Insights.
-
-- Required: No
-- Type: string
 
 ### Parameter: `associatedContainerRegistryResourceId`
 
