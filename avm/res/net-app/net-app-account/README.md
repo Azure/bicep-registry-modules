@@ -123,6 +123,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               }
             ]
             name: 'nanaamax-vol-001'
+            networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv4.1'
             ]
@@ -135,6 +136,11 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
+            zones: [
+              '1'
+              '2'
+              '3'
+            ]
           }
           {
             exportPolicyRules: [
@@ -148,11 +154,17 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               }
             ]
             name: 'nanaamax-vol-002'
+            networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv4.1'
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
+            zones: [
+              '1'
+              '2'
+              '3'
+            ]
           }
         ]
       }
@@ -249,6 +261,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "name": "nanaamax-vol-001",
+              "networkFeatures": "Standard",
               "protocolTypes": [
                 "NFSv4.1"
               ],
@@ -260,7 +273,12 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
+              "usageThreshold": 107374182400,
+              "zones": [
+                "1",
+                "2",
+                "3"
+              ]
             },
             {
               "exportPolicyRules": [
@@ -274,11 +292,17 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "name": "nanaamax-vol-002",
+              "networkFeatures": "Standard",
               "protocolTypes": [
                 "NFSv4.1"
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
+              "usageThreshold": 107374182400,
+              "zones": [
+                "1",
+                "2",
+                "3"
+              ]
             }
           ]
         },
@@ -385,6 +409,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               }
             ]
             name: 'nanaanfs3-vol-001'
+            networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv3'
             ]
@@ -397,14 +422,25 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
+            zones: [
+              '1'
+              '2'
+              '3'
+            ]
           }
           {
             name: 'nanaanfs3-vol-002'
+            networkFeatures: 'Standard'
             protocolTypes: [
               'NFSv3'
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
+            zones: [
+              '1'
+              '2'
+              '3'
+            ]
           }
         ]
       }
@@ -500,6 +536,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "name": "nanaanfs3-vol-001",
+              "networkFeatures": "Standard",
               "protocolTypes": [
                 "NFSv3"
               ],
@@ -511,15 +548,26 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
+              "usageThreshold": 107374182400,
+              "zones": [
+                "1",
+                "2",
+                "3"
+              ]
             },
             {
               "name": "nanaanfs3-vol-002",
+              "networkFeatures": "Standard",
               "protocolTypes": [
                 "NFSv3"
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
+              "usageThreshold": 107374182400,
+              "zones": [
+                "1",
+                "2",
+                "3"
+              ]
             }
           ]
         },
