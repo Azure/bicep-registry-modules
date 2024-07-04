@@ -53,7 +53,7 @@ This instance deploys the module with only its required parameters provided, if 
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
   name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
-    location: '<location>'
+
   }
 }
 ```
@@ -69,11 +69,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": {
-      "value": "<location>"
-    }
-  }
+  "parameters": {}
 }
 ```
 
@@ -151,7 +147,9 @@ This instance deploys the module with only its required parameters to align to W
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
   name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
-    location: '<location>'
+    virtualNetworkResourceIdsToLinkTo: [
+      '<vnetResourceId>'
+    ]
   }
 }
 ```
@@ -168,8 +166,10 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "location": {
-      "value": "<location>"
+    "virtualNetworkResourceIdsToLinkTo": {
+      "value": [
+        "<vnetResourceId>"
+      ]
     }
   }
 }
