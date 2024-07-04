@@ -35,9 +35,9 @@ This module deploys a Data Factory Linked Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customizedParameter`](#parameter-customizedparameter) | object | Use this to add parameters for a linked service connection string. |
 | [`integrationRuntimeName`](#parameter-integrationruntimename) | string | The name of the Integration Runtime to use. |
 | [`linkedServiceDescription`](#parameter-linkedservicedescription) | string | The description of the Integration Runtime. |
+| [`parameters`](#parameter-parameters) | object | Use this to add parameters for a linked service connection string. |
 | [`typeProperties`](#parameter-typeproperties) | object | Used to add connection properties for your linked services. |
 
 ### Parameter: `name`
@@ -61,14 +61,6 @@ The name of the parent Azure Data Factory. Required if the template is used in a
 - Required: Yes
 - Type: string
 
-### Parameter: `customizedParameter`
-
-Use this to add parameters for a linked service connection string.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
 ### Parameter: `integrationRuntimeName`
 
 The name of the Integration Runtime to use.
@@ -82,6 +74,14 @@ The description of the Integration Runtime.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `parameters`
+
+Use this to add parameters for a linked service connection string.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `typeProperties`
 

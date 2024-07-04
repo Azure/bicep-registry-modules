@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17866760708377449065"
+      "templateHash": "14223122664028298933"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1194,7 +1194,7 @@
           },
           "typeProperties": "[if(contains(parameters('linkedServices')[copyIndex()], 'typeProperties'), createObject('value', parameters('linkedServices')[copyIndex()].typeProperties), createObject('value', createObject()))]",
           "integrationRuntimeName": "[if(contains(parameters('linkedServices')[copyIndex()], 'integrationRuntimeName'), createObject('value', parameters('linkedServices')[copyIndex()].integrationRuntimeName), createObject('value', 'none'))]",
-          "customizedParameter": "[if(contains(parameters('linkedServices')[copyIndex()], 'parameters'), createObject('value', parameters('linkedServices')[copyIndex()].parameters), createObject('value', createObject()))]",
+          "parameters": "[if(contains(parameters('linkedServices')[copyIndex()], 'parameters'), createObject('value', parameters('linkedServices')[copyIndex()].parameters), createObject('value', createObject()))]",
           "linkedServiceDescription": {
             "value": "[coalesce(tryGet(parameters('linkedServices')[copyIndex()], 'linkedServiceDescription'), 'Linked Service created by avm-res-datafactory-factories')]"
           }
@@ -1206,7 +1206,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "4870430061869317267"
+              "templateHash": "15586405017645230279"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service.",
@@ -1244,7 +1244,7 @@
                 "description": "Optional. The name of the Integration Runtime to use."
               }
             },
-            "customizedParameter": {
+            "parameters": {
               "type": "object",
               "defaultValue": {},
               "metadata": {
@@ -1269,7 +1269,7 @@
                 "connectVia": "[if(contains(parameters('integrationRuntimeName'), 'none'), null(), createObject('parameters', createObject(), 'referenceName', parameters('integrationRuntimeName'), 'type', 'IntegrationRuntimeReference'))]",
                 "type": "[parameters('typeName')]",
                 "typeProperties": "[parameters('typeProperties')]",
-                "parameters": "[parameters('customizedParameter')]"
+                "parameters": "[parameters('parameters')]"
               }
             }
           ],
