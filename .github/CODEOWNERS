@@ -149,4 +149,4 @@
 /avm/res/web/serverfarm/ @Azure/avm-res-web-serverfarm-module-owners-bicep @Azure/avm-core-team-technical-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/web/site/ @Azure/avm-res-web-site-module-owners-bicep @Azure/avm-core-team-technical-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/web/static-site/ @Azure/avm-res-web-staticsite-module-owners-bicep @Azure/avm-core-team-technical-bicep @Azure/avm-module-reviewers-bicep
-*avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep @Azure/avm-module-reviewers-bicep
+*avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep
