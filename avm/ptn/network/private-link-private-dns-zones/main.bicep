@@ -107,10 +107,7 @@ param privateLinkPrivateDnsZones array = [
 ]
 
 @description('Optional. An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
-param virtualNetworkResourceIdsToLinkTo array = [
-  // '/subscriptions/xxxxxxxx/resourceGroups/rsg1/providers/Microsoft.Network/virtualNetworks/vnet1'
-  // '/subscriptions/yyyyyyyy/resourceGroups/rsg2/providers/Microsoft.Network/virtualNetworks/vnet2'
-]
+param virtualNetworkResourceIdsToLinkTo array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
