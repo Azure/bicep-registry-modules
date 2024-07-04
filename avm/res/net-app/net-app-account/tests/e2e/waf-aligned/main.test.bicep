@@ -12,8 +12,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-netapp.netappaccounts-${serviceShort}-rg'
 
-// @description('Optional. The location to deploy resources to.')
-// param resourceLocation string = deployment().location
+// enforcing location due to quote restrictions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 

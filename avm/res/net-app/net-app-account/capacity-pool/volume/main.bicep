@@ -14,6 +14,9 @@ param name string
 @description('Optional. Location of the pool volume.')
 param location string = resourceGroup().location
 
+@description('Optional. Use zones for high availability.')
+param zones array = ['1', '2', '3']
+
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
   'Premium'
@@ -22,6 +25,15 @@ param location string = resourceGroup().location
   'Ultra'
 ])
 param serviceLevel string = 'Standard'
+
+@description('Optional. Network feature for the volume.')
+@allowed([
+  'Basic'
+  'Basic_Standard'
+  'Standard'
+  'Standard_Basic'
+])
+param networkFeatures string = 'Standard'
 
 @description('Optional. A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription.')
 param creationToken string = name
@@ -55,15 +67,15 @@ var builtInRoleNames = {
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' existing = {
   name: netAppAccountName
 
-  resource capacityPool 'capacityPools@2023-11-01' existing = {
+  resource capacityPool 'capacityPools@2023-07-01' existing = {
     name: capacityPoolName
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-11-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-07-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location
@@ -73,12 +85,14 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-11-0
     usageThreshold: usageThreshold
     protocolTypes: protocolTypes
     subnetId: subnetResourceId
+    networkFeatures: networkFeatures
     exportPolicy: !empty(exportPolicyRules)
       ? {
           rules: exportPolicyRules
         }
       : null
   }
+  zones: zones
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

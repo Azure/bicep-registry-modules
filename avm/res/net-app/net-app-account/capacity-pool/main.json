@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "1693066881982918107"
+      "version": "0.28.1.47646",
+      "templateHash": "13973488824347011933"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -182,12 +182,12 @@
     "netAppAccount": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2023-07-01",
       "name": "[parameters('netAppAccountName')]"
     },
     "capacityPool": {
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -264,7 +264,9 @@
             "value": "[parameters('volumes')[copyIndex()].subnetResourceId]"
           },
           "exportPolicyRules": "[if(contains(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createObject('value', parameters('volumes')[copyIndex()].exportPolicyRules), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "networkFeatures": "[if(contains(parameters('volumes')[copyIndex()], 'networkFeatures'), createObject('value', parameters('volumes')[copyIndex()].networkFeatures), createObject('value', 'Standard'))]",
+          "zones": "[if(contains(parameters('volumes')[copyIndex()], 'zones'), createObject('value', parameters('volumes')[copyIndex()].zones), createObject('value', createArray('1', '2', '3')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -273,8 +275,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17101127509000720996"
+              "version": "0.28.1.47646",
+              "templateHash": "16117152358105160199"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -374,6 +376,17 @@
                 "description": "Optional. Location of the pool volume."
               }
             },
+            "zones": {
+              "type": "array",
+              "defaultValue": [
+                "1",
+                "2",
+                "3"
+              ],
+              "metadata": {
+                "description": "Optional. Use zones for high availability."
+              }
+            },
             "serviceLevel": {
               "type": "string",
               "defaultValue": "Standard",
@@ -385,6 +398,19 @@
               ],
               "metadata": {
                 "description": "Optional. The pool service level. Must match the one of the parent capacity pool."
+              }
+            },
+            "networkFeatures": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "allowedValues": [
+                "Basic",
+                "Basic_Standard",
+                "Standard",
+                "Standard_Basic"
+              ],
+              "metadata": {
+                "description": "Optional. Network feature for the volume."
               }
             },
             "creationToken": {
@@ -440,7 +466,7 @@
             "netAppAccount::capacityPool": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
               "dependsOn": [
                 "netAppAccount"
@@ -449,12 +475,12 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "volume": {
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -463,8 +489,10 @@
                 "usageThreshold": "[parameters('usageThreshold')]",
                 "protocolTypes": "[parameters('protocolTypes')]",
                 "subnetId": "[parameters('subnetResourceId')]",
+                "networkFeatures": "[parameters('networkFeatures')]",
                 "exportPolicy": "[if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null())]"
               },
+              "zones": "[parameters('zones')]",
               "dependsOn": [
                 "netAppAccount::capacityPool"
               ]
@@ -519,7 +547,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('volume', '2023-11-01', 'full').location]"
+              "value": "[reference('volume', '2023-07-01', 'full').location]"
             }
           }
         }
@@ -557,7 +585,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('capacityPool', '2023-11-01', 'full').location]"
+      "value": "[reference('capacityPool', '2023-07-01', 'full').location]"
     }
   }
 }

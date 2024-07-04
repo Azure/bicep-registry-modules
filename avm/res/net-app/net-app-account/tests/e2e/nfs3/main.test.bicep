@@ -11,8 +11,7 @@ metadata description = 'This instance deploys the module with nfs31.'
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-netapp.netappaccounts-${serviceShort}-rg'
 
-// @description('Optional. The location to deploy resources to.')
-// param resourceLocation string = deployment().location
+// enforcing location due to quote restrictions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 

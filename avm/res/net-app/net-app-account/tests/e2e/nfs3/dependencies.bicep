@@ -1,5 +1,4 @@
-// @description('Optional. The location to deploy resources to.')
-// param resourceLocation string = deployment().location
+// enforcing location due to quote restrictions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 
