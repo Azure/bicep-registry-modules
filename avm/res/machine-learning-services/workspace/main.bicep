@@ -74,7 +74,7 @@ param managedIdentities managedIdentitiesType = {
 }
 
 @sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
-param featureStoreSettings featureStoreSettingsType
+param featureStoreSettings featureStoreSettingType
 
 // Diagnostic Settings
 
@@ -533,7 +533,7 @@ type privateEndpointType = {
   resourceGroupName: string?
 }[]?
 
-type featureStoreSettingsType = {
+type featureStoreSettingType = {
   @sys.description('Optional. Compute runtime config for feature store type workspace.')
   computeRuntime: {
     @sys.description('Optional. The spark runtime version.')

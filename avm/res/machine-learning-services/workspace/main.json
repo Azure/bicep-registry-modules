@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14505881484435892837"
+      "templateHash": "1383473757909771573"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace.",
@@ -323,7 +323,7 @@
       },
       "nullable": true
     },
-    "featureStoreSettingsType": {
+    "featureStoreSettingType": {
       "type": "object",
       "properties": {
         "computeRuntime": {
@@ -649,7 +649,7 @@
       }
     },
     "featureStoreSettings": {
-      "$ref": "#/definitions/featureStoreSettingsType",
+      "$ref": "#/definitions/featureStoreSettingType",
       "metadata": {
         "description": "Conditional. Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'."
       }
