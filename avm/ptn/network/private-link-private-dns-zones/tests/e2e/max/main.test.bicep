@@ -14,7 +14,7 @@ param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'plpdnsdef'
+param serviceShort string = 'plpdnsmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -30,6 +30,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -41,6 +50,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
+      privateLinkPrivateDnsZones: [
+        'testpdnszone1.int'
+        'testpdnszone2.local'
+      ]
+      virtualNetworkResourceIdsToLinkTo: [
+        nestedDependencies.outputs.vnetResourceId
+      ]
     }
   }
 ]

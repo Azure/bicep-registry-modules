@@ -37,7 +37,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/network/private-link-private-dns-zones:<version>`.
 
 - [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
 ### Example 1: _Defaults_
 
@@ -49,10 +50,7 @@ The following section provides usage examples for the module, which were used to
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
   name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
-    // Required parameters
     location: '<location>'
-    // Non-required parameters
-    name: 'nplpdzdef001'
   }
 }
 ```
@@ -69,13 +67,8 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "location": {
       "value": "<location>"
-    },
-    // Non-required parameters
-    "name": {
-      "value": "nplpdzdef001"
     }
   }
 }
@@ -84,7 +77,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _Max_
 
 <details>
 
@@ -97,7 +90,13 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     // Required parameters
     location: '<location>'
     // Non-required parameters
-    name: 'nplpdzwaf001'
+    privateLinkPrivateDnsZones: [
+      'testpdnszone1.int'
+      'testpdnszone2.local'
+    ]
+    virtualNetworkResourceIdsToLinkTo: [
+      '<vnetResourceId>'
+    ]
   }
 }
 ```
@@ -119,8 +118,53 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
       "value": "<location>"
     },
     // Non-required parameters
-    "name": {
-      "value": "nplpdzwaf001"
+    "privateLinkPrivateDnsZones": {
+      "value": [
+        "testpdnszone1.int",
+        "testpdnszone2.local"
+      ]
+    },
+    "virtualNetworkResourceIdsToLinkTo": {
+      "value": [
+        "<vnetResourceId>"
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Waf-Aligned_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
+  name: 'privateLinkPrivateDnsZonesDeployment'
+  params: {
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -171,8 +215,81 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
   ```Bicep
   [
     '{regionCode}.privatelink.backup.windowsazure.com'
+    '{regionName}.data.privatelink.azurecr.io'
     '{regionName}.privatelink.batch.azure.com'
+    '{regionName}.service.privatelink.batch.azure.com'
+    'privatelink-global.wvd.microsoft.com'
+    'privatelink.{regionName}.azmk8s.io'
+    'privatelink.{regionName}.kusto.windows.net'
+    'privatelink.adf.azure.com'
+    'privatelink.afs.azure.net'
+    'privatelink.agentsvc.azure-automation.net'
+    'privatelink.analysis.windows.net'
+    'privatelink.analytics.cosmos.azure.com'
+    'privatelink.api.adu.microsoft.com'
+    'privatelink.api.azureml.ms'
+    'privatelink.attest.azure.net'
+    'privatelink.azconfig.io'
+    'privatelink.azure-api.net'
+    'privatelink.azure-automation.net'
+    'privatelink.azure-devices-provisioning.net'
+    'privatelink.azure-devices.net'
+    'privatelink.azurecr.io'
     'privatelink.azuredatabricks.net'
+    'privatelink.azurehdinsight.net'
+    'privatelink.azureiotcentral.com'
+    'privatelink.azurestaticapps.net'
+    'privatelink.azurewebsites.net'
+    'privatelink.blob.core.windows.net'
+    'privatelink.cassandra.cosmos.azure.com'
+    'privatelink.cognitiveservices.azure.com'
+    'privatelink.database.windows.net'
+    'privatelink.datafactory.azure.net'
+    'privatelink.dfs.core.windows.net'
+    'privatelink.dicom.azurehealthcareapis.com'
+    'privatelink.digitaltwins.azure.net'
+    'privatelink.directline.botframework.com'
+    'privatelink.documents.azure.com'
+    'privatelink.dp.kubernetesconfiguration.azure.com'
+    'privatelink.eventgrid.azure.net'
+    'privatelink.fhir.azurehealthcareapis.com'
+    'privatelink.file.core.windows.net'
+    'privatelink.grafana.azure.com'
+    'privatelink.gremlin.cosmos.azure.com'
+    'privatelink.guestconfiguration.azure.com'
+    'privatelink.his.arc.azure.com'
+    'privatelink.managedhsm.azure.net'
+    'privatelink.mariadb.database.azure.com'
+    'privatelink.media.azure.net'
+    'privatelink.mongo.cosmos.azure.com'
+    'privatelink.monitor.azure.com'
+    'privatelink.mysql.database.azure.com'
+    'privatelink.notebooks.azure.net'
+    'privatelink.ods.opinsights.azure.com'
+    'privatelink.oms.opinsights.azure.com'
+    'privatelink.openai.azure.com'
+    'privatelink.pbidedicated.windows.net'
+    'privatelink.postgres.cosmos.azure.com'
+    'privatelink.postgres.database.azure.com'
+    'privatelink.prod.migration.windowsazure.com'
+    'privatelink.purview.azure.com'
+    'privatelink.purviewstudio.azure.com'
+    'privatelink.queue.core.windows.net'
+    'privatelink.redis.cache.windows.net'
+    'privatelink.redisenterprise.cache.azure.net'
+    'privatelink.search.windows.net'
+    'privatelink.service.signalr.net'
+    'privatelink.servicebus.windows.net'
+    'privatelink.siterecovery.windowsazure.com'
+    'privatelink.table.core.windows.net'
+    'privatelink.table.cosmos.azure.com'
+    'privatelink.tip1.powerquery.microsoft.com'
+    'privatelink.token.botframework.com'
+    'privatelink.vaultcore.azure.net'
+    'privatelink.web.core.windows.net'
+    'privatelink.workspace.azurehealthcareapis.com'
+    'privatelink.wvd.microsoft.com'
+    'scm.privatelink.azurewebsites.net'
   ]
   ```
 
@@ -182,13 +299,7 @@ An array of Virtual Network Resource IDs to link to the Private Link Private DNS
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    '/subscriptions/xxxxxxxx/resourceGroups/rsg1/providers/Microsoft.Network/virtualNetworks/vnet1'
-    '/subscriptions/yyyyyyyy/resourceGroups/rsg2/providers/Microsoft.Network/virtualNetworks/vnet2'
-  ]
-  ```
+- Default: `[]`
 
 
 ## Outputs
