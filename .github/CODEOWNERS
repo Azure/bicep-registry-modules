@@ -5,7 +5,7 @@
 /avm/ptn/ @Azure/avm-module-reviewers-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/ @Azure/avm-module-reviewers-bicep @Azure/avm-core-team-technical-bicep
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
-/avm/utl/ @Azure/avm-module-reviewers-bicep @Azure/avm-core-team-technical-bicep
+#/avm/utl/ @Azure/avm-module-reviewers-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/resource-role-assignment/ @Azure/avm-ptn-authorization-resourceroleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
