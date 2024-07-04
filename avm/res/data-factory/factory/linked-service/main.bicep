@@ -18,7 +18,7 @@ param typeProperties object = {}
 param integrationRuntimeName string
 
 @description('Optional. Use this to add parameters for a linked service connection string.')
-param customizedParameter object = {}
+param parameters object = {}
 
 @description('Optional. The description of the Integration Runtime.')
 param linkedServiceDescription string
@@ -43,7 +43,7 @@ resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-0
         }
     type: typeName
     typeProperties: typeProperties
-    parameters: customizedParameter
+    parameters: parameters
   }
 }
 

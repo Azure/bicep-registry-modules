@@ -246,7 +246,7 @@ module dataFactory_linkedServices 'linked-service/main.bicep' = [
       integrationRuntimeName: contains(linkedService, 'integrationRuntimeName')
         ? linkedService.integrationRuntimeName
         : 'none'
-      customizedParameter: contains(linkedService, 'parameters') ? linkedService.parameters : {}
+      parameters: contains(linkedService, 'parameters') ? linkedService.parameters : {}
       linkedServiceDescription: linkedService.?linkedServiceDescription ?? 'Linked Service created by avm-res-datafactory-factories'
     }
   }
