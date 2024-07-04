@@ -431,6 +431,9 @@ module service_loggers 'loggers/main.bicep' = [
       loggerType: contains(logger, 'loggerType') ? logger.loggerType : 'azureMonitor'
       targetResourceId: contains(logger, 'targetResourceId') ? logger.targetResourceId : ''
     }
+    dependsOn: [
+      service_namedValues
+    ]
   }
 ]
 
