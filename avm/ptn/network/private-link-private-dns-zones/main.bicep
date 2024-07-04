@@ -2,10 +2,11 @@ metadata name = 'avm/ptn/network/private-link-private-dns-zones'
 metadata description = 'Private Link Private DNS Zones'
 metadata owner = 'jtracey93'
 
-@description('Required. Azure region where the each of the Private Link Private DNS Zones created and Resource Group, if created, will be deployed.')
-param location string
+@description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
+param location string = resourceGroup().location
 
-@description('''Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.
+@description('''
+Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.
 
 **NOTE:**
 
@@ -24,7 +25,7 @@ The folowing Private Link Private DNS Zones have been removed from the default v
 
 We have also removed the following Private Link Private DNS Zones from the default value for this variable as they should only be created and used with in specific scenarios:
 
-- `privatelink.azure.com`
+- `privatelink.azure.com`.
 ''')
 param privateLinkPrivateDnsZones array = [
   'privatelink.api.azureml.ms'
@@ -306,3 +307,6 @@ output combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink array = combine
 
 @description('The resource ID of the resource group that the Private DNS Zones are deployed into.')
 output resourceGroupResourceId string = resourceGroup().id
+
+@description('The name of the resource group that the Private DNS Zones are deployed into.')
+output resourceGroupName string = resourceGroup().name

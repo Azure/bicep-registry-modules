@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using module parameters to align to WAF'
+metadata description = 'This instance deploys the module with only its required parameters to align to WAF, if any.'
+
 // ========== //
 // Parameters //
 // ========== //

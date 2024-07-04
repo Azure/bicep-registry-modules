@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1180358807650042295"
+      "templateHash": "17951550269692495658"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones",
@@ -14,8 +14,9 @@
   "parameters": {
     "location": {
       "type": "string",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. Azure region where the each of the Private Link Private DNS Zones created and Resource Group, if created, will be deployed."
+        "description": "Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified."
       }
     },
     "privateLinkPrivateDnsZones": {
@@ -99,7 +100,7 @@
         "privatelink.azurestaticapps.net"
       ],
       "metadata": {
-        "description": "Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.\n\n**NOTE:**\n\n- Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` variable, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` variable, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.\n- Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` variable, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` variable, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.\n\n**IMPORTANT:**\n\nThe folowing Private Link Private DNS Zones have been removed from the default value for this variable as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as a set in the `private_link_private_dns_zones` variable, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:\n\n- `{subzone}.privatelink.{regionName}.azmk8s.io`\n- `privatelink.{dnsPrefix}.database.windows.net`\n- `privatelink.{partitionId}.azurestaticapps.net`\n\nWe have also removed the following Private Link Private DNS Zones from the default value for this variable as they should only be created and used with in specific scenarios:\n\n- `privatelink.azure.com`\n"
+        "description": "Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.\n\n**NOTE:**\n\n- Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` variable, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` variable, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.\n- Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` variable, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` variable, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.\n\n**IMPORTANT:**\n\nThe folowing Private Link Private DNS Zones have been removed from the default value for this variable as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as a set in the `private_link_private_dns_zones` variable, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:\n\n- `{subzone}.privatelink.{regionName}.azmk8s.io`\n- `privatelink.{dnsPrefix}.database.windows.net`\n- `privatelink.{partitionId}.azurestaticapps.net`\n\nWe have also removed the following Private Link Private DNS Zones from the default value for this variable as they should only be created and used with in specific scenarios:\n\n- `privatelink.azure.com`.\n"
       }
     },
     "virtualNetworkResourceIdsToLinkTo": {
@@ -3168,6 +3169,13 @@
         "description": "The resource ID of the resource group that the Private DNS Zones are deployed into."
       },
       "value": "[resourceGroup().id]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group that the Private DNS Zones are deployed into."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }
