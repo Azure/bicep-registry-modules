@@ -293,9 +293,12 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
     zoneRedundancy: acrSku == 'Premium' ? zoneRedundancy : null
   }
   resource registry_scopeMap 'scopeMaps' = [
-    for scopeMap in scopeMaps: {
-      name: scopeMap.name
-      properties: scopeMap.properties
+    for (scopeMap, index) in (scopeMaps ?? []): {
+      name: scopeMap.?name ?? '${name}-scopemaps'
+      properties: {
+        actions: scopeMap.actions
+        description: scopeMap.?description
+      }
     }
   ]
 }
@@ -664,8 +667,8 @@ type scopeMapsType = {
   @description('Optional. The name of the scope map.')
   name: string?
 
-  @description('Optional. The list of scoped permissions for registry artifacts.')
-  actions: string[]?
+  @description('Required. The list of scoped permissions for registry artifacts.')
+  actions: string[]
 
   @description('Optional. The user friendly description of the scope map.')
   description: string?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "18070042013592883016"
+      "templateHash": "12115787266264071519"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -475,6 +475,38 @@
         }
       },
       "nullable": true
+    },
+    "scopeMapsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the scope map."
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. The list of scoped permissions for registry artifacts."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The user friendly description of the scope map."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -729,8 +761,7 @@
       }
     },
     "scopeMaps": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/scopeMapsType",
       "metadata": {
         "description": "Optional. Scope maps setting."
       }
@@ -769,12 +800,15 @@
     "registry::registry_scopeMap": {
       "copy": {
         "name": "registry_scopeMap",
-        "count": "[length(parameters('scopeMaps'))]"
+        "count": "[length(coalesce(parameters('scopeMaps'), createArray()))]"
       },
       "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
       "apiVersion": "2023-06-01-preview",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('scopeMaps')[copyIndex()].name)]",
-      "properties": "[parameters('scopeMaps')[copyIndex()].properties]",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'name'), format('{0}-scopemaps', parameters('name'))))]",
+      "properties": {
+        "actions": "[coalesce(parameters('scopeMaps'), createArray())[copyIndex()].actions]",
+        "description": "[tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'description')]"
+      },
       "dependsOn": [
         "registry"
       ]

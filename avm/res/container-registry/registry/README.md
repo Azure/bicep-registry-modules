@@ -37,7 +37,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using `scopeMaps` in parameter set](#example-4-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -457,7 +458,81 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Using `scopeMaps` in parameter set_
+
+This instance deploys the module with the scopeMaps feature.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'crrs001'
+    // Non-required parameters
+    acrSku: 'Standard'
+    location: '<location>'
+    scopeMaps: [
+      {
+        actions: [
+          'repositories/repository-name/content/read'
+          'repositories/repository-name/metadata/write'
+        ]
+        description: 'This is a test for scopeMaps feature.'
+        name: 'rw'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrs001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "scopeMaps": {
+      "value": [
+        {
+          "actions": [
+            "repositories/repository-name/content/read",
+            "repositories/repository-name/metadata/write"
+          ],
+          "description": "This is a test for scopeMaps feature.",
+          "name": "rw"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1536,7 +1611,40 @@ Scope maps setting.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-scopemapsactions) | array | The list of scoped permissions for registry artifacts. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-scopemapsdescription) | string | The user friendly description of the scope map. |
+| [`name`](#parameter-scopemapsname) | string | The name of the scope map. |
+
+### Parameter: `scopeMaps.actions`
+
+The list of scoped permissions for registry artifacts.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `scopeMaps.description`
+
+The user friendly description of the scope map.
+
+- Required: No
+- Type: string
+
+### Parameter: `scopeMaps.name`
+
+The name of the scope map.
+
+- Required: No
+- Type: string
 
 ### Parameter: `softDeletePolicyDays`
 
