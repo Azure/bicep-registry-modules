@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using all module parameters'
-metadata description = 'This instance deploys the module with all its parameters provided, if any.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
