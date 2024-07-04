@@ -538,6 +538,13 @@ Describe 'Module tests' -Tag 'Module' {
           # - tags
           # - customerManagedKey.keyVaultResourceId
           $paramName = ($parameter -split '\.')[-1]
+
+          # workaround for Azure Stack HCI cluster deployment settings resource, where property names have underscores - https://github.com/Azure/Azure-Verified-Modules/issues/1029
+          if ($moduleFolderPath -match 'azure-stack-hci[/\\]cluster[/\\]deployment-settings' -and $paramName -in ('bandwidthPercentage_SMB', 'priorityValue8021Action_Cluster', 'priorityValue8021Action_SMB')) {
+            Set-ItResult -Skipped -Because 'the module path matches "azure-stack-hci/cluster/deployment-settings" and the parameter name is in list [bandwidthPercentage_SMB, priorityValue8021Action_Cluster, priorityValue8021Action_SMB], which have underscores in the API spec.'
+            return
+          }
+
           if ($paramName.substring(0, 1) -cnotmatch '[a-z]' -or $paramName -match '-' -or $paramName -match '_') {
             $incorrectParameters += @() + $parameter
           }
@@ -1145,7 +1152,7 @@ Describe 'Governance tests' {
     $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
     # Line should exist
-    $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
+    $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
 
     # Line should be correct
     $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
