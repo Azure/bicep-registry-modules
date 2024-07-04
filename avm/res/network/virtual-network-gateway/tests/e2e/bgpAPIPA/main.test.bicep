@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworkgatewa
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvgbgp'
+param serviceShort string = 'nvgapp'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -57,13 +57,12 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActive: true
-      enableBgp: true
-      bgpParams: {
+      bgpSettings: {
+        activeActive: 'true'
+        customBgpIpAddresses: ['169.254.21.4']
+        secondCustomBgpIpAddresses: ['169.254.21.5']
         asn: 65515
-        primaryCustomBgpIPs:['169.254.21.4']
-        secondaryCustomBgpIPs:['169.254.21.5']
-        }
+      }
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]

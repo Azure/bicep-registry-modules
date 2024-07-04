@@ -73,11 +73,11 @@ param vNetResourceId string
 @description('Optional. Value to specify if the Gateway should be deployed in active-active or active-passive configuration.')
 param activeActive bool = true
 
-@description('Optional. Value to specify if BGP is enabled or not.')
-param enableBgp bool = true
+// @description('Optional. Value to specify if BGP is enabled or not.')
+// param enableBgp bool = true
 
 @description('Optional. BGP Settings')
-param bgpSettings bgpSettingType
+param bgpSettings bgpSettingType?
 
 @description('Optional. The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network.')
 param vpnClientAddressPoolPrefix string = ''
@@ -154,7 +154,7 @@ var virtualGatewayPipNameVar = isActiveActiveValid
 
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
-var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
+//var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
 
 // Potential configurations (active-active vs active-passive)
 var bgpSettingsVar = bgpSettings.activeActive == 'false'
@@ -374,8 +374,8 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     activeActive: isActiveActiveValid
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
-    enableBgp: isBgpValid
-    bgpSettings: isBgpValid ? bgpSettingsVar : null
+    enableBgp: !empty(bgpSettings)
+    bgpSettings: !empty(bgpSettings) ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
     enableDnsForwarding: gatewayType == 'ExpressRoute' ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
@@ -580,8 +580,8 @@ type bgpType = {
   @maxValue(4294967295)
   asn: int? 
 
-  @description('Required. The list of custom BGP peering addresses which belong to IP configuration.')
-  customBgpIpAddresses: string[]
+  @description('Optional. The list of custom BGP peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]?
 }
 
 type bgpApipaType = {
@@ -592,12 +592,12 @@ type bgpApipaType = {
   @maxValue(4294967295)
   asn: int? 
 
-  @description('Required. The list of custom BGP peering addresses which belong to IP configuration.')
-  customBgpIpAddresses: string[]
+  @description('Optional. The list of custom BGP peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]?
 
   
-  @description('Required. The list of the second custom BGP peering addresses which belong to IP configuration.')
-  secondCustomBgpIpAddresses: string[]
+  @description('Optional. The list of the second custom BGP peering addresses which belong to IP configuration.')
+  secondCustomBgpIpAddresses: string[]?
 }
 
 @discriminator('activeActive')
