@@ -1,4 +1,4 @@
-name: "avm.ptn.network-privatelinkprivatednszones"
+name: "avm.ptn.network.private-link-private-dns-zones"
 
 on:
   workflow_dispatch:
