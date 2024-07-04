@@ -38,7 +38,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using module parameters to align to WAF](#example-3-using-module-parameters-to-align-to-waf)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -134,9 +134,9 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
-### Example 3: _Using module parameters to align to WAF_
+### Example 3: _WAF-aligned_
 
-This instance deploys the module with only its required parameters to align to WAF, if any.
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
