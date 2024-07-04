@@ -76,7 +76,7 @@ param activeActive bool = true
 // @description('Optional. Value to specify if BGP is enabled or not.')
 // param enableBgp bool = true
 
-@description('Optional. BGP Settings')
+@description('Optional. BGP Settings.')
 param bgpSettings bgpSettingType?
 
 @description('Optional. The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network.')
