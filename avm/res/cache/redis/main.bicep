@@ -161,7 +161,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource redis 'Microsoft.Cache/redis@2022-06-01' = {
+resource redis 'Microsoft.Cache/redis@2023-08-01' = {
   name: name
   location: location
   tags: tags

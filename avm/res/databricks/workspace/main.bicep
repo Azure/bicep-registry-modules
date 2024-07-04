@@ -255,6 +255,10 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
           }
         : {}
     )
+    // createdBy: {} // This is a read-only property
+    // managedDiskIdentity: {} // This is a read-only property
+    // storageAccountIdentity: {} // This is a read-only property
+    // updatedBy: {} // This is a read-only property
     publicNetworkAccess: publicNetworkAccess
     requiredNsgRules: requiredNsgRules
     encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)

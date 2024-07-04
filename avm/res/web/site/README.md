@@ -41,12 +41,14 @@ The following section provides usage examples for the module, which were used to
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
 - [Web App, using only defaults](#example-3-web-app-using-only-defaults)
-- [WAF-aligned](#example-4-waf-aligned)
-- [Web App, using only defaults](#example-5-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-6-web-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
-- [Windows Web App for Containers, using only defaults](#example-9-windows-web-app-for-containers-using-only-defaults)
+- [Web App](#example-4-web-app)
+- [WAF-aligned](#example-5-waf-aligned)
+- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-8-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-9-web-app-using-large-parameter-set)
+- [Web App](#example-10-web-app)
+- [Windows Web App for Containers, using only defaults](#example-11-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -568,7 +570,139 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Web App_
+
+This instance deploys the module as Web App with the set of logs configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wslc001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    appInsightResourceId: '<appInsightResourceId>'
+    appSettingsKeyValuePairs: {
+      ENABLE_ORYX_BUILD: 'True'
+      JAVA_OPTS: '<JAVA_OPTS>'
+      SCM_DO_BUILD_DURING_DEPLOYMENT: 'True'
+    }
+    location: '<location>'
+    logsConfiguration: {
+      applicationLogs: {
+        fileSystem: {
+          level: 'Verbose'
+        }
+      }
+      detailedErrorMessages: {
+        enabled: true
+      }
+      failedRequestsTracing: {
+        enabled: true
+      }
+      httpLogs: {
+        fileSystem: {
+          enabled: true
+          retentionInDays: 1
+          retentionInMb: 35
+        }
+      }
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    siteConfig: {
+      alwaysOn: true
+      appCommandLine: ''
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wslc001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "appInsightResourceId": {
+      "value": "<appInsightResourceId>"
+    },
+    "appSettingsKeyValuePairs": {
+      "value": {
+        "ENABLE_ORYX_BUILD": "True",
+        "JAVA_OPTS": "<JAVA_OPTS>",
+        "SCM_DO_BUILD_DURING_DEPLOYMENT": "True"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "logsConfiguration": {
+      "value": {
+        "applicationLogs": {
+          "fileSystem": {
+            "level": "Verbose"
+          }
+        },
+        "detailedErrorMessages": {
+          "enabled": true
+        },
+        "failedRequestsTracing": {
+          "enabled": true
+        },
+        "httpLogs": {
+          "fileSystem": {
+            "enabled": true,
+            "retentionInDays": 1,
+            "retentionInMb": 35
+          }
+        }
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "appCommandLine": ""
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -710,7 +844,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 5: _Web App, using only defaults_
+### Example 6: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -766,7 +900,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 6: _Web App, using large parameter set_
+### Example 7: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -1212,7 +1346,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 7: _Web App, using only defaults_
+### Example 8: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -1268,7 +1402,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 8: _Web App, using large parameter set_
+### Example 9: _Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -1714,7 +1848,103 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 9: _Windows Web App for Containers, using only defaults_
+### Example 10: _Web App_
+
+This instance deploys the module as Web App with the set of api management configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wswc001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    apiManagementConfiguration: {
+      id: '<id>'
+    }
+    appInsightResourceId: '<appInsightResourceId>'
+    appSettingsKeyValuePairs: {
+      ENABLE_ORYX_BUILD: 'True'
+      SCM_DO_BUILD_DURING_DEPLOYMENT: 'False'
+    }
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    siteConfig: {
+      alwaysOn: true
+      appCommandLine: ''
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wswc001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "apiManagementConfiguration": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    "appInsightResourceId": {
+      "value": "<appInsightResourceId>"
+    },
+    "appSettingsKeyValuePairs": {
+      "value": {
+        "ENABLE_ORYX_BUILD": "True",
+        "SCM_DO_BUILD_DURING_DEPLOYMENT": "False"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "appCommandLine": ""
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 11: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
@@ -1805,6 +2035,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`apiManagementConfiguration`](#parameter-apimanagementconfiguration) | object | The web settings api management configuration. |
 | [`appInsightResourceId`](#parameter-appinsightresourceid) | string | Resource ID of the app insight to leverage for this resource. |
 | [`appServiceEnvironmentResourceId`](#parameter-appserviceenvironmentresourceid) | string | The resource ID of the app service environment to use for this resource. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
@@ -1828,6 +2059,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`keyVaultAccessIdentityResourceId`](#parameter-keyvaultaccessidentityresourceid) | string | The resource ID of the assigned identity to be used to access a key vault with. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`logsConfiguration`](#parameter-logsconfiguration) | object | The logs settings configuration. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
@@ -1881,6 +2113,13 @@ The resource ID of the app service plan to use for the site.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `apiManagementConfiguration`
+
+The web settings api management configuration.
+
+- Required: No
+- Type: object
 
 ### Parameter: `appInsightResourceId`
 
@@ -2226,6 +2465,13 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `logsConfiguration`
+
+The logs settings configuration.
+
+- Required: No
+- Type: object
 
 ### Parameter: `managedIdentities`
 

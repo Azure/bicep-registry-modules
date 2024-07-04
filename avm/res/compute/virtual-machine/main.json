@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16930314737085588338"
+      "templateHash": "7526507591610306393"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -139,8 +139,9 @@
         },
         "diskSizeGB": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the size of an empty data disk in gigabytes."
+            "description": "Optional. Specifies the size of an empty data disk in gigabytes."
           }
         },
         "createOption": {
@@ -192,8 +193,9 @@
                 "Standard_LRS",
                 "UltraSSD_LRS"
               ],
+              "nullable": true,
               "metadata": {
-                "description": "Required. Specifies the storage account type for the managed disk."
+                "description": "Optional. Specifies the storage account type for the managed disk."
               }
             },
             "diskEncryptionSetResourceId": {

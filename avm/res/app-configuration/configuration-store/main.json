@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5812730141971658504"
+      "templateHash": "16568444774121110101"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -1686,6 +1686,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('configurationStore', '2023-03-01', 'full').location]"
+    },
+    "endpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint of the app configuration."
+      },
+      "value": "[reference('configurationStore').endpoint]"
     }
   }
 }
