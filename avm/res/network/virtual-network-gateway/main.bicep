@@ -157,25 +157,25 @@ var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 //var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
 
 // Potential configurations (active-active vs active-passive)
-var bgpSettingsVar = bgpSettings.activeActive == 'false'
+var bgpSettingsVar = bgpSettings.?activeActive == 'false'
   ? {
-      asn: bgpSettings.asn ?? 65815
+      asn: bgpSettings.?asn ?? 65815
       bgpPeeringAddresses: [
         {
-          customBgpIpAddresses: bgpSettings.customBgpIpAddresses
+          customBgpIpAddresses: bgpSettings.?customBgpIpAddresses
           ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
         }
       ]
     }
   : {
-      asn: bgpSettings.asn ?? 65815
+      asn: bgpSettings.?asn ?? 65815
       bgpPeeringAddresses: [
         {
-          customBgpIpAddresses: bgpSettings.customBgpIpAddresses
+          customBgpIpAddresses: bgpSettings.?customBgpIpAddresses
           ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
         }
         {
-          customBgpIpAddresses: bgpSettings.secondCustomBgpIpAddresses
+          customBgpIpAddresses: bgpSettings.?secondCustomBgpIpAddresses
           ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
         }
       ]
