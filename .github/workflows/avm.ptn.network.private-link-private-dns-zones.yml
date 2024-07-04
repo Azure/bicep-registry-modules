@@ -36,7 +36,7 @@ on:
 
 env:
   modulePath: "avm/ptn/network/private-link-private-dns-zones"
-  workflowPath: ".github/workflows/avm.ptn.network-privatelinkprivatednszones.yml"
+  workflowPath: ".github/workflows/avm.ptn.network.private-link-private-dns-zones.yml"
 
 concurrency:
   group: ${{ github.workflow }}
