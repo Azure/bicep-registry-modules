@@ -137,7 +137,7 @@ resource privateLinkService 'Microsoft.Network/privateLinkServices@2023-11-01' =
           privateIPAllocationMethod: 'Dynamic'
           privateIPAddressVersion: 'IPv4'
           subnet: {
-            id: reference(loadbalancer.id, '2019-06-01').frontendIPConfigurations[0].properties.subnet.id
+            id: loadbalancer.properties.frontendIPConfigurations[0].properties.subnet.id
           }
           primary: false
         }
