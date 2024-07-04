@@ -156,7 +156,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
         '<managedIdentityResourceId>'
       ]
     }
-    retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
   }
 }
@@ -194,9 +193,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "retentionInterval": {
-      "value": "P1D"
     },
     "scriptContent": {
       "value": "Write-Host \"AVM Deployment Script test!\""
@@ -884,6 +880,7 @@ Interval for which the service retains the script resource after it reaches a te
 
 - Required: No
 - Type: string
+- Default: `'P1D'`
 
 ### Parameter: `roleAssignments`
 
