@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6542452703745629871"
+      "templateHash": "8614975329946087613"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -433,7 +433,7 @@
       "$ref": "#/definitions/bgpSettingType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. BGP Settings"
+        "description": "Optional. BGP Settings."
       }
     },
     "vpnClientAddressPoolPrefix": {

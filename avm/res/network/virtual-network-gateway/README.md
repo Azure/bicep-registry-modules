@@ -615,7 +615,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`activeGatewayPipName`](#parameter-activegatewaypipname) | string | Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip' suffix will be appended to the gateway's name. |
 | [`allowRemoteVnetTraffic`](#parameter-allowremotevnettraffic) | bool | Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN. |
 | [`allowVirtualWanTraffic`](#parameter-allowvirtualwantraffic) | bool | Configures this gateway to accept traffic from remote Virtual WAN networks. |
-| [`bgpSettings`](#parameter-bgpsettings) | object | BGP Settings |
+| [`bgpSettings`](#parameter-bgpsettings) | object | BGP Settings. |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -731,7 +731,7 @@ Configures this gateway to accept traffic from remote Virtual WAN networks.
 
 ### Parameter: `bgpSettings`
 
-BGP Settings
+BGP Settings.
 
 - Required: No
 - Type: object
