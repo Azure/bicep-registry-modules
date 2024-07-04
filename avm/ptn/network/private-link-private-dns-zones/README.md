@@ -36,13 +36,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/network/private-link-private-dns-zones:<version>`.
 
-- [Using module defaults](#example-1-using-module-defaults)
-- [Using all module parameters](#example-2-using-all-module-parameters)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using module parameters to align to WAF](#example-3-using-module-parameters-to-align-to-waf)
 
-### Example 1: _Using module defaults_
+### Example 1: _Using only defaults_
 
-This instance deploys the module with only its required parameters provided, if any.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -76,9 +76,9 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
-### Example 2: _Using all module parameters_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with all its parameters provided, if any.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
