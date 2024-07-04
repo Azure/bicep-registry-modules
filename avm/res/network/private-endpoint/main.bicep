@@ -173,10 +173,10 @@ output name string = privateEndpoint.name
 @description('The location the resource was deployed into.')
 output location string = privateEndpoint.location
 
-@description('The group Id for the private endpoint Group.')
-output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections)
-  ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.groupIds[0]
-  : privateEndpoint.properties.privateLinkServiceConnections[0].properties.groupIds[0]
+@description('The group Ids for the private endpoint Group.')
+output groupIds array = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections)
+? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.groupIds
+: privateEndpoint.properties.privateLinkServiceConnections[0].properties.groupIds
 
 // ================ //
 // Definitions      //

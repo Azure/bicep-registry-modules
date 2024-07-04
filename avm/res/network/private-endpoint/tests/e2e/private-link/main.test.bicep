@@ -39,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    privateLinkServiceName: 'dep-${namePrefix}-pls-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    privateLinkServiceName: 'dep-${namePrefix}-pls-${serviceShort}'
     location: resourceLocation
   }
 }

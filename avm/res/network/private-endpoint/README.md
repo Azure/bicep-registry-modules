@@ -1054,7 +1054,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `groupId` | string | The group Id for the private endpoint Group. |
+| `groupIds` | array | The group Ids for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
