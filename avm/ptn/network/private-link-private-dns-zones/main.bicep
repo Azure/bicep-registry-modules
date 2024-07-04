@@ -39,11 +39,17 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.adf.azure.com'
   'privatelink.azurehdinsight.net'
   'privatelink.{regionName}.kusto.windows.net'
+  #disable-next-line no-hardcoded-env-urls
   'privatelink.blob.core.windows.net'
+  #disable-next-line no-hardcoded-env-urls
   'privatelink.queue.core.windows.net'
+  #disable-next-line no-hardcoded-env-urls
   'privatelink.table.core.windows.net'
+  #disable-next-line no-hardcoded-env-urls
   'privatelink.file.core.windows.net'
+  #disable-next-line no-hardcoded-env-urls
   'privatelink.web.core.windows.net'
+  #disable-next-line no-hardcoded-env-urls
   'privatelink.dfs.core.windows.net'
   'privatelink.afs.azure.net'
   'privatelink.analysis.windows.net'
@@ -57,6 +63,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.{regionName}.azmk8s.io'
   'privatelink.azurecr.io'
   '{regionName}.data.privatelink.azurecr.io'
+  #disable-next-line no-hardcoded-env-urls
   'privatelink.database.windows.net'
   'privatelink.documents.azure.com'
   'privatelink.mongo.cosmos.azure.com'
