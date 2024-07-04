@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      appInsightResourceId: nestedDependencies.outputs.applicationInsigtsId
+      appInsightResourceId: nestedDependencies.outputs.applicationInsigtsResourceId
       logsConfiguration: {
         applicationLogs: { fileSystem: { level: 'Verbose' } }
         detailedErrorMessages: { enabled: true }
@@ -75,8 +75,5 @@ module testDeployment '../../../main.bicep' = [
         JAVA_OPTS: join(concat([], ['-Djdk.attach.allowAttachSelf=true']), ' ')
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

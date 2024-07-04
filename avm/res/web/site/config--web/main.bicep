@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param appName string
 
 @description('Required. The web settings api management configuration.')
-param apiManagementConfiguration object
+param apiManagementConfiguration object?
 
 resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   name: appName

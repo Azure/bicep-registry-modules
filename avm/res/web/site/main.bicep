@@ -291,22 +291,22 @@ module app_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authS
   }
 }
 
-module app_logssettings 'config--logs/main.bicep' = if (!empty(logsConfiguration)) {
+module app_logssettings 'config--logs/main.bicep' = if (!empty(logsConfiguration ?? {})) {
   name: '${uniqueString(deployment().name, location)}-Site-Config-Logs'
   params: {
     appName: app.name
-    logsConfiguration: logsConfiguration ?? {}
+    logsConfiguration: logsConfiguration
   }
   dependsOn: [
     app_appsettings
   ]
 }
 
-module app_websettings 'config--web/main.bicep' = if (!empty(apiManagementConfiguration)) {
+module app_websettings 'config--web/main.bicep' = if (!empty(apiManagementConfiguration ?? {})) {
   name: '${uniqueString(deployment().name, location)}-Site-Config-Web'
   params: {
     appName: app.name
-    apiManagementConfiguration: apiManagementConfiguration ?? {}
+    apiManagementConfiguration: apiManagementConfiguration
   }
 }
 

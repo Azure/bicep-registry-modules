@@ -46,10 +46,10 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 @description('The resource ID of the created api management.')
-output apiManagementId string = apiManagement.id
+output apiManagementResourceId string = apiManagement.id
 
 @description('The resource ID of the created application insights.')
-output applicationInsigtsId string = applicationInsights.id
+output applicationInsigtsResourceId string = applicationInsights.id
 
 @description('The resource ID of the created Server Farm.')
 output serverFarmResourceId string = serverFarm.id

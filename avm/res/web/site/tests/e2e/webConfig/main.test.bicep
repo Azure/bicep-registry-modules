@@ -56,9 +56,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      appInsightResourceId: nestedDependencies.outputs.applicationInsigtsId
+      appInsightResourceId: nestedDependencies.outputs.applicationInsigtsResourceId
       apiManagementConfiguration: {
-        id: '${nestedDependencies.outputs.apiManagementId}/apis/todo-api'
+        id: '${nestedDependencies.outputs.apiManagementResourceId}/apis/todo-api'
       }
       managedIdentities: {
         systemAssigned: true
@@ -72,8 +72,5 @@ module testDeployment '../../../main.bicep' = [
         ENABLE_ORYX_BUILD: 'True'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

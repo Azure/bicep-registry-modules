@@ -36,7 +36,7 @@ The name of the parent site resource.
 
 The logs settings configuration.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 

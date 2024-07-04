@@ -29,7 +29,7 @@ This module deploys a Site Api Management Configuration.
 
 The web settings api management configuration.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 ### Parameter: `appName`

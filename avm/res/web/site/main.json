@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "2708337340087914590"
+      "templateHash": "984038015653934080"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1197,7 +1197,7 @@
       ]
     },
     "app_logssettings": {
-      "condition": "[not(empty(parameters('logsConfiguration')))]",
+      "condition": "[not(empty(coalesce(parameters('logsConfiguration'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Site-Config-Logs', uniqueString(deployment().name, parameters('location')))]",
@@ -1211,17 +1211,18 @@
             "value": "[parameters('name')]"
           },
           "logsConfiguration": {
-            "value": "[coalesce(parameters('logsConfiguration'), createObject())]"
+            "value": "[parameters('logsConfiguration')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "4205245374287938590"
+              "templateHash": "10404897918297908598"
             },
             "name": "Site logs Config",
             "description": "This module deploys a Site logs Configuration.",
@@ -1236,20 +1237,30 @@
             },
             "logsConfiguration": {
               "type": "object",
+              "nullable": true,
               "metadata": {
                 "description": "Required. The logs settings configuration."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "app": {
+              "existing": true,
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2022-09-01",
+              "name": "[parameters('appName')]"
+            },
+            "webSettings": {
               "type": "Microsoft.Web/sites/config",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}/{1}', parameters('appName'), 'logs')]",
               "kind": "string",
-              "properties": "[parameters('logsConfiguration')]"
+              "properties": "[parameters('logsConfiguration')]",
+              "dependsOn": [
+                "app"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1281,7 +1292,7 @@
       ]
     },
     "app_websettings": {
-      "condition": "[not(empty(parameters('apiManagementConfiguration')))]",
+      "condition": "[not(empty(coalesce(parameters('apiManagementConfiguration'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Site-Config-Web', uniqueString(deployment().name, parameters('location')))]",
@@ -1295,17 +1306,18 @@
             "value": "[parameters('name')]"
           },
           "apiManagementConfiguration": {
-            "value": "[coalesce(parameters('apiManagementConfiguration'), createObject())]"
+            "value": "[parameters('apiManagementConfiguration')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "7019667550008170293"
+              "templateHash": "7729394396836682981"
             },
             "name": "Site Api Management Config",
             "description": "This module deploys a Site Api Management Configuration.",
@@ -1320,20 +1332,30 @@
             },
             "apiManagementConfiguration": {
               "type": "object",
+              "nullable": true,
               "metadata": {
                 "description": "Required. The web settings api management configuration."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "app": {
+              "existing": true,
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2022-09-01",
+              "name": "[parameters('appName')]"
+            },
+            "webSettings": {
               "type": "Microsoft.Web/sites/config",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}/{1}', parameters('appName'), 'web')]",
               "kind": "string",
-              "properties": "[parameters('apiManagementConfiguration')]"
+              "properties": "[parameters('apiManagementConfiguration')]",
+              "dependsOn": [
+                "app"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
