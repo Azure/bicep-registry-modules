@@ -139,6 +139,9 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).')
 param cacheRules array?
 
+@description('Optional. Scope maps setting.')
+param scopeMaps array = []
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -289,6 +292,12 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
       : null
     zoneRedundancy: acrSku == 'Premium' ? zoneRedundancy : null
   }
+  resource registry_scopeMap 'scopeMaps' = [
+    for scopeMap in scopeMaps: {
+      name: scopeMap.name
+      properties: scopeMap.properties
+    }
+  ]
 }
 
 module registry_replications 'replication/main.bicep' = [

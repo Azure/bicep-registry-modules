@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "14288249811607679009"
+      "version": "0.28.1.47646",
+      "templateHash": "18070042013592883016"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -727,6 +727,13 @@
       "metadata": {
         "description": "Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview))."
       }
+    },
+    "scopeMaps": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Scope maps setting."
+      }
     }
   },
   "variables": {
@@ -757,6 +764,19 @@
       "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
       "dependsOn": [
         "cMKKeyVault"
+      ]
+    },
+    "registry::registry_scopeMap": {
+      "copy": {
+        "name": "registry_scopeMap",
+        "count": "[length(parameters('scopeMaps'))]"
+      },
+      "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('scopeMaps')[copyIndex()].name)]",
+      "properties": "[parameters('scopeMaps')[copyIndex()].properties]",
+      "dependsOn": [
+        "registry"
       ]
     },
     "avmTelemetry": {
@@ -952,8 +972,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17370607380629293508"
+              "version": "0.28.1.47646",
+              "templateHash": "13769087012819677314"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication.",
@@ -1100,8 +1120,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "15228477210534278013"
+              "version": "0.28.1.47646",
+              "templateHash": "9456138761658214484"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1241,8 +1261,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "12261942841024526503"
+              "version": "0.28.1.47646",
+              "templateHash": "708950816969162319"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
