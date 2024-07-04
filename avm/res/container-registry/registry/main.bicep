@@ -140,7 +140,7 @@ param customerManagedKey customerManagedKeyType
 param cacheRules array?
 
 @description('Optional. Scope maps setting.')
-param scopeMaps array = []
+param scopeMaps scopeMapsType
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -659,3 +659,14 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type scopeMapsType = {
+  @description('Optional. The name of the scope map.')
+  name: string?
+
+  @description('Optional. The list of scoped permissions for registry artifacts.')
+  actions: string[]?
+
+  @description('Optional. The user friendly description of the scope map.')
+  description: string?
+}[]?
