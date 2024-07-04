@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15170120544539480286"
+      "version": "0.27.1.19265",
+      "templateHash": "16353987054381890780"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.",
@@ -683,7 +683,7 @@
     },
     "redis": {
       "type": "Microsoft.Cache/redis",
-      "apiVersion": "2022-06-01",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1496,14 +1496,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('redis', '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('redis', '2023-08-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('redis', '2022-06-01', 'full').location]"
+      "value": "[reference('redis', '2023-08-01', 'full').location]"
     }
   }
 }
