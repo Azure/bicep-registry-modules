@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11693859778610248645"
+      "templateHash": "3802219188701729131"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -79,25 +79,25 @@
         "description": "Optional. How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time."
       }
     },
-    "rbacRole": {
-      "type": "string",
-      "defaultValue": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "assignRbacRole": {
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. The RoleDefinitionId required for the DeploymentScript resource to import images. If not set, an existing managed identity should have the appropriate role assigned. Defaults to Contributor."
+        "description": "Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`"
       }
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
+        "description": "Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`."
       }
     },
     "managedIdentityName": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Name of the Managed Identity resource to create. Required if `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`."
+        "description": "Conditional. Name of the Managed Identity resource to create. Required if `assignRbacRole` is `true` and `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`."
       }
     },
     "image": {
@@ -147,7 +147,7 @@
         "description": "Optional. The resource id of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script."
       }
     },
-    "subnetIds": {
+    "subnetResourceIds": {
       "type": "array",
       "items": {
         "type": "string"
@@ -161,7 +161,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\n      \"key1\": \"value1\"\n      \"key2\": \"value2\"\n  }\n  ",
+        "example": "  {\r\n      \"key1\": \"value1\"\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
       }
     }
@@ -170,15 +170,6 @@
     "useExistingManagedIdentity": "[greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())), 0)]"
   },
   "resources": {
-    "imageImportScript::logs": {
-      "existing": true,
-      "type": "Microsoft.Resources/deploymentScripts/logs",
-      "apiVersion": "2023-08-01",
-      "name": "[format('{0}/{1}', coalesce(parameters('name'), format('ACR-Import-{0}', last(split(replace(parameters('image'), ':', '-'), '/')))), 'default')]",
-      "dependsOn": [
-        "imageImportScript"
-      ]
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -226,26 +217,17 @@
     "deploymentScript_roleAssignments": {
       "copy": {
         "name": "deploymentScript_roleAssignments",
-        "count": "[length(if(and(variables('useExistingManagedIdentity'), not(empty(parameters('rbacRole')))), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray()))]"
+        "count": "[length(if(and(variables('useExistingManagedIdentity'), parameters('assignRbacRole')), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(if(and(variables('useExistingManagedIdentity'), not(empty(parameters('rbacRole')))), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())[copyIndex()], parameters('rbacRole'))]",
+      "name": "[guid(if(and(variables('useExistingManagedIdentity'), parameters('assignRbacRole')), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())[copyIndex()], 'roleAssignment')]",
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRole'))]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
         "principalId": "[reference(format('existingManagedIdentities[{0}]', copyIndex())).principalId]"
       },
       "dependsOn": [
         "[format('existingManagedIdentities[{0}]', copyIndex())]"
-      ]
-    },
-    "imageImportScript": {
-      "existing": true,
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2023-08-01",
-      "name": "[coalesce(parameters('name'), format('ACR-Import-{0}', last(split(replace(parameters('image'), ':', '-'), '/'))))]",
-      "dependsOn": [
-        "imageImport"
       ]
     },
     "imageImport": {
@@ -258,7 +240,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "roleAssignments": "[if(and(not(variables('useExistingManagedIdentity')), not(empty(parameters('rbacRole')))), createObject('value', createArray(createObject('principalId', reference('newManagedIdentity').principalId, 'roleDefinitionIdOrName', parameters('rbacRole')))), createObject('value', createArray()))]",
+          "roleAssignments": "[if(and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole')), createObject('value', createArray(createObject('principalId', reference('newManagedIdentity').principalId, 'roleDefinitionIdOrName', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))), createObject('value', createArray()))]",
           "name": {
             "value": "[parameters('name')]"
           },
@@ -326,10 +308,10 @@
             "value": "[format('{0}-infrastructure', resourceGroup().name)]"
           },
           "subnetResourceIds": {
-            "value": "[parameters('subnetIds')]"
+            "value": "[parameters('subnetResourceIds')]"
           },
           "scriptContent": {
-            "value": "#!/bin/bash\nset -e\n\necho \"Waiting on RBAC replication ($initialDelay)\\n\"\nsleep $initialDelay\n\n# retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\nretryLoopCount=0\nuntil [ $retryLoopCount -ge $retryMax ]\ndo\n  echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n  if [ $overwriteExistingImage = 'true' ]; then\n    az acr import -n $acrName --source $imageName --force && break\n  else\n    az acr import -n $acrName --source $imageName && break\n  fi\n\n  sleep $retrySleep\n  retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"done\\n\""
+            "value": "#!/bin/bash\r\nset -e\r\n\r\necho \"Waiting on RBAC replication ($initialDelay)\\n\"\r\nsleep $initialDelay\r\n\r\n# retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\r\nretryLoopCount=0\r\nuntil [ $retryLoopCount -ge $retryMax ]\r\ndo\r\n  echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\r\n  if [ $overwriteExistingImage = 'true' ]; then\r\n    az acr import -n $acrName --source $imageName --force && break\r\n  else\r\n    az acr import -n $acrName --source $imageName && break\r\n  fi\r\n\r\n  sleep $retrySleep\r\n  retryLoopCount=$((retryLoopCount+1))\r\ndone\r\n\r\necho \"done\\n\""
           }
         },
         "template": {
@@ -340,7 +322,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "734277919247190467"
+              "templateHash": "148060868388125113"
             },
             "name": "Deployment Scripts",
             "description": "This module deploys Deployment Scripts.",
@@ -485,7 +467,7 @@
           "parameters": {
             "name": {
               "type": "string",
-              "maxLength": 24,
+              "maxLength": 90,
               "metadata": {
                 "description": "Required. Name of the Deployment Script."
               }
@@ -686,47 +668,11 @@
               "resourceGroup": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]]",
               "name": "[last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))]"
             },
-            "deploymentScript_lock": {
-              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
-              "type": "Microsoft.Authorization/locks",
-              "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
-              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
-              "properties": {
-                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
-              },
-              "dependsOn": [
-                "deploymentScript"
-              ]
-            },
-            "deploymentScript_roleAssignments": {
-              "copy": {
-                "name": "deploymentScript_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
-              },
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
-              "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-              },
-              "dependsOn": [
-                "deploymentScript"
-              ]
-            },
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.2.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -768,6 +714,51 @@
               "dependsOn": [
                 "storageAccount"
               ]
+            },
+            "deploymentScript_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            },
+            "deploymentScript_roleAssignments": {
+              "copy": {
+                "name": "deploymentScript_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            },
+            "deploymentScriptLogs": {
+              "existing": true,
+              "type": "Microsoft.Resources/deploymentScripts/logs",
+              "apiVersion": "2023-08-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+              "dependsOn": [
+                "deploymentScript"
+              ]
             }
           },
           "outputs": {
@@ -805,6 +796,16 @@
                 "description": "The output of the deployment script."
               },
               "value": "[if(contains(reference('deploymentScript'), 'outputs'), reference('deploymentScript').outputs, createObject())]"
+            },
+            "deploymentScriptLogs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "The logs of the deployment script."
+              },
+              "value": "[split(reference('deploymentScriptLogs').log, '\n')]"
             }
           }
         }
@@ -830,7 +831,7 @@
       "metadata": {
         "description": "The script output of each image import."
       },
-      "value": "[split(reference('imageImportScript::logs').log, '\n')]"
+      "value": "[reference('imageImport').outputs.deploymentScriptLogs.value]"
     },
     "importedImage": {
       "$ref": "#/definitions/importedImageType",

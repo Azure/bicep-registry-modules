@@ -24,8 +24,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     roleAssignments: [
-      // assign ArcPull and AcrPush
-      for registryRole in ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-4cb8-b61a-304f252e45ec']: {
+      for registryRole in ['AcrPull', 'AcrPush']: {
         principalId: identity.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: registryRole

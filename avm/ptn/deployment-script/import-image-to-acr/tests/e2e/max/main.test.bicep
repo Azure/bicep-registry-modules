@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: { userAssignedResourcesIds: [dependencies.outputs.managedIdentityResourceId] }
       overwriteExistingImage: true
       storageAccountResourceId: dependencies.outputs.storageAccountResourceId
-      subnetIds: [dependencies.outputs.deploymentScriptSubnetResourceId]
+      subnetResourceIds: [dependencies.outputs.deploymentScriptSubnetResourceId]
     }
   }
 ]

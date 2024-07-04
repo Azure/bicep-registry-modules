@@ -17,13 +17,13 @@ param acrName string
 @description('Optional. How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time.')
 param runOnce bool = false
 
-@description('Optional. The RoleDefinitionId required for the DeploymentScript resource to import images. If not set, an existing managed identity should have the appropriate role assigned. Defaults to Contributor.')
-param rbacRole string = 'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
+@description('Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`')
+param assignRbacRole bool = true
 
-@description('Optional. The managed identity definition for this resource.')
+@description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
 param managedIdentities managedIdentitiesType?
 
-@description('Conditional. Name of the Managed Identity resource to create. Required if `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`.')
+@description('Conditional. Name of the Managed Identity resource to create. Required if `assignRbacRole` is `true` and `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`.')
 param managedIdentityName string?
 
 @description('Required. A fully qualified image name to import.')
@@ -53,7 +53,7 @@ param cleanupPreference string = 'OnExpiration'
 param storageAccountResourceId string = ''
 
 @description('Optional. The subnet ids to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script.')
-param subnetIds string[]?
+param subnetResourceIds string[]?
 
 @description('Optional. Tags of the resource.')
 @metadata({
@@ -114,28 +114,31 @@ resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
 
 // rbac assignment for existing managed identities
 resource deploymentScript_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (resourceId, i) in (useExistingManagedIdentity && !empty(rbacRole)
+  for (resourceId, i) in (useExistingManagedIdentity && assignRbacRole
     ? (managedIdentities.?userAssignedResourcesIds ?? [])
     : []): {
-    name: guid(resourceId, rbacRole)
+    name: guid(resourceId, 'roleAssignment')
     properties: {
-      roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', rbacRole)
+      roleDefinitionId: subscriptionResourceId(
+        'Microsoft.Authorization/roleDefinitions',
+        'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      ) // Contributor is needed to import ACR
       principalId: existingManagedIdentities[i].properties.principalId
     }
     scope: resourceGroup()
   }
 ]
 
-module imageImport 'br/public:avm/res/resources/deployment-script:0.2.1' = {
+module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
     // assign new managed identity rbac roles here, as the principalId is available
-    roleAssignments: !useExistingManagedIdentity && !empty(rbacRole)
+    roleAssignments: !useExistingManagedIdentity && assignRbacRole
       ? [
           {
             principalId: newManagedIdentity.properties.principalId
-            roleDefinitionIdOrName: rbacRole
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor is needed to import ACR
           }
         ]
       : []
@@ -179,7 +182,7 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.1' = {
     cleanupPreference: cleanupPreference
     storageAccountResourceId: storageAccountResourceId
     containerGroupName: '${resourceGroup().name}-infrastructure'
-    subnetResourceIds: subnetIds
+    subnetResourceIds: subnetResourceIds
     scriptContent: '''#!/bin/bash
 set -e
 
@@ -205,13 +208,6 @@ echo "done\n"'''
   }
 }
 
-resource imageImportScript 'Microsoft.Resources/deploymentScripts@2023-08-01' existing = {
-  name: imageImport.name
-  resource logs 'logs' existing = {
-    name: 'default'
-  }
-}
-
 // ============ //
 // Outputs      //
 // ============ //
@@ -220,7 +216,7 @@ resource imageImportScript 'Microsoft.Resources/deploymentScripts@2023-08-01' ex
 output resourceGroupName string = resourceGroup().name
 
 @description('The script output of each image import.')
-output deploymentScriptOutput string[] = split(imageImportScript::logs.properties.log, '\n')
+output deploymentScriptOutput string[] = imageImport.outputs.deploymentScriptLogs
 
 @description('An array of the imported images.')
 output importedImage importedImageType = {

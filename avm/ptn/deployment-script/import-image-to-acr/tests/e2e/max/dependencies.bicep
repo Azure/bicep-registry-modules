@@ -74,31 +74,6 @@ module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.2.
   }
 }
 
-module privateEndpointContainerRegistry 'br/public:avm/res/network/private-endpoint:0.4.1' = {
-  name: '${uniqueString(deployment().name, location)}-pe-ACR'
-  params: {
-    name: '${uniqueString(resourceGroup().name, location)}-pe-ContainerRegistry'
-    subnetResourceId: vnet::subnet_privateendpoints.id
-    customNetworkInterfaceName: '${uniqueString(resourceGroup().name, location)}-pe-ContainerRegistry-nic'
-    location: location
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      dnsZoneContainerRegistry.outputs.resourceId
-    ]
-    privateLinkServiceConnections: [
-      {
-        name: 'pe-ContainerRegistry-connection'
-        properties: {
-          privateLinkServiceId: acr.outputs.resourceId
-          groupIds: [
-            'registry'
-          ]
-        }
-      }
-    ]
-  }
-}
-
 module storage 'br/public:avm/res/storage/storage-account:0.9.0' = {
   name: '${uniqueString(resourceGroup().name, location)}-storage'
   params: {
@@ -139,8 +114,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     roleAssignments: [
-      // assign ArcPull and AcrPush
-      for registryRole in ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-4cb8-b61a-304f252e45ec']: {
+      for registryRole in ['AcrPull', 'AcrPush']: {
         principalId: identity.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: registryRole
@@ -149,6 +123,20 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
     networkRuleBypassOptions: 'AzureServices'
     publicNetworkAccess: 'Disabled'
     networkRuleSetDefaultAction: 'Deny'
+    privateEndpoints: [
+      {
+        name: '${uniqueString(resourceGroup().name, location)}-pe-ContainerRegistry'
+        subnetResourceId: vnet::subnet_privateendpoints.id
+        customNetworkInterfaceName: '${uniqueString(resourceGroup().name, location)}-pe-ContainerRegistry-nic'
+        location: location
+        privateDnsZoneGroupName: 'default'
+        privateDnsZoneResourceIds: [
+          dnsZoneContainerRegistry.outputs.resourceId
+        ]
+        isManualConnection: false
+        service: 'registry'
+      }
+    ]
   }
 }
 
