@@ -47,6 +47,7 @@ body:
         # - "avm/ptn/avd-lza/session-hosts"
         - "avm/ptn/finops-toolkit/finops-hub"
         - "avm/ptn/lz/sub-vending"
+        - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/security/security-center"
         - "avm/res/aad/domain-service"
