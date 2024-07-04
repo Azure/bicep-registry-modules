@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15586405017645230279"
+      "templateHash": "1086159027716637101"
     },
     "name": "Data Factory Linked Service",
     "description": "This module deploys a Data Factory Linked Service.",
@@ -50,8 +50,9 @@
         "description": "Optional. Use this to add parameters for a linked service connection string."
       }
     },
-    "linkedServiceDescription": {
+    "description": {
       "type": "string",
+      "defaultValue": "Linked Service created by avm-res-datafactory-factories",
       "metadata": {
         "description": "Optional. The description of the Integration Runtime."
       }
@@ -64,7 +65,7 @@
       "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
       "properties": {
         "annotations": [],
-        "description": "[parameters('linkedServiceDescription')]",
+        "description": "[parameters('description')]",
         "connectVia": "[if(contains(parameters('integrationRuntimeName'), 'none'), null(), createObject('parameters', createObject(), 'referenceName', parameters('integrationRuntimeName'), 'type', 'IntegrationRuntimeReference'))]",
         "type": "[parameters('typeName')]",
         "typeProperties": "[parameters('typeProperties')]",
@@ -83,14 +84,14 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Integration Runtime."
+        "description": "The name of the Linked Service."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Integration Runtime."
+        "description": "The resource ID of the Linked Service."
       },
       "value": "[resourceId('Microsoft.DataFactory/factories/linkedservices', parameters('dataFactoryName'), parameters('name'))]"
     }

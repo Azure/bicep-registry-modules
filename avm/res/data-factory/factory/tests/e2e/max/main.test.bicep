@@ -127,7 +127,7 @@ module testDeployment '../../../main.bicep' = [
           // This will connect to the IRvnetManaged integration runtime as it is specifically defined
           name: 'LakeStoreLinkedservice'
           integrationRuntimeName: 'IRvnetManaged'
-          linkedServiceDescription: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
+          description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
           parameters: {
             storageAccountName: {
               type: 'String'

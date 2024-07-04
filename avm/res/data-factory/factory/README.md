@@ -154,8 +154,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       }
       {
+        description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
         integrationRuntimeName: 'IRvnetManaged'
-        linkedServiceDescription: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
         name: 'LakeStoreLinkedservice'
         parameters: {
           storageAccountName: {
@@ -314,8 +314,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           }
         },
         {
+          "description": "This is a description for the linked service using the IRvnetManaged integration runtime.",
           "integrationRuntimeName": "IRvnetManaged",
-          "linkedServiceDescription": "This is a description for the linked service using the IRvnetManaged integration runtime.",
           "name": "LakeStoreLinkedservice",
           "parameters": {
             "storageAccountName": {

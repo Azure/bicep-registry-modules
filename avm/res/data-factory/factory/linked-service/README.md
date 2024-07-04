@@ -35,8 +35,8 @@ This module deploys a Data Factory Linked Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`description`](#parameter-description) | string | The description of the Integration Runtime. |
 | [`integrationRuntimeName`](#parameter-integrationruntimename) | string | The name of the Integration Runtime to use. |
-| [`linkedServiceDescription`](#parameter-linkedservicedescription) | string | The description of the Integration Runtime. |
 | [`parameters`](#parameter-parameters) | object | Use this to add parameters for a linked service connection string. |
 | [`typeProperties`](#parameter-typeproperties) | object | Used to add connection properties for your linked services. |
 
@@ -61,16 +61,17 @@ The name of the parent Azure Data Factory. Required if the template is used in a
 - Required: Yes
 - Type: string
 
+### Parameter: `description`
+
+The description of the Integration Runtime.
+
+- Required: No
+- Type: string
+- Default: `'Linked Service created by avm-res-datafactory-factories'`
+
 ### Parameter: `integrationRuntimeName`
 
 The name of the Integration Runtime to use.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `linkedServiceDescription`
-
-The description of the Integration Runtime.
 
 - Required: Yes
 - Type: string
@@ -96,9 +97,9 @@ Used to add connection properties for your linked services.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the Integration Runtime. |
+| `name` | string | The name of the Linked Service. |
 | `resourceGroupName` | string | The name of the Resource Group the Integration Runtime was created in. |
-| `resourceId` | string | The resource ID of the Integration Runtime. |
+| `resourceId` | string | The resource ID of the Linked Service. |
 
 ## Cross-referenced modules
 
