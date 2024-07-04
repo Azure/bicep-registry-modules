@@ -157,32 +157,54 @@ var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
 
 // Potential configurations (active-active vs active-passive)
-var bgpSettings = isActiveActiveValid
-? {
-  asn: bgpParams.?asn ?? 65815
-  bgpPeeringAddresses: [
-    {
-      customBgpIpAddresses: bgpParams.?primaryCustomBgpIPs
-      ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+var bgpSettingsVar = bgpSettings.activeActive == 'false'
+  ? {
+      asn: bgpSettings.asn ?? 65815
+      bgpPeeringAddresses: [
+        {
+          customBgpIpAddresses: bgpSettings.customBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+        }
+      ]
     }
-    {
-      customBgpIpAddresses: bgpParams.?secondaryCustomBgpIPs
-      ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
+  : {
+      asn: bgpSettings.asn ?? 65815
+      bgpPeeringAddresses: [
+        {
+          customBgpIpAddresses: bgpSettings.customBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+        }
+        {
+          customBgpIpAddresses: bgpSettings.secondCustomBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
+        }
+      ]
     }
+// ? {
+//   asn: bgpParams.?asn ?? 65815
+//   bgpPeeringAddresses: [
+//     {
+//       customBgpIpAddresses: bgpParams.?primaryCustomBgpIPs
+//       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+//     }
+//     {
+//       customBgpIpAddresses: bgpParams.?secondaryCustomBgpIPs
+//       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
+//     }
 
-  ]
-  peerWeight: bgpParams.?peerWeight
-}
-: {
-  asn: bgpParams.?asn
-  bgpPeeringAddresses: [
-    {
-      customBgpIpAddresses: bgpParams.?primaryCustomBgpIPs
-      ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
-    }
-  ]
-  peerWeight: bgpParams.?peerWeight
-}
+//   ]
+//   peerWeight: bgpParams.?peerWeight
+// }
+// : {
+//   asn: bgpParams.?asn
+//   bgpPeeringAddresses: [
+//     {
+//       customBgpIpAddresses: bgpParams.?primaryCustomBgpIPs
+//       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+//     }
+//   ]
+//   peerWeight: bgpParams.?peerWeight
+// }
 
 
 // Potential configurations (active-active vs active-passive)
@@ -353,7 +375,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
     enableBgp: isBgpValid
-    bgpSettings: isBgpValid ? bgpSettings : null
+    bgpSettings: isBgpValid ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
     enableDnsForwarding: gatewayType == 'ExpressRoute' ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
@@ -560,7 +582,7 @@ type bgpType = {
 
   @description('Required. The list of custom BGP peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]
-}?
+}
 
 type bgpApipaType = {
   activeActive: 'true'
@@ -576,7 +598,7 @@ type bgpApipaType = {
   
   @description('Required. The list of the second custom BGP peering addresses which belong to IP configuration.')
   secondCustomBgpIpAddresses: string[]
-}?
+}
 
 @discriminator('activeActive')
 type bgpSettingType = bgpType | bgpApipaType

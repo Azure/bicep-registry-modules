@@ -30,19 +30,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
-- [AAD-VPN](#example-1-aad-vpn)
-- [VPN with APIPA BGP settings](#example-2-vpn-with-apipa-bgp-settings)
-- [Using only defaults](#example-3-using-only-defaults)
-- [ExpressRoute](#example-4-expressroute)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [Using SKU without Availability Zones](#example-6-using-sku-without-availability-zones)
-- [VPN](#example-7-vpn)
-- [WAF-aligned](#example-8-waf-aligned)
+- [Aadvpn](#example-1-aadvpn)
+- [Bgpapipa](#example-2-bgpapipa)
+- [Defaults](#example-3-defaults)
+- [Expressroute](#example-4-expressroute)
+- [Max](#example-5-max)
+- [Vpn-No-Az](#example-6-vpn-no-az)
+- [Vpn](#example-7-vpn)
+- [Waf-Aligned](#example-8-waf-aligned)
 
-### Example 1: _AAD-VPN_
-
-This instance deploys the module with the AAD set of required parameters.
-
+### Example 1: _Aadvpn_
 
 <details>
 
@@ -151,10 +148,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 2: _VPN with APIPA BGP settings_
-
-This instance deploys the module with the VPN with APIPA BGP settings.
-
+### Example 2: _Bgpapipa_
 
 <details>
 
@@ -287,10 +281,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 3: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 3: _Defaults_
 
 <details>
 
@@ -359,10 +350,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 4: _ExpressRoute_
-
-This instance deploys the module with the ExpressRoute set of required parameters.
-
+### Example 4: _Expressroute_
 
 <details>
 
@@ -443,10 +431,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 5: _Max_
 
 <details>
 
@@ -713,10 +698,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 6: _Using SKU without Availability Zones_
-
-This instance deploys the module with a SKU that does not support Availability Zones.
-
+### Example 6: _Vpn-No-Az_
 
 <details>
 
@@ -731,7 +713,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     name: 'nvgnaz001'
     skuName: 'VpnGw1'
     vNetResourceId: '<vNetResourceId>'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -762,7 +743,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "vNetResourceId": {
       "value": "<vNetResourceId>"
     },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -773,10 +753,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 7: _VPN_
-
-This instance deploys the module with the VPN set of required parameters.
-
+### Example 7: _Vpn_
 
 <details>
 
@@ -885,10 +862,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 8: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 8: _Waf-Aligned_
 
 <details>
 
@@ -1139,7 +1113,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`activeGatewayPipName`](#parameter-activegatewaypipname) | string | Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip' suffix will be appended to the gateway's name. |
 | [`allowRemoteVnetTraffic`](#parameter-allowremotevnettraffic) | bool | Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN. |
 | [`allowVirtualWanTraffic`](#parameter-allowvirtualwantraffic) | bool | Configures this gateway to accept traffic from remote Virtual WAN networks. |
-| [`bgpParams`](#parameter-bgpparams) | object | BGP Settings |
+| [`bgpSettings`](#parameter-bgpsettings) | object | BGP Settings |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1254,57 +1228,12 @@ Configures this gateway to accept traffic from remote Virtual WAN networks.
 - Type: bool
 - Default: `False`
 
-### Parameter: `bgpParams`
+### Parameter: `bgpSettings`
 
 BGP Settings
 
-- Required: No
+- Required: Yes
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`asn`](#parameter-bgpparamsasn) | int | The Autonomous System Number value. |
-| [`bgpPeeringAddress`](#parameter-bgpparamsbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. |
-| [`peerWeight`](#parameter-bgpparamspeerweight) | int | The weight added to routes learned from this BGP speaker. |
-| [`primaryCustomBgpIPs`](#parameter-bgpparamsprimarycustombgpips) | array | Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled. |
-| [`secondaryCustomBgpIPs`](#parameter-bgpparamssecondarycustombgpips) | array | Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled. |
-
-### Parameter: `bgpParams.asn`
-
-The Autonomous System Number value.
-
-- Required: No
-- Type: int
-
-### Parameter: `bgpParams.bgpPeeringAddress`
-
-The BGP peering address and BGP identifier of this BGP speaker.
-
-- Required: No
-- Type: string
-
-### Parameter: `bgpParams.peerWeight`
-
-The weight added to routes learned from this BGP speaker.
-
-- Required: No
-- Type: int
-
-### Parameter: `bgpParams.primaryCustomBgpIPs`
-
-Primary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used if bgp is enabled.
-
-- Required: No
-- Type: array
-
-### Parameter: `bgpParams.secondaryCustomBgpIPs`
-
-Secondary custom Azure APIPA BGP IP addresses. Azure supports BGP IP in the ranges 169.254.21.* and 169.254.22.*. This is only used for active-active configuration if bgp is enabled.
-
-- Required: No
-- Type: array
 
 ### Parameter: `clientRevokedCertThumbprint`
 
