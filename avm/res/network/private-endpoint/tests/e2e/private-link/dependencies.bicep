@@ -59,7 +59,6 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, frontendSubnetName)
-            // id: virtualNetwork.properties.subnets[0].id
           }
         }
       }
