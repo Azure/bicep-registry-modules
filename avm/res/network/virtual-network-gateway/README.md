@@ -54,6 +54,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
+    activeActive: false
     allowRemoteVnetTraffic: true
     bgpSettings: {
       activeActive: 'false'
@@ -107,6 +108,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
+    "activeActive": {
+      "value": false
+    },
     "allowRemoteVnetTraffic": {
       "value": true
     },
