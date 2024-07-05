@@ -131,8 +131,11 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
-        # env:
-        #   AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+        env:
+          # AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
   ##################
   #   Publishing   #
