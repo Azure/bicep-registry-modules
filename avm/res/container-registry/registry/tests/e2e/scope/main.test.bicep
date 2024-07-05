@@ -46,10 +46,9 @@ module testDeployment '../../../main.bicep' = [
       acrSku: 'Standard'
       scopeMaps: [
         {
-          name: 'rw'
+          name: 'testscopemap'
           actions: [
-            'repositories/repository-name/content/read'
-            'repositories/repository-name/metadata/write'
+            'repositories/*/content/read'
           ]
           description: 'This is a test for scopeMaps feature.'
         }

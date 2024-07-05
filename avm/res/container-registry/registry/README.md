@@ -479,11 +479,10 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     scopeMaps: [
       {
         actions: [
-          'repositories/repository-name/content/read'
-          'repositories/repository-name/metadata/write'
+          'repositories/*/content/read'
         ]
         description: 'This is a test for scopeMaps feature.'
-        name: 'rw'
+        name: 'testscopemap'
       }
     ]
   }
@@ -517,11 +516,10 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "actions": [
-            "repositories/repository-name/content/read",
-            "repositories/repository-name/metadata/write"
+            "repositories/*/content/read"
           ],
           "description": "This is a test for scopeMaps feature.",
-          "name": "rw"
+          "name": "testscopemap"
         }
       ]
     }
