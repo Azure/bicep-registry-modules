@@ -23,6 +23,11 @@ param serviceShort string = 'nanaawaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The tags to apply to all resources.')
+param tags object = {
+  service: 'netapp'
+}
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -32,6 +37,7 @@ param namePrefix string = '#_namePrefix_#'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: tags
 }
 
 // ============== //
@@ -46,6 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}${iteration}'
       location: enforcedLocation
+      tags: tags
     }
   }
 ]
