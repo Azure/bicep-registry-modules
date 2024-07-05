@@ -50,7 +50,7 @@ param subnetResourceIds string[]?
 param arguments string?
 
 @description('Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week).')
-param retentionInterval string?
+param retentionInterval string = 'P1D'
 
 @description('Generated. Do not provide a value! This date value is used to make sure the script run every time the template is deployed.')
 param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')

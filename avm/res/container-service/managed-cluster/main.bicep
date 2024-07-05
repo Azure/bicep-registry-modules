@@ -489,38 +489,36 @@ var builtInRoleNames = {
 // Dependencies //
 // ============ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
 // ============== //
 // Main Resources //
@@ -810,35 +808,33 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' =
-  if (!empty(fluxExtension)) {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
-    params: {
-      clusterName: managedCluster.name
-      configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
-      configurationSettings: fluxExtension.?configurationSettings
-      enableTelemetry: enableTelemetry
-      extensionType: 'microsoft.flux'
-      fluxConfigurations: fluxExtension.?configurations
-      location: location
-      name: 'flux'
-      releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
-      releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
-      version: fluxExtension.?version
-    }
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension)) {
+  name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
+  params: {
+    clusterName: managedCluster.name
+    configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
+    configurationSettings: fluxExtension.?configurationSettings
+    enableTelemetry: enableTelemetry
+    extensionType: 'microsoft.flux'
+    fluxConfigurations: fluxExtension.?configurations
+    location: location
+    name: 'flux'
+    releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
+    releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
+    version: fluxExtension.?version
   }
+}
 
-resource managedCluster_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: managedCluster
+resource managedCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: managedCluster
+}
 
 resource managedCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -889,28 +885,26 @@ resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing =
-  if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
-    name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
-  }
+resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
+}
 
-resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' =
-  if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
-    name: guid(
-      dnsZone.id,
-      subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
-      'DNS Zone Contributor'
-    )
-    properties: {
-      roleDefinitionId: subscriptionResourceId(
-        'Microsoft.Authorization/roleDefinitions',
-        'befefa01-2a29-4197-83a8-272ff33ce314'
-      ) // 'DNS Zone Contributor'
-      principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId
-      principalType: 'ServicePrincipal'
-    }
-    scope: dnsZone
+resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: guid(
+    dnsZone.id,
+    subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
+    'DNS Zone Contributor'
+  )
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'befefa01-2a29-4197-83a8-272ff33ce314'
+    ) // 'DNS Zone Contributor'
+    principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId
+    principalType: 'ServicePrincipal'
   }
+  scope: dnsZone
+}
 
 @description('The resource ID of the managed cluster.')
 output resourceId string = managedCluster.id
