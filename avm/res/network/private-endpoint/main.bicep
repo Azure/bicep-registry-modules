@@ -219,7 +219,7 @@ type ipConfigurationsType = {
 
   @description('Required. Properties of private endpoint IP configurations.')
   properties: {
-    @description('Optional. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string.')
     groupId: string
 
     @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
@@ -236,7 +236,7 @@ type manualPrivateLinkServiceConnectionsType = {
 
   @description('Required. Properties of private link service connection.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`.')
     groupIds: string[]
 
     @description('Required. The resource id of private link service.')
@@ -253,7 +253,7 @@ type privateLinkServiceConnectionsType = {
 
   @description('Required. Properties of private link service connection.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`.')
     groupIds: string[]
 
     @description('Required. The resource id of private link service.')

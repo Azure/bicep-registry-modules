@@ -63,7 +63,16 @@ module testDeployment '../../../main.bicep' = [
       applicationSecurityGroupResourceIds: []
       customNetworkInterfaceName: ''
       privateDnsZoneGroupName: ''
-      ipConfigurations: []
+      ipConfigurations: [
+        {
+          name: 'myIPconfig'
+          properties: {
+            groupId: ''
+            memberName: 'default'
+            privateIPAddress: '10.0.0.10'
+          }
+        }
+      ]
       customDnsConfigs: []
       privateDnsZoneResourceIds: []
       manualPrivateLinkServiceConnections: []
