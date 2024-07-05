@@ -1,0 +1,88 @@
+name: "avm.ptn.network.private-link-private-dns-zones"
+
+on:
+  workflow_dispatch:
+    inputs:
+      staticValidation:
+        type: boolean
+        description: "Execute static validation"
+        required: false
+        default: true
+      deploymentValidation:
+        type: boolean
+        description: "Execute deployment validation"
+        required: false
+        default: true
+      removeDeployment:
+        type: boolean
+        description: "Remove deployed module"
+        required: false
+        default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/actions/templates/avm-**"
+      - ".github/workflows/avm.template.module.yml"
+      - ".github/workflows/avm.ptn.network.private-link-private-dns-zones.yml"
+      - "avm/ptn/network/private-link-private-dns-zones/**"
+      - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
+      - "!*/**/README.md"
+
+env:
+  modulePath: "avm/ptn/network/private-link-private-dns-zones"
+  workflowPath: ".github/workflows/avm.ptn.network.private-link-private-dns-zones.yml"
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+      - name: "Get module test file paths"
+        id: get-module-test-file-paths
+        uses: ./.github/actions/templates/avm-getModuleTestFiles
+        with:
+          modulePath: "${{ env.modulePath }}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
+      modulePath: "${{ env.modulePath }}"
+
+  ##############################
+  #   Call reusable workflow   #
+  ##############################
+  call-workflow-passing-data:
+    name: "Run"
+    permissions:
+      id-token: write # For OIDC
+      contents: write # For release tags
+    needs:
+      - job_initialize_pipeline
+    uses: ./.github/workflows/avm.template.module.yml
+    with:
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
+      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+    secrets: inherit
