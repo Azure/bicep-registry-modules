@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "3755993319783141806"
+      "templateHash": "9057053312100662890"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1409,6 +1409,24 @@
         "description": "Optional. Enables Kubernetes Event-driven Autoscaling (KEDA)."
       }
     },
+    "vpaAddon": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to enable VPA add-on in cluster. Default value is false."
+      }
+    },
+    "vpaAddonAutoscaling": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether VPA add-on is enabled and configured to scale AKS-managed add-ons."
+      }
+    },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
@@ -1602,6 +1620,10 @@
         "workloadAutoScalerProfile": {
           "keda": {
             "enabled": "[parameters('kedaAddon')]"
+          },
+          "verticalPodAutoscaler": {
+            "addonAutoscaling": "[parameters('vpaAddonAutoscaling')]",
+            "enabled": "[parameters('vpaAddon')]"
           }
         },
         "networkProfile": {

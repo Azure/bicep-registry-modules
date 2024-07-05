@@ -1538,6 +1538,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`syslogPort`](#parameter-syslogport) | int | The syslog host port. If not specified, the default port is 28330. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`vpaAddon`](#parameter-vpaaddon) | bool | Whether to enable VPA add-on in cluster. Default value is false. |
+| [`vpaAddonAutoscaling`](#parameter-vpaaddonautoscaling) | string | Whether VPA add-on is enabled and configured to scale AKS-managed add-ons. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 
 ### Parameter: `name`
@@ -3223,6 +3225,29 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `vpaAddon`
+
+Whether to enable VPA add-on in cluster. Default value is false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `vpaAddonAutoscaling`
+
+Whether VPA add-on is enabled and configured to scale AKS-managed add-ons.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `webApplicationRoutingEnabled`
 
