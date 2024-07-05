@@ -759,20 +759,20 @@ Properties of private endpoint IP configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string. |
-| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string. |
+| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string. |
 | [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
 ### Parameter: `ipConfigurations.properties.groupId`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `ipConfigurations.properties.memberName`
 
-The member name of a group obtained from the remote resource that this private endpoint should connect to.
+The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.
 
 - Required: Yes
 - Type: string
