@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17371656075672093528"
+      "templateHash": "13225163198178156324"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -165,7 +165,7 @@
                   "type": "string"
                 },
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
                 }
               },
               "privateLinkServiceId": {
@@ -209,7 +209,7 @@
                   "type": "string"
                 },
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
                 }
               },
               "privateLinkServiceId": {

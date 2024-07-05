@@ -860,7 +860,7 @@ Properties of private link service connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`. |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
 | [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
 
 **Optional parameters**
@@ -871,7 +871,7 @@ Properties of private link service connection.
 
 ### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
 
 - Required: Yes
 - Type: array
@@ -936,7 +936,7 @@ Properties of private link service connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`. |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
 | [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
 
 **Optional parameters**
@@ -947,7 +947,7 @@ Properties of private link service connection.
 
 ### Parameter: `privateLinkServiceConnections.properties.groupIds`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
 
 - Required: Yes
 - Type: array
