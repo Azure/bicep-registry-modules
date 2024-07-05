@@ -121,7 +121,7 @@
               "groupId": {
                 "type": "string",
                 "metadata": {
-                  "description": "Optional. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string."
                 }
               },
               "memberName": {
@@ -165,7 +165,7 @@
                   "type": "string"
                 },
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`."
                 }
               },
               "privateLinkServiceId": {
@@ -209,7 +209,7 @@
                   "type": "string"
                 },
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`."
                 }
               },
               "privateLinkServiceId": {

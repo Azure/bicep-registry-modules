@@ -373,7 +373,16 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     applicationSecurityGroupResourceIds: []
     customDnsConfigs: []
     customNetworkInterfaceName: ''
-    ipConfigurations: []
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: ''
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
     location: '<location>'
     lock: {}
     manualPrivateLinkServiceConnections: []
@@ -424,7 +433,16 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": ""
     },
     "ipConfigurations": {
-      "value": []
+      "value": [
+        {
+          "name": "myIPconfig",
+          "properties": {
+            "groupId": "",
+            "memberName": "default",
+            "privateIPAddress": "10.0.0.10"
+          }
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -741,14 +759,16 @@ Properties of private endpoint IP configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string. |
 | [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
-**Optional parameters**
+### Parameter: `ipConfigurations.properties.groupId`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `ipConfigurations.properties.memberName`
 
@@ -760,13 +780,6 @@ The member name of a group obtained from the remote resource that this private e
 ### Parameter: `ipConfigurations.properties.privateIPAddress`
 
 A private IP address obtained from the private endpoint's subnet.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `ipConfigurations.properties.groupId`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
 
 - Required: Yes
 - Type: string
@@ -847,7 +860,7 @@ Properties of private link service connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`. |
 | [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
 
 **Optional parameters**
@@ -858,7 +871,7 @@ Properties of private link service connection.
 
 ### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`.
 
 - Required: Yes
 - Type: array
@@ -923,7 +936,7 @@ Properties of private link service connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`. |
 | [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
 
 **Optional parameters**
@@ -934,7 +947,7 @@ Properties of private link service connection.
 
 ### Parameter: `privateLinkServiceConnections.properties.groupIds`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property can be defined as empty string array `[]`.
 
 - Required: Yes
 - Type: array
