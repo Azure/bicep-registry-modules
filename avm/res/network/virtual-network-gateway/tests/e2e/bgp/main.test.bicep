@@ -57,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      activeActive:false
       bgpSettings: {
         activeActive: 'false'
         customBgpIpAddresses: ['169.254.21.4']
