@@ -62,7 +62,10 @@ runs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        creds: ${{ env.AZURE_CREDENTIALS }}
+        # creds: ${{ env.AZURE_CREDENTIALS }}
+        client-id: ${{ env.ARM_CLIENT_ID }}
+        tenant-id: ${{ env.ARM_TENANT_ID }}
+        subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
 
     # [Set Deployment Location] task(s)
