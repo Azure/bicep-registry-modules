@@ -61,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
       bgpSettings: {
         activeActive: 'true'
         customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
-        secondCustomBgpIpAddresses: ['169.254.22.4']
+        secondCustomBgpIpAddresses: ['169.254.22.4','169.254.22.5']
         asn: 65515
       }
       domainNameLabel: [

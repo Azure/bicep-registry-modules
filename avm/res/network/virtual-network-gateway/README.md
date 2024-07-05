@@ -311,6 +311,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       ]
       secondCustomBgpIpAddresses: [
         '169.254.22.4'
+        '169.254.22.5'
       ]
     }
     disableIPSecReplayProtection: true
@@ -373,7 +374,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
           "169.254.21.5"
         ],
         "secondCustomBgpIpAddresses": [
-          "169.254.22.4"
+          "169.254.22.4",
+          "169.254.22.5"
         ]
       }
     },
