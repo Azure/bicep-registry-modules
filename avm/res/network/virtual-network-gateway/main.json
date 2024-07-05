@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8614975329946087613"
+      "templateHash": "9245960517475333865"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -224,7 +224,7 @@
       },
       "nullable": true
     },
-    "bgpType": {
+    "bgpSingleApipaType": {
       "type": "object",
       "properties": {
         "activeActive": {
@@ -249,12 +249,12 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The list of custom BGP peering addresses which belong to IP configuration."
+            "description": "Optional. The list of custom BGP Address (APIPA) peering addresses which belong to IP configuration."
           }
         }
       }
     },
-    "bgpApipaType": {
+    "bgpDoubleApipaType": {
       "type": "object",
       "properties": {
         "activeActive": {
@@ -279,7 +279,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The list of custom BGP peering addresses which belong to IP configuration."
+            "description": "Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
           }
         },
         "secondCustomBgpIpAddresses": {
@@ -289,7 +289,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The list of the second custom BGP peering addresses which belong to IP configuration."
+            "description": "Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
           }
         }
       }
@@ -300,10 +300,10 @@
         "propertyName": "activeActive",
         "mapping": {
           "false": {
-            "$ref": "#/definitions/bgpType"
+            "$ref": "#/definitions/bgpSingleApipaType"
           },
           "true": {
-            "$ref": "#/definitions/bgpApipaType"
+            "$ref": "#/definitions/bgpDoubleApipaType"
           }
         }
       }

@@ -180,31 +180,6 @@ var bgpSettingsVar = bgpSettings.?activeActive == 'false'
         }
       ]
     }
-// ? {
-//   asn: bgpParams.?asn ?? 65815
-//   bgpPeeringAddresses: [
-//     {
-//       customBgpIpAddresses: bgpParams.?primaryCustomBgpIPs
-//       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
-//     }
-//     {
-//       customBgpIpAddresses: bgpParams.?secondaryCustomBgpIPs
-//       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
-//     }
-
-//   ]
-//   peerWeight: bgpParams.?peerWeight
-// }
-// : {
-//   asn: bgpParams.?asn
-//   bgpPeeringAddresses: [
-//     {
-//       customBgpIpAddresses: bgpParams.?primaryCustomBgpIPs
-//       ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
-//     }
-//   ]
-//   peerWeight: bgpParams.?peerWeight
-// }
 
 
 // Potential configurations (active-active vs active-passive)
@@ -572,7 +547,7 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
-type bgpType = {
+type bgpSingleApipaType = {
   activeActive: 'false'
   
   @description('Optional. The Autonomous System Number value.')
@@ -580,11 +555,11 @@ type bgpType = {
   @maxValue(4294967295)
   asn: int? 
 
-  @description('Optional. The list of custom BGP peering addresses which belong to IP configuration.')
+  @description('Optional. The list of custom BGP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
 }
 
-type bgpApipaType = {
+type bgpDoubleApipaType = {
   activeActive: 'true'
   
   @description('Optional. The Autonomous System Number value.')
@@ -592,15 +567,14 @@ type bgpApipaType = {
   @maxValue(4294967295)
   asn: int? 
 
-  @description('Optional. The list of custom BGP peering addresses which belong to IP configuration.')
+  @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
-
   
-  @description('Optional. The list of the second custom BGP peering addresses which belong to IP configuration.')
+  @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   secondCustomBgpIpAddresses: string[]?
 }
 
 @discriminator('activeActive')
-type bgpSettingType = bgpType | bgpApipaType
+type bgpSettingType = bgpSingleApipaType | bgpDoubleApipaType
 
 

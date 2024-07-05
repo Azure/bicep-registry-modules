@@ -30,14 +30,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
-- [VPN with BGP settings](#example-1-vpn-with-bgp-settings)
-- [VPN with APIPA BGP settings](#example-2-vpn-with-apipa-bgp-settings)
-- [Using only defaults](#example-3-using-only-defaults)
-- [WAF-aligned](#example-4-waf-aligned)
+- [VPN Active Passive with BGP settings](#example-1-vpn-active-passive-with-bgp-settings)
+- [VPN Active Active with BGP settings](#example-2-vpn-active-active-with-bgp-settings)
+- [VPN Active Active with BGP settings and Double APIPA configuration](#example-3-vpn-active-active-with-bgp-settings-and-double-apipa-configuration)
+- [VPN Active Passive with BGP settings and Single APIPA configuration](#example-4-vpn-active-passive-with-bgp-settings-and-single-apipa-configuration)
+- [Using only defaults](#example-5-using-only-defaults)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _VPN with BGP settings_
+### Example 1: _VPN Active Passive with BGP settings_
 
-This instance deploys the module with the VPN with BGP settings.
+This instance deploys the module with the VPN Active Passive with BGP settings.
 
 
 <details>
@@ -59,9 +61,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     bgpSettings: {
       activeActive: 'false'
       asn: 65515
-      customBgpIpAddresses: [
-        '169.254.21.4'
-      ]
     }
     disableIPSecReplayProtection: true
     domainNameLabel: [
@@ -117,10 +116,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "bgpSettings": {
       "value": {
         "activeActive": "false",
-        "asn": 65515,
-        "customBgpIpAddresses": [
-          "169.254.21.4"
-        ]
+        "asn": 65515
       }
     },
     "disableIPSecReplayProtection": {
@@ -163,9 +159,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 2: _VPN with APIPA BGP settings_
+### Example 2: _VPN Active Active with BGP settings_
 
-This instance deploys the module with the VPN with APIPA BGP settings.
+This instance deploys the module with the VPN Active Active with BGP settings.
 
 
 <details>
@@ -178,24 +174,19 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   params: {
     // Required parameters
     gatewayType: 'Vpn'
-    name: 'nvgapp001'
+    name: 'nvgbaa001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
+    activeActive: true
     allowRemoteVnetTraffic: true
     bgpSettings: {
       activeActive: 'true'
       asn: 65515
-      customBgpIpAddresses: [
-        '169.254.21.4'
-      ]
-      secondCustomBgpIpAddresses: [
-        '169.254.21.5'
-      ]
     }
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgapp'
+      'dm-nvgbaa'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -229,7 +220,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgapp001"
+      "value": "nvgbaa001"
     },
     "skuName": {
       "value": "VpnGw2AZ"
@@ -238,19 +229,16 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
+    "activeActive": {
+      "value": true
+    },
     "allowRemoteVnetTraffic": {
       "value": true
     },
     "bgpSettings": {
       "value": {
         "activeActive": "true",
-        "asn": 65515,
-        "customBgpIpAddresses": [
-          "169.254.21.4"
-        ],
-        "secondCustomBgpIpAddresses": [
-          "169.254.21.5"
-        ]
+        "asn": 65515
       }
     },
     "disableIPSecReplayProtection": {
@@ -258,7 +246,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgapp"
+        "dm-nvgbaa"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -293,7 +281,273 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _VPN Active Active with BGP settings and Double APIPA configuration_
+
+This instance deploys the module with the VPN in Active Active configuraztion and APIPA BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'Vpn'
+    name: 'nvgaaa001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    activeActive: true
+    allowRemoteVnetTraffic: true
+    bgpSettings: {
+      activeActive: 'true'
+      asn: 65515
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+      secondCustomBgpIpAddresses: [
+        '169.254.22.4'
+      ]
+    }
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgaaa'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgaaa001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "activeActive": {
+      "value": true
+    },
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "bgpSettings": {
+      "value": {
+        "activeActive": "true",
+        "asn": 65515,
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ],
+        "secondCustomBgpIpAddresses": [
+          "169.254.22.4"
+        ]
+      }
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgaaa"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _VPN Active Passive with BGP settings and Single APIPA configuration_
+
+This instance deploys the module with the VPN Active Passive with APIPA BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'Vpn'
+    name: 'nvgbap001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    activeActive: false
+    allowRemoteVnetTraffic: true
+    bgpSettings: {
+      activeActive: 'false'
+      asn: 65515
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+    }
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgbap'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgbap001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "activeActive": {
+      "value": false
+    },
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "bgpSettings": {
+      "value": {
+        "activeActive": "false",
+        "asn": 65515,
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ]
+      }
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgbap"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -365,7 +619,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

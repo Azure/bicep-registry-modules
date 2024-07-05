@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'VPN Active Passive with BGP settings'
-metadata description = 'This instance deploys the module with the VPN Active Passive with BGP settings.'
+metadata name = 'VPN Active Active with BGP settings and Double APIPA configuration'
+metadata description = 'This instance deploys the module with the VPN in Active Active configuraztion and APIPA BGP settings.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworkgatewa
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvgbgp'
+param serviceShort string = 'nvgaaa'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -57,9 +57,11 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActive:false
+      activeActive: true
       bgpSettings: {
-        activeActive: 'false'
+        activeActive: 'true'
+        customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
+        secondCustomBgpIpAddresses: ['169.254.22.4']
         asn: 65515
       }
       domainNameLabel: [
