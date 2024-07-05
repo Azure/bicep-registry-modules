@@ -292,6 +292,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
       : null
     zoneRedundancy: acrSku == 'Premium' ? zoneRedundancy : null
   }
+
   resource registry_scopeMap 'scopeMaps' = [
     for (scopeMap, index) in (scopeMaps ?? []): {
       name: scopeMap.?name ?? '${name}-scopemaps'
