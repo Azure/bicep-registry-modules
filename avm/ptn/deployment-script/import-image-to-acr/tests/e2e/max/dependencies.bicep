@@ -113,13 +113,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
     location: location
     acrSku: 'Premium'
     acrAdminUserEnabled: false
-    roleAssignments: [
-      for registryRole in ['AcrPull', 'AcrPush']: {
-        principalId: identity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: registryRole
-      }
-    ]
+    // roleAssisgnments are done in the main module
     networkRuleBypassOptions: 'AzureServices'
     publicNetworkAccess: 'Disabled'
     networkRuleSetDefaultAction: 'Deny'

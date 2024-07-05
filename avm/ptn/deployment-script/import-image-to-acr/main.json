@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "3802219188701729131"
+      "templateHash": "4157392410007593041"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -83,7 +83,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`"
+        "description": "Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`."
       }
     },
     "managedIdentities": {
@@ -161,12 +161,13 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\r\n      \"key1\": \"value1\"\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
+        "example": "  {\n      \"key1\": \"value1\"\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
       }
     }
   },
   "variables": {
+    "$fxv#0": "#!/bin/bash\nset -e\n\necho 'Waiting on RBAC replication ($initialDelay)'\nsleep $initialDelay\n\n# retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\nretryLoopCount=0\nuntil [ $retryLoopCount -ge $retryMax ]\ndo\n  echo 'Importing Image ($retryLoopCount): $imageName into ACR: $acrName'\n  if [ $overwriteExistingImage = 'true' ]; then\n    az acr import -n $acrName --source $imageName --force && break\n  else\n    az acr import -n $acrName --source $imageName && break\n  fi\n\n  sleep $retrySleep\n  retryLoopCount=$((retryLoopCount+1))\ndone\n\necho 'done'\n",
     "useExistingManagedIdentity": "[greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())), 0)]"
   },
   "resources": {
@@ -201,33 +202,57 @@
         "name": "existingManagedIdentities",
         "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()))]"
       },
+      "condition": "[parameters('assignRbacRole')]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/')[4]]",
       "name": "[last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/'))]"
     },
     "newManagedIdentity": {
-      "condition": "[not(variables('useExistingManagedIdentity'))]",
+      "condition": "[and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole'))]",
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
       "name": "[coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
     },
-    "deploymentScript_roleAssignments": {
+    "acrRoleAssignmentExistingManagedIdentities": {
       "copy": {
-        "name": "deploymentScript_roleAssignments",
-        "count": "[length(if(and(variables('useExistingManagedIdentity'), parameters('assignRbacRole')), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray()))]"
+        "name": "acrRoleAssignmentExistingManagedIdentities",
+        "count": "[length(range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray()))))]"
       },
+      "condition": "[variables('useExistingManagedIdentity')]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(if(and(variables('useExistingManagedIdentity'), parameters('assignRbacRole')), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())[copyIndex()], 'roleAssignment')]",
+      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
+      "name": "[guid(format('roleAssignment-acr-{0}', last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()]], '/'))))]",
       "properties": {
+        "principalId": "[reference(format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])).principalId]",
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "principalId": "[reference(format('existingManagedIdentities[{0}]', copyIndex())).principalId]"
+        "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "[format('existingManagedIdentities[{0}]', copyIndex())]"
+        "acr",
+        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])]",
+        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])]"
+      ]
+    },
+    "acrRoleAssignmentNewManagedIdentity": {
+      "condition": "[not(variables('useExistingManagedIdentity'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
+      "name": "[guid(format('roleAssignment-acr-{0}', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport')))]",
+      "properties": {
+        "principalId": "[reference('newManagedIdentity').principalId]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "acr",
+        "newManagedIdentity"
       ]
     },
     "imageImport": {
@@ -240,7 +265,6 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "roleAssignments": "[if(and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole')), createObject('value', createArray(createObject('principalId', reference('newManagedIdentity').principalId, 'roleDefinitionIdOrName', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))), createObject('value', createArray()))]",
           "name": {
             "value": "[parameters('name')]"
           },
@@ -311,7 +335,7 @@
             "value": "[parameters('subnetResourceIds')]"
           },
           "scriptContent": {
-            "value": "#!/bin/bash\r\nset -e\r\n\r\necho \"Waiting on RBAC replication ($initialDelay)\\n\"\r\nsleep $initialDelay\r\n\r\n# retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\r\nretryLoopCount=0\r\nuntil [ $retryLoopCount -ge $retryMax ]\r\ndo\r\n  echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\r\n  if [ $overwriteExistingImage = 'true' ]; then\r\n    az acr import -n $acrName --source $imageName --force && break\r\n  else\r\n    az acr import -n $acrName --source $imageName && break\r\n  fi\r\n\r\n  sleep $retrySleep\r\n  retryLoopCount=$((retryLoopCount+1))\r\ndone\r\n\r\necho \"done\\n\""
+            "value": "[variables('$fxv#0')]"
           }
         },
         "template": {
@@ -809,10 +833,7 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "newManagedIdentity"
-      ]
+      }
     }
   },
   "outputs": {

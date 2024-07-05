@@ -61,6 +61,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       cleanupPreference: 'OnExpiration'
+      assignRbacRole: true
       managedIdentities: { userAssignedResourcesIds: [dependencies.outputs.managedIdentityResourceId] }
       overwriteExistingImage: true
       storageAccountResourceId: dependencies.outputs.storageAccountResourceId

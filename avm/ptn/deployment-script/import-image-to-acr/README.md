@@ -111,6 +111,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     name: 'dsiitamax001'
     // Non-required parameters
+    assignRbacRole: true
     cleanupPreference: 'OnExpiration'
     location: '<location>'
     managedIdentities: '<managedIdentities>'
@@ -148,6 +149,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       "value": "dsiitamax001"
     },
     // Non-required parameters
+    "assignRbacRole": {
+      "value": true
+    },
     "cleanupPreference": {
       "value": "OnExpiration"
     },
@@ -265,7 +269,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`assignRbacRole`](#parameter-assignrbacrole) | bool | If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true` |
+| [`assignRbacRole`](#parameter-assignrbacrole) | bool | If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`. |
 | [`cleanupPreference`](#parameter-cleanuppreference) | string | When the script resource is cleaned up. Default is OnExpiration and the cleanup time is after 1h. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`initialScriptDelay`](#parameter-initialscriptdelay) | int | A delay in seconds before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate. Default is 30s. |
@@ -328,7 +332,7 @@ Name of the Managed Identity resource to create. Required if `assignRbacRole` is
 
 ### Parameter: `assignRbacRole`
 
-If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`
+If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`.
 
 - Required: No
 - Type: bool

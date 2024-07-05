@@ -17,7 +17,7 @@ param acrName string
 @description('Optional. How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time.')
 param runOnce bool = false
 
-@description('Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`')
+@description('Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`.')
 param assignRbacRole bool = true
 
 @description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
@@ -99,49 +99,52 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: acrName
 }
 
-// needed to "convert" resourceids to objectids
+// needed to "convert" resourceIds to principalId
 resource existingManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = [
-  for resourceId in (managedIdentities.?userAssignedResourcesIds ?? []): {
+  for resourceId in (managedIdentities.?userAssignedResourcesIds ?? []): if (assignRbacRole) {
     name: last(split(resourceId, '/'))
+    scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4]) // get the resource group from the managed identity, as it could be in another resource group
   }
 ]
 
-resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!useExistingManagedIdentity) {
+resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!useExistingManagedIdentity && assignRbacRole) {
   name: managedIdentityName ?? 'id-ContainerRegistryImport'
   location: location
   tags: tags
 }
 
-// rbac assignment for existing managed identities
-resource deploymentScript_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (resourceId, i) in (useExistingManagedIdentity && assignRbacRole
-    ? (managedIdentities.?userAssignedResourcesIds ?? [])
-    : []): {
-    name: guid(resourceId, 'roleAssignment')
+// assign the Contributor role to the managed identity (new or existing) to import images into the ACR
+resource acrRoleAssignmentExistingManagedIdentities 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for i in range(0, length(assignRbacRole ? (managedIdentities.?userAssignedResourcesIds ?? []) : [])): if (useExistingManagedIdentity) {
+    name: guid('roleAssignment-acr-${existingManagedIdentities[i].name}')
+    scope: acr
     properties: {
+      principalId: existingManagedIdentities[i].properties.principalId
       roleDefinitionId: subscriptionResourceId(
         'Microsoft.Authorization/roleDefinitions',
         'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      ) // Contributor is needed to import ACR
-      principalId: existingManagedIdentities[i].properties.principalId
+      )
+      principalType: 'ServicePrincipal' // See https://docs.microsoft.com/azure/role-based-access-control/role-assignments-template#new-service-principal to understand why this property is included.
     }
-    scope: resourceGroup()
   }
 ]
+resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!useExistingManagedIdentity) {
+  name: guid('roleAssignment-acr-${newManagedIdentity.name}')
+  scope: acr
+  properties: {
+    principalId: newManagedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    )
+    principalType: 'ServicePrincipal' // See https://docs.microsoft.com/azure/role-based-access-control/role-assignments-template#new-service-principal to understand why this property is included.
+  }
+}
 
 module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
-    // assign new managed identity rbac roles here, as the principalId is available
-    roleAssignments: !useExistingManagedIdentity && assignRbacRole
-      ? [
-          {
-            principalId: newManagedIdentity.properties.principalId
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor is needed to import ACR
-          }
-        ]
-      : []
     name: name
     location: location
     tags: tags
@@ -183,28 +186,7 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     storageAccountResourceId: storageAccountResourceId
     containerGroupName: '${resourceGroup().name}-infrastructure'
     subnetResourceIds: subnetResourceIds
-    scriptContent: '''#!/bin/bash
-set -e
-
-echo "Waiting on RBAC replication ($initialDelay)\n"
-sleep $initialDelay
-
-# retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)
-retryLoopCount=0
-until [ $retryLoopCount -ge $retryMax ]
-do
-  echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName\n"
-  if [ $overwriteExistingImage = 'true' ]; then
-    az acr import -n $acrName --source $imageName --force && break
-  else
-    az acr import -n $acrName --source $imageName && break
-  fi
-
-  sleep $retrySleep
-  retryLoopCount=$((retryLoopCount+1))
-done
-
-echo "done\n"'''
+    scriptContent: loadTextContent('./scripts/importscript.sh', 'utf-8')
   }
 }
 
