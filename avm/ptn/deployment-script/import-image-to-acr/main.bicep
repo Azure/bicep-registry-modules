@@ -186,7 +186,29 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     storageAccountResourceId: storageAccountResourceId
     containerGroupName: '${resourceGroup().name}-infrastructure'
     subnetResourceIds: subnetResourceIds
-    scriptContent: loadTextContent('./scripts/importscript.sh', 'utf-8')
+    // scriptContent: loadTextContent('./scripts/importscript.sh')
+    scriptContent: '''#!/bin/bash
+    set -e
+
+    echo "Waiting on RBAC replication ($initialDelay)\n"
+    sleep $initialDelay
+
+    # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)
+    retryLoopCount=0
+    until [ $retryLoopCount -ge $retryMax ]
+    do
+      echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName\n"
+      if [ $overwriteExistingImage = 'true' ]; then
+        az acr import -n $acrName --source $imageName --force
+      else
+        az acr import -n $acrName --source $imageName
+      fi
+
+      sleep $retrySleep
+      retryLoopCount=$((retryLoopCount+1))
+    done
+
+    echo "done\n"'''
   }
 }
 
