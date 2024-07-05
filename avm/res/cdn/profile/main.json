@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1004296684432790978"
+      "templateHash": "5856156965470408523"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -337,7 +337,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "646975231992417020"
+              "templateHash": "265552218697992746"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint.",
@@ -652,6 +652,13 @@
                 "description": "The properties of the endpoint."
               },
               "value": "[reference('endpoint')]"
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "The uri of the endpoint."
+              },
+              "value": "[format('https://{0}', reference('endpoint').hostName)]"
             }
           }
         }
@@ -2128,6 +2135,27 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('profile', '2023-05-01', 'full').location]"
+    },
+    "endpointName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the CDN profile endpoint."
+      },
+      "value": "[if(empty(parameters('endpointProperties')), '', reference('profile_endpoint').outputs.name.value)]"
+    },
+    "endpointId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the CDN profile endpoint."
+      },
+      "value": "[if(empty(parameters('endpointProperties')), '', reference('profile_endpoint').outputs.resourceId.value)]"
+    },
+    "uri": {
+      "type": "string",
+      "metadata": {
+        "description": "The uri of the CDN profile endpoint."
+      },
+      "value": "[if(empty(parameters('endpointProperties')), '', reference('profile_endpoint').outputs.uri.value)]"
     }
   }
 }

@@ -259,6 +259,15 @@ output profileType string = profile.type
 @description('The location the resource was deployed into.')
 output location string = profile.location
 
+@description('The name of the CDN profile endpoint.')
+output endpointName string = empty(endpointProperties) ? '' : profile_endpoint.outputs.name
+
+@description('The resource ID of the CDN profile endpoint.')
+output endpointId string = empty(endpointProperties) ? '' : profile_endpoint.outputs.resourceId
+
+@description('The uri of the CDN profile endpoint.')
+output uri string = empty(endpointProperties) ? '' : profile_endpoint.outputs.uri
+
 // =============== //
 //   Definitions   //
 // =============== //
