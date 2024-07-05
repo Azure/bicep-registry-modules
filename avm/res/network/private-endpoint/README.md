@@ -378,8 +378,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         name: 'myIPconfig'
         properties: {
           groupId: ''
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
+          memberName: ''
+          privateIPAddress: '10.0.1.10'
         }
       }
     ]
@@ -438,8 +438,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
           "name": "myIPconfig",
           "properties": {
             "groupId": "",
-            "memberName": "default",
-            "privateIPAddress": "10.0.0.10"
+            "memberName": "",
+            "privateIPAddress": "10.0.1.10"
           }
         }
       ]
