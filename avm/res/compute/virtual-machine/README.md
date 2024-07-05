@@ -24,6 +24,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
@@ -1039,6 +1040,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
+    bypassPlatformSafetyChecksOnUserSchedule: true
     computerName: 'winvm1'
     dataDisks: [
       {
@@ -1166,6 +1168,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1334,6 +1337,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "backupVaultResourceGroup": {
       "value": "<backupVaultResourceGroup>"
     },
+    "bypassPlatformSafetyChecksOnUserSchedule": {
+      "value": true
+    },
     "computerName": {
       "value": "winvm1"
     },
@@ -1490,6 +1496,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "maintenanceConfigurationResourceId": {
+      "value": "<maintenanceConfigurationResourceId>"
     },
     "managedIdentities": {
       "value": {
@@ -3137,6 +3146,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationresourceid) | string | The resource Id of a maintenance configuration for this VM. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
 | [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
 | [`patchAssessmentMode`](#parameter-patchassessmentmode) | string | VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours. |
@@ -3203,7 +3213,6 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`managedDisk`](#parameter-osdiskmanageddisk) | object | The managed disk parameters. |
 
 **Optional parameters**
@@ -3213,14 +3222,8 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 | [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
 | [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machine should be created. |
 | [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`name`](#parameter-osdiskname) | string | The disk name. |
-
-### Parameter: `osDisk.diskSizeGB`
-
-Specifies the size of an empty data disk in gigabytes.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `osDisk.managedDisk`
 
@@ -3229,23 +3232,25 @@ The managed disk parameters.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
 
 ### Parameter: `osDisk.managedDisk.storageAccountType`
 
 Specifies the storage account type for the managed disk.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -3259,13 +3264,6 @@ Specifies the storage account type for the managed disk.
     'UltraSSD_LRS'
   ]
   ```
-
-### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
-
-Specifies the customer managed disk encryption set resource id for the managed disk.
-
-- Required: No
-- Type: string
 
 ### Parameter: `osDisk.caching`
 
@@ -3310,6 +3308,13 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
     'Detach'
   ]
   ```
+
+### Parameter: `osDisk.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: No
+- Type: int
 
 ### Parameter: `osDisk.name`
 
@@ -3918,6 +3923,14 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `maintenanceConfigurationResourceId`
+
+The resource Id of a maintenance configuration for this VM.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `managedIdentities`
 

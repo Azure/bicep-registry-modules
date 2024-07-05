@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "10235230031944796617"
+      "version": "0.28.1.47646",
+      "templateHash": "16568444774121110101"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -629,7 +629,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.appconfiguration-configurationstore.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -801,8 +801,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4987655092014889247"
+              "version": "0.28.1.47646",
+              "templateHash": "1895784594394176994"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value.",
@@ -922,8 +922,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "3867721314598368740"
+              "version": "0.28.1.47646",
+              "templateHash": "15490063653423076927"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica.",
@@ -1686,6 +1686,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('configurationStore', '2023-03-01', 'full').location]"
+    },
+    "endpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint of the app configuration."
+      },
+      "value": "[reference('configurationStore').endpoint]"
     }
   }
 }
