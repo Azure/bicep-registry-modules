@@ -12,10 +12,10 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the network group.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
-param staticMembers array = []
+param staticMembers staticMembersType
 
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
@@ -25,12 +25,12 @@ resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2023-04-0
   name: name
   parent: networkManager
   properties: {
-    description: description
+    description: description ?? ''
   }
 }
 
 module networkGroup_staticMembers 'static-member/main.bicep' = [
-  for (staticMember, index) in staticMembers: {
+  for (staticMember, index) in staticMembers ?? []: {
     name: '${uniqueString(deployment().name)}-NetworkGroup-StaticMembers-${index}'
     params: {
       networkManagerName: networkManager.name
@@ -49,3 +49,15 @@ output resourceId string = networkGroup.id
 
 @sys.description('The resource group the network group was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type staticMembersType = {
+  @sys.description('Required. The name of the static member.')
+  name: string
+
+  @sys.description('Required. Resource ID of the virtual network.')
+  resourceId: string
+}[]?

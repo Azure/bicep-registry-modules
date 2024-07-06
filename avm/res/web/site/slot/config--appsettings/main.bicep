@@ -8,14 +8,19 @@ param slotName string
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
 
-@description('Required. Type of slot to deploy.')
+@description('Required. Type of site to deploy.')
 @allowed([
   'functionapp' // function app windows os
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
+  'functionapp,linux,container' // function app linux container
   'app,linux' // linux web app
-  'app' // normal web app
+  'app' // windows web app
+  'linux,api' // linux api app
+  'api' // windows api app
+  'app,linux,container' // linux container app
+  'app,container,windows' // windows container app
 ])
 param kind string
 
@@ -58,20 +63,18 @@ resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   }
 }
 
-resource appInsight 'Microsoft.Insights/components@2020-02-02' existing =
-  if (!empty(appInsightResourceId)) {
-    name: last(split(appInsightResourceId ?? 'dummyName', '/'))
-    scope: resourceGroup(split(appInsightResourceId ?? '//', '/')[2], split(appInsightResourceId ?? '////', '/')[4])
-  }
+resource appInsight 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(appInsightResourceId)) {
+  name: last(split(appInsightResourceId ?? 'dummyName', '/'))
+  scope: resourceGroup(split(appInsightResourceId ?? '//', '/')[2], split(appInsightResourceId ?? '////', '/')[4])
+}
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing =
-  if (!empty(storageAccountResourceId)) {
-    name: last(split(storageAccountResourceId ?? 'dummyName', '/'))!
-    scope: resourceGroup(
-      split(storageAccountResourceId ?? '//', '/')[2],
-      split(storageAccountResourceId ?? '////', '/')[4]
-    )
-  }
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = if (!empty(storageAccountResourceId)) {
+  name: last(split(storageAccountResourceId ?? 'dummyName', '/'))!
+  scope: resourceGroup(
+    split(storageAccountResourceId ?? '//', '/')[2],
+    split(storageAccountResourceId ?? '////', '/')[4]
+  )
+}
 
 resource slotSettings 'Microsoft.Web/sites/slots/config@2022-09-01' = {
   name: 'appsettings'

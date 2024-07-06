@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "1114274520149552239"
+      "version": "0.28.1.47646",
+      "templateHash": "4541932168440754260"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -115,6 +115,7 @@
               },
               "livenessProbe": {
                 "type": "object",
+                "properties": {},
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. The liveness probe."
@@ -335,7 +336,7 @@
                       }
                     },
                     "secureValue": {
-                      "type": "string",
+                      "type": "securestring",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. The value of the secure environment variable."
@@ -362,6 +363,49 @@
           }
         }
       }
+    },
+    "imageRegistryCredentialType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The Docker image registry server without a protocol such as \"http\" and \"https\"."
+            }
+          },
+          "identity": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The identity for the private registry."
+            }
+          },
+          "identityUrl": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The identity URL for the private registry."
+            }
+          },
+          "username": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The username for the private registry."
+            }
+          },
+          "password": {
+            "type": "securestring",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The password for the private registry."
+            }
+          }
+        }
+      },
+      "nullable": true
     },
     "ipAddressPortsType": {
       "type": "array",
@@ -457,8 +501,7 @@
       }
     },
     "imageRegistryCredentials": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/imageRegistryCredentialType",
       "metadata": {
         "description": "Optional. The image registry credentials by which the container group is created from."
       }
@@ -590,7 +633,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.containerinstance-containergroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",

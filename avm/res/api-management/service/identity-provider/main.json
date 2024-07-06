@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6944159515007886666"
+      "version": "0.28.1.47646",
+      "templateHash": "834622836195899034"
     },
     "name": "API Management Service Identity Providers",
     "description": "This module deploys an API Management Service Identity Provider.",
@@ -109,7 +109,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/identityProviders",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "type": "[parameters('type')]",

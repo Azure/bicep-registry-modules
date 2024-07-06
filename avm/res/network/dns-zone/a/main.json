@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "4017689599365774964"
+      "version": "0.27.1.19265",
+      "templateHash": "10382086266285650461"
     },
     "name": "Public DNS Zone A record",
     "description": "This module deploys a Public DNS Zone A record.",
@@ -155,7 +155,7 @@
       "apiVersion": "2018-05-01",
       "name": "[format('{0}/{1}', parameters('dnsZoneName'), parameters('name'))]",
       "properties": {
-        "ARecords": "[if(not(empty(parameters('aRecords'))), parameters('aRecords'), null())]",
+        "ARecords": "[parameters('aRecords')]",
         "metadata": "[parameters('metadata')]",
         "TTL": "[parameters('ttl')]",
         "targetResource": "[if(not(empty(parameters('targetResourceId'))), createObject('id', parameters('targetResourceId')), null())]"
