@@ -132,7 +132,7 @@ jobs:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
         env:
-          # AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           ARM_SPN_CLIENT_ID: ${{ secrets.ARM_SPN_CLIENT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
