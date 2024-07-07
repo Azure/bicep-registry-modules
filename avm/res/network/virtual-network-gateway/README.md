@@ -30,14 +30,131 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
-- [VPN Active Passive with BGP settings](#example-1-vpn-active-passive-with-bgp-settings)
-- [VPN Active Active with BGP settings](#example-2-vpn-active-active-with-bgp-settings)
-- [VPN Active Active with BGP settings and Double APIPA configuration](#example-3-vpn-active-active-with-bgp-settings-and-double-apipa-configuration)
-- [VPN Active Passive with BGP settings and Single APIPA configuration](#example-4-vpn-active-passive-with-bgp-settings-and-single-apipa-configuration)
-- [Using only defaults](#example-5-using-only-defaults)
-- [WAF-aligned](#example-6-waf-aligned)
+- [AAD-VPN](#example-1-aad-vpn)
+- [VPN Active Passive with BGP settings](#example-2-vpn-active-passive-with-bgp-settings)
+- [VPN Active Active with BGP settings](#example-3-vpn-active-active-with-bgp-settings)
+- [VPN Active Active with BGP settings and Double APIPA configuration](#example-4-vpn-active-active-with-bgp-settings-and-double-apipa-configuration)
+- [VPN Active Passive with BGP settings and Single APIPA configuration](#example-5-vpn-active-passive-with-bgp-settings-and-single-apipa-configuration)
+- [Using only defaults](#example-6-using-only-defaults)
+- [ExpressRoute](#example-7-expressroute)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [Using SKU without Availability Zones](#example-9-using-sku-without-availability-zones)
+- [VPN](#example-10-vpn)
+- [WAF-aligned](#example-11-waf-aligned)
 
-### Example 1: _VPN Active Passive with BGP settings_
+### Example 1: _AAD-VPN_
+
+This instance deploys the module with the AAD set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'Vpn'
+    name: 'nvngavpn001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    activeActive: false
+    domainNameLabel: [
+      'dm-nvngavpn'
+    ]
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnClientAadConfiguration: {
+      aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
+      aadIssuer: '<aadIssuer>'
+      aadTenant: '<aadTenant>'
+      vpnAuthenticationTypes: [
+        'AAD'
+      ]
+      vpnClientProtocols: [
+        'OpenVPN'
+      ]
+    }
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvngavpn001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "activeActive": {
+      "value": false
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvngavpn"
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnClientAadConfiguration": {
+      "value": {
+        "aadAudience": "41b23e61-6c1e-4545-b367-cd054e0ed4b4",
+        "aadIssuer": "<aadIssuer>",
+        "aadTenant": "<aadTenant>",
+        "vpnAuthenticationTypes": [
+          "AAD"
+        ],
+        "vpnClientProtocols": [
+          "OpenVPN"
+        ]
+      }
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _VPN Active Passive with BGP settings_
 
 This instance deploys the module with the VPN Active Passive with BGP settings.
 
@@ -159,7 +276,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 2: _VPN Active Active with BGP settings_
+### Example 3: _VPN Active Active with BGP settings_
 
 This instance deploys the module with the VPN Active Active with BGP settings.
 
@@ -281,7 +398,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 3: _VPN Active Active with BGP settings and Double APIPA configuration_
+### Example 4: _VPN Active Active with BGP settings and Double APIPA configuration_
 
 This instance deploys the module with the VPN in Active Active configuraztion and APIPA BGP settings.
 
@@ -419,7 +536,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 4: _VPN Active Passive with BGP settings and Single APIPA configuration_
+### Example 5: _VPN Active Passive with BGP settings and Single APIPA configuration_
 
 This instance deploys the module with the VPN Active Passive with APIPA BGP settings.
 
@@ -549,7 +666,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 5: _Using only defaults_
+### Example 6: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -621,7 +738,533 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _ExpressRoute_
+
+This instance deploys the module with the ExpressRoute set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'ExpressRoute'
+    name: 'nvger001'
+    skuName: 'ErGw1AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    domainNameLabel: [
+      'dm-nvger'
+    ]
+    gatewayPipName: 'pip-nvger'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "ExpressRoute"
+    },
+    "name": {
+      "value": "nvger001"
+    },
+    "skuName": {
+      "value": "ErGw1AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "domainNameLabel": {
+      "value": [
+        "dm-nvger"
+      ]
+    },
+    "gatewayPipName": {
+      "value": "pip-nvger"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 8: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'Vpn'
+    name: 'nvgmax001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    activeActive: true
+    allowRemoteVnetTraffic: true
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgmax'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    natRules: [
+      {
+        externalMappings: [
+          {
+            addressSpace: '192.168.0.0/24'
+            portRange: '100'
+          }
+        ]
+        internalMappings: [
+          {
+            addressSpace: '10.100.0.0/24'
+            portRange: '100'
+          }
+        ]
+        mode: 'IngressSnat'
+        name: 'nat-rule-1-static-IngressSnat'
+        type: 'Static'
+      }
+      {
+        externalMappings: [
+          {
+            addressSpace: '10.200.0.0/26'
+          }
+        ]
+        internalMappings: [
+          {
+            addressSpace: '172.16.0.0/26'
+          }
+        ]
+        mode: 'EgressSnat'
+        name: 'nat-rule-2-dynamic-EgressSnat'
+        type: 'Static'
+      }
+    ]
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgmax001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "activeActive": {
+      "value": true
+    },
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgmax"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "natRules": {
+      "value": [
+        {
+          "externalMappings": [
+            {
+              "addressSpace": "192.168.0.0/24",
+              "portRange": "100"
+            }
+          ],
+          "internalMappings": [
+            {
+              "addressSpace": "10.100.0.0/24",
+              "portRange": "100"
+            }
+          ],
+          "mode": "IngressSnat",
+          "name": "nat-rule-1-static-IngressSnat",
+          "type": "Static"
+        },
+        {
+          "externalMappings": [
+            {
+              "addressSpace": "10.200.0.0/26"
+            }
+          ],
+          "internalMappings": [
+            {
+              "addressSpace": "172.16.0.0/26"
+            }
+          ],
+          "mode": "EgressSnat",
+          "name": "nat-rule-2-dynamic-EgressSnat",
+          "type": "Static"
+        }
+      ]
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 9: _Using SKU without Availability Zones_
+
+This instance deploys the module with a SKU that does not support Availability Zones.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'Vpn'
+    name: 'nvgnaz001'
+    skuName: 'VpnGw1'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgnaz001"
+    },
+    "skuName": {
+      "value": "VpnGw1"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 10: _VPN_
+
+This instance deploys the module with the VPN set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    gatewayType: 'Vpn'
+    name: 'nvgvpn001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    activeActive: true
+    allowRemoteVnetTraffic: true
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgvpn'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgvpn001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "activeActive": {
+      "value": true
+    },
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgvpn"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
