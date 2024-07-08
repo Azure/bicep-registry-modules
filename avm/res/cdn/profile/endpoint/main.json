@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "646975231992417020"
+      "templateHash": "265552218697992746"
     },
     "name": "CDN Profiles Endpoints",
     "description": "This module deploys a CDN Profile Endpoint.",
@@ -321,6 +321,13 @@
         "description": "The properties of the endpoint."
       },
       "value": "[reference('endpoint')]"
+    },
+    "uri": {
+      "type": "string",
+      "metadata": {
+        "description": "The uri of the endpoint."
+      },
+      "value": "[format('https://{0}', reference('endpoint').hostName)]"
     }
   }
 }
