@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1060505698355810100"
+      "templateHash": "7351078023215320172"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -222,7 +222,7 @@
         "name": "acrRoleAssignmentExistingManagedIdentities",
         "count": "[length(range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray()))))]"
       },
-      "condition": "[variables('useExistingManagedIdentity')]",
+      "condition": "[and(variables('useExistingManagedIdentity'), parameters('assignRbacRole'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
@@ -239,7 +239,7 @@
       ]
     },
     "acrRoleAssignmentNewManagedIdentity": {
-      "condition": "[not(variables('useExistingManagedIdentity'))]",
+      "condition": "[and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
@@ -273,9 +273,7 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "managedIdentities": {
-            "value": "[parameters('managedIdentities')]"
-          },
+          "managedIdentities": "[if(variables('useExistingManagedIdentity'), createObject('value', parameters('managedIdentities')), createObject('value', createObject('userAssignedResourcesIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport'))))))]",
           "kind": {
             "value": "AzureCLI"
           },
@@ -283,7 +281,7 @@
             "value": "[parameters('runOnce')]"
           },
           "azCliVersion": {
-            "value": "2.59.0"
+            "value": "2.61.0"
           },
           "timeout": {
             "value": "PT30M"
@@ -832,7 +830,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "newManagedIdentity"
+      ]
     }
   },
   "outputs": {

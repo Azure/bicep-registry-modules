@@ -115,7 +115,7 @@ resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
 
 // assign the Contributor role to the managed identity (new or existing) to import images into the ACR
 resource acrRoleAssignmentExistingManagedIdentities 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for i in range(0, length(assignRbacRole ? (managedIdentities.?userAssignedResourcesIds ?? []) : [])): if (useExistingManagedIdentity) {
+  for i in range(0, length(assignRbacRole ? (managedIdentities.?userAssignedResourcesIds ?? []) : [])): if (useExistingManagedIdentity && assignRbacRole) {
     name: guid('roleAssignment-acr-${existingManagedIdentities[i].name}')
     scope: acr
     properties: {
@@ -123,12 +123,12 @@ resource acrRoleAssignmentExistingManagedIdentities 'Microsoft.Authorization/rol
       roleDefinitionId: subscriptionResourceId(
         'Microsoft.Authorization/roleDefinitions',
         'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      )
+      ) // Contributor role
       principalType: 'ServicePrincipal' // See https://docs.microsoft.com/azure/role-based-access-control/role-assignments-template#new-service-principal to understand why this property is included.
     }
   }
 ]
-resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!useExistingManagedIdentity) {
+resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!useExistingManagedIdentity && assignRbacRole) {
   name: guid('roleAssignment-acr-${newManagedIdentity.name}')
   scope: acr
   properties: {
@@ -136,7 +136,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    )
+    ) // Contributor role
     principalType: 'ServicePrincipal' // See https://docs.microsoft.com/azure/role-based-access-control/role-assignments-template#new-service-principal to understand why this property is included.
   }
 }
@@ -148,10 +148,12 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     name: name
     location: location
     tags: tags
-    managedIdentities: managedIdentities
+    managedIdentities: useExistingManagedIdentity
+      ? managedIdentities
+      : { userAssignedResourcesIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
-    azCliVersion: '2.59.0'
+    azCliVersion: '2.61.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
     timeout: 'PT30M' // set timeout to 30m
     retentionInterval: 'PT1H' // cleanup after 1h
     environmentVariables: {
@@ -186,7 +188,6 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     storageAccountResourceId: storageAccountResourceId
     containerGroupName: '${resourceGroup().name}-infrastructure'
     subnetResourceIds: subnetResourceIds
-    // scriptContent: loadTextContent('./scripts/importscript.sh')
     scriptContent: '''#!/bin/bash
     set -e
 
