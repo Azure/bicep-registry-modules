@@ -25,8 +25,8 @@ This module deploys an Azure Compute Gallery Image Definition.
 | :-- | :-- | :-- |
 | [`identifier`](#parameter-identifier) | object | This is the gallery image definition identifier. |
 | [`name`](#parameter-name) | string | Name of the image definition. |
-| [`osState`](#parameter-osstate) | string | This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`. |
-| [`osType`](#parameter-ostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`. |
+| [`osState`](#parameter-osstate) | string | This property allows the user to specify the state of the OS of the image. |
+| [`osType`](#parameter-ostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. |
 
 **Conditional parameters**
 
@@ -52,7 +52,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 | [`purchasePlan`](#parameter-purchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`. |
+| [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. |
 | [`tags`](#parameter-tags) | object | Tags for all the image. |
 | [`vCPUs`](#parameter-vcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
 
@@ -67,20 +67,20 @@ This is the gallery image definition identifier.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`offer`](#parameter-identifieroffer) | string | The name of the gallery image definition publisher. |
-| [`publisher`](#parameter-identifierpublisher) | string | The name of the gallery image definition offer. |
+| [`offer`](#parameter-identifieroffer) | string | The name of the gallery image definition offer. |
+| [`publisher`](#parameter-identifierpublisher) | string | The name of the gallery image definition publisher. |
 | [`sku`](#parameter-identifiersku) | string | The name of the gallery image definition SKU. |
 
 ### Parameter: `identifier.offer`
 
-The name of the gallery image definition publisher.
+The name of the gallery image definition offer.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `identifier.publisher`
 
-The name of the gallery image definition offer.
+The name of the gallery image definition publisher.
 
 - Required: Yes
 - Type: string
@@ -101,7 +101,7 @@ Name of the image definition.
 
 ### Parameter: `osState`
 
-This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.
+This property allows the user to specify the state of the OS of the image.
 
 - Required: Yes
 - Type: string
@@ -115,7 +115,7 @@ This property allows the user to specify whether the virtual machines created un
 
 ### Parameter: `osType`
 
-This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`.
+This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image.
 
 - Required: Yes
 - Type: string
@@ -400,7 +400,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `securityType`
 
-The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.
+The security type of the image. Requires a hyperVGeneration V2.
 
 - Required: No
 - Type: string

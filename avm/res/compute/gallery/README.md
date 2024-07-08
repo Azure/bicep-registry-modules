@@ -689,8 +689,8 @@ Images to create.
 | :-- | :-- | :-- |
 | [`identifier`](#parameter-imagesidentifier) | object | This is the gallery image definition identifier. |
 | [`name`](#parameter-imagesname) | string | Name of the image definition. |
-| [`osState`](#parameter-imagesosstate) | string | This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`. |
-| [`osType`](#parameter-imagesostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`. |
+| [`osState`](#parameter-imagesosstate) | string | This property allows the user to specify the state of the OS of the image. |
+| [`osType`](#parameter-imagesostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. |
 
 **Optional parameters**
 
@@ -722,20 +722,20 @@ This is the gallery image definition identifier.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`offer`](#parameter-imagesidentifieroffer) | string | The name of the gallery image definition publisher. |
-| [`publisher`](#parameter-imagesidentifierpublisher) | string | The name of the gallery image definition offer. |
+| [`offer`](#parameter-imagesidentifieroffer) | string | The name of the gallery image definition offer. |
+| [`publisher`](#parameter-imagesidentifierpublisher) | string | The name of the gallery image definition publisher. |
 | [`sku`](#parameter-imagesidentifiersku) | string | The name of the gallery image definition SKU. |
 
 ### Parameter: `images.identifier.offer`
 
-The name of the gallery image definition publisher.
+The name of the gallery image definition offer.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `images.identifier.publisher`
 
-The name of the gallery image definition offer.
+The name of the gallery image definition publisher.
 
 - Required: Yes
 - Type: string
@@ -756,7 +756,7 @@ Name of the image definition.
 
 ### Parameter: `images.osState`
 
-This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.
+This property allows the user to specify the state of the OS of the image.
 
 - Required: Yes
 - Type: string
@@ -770,7 +770,7 @@ This property allows the user to specify whether the virtual machines created un
 
 ### Parameter: `images.osType`
 
-This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`.
+This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image.
 
 - Required: Yes
 - Type: string

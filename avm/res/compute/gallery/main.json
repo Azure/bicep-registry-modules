@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8756983115105895659"
+      "templateHash": "12549182038913466652"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -127,7 +127,7 @@
             "Windows"
           ],
           "metadata": {
-            "description": "Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`."
+            "description": "Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image."
           }
         },
         "osState": {
@@ -137,7 +137,7 @@
             "Specialized"
           ],
           "metadata": {
-            "description": "Required. This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`."
+            "description": "Required. This property allows the user to specify the state of the OS of the image."
           }
         },
         "identifier": {
@@ -146,13 +146,13 @@
             "publisher": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the gallery image definition offer."
+                "description": "Required. The name of the gallery image definition publisher."
               }
             },
             "offer": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the gallery image definition publisher."
+                "description": "Required. The name of the gallery image definition offer."
               }
             },
             "sku": {
@@ -380,7 +380,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
+        "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags for all resources."
       }
     },
@@ -884,7 +884,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "4566803214276829337"
+              "templateHash": "8937272308201718472"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -985,7 +985,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "example": "  [\r\n    'Standard_LRS'\r\n  ]",
+                    "example": "  [\n    'Standard_LRS'\n  ]",
                     "description": "Required. A list of disk types."
                   }
                 }
@@ -998,13 +998,13 @@
                 "publisher": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The name of the gallery image definition offer."
+                    "description": "Required. The name of the gallery image definition publisher."
                   }
                 },
                 "offer": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The name of the gallery image definition publisher."
+                    "description": "Required. The name of the gallery image definition offer."
                   }
                 },
                 "sku": {
@@ -1076,7 +1076,7 @@
                 "Specialized"
               ],
               "metadata": {
-                "description": "Required. This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`."
+                "description": "Required. This property allows the user to specify the state of the OS of the image."
               }
             },
             "osType": {
@@ -1086,7 +1086,7 @@
                 "Windows"
               ],
               "metadata": {
-                "description": "Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`."
+                "description": "Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image."
               }
             },
             "privacyStatementUri": {
@@ -1134,7 +1134,7 @@
               ],
               "nullable": true,
               "metadata": {
-                "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`."
+                "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
               }
             },
             "isAcceleratedNetworkSupported": {
@@ -1211,7 +1211,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "example": "{\r\n    key1: 'value1'\r\n    key2: 'value2'\r\n}\r\n",
+                "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                 "description": "Optional. Tags for all the image."
               }
             }
