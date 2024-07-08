@@ -85,7 +85,7 @@ runs:
           } else {
             $oidcException = 'false'
           }
-          Write-Verbose 'oidcException [$oidcException]' -Verbose
+          Write-Verbose ('{0}-{1}' -f 'oidcException', $oidcException) -Verbose
 
           Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
           Write-Output '::endgroup::'
