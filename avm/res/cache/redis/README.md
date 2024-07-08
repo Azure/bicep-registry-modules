@@ -423,7 +423,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     geoReplicationObject: {
       linkedRedisCacheLocation: '<linkedRedisCacheLocation>'
       linkedRedisCacheResourceId: '<linkedRedisCacheResourceId>'
-      secondaryRedisCacheName: '<secondaryRedisCacheName>'
+      name: '<name>'
     }
     location: '<location>'
     lock: {
@@ -468,7 +468,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": {
         "linkedRedisCacheLocation": "<linkedRedisCacheLocation>",
         "linkedRedisCacheResourceId": "<linkedRedisCacheResourceId>",
-        "secondaryRedisCacheName": "<secondaryRedisCacheName>"
+        "name": "<name>"
       }
     },
     "location": {

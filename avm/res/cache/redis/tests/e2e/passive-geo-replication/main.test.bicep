@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
       geoReplicationObject: {
         linkedRedisCacheResourceId: nestedDependencies2.outputs.redisResourceId
         linkedRedisCacheLocation: nestedDependencies2.outputs.redisLocation
-        secondaryRedisCacheName: nestedDependencies2.outputs.redisName
+        name: nestedDependencies2.outputs.redisName
       }
       redisVersion: '6'
       shardCount: 1
