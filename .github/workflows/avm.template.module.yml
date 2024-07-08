@@ -21,10 +21,11 @@ on:
         required: true
 
 env:
+  # Used for token replacement steps in both PSRule and deployment validation
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
-  ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
-  ARM_SPN_CLIENT_ID: "${{ secrets.ARM_SPN_CLIENT_ID }}"
+  # ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
+  # ARM_SPN_CLIENT_ID: "${{ secrets.ARM_SPN_CLIENT_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
 
 jobs:
@@ -133,9 +134,9 @@ jobs:
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-          ARM_SPN_CLIENT_ID: ${{ secrets.ARM_SPN_CLIENT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
   ##################
   #   Publishing   #
