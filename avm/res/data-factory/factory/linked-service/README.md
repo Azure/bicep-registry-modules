@@ -23,7 +23,7 @@ This module deploys a Data Factory Linked Service.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Linked Service. |
-| [`typeName`](#parameter-typename) | string | The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information. |
+| [`type`](#parameter-type) | string | The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information. |
 
 **Conditional parameters**
 
@@ -47,7 +47,7 @@ The name of the Linked Service.
 - Required: Yes
 - Type: string
 
-### Parameter: `typeName`
+### Parameter: `type`
 
 The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.
 

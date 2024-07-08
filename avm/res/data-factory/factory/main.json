@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12920402905065267836"
+      "templateHash": "10517053075077969451"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1189,7 +1189,7 @@
           "name": {
             "value": "[parameters('linkedServices')[copyIndex()].name]"
           },
-          "typeName": {
+          "type": {
             "value": "[parameters('linkedServices')[copyIndex()].type]"
           },
           "typeProperties": "[if(contains(parameters('linkedServices')[copyIndex()], 'typeProperties'), createObject('value', parameters('linkedServices')[copyIndex()].typeProperties), createObject('value', createObject()))]",
@@ -1208,7 +1208,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1086159027716637101"
+              "templateHash": "7064037262721291855"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service.",
@@ -1227,7 +1227,7 @@
                 "description": "Required. The name of the Linked Service."
               }
             },
-            "typeName": {
+            "type": {
               "type": "string",
               "metadata": {
                 "description": "Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information."
@@ -1270,7 +1270,7 @@
                 "annotations": [],
                 "description": "[parameters('description')]",
                 "connectVia": "[if(contains(parameters('integrationRuntimeName'), 'none'), null(), createObject('parameters', createObject(), 'referenceName', parameters('integrationRuntimeName'), 'type', 'IntegrationRuntimeReference'))]",
-                "type": "[parameters('typeName')]",
+                "type": "[parameters('type')]",
                 "typeProperties": "[parameters('typeProperties')]",
                 "parameters": "[parameters('parameters')]"
               }
