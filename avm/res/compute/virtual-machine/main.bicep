@@ -131,6 +131,9 @@ param backupPolicyName string = 'DefaultPolicy'
 @description('Optional. The configuration for auto-shutdown.')
 param autoShutdownConfig object = {}
 
+@description('Optional. The resource Id of a maintenance configuration for this VM.')
+param maintenanceConfigurationResourceId string = ''
+
 // Child resources
 @description('Optional. Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine.')
 param allowExtensionOperations bool = true
@@ -431,7 +434,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -605,6 +609,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   dependsOn: [
     vm_nic
   ]
+}
+
+resource vm_configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(maintenanceConfigurationResourceId)) {
+  name: '${vm.name}assignment'
+  location: location
+  properties: {
+    maintenanceConfigurationId: maintenanceConfigurationResourceId
+    resourceId: vm.id
+  }
+  scope: vm
 }
 
 resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' = if (!empty(configurationProfile)) {
@@ -1132,8 +1146,8 @@ type osDiskType = {
   @description('Optional. The disk name.')
   name: string?
 
-  @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  diskSizeGB: int
+  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  diskSizeGB: int?
 
   @description('Optional. Specifies how the virtual machine should be created.')
   createOption: 'Attach' | 'Empty' | 'FromImage'?
@@ -1146,7 +1160,7 @@ type osDiskType = {
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
-    @description('Required. Specifies the storage account type for the managed disk.')
+    @description('Optional. Specifies the storage account type for the managed disk.')
     storageAccountType:
       | 'PremiumV2_LRS'
       | 'Premium_LRS'
@@ -1154,7 +1168,7 @@ type osDiskType = {
       | 'StandardSSD_LRS'
       | 'StandardSSD_ZRS'
       | 'Standard_LRS'
-      | 'UltraSSD_LRS'
+      | 'UltraSSD_LRS'?
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?

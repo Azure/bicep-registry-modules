@@ -14,8 +14,9 @@ This module deploys an API Management Service API.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
-| `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
+| `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
+| `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
 
 ## Parameters
 
@@ -32,6 +33,7 @@ This module deploys an API Management Service API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
+| [`loggerName`](#parameter-loggername) | string | The name of the API management service logger. Required if using api/diagnostics. |
 
 **Optional parameters**
 
@@ -45,6 +47,7 @@ This module deploys an API Management Service API.
 | [`apiVersionDescription`](#parameter-apiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetId`](#parameter-apiversionsetid) | string | Indicates the Version identifier of the API version set. |
 | [`authenticationSettings`](#parameter-authenticationsettings) | object | Collection of authentication settings included into this API. |
+| [`diagnostics`](#parameter-diagnostics) | array | Array of diagnostics to apply to the Service API. |
 | [`format`](#parameter-format) | string | Format of the Content in which the API is getting imported. |
 | [`isCurrent`](#parameter-iscurrent) | bool | Indicates if API revision is current API revision. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service API. |
@@ -84,6 +87,14 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `loggerName`
+
+The name of the API management service logger. Required if using api/diagnostics.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `apiDescription`
 
@@ -150,6 +161,13 @@ Collection of authentication settings included into this API.
 
 - Required: No
 - Type: object
+
+### Parameter: `diagnostics`
+
+Array of diagnostics to apply to the Service API.
+
+- Required: No
+- Type: array
 
 ### Parameter: `format`
 

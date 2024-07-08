@@ -20,14 +20,23 @@ param location string = resourceGroup().location
 ])
 param sku string
 
-@sys.description('Required. The resource ID of the associated Storage Account.')
-param associatedStorageAccountResourceId string
+@sys.description('Optional. The type of Azure Machine Learning workspace to create.')
+@allowed([
+  'Default'
+  'Project'
+  'Hub'
+  'FeatureStore'
+])
+param kind string = 'Default'
 
-@sys.description('Required. The resource ID of the associated Key Vault.')
-param associatedKeyVaultResourceId string
+@sys.description('Conditional. The resource ID of the associated Storage Account. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
+param associatedStorageAccountResourceId string?
 
-@sys.description('Required. The resource ID of the associated Application Insights.')
-param associatedApplicationInsightsResourceId string
+@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
+param associatedKeyVaultResourceId string?
+
+@sys.description('Conditional. The resource ID of the associated Application Insights. Required if \'kind\' is \'Default\' or \'FeatureStore\'.')
+param associatedApplicationInsightsResourceId string?
 
 @sys.description('Optional. The resource ID of the associated Container Registry.')
 param associatedContainerRegistryResourceId string?
@@ -40,6 +49,9 @@ param hbiWorkspace bool = false
 
 @sys.description('Optional. The flag to indicate whether to allow public access when behind VNet.')
 param allowPublicAccessWhenBehindVnet bool = false
+
+@sys.description('Conditional. The resource ID of the hub to associate with the workspace. Required if \'kind\' is set to \'Project\'.')
+param hubResourceId string?
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -60,6 +72,9 @@ param enableTelemetry bool = true
 param managedIdentities managedIdentitiesType = {
   systemAssigned: true
 }
+
+@sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
+param featureStoreSettings featureStoreSettingType
 
 // Diagnostic Settings
 
@@ -146,49 +161,46 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.machinelearningservices-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.machinelearningservices-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
   name: name
   location: location
   tags: tags
@@ -231,6 +243,8 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         ? any(publicNetworkAccess)
         : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
       serviceManagedResourcesSettings: serviceManagedResourcesSettings
+      featureStoreSettings: featureStoreSettings
+      hubResourceId: hubResourceId
     },
     // Parameters only added if not empty
     !empty(sharedPrivateLinkResources)
@@ -239,6 +253,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         }
       : {}
   )
+  kind: kind
 }
 
 module workspace_computes 'compute/main.bicep' = [
@@ -265,17 +280,16 @@ module workspace_computes 'compute/main.bicep' = [
   }
 ]
 
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: workspace
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: workspace
+}
 
 resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -518,6 +532,20 @@ type privateEndpointType = {
   @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
   resourceGroupName: string?
 }[]?
+
+type featureStoreSettingType = {
+  @sys.description('Optional. Compute runtime config for feature store type workspace.')
+  computeRuntime: {
+    @sys.description('Optional. The spark runtime version.')
+    sparkRuntimeVersion: string?
+  }?
+
+  @sys.description('Optional. The offline store connection name.')
+  offlineStoreConnectionName: string?
+
+  @sys.description('Optional. The online store connection name.')
+  onlineStoreConnectionName: string?
+}?
 
 type diagnosticSettingType = {
   @sys.description('Optional. The name of diagnostic setting.')
