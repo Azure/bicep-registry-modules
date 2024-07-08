@@ -19,7 +19,7 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/workspaces) |
+| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -506,6 +506,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
       serverlessComputeNoPublicIP: true
     }
+    systemDatastoresAuthMode: 'accessKey'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -675,6 +676,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         "serverlessComputeNoPublicIP": true
       }
     },
+    "systemDatastoresAuthMode": {
+      "value": "accessKey"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -759,6 +763,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
     ]
+    systemDatastoresAuthMode: 'identity'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -855,6 +860,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
+    "systemDatastoresAuthMode": {
+      "value": "identity"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -914,6 +922,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`serverlessComputeSettings`](#parameter-serverlesscomputesettings) | object | Settings for serverless compute created in the workspace. |
 | [`serviceManagedResourcesSettings`](#parameter-servicemanagedresourcessettings) | object | The service managed resource settings. |
 | [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The list of shared private link resources in this workspace. Note: This property is not idempotent. |
+| [`systemDatastoresAuthMode`](#parameter-systemdatastoresauthmode) | string | The authentication mode used by the workspace when connecting to the default storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`workspaceHubConfig`](#parameter-workspacehubconfig) | object | Configuration for workspace hub settings. |
 
@@ -1907,6 +1916,20 @@ The list of shared private link resources in this workspace. Note: This property
 
 - Required: No
 - Type: array
+
+### Parameter: `systemDatastoresAuthMode`
+
+The authentication mode used by the workspace when connecting to the default storage account.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'accessKey'
+    'identity'
+  ]
+  ```
 
 ### Parameter: `tags`
 

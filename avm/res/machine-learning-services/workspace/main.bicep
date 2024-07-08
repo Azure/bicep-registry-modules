@@ -79,6 +79,13 @@ param managedNetworkSettings managedNetworkSettingType
 @sys.description('Optional. Settings for serverless compute created in the workspace.')
 param serverlessComputeSettings serverlessComputeSettingType
 
+@sys.description('Optional. The authentication mode used by the workspace when connecting to the default storage account.')
+@allowed([
+  'accessKey'
+  'identity'
+])
+param systemDatastoresAuthMode string?
+
 @sys.description('Optional. Configuration for workspace hub settings.')
 param workspaceHubConfig workspaceHubConfigType
 
@@ -206,7 +213,8 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
+// Preview API version for 'systemDatastoresAuthMode'
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -244,6 +252,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
         : null
       imageBuildCompute: imageBuildCompute
       primaryUserAssignedIdentity: primaryUserAssignedIdentity
+      systemDatastoresAuthMode: systemDatastoresAuthMode
       publicNetworkAccess: publicNetworkAccess
       serviceManagedResourcesSettings: serviceManagedResourcesSettings
       featureStoreSettings: featureStoreSettings
