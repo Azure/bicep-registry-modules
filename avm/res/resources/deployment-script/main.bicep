@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 // Parameters       //
 // ================ //
 @description('Required. Name of the Deployment Script.')
-@maxLength(24)
+@maxLength(90)
 param name string
 
 @description('Optional. Location for all resources.')
@@ -50,7 +50,7 @@ param subnetResourceIds string[]?
 param arguments string?
 
 @description('Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week).')
-param retentionInterval string?
+param retentionInterval string = 'P1D'
 
 @description('Generated. Do not provide a value! This date value is used to make sure the script run every time the template is deployed.')
 param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
@@ -141,9 +141,51 @@ var storageAccountSettings = !empty(storageAccountResourceId)
     }
   : null
 
-// ============ //
-// Dependencies //
-// ============ //
+// ================ //
+// Resources        //
+// ================ //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.resources-deploymentscript.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: name
+  location: location
+  tags: tags
+  identity: identity
+  kind: any(kind)
+  properties: {
+    azPowerShellVersion: kind == 'AzurePowerShell' ? azPowerShellVersion : null
+    azCliVersion: kind == 'AzureCLI' ? azCliVersion : null
+    containerSettings: !empty(containerSettings) ? containerSettings : null
+    storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
+    arguments: arguments
+    environmentVariables: environmentVariables != null ? environmentVariables!.secureList : []
+    scriptContent: !empty(scriptContent) ? scriptContent : null
+    primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
+    supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
+    cleanupPreference: cleanupPreference
+    forceUpdateTag: runOnce ? resourceGroup().name : baseTime
+    retentionInterval: retentionInterval
+    timeout: timeout
+  }
+}
 
 resource deploymentScript_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -176,50 +218,9 @@ resource deploymentScript_roleAssignments 'Microsoft.Authorization/roleAssignmen
   }
 ]
 
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.resources-deploymentscript.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
-  }
-}
-
-// ================ //
-// Resources        //
-// ================ //
-
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: name
-  location: location
-  tags: tags
-  identity: identity
-  kind: any(kind)
-  properties: {
-    azPowerShellVersion: kind == 'AzurePowerShell' ? azPowerShellVersion : null
-    azCliVersion: kind == 'AzureCLI' ? azCliVersion : null
-    containerSettings: !empty(containerSettings) ? containerSettings : null
-    storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
-    arguments: arguments
-    environmentVariables: environmentVariables != null ? environmentVariables!.secureList : []
-    scriptContent: !empty(scriptContent) ? scriptContent : null
-    primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
-    supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
-    cleanupPreference: cleanupPreference
-    forceUpdateTag: runOnce ? resourceGroup().name : baseTime
-    retentionInterval: retentionInterval
-    timeout: timeout
-  }
+resource deploymentScriptLogs 'Microsoft.Resources/deploymentScripts/logs@2023-08-01' existing = {
+  name: 'default'
+  parent: deploymentScript
 }
 
 // ================ //
@@ -240,6 +241,9 @@ output location string = deploymentScript.location
 
 @description('The output of the deployment script.')
 output outputs object = contains(deploymentScript.properties, 'outputs') ? deploymentScript.properties.outputs : {}
+
+@description('The logs of the deployment script.')
+output deploymentScriptLogs string[] = split(deploymentScriptLogs.properties.log, '\n')
 
 // ================ //
 // Definitions      //

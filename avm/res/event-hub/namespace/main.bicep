@@ -186,7 +186,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
   name: name
   location: location
   tags: tags

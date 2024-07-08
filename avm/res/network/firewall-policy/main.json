@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5451872777085737013"
+      "version": "0.28.1.47646",
+      "templateHash": "8226719913431972406"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy.",
@@ -231,7 +231,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-firewallpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -311,8 +311,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15656278354863511578"
+              "version": "0.28.1.47646",
+              "templateHash": "3312659149635915423"
             },
             "name": "Firewall Policy Rule Collection Groups",
             "description": "This module deploys a Firewall Policy Rule Collection Group.",

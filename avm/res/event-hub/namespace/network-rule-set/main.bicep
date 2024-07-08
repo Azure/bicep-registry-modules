@@ -44,11 +44,11 @@ var networkRules = [
   }
 ]
 
-resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource networkRuleSet 'Microsoft.EventHub/namespaces/networkRuleSets@2022-10-01-preview' = {
+resource networkRuleSet 'Microsoft.EventHub/namespaces/networkRuleSets@2024-01-01' = {
   name: networkRuleSetName
   parent: namespace
   properties: {
