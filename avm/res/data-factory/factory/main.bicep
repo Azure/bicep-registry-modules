@@ -241,7 +241,7 @@ module dataFactory_linkedServices 'linked-service/main.bicep' = [
     params: {
       dataFactoryName: dataFactory.name
       name: linkedService.name
-      typeName: linkedService.type
+      type: linkedService.type
       typeProperties: contains(linkedService, 'typeProperties') ? linkedService.typeProperties : {}
       integrationRuntimeName: contains(linkedService, 'integrationRuntimeName')
         ? linkedService.integrationRuntimeName

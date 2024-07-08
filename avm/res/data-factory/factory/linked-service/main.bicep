@@ -9,7 +9,7 @@ param dataFactoryName string
 param name string
 
 @sys.description('Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.')
-param typeName string
+param type string
 
 @sys.description('Optional. Used to add connection properties for your linked services.')
 param typeProperties object = {}
@@ -41,7 +41,7 @@ resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-0
           referenceName: integrationRuntimeName
           type: 'IntegrationRuntimeReference'
         }
-    type: typeName
+    type: type
     typeProperties: typeProperties
     parameters: parameters
   }
