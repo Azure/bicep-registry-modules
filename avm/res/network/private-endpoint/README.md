@@ -332,7 +332,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         properties: {
           groupId: ''
           memberName: ''
-          privateIPAddress: '10.0.1.10'
+          privateIPAddress: '10.0.0.10'
         }
       }
     ]
@@ -377,7 +377,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
           "properties": {
             "groupId": "",
             "memberName": "",
-            "privateIPAddress": "10.0.1.10"
+            "privateIPAddress": "10.0.0.10"
           }
         }
       ]
