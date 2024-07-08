@@ -129,7 +129,7 @@ resource acrRoleAssignmentExistingManagedIdentities 'Microsoft.Authorization/rol
   }
 ]
 resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!useExistingManagedIdentity && assignRbacRole) {
-  name: guid('roleAssignment-acr-${newManagedIdentity.name}')
+  name: guid('roleAssignment-acr-${newManagedIdentity.id}')
   scope: acr
   properties: {
     principalId: newManagedIdentity.properties.principalId
