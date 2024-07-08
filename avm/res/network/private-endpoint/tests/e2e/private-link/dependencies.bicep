@@ -7,12 +7,10 @@ param virtualNetworkName string
 @description('Required. The name of the Key Vault to create.')
 param privateLinkServiceName string
 
+@description('Required. The name of the Load Balancer to create.')
+param loadbalancerName string
+
 var addressPrefix = '10.0.0.0/16'
-var frontendSubnetPrefix = '10.0.1.0/24'
-var frontendSubnetName = 'frontendSubnet'
-var backendSubnetPrefix = '10.0.2.0/24'
-var backendSubnetName = 'backendSubnet'
-var loadbalancerName = 'ILB'
 var backendPoolName = 'backEndPool'
 var loadBalancerFrontEndIpConfigurationName = 'myFrontEnd'
 var healthProbeName = 'healthProbe'
