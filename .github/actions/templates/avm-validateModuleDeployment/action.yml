@@ -107,7 +107,6 @@ runs:
 
     # Exception: module requires login by using service principal with secret
     - name: Azure Login - Exception
-      # if: ${{ inputs.modulePath == 'avm/res/sql/managed-instance' }}
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
       uses: azure/login@v2
       with:
