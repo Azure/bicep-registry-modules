@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'npepls'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'avmx'
 
 // ============ //
 // Dependencies //
@@ -55,12 +55,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      // Workaround for PSRule
-      lock: {}
-      roleAssignments: []
-      applicationSecurityGroupResourceIds: []
-      customNetworkInterfaceName: ''
-      privateDnsZoneGroupName: ''
       ipConfigurations: [
         {
           name: 'myIPconfig'
@@ -71,9 +65,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      customDnsConfigs: []
-      privateDnsZoneResourceIds: []
-      manualPrivateLinkServiceConnections: []
       privateLinkServiceConnections: [
         {
           name: '${namePrefix}${serviceShort}001'
@@ -83,7 +74,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      tags: {}
     }
   }
 ]

@@ -27,16 +27,16 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     }
     subnets: [
       {
-        name: frontendSubnetName
+        name: 'frontendSubnet'
         properties: {
-          addressPrefix: frontendSubnetPrefix
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
           privateLinkServiceNetworkPolicies: 'Disabled'
         }
       }
       {
-        name: backendSubnetName
+        name: 'backendSubnet'
         properties: {
-          addressPrefix: backendSubnetPrefix
+          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
         }
       }
     ]
@@ -56,7 +56,7 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, frontendSubnetName)
+            id: virtualNetwork.properties.subnets[0].id // frontendSubnet
           }
         }
       }

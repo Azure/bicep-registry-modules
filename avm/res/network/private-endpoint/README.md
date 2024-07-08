@@ -50,15 +50,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     name: 'npemin001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: []
-    customDnsConfigs: []
-    customNetworkInterfaceName: ''
-    ipConfigurations: []
     location: '<location>'
-    lock: {}
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
-    privateDnsZoneResourceIds: []
     privateLinkServiceConnections: [
       {
         name: 'npemin001'
@@ -70,8 +62,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
-    roleAssignments: []
-    tags: {}
   }
 }
 ```
@@ -96,32 +86,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": []
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": ""
-    },
-    "ipConfigurations": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": ""
-    },
-    "privateDnsZoneResourceIds": {
-      "value": []
     },
     "privateLinkServiceConnections": {
       "value": [
@@ -135,12 +101,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
           }
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -193,7 +153,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
     privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
@@ -295,9 +254,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
     "privateDnsZoneGroupName": {
       "value": "default"
     },
@@ -370,9 +326,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     name: 'npepls001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: []
-    customDnsConfigs: []
-    customNetworkInterfaceName: ''
     ipConfigurations: [
       {
         name: 'myIPconfig'
@@ -384,10 +337,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       }
     ]
     location: '<location>'
-    lock: {}
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
-    privateDnsZoneResourceIds: []
     privateLinkServiceConnections: [
       {
         name: 'npepls001'
@@ -397,8 +346,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
-    roleAssignments: []
-    tags: {}
   }
 }
 ```
@@ -423,15 +370,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": []
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": ""
-    },
     "ipConfigurations": {
       "value": [
         {
@@ -447,18 +385,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {}
-    },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": ""
-    },
-    "privateDnsZoneResourceIds": {
-      "value": []
-    },
     "privateLinkServiceConnections": {
       "value": [
         {
@@ -469,12 +395,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
           }
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -503,7 +423,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
     customNetworkInterfaceName: 'npewaf001nic'
     ipConfigurations: [
       {
@@ -520,8 +439,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -570,9 +487,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "<applicationSecurityGroupResourceId>"
       ]
     },
-    "customDnsConfigs": {
-      "value": []
-    },
     "customNetworkInterfaceName": {
       "value": "npewaf001nic"
     },
@@ -596,12 +510,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
     },
     "privateDnsZoneResourceIds": {
       "value": [
