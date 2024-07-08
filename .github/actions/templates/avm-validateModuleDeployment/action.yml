@@ -70,165 +70,165 @@ runs:
         subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
 
-    # # [Set Deployment Location] task(s)
-    # # ---------------------------
-    # - name: "Get Resource Location"
-    #   id: get-resource-location
-    #   uses: azure/powershell@v2
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       # Grouping task logs
-    #       Write-Output '::group::Get Recommended Regions'
+    # [Set Deployment Location] task(s)
+    # ---------------------------
+    - name: "Get Resource Location"
+      id: get-resource-location
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Get Recommended Regions'
 
-    #       # Load used functions
-    #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AvailableResourceLocation.ps1')
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AvailableResourceLocation.ps1')
 
-    #       # Set function input parameters
-    #       $functionInput = @{
-    #           ModuleRoot = '${{ inputs.modulePath }}'
-    #           GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
-    #       }
+          # Set function input parameters
+          $functionInput = @{
+              ModuleRoot = '${{ inputs.modulePath }}'
+              GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
+          }
 
-    #       Write-Verbose "Invoke function with" -Verbose
-    #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-    #       if([String]::IsNullOrEmpty('${{ inputs.customLocation }}')) {
-    #         $resourceLocation = Get-AvailableResourceLocation @functionInput -Verbose
-    #       } else {
-    #         $resourceLocation = '${{ inputs.customLocation }}'
-    #         Write-Verbose 'Using specified location [${{ inputs.customLocation }}]' -Verbose
-    #       }
+          if([String]::IsNullOrEmpty('${{ inputs.customLocation }}')) {
+            $resourceLocation = Get-AvailableResourceLocation @functionInput -Verbose
+          } else {
+            $resourceLocation = '${{ inputs.customLocation }}'
+            Write-Verbose 'Using specified location [${{ inputs.customLocation }}]' -Verbose
+          }
 
-    #       Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
-    #       Write-Output ('{0}={1}' -f 'resourceLocation', $resourceLocation) >> $env:GITHUB_OUTPUT
+          Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
+          Write-Output ('{0}={1}' -f 'resourceLocation', $resourceLocation) >> $env:GITHUB_OUTPUT
 
-    #       Write-Output '::endgroup::'
+          Write-Output '::endgroup::'
 
-    # # [Token replacement] task(s)
-    # # ---------------------------
-    # - name: "Replace tokens in template file"
-    #   uses: azure/powershell@v2
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       # Grouping task logs
-    #       Write-Output '::group::Replace tokens in template file'
+    # [Token replacement] task(s)
+    # ---------------------------
+    - name: "Replace tokens in template file"
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Replace tokens in template file'
 
-    #       # Load used functions
-    #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
-    #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
 
-    #       $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+          $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
-    #       # Get target files
-    #       $targetFileList = @(
-    #         $templateFilePath
-    #       )
+          # Get target files
+          $targetFileList = @(
+            $templateFilePath
+          )
 
-    #       # Add all module template files as they may contain tokens
-    #       $targetFileList += (Get-LocallyReferencedFileList -FilePath $templateFilePath)
-    #       $targetFileList = $targetFileList | Sort-Object -Unique
+          # Add all module template files as they may contain tokens
+          $targetFileList += (Get-LocallyReferencedFileList -FilePath $templateFilePath)
+          $targetFileList = $targetFileList | Sort-Object -Unique
 
-    #       # Construct Token Function Input
-    #       $ConvertTokensInputs = @{
-    #         FilePathList = $targetFileList
-    #         Tokens       = @{}
-    #       }
+          # Construct Token Function Input
+          $ConvertTokensInputs = @{
+            FilePathList = $targetFileList
+            Tokens       = @{}
+          }
 
-    #       # Add enforced tokens
-    #       $ConvertTokensInputs.Tokens += @{
-    #         subscriptionId    = '${{ inputs.subscriptionId }}'
-    #         managementGroupId = '${{ inputs.managementGroupId }}'
-    #         tenantId          = '${{ env.ARM_TENANT_ID }}'
-    #       }
+          # Add enforced tokens
+          $ConvertTokensInputs.Tokens += @{
+            subscriptionId    = '${{ inputs.subscriptionId }}'
+            managementGroupId = '${{ inputs.managementGroupId }}'
+            tenantId          = '${{ env.ARM_TENANT_ID }}'
+          }
 
-    #       # Add local (source control) tokens
-    #       $tokenMap = @{}
-    #       foreach ($token in (Get-ChildItem env: | Where-Object -Property Name -Like "localToken_*")) {
-    #         $tokenMap += @{ $token.Name.Replace('localToken_','','OrdinalIgnoreCase') = $token.value }
-    #       }
-    #       Write-Verbose ('Using local tokens [{0}]' -f ($tokenMap.Keys -join ', ')) -Verbose
-    #       $ConvertTokensInputs.Tokens += $tokenMap
+          # Add local (source control) tokens
+          $tokenMap = @{}
+          foreach ($token in (Get-ChildItem env: | Where-Object -Property Name -Like "localToken_*")) {
+            $tokenMap += @{ $token.Name.Replace('localToken_','','OrdinalIgnoreCase') = $token.value }
+          }
+          Write-Verbose ('Using local tokens [{0}]' -f ($tokenMap.Keys -join ', ')) -Verbose
+          $ConvertTokensInputs.Tokens += $tokenMap
 
-    #       # Swap 'namePrefix' token if empty and provided as a GitHub secret
-    #       if([String]::IsNullOrEmpty($ConvertTokensInputs.Tokens['namePrefix'])){
-    #         Write-Verbose 'Using [namePrefix] token from GitHub' -Verbose
-    #         $ConvertTokensInputs.Tokens['namePrefix'] = '${{ env.TOKEN_NAMEPREFIX }}'
-    #       }
+          # Swap 'namePrefix' token if empty and provided as a GitHub secret
+          if([String]::IsNullOrEmpty($ConvertTokensInputs.Tokens['namePrefix'])){
+            Write-Verbose 'Using [namePrefix] token from GitHub' -Verbose
+            $ConvertTokensInputs.Tokens['namePrefix'] = '${{ env.TOKEN_NAMEPREFIX }}'
+          }
 
-    #       # Add custom tokens (passed in via the pipeline)
-    #       if(-not [String]::IsNullOrEmpty('${{  inputs.customTokens }}')) {
-    #         $customTokens = '${{ inputs.customTokens }}' | ConvertFrom-Json -AsHashTable
-    #         Write-Verbose ('Using custom parameter file tokens [{0}]' -f ($customTokens.Keys -join ', ')) -Verbose
-    #         $ConvertTokensInputs.Tokens += $customTokens
-    #       }
+          # Add custom tokens (passed in via the pipeline)
+          if(-not [String]::IsNullOrEmpty('${{  inputs.customTokens }}')) {
+            $customTokens = '${{ inputs.customTokens }}' | ConvertFrom-Json -AsHashTable
+            Write-Verbose ('Using custom parameter file tokens [{0}]' -f ($customTokens.Keys -join ', ')) -Verbose
+            $ConvertTokensInputs.Tokens += $customTokens
+          }
 
-    #       Write-Verbose "Convert Tokens Input:`n $($ConvertTokensInputs | ConvertTo-Json -Depth 10)" -Verbose
+          Write-Verbose "Convert Tokens Input:`n $($ConvertTokensInputs | ConvertTo-Json -Depth 10)" -Verbose
 
-    #       # Invoke Token Replacement Functionality [For Module]
-    #       $null = Convert-TokensInFileList @ConvertTokensInputs
+          # Invoke Token Replacement Functionality [For Module]
+          $null = Convert-TokensInFileList @ConvertTokensInputs
 
-    #       Write-Output '::endgroup::'
+          Write-Output '::endgroup::'
 
-    # # [Deployment validation] task(s)
-    # # -------------------------------
-    # - name: "Validate template file"
-    #   uses: azure/powershell@v2
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       # Grouping task logs
-    #       Write-Output '::group::Validate template file'
+    # [Deployment validation] task(s)
+    # -------------------------------
+    - name: "Validate template file"
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Validate template file'
 
-    #       # Load used functions
-    #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
 
-    #       # Prepare general parameters
-    #       # --------------------------
-    #       # Fetching parameters
-    #       $subscriptionId = '${{ inputs.subscriptionId }}'
-    #       $managementGroupId = '${{ inputs.managementGroupId }}'
+          # Prepare general parameters
+          # --------------------------
+          # Fetching parameters
+          $subscriptionId = '${{ inputs.subscriptionId }}'
+          $managementGroupId = '${{ inputs.managementGroupId }}'
 
-    #       # Resolve template file path
-    #       $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+          # Resolve template file path
+          $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
-    #       # Determine possible parameters depending on file type
-    #       if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
-    #         $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
-    #         $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
-    #       } else {
-    #         $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
-    #       }
+          # Determine possible parameters depending on file type
+          if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
+            $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
+            $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
+          } else {
+            $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
+          }
 
-    #       # ----------------- #
-    #       # Invoke validation #
-    #       # ----------------- #
-    #       $functionInput = @{
-    #         TemplateFilePath           = $moduleTestFilePath
-    #         DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
-    #         SubscriptionId             = $subscriptionId
-    #         ManagementGroupId          = $managementGroupId
-    #         RepoRoot                   = $env:GITHUB_WORKSPACE
-    #         AdditionalParameters       = @{}
-    #       }
+          # ----------------- #
+          # Invoke validation #
+          # ----------------- #
+          $functionInput = @{
+            TemplateFilePath           = $moduleTestFilePath
+            DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
+            SubscriptionId             = $subscriptionId
+            ManagementGroupId          = $managementGroupId
+            RepoRoot                   = $env:GITHUB_WORKSPACE
+            AdditionalParameters       = @{}
+          }
 
-    #       if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
-    #         $functionInput.AdditionalParameters += @{
-    #           resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
-    #         }
-    #       }
+          if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
+            $functionInput.AdditionalParameters += @{
+              resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+            }
+          }
 
-    #       Write-Verbose 'Invoke task with' -Verbose
-    #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          Write-Verbose 'Invoke task with' -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-    #       Test-TemplateDeployment @functionInput -Verbose
+          Test-TemplateDeployment @functionInput -Verbose
 
-    #       Write-Output '::endgroup::'
+          Write-Output '::endgroup::'
 
-    # # [Deployment execution] task(s)
-    # # ------------------------------
-    # - name: "Deploy template file"
+    # [Deployment execution] task(s)
+    # ------------------------------
+    - name: "Deploy template file"
     #   id: deploy_step
     #   uses: azure/powershell@v2
     #   with:
@@ -329,122 +329,122 @@ runs:
         subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
 
-    # # [Post-Deployment test] task(s)
-    # # ------------------------------
-    # - name: "Run post-deployment Pester tests"
-    #   id: pester_run_step
-    #   shell: pwsh
-    #   run: |
-    #     # Grouping task logs
-    #     Write-Output '::group::Run Pester tests'
+    # [Post-Deployment test] task(s)
+    # ------------------------------
+    - name: "Run post-deployment Pester tests"
+      id: pester_run_step
+      shell: pwsh
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Run Pester tests'
 
-    #     # Load used functions
-    #     . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
+        # Load used functions
+        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
 
-    #     # Set repo root path
-    #     $repoRootPath = $env:GITHUB_WORKSPACE
+        # Set repo root path
+        $repoRootPath = $env:GITHUB_WORKSPACE
 
-    #     $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-    #     $moduleTestFolderPath = Split-Path $moduleTestFilePath
-    #     $moduleTestFolderName = Split-Path $moduleTestFolderPath -Leaf
+        $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+        $moduleTestFolderPath = Split-Path $moduleTestFilePath
+        $moduleTestFolderName = Split-Path $moduleTestFolderPath -Leaf
 
-    #     $deploymentOutputs = '${{ steps.deploy_step.outputs.deploymentOutput }}' | ConvertFrom-Json -AsHashTable
+        $deploymentOutputs = '${{ steps.deploy_step.outputs.deploymentOutput }}' | ConvertFrom-Json -AsHashTable
 
-    #     # --------------------- #
-    #     # Invoke Pester test(s) #
-    #     # --------------------- #
+        # --------------------- #
+        # Invoke Pester test(s) #
+        # --------------------- #
 
-    #     $pesterConfiguration = @{
-    #       Run    = @{
-    #         Container = New-PesterContainer -Path $moduleTestFolderPath -Data @{
-    #           TestInputData = @{
-    #             DeploymentOutputs    = $deploymentOutputs    # Passing in in case we want to directly validate data via the deployment's output
-    #             ModuleTestFolderPath = $moduleTestFolderPath # Passing in in case we want to access any data in the test folder / files
-    #           }
-    #         }
-    #         PassThru  = $true
-    #       }
-    #       Output = @{
-    #         Verbosity = 'Detailed'
-    #       }
-    #     }
+        $pesterConfiguration = @{
+          Run    = @{
+            Container = New-PesterContainer -Path $moduleTestFolderPath -Data @{
+              TestInputData = @{
+                DeploymentOutputs    = $deploymentOutputs    # Passing in in case we want to directly validate data via the deployment's output
+                ModuleTestFolderPath = $moduleTestFolderPath # Passing in in case we want to access any data in the test folder / files
+              }
+            }
+            PassThru  = $true
+          }
+          Output = @{
+            Verbosity = 'Detailed'
+          }
+        }
 
-    #     Write-Verbose 'Invoke test with' -Verbose
-    #     $foundTestPaths = $pesterConfiguration.Run.Container | Where-Object { -not [String]::IsNullOrEmpty($_.Item.FullName) } | Foreach-Object { ($_.Item.FullName -split '[\\|\/]tests[\\|\/]e2e[\\|\/]')[1] }
+        Write-Verbose 'Invoke test with' -Verbose
+        $foundTestPaths = $pesterConfiguration.Run.Container | Where-Object { -not [String]::IsNullOrEmpty($_.Item.FullName) } | Foreach-Object { ($_.Item.FullName -split '[\\|\/]tests[\\|\/]e2e[\\|\/]')[1] }
 
-    #     if($foundTestPaths.Count -gt 0) {
-    #       Write-Verbose ('Path(s): {0}' -f ($foundTestPaths | Convertto-Json)) -Verbose
-    #       Write-Verbose ('Data: {0}' -f ($pesterConfiguration.Run.Container.Data[0] | ConvertTo-Json -Depth 3)) -Verbose
+        if($foundTestPaths.Count -gt 0) {
+          Write-Verbose ('Path(s): {0}' -f ($foundTestPaths | Convertto-Json)) -Verbose
+          Write-Verbose ('Data: {0}' -f ($pesterConfiguration.Run.Container.Data[0] | ConvertTo-Json -Depth 3)) -Verbose
 
-    #       $testResults = Invoke-Pester -Configuration $pesterConfiguration
+          $testResults = Invoke-Pester -Configuration $pesterConfiguration
 
-    #       # ----------------------------------------- #
-    #       # Create formatted Pester Test Results File #
-    #       # ----------------------------------------- #
+          # ----------------------------------------- #
+          # Create formatted Pester Test Results File #
+          # ----------------------------------------- #
 
-    #       $functionInput = @{
-    #         PesterTestResults = $testResults
-    #         OutputFilePath    = Join-Path $env:GITHUB_WORKSPACE 'avm' "$moduleTestFolderName-Pester-output.md"
-    #         GitHubRepository  = $env:GITHUB_REPOSITORY
-    #         BranchName        = $env:GITHUB_REF
-    #         Title             = 'Pester post-deployment validation summary'
-    #       }
+          $functionInput = @{
+            PesterTestResults = $testResults
+            OutputFilePath    = Join-Path $env:GITHUB_WORKSPACE 'avm' "$moduleTestFolderName-Pester-output.md"
+            GitHubRepository  = $env:GITHUB_REPOSITORY
+            BranchName        = $env:GITHUB_REF
+            Title             = 'Pester post-deployment validation summary'
+          }
 
-    #       Write-Verbose 'Invoke Pester formatting function with' -Verbose
-    #       Write-Verbose ($functionInput | ConvertTo-Json -Depth 0 | Out-String) -Verbose
+          Write-Verbose 'Invoke Pester formatting function with' -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json -Depth 0 | Out-String) -Verbose
 
-    #       Set-PesterGitHubOutput @functionInput -Verbose
+          Set-PesterGitHubOutput @functionInput -Verbose
 
-    #       Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $functionInput.outputFilePath) >> $env:GITHUB_OUTPUT
-    #     } else {
-    #       Write-Verbose 'Found no Pester test files (*.test.ps1) in test folder' -Verbose
-    #       Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', '') >> $env:GITHUB_OUTPUT
-    #     }
-    # - name: "Output to GitHub job summaries"
-    #   if: steps.pester_run_step.outputs.formattedPesterResultsPath != ''
-    #   shell: pwsh
-    #   run: |
-    #     # Grouping task logs
-    #     Write-Output '::group::Output to GitHub job summaries'
+          Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $functionInput.outputFilePath) >> $env:GITHUB_OUTPUT
+        } else {
+          Write-Verbose 'Found no Pester test files (*.test.ps1) in test folder' -Verbose
+          Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', '') >> $env:GITHUB_OUTPUT
+        }
+    - name: "Output to GitHub job summaries"
+      if: steps.pester_run_step.outputs.formattedPesterResultsPath != ''
+      shell: pwsh
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Output to GitHub job summaries'
 
-    #     $mdPesterOutputFilePath = '${{ steps.pester_run_step.outputs.formattedPesterResultsPath }}'
+        $mdPesterOutputFilePath = '${{ steps.pester_run_step.outputs.formattedPesterResultsPath }}'
 
-    #     if (-not (Test-Path $mdPesterOutputFilePath)) {
-    #       Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPesterOutputFilePath)
-    #     } else {
-    #       Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY
-    #       Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
-    #     }
+        if (-not (Test-Path $mdPesterOutputFilePath)) {
+          Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPesterOutputFilePath)
+        } else {
+          Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+          Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
+        }
 
-    #     Write-Output '::endgroup::'
+        Write-Output '::endgroup::'
 
-    # # [Deployment removal] task(s)
-    # # ----------------------------
-    # - name: "Remove deployed resources"
-    #   if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' }}
-    #   uses: azure/powershell@v2
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       # Grouping task logs
-    #       Write-Output '::group::Remove deployed resources'
+    # [Deployment removal] task(s)
+    # ----------------------------
+    - name: "Remove deployed resources"
+      if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' }}
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Remove deployed resources'
 
-    #       # Load used function
-    #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
+          # Load used function
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
 
-    #       $functionInput = @{
-    #         TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-    #         DeploymentNames   = '${{ steps.deploy_step.outputs.deploymentNames }}' | ConvertFrom-Json
-    #         ManagementGroupId = '${{ inputs.managementGroupId }}'
-    #       }
+          $functionInput = @{
+            TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+            DeploymentNames   = '${{ steps.deploy_step.outputs.deploymentNames }}' | ConvertFrom-Json
+            ManagementGroupId = '${{ inputs.managementGroupId }}'
+          }
 
-    #       if (-not [String]::IsNullOrEmpty('${{ inputs.subscriptionId }}')) {
-    #           $functionInput['SubscriptionId'] = '${{ inputs.subscriptionId }}'
-    #       }
+          if (-not [String]::IsNullOrEmpty('${{ inputs.subscriptionId }}')) {
+              $functionInput['SubscriptionId'] = '${{ inputs.subscriptionId }}'
+          }
 
-    #       Write-Verbose 'Invoke task with' -Verbose
-    #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          Write-Verbose 'Invoke task with' -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-    #       Initialize-DeploymentRemoval @functionInput
+          Initialize-DeploymentRemoval @functionInput
 
-    #       Write-Output '::endgroup::'
+          Write-Output '::endgroup::'
