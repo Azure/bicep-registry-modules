@@ -115,7 +115,7 @@ param workloadProfileName string?
   ]
   '''
 })
-#disable-next-line secure-secrets-in-params // not a secret, just a reference to a secret
+#disable-next-line secure-secrets-in-params // @secure() is specified in UDT
 param secrets secretType[]?
 
 @description('Optional. List of volume definitions for the Container App.')
