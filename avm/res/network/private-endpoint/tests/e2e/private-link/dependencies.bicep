@@ -114,9 +114,6 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
       }
     ]
   }
-  dependsOn: [
-    virtualNetwork
-  ]
 }
 
 resource privateLinkService 'Microsoft.Network/privateLinkServices@2023-11-01' = {
