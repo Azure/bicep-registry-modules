@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Creating Azure ML managed feature store'
+metadata description = 'This instance deploys an Azure ML managed feature store.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-machinelearningservices.work
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mlswmin'
+param serviceShort string = 'mlswfs'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -61,9 +61,12 @@ module testDeployment '../../../main.bicep' = [
       associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       sku: 'Basic'
+      kind: 'FeatureStore'
+      featureStoreSettings: {
+        computeRuntime: {
+          sparkRuntimeVersion: '3.3'
+        }
+      }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
