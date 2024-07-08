@@ -23,7 +23,6 @@ This module connects a primary and secondary Redis Cache together for geo-replic
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`linkedRedisCacheResourceId`](#parameter-linkedrediscacheresourceid) | string | The resource ID of the linked server. |
-| [`name`](#parameter-name) | string | The name of the secondary Redis cache. If not provided, the primary Redis cache name is used. |
 | [`redisCacheName`](#parameter-rediscachename) | string | Primary Redis cache name. |
 
 **Optional parameters**
@@ -31,6 +30,7 @@ This module connects a primary and secondary Redis Cache together for geo-replic
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`linkedRedisCacheLocation`](#parameter-linkedrediscachelocation) | string | The location of the linked server. If not provided, the location of the primary Redis cache is used. |
+| [`name`](#parameter-name) | string | The name of the secondary Redis cache. If not provided, the primary Redis cache name is used. |
 | [`serverRole`](#parameter-serverrole) | string | The role of the linked server. Possible values include: "Primary", "Secondary". Default value is "Secondary". |
 
 ### Parameter: `linkedRedisCacheResourceId`
@@ -39,14 +39,6 @@ The resource ID of the linked server.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `name`
-
-The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.
-
-- Required: No
-- Type: string
-- Default: `[parameters('redisCacheName')]`
 
 ### Parameter: `redisCacheName`
 
@@ -61,6 +53,14 @@ The location of the linked server. If not provided, the location of the primary 
 
 - Required: No
 - Type: string
+
+### Parameter: `name`
+
+The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.
+
+- Required: No
+- Type: string
+- Default: `[parameters('redisCacheName')]`
 
 ### Parameter: `serverRole`
 

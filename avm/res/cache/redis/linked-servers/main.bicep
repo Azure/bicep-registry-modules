@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Primary Redis cache name.')
 param redisCacheName string
 
-@description('Required. The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.')
+@description('Optional. The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.')
 param name string = redisCacheName
 
 @description('Required. The resource ID of the linked server.')

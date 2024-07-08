@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12367475520147461823"
+      "templateHash": "12446115079796907753"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.",
@@ -1469,7 +1469,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('geoReplicationObject').secondaryRedisCacheName]"
+            "value": "[parameters('geoReplicationObject').name]"
           },
           "linkedRedisCacheResourceId": {
             "value": "[parameters('geoReplicationObject').linkedRedisCacheResourceId]"
@@ -1486,7 +1486,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "17997086445948873902"
+              "templateHash": "16388556183951135369"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication.",
@@ -1503,7 +1503,7 @@
               "type": "string",
               "defaultValue": "[parameters('redisCacheName')]",
               "metadata": {
-                "description": "Required. The name of the secondary Redis cache. If not provided, the primary Redis cache name is used."
+                "description": "Optional. The name of the secondary Redis cache. If not provided, the primary Redis cache name is used."
               }
             },
             "linkedRedisCacheResourceId": {
