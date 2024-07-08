@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7064037262721291855"
+      "templateHash": "5108430413148442153"
     },
     "name": "Data Factory Linked Service",
     "description": "This module deploys a Data Factory Linked Service.",
@@ -39,6 +39,7 @@
     },
     "integrationRuntimeName": {
       "type": "string",
+      "defaultValue": "none",
       "metadata": {
         "description": "Optional. The name of the Integration Runtime to use."
       }

@@ -73,8 +73,9 @@ The description of the Integration Runtime.
 
 The name of the Integration Runtime to use.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `'none'`
 
 ### Parameter: `parameters`
 

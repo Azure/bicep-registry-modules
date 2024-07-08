@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10517053075077969451"
+      "templateHash": "1635148191043758282"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1192,8 +1192,12 @@
           "type": {
             "value": "[parameters('linkedServices')[copyIndex()].type]"
           },
-          "typeProperties": "[if(contains(parameters('linkedServices')[copyIndex()], 'typeProperties'), createObject('value', parameters('linkedServices')[copyIndex()].typeProperties), createObject('value', createObject()))]",
-          "integrationRuntimeName": "[if(contains(parameters('linkedServices')[copyIndex()], 'integrationRuntimeName'), createObject('value', parameters('linkedServices')[copyIndex()].integrationRuntimeName), createObject('value', 'none'))]",
+          "typeProperties": {
+            "value": "[tryGet(parameters('linkedServices')[copyIndex()], 'typeProperties')]"
+          },
+          "integrationRuntimeName": {
+            "value": "[tryGet(parameters('linkedServices')[copyIndex()], 'integrationRuntimeName')]"
+          },
           "parameters": {
             "value": "[tryGet(parameters('linkedServices')[copyIndex()], 'parameters')]"
           },
@@ -1208,7 +1212,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "7064037262721291855"
+              "templateHash": "5108430413148442153"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service.",
@@ -1242,6 +1246,7 @@
             },
             "integrationRuntimeName": {
               "type": "string",
+              "defaultValue": "none",
               "metadata": {
                 "description": "Optional. The name of the Integration Runtime to use."
               }
