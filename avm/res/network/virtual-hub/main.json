@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "7421243394882467292"
+      "version": "0.28.1.47646",
+      "templateHash": "13594058281073706360"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -92,6 +92,19 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Resource ID of the Point-to-Site VPN Gateway to link to."
+      }
+    },
+    "hubRoutingPreference": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "ASPath",
+        "ExpressRoute",
+        "VpnGateway",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. The preferred routing preference for this virtual hub."
       }
     },
     "preferredRoutingGateway": {
@@ -205,7 +218,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.res.network-virtualhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -224,7 +237,7 @@
     },
     "virtualHub": {
       "type": "Microsoft.Network/virtualHubs",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -234,6 +247,7 @@
         "azureFirewall": "[if(not(empty(parameters('azureFirewallResourceId'))), createObject('id', parameters('azureFirewallResourceId')), null())]",
         "expressRouteGateway": "[if(not(empty(parameters('expressRouteGatewayId'))), createObject('id', parameters('expressRouteGatewayId')), null())]",
         "p2SVpnGateway": "[if(not(empty(parameters('p2SVpnGatewayId'))), createObject('id', parameters('p2SVpnGatewayId')), null())]",
+        "hubRoutingPreference": "[if(not(empty(parameters('hubRoutingPreference'))), parameters('hubRoutingPreference'), null())]",
         "preferredRoutingGateway": "[if(not(empty(parameters('preferredRoutingGateway'))), parameters('preferredRoutingGateway'), null())]",
         "routeTable": "[if(not(empty(parameters('routeTableRoutes'))), createObject('routes', parameters('routeTableRoutes')), null())]",
         "securityPartnerProvider": "[if(not(empty(parameters('securityPartnerProviderId'))), createObject('id', parameters('securityPartnerProviderId')), null())]",
@@ -291,8 +305,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "13312295345359302348"
+              "version": "0.28.1.47646",
+              "templateHash": "7178717349327479453"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table.",
@@ -398,8 +412,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "449308154693946367"
+              "version": "0.28.1.47646",
+              "templateHash": "3505452198428635330"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection.",
@@ -511,7 +525,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualHub', '2022-11-01', 'full').location]"
+      "value": "[reference('virtualHub', '2023-11-01', 'full').location]"
     }
   }
 }
