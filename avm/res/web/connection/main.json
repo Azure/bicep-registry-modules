@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16876360500243904943"
+      "templateHash": "4760344619510029018"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection.",
@@ -106,17 +106,17 @@
     }
   },
   "parameters": {
-    "api": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Specific values for some API connections."
-      }
-    },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource."
+        "description": "Required. Connection name for connection. It can change depending on the resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location of the deployment."
       }
     },
     "enableTelemetry": {
@@ -124,6 +124,14 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "api": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "example": "  // for a Service Bus connection\n  {\n    type: 'Microsoft.Web/locations/managedApis'\n    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')\n  }\n",
+        "description": "Optional. Specific values for some API connections."
       }
     },
     "customParameterValues": {
@@ -136,14 +144,7 @@
     "displayName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource."
-      }
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Optional. Location of the deployment."
+        "description": "Required. Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource."
       }
     },
     "nonSecretParameterValues": {
@@ -157,7 +158,16 @@
       "type": "secureObject",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource."
+        "example": "    {\n      connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'\n    }\n    {\n      rootfolder: fileshareConnection.rootfolder\n      authType: fileshareConnection.authType\n      // to add an object, use the any() function\n      gateway: any({\n        name: fileshareConnection.odgw.name\n        id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)\n        type: 'Microsoft.Web/connectionGateways'\n      })\n      username: username\n      password: password\n    }\n  ",
+        "description": "Optional. Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource."
+      }
+    },
+    "parameterValueSet": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "example": "  // for a Service Bus connection\n  {\n    name: 'managedIdentityAuth'\n    values: {\n      namespaceEndpoint: {\n        value: 'sb://${dependency.outputs.serviceBusEndpoint}'\n      }\n    }\n  }\n",
+        "description": "Optional. Additional parameter value set used for authentication settings."
       }
     },
     "roleAssignments": {
@@ -168,9 +178,12 @@
     },
     "statuses": {
       "type": "array",
+      "items": {
+        "type": "object"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Status of the connection."
+        "description": "Optional. The status of the connection."
       }
     },
     "lock": {
@@ -183,11 +196,15 @@
       "type": "object",
       "nullable": true,
       "metadata": {
+        "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
     "testLinks": {
       "type": "array",
+      "items": {
+        "type": "object"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Links to test the API connection."
@@ -237,7 +254,8 @@
         "parameterValues": "[parameters('parameterValues')]",
         "nonSecretParameterValues": "[parameters('nonSecretParameterValues')]",
         "testLinks": "[parameters('testLinks')]",
-        "statuses": "[parameters('statuses')]"
+        "statuses": "[parameters('statuses')]",
+        "parameterValueSet": "[parameters('parameterValueSet')]"
       }
     },
     "connection_lock": {
