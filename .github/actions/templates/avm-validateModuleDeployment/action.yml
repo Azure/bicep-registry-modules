@@ -61,9 +61,38 @@ runs:
   steps:
     # [Azure login] task(s)
     # ------------------------------
+
+    - name: "Set OIDC exception"
+      id: set-oidc-exception
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Set OIDC exception'
+
+          $exceptionModulePaths = @(
+            'avm/res/api-management/service'
+            'avm/res/compute/image'
+            'avm/res/network/express-route-gateway'
+            'avm/res/network/vpn-gateway'
+            'avm/ptn/policy-insights/remediation'
+            'avm/res/sql/managed-instance'
+            'avm/res/web/hosting-environment'
+          )
+          if ($exceptionModulePaths.Contains( "${{ inputs.modulePath }}" )) {
+            $oidcException = 'true'
+          } else {
+            $oidcException = 'false'
+          }
+          Write-Verbose 'oidcException [$oidcException]' -Verbose
+
+          Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
+          Write-Output '::endgroup::'
+
     # Default: support both OIDC and older depending on existence of OIDC secrets
     - name: Azure Login
-      if: ${{ !contains(inputs.modulePath, 'managed-instance') }}
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
       uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
@@ -76,7 +105,8 @@ runs:
     # ------------------------------
     # Default: enforce older for subset of modules
     - name: Azure Login
-      if: ${{ inputs.modulePath == 'avm/res/sql/managed-instance' }}
+      # if: ${{ inputs.modulePath == 'avm/res/sql/managed-instance' }}
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
       uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
