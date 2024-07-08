@@ -123,7 +123,7 @@ resource privateLinkService 'Microsoft.Network/privateLinkServices@2023-11-01' =
     enableProxyProtocol: false
     loadBalancerFrontendIpConfigurations: [
       {
-        id: resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', loadbalancerName, loadBalancerFrontEndIpConfigurationName)
+        id: loadbalancer.properties.frontendIPConfigurations[0].id
       }
     ]
     ipConfigurations: [
