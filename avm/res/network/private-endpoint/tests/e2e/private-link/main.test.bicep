@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     privateLinkServiceName: 'dep-${namePrefix}-pls-${serviceShort}'
+    loadbalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     location: resourceLocation
   }
 }
