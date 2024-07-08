@@ -303,13 +303,16 @@ runs:
         azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
-          Write-Output '::group::Replace tokens in template file'
+          Write-Output '::group::Disconnect'
 
           # Load used functions
+          Write-Verbose "get-azcontext" -Verbose
           get-azcontext
 
+          Write-Verbose "Disconnect-AzAccount" -Verbose
           Disconnect-AzAccount
 
+          Write-Verbose "get-azcontext" -Verbose
           get-azcontext
 
           Write-Output '::endgroup::'
