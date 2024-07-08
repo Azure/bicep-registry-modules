@@ -71,6 +71,8 @@ runs:
           # Grouping task logs
           Write-Output '::group::Set OIDC exception'
 
+          # List of modules requiring more that 1 hour to deploy and delete resources
+          $modulePath = "${{ inputs.modulePath }}"
           $exceptionModulePaths = @(
             'avm/res/api-management/service'
             'avm/res/compute/image'
@@ -80,18 +82,20 @@ runs:
             'avm/res/sql/managed-instance'
             'avm/res/web/hosting-environment'
           )
-          if ($exceptionModulePaths.Contains( "${{ inputs.modulePath }}" )) {
+          if ($exceptionModulePaths.Contains($modulePath)) {
             $oidcException = 'true'
+            Write-Verbose ('The module [{0}] is in the list of modules requiring an exception to OIDC.' -f $modulePath) -Verbose
           } else {
             $oidcException = 'false'
+            Write-Verbose ('The module [{0}] supports OIDC.' -f $modulePath) -Verbose
           }
-          Write-Verbose ('{0}-{1}' -f 'oidcException', $oidcException) -Verbose
 
           Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
           Write-Output '::endgroup::'
 
-    # Default: support both OIDC and older depending on existence of OIDC secrets
-    - name: Azure Login
+    # Default: support both OIDC and service principal with secret
+    # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
+    - name: Azure Login - Default
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
       uses: azure/login@v2
       with:
@@ -101,10 +105,8 @@ runs:
         subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
 
-    # [Azure login] task(s)
-    # ------------------------------
-    # Default: enforce older for subset of modules
-    - name: Azure Login
+    # Exception: module requires login by using service principal with secret
+    - name: Azure Login - Exception
       # if: ${{ inputs.modulePath == 'avm/res/sql/managed-instance' }}
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
       uses: azure/login@v2
