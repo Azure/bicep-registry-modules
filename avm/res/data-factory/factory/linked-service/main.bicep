@@ -15,7 +15,7 @@ param type string
 param typeProperties object = {}
 
 @sys.description('Optional. The name of the Integration Runtime to use.')
-param integrationRuntimeName string
+param integrationRuntimeName string = 'none'
 
 @sys.description('Optional. Use this to add parameters for a linked service connection string.')
 param parameters object = {}
