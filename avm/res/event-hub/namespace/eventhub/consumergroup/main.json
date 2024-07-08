@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10439838475562052342"
+      "templateHash": "8005690025378324644"
     },
     "name": "Event Hub Namespace Event Hub Consumer Groups",
     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
@@ -41,7 +41,7 @@
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
       "properties": {
         "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"
