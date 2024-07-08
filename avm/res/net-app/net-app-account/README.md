@@ -633,7 +633,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     name: '<name>'
     // Non-required parameters
     location: '<location>'
-    tags: '<tags>'
+    tags: {
+      service: 'netapp'
+    }
   }
 }
 ```
@@ -659,7 +661,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       "value": "<location>"
     },
     "tags": {
-      "value": "<tags>"
+      "value": {
+        "service": "netapp"
+      }
     }
   }
 }
