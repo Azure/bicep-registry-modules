@@ -229,73 +229,73 @@ runs:
     # [Deployment execution] task(s)
     # ------------------------------
     - name: "Deploy template file"
-    #   id: deploy_step
-    #   uses: azure/powershell@v2
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       # Grouping task logs
-    #       Write-Output '::group::Deploy template file'
+      id: deploy_step
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Deploy template file'
 
-    #       # Load used functions
-    #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
 
-    #       # Prepare general parameters
-    #       # --------------------------
-    #       $subscriptionId = '${{ inputs.subscriptionId }}'
-    #       $managementGroupId = '${{ inputs.managementGroupId }}'
+          # Prepare general parameters
+          # --------------------------
+          $subscriptionId = '${{ inputs.subscriptionId }}'
+          $managementGroupId = '${{ inputs.managementGroupId }}'
 
-    #       # Resolve template file path
-    #       $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+          # Resolve template file path
+          $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
-    #       # Determine possible parameters depending on file type
-    #       if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
-    #         $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
-    #         $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
-    #       } else {
-    #         $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
-    #       }
+          # Determine possible parameters depending on file type
+          if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
+            $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
+            $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
+          } else {
+            $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
+          }
 
-    #       # ----------------- #
-    #       # Invoke deployment #
-    #       # ----------------- #
-    #       $functionInput = @{
-    #         TemplateFilePath           = $moduleTestFilePath
-    #         DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
-    #         SubscriptionId             = $subscriptionId
-    #         ManagementGroupId          = $managementGroupId
-    #         DoNotThrow                 = $true
-    #         RepoRoot                   = $env:GITHUB_WORKSPACE
-    #         AdditionalParameters       = @{}
-    #       }
+          # ----------------- #
+          # Invoke deployment #
+          # ----------------- #
+          $functionInput = @{
+            TemplateFilePath           = $moduleTestFilePath
+            DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
+            SubscriptionId             = $subscriptionId
+            ManagementGroupId          = $managementGroupId
+            DoNotThrow                 = $true
+            RepoRoot                   = $env:GITHUB_WORKSPACE
+            AdditionalParameters       = @{}
+          }
 
-    #       if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
-    #         $functionInput.AdditionalParameters += @{
-    #           resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
-    #         }
-    #       }
+          if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
+            $functionInput.AdditionalParameters += @{
+              resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+            }
+          }
 
-    #       Write-Verbose 'Invoke task with' -Verbose
-    #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          Write-Verbose 'Invoke task with' -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-    #       # Invoke deployment
-    #       $res = New-TemplateDeployment @functionInput -Verbose
+          # Invoke deployment
+          $res = New-TemplateDeployment @functionInput -Verbose
 
-    #       # Get deployment name
-    #       Write-Output ('{0}={1}' -f 'deploymentNames', ($res.deploymentNames | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+          # Get deployment name
+          Write-Output ('{0}={1}' -f 'deploymentNames', ($res.deploymentNames | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
 
-    #       # Populate further outputs
-    #       $deploymentOutput = $res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress
-    #       Write-Output ('{0}={1}' -f 'deploymentOutput', $deploymentOutput) >> $env:GITHUB_OUTPUT
+          # Populate further outputs
+          $deploymentOutput = $res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress
+          Write-Output ('{0}={1}' -f 'deploymentOutput', $deploymentOutput) >> $env:GITHUB_OUTPUT
 
-    #       Write-Verbose "Deployment output: $deploymentOutput" -Verbose
+          Write-Verbose "Deployment output: $deploymentOutput" -Verbose
 
-    #       if ($res.ContainsKey('exception')) {
-    #         # Happens only if there is an exception
-    #         throw $res.exception
-    #       }
+          if ($res.ContainsKey('exception')) {
+            # Happens only if there is an exception
+            throw $res.exception
+          }
 
-    #       Write-Output '::endgroup::'
+          Write-Output '::endgroup::'
 
     - name: "DISCONNECT"
       uses: azure/powershell@v2
