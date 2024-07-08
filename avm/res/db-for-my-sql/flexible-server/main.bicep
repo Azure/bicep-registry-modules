@@ -148,7 +148,7 @@ param storageSizeGB int = 64
   '8.0.21'
 ])
 @description('Optional. MySQL Server version.')
-param version string = '5.7'
+param version string = '8.0.21'
 
 @description('Optional. The databases to create in the server.')
 param databases array = []

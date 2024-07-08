@@ -1388,7 +1388,7 @@ MySQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'5.7'`
+- Default: `'8.0.21'`
 - Allowed:
   ```Bicep
   [

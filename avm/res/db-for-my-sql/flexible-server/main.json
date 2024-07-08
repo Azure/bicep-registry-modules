@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5744198678432091948"
+      "templateHash": "18255568260286808223"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -519,7 +519,7 @@
     },
     "version": {
       "type": "string",
-      "defaultValue": "5.7",
+      "defaultValue": "8.0.21",
       "allowedValues": [
         "5.7",
         "8.0.21"
@@ -813,7 +813,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16124321045090132550"
+              "templateHash": "10336036524933085246"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database.",
@@ -921,7 +921,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5174688085450924115"
+              "templateHash": "15749635080430899727"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
@@ -1028,7 +1028,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1872309055548332882"
+              "templateHash": "6790232868083578968"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
