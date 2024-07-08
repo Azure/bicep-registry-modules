@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "14941226257686956543"
+      "version": "0.27.1.19265",
+      "templateHash": "984038015653934080"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -583,6 +583,13 @@
         "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
       }
     },
+    "apiManagementConfiguration": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The web settings api management configuration."
+      }
+    },
     "appInsightResourceId": {
       "type": "string",
       "nullable": true,
@@ -608,6 +615,13 @@
       "$ref": "#/definitions/lockType",
       "metadata": {
         "description": "Optional. The lock settings of the service."
+      }
+    },
+    "logsConfiguration": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The logs settings configuration."
       }
     },
     "privateEndpoints": {
@@ -948,8 +962,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4955490965342210207"
+              "version": "0.27.1.19265",
+              "templateHash": "1375917194796674785"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -1104,8 +1118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "8625962477180026020"
+              "version": "0.27.1.19265",
+              "templateHash": "14800328886021060025"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1167,6 +1181,195 @@
                 "description": "The resource ID of the site config."
               },
               "value": "[resourceId('Microsoft.Web/sites/config', parameters('appName'), 'authsettingsV2')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the site config was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "app"
+      ]
+    },
+    "app_logssettings": {
+      "condition": "[not(empty(coalesce(parameters('logsConfiguration'), createObject())))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Site-Config-Logs', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appName": {
+            "value": "[parameters('name')]"
+          },
+          "logsConfiguration": {
+            "value": "[parameters('logsConfiguration')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.27.1.19265",
+              "templateHash": "10404897918297908598"
+            },
+            "name": "Site logs Config",
+            "description": "This module deploys a Site logs Configuration.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "appName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the parent site resource."
+              }
+            },
+            "logsConfiguration": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Required. The logs settings configuration."
+              }
+            }
+          },
+          "resources": {
+            "app": {
+              "existing": true,
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2022-09-01",
+              "name": "[parameters('appName')]"
+            },
+            "webSettings": {
+              "type": "Microsoft.Web/sites/config",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/{1}', parameters('appName'), 'logs')]",
+              "kind": "string",
+              "properties": "[parameters('logsConfiguration')]",
+              "dependsOn": [
+                "app"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the site config."
+              },
+              "value": "logs"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the site config."
+              },
+              "value": "[resourceId('Microsoft.Web/sites/config', parameters('appName'), 'logs')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the site config was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "app",
+        "app_appsettings"
+      ]
+    },
+    "app_websettings": {
+      "condition": "[not(empty(coalesce(parameters('apiManagementConfiguration'), createObject())))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Site-Config-Web', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appName": {
+            "value": "[parameters('name')]"
+          },
+          "apiManagementConfiguration": {
+            "value": "[parameters('apiManagementConfiguration')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.27.1.19265",
+              "templateHash": "7729394396836682981"
+            },
+            "name": "Site Api Management Config",
+            "description": "This module deploys a Site Api Management Configuration.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "appName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the parent site resource."
+              }
+            },
+            "apiManagementConfiguration": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Required. The web settings api management configuration."
+              }
+            }
+          },
+          "resources": {
+            "app": {
+              "existing": true,
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2022-09-01",
+              "name": "[parameters('appName')]"
+            },
+            "webSettings": {
+              "type": "Microsoft.Web/sites/config",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/{1}', parameters('appName'), 'web')]",
+              "kind": "string",
+              "properties": "[parameters('apiManagementConfiguration')]",
+              "dependsOn": [
+                "app"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the site config."
+              },
+              "value": "web"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the site config."
+              },
+              "value": "[resourceId('Microsoft.Web/sites/config', parameters('appName'), 'web')]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -1329,8 +1532,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15715280445379891193"
+              "version": "0.27.1.19265",
+              "templateHash": "17910920737432101876"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2256,8 +2459,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "7468244783040054160"
+                      "version": "0.27.1.19265",
+                      "templateHash": "12787561964805698777"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2431,8 +2634,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "10212981101211605812"
+                      "version": "0.27.1.19265",
+                      "templateHash": "17648822117505176946"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2552,8 +2755,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "16535586328125636135"
+                      "version": "0.27.1.19265",
+                      "templateHash": "13815624464535684714"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -2678,8 +2881,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15454748136055010211"
+                      "version": "0.27.1.19265",
+                      "templateHash": "18259551022155592905"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -3499,8 +3702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7890454949460001265"
+              "version": "0.27.1.19265",
+              "templateHash": "6464393553547779506"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
@@ -3615,8 +3818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "3173546331275321765"
+              "version": "0.27.1.19265",
+              "templateHash": "6008462668933940185"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay.",

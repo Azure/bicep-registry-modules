@@ -3213,7 +3213,6 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`managedDisk`](#parameter-osdiskmanageddisk) | object | The managed disk parameters. |
 
 **Optional parameters**
@@ -3223,14 +3222,8 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 | [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
 | [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machine should be created. |
 | [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`name`](#parameter-osdiskname) | string | The disk name. |
-
-### Parameter: `osDisk.diskSizeGB`
-
-Specifies the size of an empty data disk in gigabytes.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `osDisk.managedDisk`
 
@@ -3239,23 +3232,25 @@ The managed disk parameters.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
 
 ### Parameter: `osDisk.managedDisk.storageAccountType`
 
 Specifies the storage account type for the managed disk.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -3269,13 +3264,6 @@ Specifies the storage account type for the managed disk.
     'UltraSSD_LRS'
   ]
   ```
-
-### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
-
-Specifies the customer managed disk encryption set resource id for the managed disk.
-
-- Required: No
-- Type: string
 
 ### Parameter: `osDisk.caching`
 
@@ -3320,6 +3308,13 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
     'Detach'
   ]
   ```
+
+### Parameter: `osDisk.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: No
+- Type: int
 
 ### Parameter: `osDisk.name`
 

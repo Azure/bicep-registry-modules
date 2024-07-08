@@ -47,7 +47,7 @@ configuration:
   AZURE_BICEP_FILE_EXPANSION: true
 
   # Configures the number of seconds to wait for build Bicep files.
-  AZURE_BICEP_FILE_EXPANSION_TIMEOUT: 10
+  AZURE_BICEP_FILE_EXPANSION_TIMEOUT: 20
 
   # Custom non-sensitive parameters' names
   AZURE_DEPLOYMENT_NONSENSITIVE_PARAMETER_NAMES:
