@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17024389124356297408"
+      "templateHash": "7351695071160963851"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -23,6 +23,39 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
             }
           },
           "metricCategories": {
@@ -393,7 +426,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -412,7 +445,7 @@
     },
     "loadBalancer": {
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -459,6 +492,15 @@
               "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
               "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],
@@ -526,7 +568,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12599435098613045377"
+              "templateHash": "1736731506120599540"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -582,7 +624,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/loadBalancers/backendAddressPools",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "loadBalancerBackendAddresses": "[parameters('loadBalancerBackendAddresses')]",
@@ -645,25 +687,42 @@
             "value": "[parameters('inboundNatRules')[copyIndex()].frontendIPConfigurationName]"
           },
           "frontendPort": {
-            "value": "[parameters('inboundNatRules')[copyIndex()].frontendPort]"
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'frontendPort')]"
           },
-          "backendPort": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendPort'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendPort), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPort))]",
-          "backendAddressPoolName": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendAddressPoolName'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendAddressPoolName), createObject('value', ''))]",
-          "enableFloatingIP": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'enableFloatingIP'), createObject('value', parameters('inboundNatRules')[copyIndex()].enableFloatingIP), createObject('value', false()))]",
-          "enableTcpReset": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'enableTcpReset'), createObject('value', parameters('inboundNatRules')[copyIndex()].enableTcpReset), createObject('value', false()))]",
-          "frontendPortRangeEnd": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeEnd'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPortRangeEnd), createObject('value', -1))]",
-          "frontendPortRangeStart": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeStart'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPortRangeStart), createObject('value', -1))]",
-          "idleTimeoutInMinutes": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'idleTimeoutInMinutes'), createObject('value', parameters('inboundNatRules')[copyIndex()].idleTimeoutInMinutes), createObject('value', 4))]",
-          "protocol": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'protocol'), createObject('value', parameters('inboundNatRules')[copyIndex()].protocol), createObject('value', 'Tcp'))]"
+          "backendPort": {
+            "value": "[parameters('inboundNatRules')[copyIndex()].backendPort]"
+          },
+          "backendAddressPoolName": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'backendAddressPoolName')]"
+          },
+          "enableFloatingIP": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'enableFloatingIP')]"
+          },
+          "enableTcpReset": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'enableTcpReset')]"
+          },
+          "frontendPortRangeEnd": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeEnd')]"
+          },
+          "frontendPortRangeStart": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeStart')]"
+          },
+          "idleTimeoutInMinutes": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'idleTimeoutInMinutes')]"
+          },
+          "protocol": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'protocol')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "18107219293143755407"
+              "templateHash": "11398827458130316747"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -684,19 +743,19 @@
             },
             "frontendPort": {
               "type": "int",
-              "minValue": 1,
+              "nullable": true,
+              "minValue": 0,
               "maxValue": 65534,
               "metadata": {
-                "description": "Required. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer."
+                "description": "Conditional. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified."
               }
             },
             "backendPort": {
               "type": "int",
-              "defaultValue": "[parameters('frontendPort')]",
-              "minValue": 1,
+              "minValue": 0,
               "maxValue": 65535,
               "metadata": {
-                "description": "Optional. The port used for the internal endpoint."
+                "description": "Required. The port used for the internal endpoint."
               }
             },
             "backendAddressPoolName": {
@@ -728,20 +787,20 @@
             },
             "frontendPortRangeEnd": {
               "type": "int",
-              "defaultValue": -1,
-              "minValue": -1,
+              "nullable": true,
+              "minValue": 0,
               "maxValue": 65534,
               "metadata": {
-                "description": "Optional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool."
+                "description": "Conditonal. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
               }
             },
             "frontendPortRangeStart": {
               "type": "int",
-              "defaultValue": -1,
-              "minValue": -1,
+              "nullable": true,
+              "minValue": 0,
               "maxValue": 65534,
               "metadata": {
-                "description": "Optional. The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool."
+                "description": "Conditional. The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
               }
             },
             "idleTimeoutInMinutes": {
@@ -764,10 +823,16 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "loadBalancer": {
+              "existing": true,
+              "type": "Microsoft.Network/loadBalancers",
+              "apiVersion": "2023-11-01",
+              "name": "[parameters('loadBalancerName')]"
+            },
+            "inboundNatRule": {
               "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "frontendPort": "[parameters('frontendPort')]",
@@ -778,13 +843,16 @@
                 "frontendIPConfiguration": {
                   "id": "[format('{0}/frontendIPConfigurations/{1}', resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), parameters('frontendIPConfigurationName'))]"
                 },
-                "frontendPortRangeStart": "[if(not(equals(parameters('frontendPortRangeStart'), -1)), parameters('frontendPortRangeStart'), null())]",
-                "frontendPortRangeEnd": "[if(not(equals(parameters('frontendPortRangeEnd'), -1)), parameters('frontendPortRangeEnd'), null())]",
+                "frontendPortRangeStart": "[parameters('frontendPortRangeStart')]",
+                "frontendPortRangeEnd": "[parameters('frontendPortRangeEnd')]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
                 "protocol": "[parameters('protocol')]"
-              }
+              },
+              "dependsOn": [
+                "loadBalancer"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -850,7 +918,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('loadBalancer', '2023-04-01', 'full').location]"
+      "value": "[reference('loadBalancer', '2023-11-01', 'full').location]"
     }
   }
 }

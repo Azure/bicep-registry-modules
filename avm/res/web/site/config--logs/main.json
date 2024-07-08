@@ -1,0 +1,71 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.27.1.19265",
+      "templateHash": "10404897918297908598"
+    },
+    "name": "Site logs Config",
+    "description": "This module deploys a Site logs Configuration.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent site resource."
+      }
+    },
+    "logsConfiguration": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Required. The logs settings configuration."
+      }
+    }
+  },
+  "resources": {
+    "app": {
+      "existing": true,
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('appName')]"
+    },
+    "webSettings": {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('appName'), 'logs')]",
+      "kind": "string",
+      "properties": "[parameters('logsConfiguration')]",
+      "dependsOn": [
+        "app"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the site config."
+      },
+      "value": "logs"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the site config."
+      },
+      "value": "[resourceId('Microsoft.Web/sites/config', parameters('appName'), 'logs')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the site config was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -21,94 +21,94 @@ Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'ht
 Will be triggered by the workflow platform.set-avm-github-issue-owner-config.yml
 #>
 function Set-AvmGitHubIssueOwnerConfig {
-  [CmdletBinding(SupportsShouldProcess)]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string] $Repo,
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $Repo,
 
-    [Parameter(Mandatory = $true)]
-    [string] $IssueUrl,
+        [Parameter(Mandatory = $true)]
+        [string] $IssueUrl,
 
-    [Parameter(Mandatory = $false)]
-    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
-  )
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
+    )
 
-  # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
+    # Loading helper functions
+    . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
+    . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
 
-  $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+    $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
-  if ($issue.title.StartsWith('[AVM Module Issue]')) {
-    $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn)')[0].Trim().Replace(' ', '')
+    if ($issue.title.StartsWith('[AVM Module Issue]')) {
+        $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn)')[0].Trim().Replace(' ', '')
 
-    if ([string]::IsNullOrEmpty($moduleName)) {
-      throw 'No valid module name was found in the issue.'
-    }
+        if ([string]::IsNullOrEmpty($moduleName)) {
+            throw 'No valid module name was found in the issue.'
+        }
 
-    $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
-    # get CSV data
-    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
+        $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
+        # get CSV data
+        $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
-    # new/unknown module
-    if ($null -eq $module) {
-      $reply = @"
+        # new/unknown module
+        if ($null -eq $module) {
+            $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > The module does not exist yet, we look into it. Please file a new module proposal under [AVM Module proposal](https://aka.ms/avm/moduleproposal).
 "@
-    }
-    # orphaned module
-    elseif ($module.ModuleStatus -eq 'Orphaned :eyes:') {
-      $reply = @"
+        }
+        # orphaned module
+        elseif ($module.ModuleStatus -eq 'Orphaned :eyes:') {
+            $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > Please note, that this module is currently orphaned. The @Azure/avm-core-team-technical-bicep, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
 "@
-    }
-    # existing module
-    else {
-      $reply = @"
+        }
+        # existing module
+        else {
+            $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > A member of the @Azure/$($module.ModuleOwnersGHTeam) or @Azure/$($module.ModuleContributorsGHTeam) team will review it soon!
 "@
-    }
+        }
 
-    # add issue to project
-    $ProjectNumber = 566 # AVM - Module Issues
-    Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+        # add issue to project
+        $ProjectNumber = 566 # AVM - Module Issues
+        Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
 
-    if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
-      gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
-    }
+        if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
+            gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
+        }
 
-    if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
-      # write comment
-      gh issue comment $issue.url --body $reply --repo $Repo
-    }
+        if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
+            # write comment
+            gh issue comment $issue.url --body $reply --repo $Repo
+        }
 
-    if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
-      if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
-        # assign owner
-        $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
-      }
+        if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+            if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
+                # assign owner
+                $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+            }
 
-      if ([String]::IsNullOrEmpty($assign)) {
-        if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
-          $reply = @"
+            if ([String]::IsNullOrEmpty($assign)) {
+                if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
+                    $reply = @"
 > [!WARNING]
 > This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
 
-          gh issue comment $issue.url --body $reply --repo $Repo
+                    gh issue comment $issue.url --body $reply --repo $Repo
+                }
+            }
         }
-      }
     }
-  }
 
-  Write-Verbose ('issue {0}{1} updated' -f $issue.title, $($WhatIfPreference ? ' would have been' : ''))
+    Write-Verbose ('issue {0}{1} updated' -f $issue.title, $($WhatIfPreference ? ' would have been' : ''))
 }

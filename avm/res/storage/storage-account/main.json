@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9679329912314181282"
+      "templateHash": "5769970568658743015"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -4644,6 +4644,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('storageAccount', '2022-09-01', 'full').location]"
+    },
+    "serviceEndpoints": {
+      "type": "object",
+      "metadata": {
+        "description": "All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint."
+      },
+      "value": "[reference('storageAccount').primaryEndpoints]"
     }
   }
 }
