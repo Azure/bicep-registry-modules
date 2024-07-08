@@ -47,7 +47,7 @@ resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-0
   }
 }
 
-@sys.description('The name of the Resource Group the Integration Runtime was created in.')
+@sys.description('The name of the Resource Group the Linked Service was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The name of the Linked Service.')
