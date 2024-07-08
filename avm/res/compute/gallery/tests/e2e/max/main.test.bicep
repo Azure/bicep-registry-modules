@@ -76,176 +76,146 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           name: '${namePrefix}-az-imgd-ws-001'
-          properties: {
-            hyperVGeneration: 'V1'
-            identifier: {
-              publisher: 'MicrosoftWindowsServer'
-              offer: 'WindowsServer'
-              sku: '2022-datacenter-azure-edition'
-            }
-            osType: 'Windows'
-            osState: 'Generalized'
-            eula: 'test Eula'
-            architecture: 'x64'
-            description: 'testDescription'
-            privacyStatementUri: 'https://testPrivacyStatementUri.com'
-            disallowed: {
-              diskTypes: ['Standard_LRS']
-            }
-            purchasePlan:{
-              name: 'testPlanName1'
-              product: 'testProduct1'
-              publisher: 'testPublisher1'
-            }
-            endOfLifeDate: '2033-01-01'
-            releaseNoteUri: 'https://testReleaseNoteUri.com'
+          hyperVGeneration: 'V1'
+          identifier: {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-azure-edition'
           }
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
+          osType: 'Windows'
+          osState: 'Generalized'
+          eula: 'test Eula'
+          architecture: 'x64'
+          description: 'testDescription'
+          privacyStatementUri: 'https://testPrivacyStatementUri.com'
+          excludedDiskTypes: ['Standard_LRS']
+          purchasePlan: {
+            name: 'testPlanName1'
+            product: 'testProduct1'
+            publisher: 'testPublisher1'
+          }
+          endOfLife: '2033-01-01'
+          releaseNoteUri: 'https://testReleaseNoteUri.com'
         }
         {
           name: '${namePrefix}-az-imgd-ws-002'
-          properties: {
-            hyperVGeneration: 'V2'
-            identifier: {
-              publisher: 'MicrosoftWindowsServer'
-              offer: 'WindowsServer'
-              sku: '2022-datacenter-azure-edition-hibernate'
-            }
-            osType: 'Windows'
-            recommended: {
-              memory: {
-                min: 4
-                max: 16
-              }
-              vCPUs: {
-                min: 2
-                max: 8
-              }
-            }
-            osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-azure-edition-hibernate'
           }
+          osType: 'Windows'
+          vCPUs: {
+            min: 2
+            max: 8
+          }
+          memory: {
+            min: 4
+            max: 16
+          }
+
+          osState: 'Generalized'
           isHibernateSupported: true
           isAcceleratedNetworkSupported: false
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
         }
         {
           name: '${namePrefix}-az-imgd-wdtl-003'
           securityType: 'TrustedLaunch'
-          properties: {
-            osType: 'Windows'
-            osState: 'Generalized'
-            hyperVGeneration: 'V2'
-            identifier: {
-              publisher: 'MicrosoftWindowsDesktop'
-              offer: 'WindowsDesktop'
-              sku: 'Win11-21H2'
-            }
-            recommended: {
-              memory: {
-                min: 4
-                max: 16
-              }
-              vCPUs: {
-                min: 2
-                max: 8
-              }
-            }
-            purchasePlan:{
-              name: 'testPlanName'
-              product: 'testProduct'
-              publisher: 'testPublisher'
-            }
+          osType: 'Windows'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'MicrosoftWindowsDesktop'
+            offer: 'WindowsDesktop'
+            sku: 'Win11-21H2'
           }
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
+          memory: {
+            min: 4
+            max: 16
+          }
+          vCPUs: {
+            min: 2
+            max: 8
+          }
+          purchasePlan: {
+            name: 'testPlanName'
+            product: 'testProduct'
+            publisher: 'testPublisher'
+          }
         }
         {
           name: '${namePrefix}-az-imgd-us-004'
-          properties: {
-            osType: 'Linux'
-            osState: 'Generalized'
-            hyperVGeneration: 'V2'
-            identifier: {
-              publisher: 'canonical'
-              offer: '0001-com-ubuntu-minimal-focal'
-              sku: '22_04-lts-gen2'
-            }
-            recommended: {
-              memory: {
-                min: 4
-                max: 32
-              }
-              vCPUs: {
-                min: 1
-                max: 4
-              }
-            }
+          osType: 'Linux'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'canonical'
+            offer: '0001-com-ubuntu-minimal-focal'
+            sku: '22_04-lts-gen2'
+          }
+          memory: {
+            min: 4
+            max: 32
+          }
+          vCPUs: {
+            min: 1
+            max: 4
           }
           isAcceleratedNetworkSupported: false
         }
         {
           name: '${namePrefix}-az-imgd-us-005'
-          properties: {
-            osType: 'Linux'
-            osState: 'Generalized'
-            hyperVGeneration: 'V2'
-            identifier: {
-              publisher: 'canonical'
-              offer: '0001-com-ubuntu-minimal-focal'
-              sku: '20_04-lts-gen2'
-            }
-            recommended: {
-              memory: {
-                min: 4
-                max: 32
-              }
-              vCPUs: {
-                min: 1
-                max: 4
-              }
-            }
+          osType: 'Linux'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'canonical'
+            offer: '0001-com-ubuntu-minimal-focal'
+            sku: '20_04-lts-gen2'
+          }
+          memory: {
+            min: 4
+            max: 32
+          }
+          vCPUs: {
+            min: 1
+            max: 4
           }
           isAcceleratedNetworkSupported: true
         }
         {
           name: '${namePrefix}-az-imgd-us-006'
-          properties: {
-            osType: 'Linux'
-            osState: 'Generalized'
-            hyperVGeneration: 'V2'
-            identifier: {
-              publisher: 'canonical'
-              offer: '0001-com-ubuntu-server-focal'
-              sku: '20_04-lts-gen2'
-            }
-            recommended: {
-              memory: {
-                min: 4
-                max: 32
-              }
-              vCPUs: {
-                min: 1
-                max: 4
-              }
-            }
+          description: 'testDescription'
+          osType: 'Linux'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'canonical'
+            offer: '0001-com-ubuntu-server-focal'
+            sku: '20_04-lts-gen2'
           }
+          memory: {
+            min: 4
+            max: 32
+          }
+          vCPUs: {
+            min: 1
+            max: 4
+          }
+          securityType: 'TrustedLaunch'
+          architecture: 'x64'
+          endOfLife: '2033-01-01'
+          eula: 'test Eula'
+          excludedDiskTypes: ['Standard_LRS']
+          isHibernateSupported: true
+          privacyStatementUri: 'https://testPrivacyStatementUri.com'
+          purchasePlan: {
+            name: 'testPlanName'
+            product: 'testProduct'
+            publisher: 'testPublisher'
+          }
+          releaseNoteUri: 'https://testReleaseNoteUri.com'
           isAcceleratedNetworkSupported: false
         }
       ]

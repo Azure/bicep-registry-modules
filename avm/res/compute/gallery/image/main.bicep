@@ -3,6 +3,8 @@ metadata description = 'This module deploys an Azure Compute Gallery Image Defin
 metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the image definition.')
+@minLength(1)
+@maxLength(80)
 param name string
 
 @sys.description('Optional. Location for all resources.')
@@ -12,13 +14,69 @@ param location string = resourceGroup().location
 @minLength(1)
 param galleryName string
 
-@description('Required. Properties used to create the image.')
-param galleryImage imageType
+@sys.description('Required. This is the gallery image definition identifier.')
+param identifier identifierType
+
+@sys.description('Required. This property allows the user to specify the state of the OS of the image.')
+param osState ('Generalized' | 'Specialized')
+
+@sys.description('Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image.')
+param osType ('Linux' | 'Windows')
+
+@sys.description('Optional. The privacy statement uri.')
+param privacyStatementUri string?
+
+@sys.description('Optional. Describes the gallery image definition purchase plan. This is used by marketplace images.')
+param purchasePlan purchasePlanType?
+
+@sys.description('Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.')
+param vCPUs resourceRangeType?
+
+@sys.description('Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.')
+param memory resourceRangeType?
+
+@sys.description('Optional. The release note uri. Has to be a valid URL.')
+param releaseNoteUri string?
+
+@sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
+param securityType ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
+
+@sys.description('Optional. Specify if the image supports accelerated networking. Defaults to true.')
+param isAcceleratedNetworkSupported bool?
+
+@sys.description('Optional. Specifiy if the image supports hibernation.')
+param isHibernateSupported bool?
+
+@sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
+param architecture ('x64' | 'Arm64')?
+
+@sys.description('Optional. The description of this gallery image definition resource. This property is updatable.')
+param description string?
+
+@sys.description('Optional. Describes the disallowed disk types.')
+param disallowed disallowedType?
+
+@sys.description('Optional. The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.')
+param endOfLifeDate string?
+
+@sys.description('Optional. The Eula agreement for the gallery image definition.')
+param eula string?
+
+@sys.description('Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
+param hyperVGeneration ('V1' | 'V2')?
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@sys.description('Optional. Tags for all resources. This takes precedence over the tags of the galleryImage.tags property.')
+@sys.description('Optional. Tags for all the image.')
+@metadata({
+  example: '''
+{
+    key1: 'value1'
+    key2: 'value2'
+}
+'''
+})
 param tags object?
 
 var builtInRoleNames = {
@@ -47,53 +105,53 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
   name: name
   parent: gallery
   location: location
-  tags: tags // use from the parameter, as the galleryImage.tags have been stored there in the gallery.bicep before calling the template
+  tags: tags
   properties: {
-    architecture: galleryImage.properties.?architecture
-    description: galleryImage.properties.?description
+    architecture: architecture
+    description: description
     disallowed: {
-      diskTypes: galleryImage.properties.?disallowed.?diskTypes ?? []
+      diskTypes: disallowed.?diskTypes ?? []
     }
-    endOfLifeDate: galleryImage.properties.?endOfLifeDate
-    eula: galleryImage.properties.?eula
+    endOfLifeDate: endOfLifeDate
+    eula: eula
     features: union(
-      ((galleryImage.?isAcceleratedNetworkSupported ?? true) // sets the default to true if not specified
+      ((isAcceleratedNetworkSupported ?? true) // sets the default to true if not specified
         ? [
             {
               name: 'IsAcceleratedNetworkSupported'
-              value: '${galleryImage.?isAcceleratedNetworkSupported ?? true}'
+              value: '${isAcceleratedNetworkSupported ?? true}'
             }
           ]
         : []),
-      ((galleryImage.?isHibernateSupported) != null
+      ((isHibernateSupported) != null
         ? [
             {
               name: 'IsHibernateSupported'
-              value: '${galleryImage.isHibernateSupported}'
+              value: '${isHibernateSupported}'
             }
           ]
         : []),
-      ((galleryImage.?securityType ?? 'Standard') != 'Standard' // sets the default to Standard if not specified
+      ((securityType ?? 'Standard') != 'Standard' // sets the default to Standard if not specified
         ? [
             {
               name: 'SecurityType'
-              value: galleryImage.securityType
+              value: securityType
             }
           ]
         : [])
     )
-    hyperVGeneration: galleryImage.properties.?hyperVGeneration ?? (!empty(galleryImage.?securityType) ? 'V2' : 'V1')
+    hyperVGeneration: hyperVGeneration ?? (!empty(securityType ?? '') ? 'V2' : 'V1')
     identifier: {
-      publisher: galleryImage.properties.identifier.publisher
-      offer: galleryImage.properties.identifier.offer
-      sku: galleryImage.properties.identifier.sku
+      publisher: identifier.publisher
+      offer: identifier.offer
+      sku: identifier.sku
     }
-    osState: galleryImage.properties.osState
-    osType: galleryImage.properties.osType
-    privacyStatementUri: galleryImage.properties.?privacyStatementUri
-    purchasePlan: galleryImage.properties.?purchasePlan ?? null
-    recommended: galleryImage.properties.?recommended ?? null
-    releaseNoteUri: galleryImage.properties.?releaseNoteUri
+    osState: osState
+    osType: osType
+    privacyStatementUri: privacyStatementUri
+    purchasePlan: purchasePlan ?? null
+    recommended: { vCPUs: vCPUs ?? { min: 1, max: 4 }, memory: memory ?? { min: 4, max: 16 } }
+    releaseNoteUri: releaseNoteUri
   }
 }
 
@@ -156,115 +214,6 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-@export()
-type imageType = {
-  @sys.description('Required. The resource name.')
-  @minLength(1)
-  @maxLength(80)
-  name: string
-
-  @sys.description('Optional. The location of the resource. Defaults to the gallery resource location.')
-  location: string?
-
-  @sys.description('Optional. Tags for all resources. Defaults to the tags of the gallery.')
-  @metadata({
-    example: '''
-  {
-      key1: 'value1'
-      key2: 'value2'
-  }
-  '''
-  })
-  tags: object?
-
-  @sys.description('Required. Describes the properties of a gallery image definition.')
-  properties: {
-    @sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
-    architecture: 'x64' | 'Arm64'?
-
-    @sys.description('Optional. The description of this gallery image definition resource. This property is updatable.')
-    description: string?
-
-    @sys.description('Optional. Describes the disallowed disk types.')
-    disallowed: {
-      @sys.description('Required. A list of disk types.')
-      @metadata({ example: '''
-      [
-        'Standard_LRS'
-      ]''' })
-      diskTypes: string[]
-    }?
-
-    @sys.description('Optional. The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.')
-    endOfLifeDate: string?
-
-    @sys.description('Optional. The Eula agreement for the gallery image definition.')
-    eula: string?
-
-    // features are skipped for now, as we prefer typed parameters
-
-    @sys.description('Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
-    hyperVGeneration: 'V1' | 'V2'?
-
-    @sys.description('Required. This is the gallery image definition identifier.')
-    identifier: {
-      @sys.description('Required. The name of the gallery image definition offer.')
-      publisher: string
-
-      @sys.description('Required. The name of the gallery image definition publisher.')
-      offer: string
-
-      @sys.description('Required. The name of the gallery image definition SKU.')
-      sku: string
-    }
-
-    @sys.description('Required. This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.')
-    osState: 'Generalized' | 'Specialized'
-
-    @sys.description('Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`.')
-    osType: 'Linux' | 'Windows'
-
-    @sys.description('Optional. The privacy statement uri.')
-    privacyStatementUri: string?
-
-    @sys.description('Optional. Describes the gallery image definition purchase plan. This is used by marketplace images.')
-    purchasePlan: {
-      @sys.description('Required. The plan ID.')
-      name: string
-
-      @sys.description('Required. The product ID.')
-      product: string
-
-      @sys.description('Required. The publisher ID.')
-      publisher: string
-    }?
-
-    @sys.description('Optional. The properties describe the recommended machine configuration for this Image Definition. These properties are updatable.')
-    recommended: {
-      @sys.description('Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.')
-      vCPUs: resourceRangeType?
-
-      @sys.description('Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.')
-      memory: resourceRangeType?
-    }?
-
-    @sys.description('Optional. The release note uri. Has to be a valid URL.')
-    releaseNoteUri: string?
-  }
-
-  @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.')
-  securityType: ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
-
-  @sys.description('Optional. Specify if the image supports accelerated networking. Defaults to true.')
-  isAcceleratedNetworkSupported: bool?
-
-  @sys.description('Optional. Specifiy if the image supports hibernation.')
-  isHibernateSupported: bool?
-
-  @sys.description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
-}
-
 type resourceRangeType = {
   @sys.description('Optional. The minimum number of the resource.')
   min: int?
@@ -272,3 +221,34 @@ type resourceRangeType = {
   @sys.description('Optional. The minimum number of the resource.')
   max: int?
 }
+
+type disallowedType = {
+  @sys.description('Required. A list of disk types.')
+  @metadata({ example: '''
+  [
+    'Standard_LRS'
+  ]''' })
+  diskTypes: string[]
+}?
+
+type identifierType = {
+  @sys.description('Required. The name of the gallery image definition publisher.')
+  publisher: string
+
+  @sys.description('Required. The name of the gallery image definition offer.')
+  offer: string
+
+  @sys.description('Required. The name of the gallery image definition SKU.')
+  sku: string
+}
+
+type purchasePlanType = {
+  @sys.description('Required. The plan ID.')
+  name: string
+
+  @sys.description('Required. The product ID.')
+  product: string
+
+  @sys.description('Required. The publisher ID.')
+  publisher: string
+}?

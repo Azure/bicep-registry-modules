@@ -52,15 +52,13 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           name: '${namePrefix}-az-imgd-ws-001'
-          properties: {
-            identifier: {
-              publisher: 'MicrosoftWindowsServer'
-              offer: 'WindowsServer'
-              sku: '2022-datacenter-azure-edition'
-            }
-            osType: 'Windows'
-            osState: 'Generalized'
+          identifier: {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-azure-edition'
           }
+          osType: 'Windows'
+          osState: 'Generalized'
         }
       ]
       tags: {

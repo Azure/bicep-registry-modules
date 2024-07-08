@@ -116,179 +116,150 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     ]
     images: [
       {
-        name: 'az-imgd-ws-001'
-        properties: {
-          architecture: 'x64'
-          description: 'testDescription'
-          disallowed: {
-            diskTypes: [
-              'Standard_LRS'
-            ]
-          }
-          endOfLifeDate: '2033-01-01'
-          eula: 'test Eula'
-          hyperVGeneration: 'V1'
-          identifier: {
-            offer: 'WindowsServer'
-            publisher: 'MicrosoftWindowsServer'
-            sku: '2022-datacenter-azure-edition'
-          }
-          osState: 'Generalized'
-          osType: 'Windows'
-          privacyStatementUri: 'https://testPrivacyStatementUri.com'
-          purchasePlan: {
-            name: 'testPlanName1'
-            product: 'testProduct1'
-            publisher: 'testPublisher1'
-          }
-          releaseNoteUri: 'https://testReleaseNoteUri.com'
-        }
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
+        architecture: 'x64'
+        description: 'testDescription'
+        endOfLife: '2033-01-01'
+        eula: 'test Eula'
+        excludedDiskTypes: [
+          'Standard_LRS'
         ]
+        hyperVGeneration: 'V1'
+        identifier: {
+          offer: 'WindowsServer'
+          publisher: 'MicrosoftWindowsServer'
+          sku: '2022-datacenter-azure-edition'
+        }
+        name: 'az-imgd-ws-001'
+        osState: 'Generalized'
+        osType: 'Windows'
+        privacyStatementUri: 'https://testPrivacyStatementUri.com'
+        purchasePlan: {
+          name: 'testPlanName1'
+          product: 'testProduct1'
+          publisher: 'testPublisher1'
+        }
+        releaseNoteUri: 'https://testReleaseNoteUri.com'
       }
       {
+        hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'WindowsServer'
+          publisher: 'MicrosoftWindowsServer'
+          sku: '2022-datacenter-azure-edition-hibernate'
+        }
         isAcceleratedNetworkSupported: false
         isHibernateSupported: true
+        memory: {
+          max: 16
+          min: 4
+        }
         name: 'az-imgd-ws-002'
-        properties: {
-          hyperVGeneration: 'V2'
-          identifier: {
-            offer: 'WindowsServer'
-            publisher: 'MicrosoftWindowsServer'
-            sku: '2022-datacenter-azure-edition-hibernate'
-          }
-          osState: 'Generalized'
-          osType: 'Windows'
-          recommended: {
-            memory: {
-              max: 16
-              min: 4
-            }
-            vCPUs: {
-              max: 8
-              min: 2
-            }
-          }
+        osState: 'Generalized'
+        osType: 'Windows'
+        vCPUs: {
+          max: 8
+          min: 2
         }
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
       }
       {
+        hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'WindowsDesktop'
+          publisher: 'MicrosoftWindowsDesktop'
+          sku: 'Win11-21H2'
+        }
+        memory: {
+          max: 16
+          min: 4
+        }
         name: 'az-imgd-wdtl-003'
-        properties: {
-          hyperVGeneration: 'V2'
-          identifier: {
-            offer: 'WindowsDesktop'
-            publisher: 'MicrosoftWindowsDesktop'
-            sku: 'Win11-21H2'
-          }
-          osState: 'Generalized'
-          osType: 'Windows'
-          purchasePlan: {
-            name: 'testPlanName'
-            product: 'testProduct'
-            publisher: 'testPublisher'
-          }
-          recommended: {
-            memory: {
-              max: 16
-              min: 4
-            }
-            vCPUs: {
-              max: 8
-              min: 2
-            }
-          }
+        osState: 'Generalized'
+        osType: 'Windows'
+        purchasePlan: {
+          name: 'testPlanName'
+          product: 'testProduct'
+          publisher: 'testPublisher'
         }
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         securityType: 'TrustedLaunch'
+        vCPUs: {
+          max: 8
+          min: 2
+        }
       }
       {
+        hyperVGeneration: 'V2'
+        identifier: {
+          offer: '0001-com-ubuntu-minimal-focal'
+          publisher: 'canonical'
+          sku: '22_04-lts-gen2'
+        }
         isAcceleratedNetworkSupported: false
+        memory: {
+          max: 32
+          min: 4
+        }
         name: 'az-imgd-us-004'
-        properties: {
-          hyperVGeneration: 'V2'
-          identifier: {
-            offer: '0001-com-ubuntu-minimal-focal'
-            publisher: 'canonical'
-            sku: '22_04-lts-gen2'
-          }
-          osState: 'Generalized'
-          osType: 'Linux'
-          recommended: {
-            memory: {
-              max: 32
-              min: 4
-            }
-            vCPUs: {
-              max: 4
-              min: 1
-            }
-          }
+        osState: 'Generalized'
+        osType: 'Linux'
+        vCPUs: {
+          max: 4
+          min: 1
         }
       }
       {
+        hyperVGeneration: 'V2'
+        identifier: {
+          offer: '0001-com-ubuntu-minimal-focal'
+          publisher: 'canonical'
+          sku: '20_04-lts-gen2'
+        }
         isAcceleratedNetworkSupported: true
+        memory: {
+          max: 32
+          min: 4
+        }
         name: 'az-imgd-us-005'
-        properties: {
-          hyperVGeneration: 'V2'
-          identifier: {
-            offer: '0001-com-ubuntu-minimal-focal'
-            publisher: 'canonical'
-            sku: '20_04-lts-gen2'
-          }
-          osState: 'Generalized'
-          osType: 'Linux'
-          recommended: {
-            memory: {
-              max: 32
-              min: 4
-            }
-            vCPUs: {
-              max: 4
-              min: 1
-            }
-          }
+        osState: 'Generalized'
+        osType: 'Linux'
+        vCPUs: {
+          max: 4
+          min: 1
         }
       }
       {
+        architecture: 'x64'
+        description: 'testDescription'
+        endOfLife: '2033-01-01'
+        eula: 'test Eula'
+        excludedDiskTypes: [
+          'Standard_LRS'
+        ]
+        hyperVGeneration: 'V2'
+        identifier: {
+          offer: '0001-com-ubuntu-server-focal'
+          publisher: 'canonical'
+          sku: '20_04-lts-gen2'
+        }
         isAcceleratedNetworkSupported: false
+        isHibernateSupported: true
+        memory: {
+          max: 32
+          min: 4
+        }
         name: 'az-imgd-us-006'
-        properties: {
-          hyperVGeneration: 'V2'
-          identifier: {
-            offer: '0001-com-ubuntu-server-focal'
-            publisher: 'canonical'
-            sku: '20_04-lts-gen2'
-          }
-          osState: 'Generalized'
-          osType: 'Linux'
-          recommended: {
-            memory: {
-              max: 32
-              min: 4
-            }
-            vCPUs: {
-              max: 4
-              min: 1
-            }
-          }
+        osState: 'Generalized'
+        osType: 'Linux'
+        privacyStatementUri: 'https://testPrivacyStatementUri.com'
+        purchasePlan: {
+          name: 'testPlanName'
+          product: 'testProduct'
+          publisher: 'testPublisher'
+        }
+        releaseNoteUri: 'https://testReleaseNoteUri.com'
+        securityType: 'TrustedLaunch'
+        vCPUs: {
+          max: 4
+          min: 1
         }
       }
     ]
@@ -362,179 +333,150 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
-          "name": "az-imgd-ws-001",
-          "properties": {
-            "architecture": "x64",
-            "description": "testDescription",
-            "disallowed": {
-              "diskTypes": [
-                "Standard_LRS"
-              ]
-            },
-            "endOfLifeDate": "2033-01-01",
-            "eula": "test Eula",
-            "hyperVGeneration": "V1",
-            "identifier": {
-              "offer": "WindowsServer",
-              "publisher": "MicrosoftWindowsServer",
-              "sku": "2022-datacenter-azure-edition"
-            },
-            "osState": "Generalized",
-            "osType": "Windows",
-            "privacyStatementUri": "https://testPrivacyStatementUri.com",
-            "purchasePlan": {
-              "name": "testPlanName1",
-              "product": "testProduct1",
-              "publisher": "testPublisher1"
-            },
-            "releaseNoteUri": "https://testReleaseNoteUri.com"
+          "architecture": "x64",
+          "description": "testDescription",
+          "endOfLife": "2033-01-01",
+          "eula": "test Eula",
+          "excludedDiskTypes": [
+            "Standard_LRS"
+          ],
+          "hyperVGeneration": "V1",
+          "identifier": {
+            "offer": "WindowsServer",
+            "publisher": "MicrosoftWindowsServer",
+            "sku": "2022-datacenter-azure-edition"
           },
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ]
+          "name": "az-imgd-ws-001",
+          "osState": "Generalized",
+          "osType": "Windows",
+          "privacyStatementUri": "https://testPrivacyStatementUri.com",
+          "purchasePlan": {
+            "name": "testPlanName1",
+            "product": "testProduct1",
+            "publisher": "testPublisher1"
+          },
+          "releaseNoteUri": "https://testReleaseNoteUri.com"
         },
         {
+          "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "WindowsServer",
+            "publisher": "MicrosoftWindowsServer",
+            "sku": "2022-datacenter-azure-edition-hibernate"
+          },
           "isAcceleratedNetworkSupported": false,
           "isHibernateSupported": true,
+          "memory": {
+            "max": 16,
+            "min": 4
+          },
           "name": "az-imgd-ws-002",
-          "properties": {
-            "hyperVGeneration": "V2",
-            "identifier": {
-              "offer": "WindowsServer",
-              "publisher": "MicrosoftWindowsServer",
-              "sku": "2022-datacenter-azure-edition-hibernate"
-            },
-            "osState": "Generalized",
-            "osType": "Windows",
-            "recommended": {
-              "memory": {
-                "max": 16,
-                "min": 4
-              },
-              "vCPUs": {
-                "max": 8,
-                "min": 2
-              }
-            }
-          },
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ]
+          "osState": "Generalized",
+          "osType": "Windows",
+          "vCPUs": {
+            "max": 8,
+            "min": 2
+          }
         },
         {
+          "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "WindowsDesktop",
+            "publisher": "MicrosoftWindowsDesktop",
+            "sku": "Win11-21H2"
+          },
+          "memory": {
+            "max": 16,
+            "min": 4
+          },
           "name": "az-imgd-wdtl-003",
-          "properties": {
-            "hyperVGeneration": "V2",
-            "identifier": {
-              "offer": "WindowsDesktop",
-              "publisher": "MicrosoftWindowsDesktop",
-              "sku": "Win11-21H2"
-            },
-            "osState": "Generalized",
-            "osType": "Windows",
-            "purchasePlan": {
-              "name": "testPlanName",
-              "product": "testProduct",
-              "publisher": "testPublisher"
-            },
-            "recommended": {
-              "memory": {
-                "max": 16,
-                "min": 4
-              },
-              "vCPUs": {
-                "max": 8,
-                "min": 2
-              }
-            }
+          "osState": "Generalized",
+          "osType": "Windows",
+          "purchasePlan": {
+            "name": "testPlanName",
+            "product": "testProduct",
+            "publisher": "testPublisher"
           },
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "securityType": "TrustedLaunch"
+          "securityType": "TrustedLaunch",
+          "vCPUs": {
+            "max": 8,
+            "min": 2
+          }
         },
         {
+          "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "0001-com-ubuntu-minimal-focal",
+            "publisher": "canonical",
+            "sku": "22_04-lts-gen2"
+          },
           "isAcceleratedNetworkSupported": false,
+          "memory": {
+            "max": 32,
+            "min": 4
+          },
           "name": "az-imgd-us-004",
-          "properties": {
-            "hyperVGeneration": "V2",
-            "identifier": {
-              "offer": "0001-com-ubuntu-minimal-focal",
-              "publisher": "canonical",
-              "sku": "22_04-lts-gen2"
-            },
-            "osState": "Generalized",
-            "osType": "Linux",
-            "recommended": {
-              "memory": {
-                "max": 32,
-                "min": 4
-              },
-              "vCPUs": {
-                "max": 4,
-                "min": 1
-              }
-            }
+          "osState": "Generalized",
+          "osType": "Linux",
+          "vCPUs": {
+            "max": 4,
+            "min": 1
           }
         },
         {
+          "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "0001-com-ubuntu-minimal-focal",
+            "publisher": "canonical",
+            "sku": "20_04-lts-gen2"
+          },
           "isAcceleratedNetworkSupported": true,
+          "memory": {
+            "max": 32,
+            "min": 4
+          },
           "name": "az-imgd-us-005",
-          "properties": {
-            "hyperVGeneration": "V2",
-            "identifier": {
-              "offer": "0001-com-ubuntu-minimal-focal",
-              "publisher": "canonical",
-              "sku": "20_04-lts-gen2"
-            },
-            "osState": "Generalized",
-            "osType": "Linux",
-            "recommended": {
-              "memory": {
-                "max": 32,
-                "min": 4
-              },
-              "vCPUs": {
-                "max": 4,
-                "min": 1
-              }
-            }
+          "osState": "Generalized",
+          "osType": "Linux",
+          "vCPUs": {
+            "max": 4,
+            "min": 1
           }
         },
         {
+          "architecture": "x64",
+          "description": "testDescription",
+          "endOfLife": "2033-01-01",
+          "eula": "test Eula",
+          "excludedDiskTypes": [
+            "Standard_LRS"
+          ],
+          "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "0001-com-ubuntu-server-focal",
+            "publisher": "canonical",
+            "sku": "20_04-lts-gen2"
+          },
           "isAcceleratedNetworkSupported": false,
+          "isHibernateSupported": true,
+          "memory": {
+            "max": 32,
+            "min": 4
+          },
           "name": "az-imgd-us-006",
-          "properties": {
-            "hyperVGeneration": "V2",
-            "identifier": {
-              "offer": "0001-com-ubuntu-server-focal",
-              "publisher": "canonical",
-              "sku": "20_04-lts-gen2"
-            },
-            "osState": "Generalized",
-            "osType": "Linux",
-            "recommended": {
-              "memory": {
-                "max": 32,
-                "min": 4
-              },
-              "vCPUs": {
-                "max": 4,
-                "min": 1
-              }
-            }
+          "osState": "Generalized",
+          "osType": "Linux",
+          "privacyStatementUri": "https://testPrivacyStatementUri.com",
+          "purchasePlan": {
+            "name": "testPlanName",
+            "product": "testProduct",
+            "publisher": "testPublisher"
+          },
+          "releaseNoteUri": "https://testReleaseNoteUri.com",
+          "securityType": "TrustedLaunch",
+          "vCPUs": {
+            "max": 4,
+            "min": 1
           }
         }
       ]
@@ -605,16 +547,14 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     ]
     images: [
       {
-        name: 'az-imgd-ws-001'
-        properties: {
-          identifier: {
-            offer: 'WindowsServer'
-            publisher: 'MicrosoftWindowsServer'
-            sku: '2022-datacenter-azure-edition'
-          }
-          osState: 'Generalized'
-          osType: 'Windows'
+        identifier: {
+          offer: 'WindowsServer'
+          publisher: 'MicrosoftWindowsServer'
+          sku: '2022-datacenter-azure-edition'
         }
+        name: 'az-imgd-ws-001'
+        osState: 'Generalized'
+        osType: 'Windows'
       }
     ]
     location: '<location>'
@@ -655,16 +595,14 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
+          "identifier": {
+            "offer": "WindowsServer",
+            "publisher": "MicrosoftWindowsServer",
+            "sku": "2022-datacenter-azure-edition"
+          },
           "name": "az-imgd-ws-001",
-          "properties": {
-            "identifier": {
-              "offer": "WindowsServer",
-              "publisher": "MicrosoftWindowsServer",
-              "sku": "2022-datacenter-azure-edition"
-            },
-            "osState": "Generalized",
-            "osType": "Windows"
-          }
+          "osState": "Generalized",
+          "osType": "Windows"
         }
       ]
     },
@@ -749,58 +687,31 @@ Images to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-imagesname) | string | The resource name. |
-| [`properties`](#parameter-imagesproperties) | object | Describes the properties of a gallery image definition. |
+| [`identifier`](#parameter-imagesidentifier) | object | This is the gallery image definition identifier. |
+| [`name`](#parameter-imagesname) | string | Name of the image definition. |
+| [`osState`](#parameter-imagesosstate) | string | This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`. |
+| [`osType`](#parameter-imagesostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`architecture`](#parameter-imagesarchitecture) | string | The architecture of the image. Applicable to OS disks only. |
+| [`description`](#parameter-imagesdescription) | string | The description of this gallery image definition resource. This property is updatable. |
+| [`endOfLife`](#parameter-imagesendoflife) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
+| [`eula`](#parameter-imageseula) | string | The Eula agreement for the gallery image definition. |
+| [`excludedDiskTypes`](#parameter-imagesexcludeddisktypes) | array | Describes the disallowed disk types. |
+| [`hyperVGeneration`](#parameter-imageshypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
 | [`isAcceleratedNetworkSupported`](#parameter-imagesisacceleratednetworksupported) | bool | Specify if the image supports accelerated networking. Defaults to true. |
 | [`isHibernateSupported`](#parameter-imagesishibernatesupported) | bool | Specifiy if the image supports hibernation. |
-| [`location`](#parameter-imageslocation) | string | The location of the resource. Defaults to the gallery resource location. |
-| [`roleAssignments`](#parameter-imagesroleassignments) | array | Array of role assignments to create. |
+| [`memory`](#parameter-imagesmemory) | object | Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16. |
+| [`privacyStatementUri`](#parameter-imagesprivacystatementuri) | string | The privacy statement uri. |
+| [`purchasePlan`](#parameter-imagespurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
+| [`releaseNoteUri`](#parameter-imagesreleasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`securityType`](#parameter-imagessecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`. |
-| [`tags`](#parameter-imagestags) | object | Tags for all resources. Defaults to the tags of the gallery. |
+| [`vCPUs`](#parameter-imagesvcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
 
-### Parameter: `images.name`
-
-The resource name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `images.properties`
-
-Describes the properties of a gallery image definition.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`identifier`](#parameter-imagespropertiesidentifier) | object | This is the gallery image definition identifier. |
-| [`osState`](#parameter-imagespropertiesosstate) | string | This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`. |
-| [`osType`](#parameter-imagespropertiesostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`architecture`](#parameter-imagespropertiesarchitecture) | string | The architecture of the image. Applicable to OS disks only. |
-| [`description`](#parameter-imagespropertiesdescription) | string | The description of this gallery image definition resource. This property is updatable. |
-| [`disallowed`](#parameter-imagespropertiesdisallowed) | object | Describes the disallowed disk types. |
-| [`endOfLifeDate`](#parameter-imagespropertiesendoflifedate) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
-| [`eula`](#parameter-imagespropertieseula) | string | The Eula agreement for the gallery image definition. |
-| [`hyperVGeneration`](#parameter-imagespropertieshypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
-| [`privacyStatementUri`](#parameter-imagespropertiesprivacystatementuri) | string | The privacy statement uri. |
-| [`purchasePlan`](#parameter-imagespropertiespurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
-| [`recommended`](#parameter-imagespropertiesrecommended) | object | The properties describe the recommended machine configuration for this Image Definition. These properties are updatable. |
-| [`releaseNoteUri`](#parameter-imagespropertiesreleasenoteuri) | string | The release note uri. Has to be a valid URL. |
-
-### Parameter: `images.properties.identifier`
+### Parameter: `images.identifier`
 
 This is the gallery image definition identifier.
 
@@ -811,32 +722,39 @@ This is the gallery image definition identifier.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`offer`](#parameter-imagespropertiesidentifieroffer) | string | The name of the gallery image definition publisher. |
-| [`publisher`](#parameter-imagespropertiesidentifierpublisher) | string | The name of the gallery image definition offer. |
-| [`sku`](#parameter-imagespropertiesidentifiersku) | string | The name of the gallery image definition SKU. |
+| [`offer`](#parameter-imagesidentifieroffer) | string | The name of the gallery image definition publisher. |
+| [`publisher`](#parameter-imagesidentifierpublisher) | string | The name of the gallery image definition offer. |
+| [`sku`](#parameter-imagesidentifiersku) | string | The name of the gallery image definition SKU. |
 
-### Parameter: `images.properties.identifier.offer`
+### Parameter: `images.identifier.offer`
 
 The name of the gallery image definition publisher.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `images.properties.identifier.publisher`
+### Parameter: `images.identifier.publisher`
 
 The name of the gallery image definition offer.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `images.properties.identifier.sku`
+### Parameter: `images.identifier.sku`
 
 The name of the gallery image definition SKU.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `images.properties.osState`
+### Parameter: `images.name`
+
+Name of the image definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `images.osState`
 
 This property allows the user to specify whether the virtual machines created under this image are `Generalized` or `Specialized`.
 
@@ -850,7 +768,7 @@ This property allows the user to specify whether the virtual machines created un
   ]
   ```
 
-### Parameter: `images.properties.osType`
+### Parameter: `images.osType`
 
 This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. Possible values are: `Windows`, `Linux`.
 
@@ -864,7 +782,7 @@ This property allows you to specify the type of the OS that is included in the d
   ]
   ```
 
-### Parameter: `images.properties.architecture`
+### Parameter: `images.architecture`
 
 The architecture of the image. Applicable to OS disks only.
 
@@ -878,48 +796,35 @@ The architecture of the image. Applicable to OS disks only.
   ]
   ```
 
-### Parameter: `images.properties.description`
+### Parameter: `images.description`
 
 The description of this gallery image definition resource. This property is updatable.
 
 - Required: No
 - Type: string
 
-### Parameter: `images.properties.disallowed`
-
-Describes the disallowed disk types.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`diskTypes`](#parameter-imagespropertiesdisalloweddisktypes) | array | A list of disk types. |
-
-### Parameter: `images.properties.disallowed.diskTypes`
-
-A list of disk types.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `images.properties.endOfLifeDate`
+### Parameter: `images.endOfLife`
 
 The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.
 
 - Required: No
 - Type: string
 
-### Parameter: `images.properties.eula`
+### Parameter: `images.eula`
 
 The Eula agreement for the gallery image definition.
 
 - Required: No
 - Type: string
 
-### Parameter: `images.properties.hyperVGeneration`
+### Parameter: `images.excludedDiskTypes`
+
+Describes the disallowed disk types.
+
+- Required: No
+- Type: array
+
+### Parameter: `images.hyperVGeneration`
 
 The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
 
@@ -932,126 +837,6 @@ The hypervisor generation of the Virtual Machine. If this value is not specified
     'V2'
   ]
   ```
-
-### Parameter: `images.properties.privacyStatementUri`
-
-The privacy statement uri.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.properties.purchasePlan`
-
-Describes the gallery image definition purchase plan. This is used by marketplace images.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-imagespropertiespurchaseplanname) | string | The plan ID. |
-| [`product`](#parameter-imagespropertiespurchaseplanproduct) | string | The product ID. |
-| [`publisher`](#parameter-imagespropertiespurchaseplanpublisher) | string | The publisher ID. |
-
-### Parameter: `images.properties.purchasePlan.name`
-
-The plan ID.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `images.properties.purchasePlan.product`
-
-The product ID.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `images.properties.purchasePlan.publisher`
-
-The publisher ID.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `images.properties.recommended`
-
-The properties describe the recommended machine configuration for this Image Definition. These properties are updatable.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`memory`](#parameter-imagespropertiesrecommendedmemory) | object | Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16. |
-| [`vCPUs`](#parameter-imagespropertiesrecommendedvcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
-
-### Parameter: `images.properties.recommended.memory`
-
-Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`max`](#parameter-imagespropertiesrecommendedmemorymax) | int | The minimum number of the resource. |
-| [`min`](#parameter-imagespropertiesrecommendedmemorymin) | int | The minimum number of the resource. |
-
-### Parameter: `images.properties.recommended.memory.max`
-
-The minimum number of the resource.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.properties.recommended.memory.min`
-
-The minimum number of the resource.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.properties.recommended.vCPUs`
-
-Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`max`](#parameter-imagespropertiesrecommendedvcpusmax) | int | The minimum number of the resource. |
-| [`min`](#parameter-imagespropertiesrecommendedvcpusmin) | int | The minimum number of the resource. |
-
-### Parameter: `images.properties.recommended.vCPUs.max`
-
-The minimum number of the resource.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.properties.recommended.vCPUs.min`
-
-The minimum number of the resource.
-
-- Required: No
-- Type: int
-
-### Parameter: `images.properties.releaseNoteUri`
-
-The release note uri. Has to be a valid URL.
-
-- Required: No
-- Type: string
 
 ### Parameter: `images.isAcceleratedNetworkSupported`
 
@@ -1067,101 +852,83 @@ Specifiy if the image supports hibernation.
 - Required: No
 - Type: bool
 
-### Parameter: `images.location`
+### Parameter: `images.memory`
 
-The location of the resource. Defaults to the gallery resource location.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.roleAssignments`
-
-Array of role assignments to create.
+Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.
 
 - Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-imagesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-imagesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+- Type: object
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-imagesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-imagesroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-imagesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-imagesroleassignmentsdescription) | string | The description of the role assignment. |
-| [`principalType`](#parameter-imagesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`max`](#parameter-imagesmemorymax) | int | The minimum number of the resource. |
+| [`min`](#parameter-imagesmemorymin) | int | The minimum number of the resource. |
 
-### Parameter: `images.roleAssignments.principalId`
+### Parameter: `images.memory.max`
 
-The principal ID of the principal (user/group/identity) to assign the role to.
+The minimum number of the resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `images.memory.min`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `images.privacyStatementUri`
+
+The privacy statement uri.
+
+- Required: No
+- Type: string
+
+### Parameter: `images.purchasePlan`
+
+Describes the gallery image definition purchase plan. This is used by marketplace images.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-imagespurchaseplanname) | string | The plan ID. |
+| [`product`](#parameter-imagespurchaseplanproduct) | string | The product ID. |
+| [`publisher`](#parameter-imagespurchaseplanpublisher) | string | The publisher ID. |
+
+### Parameter: `images.purchasePlan.name`
+
+The plan ID.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `images.roleAssignments.roleDefinitionIdOrName`
+### Parameter: `images.purchasePlan.product`
 
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+The product ID.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `images.roleAssignments.condition`
+### Parameter: `images.purchasePlan.publisher`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+The publisher ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `images.releaseNoteUri`
+
+The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-
-### Parameter: `images.roleAssignments.conditionVersion`
-
-Version of the condition.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `images.roleAssignments.delegatedManagedIdentityResourceId`
-
-The Resource Id of the delegated managed identity resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.roleAssignments.description`
-
-The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.roleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Device'
-    'ForeignGroup'
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
 
 ### Parameter: `images.securityType`
 
@@ -1179,12 +946,33 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
   ]
   ```
 
-### Parameter: `images.tags`
+### Parameter: `images.vCPUs`
 
-Tags for all resources. Defaults to the tags of the gallery.
+Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-imagesvcpusmax) | int | The minimum number of the resource. |
+| [`min`](#parameter-imagesvcpusmin) | int | The minimum number of the resource. |
+
+### Parameter: `images.vCPUs.max`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `images.vCPUs.min`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
 
 ### Parameter: `location`
 
@@ -1339,6 +1127,13 @@ Tags for all resources.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  ```
 
 
 ## Outputs
