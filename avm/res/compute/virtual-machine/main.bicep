@@ -434,7 +434,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -1145,8 +1146,8 @@ type osDiskType = {
   @description('Optional. The disk name.')
   name: string?
 
-  @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  diskSizeGB: int
+  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  diskSizeGB: int?
 
   @description('Optional. Specifies how the virtual machine should be created.')
   createOption: 'Attach' | 'Empty' | 'FromImage'?
@@ -1159,7 +1160,7 @@ type osDiskType = {
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
-    @description('Required. Specifies the storage account type for the managed disk.')
+    @description('Optional. Specifies the storage account type for the managed disk.')
     storageAccountType:
       | 'PremiumV2_LRS'
       | 'Premium_LRS'
@@ -1167,7 +1168,7 @@ type osDiskType = {
       | 'StandardSSD_LRS'
       | 'StandardSSD_ZRS'
       | 'Standard_LRS'
-      | 'UltraSSD_LRS'
+      | 'UltraSSD_LRS'?
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
