@@ -214,6 +214,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+@export()
 type resourceRangeType = {
   @sys.description('Optional. The minimum number of the resource.')
   min: int?
@@ -231,6 +232,7 @@ type disallowedType = {
   diskTypes: string[]
 }?
 
+@export()
 type identifierType = {
   @sys.description('Required. The name of the gallery image definition publisher.')
   publisher: string
@@ -242,6 +244,7 @@ type identifierType = {
   sku: string
 }
 
+@export()
 type purchasePlanType = {
   @sys.description('Required. The plan ID.')
   name: string

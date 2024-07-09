@@ -238,6 +238,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]
 
+import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
 type imageType = {
   @sys.description('Required. Name of the image definition.')
   @minLength(1)
@@ -254,16 +255,7 @@ type imageType = {
   osState: ('Generalized' | 'Specialized')
 
   @sys.description('Required. This is the gallery image definition identifier.')
-  identifier: {
-    @sys.description('Required. The name of the gallery image definition publisher.')
-    publisher: string
-
-    @sys.description('Required. The name of the gallery image definition offer.')
-    offer: string
-
-    @sys.description('Required. The name of the gallery image definition SKU.')
-    sku: string
-  }
+  identifier: identifierType
 
   @sys.description('Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.')
   vCPUs: resourceRangeType?
@@ -296,28 +288,11 @@ type imageType = {
   releaseNoteUri: string?
 
   @sys.description('Optional. Describes the gallery image definition purchase plan. This is used by marketplace images.')
-  purchasePlan: {
-    @sys.description('Required. The plan ID.')
-    name: string
-
-    @sys.description('Required. The product ID.')
-    product: string
-
-    @sys.description('Required. The publisher ID.')
-    publisher: string
-  }?
+  purchasePlan: purchasePlanType?
 
   @sys.description('Optional. The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.')
   endOfLife: string?
 
   @sys.description('Optional. Describes the disallowed disk types.')
   excludedDiskTypes: string[]?
-}
-
-type resourceRangeType = {
-  @sys.description('Optional. The minimum number of the resource.')
-  min: int?
-
-  @sys.description('Optional. The minimum number of the resource.')
-  max: int?
 }

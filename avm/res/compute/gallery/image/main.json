@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8937272308201718472"
+      "templateHash": "8910841628844637362"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -96,6 +96,9 @@
             "description": "Optional. The minimum number of the resource."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "disallowedType": {
@@ -135,6 +138,9 @@
             "description": "Required. The name of the gallery image definition SKU."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "purchasePlanType": {
@@ -159,7 +165,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
