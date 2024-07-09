@@ -177,7 +177,7 @@ module galleries_images 'image/main.bicep' = [
       endOfLifeDate: image.?endOfLife
       disallowed: { diskTypes: image.?excludedDiskTypes ?? [] }
       roleAssignments: image.?roleAssignments
-      tags: tags
+      tags: image.?tags ?? tags
     }
   }
 ]
