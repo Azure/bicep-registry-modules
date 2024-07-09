@@ -23,7 +23,7 @@ param description string?
 param applications array?
 
 @sys.description('Optional. Images to create.')
-param images imageType[]?
+param images imageType[]? // use a UDT here to not overload the main module, as it has images and applications parameters
 
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -163,8 +163,8 @@ module galleries_images 'image/main.bicep' = [
       osType: image.osType
       osState: image.osState
       identifier: image.identifier
-      vCPUs: image.?vCPUs ?? { min: 1, max: 4 }
-      memory: image.?memory ?? { min: 4, max: 16 }
+      vCPUs: image.vCPUs
+      memory: image.memory
       hyperVGeneration: image.?hyperVGeneration
       securityType: image.?securityType
       isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported

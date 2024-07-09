@@ -29,11 +29,11 @@ param privacyStatementUri string?
 @sys.description('Optional. Describes the gallery image definition purchase plan. This is used by marketplace images.')
 param purchasePlan purchasePlanType?
 
-@sys.description('Optional. Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.')
-param vCPUs resourceRangeType?
+@sys.description('Optional. Describes the resource range (1-128 CPU cores).')
+param vCPUs resourceRangeType = { min: 1, max: 4 }
 
-@sys.description('Optional. Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.')
-param memory resourceRangeType?
+@sys.description('Optional. Describes the resource range (1-4000 GB RAM).')
+param memory resourceRangeType = { min: 4, max: 16 }
 
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
 param releaseNoteUri string?
@@ -41,8 +41,8 @@ param releaseNoteUri string?
 @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
 param securityType ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
 
-@sys.description('Optional. Specify if the image supports accelerated networking. Defaults to true.')
-param isAcceleratedNetworkSupported bool?
+@sys.description('Optional. Specify if the image supports accelerated networking.')
+param isAcceleratedNetworkSupported bool = true
 
 @sys.description('Optional. Specifiy if the image supports hibernation.')
 param isHibernateSupported bool?
@@ -115,27 +115,21 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
     endOfLifeDate: endOfLifeDate
     eula: eula
     features: union(
-      ((isAcceleratedNetworkSupported ?? true) // sets the default to true if not specified
-        ? [
-            {
-              name: 'IsAcceleratedNetworkSupported'
-              value: '${isAcceleratedNetworkSupported ?? true}'
-            }
-          ]
-        : []),
+      [
+        {
+          name: 'IsAcceleratedNetworkSupported'
+          value: '${isAcceleratedNetworkSupported}'
+        }
+        {
+          name: 'SecurityType'
+          value: securityType
+        }
+      ],
       ((isHibernateSupported) != null
         ? [
             {
               name: 'IsHibernateSupported'
               value: '${isHibernateSupported}'
-            }
-          ]
-        : []),
-      ((securityType ?? 'Standard') != 'Standard' // sets the default to Standard if not specified
-        ? [
-            {
-              name: 'SecurityType'
-              value: securityType
             }
           ]
         : [])
@@ -150,7 +144,7 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
     osType: osType
     privacyStatementUri: privacyStatementUri
     purchasePlan: purchasePlan ?? null
-    recommended: { vCPUs: vCPUs ?? { min: 1, max: 4 }, memory: memory ?? { min: 4, max: 16 } }
+    recommended: { vCPUs: vCPUs, memory: memory }
     releaseNoteUri: releaseNoteUri
   }
 }
@@ -217,6 +211,7 @@ type roleAssignmentType = {
 @export()
 type resourceRangeType = {
   @sys.description('Optional. The minimum number of the resource.')
+  @minValue(1)
   min: int?
 
   @sys.description('Optional. The minimum number of the resource.')

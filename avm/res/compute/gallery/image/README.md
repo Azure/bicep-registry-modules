@@ -44,17 +44,17 @@ This module deploys an Azure Compute Gallery Image Definition.
 | [`endOfLifeDate`](#parameter-endoflifedate) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery image definition. |
 | [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
-| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | bool | Specify if the image supports accelerated networking. Defaults to true. |
+| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | bool | Specify if the image supports accelerated networking. |
 | [`isHibernateSupported`](#parameter-ishibernatesupported) | bool | Specifiy if the image supports hibernation. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`memory`](#parameter-memory) | object | Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16. |
+| [`memory`](#parameter-memory) | object | Describes the resource range (1-4000 GB RAM). |
 | [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-purchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. |
 | [`tags`](#parameter-tags) | object | Tags for all the image. |
-| [`vCPUs`](#parameter-vcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
+| [`vCPUs`](#parameter-vcpus) | object | Describes the resource range (1-128 CPU cores). |
 
 ### Parameter: `identifier`
 
@@ -211,10 +211,11 @@ The hypervisor generation of the Virtual Machine. If this value is not specified
 
 ### Parameter: `isAcceleratedNetworkSupported`
 
-Specify if the image supports accelerated networking. Defaults to true.
+Specify if the image supports accelerated networking.
 
 - Required: No
 - Type: bool
+- Default: `True`
 
 ### Parameter: `isHibernateSupported`
 
@@ -233,10 +234,17 @@ Location for all resources.
 
 ### Parameter: `memory`
 
-Describes the resource range (1-4000 GB RAM). Defaults to min=4, max=16.
+Describes the resource range (1-4000 GB RAM).
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      max: 16
+      min: 4
+  }
+  ```
 
 **Optional parameters**
 
@@ -430,10 +438,17 @@ Tags for all the image.
 
 ### Parameter: `vCPUs`
 
-Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4.
+Describes the resource range (1-128 CPU cores).
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      max: 4
+      min: 1
+  }
+  ```
 
 **Optional parameters**
 
