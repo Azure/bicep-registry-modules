@@ -2,7 +2,7 @@
 name: .Platform - Set AVM GitHub PR labels
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened]
 
 jobs:
