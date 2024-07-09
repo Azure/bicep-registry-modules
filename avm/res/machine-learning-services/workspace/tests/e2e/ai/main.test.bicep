@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    secondaryStorageAccountName: 'dep${namePrefix}st${serviceShort}2'
     location: resourceLocation
   }
 }
@@ -62,6 +63,10 @@ module testDeployment '../../../main.bicep' = [
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       sku: 'Basic'
       kind: 'Hub'
+      workspaceHubConfig: {
+        additionalWorkspaceStorageAccounts: [nestedDependencies.outputs.secondaryStorageAccountResourceId]
+        defaultWorkspaceResourceGroup: resourceGroup.id
+      }
     }
     dependsOn: [
       nestedDependencies
