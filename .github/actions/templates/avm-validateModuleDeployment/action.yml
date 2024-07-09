@@ -56,12 +56,14 @@ inputs:
     description: "Custom location overwrite, if needed"
     required: false
 
+environment:
+  name: avm-validation
+
 runs:
   using: "composite"
   steps:
     # [Azure login] task(s)
     # ------------------------------
-
     - name: "Set OIDC exception"
       id: set-oidc-exception
       uses: azure/powershell@v2
@@ -95,7 +97,7 @@ runs:
 
     # Default: support both OIDC and service principal with secret
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
-    - name: Azure Login - Default
+    - name: "Azure Login - Default"
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
       uses: azure/login@v2
       with:
@@ -106,7 +108,7 @@ runs:
         enable-AzPSSession: true
 
     # Exception: module requires login by using service principal with secret
-    - name: Azure Login - Exception
+    - name: "Azure Login - Exception"
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
       uses: azure/login@v2
       with:
