@@ -60,7 +60,7 @@ param nonSecretParameterValues object?
 })
 param parameterValues object?
 
-@description('Optional. Additional parameter Value Set used for authentication settings.')
+@description('Optional. Additional parameter value set used for authentication settings.')
 @metadata({
   example: '''
   // for a Service Bus connection
