@@ -174,9 +174,11 @@ output name string = privateEndpoint.name
 output location string = privateEndpoint.location
 
 @description('The group Id for the private endpoint Group.')
-output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections)
+output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections) && length(privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds) > 0
   ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
-  : privateEndpoint.properties.privateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
+  : !empty(privateEndpoint.properties.privateLinkServiceConnections) && length(privateEndpoint.properties.privateLinkServiceConnections[0].properties.?groupIds) > 0
+      ? privateEndpoint.properties.privateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
+      : ''
 
 // ================ //
 // Definitions      //
