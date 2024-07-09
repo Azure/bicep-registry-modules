@@ -9,8 +9,8 @@ on:
         required: false
         default: '.*'
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     paths:
       - ".github/workflows/platform.ci-tests.yml"
       - "avm/utilities/**"
