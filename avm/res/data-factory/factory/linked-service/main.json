@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.28.1.47646",
+      "templateHash": "6177259720192070721"
+    },
+    "name": "Data Factory Linked Service",
+    "description": "This module deploys a Data Factory Linked Service.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "dataFactoryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Data Factory. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Linked Service."
+      }
+    },
+    "type": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information."
+      }
+    },
+    "typeProperties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Used to add connection properties for your linked services."
+      }
+    },
+    "integrationRuntimeName": {
+      "type": "string",
+      "defaultValue": "none",
+      "metadata": {
+        "description": "Optional. The name of the Integration Runtime to use."
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Use this to add parameters for a linked service connection string."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "Linked Service created by avm-res-datafactory-factories",
+      "metadata": {
+        "description": "Optional. The description of the Integration Runtime."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DataFactory/factories/linkedservices",
+      "apiVersion": "2018-06-01",
+      "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
+      "properties": {
+        "annotations": [],
+        "description": "[parameters('description')]",
+        "connectVia": "[if(contains(parameters('integrationRuntimeName'), 'none'), null(), createObject('parameters', createObject(), 'referenceName', parameters('integrationRuntimeName'), 'type', 'IntegrationRuntimeReference'))]",
+        "type": "[parameters('type')]",
+        "typeProperties": "[parameters('typeProperties')]",
+        "parameters": "[parameters('parameters')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Linked Service was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Linked Service."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Linked Service."
+      },
+      "value": "[resourceId('Microsoft.DataFactory/factories/linkedservices', parameters('dataFactoryName'), parameters('name'))]"
+    }
+  }
+}
