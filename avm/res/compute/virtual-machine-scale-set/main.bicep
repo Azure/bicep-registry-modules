@@ -605,13 +605,11 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
                   publisher: 'Microsoft.ManagedServices'
                   type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
                   typeHandlerVersion: '1.0'
-                  autoUpgradeMinorVersion: false
+                  autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
                   settings: {
-                    protocol: contains(extensionHealthConfig, 'protocol') ? extensionHealthConfig.protocol : 'http'
-                    port: contains(extensionHealthConfig, 'port') ? extensionHealthConfig.port : '80'
-                    requestPath: contains(extensionHealthConfig, 'requestPath')
-                      ? extensionHealthConfig.requestPath
-                      : '/'
+                    protocol: extensionHealthConfig.?protocol ?? 'http'
+                    port: extensionHealthConfig.?port ?? '80'
+                    requestPath: extensionHealthConfig.?requestPath ?? '/'
                   }
                 }
               }
