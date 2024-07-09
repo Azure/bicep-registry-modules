@@ -163,8 +163,8 @@ module galleries_images 'image/main.bicep' = [
       osType: image.osType
       osState: image.osState
       identifier: image.identifier
-      vCPUs: image.vCPUs
-      memory: image.memory
+      vCPUs: image.?vCPUs
+      memory: image.?memory
       hyperVGeneration: image.?hyperVGeneration
       securityType: image.?securityType
       isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported

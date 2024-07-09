@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "3038660112110229458"
+      "templateHash": "2904481693910053437"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -852,10 +852,10 @@
             "value": "[coalesce(parameters('images'), createArray())[copyIndex()].identifier]"
           },
           "vCPUs": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].vCPUs]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'vCPUs')]"
           },
           "memory": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].memory]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'memory')]"
           },
           "hyperVGeneration": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'hyperVGeneration')]"
