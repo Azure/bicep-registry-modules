@@ -113,7 +113,6 @@ var builtInRoleNames = {
   )
 }
 
-
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -256,6 +255,10 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
           }
         : {}
     )
+    // createdBy: {} // This is a read-only property
+    // managedDiskIdentity: {} // This is a read-only property
+    // storageAccountIdentity: {} // This is a read-only property
+    // updatedBy: {} // This is a read-only property
     publicNetworkAccess: publicNetworkAccess
     requiredNsgRules: requiredNsgRules
     encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)

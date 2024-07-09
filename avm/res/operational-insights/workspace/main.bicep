@@ -82,6 +82,9 @@ param useResourcePermissions bool = false
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
+@description('Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings.')
+param useDeployedWorkspaceForDiagnosticSettings bool = false
+
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
 param forceCmkForQuery bool = true
 
@@ -198,7 +201,9 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
     properties: {
       storageAccountId: diagnosticSetting.?storageAccountResourceId
-      workspaceId: diagnosticSetting.?workspaceResourceId
+      workspaceId: useDeployedWorkspaceForDiagnosticSettings
+        ? logAnalyticsWorkspace.id
+        : diagnosticSetting.?workspaceResourceId
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
