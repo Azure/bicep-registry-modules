@@ -98,6 +98,7 @@ jobs:
   #############################
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Deploy [${{ matrix.testCases.name}}]"
+    environment: avm-validation
     runs-on: ubuntu-latest
     if: |
       !cancelled() &&

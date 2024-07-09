@@ -56,9 +56,6 @@ inputs:
     description: "Custom location overwrite, if needed"
     required: false
 
-environment:
-  name: avm-validation
-
 runs:
   using: "composite"
   steps:
