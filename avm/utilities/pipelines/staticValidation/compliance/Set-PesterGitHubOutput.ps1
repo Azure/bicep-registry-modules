@@ -12,35 +12,35 @@ Optional. The path to the root of the repository
 Mandatory. The Pester tests results to parse. Can be fetched by running Pester with the `-PassThru` parameter. For example:
 
 @{
-        Containers            = '[+] C:/ResourceModules/utilities/pipelines/staticValidation/module.tests.ps1'
-        Result                = 'Passed'
-        FailedCount           = 0
-        FailedBlocksCount     = 0
-        FailedContainersCount = 0
-        PassedCount           = 36
-        SkippedCount          = 1
-        NotRunCount           = 0
-        TotalCount            = 37
-        Duration              = '00:00:41.8816077'
-        Executed              = true
-        ExecutedAt            = '2023-04-01T12:27:19.5807422+02:00'
-        Version               = '5.4.0'
-        PSVersion             = '7.3.3'
-        PSBoundParameters     = 'System.Management.Automation.PSBoundParametersDictionary'
-        Plugins               = null
-        PluginConfiguration   = null
-        PluginData            = null
-        Configuration         = 'PesterConfiguration'
-        DiscoveryDuration     = '00:00:16.1489218'
-        UserDuration          = '00:00:22.4714890'
-        FrameworkDuration     = '00:00:03.2611969'
-        Failed                = ''
-        FailedBlocks          = ''
-        FailedContainers      = ''
-        Passed                = '[+] [key-vault/vault/secret] Module should contain a [main.json/main.bicep] file. [+] ...'
-        NotRun                = ''
-        Tests                 = '[+] [key-vault/vault/secret] Module should contain a [main.json/main.bicep] file. [+] ...'
-        CodeCoverage          = null
+    Containers            = '[+] C:/ResourceModules/utilities/pipelines/staticValidation/module.tests.ps1'
+    Result                = 'Passed'
+    FailedCount           = 0
+    FailedBlocksCount     = 0
+    FailedContainersCount = 0
+    PassedCount           = 36
+    SkippedCount          = 1
+    NotRunCount           = 0
+    TotalCount            = 37
+    Duration              = '00:00:41.8816077'
+    Executed              = true
+    ExecutedAt            = '2023-04-01T12:27:19.5807422+02:00'
+    Version               = '5.4.0'
+    PSVersion             = '7.3.3'
+    PSBoundParameters     = 'System.Management.Automation.PSBoundParametersDictionary'
+    Plugins               = null
+    PluginConfiguration   = null
+    PluginData            = null
+    Configuration         = 'PesterConfiguration'
+    DiscoveryDuration     = '00:00:16.1489218'
+    UserDuration          = '00:00:22.4714890'
+    FrameworkDuration     = '00:00:03.2611969'
+    Failed                = ''
+    FailedBlocks          = ''
+    FailedContainers      = ''
+    Passed                = '[+] [key-vault/vault/secret] Module should contain a [main.json/main.bicep] file. [+] ...'
+    NotRun                = ''
+    Tests                 = '[+] [key-vault/vault/secret] Module should contain a [main.json/main.bicep] file. [+] ...'
+    CodeCoverage          = null
 }
 
 .PARAMETER OutputFilePath
