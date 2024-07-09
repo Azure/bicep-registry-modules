@@ -37,7 +37,7 @@ function Set-AvmGitHubPrLabels {
     . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
 
     $pr = gh pr view $PrUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
-    $teamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $PrUrl.Replace('api.', '').Replace('repos/', '') | Where-Object { $_ -ne 'bicep-admins' -and $_ -ne 'avm-core-team-technical-bicep' })
+    $teamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $PrUrl.Replace('api.', '').Replace('repos/', '') | Where-Object { $_ -ne 'bicep-admins' -and $_ -ne 'avm-core-team-technical-bicep' -and $_ -ne 'avm-module-reviewers-bicep' })
 
     # no or more than one module reviewer team
     if ($teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
