@@ -32,11 +32,11 @@ param subscriptionsLimit int = 1
 @sys.description('Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process.')
 param terms string = ''
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource product 'Microsoft.ApiManagement/service/products@2021-08-01' = {
+resource product 'Microsoft.ApiManagement/service/products@2022-08-01' = {
   name: name
   parent: service
   properties: {

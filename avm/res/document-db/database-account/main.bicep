@@ -73,6 +73,12 @@ param serverVersion string = '4.2'
 @description('Optional. SQL Databases configurations.')
 param sqlDatabases sqlDatabaseType[] = []
 
+@description('Optional. SQL Role Definitions configurations.')
+param sqlRoleAssignmentsPrincipalIds array = []
+
+@description('Optional. SQL Role Definitions configurations.')
+param sqlRoleDefinitions sqlRoleDefinitionsType
+
 @description('Optional. MongoDB Databases configurations.')
 param mongodbDatabases array = []
 
@@ -308,7 +314,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -404,6 +411,20 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
       throughput: sqlDatabase.?throughput
       databaseAccountName: databaseAccount.name
       autoscaleSettingsMaxThroughput: sqlDatabase.?autoscaleSettingsMaxThroughput
+    }
+  }
+]
+
+module databaseAccount_sqlRoleDefinitions 'sql-role/main.bicep' = [
+  for sqlRoleDefinition in (sqlRoleDefinitions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-sqlrd-${sqlRoleDefinition.name}'
+    params: {
+      name: sqlRoleDefinition.name
+      databaseAccountName: databaseAccount.name
+      dataActions: sqlRoleDefinition.?dataActions
+      roleName: sqlRoleDefinition.?roleName
+      roleType: sqlRoleDefinition.?roleType
+      principalIds: sqlRoleAssignmentsPrincipalIds
     }
   }
 ]
@@ -545,6 +566,9 @@ output systemAssignedMIPrincipalId string = databaseAccount.?identity.?principal
 
 @description('The location the resource was deployed into.')
 output location string = databaseAccount.location
+
+@description('The endpoint of the database account.')
+output endpoint string = databaseAccount.properties.documentEndpoint
 
 // =============== //
 //   Definitions   //
@@ -721,6 +745,20 @@ type failoverLocationsType = {
   @description('Required. The name of the region.')
   locationName: string
 }
+
+type sqlRoleDefinitionsType = {
+  @description('Required. Name of the SQL Role Definition.')
+  name: string
+
+  @description('Optional. An array of data actions that are allowed.')
+  dataAction: array?
+
+  @description('Optional. A user-friendly name for the Role Definition. Must be unique for the database account.')
+  roleName: string?
+
+  @description('Optional. Indicates whether the Role Definition was built-in or user created.')
+  roleType: ('CustomRole' | 'BuiltInRole')?
+}[]?
 
 type sqlDatabaseType = {
   @description('Required. Name of the SQL database .')

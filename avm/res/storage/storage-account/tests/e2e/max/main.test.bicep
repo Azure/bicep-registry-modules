@@ -60,403 +60,423 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    skuName: 'Standard_LRS'
-    allowBlobPublicAccess: false
-    requireInfrastructureEncryption: true
-    largeFileSharesState: 'Enabled'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    enableHierarchicalNamespace: true
-    enableSftp: true
-    enableNfsV3: true
-    privateEndpoints: [
-      {
-        service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      skuName: 'Standard_LRS'
+      allowBlobPublicAccess: false
+      requireInfrastructureEncryption: true
+      largeFileSharesState: 'Enabled'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'table'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'queue'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'file'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'web'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'dfs'
-      }
-    ]
-    networkAcls: {
-      resourceAccessRules: [
+      enableHierarchicalNamespace: true
+      enableSftp: true
+      enableNfsV3: true
+      privateEndpoints: [
         {
-          tenantId: subscription().tenantId
-          resourceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*'
+          service: 'blob'
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+        {
+          service: 'blob'
+          subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          service: 'table'
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          service: 'queue'
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          service: 'file'
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          service: 'web'
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          service: 'dfs'
         }
       ]
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-      virtualNetworkRules: [
-        {
-          action: 'Allow'
-          id: nestedDependencies.outputs.defaultSubnetResourceId
-        }
-      ]
-      ipRules: [
-        {
-          action: 'Allow'
-          value: '1.1.1.1'
-        }
-      ]
-    }
-    localUsers: [
-      {
-        storageAccountName: '${namePrefix}${serviceShort}001'
-        name: 'testuser'
-        hasSharedKey: false
-        hasSshKey: true
-        hasSshPassword: false
-        homeDirectory: 'avdscripts'
-        permissionScopes: [
+      networkAcls: {
+        resourceAccessRules: [
           {
-            permissions: 'r'
-            service: 'blob'
-            resourceName: 'avdscripts'
+            tenantId: subscription().tenantId
+            resourceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*'
           }
         ]
-      }
-    ]
-    blobServices: {
-      lastAccessTimeTrackingPolicyEnabled: true
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
-      containers: [
-        {
-          name: 'avdscripts'
-          enableNfsV3AllSquash: true
-          enableNfsV3RootSquash: true
-          publicAccess: 'None'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Owner'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-        }
-        {
-          name: 'archivecontainer'
-          publicAccess: 'None'
-          metadata: {
-            testKey: 'testValue'
-          }
-          enableWORM: true
-          WORMRetention: 666
-          allowProtectedAppendWrites: false
-        }
-      ]
-      automaticSnapshotPolicyEnabled: true
-      containerDeleteRetentionPolicyEnabled: true
-      containerDeleteRetentionPolicyDays: 10
-      deleteRetentionPolicyEnabled: true
-      deleteRetentionPolicyDays: 9
-    }
-    fileServices: {
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
-      shares: [
-        {
-          name: 'avdprofiles'
-          accessTier: 'Hot'
-          shareQuota: 5120
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Owner'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-        }
-        {
-          name: 'avdprofiles2'
-          shareQuota: 102400
-        }
-      ]
-    }
-    tableServices: {
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
-      tables: [
-        {
-          name: 'table1'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Owner'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-        }
-        {
-          name: 'table2'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Owner'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-        }
-      ]
-    }
-    queueServices: {
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
-      queues: [
-        {
-          name: 'queue1'
-          metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Owner'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-        }
-        {
-          name: 'queue2'
-          metadata: {}
-        }
-      ]
-    }
-    sasExpirationPeriod: '180.00:00:00'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: [
           {
-            category: 'AllMetrics'
+            action: 'Allow'
+            id: nestedDependencies.outputs.defaultSubnetResourceId
           }
         ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    managementPolicyRules: [
-      {
-        enabled: true
-        name: 'FirstRule'
-        type: 'Lifecycle'
-        definition: {
-          actions: {
-            baseBlob: {
-              delete: {
-                daysAfterModificationGreaterThan: 30
-              }
-              tierToCool: {
-                daysAfterLastAccessTimeGreaterThan: 5
-              }
-            }
+        ipRules: [
+          {
+            action: 'Allow'
+            value: '1.1.1.1'
           }
-          filters: {
-            blobIndexMatch: [
+        ]
+      }
+      localUsers: [
+        {
+          storageAccountName: '${namePrefix}${serviceShort}001'
+          name: 'testuser'
+          hasSharedKey: false
+          hasSshKey: true
+          hasSshPassword: false
+          homeDirectory: 'avdscripts'
+          permissionScopes: [
+            {
+              permissions: 'r'
+              service: 'blob'
+              resourceName: 'avdscripts'
+            }
+          ]
+        }
+      ]
+      blobServices: {
+        lastAccessTimeTrackingPolicyEnabled: true
+        diagnosticSettings: [
+          {
+            name: 'customSetting'
+            metricCategories: [
               {
-                name: 'BlobIndex'
-                op: '=='
-                value: '1'
+                category: 'AllMetrics'
               }
             ]
-            blobTypes: [
-              'blockBlob'
-            ]
-            prefixMatch: [
-              'sample-container/log'
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
+        containers: [
+          {
+            name: 'avdscripts'
+            enableNfsV3AllSquash: true
+            enableNfsV3RootSquash: true
+            publicAccess: 'None'
+            roleAssignments: [
+              {
+                roleDefinitionIdOrName: 'Owner'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: subscriptionResourceId(
+                  'Microsoft.Authorization/roleDefinitions',
+                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                )
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
             ]
           }
-        }
+          {
+            name: 'archivecontainer'
+            publicAccess: 'None'
+            metadata: {
+              testKey: 'testValue'
+            }
+            enableWORM: true
+            WORMRetention: 666
+            allowProtectedAppendWrites: false
+          }
+        ]
+        automaticSnapshotPolicyEnabled: true
+        containerDeleteRetentionPolicyEnabled: true
+        containerDeleteRetentionPolicyDays: 10
+        deleteRetentionPolicyEnabled: true
+        deleteRetentionPolicyDays: 9
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      fileServices: {
+        diagnosticSettings: [
+          {
+            name: 'customSetting'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
+        shares: [
+          {
+            name: 'avdprofiles'
+            accessTier: 'Hot'
+            shareQuota: 5120
+            roleAssignments: [
+              {
+                roleDefinitionIdOrName: 'Owner'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: subscriptionResourceId(
+                  'Microsoft.Authorization/roleDefinitions',
+                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                )
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+            ]
+          }
+          {
+            name: 'avdprofiles2'
+            shareQuota: 102400
+          }
+        ]
+      }
+      tableServices: {
+        diagnosticSettings: [
+          {
+            name: 'customSetting'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
+        tables: [
+          {
+            name: 'table1'
+            roleAssignments: [
+              {
+                roleDefinitionIdOrName: 'Owner'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: subscriptionResourceId(
+                  'Microsoft.Authorization/roleDefinitions',
+                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                )
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+            ]
+          }
+          {
+            name: 'table2'
+            roleAssignments: [
+              {
+                roleDefinitionIdOrName: 'Owner'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: subscriptionResourceId(
+                  'Microsoft.Authorization/roleDefinitions',
+                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                )
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+            ]
+          }
+        ]
+      }
+      queueServices: {
+        diagnosticSettings: [
+          {
+            name: 'customSetting'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
+        queues: [
+          {
+            name: 'queue1'
+            metadata: {
+              key1: 'value1'
+              key2: 'value2'
+            }
+            roleAssignments: [
+              {
+                roleDefinitionIdOrName: 'Owner'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+              {
+                roleDefinitionIdOrName: subscriptionResourceId(
+                  'Microsoft.Authorization/roleDefinitions',
+                  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                )
+                principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                principalType: 'ServicePrincipal'
+              }
+            ]
+          }
+          {
+            name: 'queue2'
+            metadata: {}
+          }
+        ]
+      }
+      sasExpirationPeriod: '180.00:00:00'
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      managementPolicyRules: [
+        {
+          enabled: true
+          name: 'FirstRule'
+          type: 'Lifecycle'
+          definition: {
+            actions: {
+              baseBlob: {
+                delete: {
+                  daysAfterModificationGreaterThan: 30
+                }
+                tierToCool: {
+                  daysAfterLastAccessTimeGreaterThan: 5
+                }
+              }
+            }
+            filters: {
+              blobIndexMatch: [
+                {
+                  name: 'BlobIndex'
+                  op: '=='
+                  value: '1'
+                }
+              ]
+              blobTypes: [
+                'blockBlob'
+              ]
+              prefixMatch: [
+                'sample-container/log'
+              ]
+            }
+          }
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]

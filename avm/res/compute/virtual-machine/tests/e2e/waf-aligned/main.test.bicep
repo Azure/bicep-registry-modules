@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -49,6 +50,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
+    backupManagementServiceApplicationObjectId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Tenant-specific Backup Management Service Enterprise Application Object Id
   }
 }
 
@@ -196,6 +198,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
+      bypassPlatformSafetyChecksOnUserSchedule: true
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       encryptionAtHost: false
       extensionAntiMalwareConfig: {
         enabled: true
