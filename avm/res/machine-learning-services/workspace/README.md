@@ -1,10 +1,5 @@
 # Machine Learning Services Workspaces `[Microsoft.MachineLearningServices/workspaces]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Machine Learning Services Workspace.
 
 ## Navigation
@@ -24,7 +19,7 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces) |
+| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -37,12 +32,92 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/machine-learning-services/workspace:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Creating Azure AI Studio resources](#example-1-creating-azure-ai-studio-resources)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
+- [Creating Azure ML managed feature store](#example-4-creating-azure-ml-managed-feature-store)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Creating Azure AI Studio resources_
+
+This instance deploys an Azure AI hub workspace.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'mlswai001'
+    sku: 'Basic'
+    // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
+    kind: 'Hub'
+    location: '<location>'
+    workspaceHubConfig: {
+      additionalWorkspaceStorageAccounts: '<additionalWorkspaceStorageAccounts>'
+      defaultWorkspaceResourceGroup: '<defaultWorkspaceResourceGroup>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlswai001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
+    "associatedApplicationInsightsResourceId": {
+      "value": "<associatedApplicationInsightsResourceId>"
+    },
+    "associatedKeyVaultResourceId": {
+      "value": "<associatedKeyVaultResourceId>"
+    },
+    "associatedStorageAccountResourceId": {
+      "value": "<associatedStorageAccountResourceId>"
+    },
+    "kind": {
+      "value": "Hub"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "workspaceHubConfig": {
+      "value": {
+        "additionalWorkspaceStorageAccounts": "<additionalWorkspaceStorageAccounts>",
+        "defaultWorkspaceResourceGroup": "<defaultWorkspaceResourceGroup>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -56,12 +131,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
-    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
-    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswmin001'
     sku: 'Basic'
     // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     location: '<location>'
   }
 }
@@ -80,6 +155,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswmin001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -89,13 +171,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswmin001"
-    },
-    "sku": {
-      "value": "Basic"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -106,7 +181,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -120,12 +195,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
-    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
-    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswecr001'
     sku: 'Basic'
     // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -137,6 +212,19 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    managedNetworkSettings: {
+      isolationMode: 'AllowInternetOutbound'
+      outboundRules: {
+        rule: {
+          category: 'UserDefined'
+          destination: {
+            serviceResourceId: '<serviceResourceId>'
+            subresourceTarget: 'blob'
+          }
+          type: 'PrivateEndpoint'
+        }
+      }
     }
     primaryUserAssignedIdentity: '<primaryUserAssignedIdentity>'
   }
@@ -156,6 +244,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswecr001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -165,13 +260,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswecr001"
-    },
-    "sku": {
-      "value": "Basic"
-    },
-    // Non-required parameters
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -190,6 +278,21 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         ]
       }
     },
+    "managedNetworkSettings": {
+      "value": {
+        "isolationMode": "AllowInternetOutbound",
+        "outboundRules": {
+          "rule": {
+            "category": "UserDefined",
+            "destination": {
+              "serviceResourceId": "<serviceResourceId>",
+              "subresourceTarget": "blob"
+            },
+            "type": "PrivateEndpoint"
+          }
+        }
+      }
+    },
     "primaryUserAssignedIdentity": {
       "value": "<primaryUserAssignedIdentity>"
     }
@@ -200,7 +303,87 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Creating Azure ML managed feature store_
+
+This instance deploys an Azure ML managed feature store.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'mlswfs001'
+    sku: 'Basic'
+    // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
+    featureStoreSettings: {
+      computeRuntime: {
+        sparkRuntimeVersion: '3.3'
+      }
+    }
+    kind: 'FeatureStore'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlswfs001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
+    "associatedApplicationInsightsResourceId": {
+      "value": "<associatedApplicationInsightsResourceId>"
+    },
+    "associatedKeyVaultResourceId": {
+      "value": "<associatedKeyVaultResourceId>"
+    },
+    "associatedStorageAccountResourceId": {
+      "value": "<associatedStorageAccountResourceId>"
+    },
+    "featureStoreSettings": {
+      "value": {
+        "computeRuntime": {
+          "sparkRuntimeVersion": "3.3"
+        }
+      }
+    },
+    "kind": {
+      "value": "FeatureStore"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -214,12 +397,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
-    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
-    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswmax001'
     sku: 'Premium'
     // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     computes: [
       {
         computeLocation: '<computeLocation>'
@@ -267,6 +450,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     ]
     discoveryUrl: 'http://example.com'
     imageBuildCompute: 'testcompute'
+    kind: 'Default'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -277,6 +461,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    managedNetworkSettings: {
+      isolationMode: 'Disabled'
     }
     primaryUserAssignedIdentity: '<primaryUserAssignedIdentity>'
     privateEndpoints: [
@@ -315,6 +502,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    serverlessComputeSettings: {
+      serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
+      serverlessComputeNoPublicIP: true
+    }
+    systemDatastoresAuthMode: 'accessKey'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -337,6 +529,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswmax001"
+    },
+    "sku": {
+      "value": "Premium"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -346,13 +545,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswmax001"
-    },
-    "sku": {
-      "value": "Premium"
-    },
-    // Non-required parameters
     "computes": {
       "value": [
         {
@@ -410,6 +602,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "imageBuildCompute": {
       "value": "testcompute"
     },
+    "kind": {
+      "value": "Default"
+    },
     "location": {
       "value": "<location>"
     },
@@ -425,6 +620,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "managedNetworkSettings": {
+      "value": {
+        "isolationMode": "Disabled"
       }
     },
     "primaryUserAssignedIdentity": {
@@ -470,6 +670,15 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
+    "serverlessComputeSettings": {
+      "value": {
+        "serverlessComputeCustomSubnet": "<serverlessComputeCustomSubnet>",
+        "serverlessComputeNoPublicIP": true
+      }
+    },
+    "systemDatastoresAuthMode": {
+      "value": "accessKey"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -484,7 +693,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -498,12 +707,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
-    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
-    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswwaf001'
     sku: 'Standard'
     // Non-required parameters
+    associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
+    associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
+    associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -513,6 +722,34 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       }
     ]
     location: '<location>'
+    managedNetworkSettings: {
+      isolationMode: 'AllowOnlyApprovedOutbound'
+      outboundRules: {
+        rule1: {
+          category: 'UserDefined'
+          destination: {
+            serviceResourceId: '<serviceResourceId>'
+            sparkEnabled: true
+            subresourceTarget: 'blob'
+          }
+          type: 'PrivateEndpoint'
+        }
+        rule2: {
+          category: 'UserDefined'
+          destination: 'pypi.org'
+          type: 'FQDN'
+        }
+        rule3: {
+          category: 'UserDefined'
+          destination: {
+            portRanges: '80,443'
+            protocol: 'TCP'
+            serviceTag: 'AppService'
+          }
+          type: 'ServiceTag'
+        }
+      }
+    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -526,6 +763,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
     ]
+    systemDatastoresAuthMode: 'identity'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -548,6 +786,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "mlswwaf001"
+    },
+    "sku": {
+      "value": "Standard"
+    },
+    // Non-required parameters
     "associatedApplicationInsightsResourceId": {
       "value": "<associatedApplicationInsightsResourceId>"
     },
@@ -557,13 +802,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
     },
-    "name": {
-      "value": "mlswwaf001"
-    },
-    "sku": {
-      "value": "Standard"
-    },
-    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -576,6 +814,36 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "location": {
       "value": "<location>"
+    },
+    "managedNetworkSettings": {
+      "value": {
+        "isolationMode": "AllowOnlyApprovedOutbound",
+        "outboundRules": {
+          "rule1": {
+            "category": "UserDefined",
+            "destination": {
+              "serviceResourceId": "<serviceResourceId>",
+              "sparkEnabled": true,
+              "subresourceTarget": "blob"
+            },
+            "type": "PrivateEndpoint"
+          },
+          "rule2": {
+            "category": "UserDefined",
+            "destination": "pypi.org",
+            "type": "FQDN"
+          },
+          "rule3": {
+            "category": "UserDefined",
+            "destination": {
+              "portRanges": "80,443",
+              "protocol": "TCP",
+              "serviceTag": "AppService"
+            },
+            "type": "ServiceTag"
+          }
+        }
+      }
     },
     "privateEndpoints": {
       "value": [
@@ -591,6 +859,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           }
         }
       ]
+    },
+    "systemDatastoresAuthMode": {
+      "value": "identity"
     },
     "tags": {
       "value": {
@@ -613,9 +884,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. |
-| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. |
-| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. |
 | [`name`](#parameter-name) | string | The name of the machine learning workspace. |
 | [`sku`](#parameter-sku) | string | Specifies the SKU, also referred as 'edition' of the Azure Machine Learning workspace. |
 
@@ -623,13 +891,17 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'. |
+| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
+| [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
+| [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'. |
+| [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'. |
 | [`primaryUserAssignedIdentity`](#parameter-primaryuserassignedidentity) | string | The user assigned identity resource ID that represents the workspace identity. Required if 'userAssignedIdentities' is not empty and may not be used if 'systemAssignedIdentity' is enabled. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowPublicAccessWhenBehindVnet`](#parameter-allowpublicaccesswhenbehindvnet) | bool | The flag to indicate whether to allow public access when behind VNet. |
 | [`associatedContainerRegistryResourceId`](#parameter-associatedcontainerregistryresourceid) | string | The resource ID of the associated Container Registry. |
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -639,36 +911,20 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hbiWorkspace`](#parameter-hbiworkspace) | bool | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
 | [`imageBuildCompute`](#parameter-imagebuildcompute) | string | The compute name for image build. |
+| [`kind`](#parameter-kind) | string | The type of Azure Machine Learning workspace to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. At least one identity type is required. |
+| [`managedNetworkSettings`](#parameter-managednetworksettings) | object | Managed Network settings for a machine learning workspace. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`serverlessComputeSettings`](#parameter-serverlesscomputesettings) | object | Settings for serverless compute created in the workspace. |
 | [`serviceManagedResourcesSettings`](#parameter-servicemanagedresourcessettings) | object | The service managed resource settings. |
 | [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The list of shared private link resources in this workspace. Note: This property is not idempotent. |
+| [`systemDatastoresAuthMode`](#parameter-systemdatastoresauthmode) | string | The authentication mode used by the workspace when connecting to the default storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
-
-### Parameter: `associatedApplicationInsightsResourceId`
-
-The resource ID of the associated Application Insights.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `associatedKeyVaultResourceId`
-
-The resource ID of the associated Key Vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `associatedStorageAccountResourceId`
-
-The resource ID of the associated Storage Account.
-
-- Required: Yes
-- Type: string
+| [`workspaceHubConfig`](#parameter-workspacehubconfig) | object | Configuration for workspace hub settings. |
 
 ### Parameter: `name`
 
@@ -693,20 +949,89 @@ Specifies the SKU, also referred as 'edition' of the Azure Machine Learning work
   ]
   ```
 
+### Parameter: `associatedApplicationInsightsResourceId`
+
+The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'.
+
+- Required: No
+- Type: string
+
+### Parameter: `associatedKeyVaultResourceId`
+
+The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'.
+
+- Required: No
+- Type: string
+
+### Parameter: `associatedStorageAccountResourceId`
+
+The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings`
+
+Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`computeRuntime`](#parameter-featurestoresettingscomputeruntime) | object | Compute runtime config for feature store type workspace. |
+| [`offlineStoreConnectionName`](#parameter-featurestoresettingsofflinestoreconnectionname) | string | The offline store connection name. |
+| [`onlineStoreConnectionName`](#parameter-featurestoresettingsonlinestoreconnectionname) | string | The online store connection name. |
+
+### Parameter: `featureStoreSettings.computeRuntime`
+
+Compute runtime config for feature store type workspace.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sparkRuntimeVersion`](#parameter-featurestoresettingscomputeruntimesparkruntimeversion) | string | The spark runtime version. |
+
+### Parameter: `featureStoreSettings.computeRuntime.sparkRuntimeVersion`
+
+The spark runtime version.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings.offlineStoreConnectionName`
+
+The offline store connection name.
+
+- Required: No
+- Type: string
+
+### Parameter: `featureStoreSettings.onlineStoreConnectionName`
+
+The online store connection name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubResourceId`
+
+The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'.
+
+- Required: No
+- Type: string
+
 ### Parameter: `primaryUserAssignedIdentity`
 
 The user assigned identity resource ID that represents the workspace identity. Required if 'userAssignedIdentities' is not empty and may not be used if 'systemAssignedIdentity' is enabled.
 
 - Required: No
 - Type: string
-
-### Parameter: `allowPublicAccessWhenBehindVnet`
-
-The flag to indicate whether to allow public access when behind VNet.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `associatedContainerRegistryResourceId`
 
@@ -954,6 +1279,23 @@ The compute name for image build.
 - Required: No
 - Type: string
 
+### Parameter: `kind`
+
+The type of Azure Machine Learning workspace to create.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'FeatureStore'
+    'Hub'
+    'Project'
+  ]
+  ```
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -1031,6 +1373,60 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+
+### Parameter: `managedNetworkSettings`
+
+Managed Network settings for a machine learning workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isolationMode`](#parameter-managednetworksettingsisolationmode) | string | Isolation mode for the managed network of a machine learning workspace. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`outboundRules`](#parameter-managednetworksettingsoutboundrules) | object | Outbound rules for the managed network of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.isolationMode`
+
+Isolation mode for the managed network of a machine learning workspace.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AllowInternetOutbound'
+    'AllowOnlyApprovedOutbound'
+    'Disabled'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules`
+
+Outbound rules for the managed network of a machine learning workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-managednetworksettingsoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<`
+
+The outbound rule. The name of the rule is the object key.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `privateEndpoints`
 
@@ -1377,10 +1773,11 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled.
 
 - Required: No
 - Type: string
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -1478,6 +1875,34 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `serverlessComputeSettings`
+
+Settings for serverless compute created in the workspace.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serverlessComputeCustomSubnet`](#parameter-serverlesscomputesettingsserverlesscomputecustomsubnet) | string | The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed. |
+| [`serverlessComputeNoPublicIP`](#parameter-serverlesscomputesettingsserverlesscomputenopublicip) | bool | The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint. |
+
+### Parameter: `serverlessComputeSettings.serverlessComputeCustomSubnet`
+
+The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed.
+
+- Required: No
+- Type: string
+
+### Parameter: `serverlessComputeSettings.serverlessComputeNoPublicIP`
+
+The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `serviceManagedResourcesSettings`
 
 The service managed resource settings.
@@ -1492,12 +1917,54 @@ The list of shared private link resources in this workspace. Note: This property
 - Required: No
 - Type: array
 
+### Parameter: `systemDatastoresAuthMode`
+
+The authentication mode used by the workspace when connecting to the default storage account.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'accessKey'
+    'identity'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Resource tags.
 
 - Required: No
 - Type: object
+
+### Parameter: `workspaceHubConfig`
+
+Configuration for workspace hub settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`additionalWorkspaceStorageAccounts`](#parameter-workspacehubconfigadditionalworkspacestorageaccounts) | array | The resource IDs of additional storage accounts to attach to the workspace. |
+| [`defaultWorkspaceResourceGroup`](#parameter-workspacehubconfigdefaultworkspaceresourcegroup) | string | The resource ID of the default resource group for projects created in the workspace hub. |
+
+### Parameter: `workspaceHubConfig.additionalWorkspaceStorageAccounts`
+
+The resource IDs of additional storage accounts to attach to the workspace.
+
+- Required: No
+- Type: array
+
+### Parameter: `workspaceHubConfig.defaultWorkspaceResourceGroup`
+
+The resource ID of the default resource group for projects created in the workspace hub.
+
+- Required: No
+- Type: string
 
 
 ## Outputs

@@ -330,6 +330,7 @@ function Set-DefinitionSection {
 
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
             $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
+            $example = ($parameter.ContainsKey('metadata') -and $parameter['metadata'].ContainsKey('example')) ? $parameter['metadata']['example'] : $null
 
             #####################
             #   Table content   #
@@ -412,6 +413,29 @@ function Set-DefinitionSection {
                 $formattedAllowedValues = $null
             }
 
+            # Format example
+            # ==============
+            if (-not [String]::IsNullOrEmpty($example)) {
+                # allign content to the left by removing trailing whitespaces
+                $leadingSpacesToTrim = ($example -match '^(\s+).+') ? $matches[1].Length : 0
+                $exampleLines = $example -split '\n'
+                # Removing excess leading spaces
+                $example = ($exampleLines | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" -replace "^\s{$leadingSpacesToTrim}" } | Out-String).TrimEnd()
+
+                if ($exampleLines.count -eq 1) {
+                    $formattedExample = '- Example: `{0}`' -f $example.TrimStart()
+                } else {
+                    $formattedExample = @(
+                        '- Example:',
+                        '  ```Bicep',
+                        $example,
+                        '  ```'
+                    )
+                }
+            } else {
+                $formattedExample = $null
+            }
+
             # Build list item
             # ===============
             $listSectionContent += @(
@@ -422,7 +446,8 @@ function Set-DefinitionSection {
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null)
+            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null)
                 ''
             ) | Where-Object { $null -ne $_ }
 
@@ -1619,17 +1644,30 @@ function Initialize-ReadMe {
 
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
-    $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+
+    if ($ReadMeFilePath -match 'avm.(?:res)') {
+        # Resource module
+        $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+
+        $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
+            $_ -match "^$formattedResourceType$"
+        }
+
+        if ($inTemplateResourceType) {
+            $headerType = $inTemplateResourceType
+        } else {
+            Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
+            $headerType = $formattedResourceType
+        }
+    } else {
+        # Non-resource modules always need a custom identifier
+        $parentIdentifierName, $childIdentifierName = $FullModuleIdentifier -Split '[\/|\\]', 2 # e.g. 'lz' & 'sub-vending'
+        $formattedParentIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($parentIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
+        $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
+        $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
+    }
+
     $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
-
-    $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
-        $_ -match "^$formattedResourceType$"
-    }
-
-    if (-not $inTemplateResourceType) {
-        Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
-        $inTemplateResourceType = $formattedResourceType
-    }
 
     # Orphaned readme existing?
     $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
@@ -1644,7 +1682,7 @@ function Initialize-ReadMe {
     }
 
     $initialContent = @(
-        "# $moduleName ``[$inTemplateResourceType]``",
+        "# $moduleName ``[$headerType]``",
         '',
         ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
         ((Test-Path $orphanedReadMeFilePath) ? '' : $null),

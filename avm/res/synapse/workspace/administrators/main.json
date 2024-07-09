@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.28.1.47646",
+      "templateHash": "351030244990389212"
+    },
+    "name": "Synapse Workspaces Administrators",
+    "description": "This module deploys Synapse Workspaces Administrators.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "administratorType": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Workspace active directory administrator type."
+      }
+    },
+    "login": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Required. Login of the workspace active directory administrator."
+      }
+    },
+    "sid": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Required. Object ID of the workspace active directory administrator."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "defaultValue": "[tenant().tenantId]",
+      "metadata": {
+        "description": "Optional. Tenant ID of the workspace active directory administrator."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Synapse/workspaces/administrators",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), 'activeDirectory')]",
+      "properties": {
+        "administratorType": "[parameters('administratorType')]",
+        "login": "[parameters('login')]",
+        "sid": "[parameters('sid')]",
+        "tenantId": "[parameters('tenantId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed administrator."
+      },
+      "value": "activeDirectory"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed administrator."
+      },
+      "value": "[resourceId('Microsoft.Synapse/workspaces/administrators', parameters('workspaceName'), 'activeDirectory')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed administrator."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

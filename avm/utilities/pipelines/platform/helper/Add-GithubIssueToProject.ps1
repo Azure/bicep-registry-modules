@@ -21,20 +21,20 @@ Add-GithubIssueToProject -Repo 'Azure/bicep-registry-modules' -ProjectNumber 538
 Needs to run under a context with the permissions to read/write organization projects
 #>
 function Add-GithubIssueToProject {
-  param (
-    [Parameter(Mandatory = $true)]
-    [string] $Repo,
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $Repo,
 
-    [Parameter(Mandatory = $true)]
-    [int] $ProjectNumber,
+        [Parameter(Mandatory = $true)]
+        [int] $ProjectNumber,
 
-    [Parameter(Mandatory = $true)]
-    [string] $IssueUrl
-  )
+        [Parameter(Mandatory = $true)]
+        [string] $IssueUrl
+    )
 
-  $Organization = $Repo.Split('/')[0]
+    $Organization = $Repo.Split('/')[0]
 
-  $Project = gh api graphql -f query='
+    $Project = gh api graphql -f query='
   query($organization: String! $number: Int!){
     organization(login: $organization){
       projectV2(number: $number) {
@@ -43,10 +43,10 @@ function Add-GithubIssueToProject {
     }
   }' -f organization=$Organization -F number=$ProjectNumber | ConvertFrom-Json -Depth 10
 
-  $ProjectId = $Project.data.organization.projectV2.id
-  $IssueId = (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --repo $Repo --json 'id' | ConvertFrom-Json -Depth 100).id
+    $ProjectId = $Project.data.organization.projectV2.id
+    $IssueId = (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --repo $Repo --json 'id' | ConvertFrom-Json -Depth 100).id
 
-  gh api graphql -f query='
+    gh api graphql -f query='
   mutation($project:ID!, $issue:ID!) {
     addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
       item {
