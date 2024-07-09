@@ -111,27 +111,6 @@ module capacityPool_volumes 'volume/main.bicep' = [
       remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
       remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
       replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
-      snapshotPolicyId: contains(volume, 'snapshotPolicyId') ? volume.snapshotPolicyId : ''
-      snapshotPolicyName: contains(volume, 'snapshotPolicyName') ? volume.snapshotPolicyName : ''
-      snapshotPolicyLocation: contains(volume, 'snapshotPolicyLocation') ? volume.snapshotPolicyLocation : ''
-      snapEnabled: contains(volume, 'snapEnabled') ? volume.snapEnabled : false
-      dailyHour: contains(volume, 'dailyHour') ? volume.dailyHour : 0
-      dailyMinute: contains(volume, 'dailyMinute') ? volume.dailyMinute : 0
-      dailySnapshotsToKeep: contains(volume, 'dailySnapshotsToKeep') ? volume.dailySnapshotsToKeep : 0
-      dailyUsedBytes: contains(volume, 'dailyUsedBytes') ? volume.dailyUsedBytes : 0
-      hourlyMinute: contains(volume, 'hourlyMinute') ? volume.hourlyMinute : 0
-      hourlySnapshotsToKeep: contains(volume, 'hourlySnapshotsToKeep') ? volume.hourlySnapshotsToKeep : 0
-      hourlyUsedBytes: contains(volume, 'hourlyUsedBytes') ? volume.hourlyUsedBytes : 0
-      daysOfMonth: contains(volume, 'daysOfMonth') ? volume.daysOfMonth : ''
-      monthlyHour: contains(volume, 'monthlyHour') ? volume.monthlyHour : 0
-      monthlyMinute: contains(volume, 'monthlyMinute') ? volume.monthlyMinute : 0
-      monthlySnapshotsToKeep: contains(volume, 'monthlySnapshotsToKeep') ? volume.monthlySnapshotsToKeep : 0
-      monthlyUsedBytes: contains(volume, 'monthlyUsedBytes') ? volume.monthlyUsedBytes : 0
-      weeklyDay: contains(volume, 'weeklyDay') ? volume.weeklyDay : ''
-      weeklyHour: contains(volume, 'weeklyHour') ? volume.weeklyHour : 0
-      weeklyMinute: contains(volume, 'weeklyMinute') ? volume.weeklyMinute : 0
-      weeklySnapshotsToKeep: contains(volume, 'weeklySnapshotsToKeep') ? volume.weeklySnapshotsToKeep : 0
-      weeklyUsedBytes: contains(volume, 'weeklyUsedBytes') ? volume.weeklyUsedBytes : 0
       backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : ''
       backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
       dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0

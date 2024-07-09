@@ -19,7 +19,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | `Microsoft.NetApp/netAppAccounts/backupVaults` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults) |
 | `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults/backups) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/capacityPools/volumes) |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/snapshotPolicies) |
 
 ## Parameters
 
@@ -55,41 +54,20 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
-| [`dailyHour`](#parameter-dailyhour) | int | The daily snapshot hour. |
-| [`dailyMinute`](#parameter-dailyminute) | int | The daily snapshot minute. |
-| [`dailySnapshotsToKeep`](#parameter-dailysnapshotstokeep) | int | Daily snapshot count to keep. |
-| [`dailyUsedBytes`](#parameter-dailyusedbytes) | int | Daily snapshot used bytes. |
-| [`daysOfMonth`](#parameter-daysofmonth) | string | The monthly snapshot day. |
 | [`endpointType`](#parameter-endpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
-| [`hourlyMinute`](#parameter-hourlyminute) | int | The hourly snapshot minute. |
-| [`hourlySnapshotsToKeep`](#parameter-hourlysnapshotstokeep) | int | Hourly snapshot count to keep. |
-| [`hourlyUsedBytes`](#parameter-hourlyusedbytes) | int | Hourly snapshot used bytes. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
-| [`monthlyHour`](#parameter-monthlyhour) | int | The monthly snapshot hour. |
-| [`monthlyMinute`](#parameter-monthlyminute) | int | The monthly snapshot minute. |
-| [`monthlySnapshotsToKeep`](#parameter-monthlysnapshotstokeep) | int | Monthly snapshot count to keep. |
-| [`monthlyUsedBytes`](#parameter-monthlyusedbytes) | int | Monthly snapshot used bytes. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
 | [`remoteVolumeRegion`](#parameter-remotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 | [`remoteVolumeResourceId`](#parameter-remotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-replicationschedule) | string | The replication schedule for the volume. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
-| [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
 | [`snapshotName`](#parameter-snapshotname) | string | The name of the snapshot. |
-| [`snapshotPolicyId`](#parameter-snapshotpolicyid) | string | Snapshot Policy ResourceId. |
-| [`snapshotPolicyLocation`](#parameter-snapshotpolicylocation) | string | The location of the snapshot policy. |
-| [`snapshotPolicyName`](#parameter-snapshotpolicyname) | string | The name of the snapshot policy. |
 | [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Indicates whether to use an existing snapshot. |
 | [`volumeResourceId`](#parameter-volumeresourceid) | string | The resource ID of the volume. |
 | [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
-| [`weeklyDay`](#parameter-weeklyday) | string | The weekly snapshot day. |
-| [`weeklyHour`](#parameter-weeklyhour) | int | The weekly snapshot hour. |
-| [`weeklyMinute`](#parameter-weeklyminute) | int | The weekly snapshot minute. |
-| [`weeklySnapshotsToKeep`](#parameter-weeklysnapshotstokeep) | int | Weekly snapshot count to keep. |
-| [`weeklyUsedBytes`](#parameter-weeklyusedbytes) | int | Weekly snapshot used bytes. |
 | [`zones`](#parameter-zones) | array | Availability Zone. |
 
 ### Parameter: `name`
@@ -226,41 +204,6 @@ The daily backups to keep.
 - Required: Yes
 - Type: int
 
-### Parameter: `dailyHour`
-
-The daily snapshot hour.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `dailyMinute`
-
-The daily snapshot minute.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `dailySnapshotsToKeep`
-
-Daily snapshot count to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `dailyUsedBytes`
-
-Daily snapshot used bytes.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `daysOfMonth`
-
-The monthly snapshot day.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `endpointType`
 
 Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).
@@ -276,27 +219,6 @@ Export policy rules.
 - Type: array
 - Default: `[]`
 
-### Parameter: `hourlyMinute`
-
-The hourly snapshot minute.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `hourlySnapshotsToKeep`
-
-Hourly snapshot count to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `hourlyUsedBytes`
-
-Hourly snapshot used bytes.
-
-- Required: Yes
-- Type: int
-
 ### Parameter: `location`
 
 Location of the pool volume.
@@ -308,34 +230,6 @@ Location of the pool volume.
 ### Parameter: `monthlyBackupsToKeep`
 
 The monthly backups to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `monthlyHour`
-
-The monthly snapshot hour.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `monthlyMinute`
-
-The monthly snapshot minute.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `monthlySnapshotsToKeep`
-
-Monthly snapshot count to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `monthlyUsedBytes`
-
-Monthly snapshot used bytes.
 
 - Required: Yes
 - Type: int
@@ -475,39 +369,9 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
-### Parameter: `snapEnabled`
-
-Indicates whether the snapshot policy is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `snapshotName`
 
 The name of the snapshot.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `snapshotPolicyId`
-
-Snapshot Policy ResourceId.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `snapshotPolicyLocation`
-
-The location of the snapshot policy.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
-
-### Parameter: `snapshotPolicyName`
-
-The name of the snapshot policy.
 
 - Required: Yes
 - Type: string
@@ -529,41 +393,6 @@ The resource ID of the volume.
 ### Parameter: `weeklyBackupsToKeep`
 
 The weekly backups to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `weeklyDay`
-
-The weekly snapshot day.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `weeklyHour`
-
-The weekly snapshot hour.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `weeklyMinute`
-
-The weekly snapshot minute.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `weeklySnapshotsToKeep`
-
-Weekly snapshot count to keep.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `weeklyUsedBytes`
-
-Weekly snapshot used bytes.
 
 - Required: Yes
 - Type: int
