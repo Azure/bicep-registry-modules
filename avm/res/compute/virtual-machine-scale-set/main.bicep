@@ -86,7 +86,10 @@ param extensionDomainJoinPassword string = ''
 
 @description('Optional. The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed.')
 @secure()
-param extensionDomainJoinConfig object = {}
+#disable-next-line secure-parameter-default
+param extensionMonitoringAgentConfig object = {
+  enabled: false
+}
 
 @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionAntiMalwareConfig object = {
