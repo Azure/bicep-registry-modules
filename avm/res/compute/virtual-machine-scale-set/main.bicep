@@ -604,7 +604,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
                 properties: {
                   publisher: 'Microsoft.ManagedServices'
                   type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
-                  typeHandlerVersion: '1.0'
+                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion?? '1.0'
                   autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
                   settings: {
                     protocol: extensionHealthConfig.?protocol ?? 'http'
