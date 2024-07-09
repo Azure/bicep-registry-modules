@@ -1842,6 +1842,7 @@ The secrets of the Container App.
       keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
     }
     {
+      // You can do this, but you shouldn't. Use a secret reference instead.
       name: 'mysecret'
       value: 'mysecretvalue'
     }

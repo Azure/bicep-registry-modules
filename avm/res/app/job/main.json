@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "785827336085494592"
+      "templateHash": "2845806145425627201"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
