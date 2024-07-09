@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using Private Endpoint'
-metadata description = 'This instance deploys the module with access to a private endppint.'
+metadata description = 'This instance deploys the module with access to a private endpoint.'
 
 // ========== //
 // Parameters //
@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'rdspe'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'avmx'
 
 // ============ //
 // Dependencies //

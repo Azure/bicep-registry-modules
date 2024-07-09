@@ -44,7 +44,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
   kind: 'StorageV2'
   properties: {
     publicNetworkAccess: 'Disabled'
-    // allowSharedKeyAccess: true // Cannot be set to false when using a private network for the deployment script
+    allowSharedKeyAccess: true // Cannot be set to false when using a private network for the deployment script
     networkAcls: {
       defaultAction: 'Deny'
       bypass: 'AzureServices'
@@ -87,18 +87,6 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
       }
     }
   }
-
-  // resource resRecord 'A' = {
-  //   name: storageAccount.name
-  //   properties: {
-  //     ttl: 10
-  //     aRecords: [
-  //       {
-  //         ipv4Address: first(first(privateEndpoint.properties.customDnsConfigs)!.ipAddresses)
-  //       }
-  //     ]
-  //   }
-  // }
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {

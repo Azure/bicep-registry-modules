@@ -389,7 +389,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 ### Example 4: _Using Private Endpoint_
 
-This instance deploys the module with access to a private endppint.
+This instance deploys the module with access to a private endpoint.
 
 
 <details>
