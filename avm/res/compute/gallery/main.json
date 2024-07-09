@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2904481693910053437"
+      "templateHash": "1315595595350601459"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -907,7 +907,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "14930439882618400903"
+              "templateHash": "934690756669082834"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -1171,7 +1171,7 @@
                 "Standard",
                 "TrustedLaunch"
               ],
-              "nullable": true,
+              "defaultValue": "Standard",
               "metadata": {
                 "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
               }

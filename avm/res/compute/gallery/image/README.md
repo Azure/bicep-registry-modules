@@ -412,6 +412,7 @@ The security type of the image. Requires a hyperVGeneration V2.
 
 - Required: No
 - Type: string
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [

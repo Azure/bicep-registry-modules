@@ -39,7 +39,7 @@ param memory resourceRangeType = { min: 4, max: 16 }
 param releaseNoteUri string?
 
 @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
-param securityType ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
+param securityType ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported') = 'Standard'
 
 @sys.description('Optional. Specify if the image supports accelerated networking.')
 param isAcceleratedNetworkSupported bool = true
