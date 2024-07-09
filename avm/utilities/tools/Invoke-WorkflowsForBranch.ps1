@@ -126,7 +126,7 @@ Mandatory. The name of the repository to fetch the workflows from.
 Optional. Set if you want to also include disabled workflows in the result.
 
 .PARAMETER Filter
-Optional. A regex filter to apply when fetching the workflows. By default we fetch all module workflows (avm.res.*).
+Optional. A regex filter to apply when fetching the workflows. By default we fetch all module workflows.
 
 .EXAMPLE
 Get-GitHubModuleWorkflowList -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules'
