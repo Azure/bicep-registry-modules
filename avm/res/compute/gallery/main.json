@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1315595595350601459"
+      "templateHash": "10621558710592844448"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -907,7 +907,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "934690756669082834"
+              "templateHash": "751325967553230167"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -1171,7 +1171,7 @@
                 "Standard",
                 "TrustedLaunch"
               ],
-              "defaultValue": "Standard",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
               }
@@ -1286,7 +1286,7 @@
                 },
                 "endOfLifeDate": "[parameters('endOfLifeDate')]",
                 "eula": "[parameters('eula')]",
-                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported'))), createObject('name', 'SecurityType', 'value', parameters('securityType'))), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
+                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), if(not(equals(parameters('securityType'), null())), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
                 "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1'))]",
                 "identifier": {
                   "publisher": "[parameters('identifier').publisher]",

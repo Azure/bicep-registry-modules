@@ -39,7 +39,7 @@ param memory resourceRangeType = { min: 4, max: 16 }
 param releaseNoteUri string?
 
 @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
-param securityType ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported') = 'Standard'
+param securityType ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
 
 @sys.description('Optional. Specify if the image supports accelerated networking.')
 param isAcceleratedNetworkSupported bool = true
@@ -120,12 +120,16 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
           name: 'IsAcceleratedNetworkSupported'
           value: '${isAcceleratedNetworkSupported}'
         }
-        {
-          name: 'SecurityType'
-          value: securityType
-        }
       ],
-      ((isHibernateSupported) != null
+      (securityType != null
+        ? [
+            {
+              name: 'SecurityType'
+              value: '${securityType}'
+            }
+          ]
+        : []),
+      (isHibernateSupported != null
         ? [
             {
               name: 'IsHibernateSupported'
