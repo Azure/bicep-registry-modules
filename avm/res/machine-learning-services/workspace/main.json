@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6372555693583226495"
+      "templateHash": "5554101983463248531"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace.",
@@ -404,7 +404,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": ""
+            "description": "Optional. Category of a managed network Outbound Rule of a machine learning workspace."
           }
         }
       }
@@ -458,7 +458,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": ""
+            "description": "Optional. Category of a managed network Outbound Rule of a machine learning workspace."
           }
         }
       }
@@ -517,7 +517,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": ""
+            "description": "Optional. Category of a managed network Outbound Rule of a machine learning workspace."
           }
         }
       }
