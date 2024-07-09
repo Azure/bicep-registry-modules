@@ -8,14 +8,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: managedEnvironmentName
   location: location
   properties: {
-    workloadProfiles: [
-      {
-        workloadProfileType: 'D4'
-        name: 'WorkloadProfile'
-        minimumCount: 1
-        maximumCount: 3
-      }
-    ]
+    zoneRedundant: false
   }
 }
 
