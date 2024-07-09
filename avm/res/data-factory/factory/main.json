@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1635148191043758282"
+      "templateHash": "14871862405495060994"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1212,7 +1212,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5108430413148442153"
+              "templateHash": "6177259720192070721"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service.",
@@ -1285,7 +1285,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the Resource Group the Integration Runtime was created in."
+                "description": "The name of the Resource Group the Linked Service was created in."
               },
               "value": "[resourceGroup().name]"
             },

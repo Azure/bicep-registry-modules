@@ -99,7 +99,7 @@ Used to add connection properties for your linked services.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the Linked Service. |
-| `resourceGroupName` | string | The name of the Resource Group the Integration Runtime was created in. |
+| `resourceGroupName` | string | The name of the Resource Group the Linked Service was created in. |
 | `resourceId` | string | The resource ID of the Linked Service. |
 
 ## Cross-referenced modules
