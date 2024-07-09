@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "17252916584930209182"
+      "version": "0.28.1.47646",
+      "templateHash": "16758094060432541351"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service",
@@ -174,7 +174,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.communication-emailservice.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -286,8 +286,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "3536602426579825020"
+              "version": "0.28.1.47646",
+              "templateHash": "4023506626147517594"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain",
@@ -560,8 +560,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "11776160114645029549"
+                      "version": "0.28.1.47646",
+                      "templateHash": "13309861087327282093"
                     },
                     "name": "Sender Usernames",
                     "description": "This module deploys an Sender",

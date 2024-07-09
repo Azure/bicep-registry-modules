@@ -17,7 +17,7 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/virtualHubs` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs) |
+| `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
 | `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubVirtualNetworkConnections) |
 
@@ -377,6 +377,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayId`](#parameter-expressroutegatewayid) | string | Resource ID of the Express Route Gateway to link to. |
 | [`hubRouteTables`](#parameter-hubroutetables) | array | Route tables to create for the virtual hub. |
+| [`hubRoutingPreference`](#parameter-hubroutingpreference) | string | The preferred routing preference for this virtual hub. |
 | [`hubVirtualNetworkConnections`](#parameter-hubvirtualnetworkconnections) | array | Virtual network connections to create for the virtual hub. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -452,6 +453,23 @@ Route tables to create for the virtual hub.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `hubRoutingPreference`
+
+The preferred routing preference for this virtual hub.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'ASPath'
+    'ExpressRoute'
+    'VpnGateway'
+  ]
+  ```
 
 ### Parameter: `hubVirtualNetworkConnections`
 
