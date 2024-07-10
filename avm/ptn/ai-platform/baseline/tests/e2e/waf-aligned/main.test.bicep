@@ -54,15 +54,17 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
-      workspaceNetworkIsolationMode: 'AllowOnlyApprovedOutbound'
-      workspaceNetworkOutboundRules: {
-        rule: {
-          type: 'PrivateEndpoint'
-          destination: {
-            serviceResourceId: nestedDependencies.outputs.storageAccountResourceId
-            subresourceTarget: 'blob'
+      workspaceHubSettings: {
+        networkIsolationMode: 'AllowOnlyApprovedOutbound'
+        networkOutboundRules: {
+          rule: {
+            type: 'PrivateEndpoint'
+            destination: {
+              serviceResourceId: nestedDependencies.outputs.storageAccountResourceId
+              subresourceTarget: 'blob'
+            }
+            category: 'UserDefined'
           }
-          category: 'UserDefined'
         }
       }
       tags: {

@@ -53,31 +53,53 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
-      keyVaultEnablePurgeProtection: false
-      storageAccountAllowSharedKeyAccess: true
-      workspaceComputes: [
-        {
-          computeType: 'ComputeInstance'
-          name: 'compute-${substring(uniqueString(baseTime), 0, 3)}'
-          description: 'Default'
-          location: resourceLocation
-          properties: {
-            vmSize: 'STANDARD_DS11_V2'
+      name: '${namePrefix}${serviceShort}'
+      managedIdentitySettings: {
+        name: 'dep-${namePrefix}-id-${serviceShort}'
+      }
+      logAnalyticsSettings: {
+        name: 'dep-${namePrefix}-log-${serviceShort}'
+      }
+      keyVaultSettings: {
+        name: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+        enablePurgeProtection: false
+      }
+      storageAccountSettings: {
+        name: 'dep${namePrefix}st${serviceShort}'
+        allowSharedKeyAccess: true
+      }
+      containerRegistrySettings: {
+        name: 'dep${namePrefix}cr${serviceShort}'
+        trustPolicyStatus: 'disabled'
+      }
+      applicationInsightsSettings: {
+        name: 'dep-${namePrefix}-appi-${serviceShort}'
+      }
+      workspaceHubSettings: {
+        name: 'dep-${namePrefix}-hub-${serviceShort}'
+        computes: [
+          {
+            computeType: 'ComputeInstance'
+            name: 'compute-${substring(uniqueString(baseTime), 0, 3)}'
+            description: 'Default'
+            location: resourceLocation
+            properties: {
+              vmSize: 'STANDARD_DS11_V2'
+            }
+            sku: 'Standard'
           }
-          sku: 'Standard'
-        }
-      ]
-      workspaceNetworkIsolationMode: 'AllowOnlyApprovedOutbound'
-      workspaceNetworkOutboundRules: {
-        rule1: {
-          type: 'PrivateEndpoint'
-          destination: {
-            serviceResourceId: nestedDependencies.outputs.storageAccountResourceId
-            subresourceTarget: 'blob'
-            sparkEnabled: true
+        ]
+        networkIsolationMode: 'AllowOnlyApprovedOutbound'
+        networkOutboundRules: {
+          rule1: {
+            type: 'PrivateEndpoint'
+            destination: {
+              serviceResourceId: nestedDependencies.outputs.storageAccountResourceId
+              subresourceTarget: 'blob'
+              sparkEnabled: true
+            }
+            category: 'UserDefined'
           }
-          category: 'UserDefined'
         }
       }
     }

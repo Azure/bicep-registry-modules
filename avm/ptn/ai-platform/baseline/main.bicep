@@ -17,31 +17,26 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@allowed([
-  'disabled'
-  'enabled'
-])
-@description('Optional. Whether the trust policy is enabled for the container registry.')
-param containerRegistryTrustPolicyStatus string = 'enabled'
+@description('Optional. Settings for the user-assigned managed identity.')
+param managedIdentitySettings managedIdentitySettingType
 
-@description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature.')
-param keyVaultEnablePurgeProtection bool = true
+@description('Optional. Settings for the Log Analytics workspace.')
+param logAnalyticsSettings logAnalyticsSettingType
 
-@description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true.')
-param storageAccountAllowSharedKeyAccess bool = false
+@description('Optional. Settings for the key vault.')
+param keyVaultSettings keyVaultSettingType
 
-@sys.description('Optional. Computes to create and attach to the workspace hub.')
-param workspaceComputes array = []
+@description('Optional. Settings for the storage account.')
+param storageAccountSettings storageAccountSettingType
 
-@allowed([
-  'AllowInternetOutbound'
-  'AllowOnlyApprovedOutbound'
-])
-@description('Optional. The network isolation mode of the workspace hub.')
-param workspaceNetworkIsolationMode string = 'AllowInternetOutbound'
+@description('Optional. Settings for the container registry.')
+param containerRegistrySettings containerRegistrySettingType
 
-@description('Optional. The outbound rules for the managed network of the workspace hub.')
-param workspaceNetworkOutboundRules workspaceNetworkOutboundRuleType
+@description('Optional. Settings for Application Insights.')
+param applicationInsightsSettings applicationInsightsSettingType
+
+@description('Optional. Settings for the AI Studio workspace hub.')
+param workspaceHubSettings workspaceHubSettingType
 
 // ============== //
 // Resources      //
@@ -67,13 +62,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: 'id-${name}'
+  name: managedIdentitySettings.?name ?? 'id-${name}'
   location: location
   tags: tags
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
-  name: 'log-${name}'
+  name: logAnalyticsSettings.?name ?? 'log-${name}'
   location: location
   tags: tags
 }
@@ -81,7 +76,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
 module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
-    name: 'kv-${name}'
+    name: keyVaultSettings.?name ?? 'kv-${name}'
     location: location
     enableTelemetry: enableTelemetry
     enableRbacAuthorization: true
@@ -93,7 +88,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
       bypass: 'AzureServices'
     }
     publicNetworkAccess: 'Disabled'
-    enablePurgeProtection: keyVaultEnablePurgeProtection
+    enablePurgeProtection: keyVaultSettings.?enablePurgeProtection ?? true
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
@@ -118,12 +113,12 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
 module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
-    name: 'st${name}'
+    name: storageAccountSettings.?name ?? 'st${name}'
     location: location
     enableTelemetry: enableTelemetry
     allowBlobPublicAccess: false
-    allowSharedKeyAccess: storageAccountAllowSharedKeyAccess
-    defaultToOAuthAuthentication: !storageAccountAllowSharedKeyAccess
+    allowSharedKeyAccess: storageAccountSettings.?allowSharedKeyAccess ?? false
+    defaultToOAuthAuthentication: !(storageAccountSettings.?allowSharedKeyAccess ?? false)
     publicNetworkAccess: 'Disabled'
     networkAcls: {
       defaultAction: 'Deny'
@@ -146,14 +141,14 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
-    name: 'cr${name}'
+    name: containerRegistrySettings.?name ?? 'cr${name}'
     acrSku: 'Premium'
     location: location
     enableTelemetry: enableTelemetry
     publicNetworkAccess: 'Disabled'
     networkRuleBypassOptions: 'AzureServices'
     zoneRedundancy: 'Enabled'
-    trustPolicyStatus: containerRegistryTrustPolicyStatus
+    trustPolicyStatus: containerRegistrySettings.?trustPolicyStatus ?? 'enabled'
     tags: tags
   }
 }
@@ -161,7 +156,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' =
 module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
   name: '${uniqueString(deployment().name, location)}-appi'
   params: {
-    name: 'appi-${name}'
+    name: applicationInsightsSettings.?name ?? 'appi-${name}'
     location: location
     kind: 'web'
     enableTelemetry: enableTelemetry
@@ -189,7 +184,7 @@ resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2
 module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.4.0' = {
   name: '${uniqueString(deployment().name, location)}-hub'
   params: {
-    name: 'hub-${name}'
+    name: workspaceHubSettings.?name ?? 'hub-${name}'
     sku: 'Standard'
     location: location
     enableTelemetry: enableTelemetry
@@ -207,10 +202,10 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.4.0
       ]
     }
     primaryUserAssignedIdentity: managedIdentity.id
-    computes: workspaceComputes
+    computes: workspaceHubSettings.?computes
     managedNetworkSettings: {
-      isolationMode: workspaceNetworkIsolationMode
-      outboundRules: workspaceNetworkOutboundRules
+      isolationMode: workspaceHubSettings.?networkIsolationMode ?? 'AllowInternetOutbound'
+      outboundRules: workspaceHubSettings.?networkOutboundRules
     }
     systemDatastoresAuthMode: 'identity'
     tags: tags
@@ -270,6 +265,58 @@ output workspaceHubName string = workspaceHub.outputs.name
 // Definitions      //
 // ================ //
 
+type managedIdentitySettingType = {
+  @description('Optional. The name of the user-assigned managed identity.')
+  name: string?
+}?
+
+type logAnalyticsSettingType = {
+  @description('Optional. The name of the Log Analytics workspace.')
+  name: string?
+}?
+
+type keyVaultSettingType = {
+  @description('Optional. The name of the key vault.')
+  name: string?
+
+  @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. Defaults to \'true\'.')
+  enablePurgeProtection: bool?
+}?
+
+type storageAccountSettingType = {
+  @description('Optional. The name of the storage account.')
+  name: string?
+
+  @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to \'false\'.')
+  allowSharedKeyAccess: bool?
+}?
+
+type containerRegistrySettingType = {
+  @description('Optional. The name of the container registry.')
+  name: string?
+
+  @description('Optional. Whether the trust policy is enabled for the container registry. Defaults to \'enabled\'.')
+  trustPolicyStatus: 'enabled' | 'disabled'?
+}?
+
+type applicationInsightsSettingType = {
+  @description('Optional. The name of the Application Insights resource.')
+  name: string?
+}?
+
+type workspaceHubSettingType = {
+  name: string?
+
+  @description('Optional. Computes to create and attach to the workspace hub.')
+  computes: array?
+
+  @description('Optional. The network isolation mode of the workspace hub. Defaults to \'AllowInternetOutbound\'.')
+  networkIsolationMode: 'AllowInternetOutbound' | 'AllowOnlyApprovedOutbound'?
+
+  @description('Optional. The outbound rules for the managed network of the workspace hub.')
+  networkOutboundRules: networkOutboundRuleType
+}?
+
 @discriminator('type')
 type OutboundRuleType = FqdnOutboundRuleType | PrivateEndpointOutboundRule | ServiceTagOutboundRule
 
@@ -325,7 +372,7 @@ type ServiceTagOutboundRule = {
 }
 
 @sys.description('Optional. Outbound rules for the managed network of the workspace hub.')
-type workspaceNetworkOutboundRuleType = {
+type networkOutboundRuleType = {
   @sys.description('Required. The outbound rule. The name of the rule is the object key.')
   *: OutboundRuleType
 }?
