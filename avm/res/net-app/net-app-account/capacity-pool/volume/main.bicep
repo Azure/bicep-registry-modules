@@ -51,7 +51,7 @@ param monthlyBackupsToKeep int
 param weeklyBackupsToKeep int
 
 @description('Optional. The name of the backup vault.')
-param backupVaultName string = 'vault1'
+param backupVaultName string = 'vault'
 
 @description('Optional. The location of the backup vault.')
 param backupVaultLocation string = resourceGroup().location

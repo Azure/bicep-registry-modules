@@ -165,7 +165,7 @@ The name of the backup vault.
 
 - Required: No
 - Type: string
-- Default: `'vault1'`
+- Default: `'vault'`
 
 ### Parameter: `coolAccess`
 

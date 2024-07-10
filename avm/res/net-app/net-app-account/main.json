@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "18126270431082136412"
+      "templateHash": "16353159304429799485"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5959885194653701706"
+              "templateHash": "2933361585897760330"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -755,17 +755,19 @@
                   "remoteVolumeRegion": "[if(contains(parameters('volumes')[copyIndex()], 'remoteVolumeRegion'), createObject('value', parameters('volumes')[copyIndex()].remoteVolumeRegion), createObject('value', ''))]",
                   "remoteVolumeResourceId": "[if(contains(parameters('volumes')[copyIndex()], 'remoteVolumeResourceId'), createObject('value', parameters('volumes')[copyIndex()].remoteVolumeResourceId), createObject('value', ''))]",
                   "replicationSchedule": "[if(contains(parameters('volumes')[copyIndex()], 'replicationSchedule'), createObject('value', parameters('volumes')[copyIndex()].replicationSchedule), createObject('value', ''))]",
-                  "backupPolicyName": "[if(contains(parameters('volumes')[copyIndex()], 'backupPolicyName'), createObject('value', parameters('volumes')[copyIndex()].backupPolicyName), createObject('value', ''))]",
+                  "backupPolicyName": {
+                    "value": "[parameters('volumes')[copyIndex()].backupPolicyName]"
+                  },
                   "backupPolicyLocation": "[if(contains(parameters('volumes')[copyIndex()], 'backupPolicyLocation'), createObject('value', parameters('volumes')[copyIndex()].backupPolicyLocation), createObject('value', ''))]",
                   "dailyBackupsToKeep": "[if(contains(parameters('volumes')[copyIndex()], 'dailyBackupsToKeep'), createObject('value', parameters('volumes')[copyIndex()].dailyBackupsToKeep), createObject('value', 0))]",
                   "backupEnabled": "[if(contains(parameters('volumes')[copyIndex()], 'backupEnabled'), createObject('value', parameters('volumes')[copyIndex()].backupEnabled), createObject('value', false()))]",
                   "monthlyBackupsToKeep": "[if(contains(parameters('volumes')[copyIndex()], 'monthlyBackupsToKeep'), createObject('value', parameters('volumes')[copyIndex()].monthlyBackupsToKeep), createObject('value', 0))]",
                   "weeklyBackupsToKeep": "[if(contains(parameters('volumes')[copyIndex()], 'weeklyBackupsToKeep'), createObject('value', parameters('volumes')[copyIndex()].weeklyBackupsToKeep), createObject('value', 0))]",
-                  "backupVaultName": "[if(contains(parameters('volumes')[copyIndex()], 'backupVaultName'), createObject('value', parameters('volumes')[copyIndex()].backupVaultName), createObject('value', ''))]",
+                  "backupVaultName": "[if(contains(parameters('volumes')[copyIndex()], 'backupVaultName'), createObject('value', parameters('volumes')[copyIndex()].backupVaultName), createObject('value', 'vault'))]",
                   "backupVaultLocation": "[if(contains(parameters('volumes')[copyIndex()], 'backupVaultLocation'), createObject('value', parameters('volumes')[copyIndex()].backupVaultLocation), createObject('value', ''))]",
-                  "backupName": "[if(contains(parameters('volumes')[copyIndex()], 'backupName'), createObject('value', parameters('volumes')[copyIndex()].backupName), createObject('value', ''))]",
+                  "backupName": "[if(contains(parameters('volumes')[copyIndex()], 'backupName'), createObject('value', parameters('volumes')[copyIndex()].backupName), createObject('value', 'backup'))]",
                   "backupLabel": "[if(contains(parameters('volumes')[copyIndex()], 'backupLabel'), createObject('value', parameters('volumes')[copyIndex()].backupLabel), createObject('value', ''))]",
-                  "snapshotName": "[if(contains(parameters('volumes')[copyIndex()], 'snapshotName'), createObject('value', parameters('volumes')[copyIndex()].snapshotName), createObject('value', ''))]",
+                  "snapshotName": "[if(contains(parameters('volumes')[copyIndex()], 'snapshotName'), createObject('value', parameters('volumes')[copyIndex()].snapshotName), createObject('value', 'snapshot'))]",
                   "useExistingSnapshot": "[if(contains(parameters('volumes')[copyIndex()], 'useExistingSnapshot'), createObject('value', parameters('volumes')[copyIndex()].useExistingSnapshot), createObject('value', false()))]",
                   "volumeResourceId": "[if(contains(parameters('volumes')[copyIndex()], 'volumeResourceId'), createObject('value', parameters('volumes')[copyIndex()].volumeResourceId), createObject('value', ''))]"
                 },
@@ -777,7 +779,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "5041704119070633558"
+                      "templateHash": "6186302804775003679"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -957,7 +959,7 @@
                     },
                     "backupVaultName": {
                       "type": "string",
-                      "defaultValue": "vault1",
+                      "defaultValue": "vault",
                       "metadata": {
                         "description": "Optional. The name of the backup vault."
                       }

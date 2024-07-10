@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5041704119070633558"
+      "templateHash": "6186302804775003679"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -186,7 +186,7 @@
     },
     "backupVaultName": {
       "type": "string",
-      "defaultValue": "vault1",
+      "defaultValue": "vault",
       "metadata": {
         "description": "Optional. The name of the backup vault."
       }

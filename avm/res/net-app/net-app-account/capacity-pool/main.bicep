@@ -111,17 +111,18 @@ module capacityPool_volumes 'volume/main.bicep' = [
       remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
       remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
       replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
-      backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : ''
+      //backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : 'backupPolicy'
+      backupPolicyName: volume.backupPolicyName!
       backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
       dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0
       backupEnabled: contains(volume, 'backupEnabled') ? volume.backupEnabled : false
       monthlyBackupsToKeep: contains(volume, 'monthlyBackupsToKeep') ? volume.monthlyBackupsToKeep : 0
       weeklyBackupsToKeep: contains(volume, 'weeklyBackupsToKeep') ? volume.weeklyBackupsToKeep : 0
-      backupVaultName: contains(volume, 'backupVaultName') ? volume.backupVaultName : ''
+      backupVaultName: contains(volume, 'backupVaultName') ? volume.backupVaultName : 'vault'
       backupVaultLocation: contains(volume, 'backupVaultLocation') ? volume.backupVaultLocation : ''
-      backupName: contains(volume, 'backupName') ? volume.backupName : ''
+      backupName: contains(volume, 'backupName') ? volume.backupName : 'backup'
       backupLabel: contains(volume, 'backupLabel') ? volume.backupLabel : ''
-      snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : ''
+      snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : 'snapshot'
       useExistingSnapshot: contains(volume, 'useExistingSnapshot') ? volume.useExistingSnapshot : false
       volumeResourceId: contains(volume, 'volumeResourceId') ? volume.volumeResourceId : ''
     }
