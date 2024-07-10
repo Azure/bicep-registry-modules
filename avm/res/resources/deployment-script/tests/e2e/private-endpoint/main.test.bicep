@@ -70,7 +70,4 @@ module testDeployment '../../../main.bicep' = {
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }
