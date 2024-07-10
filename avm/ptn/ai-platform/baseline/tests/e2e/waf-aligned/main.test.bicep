@@ -27,6 +27,13 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -34,13 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: resourceLocation
   }
-}
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
 }
 
 // ============== //
