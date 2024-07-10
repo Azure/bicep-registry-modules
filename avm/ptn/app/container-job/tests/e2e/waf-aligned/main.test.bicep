@@ -1,13 +1,15 @@
 targetScope = 'subscription'
 
+metadata name = 'Align to WAG'
+metadata description = 'This instance deploys the module with private networking.'
+
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-app-containerjob-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -22,6 +24,14 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 // Dependencies //
 // ============ //
+
+module dependencies './dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
+  scope: resourceGroup
+  params: {
+    lawName: 'dep${namePrefix}law${serviceShort}'
+  }
+}
 
 // General resources
 // =================
@@ -40,9 +50,10 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+      logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
     }
   }
 ]

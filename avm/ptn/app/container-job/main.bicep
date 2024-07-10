@@ -19,7 +19,7 @@ param enableTelemetry bool = true
 param nameSuffix string = 'cjob'
 
 @description('Optional. Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created.')
-param managedIdentityPrincipalId string?
+param managedIdentityName string?
 
 @sys.description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
 @metadata({
@@ -27,7 +27,7 @@ param managedIdentityPrincipalId string?
 })
 param logAnalyticsWorkspaceResourceId string
 
-@sys.description('Optional. The connection string for the Application Insights instance that will be used by the Job.')
+@sys.description('Optional. The connection string for the Application Insights instance that will be added to Key Vault as `applicationinsights-connection-string` and can be used by the Job.')
 @metadata({
   example: 'InstrumentationKey=<00000000-0000-0000-0000-000000000000>;IngestionEndpoint=https://germanywestcentral-1.in.applicationinsights.azure.com/;LiveEndpoint=https://germanywestcentral.livediagnostics.monitor.azure.com/;ApplicationId=<00000000-0000-0000-0000-000000000000>'
 })
@@ -38,14 +38,14 @@ param appInsightsConnectionString string?
 @description('Optional. Deploy resources in a virtual network and use it for private endpoints.')
 param deployInVnet bool = true
 
-@description('Conditional. The address prefix for the virtual network needs to be at least a /16. Required, if `deployInVnet` is `true`.')
+@description('Conditional. The address prefix for the virtual network needs to be at least a /16. Required if `deployInVnet` is `true`.')
 @metadata({ default: '10.50.0.0/16' })
 param addressPrefix string?
 
-@description('Conditional. A new private DNS Zone will be created. Optional, if `deployInVnet` is `true`.')
+@description('Conditional. A new private DNS Zone will be created. Required if `deployInVnet` is `true`.')
 param deployDnsZoneKeyVault bool = true
 
-@description('Conditional. A new private DNS Zone will be created. Optional, if `deployInVnet` is `true`.')
+@description('Conditional. A new private DNS Zone will be created. Required if `deployInVnet` is `true`.')
 param deployDnsZoneContainerRegistry bool = true
 
 // container related parameters
@@ -61,8 +61,37 @@ param overwriteExistingImage bool = false
 @metadata({ default: '0 0 * * * // every day at midnight' })
 param cronExpression string = '0 0 * * *'
 
+@description('Optional. The CPU resources that will be allocated to the Container Apps Job.')
+param cpu string = '1'
+
+@description('Optional. The memory resources that will be allocated to the Container Apps Job.')
+param memory string = '2Gi'
+
 @sys.description('Optional. The environment variables that will be added to the Container Apps Job.')
+@metadata({
+  example: '''[
+  {
+    name: 'ENV_VAR_NAME'
+    value: 'ENV_VAR_VALUE'
+  }
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    secretRef: 'applicationinsights-connection-string'
+  }
+]'''
+})
 param jobEnvironmentVariables array = []
+
+@description('Optional. Tags of the resource.')
+@metadata({
+  example: '''
+  {
+      "key1": "value1"
+      "key2": "value2"
+  }
+  '''
+})
+param tags object?
 
 // ============== //
 // Resources      //
@@ -87,19 +116,88 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+// provision required services
 module services 'modules/deploy_services.bicep' = {
   name: '${name}-services'
   params: {
     nameSuffix: nameSuffix
     resourceLocation: location
     resourceGroupName: resourceGroup().name
-    managedIdentityPrincipalId: managedIdentityPrincipalId
+    managedIdentityName: managedIdentityName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     appInsightsConnectionString: appInsightsConnectionString
     deployInVnet: deployInVnet
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
     deployDnsZoneContainerRegistry: deployDnsZoneContainerRegistry
+    tags: tags
+  }
+}
+
+// import the image to the ACR that will be used to run the job
+module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.1.0' = {
+  name: '${name}-import-image'
+  params: {
+    name: '${name}-import-image-${nameSuffix}'
+    location: location
+    acrName: services.outputs.registryName
+    image: containerImageSource
+    managedIdentities: { userAssignedResourcesIds: [services.outputs.userManagedIdentityResourceId] }
+    overwriteExistingImage: overwriteExistingImage
+    initialScriptDelay: 1
+    retryMax: 1
+    runOnce: false
+    storageAccountResourceId: (deployInVnet) ? services.outputs.storageAccountResourceId : null
+    subnetResourceIds: (deployInVnet) ? [services.outputs.subnetResourceId_deploymentScript] : []
+    tags: tags
+  }
+}
+
+module job 'br/public:avm/res/app/job:0.1.0' = {
+  name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
+  params: {
+    name: 'container-apps-job-${nameSuffix}'
+    tags: tags
+    environmentResourceId: services.outputs.managedEnvironmentId
+    workloadProfileName: services.outputs.workloadProfileName
+    location: location
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
+    }
+    secrets: {
+      secureList: appInsightsConnectionString != null
+        ? [
+            {
+              'applicationinsights-connection-string': {
+                keyVaultId: services.outputs.vaultResourceId
+                secretName: 'applicationinsights-connection-string'
+              }
+            }
+          ]
+        : []
+    }
+    triggerType: 'Schedule'
+    scheduleTriggerConfig: {
+      cronExpression: cronExpression
+    }
+    registries: [
+      {
+        identity: services.outputs.userManagedIdentityResourceId
+        server: services.outputs.registryLoginServer
+      }
+    ]
+    containers: [
+      {
+        name: 'job-${nameSuffix}'
+        image: containerImageSource
+        env: jobEnvironmentVariables
+        resources: {
+          cpu: cpu
+          memory: memory
+        }
+      }
+    ]
   }
 }
 
@@ -107,16 +205,20 @@ module services 'modules/deploy_services.bicep' = {
 // Outputs      //
 // ============ //
 
-// Add your outputs here
+@description('The resource ID of the container job.')
+output resourceId string = job.outputs.resourceId
 
-// @description('The resource ID of the resource.')
-// output resourceId string = <Resource>.id
-
-// @description('The name of the resource.')
-// output name string = <Resource>.name
+@description('The name of the container job.')
+output name string = job.name
 
 // @description('The location the resource was deployed into.')
 // output location string = <Resource>.location
+
+@description('The name of the Resource Group the resource was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('Conditional. The virtual network resourceId, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty.')
+output vnetResourceId string = services.outputs.vnetResourceId
 
 // ================ //
 // Definitions      //

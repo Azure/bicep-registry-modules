@@ -21,8 +21,8 @@ param deployDnsZoneKeyVault bool = true
 @description('Conditional. A new private DNS Zone will be created. Optional, if `deployInVnet` is `true`.')
 param deployDnsZoneContainerRegistry bool = true
 
-@description('Optional. Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created.')
-param managedIdentity string?
+@description('Optional. Pass the name to use an existing managed identity for importing the container image and run the job. If not provided, a new managed identity will be created.')
+param managedIdentityName string?
 
 // infrastructure parameters
 // -------------------------
@@ -49,8 +49,8 @@ var workloadSubnetAddressPrefix = cidrSubnet(addressPrefix, 23, 1) // the second
 
 // Networking resources
 // -----------------
-module nsg 'br/public:avm/res/network/network-security-group:0.1.3' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-nsg'
+module nsg 'br/public:avm/res/network/network-security-group:0.3.1' = if (deployInVnet) {
+  name: '${uniqueString(deployment().name, resourceLocation)}-nsg'
   params: {
     name: 'nsg-${nameSuffix}'
     location: resourceLocation
@@ -58,8 +58,8 @@ module nsg 'br/public:avm/res/network/network-security-group:0.1.3' = if (deploy
   }
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.1.5' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-vnet'
+module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (deployInVnet) {
+  name: '${uniqueString(deployment().name, resourceLocation)}-vnet'
   params: {
     name: 'vnet-${nameSuffix}'
     addressPrefixes: [
@@ -108,8 +108,8 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.5' = if (deployInVnet
   }
 }
 
-module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.2.5' = if (deployInVnet && deployDnsZoneKeyVault) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-dnsZoneKeyVault'
+module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (deployInVnet && deployDnsZoneKeyVault) {
+  name: '${uniqueString(deployment().name, resourceLocation)}-dnsZoneKeyVault'
   params: {
     name: 'privatelink.vaultcore.azure.net'
     tags: tags
@@ -126,10 +126,20 @@ resource dnsZoneKeyVault_existing 'Microsoft.Network/privateDnsZones@2020-06-01'
   name: 'privatelink.vaultcore.azure.net'
   location: resourceLocation
 }
-// TODO add vnet link like in the above
+resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneKeyVault) {
+  name: 'KeyVault-link-${nameSuffix}'
+  parent: dnsZoneKeyVault_existing
+  location: resourceLocation
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnet.outputs.resourceId
+    }
+  }
+}
 
-module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.2.5' = if (deployInVnet && deployDnsZoneContainerRegistry) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-dnsZoneContainerRegistry'
+module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (deployInVnet && deployDnsZoneContainerRegistry) {
+  name: '${uniqueString(deployment().name, resourceLocation)}-dnsZoneContainerRegistry'
   params: {
     name: 'privatelink.azurecr.io'
     tags: tags
@@ -146,10 +156,20 @@ resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@20
   name: 'privatelink.azurecr.io'
   location: resourceLocation
 }
-// TODO add vnet link like in the above
+resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneContainerRegistry) {
+  name: 'ContainerRegistry-link-${nameSuffix}'
+  parent: dnsZoneContainerRegistry_existing
+  location: resourceLocation
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnet.outputs.resourceId
+    }
+  }
+}
 
-module privateEndpointKeyVault 'br/public:avm/res/network/private-endpoint:0.4.1' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-privateEndpointKeyVault'
+module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.4.2' = if (deployInVnet) {
+  name: '${uniqueString(deployment().name, resourceLocation)}-privateEndpoint_KeyVault'
   params: {
     name: 'pe-KeyVault-${nameSuffix}'
     subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
@@ -173,20 +193,22 @@ module privateEndpointKeyVault 'br/public:avm/res/network/private-endpoint:0.4.1
     ]
   }
 }
-module privateEndpointContainerRegistry 'br/public:avm/res/network/private-endpoint:0.4.1' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-privateEndpointContainerRegistry'
+module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.4.2' = if (deployInVnet) {
+  name: '${uniqueString(deployment().name, resourceLocation)}-privateEndpoint_ContainerRegistry'
   params: {
     name: 'pe-ContainerRegistry-${nameSuffix}'
     subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
-    customNetworkInterfaceName: 'pe-ContainerRegistry-nic'
+    customNetworkInterfaceName: 'pe-ContainerRegistry-nic-${nameSuffix}'
     location: resourceLocation
     privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
-      dnsZoneContainerRegistry.outputs.resourceId
+      deployDnsZoneContainerRegistry
+        ? dnsZoneContainerRegistry_new.outputs.resourceId
+        : dnsZoneContainerRegistry_existing.id
     ]
     privateLinkServiceConnections: [
       {
-        name: 'pe-ContainerRegistry-connection'
+        name: 'pe-ContainerRegistry-connection-${nameSuffix}'
         properties: {
           privateLinkServiceId: registry.outputs.resourceId
           groupIds: [
@@ -200,58 +222,58 @@ module privateEndpointContainerRegistry 'br/public:avm/res/network/private-endpo
 
 // Identity resources
 // -----------------
-module jobsUserIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-jobsUserIdentity'
+module userIdentity_new 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (managedIdentityName == null) {
+  name: '${uniqueString(deployment().name, resourceLocation)}-userIdentity'
   params: {
     name: 'jobsUserIdentity-${nameSuffix}'
     location: resourceLocation
-    tags: union(tags, { 'used-by': 'container-apps-job, deployment-script, container-registry, storage-account' })
+    tags: union(tags, { 'used-by': 'container-job, deployment-script, container-registry, storage-account' })
   }
+}
+resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (managedIdentityName != null) {
+  name: managedIdentityName ?? 'dummy'
+  location: resourceLocation
 }
 
 // supporting resources
 // -----------------
-module vault 'br/public:avm/res/key-vault/vault:0.3.4' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-vault'
+module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-vault'
   params: {
-    name: uniqueString('kv', nameSuffix, resourceLocation)
+    name: 'kv${uniqueString(nameSuffix, resourceLocation)}' // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
     enablePurgeProtection: false
     enableRbacAuthorization: true
     location: resourceLocation
     sku: 'standard'
-    tags: union(tags, { 'used-by': 'container-apps-job' })
-    secrets: {
-      secureList: !empty(appInsightsConnectionString)
-        ? [
-            {
-              name: 'applicationinsights-connection-string'
-              value: appInsightsConnectionString
-            }
-          ]
-        : []
-    }
+    tags: union(tags, { 'used-by': 'container-job' })
+    secrets: !empty(appInsightsConnectionString ?? '')
+      ? [
+          {
+            name: 'applicationinsights-connection-string'
+            value: appInsightsConnectionString!
+          }
+        ]
+      : null
     roleAssignments: [
       for vaultRole in vaultRbacRoles: {
-        principalId: jobsUserIdentity.outputs.principalId
+        principalId: managedIdentityName != null
+          ? userIdentity_existing.properties.principalId
+          : userIdentity_new.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: vaultRole
       }
     ]
-    // networkAcls: {
-    //   bypass: 'AzureServices'
-    //   defaultAction: 'Allow'
-    // }
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: deployInVnet ? 'Disabled' : 'Enabled'
   }
 }
 
-module registry 'br/public:avm/res/container-registry/registry:0.1.0' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-registry'
+module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-registry'
   params: {
     #disable-next-line BCP334
     name: uniqueString('cr', nameSuffix, resourceLocation)
     location: resourceLocation
-    acrSku: 'Premium' // Private Endpoint needs Premium tier
+    acrSku: deployInVnet ? 'Premium' : 'Standard' // Private Endpoint needs Premium tier
     retentionPolicyDays: 30
     retentionPolicyStatus: 'enabled'
     softDeletePolicyDays: 7
@@ -260,7 +282,9 @@ module registry 'br/public:avm/res/container-registry/registry:0.1.0' = {
     acrAdminUserEnabled: false
     roleAssignments: [
       for registryRole in registryRbacRoles: {
-        principalId: jobsUserIdentity.outputs.principalId
+        principalId: managedIdentityName != null
+          ? userIdentity_existing.properties.principalId
+          : userIdentity_new.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: registryRole
       }
@@ -270,8 +294,8 @@ module registry 'br/public:avm/res/container-registry/registry:0.1.0' = {
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.8.3' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-storage'
+module storage 'br/public:avm/res/storage/storage-account:0.9.1' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-storage'
   params: {
     name: uniqueString('sa', nameSuffix, resourceLocation)
     location: resourceLocation
@@ -295,7 +319,9 @@ module storage 'br/public:avm/res/storage/storage-account:0.8.3' = {
     }
     roleAssignments: [
       for storageRole in storageAccountRbacRoles: {
-        principalId: jobsUserIdentity.outputs.principalId
+        principalId: managedIdentityName != null
+          ? userIdentity_existing.properties.principalId
+          : userIdentity_new.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: storageRole
       }
@@ -305,8 +331,8 @@ module storage 'br/public:avm/res/storage/storage-account:0.8.3' = {
 
 // Managed Environment
 // -------------------
-module managedEnvironment 'br/public:avm/res/app/managed-environment:0.4.2' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-${resourceGroupName}-managedEnvironment'
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.5.2' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${nameSuffix}'
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
@@ -316,7 +342,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.4.2' = {
     dockerBridgeCidr: '172.16.0.1/28'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
-    infrastructureResourceGroupName: '${resourceGroupName}-infrastructure'
+    infrastructureResourceGroupName: resourceGroupName
     infrastructureSubnetId: vnet.outputs.subnetResourceIds[2] // third subnet is the workload subnet
     workloadProfiles: [
       {
@@ -330,10 +356,16 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.4.2' = {
 }
 
 output vaultName string = vault.outputs.name
+output vaultResourceId string = vault.outputs.resourceId
 output registryName string = registry.outputs.name
+output registryLoginServer string = registry.outputs.loginServer
 output managedEnvironmentId string = managedEnvironment.outputs.resourceId
 output workloadProfileName string = workloadprofileName
-output userManagedIdentityResourceId string = jobsUserIdentity.outputs.resourceId
-output userManagedIdentityName string = jobsUserIdentity.outputs.name
-output subnetIds array = vnet.outputs.subnetResourceIds
-output storageAccountName string = storage.outputs.name
+output userManagedIdentityResourceId string = managedIdentityName == null
+  ? userIdentity_new.outputs.resourceId
+  : userIdentity_existing.id
+output userManagedIdentityName string = managedIdentityName == null ? userIdentity_new.name : userIdentity_existing.name
+output vnetResourceId string = vnet.outputs.resourceId
+// output subnetResourceId_privateLink string = vnet.outputs.subnetResourceIds[0]
+output subnetResourceId_deploymentScript string = vnet.outputs.subnetResourceIds[1]
+output storageAccountResourceId string = storage.outputs.resourceId
