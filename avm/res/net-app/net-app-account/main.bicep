@@ -240,7 +240,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = netAppAccount.location
 
 @description('The resource IDs of the volume created in the capacity pool.')
-output volumeResourceId string = netAppAccount_capacityPools[0].outputs.volumeResourceId
+output volumeResourceId string = (capacityPools != []) ? netAppAccount_capacityPools[0].outputs.volumeResourceId : ''
 
 // =============== //
 //   Definitions   //
