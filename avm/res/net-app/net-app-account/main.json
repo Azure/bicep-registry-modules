@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16353159304429799485"
+      "templateHash": "3198700958000368825"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "2933361585897760330"
+              "templateHash": "13334383153797238447"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -755,9 +755,7 @@
                   "remoteVolumeRegion": "[if(contains(parameters('volumes')[copyIndex()], 'remoteVolumeRegion'), createObject('value', parameters('volumes')[copyIndex()].remoteVolumeRegion), createObject('value', ''))]",
                   "remoteVolumeResourceId": "[if(contains(parameters('volumes')[copyIndex()], 'remoteVolumeResourceId'), createObject('value', parameters('volumes')[copyIndex()].remoteVolumeResourceId), createObject('value', ''))]",
                   "replicationSchedule": "[if(contains(parameters('volumes')[copyIndex()], 'replicationSchedule'), createObject('value', parameters('volumes')[copyIndex()].replicationSchedule), createObject('value', ''))]",
-                  "backupPolicyName": {
-                    "value": "[parameters('volumes')[copyIndex()].backupPolicyName]"
-                  },
+                  "backupPolicyName": "[if(contains(parameters('volumes')[copyIndex()], 'backupPolicyName'), createObject('value', parameters('volumes')[copyIndex()].backupPolicyName), createObject('value', 'backupPolicy'))]",
                   "backupPolicyLocation": "[if(contains(parameters('volumes')[copyIndex()], 'backupPolicyLocation'), createObject('value', parameters('volumes')[copyIndex()].backupPolicyLocation), createObject('value', ''))]",
                   "dailyBackupsToKeep": "[if(contains(parameters('volumes')[copyIndex()], 'dailyBackupsToKeep'), createObject('value', parameters('volumes')[copyIndex()].dailyBackupsToKeep), createObject('value', 0))]",
                   "backupEnabled": "[if(contains(parameters('volumes')[copyIndex()], 'backupEnabled'), createObject('value', parameters('volumes')[copyIndex()].backupEnabled), createObject('value', false()))]",
