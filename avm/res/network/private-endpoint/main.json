@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6936556431546043466"
+      "templateHash": "12384550528617388749"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -121,13 +121,13 @@
               "groupId": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
                 }
               },
               "memberName": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
                 }
               },
               "privateIPAddress": {
@@ -161,8 +161,11 @@
             "properties": {
               "groupIds": {
                 "type": "array",
+                "items": {
+                  "type": "string"
+                },
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
                 }
               },
               "privateLinkServiceId": {
@@ -202,8 +205,11 @@
             "properties": {
               "groupIds": {
                 "type": "array",
+                "items": {
+                  "type": "string"
+                },
                 "metadata": {
-                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
                 }
               },
               "privateLinkServiceId": {
@@ -389,7 +395,7 @@
     },
     "privateEndpoint": {
       "type": "Microsoft.Network/privateEndpoints",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -477,7 +483,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8661907155223407544"
+              "templateHash": "18351493760118120087"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
             "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -523,7 +529,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
               "properties": {
                 "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
@@ -587,14 +593,14 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+      "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
     },
     "groupId": {
       "type": "string",
       "metadata": {
         "description": "The group Id for the private endpoint Group."
       },
-      "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
+      "value": "[if(and(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds', 0), ''), if(and(not(empty(reference('privateEndpoint').privateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds', 0), ''), ''))]"
     }
   }
 }
