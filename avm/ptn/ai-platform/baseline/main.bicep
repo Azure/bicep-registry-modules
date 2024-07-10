@@ -236,6 +236,27 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the module was deployed to.')
 output location string = location
 
+@description('The resource ID of the application insights component.')
+output applicationInsightsResourceId string = applicationInsights.outputs.resourceId
+
+@description('The name of the application insights component.')
+output applicationInsightsName string = applicationInsights.outputs.name
+
+@description('The application ID of the application insights component.')
+output applicationInsightsApplicationId string = applicationInsights.outputs.applicationId
+
+@description('The instrumentation key of the application insights component.')
+output applicationInsightsInstrumentationKey string = applicationInsights.outputs.instrumentationKey
+
+@description('The connection string of the application insights component.')
+output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString
+
+@description('The resource ID of the log analytics workspace.')
+output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
+
+@description('The name of the log analytics workspace.')
+output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name
+
 @description('The resource ID of the user assigned managed identity.')
 output managedIdentityResourceId string = managedIdentity.id
 
