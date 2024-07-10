@@ -92,6 +92,10 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+      }
+      {
+        principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Key Vault Administrator'
       }
     ]
@@ -127,6 +131,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+      }
+      {
+        principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
       {
@@ -149,6 +157,16 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' =
     networkRuleBypassOptions: 'AzureServices'
     zoneRedundancy: 'Enabled'
     trustPolicyStatus: containerRegistrySettings.?trustPolicyStatus ?? 'enabled'
+    roleAssignments: [
+      {
+        principalId: managedIdentity.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+      }
+      {
+        principalId: managedIdentity.properties.principalId
+        roleDefinitionIdOrName: 'AcrPull'
+      }
+    ]
     tags: tags
   }
 }
@@ -161,24 +179,14 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
     kind: 'web'
     enableTelemetry: enableTelemetry
     workspaceResourceId: logAnalyticsWorkspace.id
+    roleAssignments: [
+      {
+        principalId: managedIdentity.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+      }
+    ]
     tags: tags
   }
-}
-
-resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, name)
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
-    )
-    principalId: managedIdentity.properties.principalId
-  }
-
-  // Wait some time before creating the role assignment
-  dependsOn: [
-    keyVault
-  ]
 }
 
 module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.4.0' = {
@@ -208,6 +216,12 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.4.0
       outboundRules: workspaceHubSettings.?networkOutboundRules
     }
     systemDatastoresAuthMode: 'identity'
+    roleAssignments: [
+      {
+        principalId: managedIdentity.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+      }
+    ]
     tags: tags
   }
 }
