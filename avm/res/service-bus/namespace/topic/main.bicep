@@ -3,13 +3,13 @@ metadata description = 'This module deploys a Service Bus Namespace Topic.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment.')
-@minLength(6)
-@maxLength(50)
+@minLength(1)
+@maxLength(260)
 param namespaceName string
 
 @description('Required. Name of the Service Bus Topic.')
-@minLength(6)
-@maxLength(50)
+@minLength(1)
+@maxLength(260)
 param name string
 
 @description('Optional. The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024.')

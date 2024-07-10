@@ -1061,8 +1061,8 @@
           "type": {
             "value": "[parameters('integrationRuntimes')[copyIndex()].type]"
           },
-          "interagrationRuntimeCustomDescription": {
-            "value": "[coalesce(tryGet(parameters('integrationRuntimes')[copyIndex()], 'interagrationRuntimeCustomDescription'), 'Managed Integration Runtime created by avm-res-datafactory-factories')]"
+          "integrationRuntimeCustomDescription": {
+            "value": "[coalesce(tryGet(parameters('integrationRuntimes')[copyIndex()], 'integrationRuntimeCustomDescription'), 'Managed Integration Runtime created by avm-res-datafactory-factories')]"
           },
           "managedVirtualNetworkName": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'managedVirtualNetworkName'), createObject('value', parameters('integrationRuntimes')[copyIndex()].managedVirtualNetworkName), createObject('value', ''))]",
           "typeProperties": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'typeProperties'), createObject('value', parameters('integrationRuntimes')[copyIndex()].typeProperties), createObject('value', createObject()))]"
@@ -1117,7 +1117,7 @@
                 "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
               }
             },
-            "interagrationRuntimeCustomDescription": {
+            "integrationRuntimeCustomDescription": {
               "type": "string",
               "defaultValue": "Managed Integration Runtime created by avm-res-datafactory-factories",
               "metadata": {
@@ -1136,7 +1136,7 @@
               "type": "Microsoft.DataFactory/factories/integrationRuntimes",
               "apiVersion": "2018-06-01",
               "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
-              "properties": "[if(equals(parameters('type'), 'Managed'), createObject('description', parameters('interagrationRuntimeCustomDescription'), 'type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+              "properties": "[if(equals(parameters('type'), 'Managed'), createObject('description', parameters('integrationRuntimeCustomDescription'), 'type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
             }
           ],
           "outputs": {

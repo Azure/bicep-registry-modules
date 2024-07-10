@@ -1093,7 +1093,7 @@
   "parameters": {
     "name": {
       "type": "string",
-      "maxLength": 50,
+      "maxLength": 260,
       "metadata": {
         "description": "Required. Name of the Service Bus Namespace."
       }
@@ -1478,8 +1478,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1582,8 +1582,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1687,8 +1687,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1792,8 +1792,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Network Rule Set. Required if the template is used in a standalone deployment."
               }
@@ -2085,16 +2085,16 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Required. Name of the Service Bus Queue."
               }
@@ -2785,16 +2785,16 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Required. Name of the Service Bus Topic."
               }
