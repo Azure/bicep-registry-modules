@@ -21,7 +21,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -31,7 +31,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
     tenantId: tenant().tenantId
     enablePurgeProtection: true // Required for encryption to work
-    enableSoftDelete: true
     softDeleteRetentionInDays: 7
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
@@ -40,7 +39,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-07-01' = {
+  resource key 'keys@2023-02-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -66,7 +65,7 @@ resource geoBackupManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentit
   location: geoBackupLocation
 }
 
-resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
   name: geoBackupKeyVaultName
   location: geoBackupLocation
   properties: {
@@ -76,7 +75,6 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
     tenantId: tenant().tenantId
     enablePurgeProtection: true // Required for encryption to work
-    enableSoftDelete: true
     softDeleteRetentionInDays: 7
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
@@ -85,7 +83,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-07-01' = {
+  resource key 'keys@2023-02-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
