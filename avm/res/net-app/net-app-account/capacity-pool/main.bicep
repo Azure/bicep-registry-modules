@@ -161,7 +161,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = capacityPool.location
 
 @description('The resource IDs of the volume created in the capacity pool.')
-output volumeResourceId string = capacityPool_volumes[0].outputs.resourceId
+output volumeResourceId string = (volumes != []) ? capacityPool_volumes[0].outputs.resourceId : ''
 
 // =============== //
 //   Definitions   //
