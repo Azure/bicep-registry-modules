@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2408654119117467263"
+      "templateHash": "16939519453853251293"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -1284,7 +1284,7 @@
       "metadata": {
         "description": "The resource IDs of the volume created in the capacity pool."
       },
-      "value": "[reference(format('netAppAccount_capacityPools[{0}]', 0)).outputs.volumeResourceId.value]"
+      "value": "[if(not(equals(parameters('capacityPools'), createArray())), reference(format('netAppAccount_capacityPools[{0}]', 0)).outputs.volumeResourceId.value, '')]"
     }
   }
 }
