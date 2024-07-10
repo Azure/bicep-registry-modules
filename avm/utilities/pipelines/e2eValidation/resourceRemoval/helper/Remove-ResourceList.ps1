@@ -134,7 +134,7 @@ function Remove-ResourceList {
             break
         }
         $remainingCount = (($resourcesToRetryRemoval.resourceId + @() + $resourcesToRetryPostRemoval.resourceId) | Sort-Object -Unique).Count # check how many unique IDs remain
-        Write-Verbose ('Retrying removal or post-removal of remaining [{0}] resources. Waiting [{2}] seconds. Round [{3}|{4}]' -f $remainingCount, $removalRetryInterval, $removalRetryCount, $removalRetryLimit)
+        Write-Verbose ('Retrying removal or post-removal of remaining [{0}] resources. Waiting [{1}] seconds. Round [{2}|{3}]' -f $remainingCount, $removalRetryInterval, $removalRetryCount, $removalRetryLimit)
         $removalRetryCount++
         Start-Sleep $removalRetryInterval
     } while ($removalRetryCount -le $removalRetryLimit)
