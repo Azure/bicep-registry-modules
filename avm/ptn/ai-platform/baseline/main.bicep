@@ -280,7 +280,7 @@ type FqdnOutboundRuleType = {
   @sys.description('Required. Fully Qualified Domain Name to allow for outbound traffic.')
   destination: string
 
-  @sys.description('')
+  @sys.description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
@@ -300,7 +300,7 @@ type PrivateEndpointOutboundRule = {
     subresourceTarget: string
   }
 
-  @sys.description('')
+  @sys.description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
@@ -320,7 +320,7 @@ type ServiceTagOutboundRule = {
     serviceTag: string
   }
 
-  @sys.description('')
+  @sys.description('Optional. Category of a managed network Outbound Rule of the workspace hub.')
   category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
 }
 
