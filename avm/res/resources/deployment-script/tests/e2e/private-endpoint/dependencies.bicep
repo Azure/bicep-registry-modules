@@ -10,6 +10,7 @@ param virtualNetworkName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
+@description('Required. The name of the private endpoint to create.')
 param privateEndpointName string
 
 var addressPrefix = '10.0.0.0/16'
@@ -44,7 +45,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
   kind: 'StorageV2'
   properties: {
     publicNetworkAccess: 'Disabled'
-    // allowSharedKeyAccess: true // Cannot be set to false when using a private network for the deployment script
+    allowSharedKeyAccess: true // Cannot be set to false when using a private network for the deployment script
     networkAcls: {
       defaultAction: 'Deny'
       bypass: 'AzureServices'
