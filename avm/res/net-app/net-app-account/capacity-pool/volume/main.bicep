@@ -15,7 +15,7 @@ param coolAccess bool
 param coolnessPeriod int
 
 @description('Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).')
-param coolAccessRetrievalPolicy string = 'None'
+param coolAccessRetrievalPolicy string = 'Default'
 
 @description('Optional. Availability Zone.')
 param zones string[]

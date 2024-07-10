@@ -180,7 +180,7 @@ determines the data retrieval behavior from the cool tier to standard storage ba
 
 - Required: No
 - Type: string
-- Default: `'None'`
+- Default: `'Default'`
 
 ### Parameter: `coolnessPeriod`
 

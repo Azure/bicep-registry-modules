@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13334383153797238447"
+      "templateHash": "17304854614770516158"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -277,7 +277,7 @@
           "zones": "[if(contains(parameters('volumes')[copyIndex()], 'zones'), createObject('value', parameters('volumes')[copyIndex()].zones), createObject('value', createArray()))]",
           "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
           "coolAccess": "[if(contains(parameters('volumes')[copyIndex()], 'coolAccess'), createObject('value', parameters('volumes')[copyIndex()].coolAccess), createObject('value', false()))]",
-          "coolAccessRetrievalPolicy": "[if(contains(parameters('volumes')[copyIndex()], 'coolAccessRetrievalPolicy'), createObject('value', parameters('volumes')[copyIndex()].coolAccessRetrievalPolicy), createObject('value', 'None'))]",
+          "coolAccessRetrievalPolicy": "[if(contains(parameters('volumes')[copyIndex()], 'coolAccessRetrievalPolicy'), createObject('value', parameters('volumes')[copyIndex()].coolAccessRetrievalPolicy), createObject('value', 'Default'))]",
           "coolnessPeriod": "[if(contains(parameters('volumes')[copyIndex()], 'coolnessPeriod'), createObject('value', parameters('volumes')[copyIndex()].coolnessPeriod), createObject('value', 0))]",
           "endpointType": "[if(contains(parameters('volumes')[copyIndex()], 'endpointType'), createObject('value', parameters('volumes')[copyIndex()].endpointType), createObject('value', ''))]",
           "remoteVolumeRegion": "[if(contains(parameters('volumes')[copyIndex()], 'remoteVolumeRegion'), createObject('value', parameters('volumes')[copyIndex()].remoteVolumeRegion), createObject('value', ''))]",
@@ -305,7 +305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "6186302804775003679"
+              "templateHash": "8818431800962559009"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -406,7 +406,7 @@
             },
             "coolAccessRetrievalPolicy": {
               "type": "string",
-              "defaultValue": "None",
+              "defaultValue": "Default",
               "metadata": {
                 "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
               }

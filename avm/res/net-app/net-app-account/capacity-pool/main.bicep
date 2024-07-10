@@ -105,14 +105,13 @@ module capacityPool_volumes 'volume/main.bicep' = [
       coolAccess: contains(volume, 'coolAccess') ? volume.coolAccess : false
       coolAccessRetrievalPolicy: contains(volume, 'coolAccessRetrievalPolicy')
         ? volume.coolAccessRetrievalPolicy
-        : 'None'
+        : 'Default'
       coolnessPeriod: contains(volume, 'coolnessPeriod') ? volume.coolnessPeriod : 0
       endpointType: contains(volume, 'endpointType') ? volume.endpointType : ''
       remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
       remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
       replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
       backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : 'backupPolicy'
-      //backupPolicyName: volume.backupPolicyName!
       backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
       dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0
       backupEnabled: contains(volume, 'backupEnabled') ? volume.backupEnabled : false

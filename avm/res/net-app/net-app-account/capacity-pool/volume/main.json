@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6186302804775003679"
+      "templateHash": "8818431800962559009"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -107,7 +107,7 @@
     },
     "coolAccessRetrievalPolicy": {
       "type": "string",
-      "defaultValue": "None",
+      "defaultValue": "Default",
       "metadata": {
         "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
       }
