@@ -41,8 +41,20 @@ function Set-AvmGitHubPrLabels {
     $allTeamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $PrUrl.Replace('api.', '').Replace('repos/', ''))
     $teamNames = [array]($allTeamNames | Where-Object { $_ -ne 'bicep-admins' -and $_ -ne 'avm-core-team-technical-bicep' -and $_ -ne 'avm-module-reviewers-bicep' })
 
-    # check for orphanded module
-    if ($teamMembers.Count -eq 1) {
+    # core team is already assigned, no or more than one module reviewer team is assigned
+    if ($allTeamNames.Contains('avm-core-team-technical-bicep') -or $teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
+        gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
+    } else {
+        $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $teamNames[0])
+
+        # no members in module team or only one and that user submitted the PR
+        if (($teamMembers.Count -eq 0) -or ($teamMembers.Count -eq 1 -and $teamMembers[0] -eq $pr.author.login)) {
+            gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
+        } else {
+            gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
+        }
+
+        # check for orphanded module
         $moduleName = $teamMembers[0]
         $moduleIndex = $moduleName.StartsWith('avm-res') ? 'Bicep-Resource' : 'Bicep-Pattern'
         # get CSV data
@@ -56,20 +68,6 @@ function Set-AvmGitHubPrLabels {
 
         if ($module.ModuleStatus -eq 'Orphaned :eyes:') {
             gh pr edit $pr.url --add-label 'Status: Module Orphaned :eyes:' --repo $Repo
-        }
-    }
-
-    # core team is already assigned, no or more than one module reviewer team is assigned
-    if ($allTeamNames.Contains('avm-core-team-technical-bicep') -or $teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
-        gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
-    } else {
-        $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $teamNames[0])
-
-        # no members in module team or only one and that user submitted the PR
-        if (($teamMembers.Count -eq 0) -or ($teamMembers.Count -eq 1 -and $teamMembers[0] -eq $pr.author.login)) {
-            gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
-        } else {
-            gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
         }
     }
 }
