@@ -9,13 +9,14 @@ This module deploys a container to run as a job.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/jobs) |
+| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/jobs) |
 | `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
@@ -69,11 +70,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/container-job:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Align to WAG](#example-2-align-to-wag)
+- [Align to WAF](#example-2-align-to-waf)
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the minimum set of required parameters in a consumption plan.
 
 
 <details>
@@ -131,9 +132,9 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 </details>
 <p>
 
-### Example 2: _Align to WAG_
+### Example 2: _Align to WAF_
 
-This instance deploys the module with private networking.
+This instance deploys the module with private networking and a workload plan.
 
 
 <details>
@@ -149,7 +150,20 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjwaf001'
     // Non-required parameters
+    appInsightsConnectionString: '<appInsightsConnectionString>'
+    deployInVnet: true
     location: '<location>'
+    managedIdentityName: '<managedIdentityName>'
+    overwriteExistingImage: true
+    workloadProfileName: 'CAW01'
+    workloadProfiles: [
+      {
+        maximumCount: 1
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
   }
 }
 ```
@@ -177,8 +191,33 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
       "value": "acjwaf001"
     },
     // Non-required parameters
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
+    "deployInVnet": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentityName": {
+      "value": "<managedIdentityName>"
+    },
+    "overwriteExistingImage": {
+      "value": true
+    },
+    "workloadProfileName": {
+      "value": "CAW01"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 1,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
     }
   }
 }
@@ -222,6 +261,8 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | [`nameSuffix`](#parameter-namesuffix) | string | The suffix will be used for newly created resources. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The flag that indicates whether the existing image in the Container Registry should be overwritten. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
+| [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. |
 
 ### Parameter: `containerImageSource`
 
@@ -291,7 +332,7 @@ Deploy resources in a virtual network and use it for private endpoints.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -383,6 +424,32 @@ Tags of the resource.
   }
   ```
 
+### Parameter: `workloadProfileName`
+
+ The name of the workload profile to use. Leave empty to use a consumption based profile.
+
+- Required: No
+- Type: string
+- Example: `CAW01`
+
+### Parameter: `workloadProfiles`
+
+Workload profiles for the managed environment.
+
+- Required: No
+- Type: array
+- Example:
+  ```Bicep
+  [[
+      {
+        workloadProfileType: 'D4'
+        name: 'CAW01'
+        minimumCount: 0
+        maximumCount: 1
+      }
+    ]
+  ```
+
 
 ## Outputs
 
@@ -400,7 +467,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/deployment-script/import-image-to-acr:0.1.0` | Remote reference |
-| `br/public:avm/res/app/job:0.1.0` | Remote reference |
+| `br/public:avm/res/app/job:0.2.2` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.5.2` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.3.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.2` | Remote reference |
@@ -409,7 +476,18 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.3.1` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.4.2` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.1.8` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.11.0` | Remote reference |
+
+## Notes
+
+### TODO
+
+Tests for:
+
+- waf-aligned
+- without networking
+- bringing a managed identity
+- maybe consumption plan
 
 ## Data Collection
 

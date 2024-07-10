@@ -36,7 +36,7 @@ param appInsightsConnectionString string?
 // network related parameters
 // -------------------------
 @description('Optional. Deploy resources in a virtual network and use it for private endpoints.')
-param deployInVnet bool = true
+param deployInVnet bool = false
 
 @description('Conditional. The address prefix for the virtual network needs to be at least a /16. Required if `deployInVnet` is `true`.')
 @metadata({ default: '10.50.0.0/16' })
@@ -81,6 +81,23 @@ param memory string = '2Gi'
 ]'''
 })
 param jobEnvironmentVariables array = []
+
+@description('Optional. Workload profiles for the managed environment.')
+@metadata({
+  example: '''[
+    {
+      workloadProfileType: 'D4'
+      name: 'CAW01'
+      minimumCount: 0
+      maximumCount: 1
+    }
+  ]'''
+})
+param workloadProfiles array?
+
+@description('Optional.  The name of the workload profile to use. Leave empty to use a consumption based profile.')
+@metadata({ example: 'CAW01' })
+param workloadProfileName string?
 
 @description('Optional. Tags of the resource.')
 @metadata({
@@ -130,6 +147,7 @@ module services 'modules/deploy_services.bicep' = {
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
     deployDnsZoneContainerRegistry: deployDnsZoneContainerRegistry
+    workloadProfiles: workloadProfiles ?? []
     tags: tags
   }
 }
@@ -153,30 +171,30 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.1
   }
 }
 
-module job 'br/public:avm/res/app/job:0.1.0' = {
+module job 'br/public:avm/res/app/job:0.2.2' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
     name: 'container-apps-job-${nameSuffix}'
     tags: tags
     environmentResourceId: services.outputs.managedEnvironmentId
-    workloadProfileName: services.outputs.workloadProfileName
+    workloadProfileName: workloadProfileName
     location: location
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
     }
-    secrets: {
-      secureList: appInsightsConnectionString != null
+    secrets: union(
+      !empty(services.outputs.keyVaultAppInsightsConnectionStringUrl)
         ? [
             {
-              'applicationinsights-connection-string': {
-                keyVaultId: services.outputs.vaultResourceId
-                secretName: 'applicationinsights-connection-string'
-              }
+              name: 'mysecret'
+              identity: services.outputs.userManagedIdentityResourceId
+              keyVaultUrl: 'https://${services.outputs.vaultName}${environment().suffixes.keyvaultDns}/secrets/applicationinsights-connection-string'
             }
           ]
-        : []
-    }
+        : [],
+      []
+    )
     triggerType: 'Schedule'
     scheduleTriggerConfig: {
       cronExpression: cronExpression

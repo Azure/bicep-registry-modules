@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Align to WAG'
-metadata description = 'This instance deploys the module with private networking.'
+metadata name = 'Align to WAF'
+metadata description = 'This instance deploys the module with private networking and a workload plan.'
 
 // ========== //
 // Parameters //
@@ -30,6 +30,8 @@ module dependencies './dependencies.bicep' = {
   scope: resourceGroup
   params: {
     lawName: 'dep${namePrefix}law${serviceShort}'
+    appInsightsName: 'dep${namePrefix}ai${serviceShort}'
+    userIdentityName: 'dep${namePrefix}uid${serviceShort}'
   }
 }
 
@@ -54,6 +56,20 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
+      // needed for idempotency testing
+      overwriteExistingImage: true
+      appInsightsConnectionString: dependencies.outputs.appInsightsConnectionString
+      deployInVnet: true
+      workloadProfiles: [
+        {
+          workloadProfileType: 'D4'
+          name: 'CAW01'
+          minimumCount: 0
+          maximumCount: 1
+        }
+      ]
+      workloadProfileName: 'CAW01'
+      managedIdentityName: dependencies.outputs.userIdentityName
     }
   }
 ]

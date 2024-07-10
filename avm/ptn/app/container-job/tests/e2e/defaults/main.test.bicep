@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters in a consumption plan.'
 
 // ========== //
 // Parameters //
@@ -53,7 +53,8 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
-      overwriteExistingImage: true // needed for idempotency testing
+      // needed for idempotency testing
+      overwriteExistingImage: true
     }
   }
 ]

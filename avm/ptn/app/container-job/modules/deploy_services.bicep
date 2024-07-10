@@ -26,14 +26,24 @@ param managedIdentityName string?
 
 // infrastructure parameters
 // -------------------------
-@description('Optional. Tags of the resource.')
-param tags object = {}
-
 @sys.description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
 param logAnalyticsWorkspaceResourceId string
 
 @sys.description('Optional. The connection string for the Application Insights instance that will be used by the Job.')
 param appInsightsConnectionString string?
+
+// workload parameters
+// -------------------------
+
+@description('Required. Workload profiles for the managed environment.')
+param workloadProfiles array
+
+@description('Optional. Tags of the resource.')
+param tags object = {}
+
+// -----------------
+// variables
+// -----------------
 
 // Rbac roles that will be granted to the user-assigned identity
 var vaultRbacRoles = ['4633458b-17de-408a-b874-0445c86b69e6'] // Key Vault Secrets User
@@ -41,7 +51,6 @@ var registryRbacRoles = ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-
 var storageAccountRbacRoles = [
   '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
 ]
-var workloadprofileName = 'CAW01'
 // network related variables
 var privateEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 0) // the first /24 subnet in the address space
 var serviceEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 1) // the second /24 subnet in the address space
@@ -294,7 +303,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module storage 'br/public:avm/res/storage/storage-account:0.11.0' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-storage'
   params: {
     name: uniqueString('sa', nameSuffix, resourceLocation)
@@ -342,30 +351,25 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.5.2' = {
     dockerBridgeCidr: '172.16.0.1/28'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
-    infrastructureResourceGroupName: resourceGroupName
+    infrastructureResourceGroupName: '${resourceGroupName}-infrastructure'
     infrastructureSubnetId: vnet.outputs.subnetResourceIds[2] // third subnet is the workload subnet
-    workloadProfiles: [
-      {
-        workloadProfileType: 'D4'
-        name: workloadprofileName
-        minimumCount: 0
-        maximumCount: 1
-      }
-    ]
+    workloadProfiles: workloadProfiles
   }
 }
 
 output vaultName string = vault.outputs.name
-output vaultResourceId string = vault.outputs.resourceId
+// output vaultResourceId string = vault.outputs.resourceId
+output keyVaultAppInsightsConnectionStringUrl string = !empty(appInsightsConnectionString ?? '')
+  ? '${vault.outputs.uri}/secrets/applicationinsights-connection-string' // TODO check URI
+  : ''
 output registryName string = registry.outputs.name
 output registryLoginServer string = registry.outputs.loginServer
 output managedEnvironmentId string = managedEnvironment.outputs.resourceId
-output workloadProfileName string = workloadprofileName
+// output workloadProfileName string = workloadProfiles[0].name
 output userManagedIdentityResourceId string = managedIdentityName == null
   ? userIdentity_new.outputs.resourceId
   : userIdentity_existing.id
 output userManagedIdentityName string = managedIdentityName == null ? userIdentity_new.name : userIdentity_existing.name
 output vnetResourceId string = vnet.outputs.resourceId
-// output subnetResourceId_privateLink string = vnet.outputs.subnetResourceIds[0]
 output subnetResourceId_deploymentScript string = vnet.outputs.subnetResourceIds[1]
 output storageAccountResourceId string = storage.outputs.resourceId
