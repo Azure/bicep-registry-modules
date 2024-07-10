@@ -319,6 +319,7 @@ type applicationInsightsSettingType = {
 }?
 
 type workspaceHubSettingType = {
+  @description('Optional. The name of the AI Studio workspace hub.')
   name: string?
 
   @description('Optional. Computes to create and attach to the workspace hub.')
