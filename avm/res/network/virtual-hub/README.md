@@ -20,6 +20,7 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 | `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
 | `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs/routingIntent` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualHubs/routingIntent) |
 
 ## Usage examples
 
@@ -112,6 +113,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         name: 'routeTable1'
       }
     ]
+    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
@@ -133,11 +135,13 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       }
     ]
+    internetToFirewall: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    privateToFirewall: true
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -177,6 +181,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
+    "hubRoutingPreference": {
+      "value": "ASPath"
+    },
     "hubVirtualNetworkConnections": {
       "value": [
         {
@@ -200,6 +207,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
+    "internetToFirewall": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -208,6 +218,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "privateToFirewall": {
+      "value": true
     },
     "tags": {
       "value": {
@@ -246,6 +259,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         name: 'routeTable1'
       }
     ]
+    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
@@ -267,11 +281,13 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       }
     ]
+    internetToFirewall: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    privateToFirewall: false
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -311,6 +327,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
+    "hubRoutingPreference": {
+      "value": "ASPath"
+    },
     "hubVirtualNetworkConnections": {
       "value": [
         {
@@ -334,6 +353,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
+    "internetToFirewall": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -342,6 +364,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "privateToFirewall": {
+      "value": false
     },
     "tags": {
       "value": {
@@ -379,10 +404,12 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | [`hubRouteTables`](#parameter-hubroutetables) | array | Route tables to create for the virtual hub. |
 | [`hubRoutingPreference`](#parameter-hubroutingpreference) | string | The preferred routing preference for this virtual hub. |
 | [`hubVirtualNetworkConnections`](#parameter-hubvirtualnetworkconnections) | array | Virtual network connections to create for the virtual hub. |
+| [`internetToFirewall`](#parameter-internettofirewall) | bool | Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2SVpnGatewayId`](#parameter-p2svpngatewayid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
+| [`privateToFirewall`](#parameter-privatetofirewall) | bool | Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true. |
 | [`routeTableRoutes`](#parameter-routetableroutes) | array | VirtualHub route tables. |
 | [`securityPartnerProviderId`](#parameter-securitypartnerproviderid) | string | ID of the Security Partner Provider to link to. |
 | [`securityProviderName`](#parameter-securityprovidername) | string | The Security Provider name. |
@@ -479,6 +506,14 @@ Virtual network connections to create for the virtual hub.
 - Type: array
 - Default: `[]`
 
+### Parameter: `internetToFirewall`
+
+Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -547,6 +582,14 @@ The preferred routing gateway types.
     'VpnGateway'
   ]
   ```
+
+### Parameter: `privateToFirewall`
+
+Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `routeTableRoutes`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13594058281073706360"
+      "templateHash": "17375901708019881155"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -186,6 +186,20 @@
         "description": "Optional. Resource ID of the VPN Gateway to link to."
       }
     },
+    "internetToFirewall": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true."
+      }
+    },
+    "privateToFirewall": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true."
+      }
+    },
     "hubRouteTables": {
       "type": "array",
       "defaultValue": [],
@@ -271,6 +285,85 @@
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "virtualHub"
+      ]
+    },
+    "virtualHub_routingIntent": {
+      "condition": "[or(parameters('internetToFirewall'), parameters('privateToFirewall'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-routingIntent', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualHubName": {
+            "value": "[parameters('name')]"
+          },
+          "azureFirewallResourceId": {
+            "value": "[parameters('azureFirewallResourceId')]"
+          },
+          "internetToFirewall": {
+            "value": "[parameters('internetToFirewall')]"
+          },
+          "privateToFirewall": {
+            "value": "[parameters('privateToFirewall')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "9260557794017749375"
+            },
+            "name": "Virtual Hub Routing Intent",
+            "description": "This module configures Routing Intent for a Virtual Hub.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "azureFirewallResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Hub firewall Resource ID "
+              }
+            },
+            "virtualHubName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Virtual Hub"
+              }
+            },
+            "privateToFirewall": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Forward Private traffic to the Azure firewall (RFC1918)"
+              }
+            },
+            "internetToFirewall": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. orward Internet traffic to the Azure firewall (0.0.0.0/0)"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualHubs/routingIntent",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}', parameters('virtualHubName'), 'defaultRouteTable')]",
+              "properties": {
+                "routingPolicies": "[if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', 'PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId')), createObject('name', 'PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), false())), createArray(createObject('name', 'PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), false()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', 'PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), null())))]"
+              }
+            }
+          ]
+        }
       },
       "dependsOn": [
         "virtualHub"

@@ -85,6 +85,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      hubRoutingPreference: 'ASPath'
+      internetToFirewall: true
+      privateToFirewall: false
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
