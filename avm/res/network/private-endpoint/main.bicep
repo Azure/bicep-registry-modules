@@ -100,7 +100,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -174,9 +174,11 @@ output name string = privateEndpoint.name
 output location string = privateEndpoint.location
 
 @description('The group Id for the private endpoint Group.')
-output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections)
-  ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.groupIds[0]
-  : privateEndpoint.properties.privateLinkServiceConnections[0].properties.groupIds[0]
+output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections) && length(privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds) > 0
+  ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
+  : !empty(privateEndpoint.properties.privateLinkServiceConnections) && length(privateEndpoint.properties.privateLinkServiceConnections[0].properties.?groupIds) > 0
+      ? privateEndpoint.properties.privateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
+      : ''
 
 // ================ //
 // Definitions      //
@@ -219,10 +221,10 @@ type ipConfigurationsType = {
 
   @description('Required. Properties of private endpoint IP configurations.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.')
     groupId: string
 
-    @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.')
     memberName: string
 
     @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
@@ -236,8 +238,8 @@ type manualPrivateLinkServiceConnectionsType = {
 
   @description('Required. Properties of private link service connection.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupIds: array
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
+    groupIds: string[]
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string
@@ -253,8 +255,8 @@ type privateLinkServiceConnectionsType = {
 
   @description('Required. Properties of private link service connection.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupIds: array
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
+    groupIds: string[]
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string
