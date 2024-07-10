@@ -98,6 +98,35 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      managedNetworkSettings: {
+        isolationMode: 'AllowOnlyApprovedOutbound'
+        outboundRules: {
+          rule1: {
+            type: 'PrivateEndpoint'
+            destination: {
+              serviceResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              subresourceTarget: 'blob'
+              sparkEnabled: true
+            }
+            category: 'UserDefined'
+          }
+          rule2: {
+            type: 'FQDN'
+            destination: 'pypi.org'
+            category: 'UserDefined'
+          }
+          rule3: {
+            type: 'ServiceTag'
+            destination: {
+              serviceTag: 'AppService'
+              portRanges: '80,443'
+              protocol: 'TCP'
+            }
+            category: 'UserDefined'
+          }
+        }
+      }
+      systemDatastoresAuthMode: 'identity'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

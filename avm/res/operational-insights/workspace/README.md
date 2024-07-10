@@ -325,6 +325,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    useDeployedWorkspaceForDiagnosticSettings: true
     useResourcePermissions: true
   }
 }
@@ -644,6 +645,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "useDeployedWorkspaceForDiagnosticSettings": {
+      "value": true
     },
     "useResourcePermissions": {
       "value": true
@@ -1717,6 +1721,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`useDeployedWorkspaceForDiagnosticSettings`](#parameter-usedeployedworkspacefordiagnosticsettings) | bool | Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. |
 | [`useResourcePermissions`](#parameter-useresourcepermissions) | bool | Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions. |
 
 ### Parameter: `name`
@@ -2194,6 +2199,14 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `useDeployedWorkspaceForDiagnosticSettings`
+
+Instead of using an external reference, use the deployed instance as the target for its diagnostic settings.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `useResourcePermissions`
 
