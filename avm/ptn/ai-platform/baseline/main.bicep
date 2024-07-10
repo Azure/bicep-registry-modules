@@ -27,7 +27,7 @@ param containerRegistryTrustPolicyStatus string = 'enabled'
 @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature.')
 param keyVaultEnablePurgeProtection bool = true
 
-@description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.')
+@description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true.')
 param storageAccountAllowSharedKeyAccess bool = false
 
 @sys.description('Optional. Computes to create and attach to the workspace hub.')

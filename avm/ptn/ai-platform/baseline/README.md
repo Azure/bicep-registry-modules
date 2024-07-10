@@ -304,7 +304,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyVaultEnablePurgeProtection`](#parameter-keyvaultenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`storageAccountAllowSharedKeyAccess`](#parameter-storageaccountallowsharedkeyaccess) | bool | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true. |
+| [`storageAccountAllowSharedKeyAccess`](#parameter-storageaccountallowsharedkeyaccess) | bool | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`workspaceComputes`](#parameter-workspacecomputes) | array | Computes to create and attach to the workspace hub. |
 | [`workspaceNetworkIsolationMode`](#parameter-workspacenetworkisolationmode) | string | The network isolation mode of the workspace hub. |
@@ -358,7 +358,7 @@ Location for all Resources.
 
 ### Parameter: `storageAccountAllowSharedKeyAccess`
 
-Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.
+Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true.
 
 - Required: No
 - Type: bool
