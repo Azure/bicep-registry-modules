@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    appInsightsComponentName: 'dep-${namePrefix}-appinsights-${serviceShort}'
   }
 }
 
@@ -54,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
+      appInsightsConnectionString: nestedDependencies.outputs.appInsightsConnectionString
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -73,6 +75,14 @@ module testDeployment '../../../main.bicep' = [
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
+      }
+      openTelemetryConfiguration: {
+        tracesConfiguration: {
+          destinations: ['appInsights']
+        }
+        logsConfiguration: {
+          destinations: ['appInsights']
+        }
       }
       roleAssignments: [
         {

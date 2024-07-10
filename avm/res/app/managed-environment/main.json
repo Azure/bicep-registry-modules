@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12999897331661318170"
+      "templateHash": "3161034588289851821"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -181,6 +181,13 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
+    "appInsightsConnectionString": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Application Insights connection string."
+      }
+    },
     "daprAIConnectionString": {
       "type": "securestring",
       "defaultValue": "",
@@ -264,6 +271,13 @@
         "description": "Optional. The lock settings of the service."
       }
     },
+    "openTelemetryConfiguration": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Open Telemetry configuration."
+      }
+    },
     "workloadProfiles": {
       "type": "array",
       "defaultValue": [],
@@ -315,7 +329,7 @@
       "condition": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2021-06-01",
+      "apiVersion": "2023-09-01",
       "subscriptionId": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]]",
       "name": "[last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))]"
@@ -328,11 +342,14 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
+        "appInsightsConfiguration": {
+          "connectionString": "[parameters('appInsightsConnectionString')]"
+        },
         "appLogsConfiguration": {
           "destination": "[parameters('logsDestination')]",
           "logAnalyticsConfiguration": {
             "customerId": "[reference('logAnalyticsWorkspace').customerId]",
-            "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2021-06-01').primarySharedKey]"
+            "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey]"
           }
         },
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
@@ -342,6 +359,7 @@
           "certificateValue": "[if(not(empty(parameters('certificateValue'))), parameters('certificateValue'), null())]",
           "dnsSuffix": "[parameters('dnsSuffix')]"
         },
+        "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
           "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",

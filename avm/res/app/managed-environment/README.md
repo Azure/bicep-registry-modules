@@ -142,6 +142,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
+    appInsightsConnectionString: '<appInsightsConnectionString>'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
@@ -156,6 +157,18 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    openTelemetryConfiguration: {
+      logsConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
+      tracesConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
     }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -212,6 +225,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemax001"
     },
     // Non-required parameters
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -239,6 +255,20 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "openTelemetryConfiguration": {
+      "value": {
+        "logsConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        },
+        "tracesConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        }
       }
     },
     "platformReservedCidr": {
@@ -465,6 +495,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -475,6 +506,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
@@ -548,6 +580,14 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `appInsightsConnectionString`
+
+Application Insights connection string.
+
+- Required: No
+- Type: securestring
+- Default: `''`
 
 ### Parameter: `certificatePassword`
 
@@ -676,6 +716,14 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+
+### Parameter: `openTelemetryConfiguration`
+
+Open Telemetry configuration.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `roleAssignments`
 
