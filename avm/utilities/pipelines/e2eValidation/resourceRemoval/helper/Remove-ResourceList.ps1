@@ -31,6 +31,7 @@ function Remove-ResourceListInner {
     process {
         $resourcesToRemove | ForEach-Object { Write-Verbose ('- Remove [{0}]' -f $_.resourceId) -Verbose }
         $resourcesToRetry = @()
+        $resourcesToRetryPost = @()
         $processedResources = @()
         Write-Verbose '----------------------------------' -Verbose
 
@@ -66,9 +67,14 @@ function Remove-ResourceListInner {
                 }
             }
 
-            # We want to purge resources even if they were not explicitly removed because they were 'alreadyProcessed'
-            if ($PSCmdlet.ShouldProcess(('Post-resource-removal for [{0}]' -f $resource.resourceId), 'Execute')) {
-                Invoke-ResourcePostRemoval -Type $resource.type -ResourceId $resource.resourceId
+            try {
+                # We want to purge resources even if they were not explicitly removed because they were 'alreadyProcessed'
+                if ($PSCmdlet.ShouldProcess(('Post-resource-removal for [{0}]' -f $resource.resourceId), 'Execute')) {
+                    Invoke-ResourcePostRemoval -Type $resource.type -ResourceId $resource.resourceId
+                }
+            } catch {
+                Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
+                [array]$resourcesToRetry += $resource
             }
         }
         Write-Verbose '----------------------------------' -Verbose
