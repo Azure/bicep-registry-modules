@@ -17,8 +17,8 @@ This module deploys a Private Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -30,7 +30,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using private link service](#example-3-using-private-link-service)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -49,15 +50,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     name: 'npemin001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: []
-    customDnsConfigs: []
-    customNetworkInterfaceName: ''
-    ipConfigurations: []
     location: '<location>'
-    lock: {}
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
-    privateDnsZoneResourceIds: []
     privateLinkServiceConnections: [
       {
         name: 'npemin001'
@@ -69,8 +62,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
-    roleAssignments: []
-    tags: {}
   }
 }
 ```
@@ -95,32 +86,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": []
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": ""
-    },
-    "ipConfigurations": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": ""
-    },
-    "privateDnsZoneResourceIds": {
-      "value": []
     },
     "privateLinkServiceConnections": {
       "value": [
@@ -134,12 +101,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
           }
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -192,7 +153,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
     privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
@@ -294,9 +254,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
     "privateDnsZoneGroupName": {
       "value": "default"
     },
@@ -352,7 +309,101 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using private link service_
+
+This instance deploys the module with a private link service to test the application of an empty list of string for `groupIds`.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
+  name: 'privateEndpointDeployment'
+  params: {
+    // Required parameters
+    name: 'npepls001'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: ''
+          memberName: ''
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    location: '<location>'
+    privateLinkServiceConnections: [
+      {
+        name: 'npepls001'
+        properties: {
+          groupIds: []
+          privateLinkServiceId: '<privateLinkServiceId>'
+        }
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "npepls001"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    // Non-required parameters
+    "ipConfigurations": {
+      "value": [
+        {
+          "name": "myIPconfig",
+          "properties": {
+            "groupId": "",
+            "memberName": "",
+            "privateIPAddress": "10.0.0.10"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateLinkServiceConnections": {
+      "value": [
+        {
+          "name": "npepls001",
+          "properties": {
+            "groupIds": [],
+            "privateLinkServiceId": "<privateLinkServiceId>"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -372,7 +423,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
     customNetworkInterfaceName: 'npewaf001nic'
     ipConfigurations: [
       {
@@ -389,8 +439,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -439,9 +487,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "<applicationSecurityGroupResourceId>"
       ]
     },
-    "customDnsConfigs": {
-      "value": []
-    },
     "customNetworkInterfaceName": {
       "value": "npewaf001nic"
     },
@@ -465,12 +510,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
     },
     "privateDnsZoneResourceIds": {
       "value": [
@@ -628,20 +667,20 @@ Properties of private endpoint IP configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string. |
+| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string. |
 | [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
 ### Parameter: `ipConfigurations.properties.groupId`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `ipConfigurations.properties.memberName`
 
-The member name of a group obtained from the remote resource that this private endpoint should connect to.
+The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.
 
 - Required: Yes
 - Type: string
@@ -729,7 +768,7 @@ Properties of private link service connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
 | [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
 
 **Optional parameters**
@@ -740,7 +779,7 @@ Properties of private link service connection.
 
 ### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
 
 - Required: Yes
 - Type: array
@@ -805,7 +844,7 @@ Properties of private link service connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
 | [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
 
 **Optional parameters**
@@ -816,7 +855,7 @@ Properties of private link service connection.
 
 ### Parameter: `privateLinkServiceConnections.properties.groupIds`
 
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
 
 - Required: Yes
 - Type: array
