@@ -2062,7 +2062,12 @@ The configuration for the [Domain Join] extension. Must at least contain the ["e
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
 
 ### Parameter: `extensionDomainJoinPassword`
 

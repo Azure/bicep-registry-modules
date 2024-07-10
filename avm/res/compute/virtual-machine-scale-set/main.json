@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10531696374888927748"
+      "templateHash": "10261643860679294572"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -383,7 +383,9 @@
     },
     "extensionDomainJoinConfig": {
       "type": "secureObject",
-      "defaultValue": {},
+      "defaultValue": {
+        "enabled": false
+      },
       "metadata": {
         "description": "Optional. The configuration for the [Domain Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
@@ -1007,7 +1009,7 @@
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
-          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', '1.0', 'autoUpgradeMinorVersion', false(), 'settings', createObject('protocol', if(contains(parameters('extensionHealthConfig'), 'protocol'), parameters('extensionHealthConfig').protocol, 'http'), 'port', if(contains(parameters('extensionHealthConfig'), 'port'), parameters('extensionHealthConfig').port, '80'), 'requestPath', if(contains(parameters('extensionHealthConfig'), 'requestPath'), parameters('extensionHealthConfig').requestPath, '/')))))), null())]",
+          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '1.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), '80'), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), '/')))))), null())]",
           "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
@@ -1108,7 +1110,7 @@
       ]
     },
     "vmss_domainJoinExtension": {
-      "condition": "[and(contains(parameters('extensionDomainJoinConfig'), 'enabled'), parameters('extensionDomainJoinConfig').enabled)]",
+      "condition": "[parameters('extensionDomainJoinConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-VMSS-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
