@@ -69,6 +69,8 @@ function Invoke-ResourcePostRemoval {
                     } catch {
                         if ($_.Exception.Message -like '*DeletedVaultPurge*') {
                             Write-Warning ('Purge protection for key vault [{0}] enabled. Skipping. Scheduled purge date is [{1}]' -f $resourceName, $matchingKeyVault.ScheduledPurgeDate)
+                        } elseif ($_.Exception.Message -eq 'An error occurred while sending the request.') {
+                            return # This can happen, but by the time it happens, the Key Vault is already purged
                         } else {
                             throw $_
                         }
