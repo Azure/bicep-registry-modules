@@ -30,8 +30,8 @@ function Remove-ResourceListInner {
 
     process {
         $resourcesToRemove | ForEach-Object { Write-Verbose ('- Remove [{0}]' -f $_.resourceId) -Verbose }
-        $resourcesToRetry = @()
-        $resourcesToRetryPost = @()
+        $resourcesToRetryRemoval = @()
+        $resourcesToRetryPostRemoval = @()
         $processedResources = @()
         Write-Verbose '----------------------------------' -Verbose
 
@@ -43,7 +43,7 @@ function Remove-ResourceListInner {
                 # Skipping
                 Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: Its parent resource was already processed' -f $resourceName, $resource.type) -Verbose
                 [array]$processedResources += $resource.resourceId
-                [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
+                [array]$resourcesToRetryRemoval = $resourcesToRetryRemoval | Where-Object { $_.resourceId -notmatch $resource.resourceId }
             } else {
                 Write-Verbose ('[-] Removing resource [{0}] of type [{1}]' -f $resourceName, $resource.type) -Verbose
                 try {
@@ -53,16 +53,16 @@ function Remove-ResourceListInner {
 
                     # If we removed a parent remove its children
                     [array]$processedResources += $resource.resourceId
-                    [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
+                    [array]$resourcesToRetryRemoval = $resourcesToRetryRemoval | Where-Object { $_.resourceId -notmatch $resource.resourceId }
                 } catch {
                     if ($_.Exception.HttpStatus -in @(404, 'NotFound')) {
                         # Skipping because resource/parent is missing. This 'exception handling' can be required in case the parent resource removal ran into an issue, but was completed regardless
                         Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It or its parent cannot be found.' -f $resourceName, $resource.type) -Verbose
                         [array]$processedResources += $resource.resourceId
-                        [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
+                        [array]$resourcesToRetryRemoval = $resourcesToRetryRemoval | Where-Object { $_.resourceId -notmatch $resource.resourceId }
                     } else {
                         Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
-                        [array]$resourcesToRetry += $resource
+                        [array]$resourcesToRetryRemoval += $resource
                     }
                 }
             }
@@ -74,11 +74,14 @@ function Remove-ResourceListInner {
                 }
             } catch {
                 Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
-                [array]$resourcesToRetry += $resource
+                [array]$resourcesToRetryPostRemoval += $resource
             }
         }
         Write-Verbose '----------------------------------' -Verbose
-        return $resourcesToRetry
+        return @{
+            resourcesToRetryRemoval     = $resourcesToRetryRemoval
+            resourcesToRetryPostRemoval = $resourcesToRetryPostRemoval
+        }
     }
     end {
         Write-Debug ('{0} exited' -f $MyInvocation.MyCommand)
@@ -116,25 +119,28 @@ function Remove-ResourceList {
     )
 
     $removalRetryCount = 1
-    $resourcesToRetry = $resourcesToRemove
+    $resourcesToRetryRemoval = $resourcesToRemove
 
     do {
-        if ($PSCmdlet.ShouldProcess(("[{0}] Resource(s) with a maximum of [$removalRetryLimit] attempts." -f (($resourcesToRetry -is [array]) ? $resourcesToRetry.Count : 1)), 'Remove')) {
-            $resourcesToRetry = Remove-ResourceListInner -ResourcesToRemove $resourcesToRetry
+        if ($PSCmdlet.ShouldProcess(("[{0}] Resource(s) with a maximum of [$removalRetryLimit] attempts." -f (($resourcesToRetryRemoval -is [array]) ? $resourcesToRetryRemoval.Count : 1)), 'Remove')) {
+            $resourcesToRetry = Remove-ResourceListInner -ResourcesToRemove $resourcesToRetryRemoval
+            $resourcesToRetryRemoval = $resourcesToRetry.resourcesToRetryRemoval
+            $resourcesToRetryPostRemoval = $resourcesToRetry.resourcesToRetryPostRemoval
         } else {
             Remove-ResourceListInner -ResourcesToRemove $resourcesToRemove -WhatIf
         }
 
-        if (-not $resourcesToRetry) {
+        if (-not $resourcesToRetryRemoval -and -not $resourcesToRetryPostRemoval) {
             break
         }
-        Write-Verbose ('Retry removal of remaining [{0}] resources. Waiting [{1}] seconds. Round [{2}|{3}]' -f (($resourcesToRetry -is [array]) ? $resourcesToRetry.Count : 1), $removalRetryInterval, $removalRetryCount, $removalRetryLimit)
+        $remainingCount = (($resourcesToRetryRemoval.resourceId + @() + $resourcesToRetryPostRemoval.resourceId) | Sort-Object -Unique).Count # check how many unique IDs remain
+        Write-Verbose ('Retrying removal or post-removal of remaining [{0}] resources. Waiting [{2}] seconds. Round [{3}|{4}]' -f $remainingCount, $removalRetryInterval, $removalRetryCount, $removalRetryLimit)
         $removalRetryCount++
         Start-Sleep $removalRetryInterval
     } while ($removalRetryCount -le $removalRetryLimit)
 
-    if ($resourcesToRetry.Count -gt 0) {
-        throw ('The removal failed for resources [{0}]' -f ((Split-Path $resourcesToRetry.resourceId -Leaf) -join ', '))
+    if ($resourcesToRetryRemoval.Count -gt 0) {
+        throw ('The removal or post-removal failed for resources [{0}]' -f (($resourcesToRetryRemoval.resourceId | ForEach-Object { Split-Path $_ -Leaf }) -join ', '))
     } else {
         Write-Verbose 'The removal completed successfully'
     }
