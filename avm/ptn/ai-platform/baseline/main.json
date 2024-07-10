@@ -6,13 +6,153 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16876481582099285129"
+      "templateHash": "10362412508456263694"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "managedIdentitySettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the user-assigned managed identity."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "logAnalyticsSettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Log Analytics workspace."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "keyVaultSettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the key vault."
+          }
+        },
+        "enablePurgeProtection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Provide 'true' to enable Key Vault's purge protection feature. Defaults to 'true'."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "storageAccountSettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the storage account."
+          }
+        },
+        "allowSharedKeyAccess": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "containerRegistrySettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the container registry."
+          }
+        },
+        "trustPolicyStatus": {
+          "type": "string",
+          "allowedValues": [
+            "disabled",
+            "enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the trust policy is enabled for the container registry. Defaults to 'enabled'."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "applicationInsightsSettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Application Insights resource."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "workspaceHubSettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the AI Studio workspace hub."
+          }
+        },
+        "computes": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Computes to create and attach to the workspace hub."
+          }
+        },
+        "networkIsolationMode": {
+          "type": "string",
+          "allowedValues": [
+            "AllowInternetOutbound",
+            "AllowOnlyApprovedOutbound"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'."
+          }
+        },
+        "networkOutboundRules": {
+          "$ref": "#/definitions/networkOutboundRuleType",
+          "metadata": {
+            "description": "Optional. The outbound rules for the managed network of the workspace hub."
+          }
+        }
+      },
+      "nullable": true
+    },
     "OutboundRuleType": {
       "type": "object",
       "discriminator": {
@@ -58,7 +198,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": ""
+            "description": "Optional. Category of a managed network Outbound Rule of the workspace hub."
           }
         }
       }
@@ -112,7 +252,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": ""
+            "description": "Optional. Category of a managed network Outbound Rule of the workspace hub."
           }
         }
       }
@@ -171,12 +311,12 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": ""
+            "description": "Optional. Category of a managed network Outbound Rule of the workspace hub."
           }
         }
       }
     },
-    "workspaceNetworkOutboundRuleType": {
+    "networkOutboundRuleType": {
       "type": "object",
       "properties": {},
       "additionalProperties": {
@@ -220,53 +360,46 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "containerRegistryTrustPolicyStatus": {
-      "type": "string",
-      "defaultValue": "enabled",
-      "allowedValues": [
-        "disabled",
-        "enabled"
-      ],
+    "managedIdentitySettings": {
+      "$ref": "#/definitions/managedIdentitySettingType",
       "metadata": {
-        "description": "Optional. Whether the trust policy is enabled for the container registry."
+        "description": "Optional. Settings for the user-assigned managed identity."
       }
     },
-    "keyVaultEnablePurgeProtection": {
-      "type": "bool",
-      "defaultValue": true,
+    "logAnalyticsSettings": {
+      "$ref": "#/definitions/logAnalyticsSettingType",
       "metadata": {
-        "description": "Optional. Provide 'true' to enable Key Vault's purge protection feature."
+        "description": "Optional. Settings for the Log Analytics workspace."
       }
     },
-    "storageAccountAllowSharedKeyAccess": {
-      "type": "bool",
-      "defaultValue": false,
+    "keyVaultSettings": {
+      "$ref": "#/definitions/keyVaultSettingType",
       "metadata": {
-        "description": "Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true."
+        "description": "Optional. Settings for the key vault."
       }
     },
-    "workspaceComputes": {
-      "type": "array",
-      "defaultValue": [],
+    "storageAccountSettings": {
+      "$ref": "#/definitions/storageAccountSettingType",
       "metadata": {
-        "description": "Optional. Computes to create and attach to the workspace hub."
+        "description": "Optional. Settings for the storage account."
       }
     },
-    "workspaceNetworkIsolationMode": {
-      "type": "string",
-      "defaultValue": "AllowInternetOutbound",
-      "allowedValues": [
-        "AllowInternetOutbound",
-        "AllowOnlyApprovedOutbound"
-      ],
+    "containerRegistrySettings": {
+      "$ref": "#/definitions/containerRegistrySettingType",
       "metadata": {
-        "description": "Optional. The network isolation mode of the workspace hub."
+        "description": "Optional. Settings for the container registry."
       }
     },
-    "workspaceNetworkOutboundRules": {
-      "$ref": "#/definitions/workspaceNetworkOutboundRuleType",
+    "applicationInsightsSettings": {
+      "$ref": "#/definitions/applicationInsightsSettingType",
       "metadata": {
-        "description": "Optional. The outbound rules for the managed network of the workspace hub."
+        "description": "Optional. Settings for Application Insights."
+      }
+    },
+    "workspaceHubSettings": {
+      "$ref": "#/definitions/workspaceHubSettingType",
+      "metadata": {
+        "description": "Optional. Settings for the AI Studio workspace hub."
       }
     }
   },
@@ -294,29 +427,16 @@
     "managedIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "name": "[format('id-{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name')))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
     },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2023-09-01",
-      "name": "[format('log-{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name')))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
-    },
-    "resourceGroup_roleAssignment": {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, parameters('name'))]",
-      "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "principalId": "[reference('managedIdentity').principalId]"
-      },
-      "dependsOn": [
-        "keyVault",
-        "managedIdentity"
-      ]
     },
     "keyVault": {
       "type": "Microsoft.Resources/deployments",
@@ -329,7 +449,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('kv-{0}', parameters('name'))]"
+            "value": "[coalesce(tryGet(parameters('keyVaultSettings'), 'name'), format('kv-{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -359,10 +479,14 @@
             "value": "Disabled"
           },
           "enablePurgeProtection": {
-            "value": "[parameters('keyVaultEnablePurgeProtection')]"
+            "value": "[coalesce(tryGet(parameters('keyVaultSettings'), 'enablePurgeProtection'), true())]"
           },
           "roleAssignments": {
             "value": [
+              {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionIdOrName": "Contributor"
+              },
               {
                 "principalId": "[reference('managedIdentity').principalId]",
                 "roleDefinitionIdOrName": "Key Vault Administrator"
@@ -372,7 +496,7 @@
           "diagnosticSettings": {
             "value": [
               {
-                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', format('log-{0}', parameters('name')))]",
+                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name'))))]",
                 "logCategoriesAndGroups": [
                   {
                     "category": "AuditEvent",
@@ -3130,7 +3254,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('st{0}', parameters('name'))]"
+            "value": "[coalesce(tryGet(parameters('storageAccountSettings'), 'name'), format('st{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -3142,10 +3266,10 @@
             "value": false
           },
           "allowSharedKeyAccess": {
-            "value": "[parameters('storageAccountAllowSharedKeyAccess')]"
+            "value": "[coalesce(tryGet(parameters('storageAccountSettings'), 'allowSharedKeyAccess'), false())]"
           },
           "defaultToOAuthAuthentication": {
-            "value": "[not(parameters('storageAccountAllowSharedKeyAccess'))]"
+            "value": "[not(coalesce(tryGet(parameters('storageAccountSettings'), 'allowSharedKeyAccess'), false()))]"
           },
           "publicNetworkAccess": {
             "value": "Disabled"
@@ -3158,6 +3282,10 @@
           },
           "roleAssignments": {
             "value": [
+              {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionIdOrName": "Contributor"
+              },
               {
                 "principalId": "[reference('managedIdentity').principalId]",
                 "roleDefinitionIdOrName": "Storage Blob Data Contributor"
@@ -7822,7 +7950,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('cr{0}', parameters('name'))]"
+            "value": "[coalesce(tryGet(parameters('containerRegistrySettings'), 'name'), format('cr{0}', parameters('name')))]"
           },
           "acrSku": {
             "value": "Premium"
@@ -7843,7 +7971,19 @@
             "value": "Enabled"
           },
           "trustPolicyStatus": {
-            "value": "[parameters('containerRegistryTrustPolicyStatus')]"
+            "value": "[coalesce(tryGet(parameters('containerRegistrySettings'), 'trustPolicyStatus'), 'enabled')]"
+          },
+          "roleAssignments": {
+            "value": [
+              {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionIdOrName": "Contributor"
+              },
+              {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionIdOrName": "AcrPull"
+              }
+            ]
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -9964,7 +10104,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
     },
     "applicationInsights": {
       "type": "Microsoft.Resources/deployments",
@@ -9977,7 +10120,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('appi-{0}', parameters('name'))]"
+            "value": "[coalesce(tryGet(parameters('applicationInsightsSettings'), 'name'), format('appi-{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -9989,7 +10132,15 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "workspaceResourceId": {
-            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', format('log-{0}', parameters('name')))]"
+            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name'))))]"
+          },
+          "roleAssignments": {
+            "value": [
+              {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionIdOrName": "Contributor"
+              }
+            ]
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -10590,7 +10741,8 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace"
+        "logAnalyticsWorkspace",
+        "managedIdentity"
       ]
     },
     "workspaceHub": {
@@ -10604,7 +10756,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('hub-{0}', parameters('name'))]"
+            "value": "[coalesce(tryGet(parameters('workspaceHubSettings'), 'name'), format('hub-{0}', parameters('name')))]"
           },
           "sku": {
             "value": "Standard"
@@ -10638,24 +10790,32 @@
           "managedIdentities": {
             "value": {
               "userAssignedResourceIds": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('name')))]"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name'))))]"
               ]
             }
           },
           "primaryUserAssignedIdentity": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('name')))]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name'))))]"
           },
           "computes": {
-            "value": "[parameters('workspaceComputes')]"
+            "value": "[tryGet(parameters('workspaceHubSettings'), 'computes')]"
           },
           "managedNetworkSettings": {
             "value": {
-              "isolationMode": "[parameters('workspaceNetworkIsolationMode')]",
-              "outboundRules": "[parameters('workspaceNetworkOutboundRules')]"
+              "isolationMode": "[coalesce(tryGet(parameters('workspaceHubSettings'), 'networkIsolationMode'), 'AllowInternetOutbound')]",
+              "outboundRules": "[tryGet(parameters('workspaceHubSettings'), 'networkOutboundRules')]"
             }
           },
           "systemDatastoresAuthMode": {
             "value": "identity"
+          },
+          "roleAssignments": {
+            "value": [
+              {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionIdOrName": "Contributor"
+              }
+            ]
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -12801,19 +12961,68 @@
       },
       "value": "[parameters('location')]"
     },
+    "applicationInsightsResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the application insights component."
+      },
+      "value": "[reference('applicationInsights').outputs.resourceId.value]"
+    },
+    "applicationInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the application insights component."
+      },
+      "value": "[reference('applicationInsights').outputs.name.value]"
+    },
+    "applicationInsightsApplicationId": {
+      "type": "string",
+      "metadata": {
+        "description": "The application ID of the application insights component."
+      },
+      "value": "[reference('applicationInsights').outputs.applicationId.value]"
+    },
+    "applicationInsightsInstrumentationKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The instrumentation key of the application insights component."
+      },
+      "value": "[reference('applicationInsights').outputs.instrumentationKey.value]"
+    },
+    "applicationInsightsConnectionString": {
+      "type": "string",
+      "metadata": {
+        "description": "The connection string of the application insights component."
+      },
+      "value": "[reference('applicationInsights').outputs.connectionString.value]"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the log analytics workspace."
+      },
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name'))))]"
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the log analytics workspace."
+      },
+      "value": "[coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name')))]"
+    },
     "managedIdentityResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the user assigned managed identity."
       },
-      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('name')))]"
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name'))))]"
     },
     "managedIdentityName": {
       "type": "string",
       "metadata": {
         "description": "The name of the user assigned managed identity."
       },
-      "value": "[format('id-{0}', parameters('name'))]"
+      "value": "[coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name')))]"
     },
     "managedIdentityPrincipalId": {
       "type": "string",

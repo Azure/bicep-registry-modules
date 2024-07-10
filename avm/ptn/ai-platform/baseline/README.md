@@ -115,32 +115,54 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
   name: 'baselineDeployment'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'aipbmax'
     // Non-required parameters
-    keyVaultEnablePurgeProtection: false
-    storageAccountAllowSharedKeyAccess: true
-    workspaceComputes: [
-      {
-        computeType: 'ComputeInstance'
-        description: 'Default'
-        location: '<location>'
-        name: '<name>'
-        properties: {
-          vmSize: 'STANDARD_DS11_V2'
+    applicationInsightsSettings: {
+      name: 'dep-appi-aipbmax'
+    }
+    containerRegistrySettings: {
+      name: 'depcraipbmax'
+      trustPolicyStatus: 'disabled'
+    }
+    keyVaultSettings: {
+      enablePurgeProtection: false
+      name: '<name>'
+    }
+    logAnalyticsSettings: {
+      name: 'dep-log-aipbmax'
+    }
+    managedIdentitySettings: {
+      name: 'dep-id-aipbmax'
+    }
+    storageAccountSettings: {
+      allowSharedKeyAccess: true
+      name: 'depstaipbmax'
+    }
+    workspaceHubSettings: {
+      computes: [
+        {
+          computeType: 'ComputeInstance'
+          description: 'Default'
+          location: '<location>'
+          name: '<name>'
+          properties: {
+            vmSize: 'STANDARD_DS11_V2'
+          }
+          sku: 'Standard'
         }
-        sku: 'Standard'
-      }
-    ]
-    workspaceNetworkIsolationMode: 'AllowOnlyApprovedOutbound'
-    workspaceNetworkOutboundRules: {
-      rule1: {
-        category: 'UserDefined'
-        destination: {
-          serviceResourceId: '<serviceResourceId>'
-          sparkEnabled: true
-          subresourceTarget: 'blob'
+      ]
+      name: 'dep-hub-aipbmax'
+      networkIsolationMode: 'AllowOnlyApprovedOutbound'
+      networkOutboundRules: {
+        rule1: {
+          category: 'UserDefined'
+          destination: {
+            serviceResourceId: '<serviceResourceId>'
+            sparkEnabled: true
+            subresourceTarget: 'blob'
+          }
+          type: 'PrivateEndpoint'
         }
-        type: 'PrivateEndpoint'
       }
     }
   }
@@ -161,42 +183,68 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "aipbmax"
     },
     // Non-required parameters
-    "keyVaultEnablePurgeProtection": {
-      "value": false
-    },
-    "storageAccountAllowSharedKeyAccess": {
-      "value": true
-    },
-    "workspaceComputes": {
-      "value": [
-        {
-          "computeType": "ComputeInstance",
-          "description": "Default",
-          "location": "<location>",
-          "name": "<name>",
-          "properties": {
-            "vmSize": "STANDARD_DS11_V2"
-          },
-          "sku": "Standard"
-        }
-      ]
-    },
-    "workspaceNetworkIsolationMode": {
-      "value": "AllowOnlyApprovedOutbound"
-    },
-    "workspaceNetworkOutboundRules": {
+    "applicationInsightsSettings": {
       "value": {
-        "rule1": {
-          "category": "UserDefined",
-          "destination": {
-            "serviceResourceId": "<serviceResourceId>",
-            "sparkEnabled": true,
-            "subresourceTarget": "blob"
-          },
-          "type": "PrivateEndpoint"
+        "name": "dep-appi-aipbmax"
+      }
+    },
+    "containerRegistrySettings": {
+      "value": {
+        "name": "depcraipbmax",
+        "trustPolicyStatus": "disabled"
+      }
+    },
+    "keyVaultSettings": {
+      "value": {
+        "enablePurgeProtection": false,
+        "name": "<name>"
+      }
+    },
+    "logAnalyticsSettings": {
+      "value": {
+        "name": "dep-log-aipbmax"
+      }
+    },
+    "managedIdentitySettings": {
+      "value": {
+        "name": "dep-id-aipbmax"
+      }
+    },
+    "storageAccountSettings": {
+      "value": {
+        "allowSharedKeyAccess": true,
+        "name": "depstaipbmax"
+      }
+    },
+    "workspaceHubSettings": {
+      "value": {
+        "computes": [
+          {
+            "computeType": "ComputeInstance",
+            "description": "Default",
+            "location": "<location>",
+            "name": "<name>",
+            "properties": {
+              "vmSize": "STANDARD_DS11_V2"
+            },
+            "sku": "Standard"
+          }
+        ],
+        "name": "dep-hub-aipbmax",
+        "networkIsolationMode": "AllowOnlyApprovedOutbound",
+        "networkOutboundRules": {
+          "rule1": {
+            "category": "UserDefined",
+            "destination": {
+              "serviceResourceId": "<serviceResourceId>",
+              "sparkEnabled": true,
+              "subresourceTarget": "blob"
+            },
+            "type": "PrivateEndpoint"
+          }
         }
       }
     }
@@ -227,15 +275,17 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
     }
-    workspaceNetworkIsolationMode: 'AllowOnlyApprovedOutbound'
-    workspaceNetworkOutboundRules: {
-      rule: {
-        category: 'UserDefined'
-        destination: {
-          serviceResourceId: '<serviceResourceId>'
-          subresourceTarget: 'blob'
+    workspaceHubSettings: {
+      networkIsolationMode: 'AllowOnlyApprovedOutbound'
+      networkOutboundRules: {
+        rule: {
+          category: 'UserDefined'
+          destination: {
+            serviceResourceId: '<serviceResourceId>'
+            subresourceTarget: 'blob'
+          }
+          type: 'PrivateEndpoint'
         }
-        type: 'PrivateEndpoint'
       }
     }
   }
@@ -265,18 +315,18 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "hidden-title": "This is visible in the resource name"
       }
     },
-    "workspaceNetworkIsolationMode": {
-      "value": "AllowOnlyApprovedOutbound"
-    },
-    "workspaceNetworkOutboundRules": {
+    "workspaceHubSettings": {
       "value": {
-        "rule": {
-          "category": "UserDefined",
-          "destination": {
-            "serviceResourceId": "<serviceResourceId>",
-            "subresourceTarget": "blob"
-          },
-          "type": "PrivateEndpoint"
+        "networkIsolationMode": "AllowOnlyApprovedOutbound",
+        "networkOutboundRules": {
+          "rule": {
+            "category": "UserDefined",
+            "destination": {
+              "serviceResourceId": "<serviceResourceId>",
+              "subresourceTarget": "blob"
+            },
+            "type": "PrivateEndpoint"
+          }
         }
       }
     }
@@ -300,15 +350,16 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`containerRegistryTrustPolicyStatus`](#parameter-containerregistrytrustpolicystatus) | string | Whether the trust policy is enabled for the container registry. |
+| [`applicationInsightsSettings`](#parameter-applicationinsightssettings) | object | Settings for Application Insights. |
+| [`containerRegistrySettings`](#parameter-containerregistrysettings) | object | Settings for the container registry. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`keyVaultEnablePurgeProtection`](#parameter-keyvaultenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. |
+| [`keyVaultSettings`](#parameter-keyvaultsettings) | object | Settings for the key vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`storageAccountAllowSharedKeyAccess`](#parameter-storageaccountallowsharedkeyaccess) | bool | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true. |
+| [`logAnalyticsSettings`](#parameter-loganalyticssettings) | object | Settings for the Log Analytics workspace. |
+| [`managedIdentitySettings`](#parameter-managedidentitysettings) | object | Settings for the user-assigned managed identity. |
+| [`storageAccountSettings`](#parameter-storageaccountsettings) | object | Settings for the storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
-| [`workspaceComputes`](#parameter-workspacecomputes) | array | Computes to create and attach to the workspace hub. |
-| [`workspaceNetworkIsolationMode`](#parameter-workspacenetworkisolationmode) | string | The network isolation mode of the workspace hub. |
-| [`workspaceNetworkOutboundRules`](#parameter-workspacenetworkoutboundrules) | object | The outbound rules for the managed network of the workspace hub. |
+| [`workspaceHubSettings`](#parameter-workspacehubsettings) | object | Settings for the AI Studio workspace hub. |
 
 ### Parameter: `name`
 
@@ -317,13 +368,53 @@ Alphanumberic suffix to use for resource naming.
 - Required: Yes
 - Type: string
 
-### Parameter: `containerRegistryTrustPolicyStatus`
+### Parameter: `applicationInsightsSettings`
 
-Whether the trust policy is enabled for the container registry.
+Settings for Application Insights.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationinsightssettingsname) | string | The name of the Application Insights resource. |
+
+### Parameter: `applicationInsightsSettings.name`
+
+The name of the Application Insights resource.
 
 - Required: No
 - Type: string
-- Default: `'enabled'`
+
+### Parameter: `containerRegistrySettings`
+
+Settings for the container registry.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containerregistrysettingsname) | string | The name of the container registry. |
+| [`trustPolicyStatus`](#parameter-containerregistrysettingstrustpolicystatus) | string | Whether the trust policy is enabled for the container registry. Defaults to 'enabled'. |
+
+### Parameter: `containerRegistrySettings.name`
+
+The name of the container registry.
+
+- Required: No
+- Type: string
+
+### Parameter: `containerRegistrySettings.trustPolicyStatus`
+
+Whether the trust policy is enabled for the container registry. Defaults to 'enabled'.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -340,13 +431,33 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `keyVaultEnablePurgeProtection`
+### Parameter: `keyVaultSettings`
 
-Provide 'true' to enable Key Vault's purge protection feature.
+Settings for the key vault.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enablePurgeProtection`](#parameter-keyvaultsettingsenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. Defaults to 'true'. |
+| [`name`](#parameter-keyvaultsettingsname) | string | The name of the key vault. |
+
+### Parameter: `keyVaultSettings.enablePurgeProtection`
+
+Provide 'true' to enable Key Vault's purge protection feature. Defaults to 'true'.
 
 - Required: No
 - Type: bool
-- Default: `True`
+
+### Parameter: `keyVaultSettings.name`
+
+The name of the key vault.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -356,13 +467,73 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `storageAccountAllowSharedKeyAccess`
+### Parameter: `logAnalyticsSettings`
 
-Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true.
+Settings for the Log Analytics workspace.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-loganalyticssettingsname) | string | The name of the Log Analytics workspace. |
+
+### Parameter: `logAnalyticsSettings.name`
+
+The name of the Log Analytics workspace.
+
+- Required: No
+- Type: string
+
+### Parameter: `managedIdentitySettings`
+
+Settings for the user-assigned managed identity.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-managedidentitysettingsname) | string | The name of the user-assigned managed identity. |
+
+### Parameter: `managedIdentitySettings.name`
+
+The name of the user-assigned managed identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountSettings`
+
+Settings for the storage account.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowSharedKeyAccess`](#parameter-storageaccountsettingsallowsharedkeyaccess) | bool | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'. |
+| [`name`](#parameter-storageaccountsettingsname) | string | The name of the storage account. |
+
+### Parameter: `storageAccountSettings.allowSharedKeyAccess`
+
+Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'.
 
 - Required: No
 - Type: bool
-- Default: `False`
+
+### Parameter: `storageAccountSettings.name`
+
+The name of the storage account.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 
@@ -371,21 +542,42 @@ Resource tags.
 - Required: No
 - Type: object
 
-### Parameter: `workspaceComputes`
+### Parameter: `workspaceHubSettings`
+
+Settings for the AI Studio workspace hub.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`computes`](#parameter-workspacehubsettingscomputes) | array | Computes to create and attach to the workspace hub. |
+| [`name`](#parameter-workspacehubsettingsname) | string | The name of the AI Studio workspace hub. |
+| [`networkIsolationMode`](#parameter-workspacehubsettingsnetworkisolationmode) | string | The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'. |
+| [`networkOutboundRules`](#parameter-workspacehubsettingsnetworkoutboundrules) | object | The outbound rules for the managed network of the workspace hub. |
+
+### Parameter: `workspaceHubSettings.computes`
 
 Computes to create and attach to the workspace hub.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `workspaceNetworkIsolationMode`
+### Parameter: `workspaceHubSettings.name`
 
-The network isolation mode of the workspace hub.
+The name of the AI Studio workspace hub.
 
 - Required: No
 - Type: string
-- Default: `'AllowInternetOutbound'`
+
+### Parameter: `workspaceHubSettings.networkIsolationMode`
+
+The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -394,7 +586,7 @@ The network isolation mode of the workspace hub.
   ]
   ```
 
-### Parameter: `workspaceNetworkOutboundRules`
+### Parameter: `workspaceHubSettings.networkOutboundRules`
 
 The outbound rules for the managed network of the workspace hub.
 
@@ -405,9 +597,9 @@ The outbound rules for the managed network of the workspace hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-workspacenetworkoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
+| [`>Any_other_property<`](#parameter-workspacehubsettingsnetworkoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
 
-### Parameter: `workspaceNetworkOutboundRules.>Any_other_property<`
+### Parameter: `workspaceHubSettings.networkOutboundRules.>Any_other_property<`
 
 The outbound rule. The name of the rule is the object key.
 
@@ -419,12 +611,19 @@ The outbound rule. The name of the rule is the object key.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `applicationInsightsApplicationId` | string | The application ID of the application insights component. |
+| `applicationInsightsConnectionString` | string | The connection string of the application insights component. |
+| `applicationInsightsInstrumentationKey` | string | The instrumentation key of the application insights component. |
+| `applicationInsightsName` | string | The name of the application insights component. |
+| `applicationInsightsResourceId` | string | The resource ID of the application insights component. |
 | `containerRegistryName` | string | The name of the container registry. |
 | `containerRegistryResourceId` | string | The resource ID of the container registry. |
 | `keyVaultName` | string | The name of the key vault. |
 | `keyVaultResourceId` | string | The resource ID of the key vault. |
 | `keyVaultUri` | string | The URI of the key vault. |
 | `location` | string | The location the module was deployed to. |
+| `logAnalyticsWorkspaceName` | string | The name of the log analytics workspace. |
+| `logAnalyticsWorkspaceResourceId` | string | The resource ID of the log analytics workspace. |
 | `managedIdentityClientId` | string | The client ID of the user assigned managed identity. |
 | `managedIdentityName` | string | The name of the user assigned managed identity. |
 | `managedIdentityPrincipalId` | string | The principal ID of the user assigned managed identity. |
