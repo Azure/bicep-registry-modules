@@ -108,6 +108,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     name: 'nvhmax'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
+    azureFirewallResourceId: '<azureFirewallResourceId>'
     hubRouteTables: [
       {
         name: 'routeTable1'
@@ -174,6 +175,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
+    "azureFirewallResourceId": {
+      "value": "<azureFirewallResourceId>"
+    },
     "hubRouteTables": {
       "value": [
         {

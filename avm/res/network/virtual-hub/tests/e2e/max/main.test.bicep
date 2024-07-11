@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    azureFirewallName: 'dep-${namePrefix}-azfw-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -59,6 +60,7 @@ module testDeployment '../../../main.bicep' = [
       }
       addressPrefix: '10.1.0.0/16'
       virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      azureFirewallResourceId: nestedDependencies.outputs.azureFirewallResourceId
       hubRouteTables: [
         {
           name: 'routeTable1'
