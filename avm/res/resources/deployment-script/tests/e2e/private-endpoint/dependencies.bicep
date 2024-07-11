@@ -21,7 +21,7 @@ resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefin
   scope: tenant()
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: managedIdentityName
   location: location
 }
