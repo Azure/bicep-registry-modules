@@ -156,12 +156,8 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       networkOutboundRules: {
         rule1: {
           category: 'UserDefined'
-          destination: {
-            serviceResourceId: '<serviceResourceId>'
-            sparkEnabled: true
-            subresourceTarget: 'blob'
-          }
-          type: 'PrivateEndpoint'
+          destination: 'pypi.org'
+          type: 'FQDN'
         }
       }
     }
@@ -238,12 +234,8 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "networkOutboundRules": {
           "rule1": {
             "category": "UserDefined",
-            "destination": {
-              "serviceResourceId": "<serviceResourceId>",
-              "sparkEnabled": true,
-              "subresourceTarget": "blob"
-            },
-            "type": "PrivateEndpoint"
+            "destination": "pypi.org",
+            "type": "FQDN"
           }
         }
       }
