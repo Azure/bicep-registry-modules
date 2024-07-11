@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "8917905061877887283"
+      "version": "0.28.1.47646",
+      "templateHash": "16680341650888375579"
     },
     "name": "Local Network Gateways",
     "description": "This module deploys a Local Network Gateway.",
@@ -206,7 +206,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.res.network-localnetworkgateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",

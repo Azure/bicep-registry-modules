@@ -86,8 +86,8 @@ param manualTriggerConfig manualTriggerConfigType?
 @description('Optional. The maximum number of times a replica can be retried.')
 param replicaRetryLimit int = 0
 
-@description('Optional. The name of the workload profile to use.')
-param workloadProfileName string = 'Consumption'
+@description('Optional. The name of the workload profile to use. Leave empty to use a consumption based profile.')
+param workloadProfileName string?
 
 @description('Optional. The secrets of the Container App.')
 @metadata({
@@ -104,6 +104,7 @@ param workloadProfileName string = 'Consumption'
       keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
     }
     {
+      // You can do this, but you shouldn't. Use a secret reference instead.
       name: 'mysecret'
       value: 'mysecretvalue'
     }
@@ -114,6 +115,7 @@ param workloadProfileName string = 'Consumption'
   ]
   '''
 })
+#disable-next-line secure-secrets-in-params // @secure() is specified in UDT
 param secrets secretType[]?
 
 @description('Optional. List of volume definitions for the Container App.')
@@ -163,7 +165,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-job.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'

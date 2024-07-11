@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11803357399151500299"
+      "version": "0.28.1.47646",
+      "templateHash": "9012434638514265083"
     },
     "name": "Front Door Web Application Firewall (WAF) Policies",
     "description": "This module deploys a Front Door Web Application Firewall (WAF) Policy.",
@@ -232,7 +232,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.network-frontdoorwebappfirewallpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",

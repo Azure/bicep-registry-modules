@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "7194247781912576602"
+      "version": "0.28.1.47646",
+      "templateHash": "18324011062979290950"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -654,7 +654,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-networkmanager.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -753,11 +753,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "1167650749257240939"
+              "version": "0.28.1.47646",
+              "templateHash": "15382409345741375912"
             },
             "name": "Network Manager Network Groups",
-            "description": "This module deploys a Network Manager Network Group.\r\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
+            "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -863,11 +863,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "15788464740461325450"
+                      "version": "0.28.1.47646",
+                      "templateHash": "5856566387911873889"
                     },
                     "name": "Network Manager Network Group Static Members",
-                    "description": "This module deploys a Network Manager Network Group Static Member.\r\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+                    "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
                     "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
@@ -1012,11 +1012,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "2756544330949607993"
+              "version": "0.28.1.47646",
+              "templateHash": "10727241272557696879"
             },
             "name": "Network Manager Connectivity Configurations",
-            "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+            "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1233,11 +1233,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "13509671695440625631"
+              "version": "0.28.1.47646",
+              "templateHash": "13669533264515087337"
             },
             "name": "Network Manager Scope Connections",
-            "description": "This module deploys a Network Manager Scope Connection.\r\nCreate a cross-tenant connection to manage a resource from another tenant.",
+            "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1362,11 +1362,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "11015814946289049349"
+              "version": "0.28.1.47646",
+              "templateHash": "11404005385428137458"
             },
             "name": "Network Manager Security Admin Configurations",
-            "description": "This module deploys an Network Manager Security Admin Configuration.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+            "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1656,11 +1656,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "4261286839823300724"
+                      "version": "0.28.1.47646",
+                      "templateHash": "16935679479200215106"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
-                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
+                    "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
@@ -1950,11 +1950,11 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.27.1.19265",
-                              "templateHash": "17880704693619791217"
+                              "version": "0.28.1.47646",
+                              "templateHash": "2308266442236720720"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+                            "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
                             "owner": "Azure/module-maintainers"
                           },
                           "definitions": {
