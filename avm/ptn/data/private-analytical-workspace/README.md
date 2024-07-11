@@ -677,6 +677,10 @@ This option allows the solution to be connected to a VNET that the customer prov
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `databricksLocation` | string | The location of the Azure Databricks when enabled for provisioning. |
+| `databricksName` | string | The name of the Azure Databricks when enabled for provisioning. |
+| `databricksResourceGroupName` | string | The name of the Azure Databricks resource group when enabled for provisioning. |
+| `databricksResourceId` | string | The resource ID of the Azure Databricks when enabled for provisioning. |
 | `keyVaultLocation` | string | The location of the Azure Key Vault. |
 | `keyVaultName` | string | The name of the Azure Key Vault. |
 | `keyVaultResourceGroupName` | string | The name of the Azure Key Vault resource group. |
@@ -709,7 +713,35 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Notes
 
-TODO: !!!!! UPDATE NOTES !!!!!
+### Supported Use Cases
+
+#### Use Case 1: Isolated Virtual Network
+
+- Not reachable from enterprise network.
+- Accessible only from specified public IP addresses.
+- Public IP addresses or ranges needs to be provided to allow network access to the solution.
+- Identity of the solution administrator or group needs to be provided to access and manage the solution.
+- Easy to provision and manage.
+- When Azure Databricks is enabled, the public IP must be enabled manually.
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawisolated'
+    // Non-required parameters
+    keyVaultResourceId: '<keyVaultResourceId>'
+  }
+}
+```
+
+#### Use Case 3: Provided Virtual Network
+
+- Customer needs to provide Spoke Virtual Network with subnets for the solution.
+  - Private Link Subnet, control plane and compute plane subnet for Azure Databricks
+  - Subnets for Azure Databricks must have delegations for 'Microsoft.Databricks/workspaces' enabled
+
 
 ## Data Collection
 

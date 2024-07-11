@@ -425,7 +425,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
   }
 }
 
-module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET) {
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET && createNewKV) {
   name: privateDnsZoneNameKv
   params: {
     // Required parameters
@@ -583,6 +583,18 @@ output keyVaultLocation string = kvCfg.location
 
 @description('The name of the Azure Key Vault resource group.')
 output keyVaultResourceGroupName string = kvCfg.resourceGroupName
+
+@description('The resource ID of the Azure Databricks when enabled for provisioning.')
+output databricksResourceId string = dbw.outputs.resourceId
+
+@description('The name of the Azure Databricks when enabled for provisioning.')
+output databricksName string = dbw.outputs.name
+
+@description('The location of the Azure Databricks when enabled for provisioning.')
+output databricksLocation string = dbw.outputs.location
+
+@description('The name of the Azure Databricks resource group when enabled for provisioning.')
+output databricksResourceGroupName string = dbw.outputs.resourceGroupName
 
 // ================ //
 // Definitions      //

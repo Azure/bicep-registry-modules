@@ -25,6 +25,11 @@ Describe 'Validate deployment' {
         $keyVaultName = $TestInputData.DeploymentOutputs.keyVaultName.Value
         $keyVaultLocation = $TestInputData.DeploymentOutputs.keyVaultLocation.Value
         $keyVaultResourceGroupName = $TestInputData.DeploymentOutputs.keyVaultResourceGroupName.Value
+
+        $databricksResourceId = $TestInputData.DeploymentOutputs.databricksResourceId.Value
+        $databricksName = $TestInputData.DeploymentOutputs.databricksName.Value
+        $databricksLocation = $TestInputData.DeploymentOutputs.databricksLocation.Value
+        $databricksResourceGroupName = $TestInputData.DeploymentOutputs.databricksResourceGroupName.Value
     }
 
     Context 'Common Tests' {
@@ -53,6 +58,11 @@ Describe 'Validate deployment' {
             $keyVaultName | Should -Not -BeNullOrEmpty
             $keyVaultLocation | Should -Not -BeNullOrEmpty
             $keyVaultResourceGroupName | Should -Not -BeNullOrEmpty
+
+            $databricksResourceId | Should -Not -BeNullOrEmpty
+            $databricksName | Should -Not -BeNullOrEmpty
+            $databricksLocation | Should -Not -BeNullOrEmpty
+            $databricksResourceGroupName | Should -Not -BeNullOrEmpty
         }
 
         It 'Check Mandatory Objects' {
