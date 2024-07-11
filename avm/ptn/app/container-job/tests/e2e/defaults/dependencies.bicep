@@ -5,7 +5,7 @@ param location string = resourceGroup().location
 param lawName string
 
 resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
-  name: '${lawName}-law'
+  name: lawName
   location: location
 }
 

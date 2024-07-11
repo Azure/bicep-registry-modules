@@ -15,7 +15,6 @@ param resourceGroupName string = 'dep-${namePrefix}-app-containerjob-${serviceSh
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'acjwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
@@ -56,6 +55,8 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
+      // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
+      keyVaultName: 'kv${uniqueString('cjob', resourceLocation, resourceGroupName)}'
       // needed for idempotency testing
       overwriteExistingImage: true
       appInsightsConnectionString: dependencies.outputs.appInsightsConnectionString

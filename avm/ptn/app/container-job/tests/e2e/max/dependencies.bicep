@@ -31,6 +31,16 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   location: location
 }
 
+resource dnsZoneKeyVault 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.vaultcore.azure.net'
+  location: 'global'
+}
+
+resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.azurecr.io'
+  location: 'global'
+}
+
 @description('The name of the created Azure Container Registry.')
 output logAnalyticsResourceId string = law.id
 
@@ -39,3 +49,9 @@ output appInsightsConnectionString string = appInsights.properties.ConnectionStr
 
 @description('The name of the created User Assigned Identity.')
 output userIdentityName string = userAssignedIdentity.name
+
+@description('The name of the created DNS Zone for Key Vault.')
+output dnsZoneKeyVaultId string = dnsZoneKeyVault.id
+
+@description('The name of the created DNS Zone for Container Registry.')
+output dnsZoneContainerRegistryId string = dnsZoneContainerRegistry_existing.id

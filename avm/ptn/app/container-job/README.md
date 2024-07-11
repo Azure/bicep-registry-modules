@@ -70,7 +70,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/container-job:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Align to WAF](#example-2-align-to-waf)
+- [Pass in existing resources](#example-2-pass-in-existing-resources)
+- [Align to WAF](#example-3-align-to-waf)
 
 ### Example 1: _Using only defaults_
 
@@ -87,6 +88,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+    keyVaultName: '<keyVaultName>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjmin001'
     // Non-required parameters
@@ -112,6 +114,9 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
     },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
@@ -132,7 +137,177 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 </details>
 <p>
 
-### Example 2: _Align to WAF_
+### Example 2: _Pass in existing resources_
+
+This instance deploys the module with existing resources.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
+  name: 'containerJobDeployment'
+  params: {
+    // Required parameters
+    containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+    keyVaultName: '<keyVaultName>'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    name: 'acjmax001'
+    // Non-required parameters
+    addressPrefix: '192.168.0.0/16'
+    appInsightsConnectionString: '<appInsightsConnectionString>'
+    cpu: '2'
+    cronExpression: '0 * * * *'
+    deployDnsZoneContainerRegistry: false
+    deployDnsZoneKeyVault: false
+    deployInVnet: true
+    environmentVariables: [
+      {
+        name: 'key1'
+        value: 'value1'
+      }
+      {
+        name: 'key2'
+        secretRef: 'secret_key1'
+      }
+    ]
+    location: '<location>'
+    managedIdentityName: '<managedIdentityName>'
+    memory: '8Gi'
+    nameSuffix: 'cjob'
+    overwriteExistingImage: true
+    secrets: [
+      {
+        keyVaultUrl: '<keyVaultUrl>'
+        name: 'secret_key1'
+      }
+    ]
+    tags: {
+      environment: 'test'
+    }
+    workloadProfileName: 'CAW01'
+    workloadProfiles: [
+      {
+        maximumCount: 1
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containerImageSource": {
+      "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
+    },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "name": {
+      "value": "acjmax001"
+    },
+    // Non-required parameters
+    "addressPrefix": {
+      "value": "192.168.0.0/16"
+    },
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
+    "cpu": {
+      "value": "2"
+    },
+    "cronExpression": {
+      "value": "0 * * * *"
+    },
+    "deployDnsZoneContainerRegistry": {
+      "value": false
+    },
+    "deployDnsZoneKeyVault": {
+      "value": false
+    },
+    "deployInVnet": {
+      "value": true
+    },
+    "environmentVariables": {
+      "value": [
+        {
+          "name": "key1",
+          "value": "value1"
+        },
+        {
+          "name": "key2",
+          "secretRef": "secret_key1"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentityName": {
+      "value": "<managedIdentityName>"
+    },
+    "memory": {
+      "value": "8Gi"
+    },
+    "nameSuffix": {
+      "value": "cjob"
+    },
+    "overwriteExistingImage": {
+      "value": true
+    },
+    "secrets": {
+      "value": [
+        {
+          "keyVaultUrl": "<keyVaultUrl>",
+          "name": "secret_key1"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "environment": "test"
+      }
+    },
+    "workloadProfileName": {
+      "value": "CAW01"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 1,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Align to WAF_
 
 This instance deploys the module with private networking and a workload plan.
 
@@ -147,6 +322,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+    keyVaultName: '<keyVaultName>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjwaf001'
     // Non-required parameters
@@ -183,6 +359,9 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     // Required parameters
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
+    },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
@@ -234,6 +413,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerImageSource`](#parameter-containerimagesource) | string | The container image source that will be copied to the Container Registry and used to provision the job. |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 
 **Conditional parameters**
@@ -241,8 +421,8 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the virtual network needs to be at least a /16. Required if `deployInVnet` is `true`. |
-| [`deployDnsZoneContainerRegistry`](#parameter-deploydnszonecontainerregistry) | bool | A new private DNS Zone will be created. Required if `deployInVnet` is `true`. |
-| [`deployDnsZoneKeyVault`](#parameter-deploydnszonekeyvault) | bool | A new private DNS Zone will be created. Required if `deployInVnet` is `true`. |
+| [`deployDnsZoneContainerRegistry`](#parameter-deploydnszonecontainerregistry) | bool | A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.azurecr.io`. Required if `deployInVnet` is `true`. |
+| [`deployDnsZoneKeyVault`](#parameter-deploydnszonekeyvault) | bool | A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.vaultcore.azure.net`. Required if `deployInVnet` is `true`. |
 
 **Optional parameters**
 
@@ -253,13 +433,14 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | [`cronExpression`](#parameter-cronexpression) | string | The cron expression that will be used to schedule the job. |
 | [`deployInVnet`](#parameter-deployinvnet) | bool | Deploy resources in a virtual network and use it for private endpoints. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`jobEnvironmentVariables`](#parameter-jobenvironmentvariables) | array | The environment variables that will be added to the Container Apps Job. |
+| [`environmentVariables`](#parameter-environmentvariables) | array | The environment variables that will be added to the Container Apps Job. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created. |
 | [`managedIdentityName`](#parameter-managedidentityname) | string | Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created. |
 | [`memory`](#parameter-memory) | string | The memory resources that will be allocated to the Container Apps Job. |
 | [`nameSuffix`](#parameter-namesuffix) | string | The suffix will be used for newly created resources. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The flag that indicates whether the existing image in the Container Registry should be overwritten. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. |
@@ -271,6 +452,14 @@ The container image source that will be copied to the Container Registry and use
 - Required: Yes
 - Type: string
 - Example: `mcr.microsoft.com/k8se/quickstart-jobs:latest`
+
+### Parameter: `keyVaultName`
+
+The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.
+
+- Required: Yes
+- Type: string
+- Example: `kv${uniqueString(nameSuffix, location, resourceGroup().name)`
 
 ### Parameter: `name`
 
@@ -288,7 +477,7 @@ The address prefix for the virtual network needs to be at least a /16. Required 
 
 ### Parameter: `deployDnsZoneContainerRegistry`
 
-A new private DNS Zone will be created. Required if `deployInVnet` is `true`.
+A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.azurecr.io`. Required if `deployInVnet` is `true`.
 
 - Required: No
 - Type: bool
@@ -296,7 +485,7 @@ A new private DNS Zone will be created. Required if `deployInVnet` is `true`.
 
 ### Parameter: `deployDnsZoneKeyVault`
 
-A new private DNS Zone will be created. Required if `deployInVnet` is `true`.
+A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.vaultcore.azure.net`. Required if `deployInVnet` is `true`.
 
 - Required: No
 - Type: bool
@@ -342,13 +531,12 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `jobEnvironmentVariables`
+### Parameter: `environmentVariables`
 
 The environment variables that will be added to the Container Apps Job.
 
 - Required: No
 - Type: array
-- Default: `[]`
 - Example:
   ```Bicep
   [[
@@ -362,6 +550,40 @@ The environment variables that will be added to the Container Apps Job.
     }
   ]
   ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-environmentvariablesname) | string | The environment variable name. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretRef`](#parameter-environmentvariablessecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null. |
+| [`value`](#parameter-environmentvariablesvalue) | string | The environment variable value. Required if `secretRef` is null. |
+
+### Parameter: `environmentVariables.name`
+
+The environment variable name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `environmentVariables.secretRef`
+
+The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.
+
+- Required: No
+- Type: string
+
+### Parameter: `environmentVariables.value`
+
+The environment variable value. Required if `secretRef` is null.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -409,6 +631,80 @@ The flag that indicates whether the existing image in the Container Registry sho
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `secrets`
+
+The secrets of the Container App.
+
+- Required: No
+- Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      name: 'mysecret'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      name: 'mysecret'
+      identity: 'system'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      // You can do this, but you shouldn't. Use a secret reference instead.
+      name: 'mysecret'
+      value: 'mysecretvalue'
+    }
+    {
+      name: 'connection-string'
+      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value
+    }
+  ]
+  ```
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+
+### Parameter: `secrets.keyVaultUrl`
+
+Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.
+
+- Required: No
+- Type: string
+- Example: `https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret`
+
+### Parameter: `secrets.value`
+
+The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `secrets.identity`
+
+Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 
@@ -479,15 +775,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/storage/storage-account:0.11.0` | Remote reference |
 
 ## Notes
-
-### TODO
-
-Tests for:
-
-- waf-aligned
-- without networking
-- bringing a managed identity
-- maybe consumption plan
 
 ## Data Collection
 

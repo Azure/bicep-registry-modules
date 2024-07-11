@@ -32,6 +32,9 @@ param logAnalyticsWorkspaceResourceId string
 @sys.description('Optional. The connection string for the Application Insights instance that will be used by the Job.')
 param appInsightsConnectionString string?
 
+@description('Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.')
+param keyVaultName string
+
 // workload parameters
 // -------------------------
 
@@ -246,7 +249,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-vault'
   params: {
-    name: 'kv${uniqueString(nameSuffix, resourceLocation, resourceGroupName)}' // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
+    name: keyVaultName
     enablePurgeProtection: false
     enableRbacAuthorization: true
     location: resourceLocation
@@ -274,17 +277,17 @@ module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
 }
 
 module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-registry'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-registry'
   params: {
     #disable-next-line BCP334
-    name: uniqueString('cr', nameSuffix, resourceLocation)
+    name: uniqueString('cr', nameSuffix, resourceLocation, resourceGroupName)
     location: resourceLocation
     acrSku: deployInVnet ? 'Premium' : 'Standard' // Private Endpoint needs Premium tier
     retentionPolicyDays: 30
     retentionPolicyStatus: 'enabled'
     softDeletePolicyDays: 7
     softDeletePolicyStatus: 'disabled'
-    tags: union(tags, { 'used-by': 'container-apps-job' })
+    tags: union(tags, { 'used-by': 'container-job' })
     acrAdminUserEnabled: false
     roleAssignments: [
       for registryRole in registryRbacRoles: {
@@ -301,7 +304,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
 }
 
 module storage 'br/public:avm/res/storage/storage-account:0.11.0' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-storage'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-storage'
   params: {
     name: uniqueString('sa', nameSuffix, resourceLocation)
     location: resourceLocation
@@ -365,7 +368,6 @@ output managedEnvironmentId string = managedEnvironment.outputs.resourceId
 output userManagedIdentityResourceId string = managedIdentityName == null
   ? userIdentity_new.outputs.resourceId
   : userIdentity_existing.id
-// output userManagedIdentityName string = managedIdentityName == null ? userIdentity_new.name : userIdentity_existing.name
 output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
 output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''
 output storageAccountResourceId string = deployInVnet ? storage.outputs.resourceId : ''

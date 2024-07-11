@@ -33,6 +33,10 @@ param logAnalyticsWorkspaceResourceId string
 })
 param appInsightsConnectionString string?
 
+@description('Required. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.')
+@metadata({ example: '''kv${uniqueString(nameSuffix, location, resourceGroup().name)''' })
+param keyVaultName string
+
 // network related parameters
 // -------------------------
 @description('Optional. Deploy resources in a virtual network and use it for private endpoints.')
@@ -42,10 +46,10 @@ param deployInVnet bool = false
 @metadata({ default: '10.50.0.0/16' })
 param addressPrefix string?
 
-@description('Conditional. A new private DNS Zone will be created. Required if `deployInVnet` is `true`.')
+@description('Conditional. A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.vaultcore.azure.net`. Required if `deployInVnet` is `true`.')
 param deployDnsZoneKeyVault bool = true
 
-@description('Conditional. A new private DNS Zone will be created. Required if `deployInVnet` is `true`.')
+@description('Conditional. A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.azurecr.io`. Required if `deployInVnet` is `true`.')
 param deployDnsZoneContainerRegistry bool = true
 
 // container related parameters
@@ -80,7 +84,36 @@ param memory string = '2Gi'
   }
 ]'''
 })
-param jobEnvironmentVariables array = []
+param environmentVariables environmentVariablesType[]?
+
+@description('Optional. The secrets of the Container App.')
+@metadata({
+  example: '''
+  [
+    {
+      name: 'mysecret'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      name: 'mysecret'
+      identity: 'system'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      // You can do this, but you shouldn't. Use a secret reference instead.
+      name: 'mysecret'
+      value: 'mysecretvalue'
+    }
+    {
+      name: 'connection-string'
+      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value
+    }
+  ]
+  '''
+})
+#disable-next-line secure-secrets-in-params // @secure() is specified in UDT
+param secrets secretType[]?
 
 @description('Optional. Workload profiles for the managed environment.')
 @metadata({
@@ -143,6 +176,7 @@ module services 'modules/deploy_services.bicep' = {
     managedIdentityName: managedIdentityName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     appInsightsConnectionString: appInsightsConnectionString
+    keyVaultName: keyVaultName
     deployInVnet: deployInVnet
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
@@ -193,7 +227,7 @@ module job 'br/public:avm/res/app/job:0.3.0' = {
             }
           ]
         : [],
-      []
+      secrets ?? []
     )
     triggerType: 'Schedule'
     scheduleTriggerConfig: {
@@ -208,8 +242,8 @@ module job 'br/public:avm/res/app/job:0.3.0' = {
     containers: [
       {
         name: 'job-${nameSuffix}'
-        image: containerImageSource
-        env: jobEnvironmentVariables
+        image: import_image.outputs.importedImage.acrHostedImage
+        env: environmentVariables
         resources: {
           cpu: cpu
           memory: memory
@@ -241,6 +275,32 @@ output vnetResourceId string = services.outputs.vnetResourceId
 // ================ //
 // Definitions      //
 // ================ //
-//
-// Add your User-defined-types here, if any
-//
+
+type environmentVariablesType = {
+  @description('Required. The environment variable name.')
+  name: string
+
+  @description('Conditional. The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.')
+  secretRef: string?
+
+  @description('Conditional. The environment variable value. Required if `secretRef` is null.')
+  value: string?
+}
+
+type secretType = {
+  @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
+  identity: string?
+
+  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  @metadata({
+    example: '''https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'''
+  })
+  keyVaultUrl: string?
+
+  @description('Optional. The name of the secret.')
+  name: string?
+
+  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @secure()
+  value: string?
+}

@@ -6,11 +6,72 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14329196268657931975"
+      "templateHash": "9985882137563934265"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "environmentVariablesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The environment variable name."
+          }
+        },
+        "secretRef": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The environment variable value. Required if `secretRef` is null."
+          }
+        }
+      }
+    },
+    "secretType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
+          }
+        },
+        "keyVaultUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "example": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
+            "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the secret."
+          }
+        },
+        "value": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
+          }
+        }
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -62,6 +123,13 @@
         "description": "Optional. The connection string for the Application Insights instance that will be added to Key Vault as `applicationinsights-connection-string` and can be used by the Job."
       }
     },
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "example": "kv${uniqueString(nameSuffix, location, resourceGroup().name)",
+        "description": "Required. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets."
+      }
+    },
     "deployInVnet": {
       "type": "bool",
       "defaultValue": false,
@@ -81,14 +149,14 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Conditional. A new private DNS Zone will be created. Required if `deployInVnet` is `true`."
+        "description": "Conditional. A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.vaultcore.azure.net`. Required if `deployInVnet` is `true`."
       }
     },
     "deployDnsZoneContainerRegistry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Conditional. A new private DNS Zone will be created. Required if `deployInVnet` is `true`."
+        "description": "Conditional. A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.azurecr.io`. Required if `deployInVnet` is `true`."
       }
     },
     "containerImageSource": {
@@ -127,12 +195,26 @@
         "description": "Optional. The memory resources that will be allocated to the Container Apps Job."
       }
     },
-    "jobEnvironmentVariables": {
+    "environmentVariables": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/environmentVariablesType"
+      },
+      "nullable": true,
       "metadata": {
         "example": "[[\n  {\n    name: 'ENV_VAR_NAME'\n    value: 'ENV_VAR_VALUE'\n  }\n  {\n    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'\n    secretRef: 'applicationinsights-connection-string'\n  }\n]",
         "description": "Optional. The environment variables that will be added to the Container Apps Job."
+      }
+    },
+    "secrets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/secretType"
+      },
+      "nullable": true,
+      "metadata": {
+        "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      // You can do this, but you shouldn't. Use a secret reference instead.\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
+        "description": "Optional. The secrets of the Container App."
       }
     },
     "workloadProfiles": {
@@ -209,6 +291,9 @@
           "appInsightsConnectionString": {
             "value": "[parameters('appInsightsConnectionString')]"
           },
+          "keyVaultName": {
+            "value": "[parameters('keyVaultName')]"
+          },
           "deployInVnet": {
             "value": "[parameters('deployInVnet')]"
           },
@@ -234,7 +319,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1943552884645449467"
+              "templateHash": "3045331987939119981"
             }
           },
           "parameters": {
@@ -304,6 +389,12 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. The connection string for the Application Insights instance that will be used by the Job."
+              }
+            },
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets."
               }
             },
             "workloadProfiles": {
@@ -9772,7 +9863,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('kv{0}', uniqueString(parameters('nameSuffix'), parameters('resourceLocation'), parameters('resourceGroupName')))]"
+                    "value": "[parameters('keyVaultName')]"
                   },
                   "enablePurgeProtection": {
                     "value": false
@@ -12537,7 +12628,7 @@
             "registry": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-registry', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-registry', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -12545,7 +12636,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[uniqueString('cr', parameters('nameSuffix'), parameters('resourceLocation'))]"
+                    "value": "[uniqueString('cr', parameters('nameSuffix'), parameters('resourceLocation'), parameters('resourceGroupName'))]"
                   },
                   "location": {
                     "value": "[parameters('resourceLocation')]"
@@ -12564,7 +12655,7 @@
                     "value": "disabled"
                   },
                   "tags": {
-                    "value": "[union(parameters('tags'), createObject('used-by', 'container-apps-job'))]"
+                    "value": "[union(parameters('tags'), createObject('used-by', 'container-job'))]"
                   },
                   "acrAdminUserEnabled": {
                     "value": false
@@ -14706,7 +14797,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -20907,7 +20998,7 @@
             }
           },
           "secrets": {
-            "value": "[union(if(not(empty(reference('services').outputs.keyVaultAppInsightsConnectionStringUrl.value)), createArray(createObject('name', 'mysecret', 'identity', reference('services').outputs.userManagedIdentityResourceId.value, 'keyVaultUrl', format('https://{0}{1}/secrets/applicationinsights-connection-string', reference('services').outputs.vaultName.value, environment().suffixes.keyvaultDns))), createArray()), createArray())]"
+            "value": "[union(if(not(empty(reference('services').outputs.keyVaultAppInsightsConnectionStringUrl.value)), createArray(createObject('name', 'mysecret', 'identity', reference('services').outputs.userManagedIdentityResourceId.value, 'keyVaultUrl', format('https://{0}{1}/secrets/applicationinsights-connection-string', reference('services').outputs.vaultName.value, environment().suffixes.keyvaultDns))), createArray()), coalesce(parameters('secrets'), createArray()))]"
           },
           "triggerType": {
             "value": "Schedule"
@@ -20929,8 +21020,8 @@
             "value": [
               {
                 "name": "[format('job-{0}', parameters('nameSuffix'))]",
-                "image": "[parameters('containerImageSource')]",
-                "env": "[parameters('jobEnvironmentVariables')]",
+                "image": "[reference('import_image').outputs.importedImage.value.acrHostedImage]",
+                "env": "[parameters('environmentVariables')]",
                 "resources": {
                   "cpu": "[parameters('cpu')]",
                   "memory": "[parameters('memory')]"
@@ -22014,6 +22105,7 @@
         }
       },
       "dependsOn": [
+        "import_image",
         "services"
       ]
     }
