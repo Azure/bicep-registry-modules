@@ -104,6 +104,11 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      alertDisplayName: '${uniqueString(deployment().name, resourceLocation)}-displayNameTest-${serviceShort}-${iteration}'
+      ruleResolveConfiguration: {
+        autoResolved: true
+        timeToResolve: 'PT5M'
+      }
       scopes: [
         nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       ]

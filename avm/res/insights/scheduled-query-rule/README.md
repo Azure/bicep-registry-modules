@@ -16,7 +16,7 @@ This module deploys a Scheduled Query Rule.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/scheduledQueryRules` | [2021-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-02-01-preview/scheduledQueryRules) |
+| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-02-01-preview/scheduledQueryRules) |
 
 ## Usage examples
 
@@ -218,6 +218,11 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    alertDisplayName: 'isqrminDisplay001'
+    ruleResolveConfiguration: {
+      autoResolved: true
+      timeToResolve: 'PT5M'
+    }
     suppressForMinutes: 'PT5M'
     tags: {
       Environment: 'Non-Prod'
@@ -283,6 +288,9 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "alertDescription": {
       "value": "My sample Alert"
     },
+    "displayName": {
+      "value": "isqrminDisplay001"
+    },
     "autoMitigate": {
       "value": false
     },
@@ -313,6 +321,12 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "ruleResolveConfiguration": {
+      "value": {
+        "autoResolved": true,
+        "timeToResolve": "PT5M"
+      }
     },
     "suppressForMinutes": {
       "value": "PT5M"
@@ -505,6 +519,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | :-- | :-- | :-- |
 | [`actions`](#parameter-actions) | array | Actions to invoke when the alert fires. |
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
+| [`alertDisplayName`](#parameter-alertdisplayname) | string | The display name of the scheduled query rule. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
 | [`enabled`](#parameter-enabled) | bool | The flag which indicates whether this scheduled query rule is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -512,6 +527,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | [`kind`](#parameter-kind) | string | Indicates the type of scheduled query rule. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
+| [`ruleResolveConfiguration`](#parameter-ruleResolveConfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
@@ -559,6 +575,14 @@ Actions to invoke when the alert fires.
 ### Parameter: `alertDescription`
 
 The description of the scheduled query rule.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `alertDisplayName`
+
+The display name of the scheduled query rule.
 
 - Required: No
 - Type: string
@@ -626,6 +650,13 @@ If specified (in ISO 8601 duration format) then overrides the query time range. 
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `ruleResolveConfiguration`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 
