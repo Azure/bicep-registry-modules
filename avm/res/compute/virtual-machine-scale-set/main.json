@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10261643860679294572"
+      "templateHash": "11113445400377232616"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -1009,7 +1009,7 @@
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
-          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '1.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), '80'), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), '/')))))), null())]",
+          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '1.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), '/')))))), null())]",
           "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
