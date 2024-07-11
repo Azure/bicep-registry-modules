@@ -584,6 +584,7 @@ output keyVaultLocation string = kvCfg.location
 @description('The name of the Azure Key Vault resource group.')
 output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
+/*
 @description('The resource ID of the Azure Databricks when enabled for provisioning.')
 output databricksResourceId string = dbw.outputs.resourceId
 
@@ -595,6 +596,7 @@ output databricksLocation string = dbw.outputs.location
 
 @description('The name of the Azure Databricks resource group when enabled for provisioning.')
 output databricksResourceGroupName string = dbw.outputs.resourceGroupName
+*/
 
 // ================ //
 // Definitions      //

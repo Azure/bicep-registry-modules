@@ -26,10 +26,10 @@ Describe 'Validate deployment' {
         $keyVaultLocation = $TestInputData.DeploymentOutputs.keyVaultLocation.Value
         $keyVaultResourceGroupName = $TestInputData.DeploymentOutputs.keyVaultResourceGroupName.Value
 
-        $databricksResourceId = $TestInputData.DeploymentOutputs.databricksResourceId.Value
-        $databricksName = $TestInputData.DeploymentOutputs.databricksName.Value
-        $databricksLocation = $TestInputData.DeploymentOutputs.databricksLocation.Value
-        $databricksResourceGroupName = $TestInputData.DeploymentOutputs.databricksResourceGroupName.Value
+        #$databricksResourceId = $TestInputData.DeploymentOutputs.databricksResourceId.Value
+        #$databricksName = $TestInputData.DeploymentOutputs.databricksName.Value
+        #$databricksLocation = $TestInputData.DeploymentOutputs.databricksLocation.Value
+        #$databricksResourceGroupName = $TestInputData.DeploymentOutputs.databricksResourceGroupName.Value
     }
 
     Context 'Common Tests' {
@@ -59,10 +59,10 @@ Describe 'Validate deployment' {
             $keyVaultLocation | Should -Not -BeNullOrEmpty
             $keyVaultResourceGroupName | Should -Not -BeNullOrEmpty
 
-            $databricksResourceId | Should -Not -BeNullOrEmpty
-            $databricksName | Should -Not -BeNullOrEmpty
-            $databricksLocation | Should -Not -BeNullOrEmpty
-            $databricksResourceGroupName | Should -Not -BeNullOrEmpty
+            #$databricksResourceId | Should -Not -BeNullOrEmpty
+            #$databricksName | Should -Not -BeNullOrEmpty
+            #$databricksLocation | Should -Not -BeNullOrEmpty
+            #$databricksResourceGroupName | Should -Not -BeNullOrEmpty
         }
 
         It 'Check Mandatory Objects' {
