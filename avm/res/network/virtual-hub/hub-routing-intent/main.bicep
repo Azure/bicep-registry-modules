@@ -18,7 +18,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' existing = {
   name: virtualHubName
 }
 
-resource routingintent 'Microsoft.Network/virtualHubs/routingIntent@2023-04-01' = {
+resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-11-01' = {
   name: 'defaultRouteTable'
   parent : virtualHub
   properties: {
@@ -57,3 +57,12 @@ resource routingintent 'Microsoft.Network/virtualHubs/routingIntent@2023-04-01' 
   : null
   }
 }
+
+@description('The name of the Routing Intent configuration')
+output name string = routingIntent.name
+
+@description('The resource ID of the Routing Intent configuration')
+output resourceId string = routingIntent.id
+
+@description('The resource group the Routing Intent configuration was deployed into')
+output resourceGroupName string = resourceGroup().name
