@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "15959591161859117986"
+      "templateHash": "13728728376475281209"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -16121,28 +16121,28 @@
       "metadata": {
         "description": "Conditional. The resource ID of the Azure Databricks if `enableDatabricks` is `true`."
       },
-      "value": "[reference('dbw').outputs.resourceId.value]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('dbw'), 'outputs'), 'resourceId'), 'value'), '')]"
     },
     "databricksName": {
       "type": "string",
       "metadata": {
         "description": "Conditional. The name of the Azure Databricks if `enableDatabricks` is `true`."
       },
-      "value": "[reference('dbw').outputs.name.value]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('dbw'), 'outputs'), 'name'), 'value'), '')]"
     },
     "databricksLocation": {
       "type": "string",
       "metadata": {
         "description": "Conditional. The location of the Azure Databricks if `enableDatabricks` is `true`."
       },
-      "value": "[reference('dbw').outputs.location.value]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('dbw'), 'outputs'), 'location'), 'value'), '')]"
     },
     "databricksResourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "Conditional. The name of the Azure Databricks resource group if `enableDatabricks` is `true`."
       },
-      "value": "[reference('dbw').outputs.resourceGroupName.value]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('dbw'), 'outputs'), 'resourceGroupName'), 'value'), '')]"
     }
   }
 }

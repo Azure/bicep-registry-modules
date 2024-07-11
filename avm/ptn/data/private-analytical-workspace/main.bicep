@@ -585,16 +585,16 @@ output keyVaultLocation string = kvCfg.location
 output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
 @description('Conditional. The resource ID of the Azure Databricks if `enableDatabricks` is `true`.')
-output databricksResourceId string = dbw.outputs.resourceId
+output databricksResourceId string = dbw.?outputs.?resourceId ?? ''
 
 @description('Conditional. The name of the Azure Databricks if `enableDatabricks` is `true`.')
-output databricksName string = dbw.outputs.name
+output databricksName string = dbw.?outputs.?name ?? ''
 
 @description('Conditional. The location of the Azure Databricks if `enableDatabricks` is `true`.')
-output databricksLocation string = dbw.outputs.location
+output databricksLocation string = dbw.?outputs.?location ?? ''
 
 @description('Conditional. The name of the Azure Databricks resource group if `enableDatabricks` is `true`.')
-output databricksResourceGroupName string = dbw.outputs.resourceGroupName
+output databricksResourceGroupName string = dbw.?outputs.?resourceGroupName ?? ''
 
 // ================ //
 // Definitions      //
