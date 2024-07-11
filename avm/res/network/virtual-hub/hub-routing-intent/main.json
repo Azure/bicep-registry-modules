@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1181397226774988770"
+      "templateHash": "338300700691072984"
     },
     "name": "Virtual Hub Routing Intent",
     "description": "This module configures Routing Intent for a Virtual Hub.",
@@ -15,25 +15,25 @@
     "azureFirewallResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. Hub firewall Resource ID "
+        "description": "Required. Hub firewall Resource ID."
       }
     },
     "virtualHubName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Virtual Hub"
+        "description": "Required. Name of the Virtual Hub."
       }
     },
     "privateToFirewall": {
       "type": "bool",
       "metadata": {
-        "description": "Required. Forward Private traffic to the Azure firewall (RFC1918)"
+        "description": "Required. Forward Private traffic to the Azure firewall (RFC1918)."
       }
     },
     "internetToFirewall": {
       "type": "bool",
       "metadata": {
-        "description": "Required. orward Internet traffic to the Azure firewall (0.0.0.0/0)"
+        "description": "Required. Forward Internet traffic to the Azure firewall (0.0.0.0/0)."
       }
     }
   },

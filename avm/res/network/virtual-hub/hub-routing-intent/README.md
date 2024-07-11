@@ -22,35 +22,35 @@ This module configures Routing Intent for a Virtual Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureFirewallResourceId`](#parameter-azurefirewallresourceid) | string | Hub firewall Resource ID  |
-| [`internetToFirewall`](#parameter-internettofirewall) | bool | orward Internet traffic to the Azure firewall (0.0.0.0/0) |
-| [`privateToFirewall`](#parameter-privatetofirewall) | bool | Forward Private traffic to the Azure firewall (RFC1918) |
-| [`virtualHubName`](#parameter-virtualhubname) | string | Name of the Virtual Hub |
+| [`azureFirewallResourceId`](#parameter-azurefirewallresourceid) | string | Hub firewall Resource ID. |
+| [`internetToFirewall`](#parameter-internettofirewall) | bool | Forward Internet traffic to the Azure firewall (0.0.0.0/0). |
+| [`privateToFirewall`](#parameter-privatetofirewall) | bool | Forward Private traffic to the Azure firewall (RFC1918). |
+| [`virtualHubName`](#parameter-virtualhubname) | string | Name of the Virtual Hub. |
 
 ### Parameter: `azureFirewallResourceId`
 
-Hub firewall Resource ID 
+Hub firewall Resource ID.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `internetToFirewall`
 
-orward Internet traffic to the Azure firewall (0.0.0.0/0)
+Forward Internet traffic to the Azure firewall (0.0.0.0/0).
 
 - Required: Yes
 - Type: bool
 
 ### Parameter: `privateToFirewall`
 
-Forward Private traffic to the Azure firewall (RFC1918)
+Forward Private traffic to the Azure firewall (RFC1918).
 
 - Required: Yes
 - Type: bool
 
 ### Parameter: `virtualHubName`
 
-Name of the Virtual Hub
+Name of the Virtual Hub.
 
 - Required: Yes
 - Type: string
