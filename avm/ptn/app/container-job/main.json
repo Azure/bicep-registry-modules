@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9985882137563934265"
+      "templateHash": "11989000961187853771"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -319,7 +319,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "3045331987939119981"
+              "templateHash": "5950784802972185799"
             }
           },
           "parameters": {
@@ -440,7 +440,7 @@
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
               "apiVersion": "2020-06-01",
               "name": "[format('{0}/{1}', 'privatelink.vaultcore.azure.net', format('KeyVault-link-{0}', parameters('nameSuffix')))]",
-              "location": "[parameters('resourceLocation')]",
+              "location": "global",
               "properties": {
                 "registrationEnabled": false,
                 "virtualNetwork": {
@@ -464,7 +464,7 @@
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
               "apiVersion": "2020-06-01",
               "name": "[format('{0}/{1}', 'privatelink.azurecr.io', format('ContainerRegistry-link-{0}', parameters('nameSuffix')))]",
-              "location": "[parameters('resourceLocation')]",
+              "location": "global",
               "properties": {
                 "registrationEnabled": false,
                 "virtualNetwork": {
@@ -487,7 +487,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-nsg', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-nsg', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1099,7 +1099,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2329,7 +2329,7 @@
               "condition": "[and(parameters('deployInVnet'), parameters('deployDnsZoneKeyVault'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-dnsZoneKeyVault', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-dnsZoneKeyVault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -5212,7 +5212,7 @@
               "condition": "[and(parameters('deployInVnet'), parameters('deployDnsZoneContainerRegistry'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-dnsZoneContainerRegistry', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-dnsZoneContainerRegistry', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -8095,7 +8095,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-privateEndpoint_KeyVault', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-privateEndpoint_KeyVault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -8751,7 +8751,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-privateEndpoint_ContainerRegistry', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-privateEndpoint_ContainerRegistry', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -9404,7 +9404,7 @@
               "condition": "[equals(parameters('managedIdentityName'), null())]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-userIdentity', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-userIdentity', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -9855,7 +9855,7 @@
             "vault": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-vault', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-vault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -14805,7 +14805,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[uniqueString('sa', parameters('nameSuffix'), parameters('resourceLocation'))]"
+                    "value": "[uniqueString('sa', parameters('nameSuffix'), parameters('resourceLocation'), parameters('resourceGroupName'))]"
                   },
                   "location": {
                     "value": "[parameters('resourceLocation')]"
@@ -19519,7 +19519,7 @@
             "managedEnvironment": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-managedEnvironment', uniqueString(deployment().name, parameters('resourceLocation')))]",
+              "name": "[format('{0}-managedEnvironment', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

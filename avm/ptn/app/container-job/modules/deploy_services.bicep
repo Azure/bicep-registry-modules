@@ -62,7 +62,7 @@ var workloadSubnetAddressPrefix = cidrSubnet(addressPrefix, 23, 1) // the second
 // Networking resources
 // -----------------
 module nsg 'br/public:avm/res/network/network-security-group:0.3.1' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-nsg'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg'
   params: {
     name: 'nsg-${nameSuffix}'
     location: resourceLocation
@@ -71,7 +71,7 @@ module nsg 'br/public:avm/res/network/network-security-group:0.3.1' = if (deploy
 }
 
 module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-vnet'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${nameSuffix}'
     addressPrefixes: [
@@ -121,7 +121,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (deployInVnet
 }
 
 module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (deployInVnet && deployDnsZoneKeyVault) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-dnsZoneKeyVault'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-dnsZoneKeyVault'
   params: {
     name: 'privatelink.vaultcore.azure.net'
     tags: tags
@@ -140,7 +140,7 @@ resource dnsZoneKeyVault_existing 'Microsoft.Network/privateDnsZones@2020-06-01'
 resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneKeyVault) {
   name: 'KeyVault-link-${nameSuffix}'
   parent: dnsZoneKeyVault_existing
-  location: resourceLocation
+  location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
@@ -150,7 +150,7 @@ resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetw
 }
 
 module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (deployInVnet && deployDnsZoneContainerRegistry) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-dnsZoneContainerRegistry'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-dnsZoneContainerRegistry'
   params: {
     name: 'privatelink.azurecr.io'
     tags: tags
@@ -169,7 +169,7 @@ resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@20
 resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneContainerRegistry) {
   name: 'ContainerRegistry-link-${nameSuffix}'
   parent: dnsZoneContainerRegistry_existing
-  location: resourceLocation
+  location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
@@ -179,7 +179,7 @@ resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/vi
 }
 
 module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.4.2' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-privateEndpoint_KeyVault'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-privateEndpoint_KeyVault'
   params: {
     name: 'pe-KeyVault-${nameSuffix}'
     subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
@@ -204,7 +204,7 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.4.
   }
 }
 module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.4.2' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-privateEndpoint_ContainerRegistry'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-privateEndpoint_ContainerRegistry'
   params: {
     name: 'pe-ContainerRegistry-${nameSuffix}'
     subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
@@ -233,7 +233,7 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
 // Identity resources
 // -----------------
 module userIdentity_new 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (managedIdentityName == null) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-userIdentity'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-userIdentity'
   params: {
     name: 'jobsUserIdentity-${nameSuffix}'
     location: resourceLocation
@@ -247,7 +247,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 // supporting resources
 // -----------------
 module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-vault'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-vault'
   params: {
     name: keyVaultName
     enablePurgeProtection: false
@@ -306,7 +306,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
 module storage 'br/public:avm/res/storage/storage-account:0.11.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-storage'
   params: {
-    name: uniqueString('sa', nameSuffix, resourceLocation)
+    name: uniqueString('sa', nameSuffix, resourceLocation, resourceGroupName)
     location: resourceLocation
     tags: union(tags, { 'used-by': 'deployment-script' })
     kind: 'StorageV2'
@@ -340,7 +340,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.11.0' = if (deployIn
 // Managed Environment
 // -------------------
 module managedEnvironment 'br/public:avm/res/app/managed-environment:0.5.2' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-managedEnvironment'
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${nameSuffix}'
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
