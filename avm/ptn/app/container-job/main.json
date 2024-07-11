@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12767544164276173907"
+      "templateHash": "14329196268657931975"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -221,9 +221,7 @@
           "deployDnsZoneContainerRegistry": {
             "value": "[parameters('deployDnsZoneContainerRegistry')]"
           },
-          "workloadProfiles": {
-            "value": "[coalesce(parameters('workloadProfiles'), createArray())]"
-          },
+          "workloadProfiles": "[if(greater(length(coalesce(parameters('workloadProfiles'), createArray())), 0), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -236,7 +234,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1050232339606065885"
+              "templateHash": "1943552884645449467"
             }
           },
           "parameters": {
@@ -310,6 +308,7 @@
             },
             "workloadProfiles": {
               "type": "array",
+              "nullable": true,
               "metadata": {
                 "description": "Required. Workload profiles for the managed environment."
               }
@@ -340,10 +339,10 @@
           "resources": {
             "dnsZoneKeyVault_existing": {
               "condition": "[and(parameters('deployInVnet'), not(parameters('deployDnsZoneKeyVault')))]",
+              "existing": true,
               "type": "Microsoft.Network/privateDnsZones",
               "apiVersion": "2020-06-01",
-              "name": "privatelink.vaultcore.azure.net",
-              "location": "[parameters('resourceLocation')]"
+              "name": "privatelink.vaultcore.azure.net"
             },
             "dnsZoneKeyVault_vnetLink": {
               "condition": "[and(parameters('deployInVnet'), not(parameters('deployDnsZoneKeyVault')))]",
@@ -364,10 +363,10 @@
             },
             "dnsZoneContainerRegistry_existing": {
               "condition": "[and(parameters('deployInVnet'), not(parameters('deployDnsZoneContainerRegistry')))]",
+              "existing": true,
               "type": "Microsoft.Network/privateDnsZones",
               "apiVersion": "2020-06-01",
-              "name": "privatelink.azurecr.io",
-              "location": "[parameters('resourceLocation')]"
+              "name": "privatelink.azurecr.io"
             },
             "dnsZoneContainerRegistry_vnetLink": {
               "condition": "[and(parameters('deployInVnet'), not(parameters('deployDnsZoneContainerRegistry')))]",
@@ -388,10 +387,10 @@
             },
             "userIdentity_existing": {
               "condition": "[not(equals(parameters('managedIdentityName'), null()))]",
+              "existing": true,
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2023-01-31",
-              "name": "[coalesce(parameters('managedIdentityName'), 'dummy')]",
-              "location": "[parameters('resourceLocation')]"
+              "name": "[coalesce(parameters('managedIdentityName'), 'dummy')]"
             },
             "nsg": {
               "condition": "[parameters('deployInVnet')]",
@@ -9773,7 +9772,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('kv{0}', uniqueString(parameters('nameSuffix'), parameters('resourceLocation')))]"
+                    "value": "[format('kv{0}', uniqueString(parameters('nameSuffix'), parameters('resourceLocation'), parameters('resourceGroupName')))]"
                   },
                   "enablePurgeProtection": {
                     "value": false
@@ -9800,7 +9799,7 @@
                       }
                     ]
                   },
-                  "publicNetworkAccess": "[if(parameters('deployInVnet'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]"
+                  "publicNetworkAccess": "[if(parameters('deployInVnet'), createObject('value', 'Disabled'), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -12579,12 +12578,8 @@
                       }
                     ]
                   },
-                  "networkRuleBypassOptions": {
-                    "value": "AzureServices"
-                  },
-                  "publicNetworkAccess": {
-                    "value": "Disabled"
-                  }
+                  "networkRuleBypassOptions": "[if(parameters('deployInVnet'), createObject('value', 'AzureServices'), createObject('value', null()))]",
+                  "publicNetworkAccess": "[if(parameters('deployInVnet'), createObject('value', 'Disabled'), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -14708,6 +14703,7 @@
               ]
             },
             "storage": {
+              "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('resourceLocation')))]",
@@ -19451,27 +19447,16 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
-                  "internal": {
-                    "value": true
-                  },
-                  "dockerBridgeCidr": {
-                    "value": "172.16.0.1/28"
-                  },
-                  "platformReservedCidr": {
-                    "value": "172.17.17.0/24"
-                  },
-                  "platformReservedDnsIP": {
-                    "value": "172.17.17.17"
-                  },
+                  "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
+                  "zoneRedundant": "[if(parameters('deployInVnet'), createObject('value', true()), createObject('value', false()))]",
                   "infrastructureResourceGroupName": {
                     "value": "[format('{0}-infrastructure', parameters('resourceGroupName'))]"
                   },
-                  "infrastructureSubnetId": {
-                    "value": "[reference('vnet').outputs.subnetResourceIds.value[2]]"
-                  },
-                  "workloadProfiles": {
-                    "value": "[parameters('workloadProfiles')]"
-                  }
+                  "internal": "[if(parameters('deployInVnet'), createObject('value', true()), createObject('value', false()))]",
+                  "infrastructureSubnetId": "[if(parameters('deployInVnet'), createObject('value', reference('vnet').outputs.subnetResourceIds.value[2]), createObject('value', null()))]",
+                  "dockerBridgeCidr": "[if(parameters('deployInVnet'), createObject('value', '172.16.0.1/28'), createObject('value', null()))]",
+                  "platformReservedCidr": "[if(parameters('deployInVnet'), createObject('value', '172.17.17.0/24'), createObject('value', null()))]",
+                  "platformReservedDnsIP": "[if(parameters('deployInVnet'), createObject('value', '172.17.17.17'), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -19952,21 +19937,17 @@
               "type": "string",
               "value": "[if(equals(parameters('managedIdentityName'), null()), reference('userIdentity_new').outputs.resourceId.value, resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'dummy')))]"
             },
-            "userManagedIdentityName": {
-              "type": "string",
-              "value": "[if(equals(parameters('managedIdentityName'), null()), format('{0}-userIdentity', uniqueString(deployment().name, parameters('resourceLocation'))), coalesce(parameters('managedIdentityName'), 'dummy'))]"
-            },
             "vnetResourceId": {
               "type": "string",
-              "value": "[reference('vnet').outputs.resourceId.value]"
+              "value": "[if(parameters('deployInVnet'), reference('vnet').outputs.resourceId.value, '')]"
             },
             "subnetResourceId_deploymentScript": {
               "type": "string",
-              "value": "[reference('vnet').outputs.subnetResourceIds.value[1]]"
+              "value": "[if(parameters('deployInVnet'), reference('vnet').outputs.subnetResourceIds.value[1], '')]"
             },
             "storageAccountResourceId": {
               "type": "string",
-              "value": "[reference('storage').outputs.resourceId.value]"
+              "value": "[if(parameters('deployInVnet'), reference('storage').outputs.resourceId.value, '')]"
             }
           }
         }
@@ -20903,7 +20884,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('container-apps-job-{0}', parameters('nameSuffix'))]"
+            "value": "[format('container-job-{0}', parameters('nameSuffix'))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -20966,7 +20947,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "6184621983292200666"
+              "templateHash": "3617743781316362303"
             },
             "name": "Container App Jobs",
             "description": "This module deploys a Container App Job.",
@@ -21846,9 +21827,9 @@
             },
             "workloadProfileName": {
               "type": "string",
-              "defaultValue": "Consumption",
+              "nullable": true,
               "metadata": {
-                "description": "Optional. The name of the workload profile to use."
+                "description": "Optional. The name of the workload profile to use. Leave empty to use a consumption based profile."
               }
             },
             "secrets": {
@@ -21858,7 +21839,7 @@
               },
               "nullable": true,
               "metadata": {
-                "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
+                "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      // You can do this, but you shouldn't. Use a secret reference instead.\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
                 "description": "Optional. The secrets of the Container App."
               }
             },
@@ -21908,7 +21889,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('0.2.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

@@ -36,7 +36,7 @@ param appInsightsConnectionString string?
 // -------------------------
 
 @description('Required. Workload profiles for the managed environment.')
-param workloadProfiles array
+param workloadProfiles array?
 
 @description('Optional. Tags of the resource.')
 param tags object = {}
@@ -131,9 +131,8 @@ module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.3.1' = 
     ]
   }
 }
-resource dnsZoneKeyVault_existing 'Microsoft.Network/privateDnsZones@2020-06-01' = if (deployInVnet && !deployDnsZoneKeyVault) {
+resource dnsZoneKeyVault_existing 'Microsoft.Network/privateDnsZones@2020-06-01' existing = if (deployInVnet && !deployDnsZoneKeyVault) {
   name: 'privatelink.vaultcore.azure.net'
-  location: resourceLocation
 }
 resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneKeyVault) {
   name: 'KeyVault-link-${nameSuffix}'
@@ -161,9 +160,8 @@ module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:
     ]
   }
 }
-resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2020-06-01' = if (deployInVnet && !deployDnsZoneContainerRegistry) {
+resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2020-06-01' existing = if (deployInVnet && !deployDnsZoneContainerRegistry) {
   name: 'privatelink.azurecr.io'
-  location: resourceLocation
 }
 resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneContainerRegistry) {
   name: 'ContainerRegistry-link-${nameSuffix}'
@@ -239,9 +237,8 @@ module userIdentity_new 'br/public:avm/res/managed-identity/user-assigned-identi
     tags: union(tags, { 'used-by': 'container-job, deployment-script, container-registry, storage-account' })
   }
 }
-resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (managedIdentityName != null) {
+resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityName != null) {
   name: managedIdentityName ?? 'dummy'
-  location: resourceLocation
 }
 
 // supporting resources
@@ -249,7 +246,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-vault'
   params: {
-    name: 'kv${uniqueString(nameSuffix, resourceLocation)}' // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
+    name: 'kv${uniqueString(nameSuffix, resourceLocation, resourceGroupName)}' // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
     enablePurgeProtection: false
     enableRbacAuthorization: true
     location: resourceLocation
@@ -272,7 +269,7 @@ module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
         roleDefinitionIdOrName: vaultRole
       }
     ]
-    publicNetworkAccess: deployInVnet ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: deployInVnet ? 'Disabled' : null
   }
 }
 
@@ -298,12 +295,12 @@ module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
         roleDefinitionIdOrName: registryRole
       }
     ]
-    networkRuleBypassOptions: 'AzureServices'
-    publicNetworkAccess: 'Disabled'
+    networkRuleBypassOptions: deployInVnet ? 'AzureServices' : null
+    publicNetworkAccess: deployInVnet ? 'Disabled' : null
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.11.0' = {
+module storage 'br/public:avm/res/storage/storage-account:0.11.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation)}-storage'
   params: {
     name: uniqueString('sa', nameSuffix, resourceLocation)
@@ -313,7 +310,6 @@ module storage 'br/public:avm/res/storage/storage-account:0.11.0' = {
     minimumTlsVersion: 'TLS1_2'
     skuName: 'Standard_LRS'
     accessTier: 'Hot'
-    // publicNetworkAccess: 'Enabled'
     allowSharedKeyAccess: true
     allowBlobPublicAccess: false
     networkAcls: {
@@ -347,29 +343,29 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.5.2' = {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     location: resourceLocation
     tags: tags
-    internal: true
-    dockerBridgeCidr: '172.16.0.1/28'
-    platformReservedCidr: '172.17.17.0/24'
-    platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
+    zoneRedundant: deployInVnet ? true : false
     infrastructureResourceGroupName: '${resourceGroupName}-infrastructure'
-    infrastructureSubnetId: vnet.outputs.subnetResourceIds[2] // third subnet is the workload subnet
-    workloadProfiles: workloadProfiles
+    // vnet configuration
+    internal: deployInVnet ? true : false
+    infrastructureSubnetId: deployInVnet ? vnet.outputs.subnetResourceIds[2] : null // third subnet is the workload subnet
+    dockerBridgeCidr: deployInVnet ? '172.16.0.1/28' : null
+    platformReservedCidr: deployInVnet ? '172.17.17.0/24' : null
+    platformReservedDnsIP: deployInVnet ? '172.17.17.17' : null
   }
 }
 
 output vaultName string = vault.outputs.name
-// output vaultResourceId string = vault.outputs.resourceId
 output keyVaultAppInsightsConnectionStringUrl string = !empty(appInsightsConnectionString ?? '')
   ? '${vault.outputs.uri}/secrets/applicationinsights-connection-string' // TODO check URI
   : ''
 output registryName string = registry.outputs.name
 output registryLoginServer string = registry.outputs.loginServer
 output managedEnvironmentId string = managedEnvironment.outputs.resourceId
-// output workloadProfileName string = workloadProfiles[0].name
 output userManagedIdentityResourceId string = managedIdentityName == null
   ? userIdentity_new.outputs.resourceId
   : userIdentity_existing.id
-output userManagedIdentityName string = managedIdentityName == null ? userIdentity_new.name : userIdentity_existing.name
-output vnetResourceId string = vnet.outputs.resourceId
-output subnetResourceId_deploymentScript string = vnet.outputs.subnetResourceIds[1]
-output storageAccountResourceId string = storage.outputs.resourceId
+// output userManagedIdentityName string = managedIdentityName == null ? userIdentity_new.name : userIdentity_existing.name
+output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
+output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''
+output storageAccountResourceId string = deployInVnet ? storage.outputs.resourceId : ''

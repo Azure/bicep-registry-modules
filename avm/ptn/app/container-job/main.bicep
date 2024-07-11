@@ -147,7 +147,7 @@ module services 'modules/deploy_services.bicep' = {
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
     deployDnsZoneContainerRegistry: deployDnsZoneContainerRegistry
-    workloadProfiles: workloadProfiles ?? []
+    workloadProfiles: length(workloadProfiles ?? []) > 0 ? workloadProfiles : null
     tags: tags
   }
 }
@@ -171,10 +171,10 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.1
   }
 }
 
-module job 'br/public:avm/res/app/job:0.2.2' = {
+module job 'br/public:avm/res/app/job:0.3.0' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
-    name: 'container-apps-job-${nameSuffix}'
+    name: 'container-job-${nameSuffix}'
     tags: tags
     environmentResourceId: services.outputs.managedEnvironmentId
     workloadProfileName: workloadProfileName
