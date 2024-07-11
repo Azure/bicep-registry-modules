@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "9938615640421486630"
+      "version": "0.28.1.47646",
+      "templateHash": "1469752443660867394"
     },
     "name": "Policy Insights Remediations",
     "description": "This module deploys a Policy Insights Remediation.",
@@ -114,7 +114,7 @@
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.ptn.policyinsights-remediation.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[parameters('location')]",
       "properties": {
@@ -176,8 +176,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "12299861631299116532"
+              "version": "0.28.1.47646",
+              "templateHash": "2802722151462806427"
             },
             "name": "Policy Insights Remediations (Management Group scope)",
             "description": "This module starts a Policy Remediation task at a Management Group scope.",
@@ -342,8 +342,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "1015297291864726810"
+              "version": "0.28.1.47646",
+              "templateHash": "13178635694417585402"
             },
             "name": "Policy Insights Remediations (Subscription scope)",
             "description": "This module deploys a Policy Insights Remediation on a Subscription scope.",
@@ -520,8 +520,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "10110336327374487357"
+              "version": "0.28.1.47646",
+              "templateHash": "4742361634752088015"
             },
             "name": "Policy Insights Remediations (Resource Group scope)",
             "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
