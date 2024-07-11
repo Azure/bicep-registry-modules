@@ -114,7 +114,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
     name: storageAccountSettings.?name ?? 'st${name}'

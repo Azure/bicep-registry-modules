@@ -55,28 +55,28 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}'
       managedIdentitySettings: {
-        name: 'dep-${namePrefix}-id-${serviceShort}'
+        name: '${namePrefix}-id-${serviceShort}'
       }
       logAnalyticsSettings: {
-        name: 'dep-${namePrefix}-log-${serviceShort}'
+        name: '${namePrefix}-log-${serviceShort}'
       }
       keyVaultSettings: {
-        name: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+        name: '${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
         enablePurgeProtection: false
       }
       storageAccountSettings: {
-        name: 'dep${namePrefix}st${serviceShort}'
+        name: '${namePrefix}st${serviceShort}'
         allowSharedKeyAccess: true
       }
       containerRegistrySettings: {
-        name: 'dep${namePrefix}cr${serviceShort}'
+        name: '${namePrefix}cr${serviceShort}'
         trustPolicyStatus: 'disabled'
       }
       applicationInsightsSettings: {
-        name: 'dep-${namePrefix}-appi-${serviceShort}'
+        name: '${namePrefix}-appi-${serviceShort}'
       }
       workspaceHubSettings: {
-        name: 'dep-${namePrefix}-hub-${serviceShort}'
+        name: '${namePrefix}-hub-${serviceShort}'
         computes: [
           {
             computeType: 'ComputeInstance'

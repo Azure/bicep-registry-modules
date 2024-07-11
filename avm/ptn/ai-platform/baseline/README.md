@@ -118,10 +118,10 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     name: 'aipbmax'
     // Non-required parameters
     applicationInsightsSettings: {
-      name: 'dep-appi-aipbmax'
+      name: 'appi-aipbmax'
     }
     containerRegistrySettings: {
-      name: 'depcraipbmax'
+      name: 'craipbmax'
       trustPolicyStatus: 'disabled'
     }
     keyVaultSettings: {
@@ -129,14 +129,14 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       name: '<name>'
     }
     logAnalyticsSettings: {
-      name: 'dep-log-aipbmax'
+      name: 'log-aipbmax'
     }
     managedIdentitySettings: {
-      name: 'dep-id-aipbmax'
+      name: 'id-aipbmax'
     }
     storageAccountSettings: {
       allowSharedKeyAccess: true
-      name: 'depstaipbmax'
+      name: 'staipbmax'
     }
     workspaceHubSettings: {
       computes: [
@@ -151,7 +151,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
           sku: 'Standard'
         }
       ]
-      name: 'dep-hub-aipbmax'
+      name: 'hub-aipbmax'
       networkIsolationMode: 'AllowOnlyApprovedOutbound'
       networkOutboundRules: {
         rule1: {
@@ -188,12 +188,12 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Non-required parameters
     "applicationInsightsSettings": {
       "value": {
-        "name": "dep-appi-aipbmax"
+        "name": "appi-aipbmax"
       }
     },
     "containerRegistrySettings": {
       "value": {
-        "name": "depcraipbmax",
+        "name": "craipbmax",
         "trustPolicyStatus": "disabled"
       }
     },
@@ -205,18 +205,18 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     },
     "logAnalyticsSettings": {
       "value": {
-        "name": "dep-log-aipbmax"
+        "name": "log-aipbmax"
       }
     },
     "managedIdentitySettings": {
       "value": {
-        "name": "dep-id-aipbmax"
+        "name": "id-aipbmax"
       }
     },
     "storageAccountSettings": {
       "value": {
         "allowSharedKeyAccess": true,
-        "name": "depstaipbmax"
+        "name": "staipbmax"
       }
     },
     "workspaceHubSettings": {
@@ -233,7 +233,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
             "sku": "Standard"
           }
         ],
-        "name": "dep-hub-aipbmax",
+        "name": "hub-aipbmax",
         "networkIsolationMode": "AllowOnlyApprovedOutbound",
         "networkOutboundRules": {
           "rule1": {
@@ -644,7 +644,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/insights/component:0.3.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.2` | Remote reference |
 | `br/public:avm/res/machine-learning-services/workspace:0.4.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.11.0` | Remote reference |
 
 ## Data Collection
 
