@@ -118,6 +118,7 @@ The tags of the AFD Endpoint.
 | `name` | string | The name of the AFD Endpoint. |
 | `resourceGroupName` | string | The name of the resource group the endpoint was created in. |
 | `resourceId` | string | The resource id of the AFD Endpoint. |
+| `routes` | array | The list of routes assigned to the AFD endpoint. |
 
 ## Cross-referenced modules
 
