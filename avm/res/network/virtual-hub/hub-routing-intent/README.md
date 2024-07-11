@@ -14,7 +14,7 @@ This module configures Routing Intent for a Virtual Hub.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/virtualHubs/routingIntent` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualHubs/routingIntent) |
+| `Microsoft.Network/virtualHubs/routingIntent` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/routingIntent) |
 
 ## Parameters
 
@@ -58,8 +58,11 @@ Name of the Virtual Hub
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `name` | string | The name of the Routing Intent configuration. |
+| `resourceGroupName` | string | The resource group the Routing Intent configuration was deployed into. |
+| `resourceId` | string | The resource ID of the Routing Intent configuration. |
 
 ## Cross-referenced modules
 

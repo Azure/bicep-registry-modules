@@ -58,11 +58,11 @@ resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-11-01' 
   }
 }
 
-@description('The name of the Routing Intent configuration')
+@description('The name of the Routing Intent configuration.')
 output name string = routingIntent.name
 
-@description('The resource ID of the Routing Intent configuration')
+@description('The resource ID of the Routing Intent configuration.')
 output resourceId string = routingIntent.id
 
-@description('The resource group the Routing Intent configuration was deployed into')
+@description('The resource group the Routing Intent configuration was deployed into.')
 output resourceGroupName string = resourceGroup().name
