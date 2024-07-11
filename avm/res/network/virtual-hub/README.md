@@ -32,7 +32,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -240,7 +241,149 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
+  name: 'virtualHubDeployment'
+  params: {
+    // Required parameters
+    addressPrefix: '10.1.0.0/16'
+    name: 'nvhmax'
+    virtualWanId: '<virtualWanId>'
+    // Non-required parameters
+    azureFirewallResourceId: '<azureFirewallResourceId>'
+    hubRouteTables: []
+    hubRoutingPreference: 'ASPath'
+    hubVirtualNetworkConnections: [
+      {
+        name: 'connection1'
+        remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+        routingConfiguration: {
+          associatedRouteTable: {
+            id: '<id>'
+          }
+          propagatedRouteTables: {
+            ids: [
+              {
+                id: '<id>'
+              }
+            ]
+            labels: [
+              'none'
+            ]
+          }
+        }
+      }
+    ]
+    internetToFirewall: true
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    privateToFirewall: true
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefix": {
+      "value": "10.1.0.0/16"
+    },
+    "name": {
+      "value": "nvhmax"
+    },
+    "virtualWanId": {
+      "value": "<virtualWanId>"
+    },
+    // Non-required parameters
+    "azureFirewallResourceId": {
+      "value": "<azureFirewallResourceId>"
+    },
+    "hubRouteTables": {
+      "value": []
+    },
+    "hubRoutingPreference": {
+      "value": "ASPath"
+    },
+    "hubVirtualNetworkConnections": {
+      "value": [
+        {
+          "name": "connection1",
+          "remoteVirtualNetworkId": "<remoteVirtualNetworkId>",
+          "routingConfiguration": {
+            "associatedRouteTable": {
+              "id": "<id>"
+            },
+            "propagatedRouteTables": {
+              "ids": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "labels": [
+                "none"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "internetToFirewall": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "privateToFirewall": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
