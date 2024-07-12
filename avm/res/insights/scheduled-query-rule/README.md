@@ -197,7 +197,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     ]
     // Non-required parameters
     alertDescription: 'My sample Alert'
-    alertDisplayName: 'isqrminDisplay001'
+    alertDisplayName: '<alertDisplayName>'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
     location: '<location>'
@@ -289,7 +289,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
       "value": "My sample Alert"
     },
     "alertDisplayName": {
-      "value": "isqrminDisplay001"
+      "value": "<alertDisplayName>"
     },
     "autoMitigate": {
       "value": false
@@ -528,7 +528,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`ruleResolveConfiguration`](#parameter-ruleResolveConfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
+| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
 | [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert. |
@@ -658,12 +658,6 @@ Array of role assignments to create.
 - Required: No
 - Type: array
 
-### Parameter: `ruleResolveConfiguration`
-
-Tags of the resource.
-
-- Required: No
-- Type: object
 
 **Required parameters**
 
@@ -764,6 +758,13 @@ Severity of the alert. Should be an integer between [0-4]. Value of 0 is severes
     4
   ]
   ```
+
+  ### Parameter: `ruleResolveConfiguration`
+
+  Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
+
+  - Required: No
+  - Type: object
 
 ### Parameter: `skipQueryValidation`
 
