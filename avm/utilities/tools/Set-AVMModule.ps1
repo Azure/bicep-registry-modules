@@ -165,11 +165,11 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $TelemetryFileContent = $rawResponse.Content -split '\n'
             } else {
-                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Incorrect Url (e.g., points to HTML)
                 $TelemetryFileContent = $null
             }
         } catch {
-            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]." # Invalid url
+            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Invalid url
             $TelemetryFileContent = $null
         }
 
