@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9100089304805171157"
+      "templateHash": "15489984193738380192"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -395,7 +395,7 @@
     "virtualHub_routeTables": {
       "copy": {
         "name": "virtualHub_routeTables",
-        "count": "[length(parameters('hubRouteTables'))]"
+        "count": "[length(coalesce(parameters('hubRouteTables'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -410,10 +410,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('hubRouteTables')[copyIndex()].name]"
+            "value": "[coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].name]"
           },
-          "labels": "[if(contains(parameters('hubRouteTables')[copyIndex()], 'labels'), createObject('value', parameters('hubRouteTables')[copyIndex()].labels), createObject('value', createArray()))]",
-          "routes": "[if(contains(parameters('hubRouteTables')[copyIndex()], 'routes'), createObject('value', parameters('hubRouteTables')[copyIndex()].routes), createObject('value', createArray()))]"
+          "labels": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].labels), createObject('value', createArray()))]",
+          "routes": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].routes), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

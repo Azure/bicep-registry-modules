@@ -188,7 +188,7 @@ module virtualHub_routingIntent 'hub-routing-intent/main.bicep' = if (internetTo
 }
 
 module virtualHub_routeTables 'hub-route-table/main.bicep' = [
-  for (routeTable, index) in hubRouteTables: {
+  for (routeTable, index) in (hubRouteTables ?? []): {
     name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
     params: {
       virtualHubName: virtualHub.name
