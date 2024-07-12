@@ -741,6 +741,13 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `ruleResolveConfiguration`
+
+Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
+
+- Required: No
+- Type: object
+
 ### Parameter: `severity`
 
 Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert.
@@ -758,13 +765,6 @@ Severity of the alert. Should be an integer between [0-4]. Value of 0 is severes
     4
   ]
   ```
-
-### Parameter: `ruleResolveConfiguration`
-
-Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
-
-- Required: No
-- Type: object
 
 ### Parameter: `skipQueryValidation`
 
