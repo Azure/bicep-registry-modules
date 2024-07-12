@@ -630,7 +630,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   name: 'netAppAccountDeployment'
   params: {
     // Required parameters
-    name: 'nanaawaf002'
+    name: '<name>'
     // Non-required parameters
     location: '<location>'
     tags: {
@@ -654,7 +654,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nanaawaf002"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
