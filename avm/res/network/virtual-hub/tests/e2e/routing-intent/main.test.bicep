@@ -69,12 +69,12 @@ module testDeployment '../../../main.bicep' = [
           remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
           routingConfiguration: {
             associatedRouteTable: {
-              id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
+              id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${namePrefix}-${serviceShort}' , 'defaultRouteTable')
             }
             propagatedRouteTables: {
               ids: [
                 {
-                  id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
+                  id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${namePrefix}-${serviceShort}' , 'defaultRouteTable')
                 }
               ]
               labels: [

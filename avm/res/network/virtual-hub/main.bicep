@@ -123,16 +123,14 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
   properties: {
     addressPrefix: addressPrefix
     allowBranchToBranchTraffic: allowBranchToBranchTraffic
-    azureFirewall: !empty(azureFirewallResourceId)
-      ? {
-          id: azureFirewallResourceId
-        }
-      : null
+    azureFirewall:{
+        id: !empty(azureFirewallResourceId) ? azureFirewallResourceId : null
+    }
     expressRouteGateway: !empty(expressRouteGatewayId)
-      ? {
-          id: expressRouteGatewayId
-        }
-      : null
+    ? {
+        id: expressRouteGatewayId
+      }
+    : null
     p2SVpnGateway: !empty(p2SVpnGatewayId)
       ? {
           id: p2SVpnGatewayId
