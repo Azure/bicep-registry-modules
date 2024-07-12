@@ -63,11 +63,11 @@ var builtInRoleNames = {
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2023-11-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2023-07-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -97,6 +97,8 @@ module capacityPool_volumes 'volume/main.bicep' = [
       subnetResourceId: volume.subnetResourceId
       exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
       roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
+      networkFeatures: volume.?networkFeatures
+      zones: volume.?zones
     }
   }
 ]
