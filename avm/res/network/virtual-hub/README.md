@@ -256,7 +256,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
   params: {
     // Required parameters
     addressPrefix: '10.1.0.0/16'
-    name: 'nvhmax'
+    name: 'nvhrtint'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
     azureFirewallResourceId: '<azureFirewallResourceId>'
@@ -316,7 +316,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "10.1.0.0/16"
     },
     "name": {
-      "value": "nvhmax"
+      "value": "nvhrtint"
     },
     "virtualWanId": {
       "value": "<virtualWanId>"
