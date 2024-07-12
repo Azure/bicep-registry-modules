@@ -658,7 +658,6 @@ Array of role assignments to create.
 - Required: No
 - Type: array
 
-
 **Required parameters**
 
 | Parameter | Type | Description |
