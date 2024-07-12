@@ -84,6 +84,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'secret_key1'
           keyVaultUrl: 'https://kv${uniqueString('cjob', resourceLocation, resourceGroupName)}${environment().suffixes.keyvaultDns}/secrets/key1'
+          identity: dependencies.outputs.userIdentityName
         }
       ]
       deployDnsZoneContainerRegistry: false

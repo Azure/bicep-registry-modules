@@ -50,6 +50,9 @@ output appInsightsConnectionString string = appInsights.properties.ConnectionStr
 @description('The name of the created User Assigned Identity.')
 output userIdentityName string = userAssignedIdentity.name
 
+@description('The name of the created User Assigned Identity.')
+output userIdentityResourceId string = userAssignedIdentity.id
+
 @description('The name of the created DNS Zone for Key Vault.')
 output dnsZoneKeyVaultId string = dnsZoneKeyVault.id
 

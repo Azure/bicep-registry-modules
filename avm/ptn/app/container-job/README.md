@@ -180,6 +180,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     overwriteExistingImage: true
     secrets: [
       {
+        identity: '<identity>'
         keyVaultUrl: '<keyVaultUrl>'
         name: 'secret_key1'
       }
@@ -277,6 +278,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     "secrets": {
       "value": [
         {
+          "identity": "<identity>",
           "keyVaultUrl": "<keyVaultUrl>",
           "name": "secret_key1"
         }
