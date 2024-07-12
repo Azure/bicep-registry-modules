@@ -109,13 +109,11 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     name: 'nvhmax'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
-    azureFirewallResourceId: '<azureFirewallResourceId>'
     hubRouteTables: [
       {
         name: 'routeTable1'
       }
     ]
-    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
@@ -137,13 +135,11 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       }
     ]
-    internetToFirewall: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateToFirewall: true
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -176,18 +172,12 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
-    "azureFirewallResourceId": {
-      "value": "<azureFirewallResourceId>"
-    },
     "hubRouteTables": {
       "value": [
         {
           "name": "routeTable1"
         }
       ]
-    },
-    "hubRoutingPreference": {
-      "value": "ASPath"
     },
     "hubVirtualNetworkConnections": {
       "value": [
@@ -212,9 +202,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
-    "internetToFirewall": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
@@ -223,9 +210,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "privateToFirewall": {
-      "value": true
     },
     "tags": {
       "value": {
@@ -406,7 +390,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         name: 'routeTable1'
       }
     ]
-    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
@@ -428,13 +411,11 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       }
     ]
-    internetToFirewall: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateToFirewall: false
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -474,9 +455,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
-    "hubRoutingPreference": {
-      "value": "ASPath"
-    },
     "hubVirtualNetworkConnections": {
       "value": [
         {
@@ -500,9 +478,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       ]
     },
-    "internetToFirewall": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
@@ -511,9 +486,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "privateToFirewall": {
-      "value": false
     },
     "tags": {
       "value": {
