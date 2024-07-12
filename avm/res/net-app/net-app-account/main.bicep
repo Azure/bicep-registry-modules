@@ -133,7 +133,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' = {
   name: name
   tags: tags
   identity: identity
