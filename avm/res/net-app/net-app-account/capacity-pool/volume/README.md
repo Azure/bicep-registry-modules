@@ -15,7 +15,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -41,9 +41,11 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
+| [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `name`
 
@@ -103,6 +105,23 @@ Location of the pool volume.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `networkFeatures`
+
+Network feature for the volume.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Basic_Standard'
+    'Standard'
+    'Standard_Basic'
+  ]
+  ```
 
 ### Parameter: `protocolTypes`
 
@@ -215,6 +234,19 @@ The pool service level. Must match the one of the parent capacity pool.
     'Standard'
     'StandardZRS'
     'Ultra'
+  ]
+  ```
+
+### Parameter: `zones`
+
+Zone where the volume will be placed.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    '1'
   ]
   ```
 
