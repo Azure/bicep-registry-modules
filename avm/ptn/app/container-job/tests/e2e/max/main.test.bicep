@@ -83,8 +83,9 @@ module testDeployment '../../../main.bicep' = [
       secrets: [
         {
           name: 'secretkey1'
+          // the Key Vault name needs to be known here. Not using the output of the dependencies to show the usage.
           keyVaultUrl: 'https://kv${uniqueString('cjob', resourceLocation, resourceGroupName)}${environment().suffixes.keyvaultDns}/secrets/key1'
-          identity: dependencies.outputs.userIdentityName
+          identity: dependencies.outputs.userIdentityResourceId
         }
       ]
       deployDnsZoneContainerRegistry: false

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8333303902566833962"
+      "templateHash": "10341077305432287517"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -69,6 +69,11 @@
           "metadata": {
             "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
           }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/deploy_services.bicep"
         }
       }
     }
@@ -294,6 +299,9 @@
           "keyVaultName": {
             "value": "[parameters('keyVaultName')]"
           },
+          "keyVaultSecrets": {
+            "value": "[parameters('secrets')]"
+          },
           "deployInVnet": {
             "value": "[parameters('deployInVnet')]"
           },
@@ -319,7 +327,46 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5950784802972185799"
+              "templateHash": "1831159989083907896"
+            }
+          },
+          "definitions": {
+            "secretType": {
+              "type": "object",
+              "properties": {
+                "identity": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
+                  }
+                },
+                "keyVaultUrl": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "example": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
+                    "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the secret."
+                  }
+                },
+                "value": {
+                  "type": "securestring",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
             }
           },
           "parameters": {
@@ -397,6 +444,16 @@
                 "description": "Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets."
               }
             },
+            "keyVaultSecrets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Secrets that will be added to Key Vault for later reference in the Container App Job."
+              }
+            },
             "workloadProfiles": {
               "type": "array",
               "nullable": true,
@@ -413,6 +470,13 @@
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "secrets",
+                "count": "[length(coalesce(parameters('keyVaultSecrets'), createArray()))]",
+                "input": "[if(not(equals(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, null())), createObject('name', last(split(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, '/')), 'identity', coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].identity, 'value', 'dummy'), null())]"
+              }
+            ],
             "vaultRbacRoles": [
               "4633458b-17de-408a-b874-0445c86b69e6"
             ],
@@ -9880,7 +9944,9 @@
                   "tags": {
                     "value": "[union(parameters('tags'), createObject('used-by', 'container-job'))]"
                   },
-                  "secrets": "[if(not(empty(coalesce(parameters('appInsightsConnectionString'), ''))), createObject('value', createArray(createObject('name', 'applicationinsights-connection-string', 'value', parameters('appInsightsConnectionString')))), createObject('value', null()))]",
+                  "secrets": {
+                    "value": "[union(if(not(empty(coalesce(parameters('appInsightsConnectionString'), ''))), createArray(createObject('name', 'applicationinsights-connection-string', 'value', parameters('appInsightsConnectionString'))), createArray()), variables('secrets'))]"
+                  },
                   "roleAssignments": {
                     "copy": [
                       {

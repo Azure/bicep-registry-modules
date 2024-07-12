@@ -35,6 +35,9 @@ param appInsightsConnectionString string?
 @description('Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.')
 param keyVaultName string
 
+@description('Optional. Secrets that will be added to Key Vault for later reference in the Container App Job.')
+param keyVaultSecrets secretType[]?
+
 // workload parameters
 // -------------------------
 
@@ -58,6 +61,17 @@ var storageAccountRbacRoles = [
 var privateEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 0) // the first /24 subnet in the address space
 var serviceEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 1) // the second /24 subnet in the address space
 var workloadSubnetAddressPrefix = cidrSubnet(addressPrefix, 23, 1) // the second /23 subnet in the address space, as the first /24 subnet is used for private endpoints
+
+// filter and prepare secrets that need to be added to Key Vault in order to reference them later
+var secrets = [
+  for secret in keyVaultSecrets ?? []: (secret.keyVaultUrl != null)
+    ? {
+        name: last(split(secret.keyVaultUrl, '/'))
+        identity: secret.identity
+        value: 'dummy' // dummy needed to pass the validation
+      }
+    : null
+]
 
 // Networking resources
 // -----------------
@@ -255,14 +269,17 @@ module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
     location: resourceLocation
     sku: 'standard'
     tags: union(tags, { 'used-by': 'container-job' })
-    secrets: !empty(appInsightsConnectionString ?? '')
-      ? [
-          {
-            name: 'applicationinsights-connection-string'
-            value: appInsightsConnectionString!
-          }
-        ]
-      : null
+    secrets: union(
+      !empty(appInsightsConnectionString ?? '')
+        ? [
+            {
+              name: 'applicationinsights-connection-string'
+              value: appInsightsConnectionString!
+            }
+          ]
+        : [],
+      secrets
+    )
     roleAssignments: [
       for vaultRole in vaultRbacRoles: {
         principalId: managedIdentityName != null
@@ -371,3 +388,26 @@ output userManagedIdentityResourceId string = managedIdentityName == null
 output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
 output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''
 output storageAccountResourceId string = deployInVnet ? storage.outputs.resourceId : ''
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+type secretType = {
+  @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
+  identity: string?
+
+  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  @metadata({
+    example: '''https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'''
+  })
+  keyVaultUrl: string?
+
+  @description('Optional. The name of the secret.')
+  name: string?
+
+  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @secure()
+  value: string?
+}
