@@ -377,7 +377,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.5.2' = {
 
 output vaultName string = vault.outputs.name
 output keyVaultAppInsightsConnectionStringUrl string = !empty(appInsightsConnectionString ?? '')
-  ? '${vault.outputs.uri}/secrets/applicationinsights-connection-string' // TODO check URI
+  ? '${vault.outputs.uri}/secrets/applicationinsights-connection-string'
   : ''
 output registryName string = registry.outputs.name
 output registryLoginServer string = registry.outputs.loginServer
