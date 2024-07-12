@@ -78,11 +78,11 @@ module testDeployment '../../../main.bicep' = [
       cronExpression: '0 * * * *'
       environmentVariables: [
         { name: 'key1', value: 'value1' }
-        { name: 'key2', secretRef: 'secret_key1' }
+        { name: 'key2', secretRef: 'secretkey1' }
       ]
       secrets: [
         {
-          name: 'secret_key1'
+          name: 'secretkey1'
           keyVaultUrl: 'https://kv${uniqueString('cjob', resourceLocation, resourceGroupName)}${environment().suffixes.keyvaultDns}/secrets/key1'
           identity: dependencies.outputs.userIdentityName
         }

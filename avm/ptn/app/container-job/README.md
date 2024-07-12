@@ -170,7 +170,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
       }
       {
         name: 'key2'
-        secretRef: 'secret_key1'
+        secretRef: 'secretkey1'
       }
     ]
     location: '<location>'
@@ -182,7 +182,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
       {
         identity: '<identity>'
         keyVaultUrl: '<keyVaultUrl>'
-        name: 'secret_key1'
+        name: 'secretkey1'
       }
     ]
     tags: {
@@ -256,7 +256,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
         },
         {
           "name": "key2",
-          "secretRef": "secret_key1"
+          "secretRef": "secretkey1"
         }
       ]
     },
@@ -280,7 +280,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
         {
           "identity": "<identity>",
           "keyVaultUrl": "<keyVaultUrl>",
-          "name": "secret_key1"
+          "name": "secretkey1"
         }
       ]
     },

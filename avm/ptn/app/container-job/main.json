@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11989000961187853771"
+      "templateHash": "8333303902566833962"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -202,7 +202,7 @@
       },
       "nullable": true,
       "metadata": {
-        "example": "[[\n  {\n    name: 'ENV_VAR_NAME'\n    value: 'ENV_VAR_VALUE'\n  }\n  {\n    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'\n    secretRef: 'applicationinsights-connection-string'\n  }\n]",
+        "example": "[[\r\n  {\r\n    name: 'ENV_VAR_NAME'\r\n    value: 'ENV_VAR_VALUE'\r\n  }\r\n  {\r\n    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'\r\n    secretRef: 'applicationinsights-connection-string'\r\n  }\r\n]",
         "description": "Optional. The environment variables that will be added to the Container Apps Job."
       }
     },
@@ -213,7 +213,7 @@
       },
       "nullable": true,
       "metadata": {
-        "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      // You can do this, but you shouldn't. Use a secret reference instead.\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
+        "example": "  [\r\n    {\r\n      name: 'mysecret'\r\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      name: 'mysecret'\r\n      identity: 'system'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      // You can do this, but you shouldn't. Use a secret reference instead.\r\n      name: 'mysecret'\r\n      value: 'mysecretvalue'\r\n    }\r\n    {\r\n      name: 'connection-string'\r\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\r\n    }\r\n  ]\r\n  ",
         "description": "Optional. The secrets of the Container App."
       }
     },
@@ -221,7 +221,7 @@
       "type": "array",
       "nullable": true,
       "metadata": {
-        "example": "[[\n    {\n      workloadProfileType: 'D4'\n      name: 'CAW01'\n      minimumCount: 0\n      maximumCount: 1\n    }\n  ]",
+        "example": "[[\r\n    {\r\n      workloadProfileType: 'D4'\r\n      name: 'CAW01'\r\n      minimumCount: 0\r\n      maximumCount: 1\r\n    }\r\n  ]",
         "description": "Optional. Workload profiles for the managed environment."
       }
     },
@@ -237,7 +237,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\n      \"key1\": \"value1\"\n      \"key2\": \"value2\"\n  }\n  ",
+        "example": "  {\r\n      \"key1\": \"value1\"\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
       }
     }
