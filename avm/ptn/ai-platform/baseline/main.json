@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10479830668992055965"
+      "templateHash": "18410100627591870388"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
@@ -67,6 +67,23 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The name of the storage account."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "Premium_LRS",
+            "Premium_ZRS",
+            "Standard_GRS",
+            "Standard_GZRS",
+            "Standard_LRS",
+            "Standard_RAGRS",
+            "Standard_RAGZRS",
+            "Standard_ZRS"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Storage account SKU. Defaults to 'Standard_RAGZRS'"
           }
         },
         "allowSharedKeyAccess": {
@@ -3258,6 +3275,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "skuName": {
+            "value": "[coalesce(tryGet(parameters('storageAccountSettings'), 'sku'), 'Standard_RAGZRS')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"

@@ -137,6 +137,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     storageAccountSettings: {
       allowSharedKeyAccess: true
       name: 'staipbmax'
+      sku: 'Standard_GRS'
     }
     workspaceHubSettings: {
       computes: [
@@ -212,7 +213,8 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "storageAccountSettings": {
       "value": {
         "allowSharedKeyAccess": true,
-        "name": "staipbmax"
+        "name": "staipbmax",
+        "sku": "Standard_GRS"
       }
     },
     "workspaceHubSettings": {
@@ -512,6 +514,7 @@ Settings for the storage account.
 | :-- | :-- | :-- |
 | [`allowSharedKeyAccess`](#parameter-storageaccountsettingsallowsharedkeyaccess) | bool | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'. |
 | [`name`](#parameter-storageaccountsettingsname) | string | The name of the storage account. |
+| [`sku`](#parameter-storageaccountsettingssku) | string | Storage account SKU. Defaults to 'Standard_RAGZRS' |
 
 ### Parameter: `storageAccountSettings.allowSharedKeyAccess`
 
@@ -526,6 +529,26 @@ The name of the storage account.
 
 - Required: No
 - Type: string
+
+### Parameter: `storageAccountSettings.sku`
+
+Storage account SKU. Defaults to 'Standard_RAGZRS'
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'Standard_GRS'
+    'Standard_GZRS'
+    'Standard_LRS'
+    'Standard_RAGRS'
+    'Standard_RAGZRS'
+    'Standard_ZRS'
+  ]
+  ```
 
 ### Parameter: `tags`
 

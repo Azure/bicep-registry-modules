@@ -57,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
       }
       storageAccountSettings: {
         name: '${namePrefix}st${serviceShort}'
+        sku: 'Standard_GRS'
         allowSharedKeyAccess: true
       }
       containerRegistrySettings: {

@@ -119,6 +119,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   params: {
     name: storageAccountSettings.?name ?? 'st${name}'
     location: location
+    skuName: storageAccountSettings.?sku ?? 'Standard_RAGZRS'
     enableTelemetry: enableTelemetry
     allowBlobPublicAccess: false
     allowSharedKeyAccess: storageAccountSettings.?allowSharedKeyAccess ?? false
@@ -321,6 +322,17 @@ type keyVaultSettingType = {
 type storageAccountSettingType = {
   @description('Optional. The name of the storage account.')
   name: string?
+
+  @description('Optional. Storage account SKU. Defaults to \'Standard_RAGZRS\'')
+  sku:
+    | 'Standard_LRS'
+    | 'Standard_GRS'
+    | 'Standard_RAGRS'
+    | 'Standard_ZRS'
+    | 'Premium_LRS'
+    | 'Premium_ZRS'
+    | 'Standard_GZRS'
+    | 'Standard_RAGZRS'?
 
   @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to \'false\'.')
   allowSharedKeyAccess: bool?
