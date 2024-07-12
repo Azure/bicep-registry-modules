@@ -40,12 +40,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 resource azureFirewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
   name: azureFirewallName
   location: location
-  properties: {
-  }
+  properties: {}
 }
 
 @description('The resource ID of the created Virtual WAN.')
-output virtualWWANResourceId string = virtualWan.id
+output virtualWANResourceId string = virtualWan.id
 
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id

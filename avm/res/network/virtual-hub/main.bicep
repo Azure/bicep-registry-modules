@@ -123,14 +123,16 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
   properties: {
     addressPrefix: addressPrefix
     allowBranchToBranchTraffic: allowBranchToBranchTraffic
-    azureFirewall:{
-        id: !empty(azureFirewallResourceId) ? azureFirewallResourceId : null
-    }
+    azureFirewall: !empty(azureFirewallResourceId)
+      ? {
+          id: azureFirewallResourceId
+        }
+      : null
     expressRouteGateway: !empty(expressRouteGatewayId)
-    ? {
-        id: expressRouteGatewayId
-      }
-    : null
+      ? {
+          id: expressRouteGatewayId
+        }
+      : null
     p2SVpnGateway: !empty(p2SVpnGatewayId)
       ? {
           id: p2SVpnGatewayId
@@ -175,7 +177,7 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   scope: virtualHub
 }
 
-module virtualHub_routingIntent 'hub-routing-intent/main.bicep' = if (internetToFirewall || privateToFirewall) {
+module virtualHub_routingIntent 'hub-routing-intent/main.bicep' = if (!empty(azureFirewallResourceId) && (internetToFirewall || privateToFirewall)) {
   name: '${uniqueString(deployment().name, location)}-routingIntent'
   params: {
     virtualHubName: virtualHub.name

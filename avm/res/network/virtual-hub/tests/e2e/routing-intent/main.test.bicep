@@ -60,7 +60,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       addressPrefix: '10.1.0.0/16'
-      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      virtualWanId: nestedDependencies.outputs.virtualWANResourceId
       azureFirewallResourceId: nestedDependencies.outputs.azureFirewallResourceId
       hubRouteTables: []
       hubVirtualNetworkConnections: [
@@ -69,12 +69,20 @@ module testDeployment '../../../main.bicep' = [
           remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
           routingConfiguration: {
             associatedRouteTable: {
-              id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${namePrefix}-${serviceShort}' , 'defaultRouteTable')
+              id: resourceId(
+                'Microsoft.Network/virtualHubs/hubRouteTables',
+                '${namePrefix}-${serviceShort}',
+                'defaultRouteTable'
+              )
             }
             propagatedRouteTables: {
               ids: [
                 {
-                  id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${namePrefix}-${serviceShort}' , 'defaultRouteTable')
+                  id: resourceId(
+                    'Microsoft.Network/virtualHubs/hubRouteTables',
+                    '${namePrefix}-${serviceShort}',
+                    'defaultRouteTable'
+                  )
                 }
               ]
               labels: [
