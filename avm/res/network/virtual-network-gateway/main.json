@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "13137403460939656531"
+      "version": "0.28.1.47646",
+      "templateHash": "13756500824845705848"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -513,7 +513,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.res.network-virtualnetworkgateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -1272,8 +1272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17230380050930057698"
+              "version": "0.28.1.47646",
+              "templateHash": "14162654774301828518"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule.",

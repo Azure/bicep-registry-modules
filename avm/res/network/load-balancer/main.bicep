@@ -211,7 +211,8 @@ var builtInRoleNames = {
 // Dependencies //
 // ============ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-loadbalancer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -229,7 +230,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -271,19 +272,15 @@ module loadBalancer_inboundNATRules 'inbound-nat-rule/main.bicep' = [
       loadBalancerName: loadBalancer.name
       name: inboundNATRule.name
       frontendIPConfigurationName: inboundNATRule.frontendIPConfigurationName
-      frontendPort: inboundNATRule.frontendPort
-      backendPort: contains(inboundNATRule, 'backendPort') ? inboundNATRule.backendPort : inboundNATRule.frontendPort
-      backendAddressPoolName: contains(inboundNATRule, 'backendAddressPoolName')
-        ? inboundNATRule.backendAddressPoolName
-        : ''
-      enableFloatingIP: contains(inboundNATRule, 'enableFloatingIP') ? inboundNATRule.enableFloatingIP : false
-      enableTcpReset: contains(inboundNATRule, 'enableTcpReset') ? inboundNATRule.enableTcpReset : false
-      frontendPortRangeEnd: contains(inboundNATRule, 'frontendPortRangeEnd') ? inboundNATRule.frontendPortRangeEnd : -1
-      frontendPortRangeStart: contains(inboundNATRule, 'frontendPortRangeStart')
-        ? inboundNATRule.frontendPortRangeStart
-        : -1
-      idleTimeoutInMinutes: contains(inboundNATRule, 'idleTimeoutInMinutes') ? inboundNATRule.idleTimeoutInMinutes : 4
-      protocol: contains(inboundNATRule, 'protocol') ? inboundNATRule.protocol : 'Tcp'
+      frontendPort: inboundNATRule.?frontendPort
+      backendPort: inboundNATRule.backendPort
+      backendAddressPoolName: inboundNATRule.?backendAddressPoolName
+      enableFloatingIP: inboundNATRule.?enableFloatingIP
+      enableTcpReset: inboundNATRule.?enableTcpReset
+      frontendPortRangeEnd: inboundNATRule.?frontendPortRangeEnd
+      frontendPortRangeStart: inboundNATRule.?frontendPortRangeStart
+      idleTimeoutInMinutes: inboundNATRule.?idleTimeoutInMinutes
+      protocol: inboundNATRule.?protocol
     }
     dependsOn: [
       loadBalancer_backendAddressPools
@@ -315,6 +312,13 @@ resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
       ]
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
@@ -370,6 +374,18 @@ output location string = loadBalancer.location
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
+
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
+  logCategoriesAndGroups: {
+    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
+    category: string?
+
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
+    categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
+  }[]?
 
   @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {

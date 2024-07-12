@@ -8,15 +8,15 @@ param loadBalancerName string
 @description('Required. The name of the inbound NAT rule.')
 param name string
 
-@description('Required. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer.')
-@minValue(1)
+@description('Conditional. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified.')
+@minValue(0)
 @maxValue(65534)
-param frontendPort int
+param frontendPort int?
 
-@description('Optional. The port used for the internal endpoint.')
-@minValue(1)
+@description('Required. The port used for the internal endpoint.')
+@minValue(0)
 @maxValue(65535)
-param backendPort int = frontendPort
+param backendPort int
 
 @description('Optional. Name of the backend address pool.')
 param backendAddressPoolName string = ''
@@ -30,15 +30,15 @@ param enableTcpReset bool = false
 @description('Required. The name of the frontend IP address to set for the inbound NAT rule.')
 param frontendIPConfigurationName string
 
-@description('Optional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool.')
-@minValue(-1)
+@description('Conditonal. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified.')
+@minValue(0)
 @maxValue(65534)
-param frontendPortRangeEnd int = -1
+param frontendPortRangeEnd int?
 
-@description('Optional. The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool.')
-@minValue(-1)
+@description('Conditional. The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified.')
+@minValue(0)
 @maxValue(65534)
-param frontendPortRangeStart int = -1
+param frontendPortRangeStart int?
 
 @description('Optional. The timeout for the TCP idle connection. The value can be set between 4 and 30 minutes. The default value is 4 minutes. This element is only used when the protocol is set to TCP.')
 param idleTimeoutInMinutes int = 4
@@ -51,11 +51,11 @@ param idleTimeoutInMinutes int = 4
 ])
 param protocol string = 'Tcp'
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' existing = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
   name: loadBalancerName
 }
 
-resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-04-01' = {
+resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-11-01' = {
   name: name
   properties: {
     frontendPort: frontendPort
@@ -70,8 +70,8 @@ resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-04
     frontendIPConfiguration: {
       id: '${loadBalancer.id}/frontendIPConfigurations/${frontendIPConfigurationName}'
     }
-    frontendPortRangeStart: frontendPortRangeStart != -1 ? frontendPortRangeStart : null
-    frontendPortRangeEnd: frontendPortRangeEnd != -1 ? frontendPortRangeEnd : null
+    frontendPortRangeStart: frontendPortRangeStart
+    frontendPortRangeEnd: frontendPortRangeEnd
     idleTimeoutInMinutes: idleTimeoutInMinutes
     protocol: protocol
   }
