@@ -759,12 +759,12 @@ Severity of the alert. Should be an integer between [0-4]. Value of 0 is severes
   ]
   ```
 
-  ### Parameter: `ruleResolveConfiguration`
+### Parameter: `ruleResolveConfiguration`
 
-  Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
+Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
 
-  - Required: No
-  - Type: object
+- Required: No
+- Type: object
 
 ### Parameter: `skipQueryValidation`
 
