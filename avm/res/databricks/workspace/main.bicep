@@ -113,7 +113,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -131,7 +132,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
   scope: resourceGroup(
     split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
@@ -143,7 +144,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empt
   }
 }
 
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId)) {
+resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId)) {
   name: last(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? 'dummyVault'), '/'))
   scope: resourceGroup(
     split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '//'), '/')[2],
@@ -254,6 +255,10 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
           }
         : {}
     )
+    // createdBy: {} // This is a read-only property
+    // managedDiskIdentity: {} // This is a read-only property
+    // storageAccountIdentity: {} // This is a read-only property
+    // updatedBy: {} // This is a read-only property
     publicNetworkAccess: publicNetworkAccess
     requiredNsgRules: requiredNsgRules
     encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
@@ -345,12 +350,13 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Databricks-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -363,7 +369,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -458,6 +464,9 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
   service: string
 
@@ -521,6 +530,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type customerManagedKeyType = {

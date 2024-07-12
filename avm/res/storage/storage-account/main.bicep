@@ -476,10 +476,11 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
 
 module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -492,7 +493,7 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -632,6 +633,9 @@ output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalI
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
 
+@description('All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint.')
+output serviceEndpoints object = storageAccount.properties.primaryEndpoints
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -713,7 +717,10 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
+  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
   service: string
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
@@ -725,7 +732,7 @@ type privateEndpointType = {
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
 
-  @description('Optional. Manual PrivateLink Service Connections.')
+  @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
   @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
@@ -776,6 +783,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
