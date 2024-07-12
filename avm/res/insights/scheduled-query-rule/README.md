@@ -16,7 +16,7 @@ This module deploys a Scheduled Query Rule.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-02-01-preview/scheduledQueryRules) |
+| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-15-preview/scheduledQueryRules) |
 
 ## Usage examples
 
@@ -197,6 +197,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     ]
     // Non-required parameters
     alertDescription: 'My sample Alert'
+    alertDisplayName: 'isqrminDisplay001'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
     location: '<location>'
@@ -218,7 +219,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    alertDisplayName: 'isqrminDisplay001'
     ruleResolveConfiguration: {
       autoResolved: true
       timeToResolve: 'PT5M'
@@ -288,7 +288,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "alertDescription": {
       "value": "My sample Alert"
     },
-    "displayName": {
+    "alertDisplayName": {
       "value": "isqrminDisplay001"
     },
     "autoMitigate": {
@@ -527,8 +527,8 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | [`kind`](#parameter-kind) | string | Indicates the type of scheduled query rule. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
-| [`ruleResolveConfiguration`](#parameter-ruleResolveConfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`ruleResolveConfiguration`](#parameter-ruleResolveConfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
 | [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert. |
@@ -651,19 +651,19 @@ If specified (in ISO 8601 duration format) then overrides the query time range. 
 - Type: string
 - Default: `''`
 
-### Parameter: `ruleResolveConfiguration`
-
-Tags of the resource.
-
-- Required: No
-- Type: object
-
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
+
+### Parameter: `ruleResolveConfiguration`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 **Required parameters**
 
