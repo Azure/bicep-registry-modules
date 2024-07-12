@@ -514,7 +514,7 @@ Settings for the storage account.
 | :-- | :-- | :-- |
 | [`allowSharedKeyAccess`](#parameter-storageaccountsettingsallowsharedkeyaccess) | bool | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'. |
 | [`name`](#parameter-storageaccountsettingsname) | string | The name of the storage account. |
-| [`sku`](#parameter-storageaccountsettingssku) | string | Storage account SKU. Defaults to 'Standard_RAGZRS' |
+| [`sku`](#parameter-storageaccountsettingssku) | string | Storage account SKU. Defaults to 'Standard_RAGZRS'. |
 
 ### Parameter: `storageAccountSettings.allowSharedKeyAccess`
 
@@ -532,7 +532,7 @@ The name of the storage account.
 
 ### Parameter: `storageAccountSettings.sku`
 
-Storage account SKU. Defaults to 'Standard_RAGZRS'
+Storage account SKU. Defaults to 'Standard_RAGZRS'.
 
 - Required: No
 - Type: string

@@ -323,7 +323,7 @@ type storageAccountSettingType = {
   @description('Optional. The name of the storage account.')
   name: string?
 
-  @description('Optional. Storage account SKU. Defaults to \'Standard_RAGZRS\'')
+  @description('Optional. Storage account SKU. Defaults to \'Standard_RAGZRS\'.')
   sku:
     | 'Standard_LRS'
     | 'Standard_GRS'
