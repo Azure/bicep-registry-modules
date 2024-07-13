@@ -20,14 +20,23 @@ param location string = resourceGroup().location
 ])
 param sku string
 
-@sys.description('Required. The resource ID of the associated Storage Account.')
-param associatedStorageAccountResourceId string
+@sys.description('Optional. The type of Azure Machine Learning workspace to create.')
+@allowed([
+  'Default'
+  'Project'
+  'Hub'
+  'FeatureStore'
+])
+param kind string = 'Default'
 
-@sys.description('Required. The resource ID of the associated Key Vault.')
-param associatedKeyVaultResourceId string
+@sys.description('Conditional. The resource ID of the associated Storage Account. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
+param associatedStorageAccountResourceId string?
 
-@sys.description('Required. The resource ID of the associated Application Insights.')
-param associatedApplicationInsightsResourceId string
+@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
+param associatedKeyVaultResourceId string?
+
+@sys.description('Conditional. The resource ID of the associated Application Insights. Required if \'kind\' is \'Default\' or \'FeatureStore\'.')
+param associatedApplicationInsightsResourceId string?
 
 @sys.description('Optional. The resource ID of the associated Container Registry.')
 param associatedContainerRegistryResourceId string?
@@ -38,8 +47,8 @@ param lock lockType
 @sys.description('Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.')
 param hbiWorkspace bool = false
 
-@sys.description('Optional. The flag to indicate whether to allow public access when behind VNet.')
-param allowPublicAccessWhenBehindVnet bool = false
+@sys.description('Conditional. The resource ID of the hub to associate with the workspace. Required if \'kind\' is set to \'Project\'.')
+param hubResourceId string?
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -60,6 +69,25 @@ param enableTelemetry bool = true
 param managedIdentities managedIdentitiesType = {
   systemAssigned: true
 }
+
+@sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
+param featureStoreSettings featureStoreSettingType
+
+@sys.description('Optional. Managed Network settings for a machine learning workspace.')
+param managedNetworkSettings managedNetworkSettingType
+
+@sys.description('Optional. Settings for serverless compute created in the workspace.')
+param serverlessComputeSettings serverlessComputeSettingType
+
+@sys.description('Optional. The authentication mode used by the workspace when connecting to the default storage account.')
+@allowed([
+  'accessKey'
+  'identity'
+])
+param systemDatastoresAuthMode string?
+
+@sys.description('Optional. Configuration for workspace hub settings.')
+param workspaceHubConfig workspaceHubConfigType
 
 // Diagnostic Settings
 
@@ -87,12 +115,12 @@ param serviceManagedResourcesSettings object?
 @sys.description('Optional. The list of shared private link resources in this workspace. Note: This property is not idempotent.')
 param sharedPrivateLinkResources array?
 
-@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
+@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string?
+param publicNetworkAccess string = 'Disabled'
 
 // ================//
 // Variables       //
@@ -185,7 +213,8 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
+// Preview API version for 'systemDatastoresAuthMode'
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -203,7 +232,6 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
       applicationInsights: associatedApplicationInsightsResourceId
       containerRegistry: associatedContainerRegistryResourceId
       hbiWorkspace: hbiWorkspace
-      allowPublicAccessWhenBehindVnet: allowPublicAccessWhenBehindVnet
       description: description
       discoveryUrl: discoveryUrl
       encryption: !empty(customerManagedKey)
@@ -224,10 +252,14 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         : null
       imageBuildCompute: imageBuildCompute
       primaryUserAssignedIdentity: primaryUserAssignedIdentity
-      publicNetworkAccess: !empty(publicNetworkAccess)
-        ? any(publicNetworkAccess)
-        : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+      systemDatastoresAuthMode: systemDatastoresAuthMode
+      publicNetworkAccess: publicNetworkAccess
       serviceManagedResourcesSettings: serviceManagedResourcesSettings
+      featureStoreSettings: featureStoreSettings
+      hubResourceId: hubResourceId
+      managedNetwork: managedNetworkSettings
+      serverlessComputeSettings: serverlessComputeSettings
+      workspaceHubConfig: workspaceHubConfig
     },
     // Parameters only added if not empty
     !empty(sharedPrivateLinkResources)
@@ -236,6 +268,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         }
       : {}
   )
+  kind: kind
 }
 
 module workspace_computes 'compute/main.bicep' = [
@@ -514,6 +547,101 @@ type privateEndpointType = {
   @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
   resourceGroupName: string?
 }[]?
+
+type featureStoreSettingType = {
+  @sys.description('Optional. Compute runtime config for feature store type workspace.')
+  computeRuntime: {
+    @sys.description('Optional. The spark runtime version.')
+    sparkRuntimeVersion: string?
+  }?
+
+  @sys.description('Optional. The offline store connection name.')
+  offlineStoreConnectionName: string?
+
+  @sys.description('Optional. The online store connection name.')
+  onlineStoreConnectionName: string?
+}?
+
+@discriminator('type')
+type OutboundRuleType = FqdnOutboundRuleType | PrivateEndpointOutboundRule | ServiceTagOutboundRule
+
+type FqdnOutboundRuleType = {
+  @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
+  type: 'FQDN'
+
+  @sys.description('Required. Fully Qualified Domain Name to allow for outbound traffic.')
+  destination: string
+
+  @sys.description('Optional. Category of a managed network Outbound Rule of a machine learning workspace.')
+  category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
+}
+
+type PrivateEndpointOutboundRule = {
+  @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\' or \'AllowInternetOutbound\'.')
+  type: 'PrivateEndpoint'
+
+  @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.')
+  destination: {
+    @sys.description('Required. The resource ID of the target resource for the private endpoint.')
+    serviceResourceId: string
+
+    @sys.description('Optional. Whether the private endpoint can be used by jobs running on Spark.')
+    sparkEnabled: bool?
+
+    @sys.description('Required. The sub resource to connect for the private endpoint.')
+    subresourceTarget: string
+  }
+
+  @sys.description('Optional. Category of a managed network Outbound Rule of a machine learning workspace.')
+  category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
+}
+
+type ServiceTagOutboundRule = {
+  @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
+  type: 'ServiceTag'
+
+  @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.')
+  destination: {
+    @sys.description('Required. The name of the service tag to allow.')
+    portRanges: string
+
+    @sys.description('Required. The protocol to allow. Provide an asterisk(*) to allow any protocol.')
+    protocol: 'TCP' | 'UDP' | 'ICMP' | '*'
+
+    @sys.description('Required. Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.')
+    serviceTag: string
+  }
+
+  @sys.description('Optional. Category of a managed network Outbound Rule of a machine learning workspace.')
+  category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
+}
+
+type managedNetworkSettingType = {
+  @sys.description('Required. Isolation mode for the managed network of a machine learning workspace.')
+  isolationMode: 'AllowInternetOutbound' | 'AllowOnlyApprovedOutbound' | 'Disabled'
+
+  @sys.description('Optional. Outbound rules for the managed network of a machine learning workspace.')
+  outboundRules: {
+    @sys.description('Required. The outbound rule. The name of the rule is the object key.')
+    *: OutboundRuleType
+  }?
+}?
+
+type serverlessComputeSettingType = {
+  @sys.description('Optional. The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed.')
+  serverlessComputeCustomSubnet: string?
+
+  @sys.description('Optional. The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint.')
+  serverlessComputeNoPublicIP: bool?
+}?
+
+type workspaceHubConfigType = {
+  @sys.description('Optional. The resource IDs of additional storage accounts to attach to the workspace.')
+  additionalWorkspaceStorageAccounts: string[]?
+
+  @sys.description('Optional. The resource ID of the default resource group for projects created in the workspace hub.')
+  defaultWorkspaceResourceGroup: string?
+}?
 
 type diagnosticSettingType = {
   @sys.description('Optional. The name of diagnostic setting.')

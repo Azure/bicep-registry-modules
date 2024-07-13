@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13236126487964309440"
+      "templateHash": "2845806145425627201"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -886,9 +886,9 @@
     },
     "workloadProfileName": {
       "type": "string",
-      "defaultValue": "Consumption",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The name of the workload profile to use."
+        "description": "Optional. The name of the workload profile to use. Leave empty to use a consumption based profile."
       }
     },
     "secrets": {
@@ -898,7 +898,7 @@
       },
       "nullable": true,
       "metadata": {
-        "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
+        "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      // You can do this, but you shouldn't. Use a secret reference instead.\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
         "description": "Optional. The secrets of the Container App."
       }
     },
@@ -947,7 +947,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
