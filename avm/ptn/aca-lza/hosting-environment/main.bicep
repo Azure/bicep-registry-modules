@@ -328,7 +328,7 @@ output containerRegistryUserAssignedIdentityId string = supportingServices.outpu
 @description('The resource ID of the key vault.')
 output keyVaultId string = supportingServices.outputs.keyVaultId
 
-@description('The name of the key vault.')
+@description('The name of the Azure key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
 
 // Application Gateway

@@ -655,7 +655,7 @@ The name of the workload that is being deployed. Up to 10 characters long.
 | `containerRegistryName` | string | The name of the container registry. |
 | `containerRegistryUserAssignedIdentityId` | string | The resource ID of the user assigned managed identity for the container registry to be able to pull images from it. |
 | `keyVaultId` | string | The resource ID of the key vault. |
-| `keyVaultName` | string | The name of the key vault. |
+| `keyVaultName` | string | The name of the Azure key vault. |
 | `logAnalyticsWorkspaceId` | string | The resource ID of the Log Analytics workspace created in the spoke vnet. |
 | `spokeApplicationGatewaySubnetId` | string | The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeApplicationGatewaySubnetName` | string | The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |

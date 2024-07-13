@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9392412191731202151"
+      "templateHash": "1109905258636222332"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -43404,7 +43404,7 @@
     "keyVaultName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the key vault."
+        "description": "The name of the Azure key vault."
       },
       "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.keyVaultName.value]"
     },
