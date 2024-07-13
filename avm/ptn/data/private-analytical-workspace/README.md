@@ -677,10 +677,6 @@ This option allows the solution to be connected to a VNET that the customer prov
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `databricksLocation` | string | Conditional. The location of the Azure Databricks if `enableDatabricks` is `true`. |
-| `databricksName` | string | Conditional. The name of the Azure Databricks if `enableDatabricks` is `true`. |
-| `databricksResourceGroupName` | string | Conditional. The name of the Azure Databricks resource group if `enableDatabricks` is `true`. |
-| `databricksResourceId` | string | Conditional. The resource ID of the Azure Databricks if `enableDatabricks` is `true`. |
 | `keyVaultLocation` | string | The location of the Azure Key Vault. |
 | `keyVaultName` | string | The name of the Azure Key Vault. |
 | `keyVaultResourceGroupName` | string | The name of the Azure Key Vault resource group. |

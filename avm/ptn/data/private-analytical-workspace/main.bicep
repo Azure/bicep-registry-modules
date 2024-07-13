@@ -47,7 +47,20 @@ var subnetNamePrivateLink = 'private-link-subnet'
 var subnetNameDbwControlPlane = 'dbw-control-plane-subnet'
 var subnetNameDbwComputePlane = 'dbw-compute-plane-subnet'
 var nsgNamePrivateLink = '${name}-nsg-private-link'
-var nsgRulesPrivateLink = [] // Standard - No special needs
+var nsgRulesPrivateLink = [
+  {
+    name: 'PrivateLinkDenyAllOutbound'
+    description: 'Private Link subnet should not initiate any Outbound Connections'
+    access: 'Deny'
+    direction: 'Outbound'
+    priority: 100
+    protocol: '*'
+    sourceAddressPrefix: '*'
+    sourcePortRanges: '*'
+    destinationAddressPrefix: '*'
+    destinationPortRange: '*'
+  }
+]
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
 var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
 var nsgRulesDbw = [] // Azure Databricks will modify NSG if needed - depends on options
@@ -584,6 +597,7 @@ output keyVaultLocation string = kvCfg.location
 @description('The name of the Azure Key Vault resource group.')
 output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
+/*
 @description('Conditional. The resource ID of the Azure Databricks if `enableDatabricks` is `true`.')
 output databricksResourceId string = dbw.?outputs.?resourceId ?? ''
 
@@ -595,6 +609,7 @@ output databricksLocation string = dbw.?outputs.?location ?? ''
 
 @description('Conditional. The name of the Azure Databricks resource group if `enableDatabricks` is `true`.')
 output databricksResourceGroupName string = dbw.?outputs.?resourceGroupName ?? ''
+*/
 
 // ================ //
 // Definitions      //
