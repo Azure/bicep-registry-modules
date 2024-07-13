@@ -520,7 +520,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
     // Select No Azure Databricks Rules if you are using back-end Private Link,
     // which means that your workspace data plane does not need network security group rules
     // to connect to the Azure Databricks control plane. Otherwise, select All Rules.
-    requiredNsgRules: 'AllRules' // In some environments with 'NoAzureDatabricksRules' cluster cannot be created
+    requiredNsgRules: empty(dbwIpRules) ? 'NoAzureDatabricksRules' : 'AllRules' // In some environments with 'NoAzureDatabricksRules' cluster cannot be created
     roleAssignments: empty(dbwRoleAssignments) ? [] : dbwRoleAssignments
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support

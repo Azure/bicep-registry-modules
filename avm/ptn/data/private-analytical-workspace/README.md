@@ -746,9 +746,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 #### Use Case 3: Provided Virtual Network
 
-- Customer needs to provide Spoke Virtual Network with subnets for the solution.
+- Customer needs to provide Spoke Virtual Network dedicated to the workload with subnets for the solution.
+  - Spoke Network needs to be peered with Hub Network - typically with central Firewall and connectivity to enterprise network.
   - Private Link Subnet, control plane and compute plane subnet for Azure Databricks
   - Subnets for Azure Databricks must have delegations for 'Microsoft.Databricks/workspaces' enabled
+  - Each subnet for Azure Databricks must have same NSG associated
+  - NSG for ADb must have following rules - https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#network-security-group-rules-for-workspaces
 
 
 ## Data Collection
