@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16772091958554241439"
+      "templateHash": "13875129175644266769"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -336,15 +336,17 @@
     "nsgRulesPrivateLink": [
       {
         "name": "PrivateLinkDenyAllOutbound",
-        "description": "Private Link subnet should not initiate any Outbound Connections",
-        "access": "Deny",
-        "direction": "Outbound",
-        "priority": 100,
-        "protocol": "*",
-        "sourceAddressPrefix": "*",
-        "sourcePortRanges": "*",
-        "destinationAddressPrefix": "*",
-        "destinationPortRange": "*"
+        "properties": {
+          "description": "Private Link subnet should not initiate any Outbound Connections",
+          "access": "Deny",
+          "direction": "Outbound",
+          "priority": 100,
+          "protocol": "*",
+          "sourceAddressPrefix": "*",
+          "sourcePortRange": "*",
+          "destinationAddressPrefix": "*",
+          "destinationPortRange": "*"
+        }
       }
     ],
     "nsgNameDbwControlPlane": "[format('{0}-nsg-dbw-control-plane', parameters('name'))]",

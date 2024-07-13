@@ -50,15 +50,17 @@ var nsgNamePrivateLink = '${name}-nsg-private-link'
 var nsgRulesPrivateLink = [
   {
     name: 'PrivateLinkDenyAllOutbound'
-    description: 'Private Link subnet should not initiate any Outbound Connections'
-    access: 'Deny'
-    direction: 'Outbound'
-    priority: 100
-    protocol: '*'
-    sourceAddressPrefix: '*'
-    sourcePortRanges: '*'
-    destinationAddressPrefix: '*'
-    destinationPortRange: '*'
+    properties: {
+      description: 'Private Link subnet should not initiate any Outbound Connections'
+      access: 'Deny'
+      direction: 'Outbound'
+      priority: 100
+      protocol: '*'
+      sourceAddressPrefix: '*'
+      sourcePortRange: '*'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '*'
+    }
   }
 ]
 var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
