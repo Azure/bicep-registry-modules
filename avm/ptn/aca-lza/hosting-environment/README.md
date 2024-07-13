@@ -1,4 +1,4 @@
-# Container Apps Landing Zone Accelerator `[Microsoft.acalza/hostingenvironment]`
+# Container Apps Landing Zone Accelerator `[AcaLza/HostingEnvironment]`
 
 This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework
 
