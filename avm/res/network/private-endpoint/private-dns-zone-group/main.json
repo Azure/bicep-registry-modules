@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15263454436186512874"
+      "templateHash": "11108603888482160861"
     },
     "name": "Private Endpoint Private DNS Zone Groups",
     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -26,6 +27,13 @@
         "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
       }
     },
+    "privateDNSConfigurationNames": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of names for each private private DNS zone configuration, in the same order as `privateDNSResourceIds`. Individual values can be set to `null` to use the default name."
+      }
+    },
     "name": {
       "type": "string",
       "defaultValue": "default",
@@ -40,7 +48,7 @@
         "name": "privateDnsZoneConfigs",
         "count": "[length(parameters('privateDNSResourceIds'))]",
         "input": {
-          "name": "[last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/'))]",
+          "name": "[coalesce(tryGet(parameters('privateDNSConfigurationNames'), copyIndex('privateDnsZoneConfigs')), last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/')))]",
           "properties": {
             "privateDnsZoneId": "[parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
           }
@@ -48,16 +56,25 @@
       }
     ]
   },
-  "resources": [
-    {
+  "resources": {
+    "privateEndpoint": {
+      "existing": true,
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2023-11-01",
+      "name": "[parameters('privateEndpointName')]"
+    },
+    "privateDnsZoneGroup": {
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
       "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
       "properties": {
         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
-      }
+      },
+      "dependsOn": [
+        "privateEndpoint"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

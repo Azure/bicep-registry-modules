@@ -153,6 +153,9 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    privateDnsZoneConfigurationNames: [
+      'config'
+    ]
     privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
@@ -255,6 +258,11 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "privateDnsZoneConfigurationNames": {
+      "value": [
+        "config"
+      ]
     },
     "privateDnsZoneGroupName": {
       "value": "default"
@@ -569,6 +577,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. |
+| [`privateDnsZoneConfigurationNames`](#parameter-privatednszoneconfigurationnames) | array | Array of names for each private private DNS zone configuration, in the same order as `privateDnsZoneResourceIds`. Individual values can be set to `null` to use the default name. |
 | [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
 | [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. |
@@ -801,6 +810,13 @@ A message passed to the owner of the remote resource with this connection reques
 
 - Required: Yes
 - Type: string
+
+### Parameter: `privateDnsZoneConfigurationNames`
+
+Array of names for each private private DNS zone configuration, in the same order as `privateDnsZoneResourceIds`. Individual values can be set to `null` to use the default name.
+
+- Required: No
+- Type: array
 
 ### Parameter: `privateDnsZoneGroupName`
 

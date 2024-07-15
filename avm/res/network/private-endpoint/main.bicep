@@ -23,6 +23,9 @@ param privateDnsZoneGroupName string?
 @description('Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
 param privateDnsZoneResourceIds array?
 
+@description('Optional. Array of names for each private private DNS zone configuration, in the same order as `privateDnsZoneResourceIds`. Individual values can be set to `null` to use the default name.')
+param privateDnsZoneConfigurationNames array?
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -137,6 +140,7 @@ module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' =
   params: {
     name: privateDnsZoneGroupName ?? 'default'
     privateDNSResourceIds: privateDnsZoneResourceIds ?? []
+    privateDNSConfigurationNames: privateDnsZoneConfigurationNames ?? []
     privateEndpointName: privateEndpoint.name
   }
 }

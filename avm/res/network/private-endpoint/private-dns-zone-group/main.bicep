@@ -10,12 +10,15 @@ param privateEndpointName string
 @maxLength(5)
 param privateDNSResourceIds array
 
+@description('Optional. Array of names for each private private DNS zone configuration, in the same order as `privateDNSResourceIds`. Individual values can be set to `null` to use the default name.')
+param privateDNSConfigurationNames array?
+
 @description('Optional. The name of the private DNS zone group.')
 param name string = 'default'
 
 var privateDnsZoneConfigs = [
-  for privateDNSResourceId in privateDNSResourceIds: {
-    name: last(split(privateDNSResourceId, '/'))!
+  for (privateDNSResourceId, index) in privateDNSResourceIds: {
+    name: privateDNSConfigurationNames[?index] ?? last(split(privateDNSResourceId, '/'))!
     properties: {
       privateDnsZoneId: privateDNSResourceId
     }
