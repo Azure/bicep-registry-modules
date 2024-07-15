@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "15788464740461325450"
+      "version": "0.28.1.47646",
+      "templateHash": "7302912339936102911"
     },
     "name": "Network Manager Network Group Static Members",
     "description": "This module deploys a Network Manager Network Group Static Member.\r\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
@@ -40,7 +40,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('networkGroupName'), parameters('name'))]",
       "properties": {
         "resourceId": "[parameters('resourceId')]"

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "18324011062979290950"
+      "templateHash": "5252125758976164873"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -673,7 +673,7 @@
     },
     "networkManager": {
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -754,7 +754,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "15382409345741375912"
+              "templateHash": "8661602355487370952"
             },
             "name": "Network Manager Network Groups",
             "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
@@ -816,12 +816,12 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[parameters('networkManagerName')]"
             },
             "networkGroup": {
               "type": "Microsoft.Network/networkManagers/networkGroups",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "description": "[coalesce(parameters('description'), '')]"
@@ -864,10 +864,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "5856566387911873889"
+                      "templateHash": "7302912339936102911"
                     },
                     "name": "Network Manager Network Group Static Members",
-                    "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+                    "description": "This module deploys a Network Manager Network Group Static Member.\r\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
                     "owner": "Azure/module-maintainers"
                   },
                   "parameters": {
@@ -899,7 +899,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('networkGroupName'), parameters('name'))]",
                       "properties": {
                         "resourceId": "[parameters('resourceId')]"
@@ -1013,7 +1013,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "10727241272557696879"
+              "templateHash": "14991353236850772040"
             },
             "name": "Network Manager Connectivity Configurations",
             "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
@@ -1118,7 +1118,7 @@
                 "Mesh"
               ],
               "metadata": {
-                "description": "Required. Connectivity topology type. \"Mesh\" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION."
+                "description": "Required. Connectivity topology type."
               }
             },
             "hubs": {
@@ -1146,12 +1146,12 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[parameters('networkManagerName')]"
             },
             "connectivityConfiguration": {
               "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",
@@ -1234,7 +1234,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "13669533264515087337"
+              "templateHash": "5354876274331094062"
             },
             "name": "Network Manager Scope Connections",
             "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
@@ -1279,12 +1279,12 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[parameters('networkManagerName')]"
             },
             "scopeConnection": {
               "type": "Microsoft.Network/networkManagers/scopeConnections",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "description": "[coalesce(parameters('description'), '')]",
@@ -1363,7 +1363,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11404005385428137458"
+              "templateHash": "15375903043323950090"
             },
             "name": "Network Manager Security Admin Configurations",
             "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
@@ -1601,12 +1601,12 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[parameters('networkManagerName')]"
             },
             "securityAdminConfigurations": {
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "description": "[coalesce(parameters('description'), '')]",
@@ -1657,7 +1657,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "16935679479200215106"
+                      "templateHash": "8668259874629593485"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
@@ -1865,7 +1865,7 @@
                     "networkManager::securityAdminConfiguration": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]",
                       "dependsOn": [
                         "networkManager"
@@ -1874,12 +1874,12 @@
                     "networkManager": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[parameters('networkManagerName')]"
                     },
                     "ruleCollection": {
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
                       "properties": {
                         "description": "[coalesce(parameters('description'), '')]",
@@ -1951,7 +1951,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.28.1.47646",
-                              "templateHash": "2308266442236720720"
+                              "templateHash": "9624028360077804841"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
                             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
@@ -2137,7 +2137,7 @@
                             "networkManager::securityAdminConfiguration::ruleCollection": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-                              "apiVersion": "2023-04-01",
+                              "apiVersion": "2023-11-01",
                               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'))]",
                               "dependsOn": [
                                 "networkManager::securityAdminConfiguration"
@@ -2146,7 +2146,7 @@
                             "networkManager::securityAdminConfiguration": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-                              "apiVersion": "2023-04-01",
+                              "apiVersion": "2023-11-01",
                               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]",
                               "dependsOn": [
                                 "networkManager"
@@ -2155,12 +2155,12 @@
                             "networkManager": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers",
-                              "apiVersion": "2023-04-01",
+                              "apiVersion": "2023-11-01",
                               "name": "[parameters('networkManagerName')]"
                             },
                             "rule": {
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
-                              "apiVersion": "2023-04-01",
+                              "apiVersion": "2023-11-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                               "kind": "Custom",
                               "properties": {
@@ -2299,7 +2299,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkManager', '2023-04-01', 'full').location]"
+      "value": "[reference('networkManager', '2023-11-01', 'full').location]"
     }
   }
 }
