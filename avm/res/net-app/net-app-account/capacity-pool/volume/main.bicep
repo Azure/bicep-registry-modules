@@ -77,6 +77,9 @@ param name string
 @description('Optional. Location of the pool volume.')
 param location string = resourceGroup().location
 
+@description('Optional. Zone where the volume will be placed.')
+param zones array = ['1']
+
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
   'Premium'
@@ -86,7 +89,13 @@ param location string = resourceGroup().location
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
+@description('Optional. Network feature for the volume.')
+@allowed([
+  'Basic'
+  'Basic_Standard'
+  'Standard'
+  'Standard_Basic'
+])
 param networkFeatures string = 'Standard'
 
 @description('Optional. A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription.')
@@ -121,15 +130,15 @@ var builtInRoleNames = {
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' existing = {
   name: netAppAccountName
 
-  resource capacityPool 'capacityPools@2023-11-01' existing = {
+  resource capacityPool 'capacityPools@2023-07-01' existing = {
     name: capacityPoolName
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-11-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-07-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location

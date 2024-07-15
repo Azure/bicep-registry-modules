@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8818431800962559009"
+      "templateHash": "1750388407131447050"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -241,6 +241,15 @@
         "description": "Optional. Location of the pool volume."
       }
     },
+    "zones": {
+      "type": "array",
+      "defaultValue": [
+        "1"
+      ],
+      "metadata": {
+        "description": "Optional. Zone where the volume will be placed."
+      }
+    },
     "serviceLevel": {
       "type": "string",
       "defaultValue": "Standard",
@@ -257,8 +266,14 @@
     "networkFeatures": {
       "type": "string",
       "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Basic_Standard",
+        "Standard",
+        "Standard_Basic"
+      ],
       "metadata": {
-        "description": "Required. Network features available to the volume, or current state of update (Basic/Standard)."
+        "description": "Optional. Network feature for the volume."
       }
     },
     "creationToken": {
@@ -314,7 +329,7 @@
     "netAppAccount::capacityPool": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
       "dependsOn": [
         "netAppAccount"
@@ -323,15 +338,23 @@
     "netAppAccount": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2023-07-01",
       "name": "[parameters('netAppAccountName')]"
     },
     "volume": {
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod')), if(not(equals(parameters('endpointType'), '')), createObject('dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
+      "properties": {
+        "serviceLevel": "[parameters('serviceLevel')]",
+        "creationToken": "[parameters('creationToken')]",
+        "usageThreshold": "[parameters('usageThreshold')]",
+        "protocolTypes": "[parameters('protocolTypes')]",
+        "subnetId": "[parameters('subnetResourceId')]",
+        "networkFeatures": "[parameters('networkFeatures')]",
+        "exportPolicy": "[if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null())]"
+      },
       "zones": "[parameters('zones')]",
       "dependsOn": [
         "netAppAccount::capacityPool"
@@ -424,7 +447,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('volume', '2023-11-01', 'full').location]"
+      "value": "[reference('volume', '2023-07-01', 'full').location]"
     }
   }
 }
