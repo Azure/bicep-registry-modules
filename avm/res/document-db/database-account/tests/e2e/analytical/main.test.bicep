@@ -29,8 +29,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: enforcedLocation
 }
 
-module t 'br/public:avm/res/virtual-machine-images/image-template:0.2.1'
-
 // ============== //
 // Test Execution //
 // ============== //
