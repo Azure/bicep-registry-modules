@@ -599,19 +599,17 @@ output keyVaultLocation string = kvCfg.location
 @description('The name of the Azure Key Vault resource group.')
 output keyVaultResourceGroupName string = kvCfg.resourceGroupName
 
-/*
-@description('Conditional. The resource ID of the Azure Databricks if `enableDatabricks` is `true`.')
-output databricksResourceId string = dbw.?outputs.?resourceId ?? ''
+@description('Conditional. The resource ID of the Azure Databricks when `enableDatabricks` is `true`.')
+output databricksResourceId string = enableDatabricks ? dbw.outputs.resourceId : ''
 
-@description('Conditional. The name of the Azure Databricks if `enableDatabricks` is `true`.')
-output databricksName string = dbw.?outputs.?name ?? ''
+@description('Conditional. The name of the Azure Databricks when `enableDatabricks` is `true`.')
+output databricksName string = enableDatabricks ? dbw.outputs.name : ''
 
-@description('Conditional. The location of the Azure Databricks if `enableDatabricks` is `true`.')
-output databricksLocation string = dbw.?outputs.?location ?? ''
+@description('Conditional. The location of the Azure Databricks when `enableDatabricks` is `true`.')
+output databricksLocation string = enableDatabricks ? dbw.outputs.location : ''
 
-@description('Conditional. The name of the Azure Databricks resource group if `enableDatabricks` is `true`.')
-output databricksResourceGroupName string = dbw.?outputs.?resourceGroupName ?? ''
-*/
+@description('Conditional. The name of the Azure Databricks resource group when `enableDatabricks` is `true`.')
+output databricksResourceGroupName string = enableDatabricks ? dbw.outputs.resourceGroupName : ''
 
 // ================ //
 // Definitions      //

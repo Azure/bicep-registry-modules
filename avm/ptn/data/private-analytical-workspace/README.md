@@ -689,6 +689,10 @@ This option allows the solution to be connected to a VNET that the customer prov
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `databricksLocation` | string | Conditional. The location of the Azure Databricks when `enableDatabricks` is `true`. |
+| `databricksName` | string | Conditional. The name of the Azure Databricks when `enableDatabricks` is `true`. |
+| `databricksResourceGroupName` | string | Conditional. The name of the Azure Databricks resource group when `enableDatabricks` is `true`. |
+| `databricksResourceId` | string | Conditional. The resource ID of the Azure Databricks when `enableDatabricks` is `true`. |
 | `keyVaultLocation` | string | The location of the Azure Key Vault. |
 | `keyVaultName` | string | The name of the Azure Key Vault. |
 | `keyVaultResourceGroupName` | string | The name of the Azure Key Vault resource group. |
@@ -721,6 +725,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Notes
 
+The goal is integrated environment for Data science.
+Monitoring, security, integration with KV, network, AML, Databricks, etc.
+
 ### Supported Use Cases
 
 #### Use Case 1: Isolated Virtual Network
@@ -749,9 +756,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 - Customer needs to provide Spoke Virtual Network dedicated to the workload with subnets for the solution.
   - Spoke Network needs to be peered with Hub Network - typically with central Firewall and connectivity to enterprise network.
   - Private Link Subnet, control plane and compute plane subnet for Azure Databricks
-  - Subnets for Azure Databricks must have delegations for 'Microsoft.Databricks/workspaces' enabled
+  - !!! Subnets for Azure Databricks must have delegations for 'Microsoft.Databricks/workspaces' enabled
   - Each subnet for Azure Databricks must have same NSG associated
   - NSG for ADb must have following rules - https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#network-security-group-rules-for-workspaces
+  - ADB PEPs
+  - ADB UDR?? https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/udr
 
 
 ## Data Collection

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "4801349843768978461"
+      "templateHash": "7054098230333682178"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -16128,6 +16128,34 @@
         "description": "The name of the Azure Key Vault resource group."
       },
       "value": "[createObject('resourceId', if(variables('createNewKV'), reference('kv').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewKV'), subscription().id, split(parameters('keyVaultResourceId'), '/')[2]), if(variables('createNewKV'), resourceGroup().id, split(parameters('keyVaultResourceId'), '/')[4])), 'Microsoft.KeyVault/vaults', if(variables('createNewKV'), 'dummyName', last(split(parameters('keyVaultResourceId'), '/'))))), 'name', if(variables('createNewKV'), reference('kv').outputs.name.value, if(variables('createNewKV'), 'dummyName', last(split(parameters('keyVaultResourceId'), '/')))), 'location', if(variables('createNewKV'), reference('kv').outputs.location.value, reference('kvExisting', '2023-07-01', 'full').location), 'resourceGroupName', if(variables('createNewKV'), reference('kv').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewKV'), subscription().id, split(parameters('keyVaultResourceId'), '/')[2]), if(variables('createNewKV'), resourceGroup().id, split(parameters('keyVaultResourceId'), '/')[4])), 'Microsoft.KeyVault/vaults', if(variables('createNewKV'), 'dummyName', last(split(parameters('keyVaultResourceId'), '/')))), '/')[4])).resourceGroupName]"
+    },
+    "databricksResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The resource ID of the Azure Databricks when `enableDatabricks` is `true`."
+      },
+      "value": "[if(parameters('enableDatabricks'), reference('dbw').outputs.resourceId.value, '')]"
+    },
+    "databricksName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the Azure Databricks when `enableDatabricks` is `true`."
+      },
+      "value": "[if(parameters('enableDatabricks'), reference('dbw').outputs.name.value, '')]"
+    },
+    "databricksLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The location of the Azure Databricks when `enableDatabricks` is `true`."
+      },
+      "value": "[if(parameters('enableDatabricks'), reference('dbw').outputs.location.value, '')]"
+    },
+    "databricksResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the Azure Databricks resource group when `enableDatabricks` is `true`."
+      },
+      "value": "[if(parameters('enableDatabricks'), reference('dbw').outputs.resourceGroupName.value, '')]"
     }
   }
 }
