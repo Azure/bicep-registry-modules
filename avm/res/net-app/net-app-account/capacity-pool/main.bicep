@@ -94,7 +94,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       name: volume.name
       location: location
       serviceLevel: serviceLevel
-      networkFeatures: networkFeatures
+      networkFeatures: contains(volume, 'networkFeatures') ? volume.networkFeatures : networkFeatures
       creationToken: contains(volume, 'creationToken') ? volume.creationToken : volume.name
       usageThreshold: volume.usageThreshold
       protocolTypes: contains(volume, 'protocolTypes') ? volume.protocolTypes : []
@@ -124,8 +124,6 @@ module capacityPool_volumes 'volume/main.bicep' = [
       snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : 'snapshot'
       useExistingSnapshot: contains(volume, 'useExistingSnapshot') ? volume.useExistingSnapshot : false
       volumeResourceId: contains(volume, 'volumeResourceId') ? volume.volumeResourceId : ''
-      networkFeatures: volume.?networkFeatures
-      zones: volume.?zones
     }
   }
 ]

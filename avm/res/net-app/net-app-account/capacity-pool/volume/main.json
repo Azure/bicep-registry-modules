@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1750388407131447050"
+      "templateHash": "12491316968044537439"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -110,15 +110,6 @@
       "defaultValue": "Default",
       "metadata": {
         "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
-      }
-    },
-    "zones": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "metadata": {
-        "description": "Optional. Availability Zone."
       }
     },
     "endpointType": {
@@ -346,15 +337,7 @@
       "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "properties": {
-        "serviceLevel": "[parameters('serviceLevel')]",
-        "creationToken": "[parameters('creationToken')]",
-        "usageThreshold": "[parameters('usageThreshold')]",
-        "protocolTypes": "[parameters('protocolTypes')]",
-        "subnetId": "[parameters('subnetResourceId')]",
-        "networkFeatures": "[parameters('networkFeatures')]",
-        "exportPolicy": "[if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null())]"
-      },
+      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod')), if(not(equals(parameters('endpointType'), '')), createObject('dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
       "zones": "[parameters('zones')]",
       "dependsOn": [
         "netAppAccount::capacityPool"

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11547939477420611757""templateHash": "17304854614770516158"
+      "templateHash": "11473738026956144548"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -262,9 +262,7 @@
           "serviceLevel": {
             "value": "[parameters('serviceLevel')]"
           },
-          "networkFeatures": {
-            "value": "[parameters('networkFeatures')]"
-          },
+          "networkFeatures": "[if(contains(parameters('volumes')[copyIndex()], 'networkFeatures'), createObject('value', parameters('volumes')[copyIndex()].networkFeatures), createObject('value', parameters('networkFeatures')))]",
           "creationToken": "[if(contains(parameters('volumes')[copyIndex()], 'creationToken'), createObject('value', parameters('volumes')[copyIndex()].creationToken), createObject('value', parameters('volumes')[copyIndex()].name))]",
           "usageThreshold": {
             "value": "[parameters('volumes')[copyIndex()].usageThreshold]"
@@ -305,7 +303,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1750388407131447050""templateHash": "8818431800962559009"
+              "templateHash": "12491316968044537439"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -409,15 +407,6 @@
               "defaultValue": "Default",
               "metadata": {
                 "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
-              }
-            },
-            "zones": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "metadata": {
-                "description": "Optional. Availability Zone."
               }
             },
             "endpointType": {
@@ -573,13 +562,6 @@
               ],
               "metadata": {
                 "description": "Optional. Network feature for the volume."
-              }
-            },
-            "networkFeatures": {
-              "type": "string",
-              "defaultValue": "Standard",
-              "metadata": {
-                "description": "Required. Network features available to the volume, or current state of update (Basic/Standard)."
               }
             },
             "creationToken": {
@@ -783,7 +765,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('capacityPool', '2023-11-01', 'full').location]"
+      "value": "[reference('capacityPool', '2023-07-01', 'full').location]"
     },
     "volumeResourceId": {
       "type": "string",

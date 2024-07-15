@@ -15,7 +15,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-11-01/netAppAccounts/backupPolicies) |
 | `Microsoft.NetApp/netAppAccounts/backupVaults` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults) |
 | `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults/backups) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools/volumes) |
@@ -27,7 +27,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the pool volume. |
-| [`networkFeatures`](#parameter-networkfeatures) | string | Network features available to the volume, or current state of update (Basic/Standard). |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-usagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
 
@@ -57,8 +56,8 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`endpointType`](#parameter-endpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
-| [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
+| [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
 | [`remoteVolumeRegion`](#parameter-remotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 | [`remoteVolumeResourceId`](#parameter-remotevolumeresourceid) | string | The resource ID of the remote volume. |
@@ -69,7 +68,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Indicates whether to use an existing snapshot. |
 | [`volumeResourceId`](#parameter-volumeresourceid) | string | The resource ID of the volume. |
 | [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
-| [`zones`](#parameter-zones) | array | Availability Zone. |
+| [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `name`
 
@@ -77,14 +76,6 @@ The name of the pool volume.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `networkFeatures`
-
-Network features available to the volume, or current state of update (Basic/Standard).
-
-- Required: No
-- Type: string
-- Default: `'Standard'`
 
 ### Parameter: `subnetResourceId`
 
@@ -234,6 +225,23 @@ The monthly backups to keep.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `networkFeatures`
+
+Network feature for the volume.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Basic_Standard'
+    'Standard'
+    'Standard_Basic'
+  ]
+  ```
 
 ### Parameter: `protocolTypes`
 
@@ -397,13 +405,6 @@ The weekly backups to keep.
 
 - Required: Yes
 - Type: int
-
-### Parameter: `zones`
-
-Availability Zone.
-
-- Required: Yes
-- Type: array
 
 ### Parameter: `zones`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14917522462016584458"
+      "templateHash": "4498449200728130154"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -347,7 +347,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.netapp-netappaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "17304854614770516158"
+              "templateHash": "11473738026956144548"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -734,9 +734,7 @@
                   "serviceLevel": {
                     "value": "[parameters('serviceLevel')]"
                   },
-                  "networkFeatures": {
-                    "value": "[parameters('networkFeatures')]"
-                  },
+                  "networkFeatures": "[if(contains(parameters('volumes')[copyIndex()], 'networkFeatures'), createObject('value', parameters('volumes')[copyIndex()].networkFeatures), createObject('value', parameters('networkFeatures')))]",
                   "creationToken": "[if(contains(parameters('volumes')[copyIndex()], 'creationToken'), createObject('value', parameters('volumes')[copyIndex()].creationToken), createObject('value', parameters('volumes')[copyIndex()].name))]",
                   "usageThreshold": {
                     "value": "[parameters('volumes')[copyIndex()].usageThreshold]"
@@ -777,7 +775,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "8818431800962559009"
+                      "templateHash": "12491316968044537439"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -881,15 +879,6 @@
                       "defaultValue": "Default",
                       "metadata": {
                         "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
-                      }
-                    },
-                    "zones": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Optional. Availability Zone."
                       }
                     },
                     "endpointType": {
@@ -1047,13 +1036,6 @@
                         "description": "Optional. Network feature for the volume."
                       }
                     },
-                    "networkFeatures": {
-                      "type": "string",
-                      "defaultValue": "Standard",
-                      "metadata": {
-                        "description": "Required. Network features available to the volume, or current state of update (Basic/Standard)."
-                      }
-                    },
                     "creationToken": {
                       "type": "string",
                       "defaultValue": "[parameters('name')]",
@@ -1128,50 +1110,6 @@
                       "zones": "[parameters('zones')]",
                       "dependsOn": [
                         "netAppAccount::capacityPool"
-                      ]
-                    },
-                    "backupPolicies": {
-                      "condition": "[parameters('backupEnabled')]",
-                      "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
-                      "apiVersion": "2023-11-01",
-                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
-                      "location": "[parameters('backupPolicyLocation')]",
-                      "properties": {
-                        "serviceLevel": "[parameters('serviceLevel')]",
-                        "creationToken": "[parameters('creationToken')]",
-                        "usageThreshold": "[parameters('usageThreshold')]",
-                        "protocolTypes": "[parameters('protocolTypes')]",
-                        "subnetId": "[parameters('subnetResourceId')]",
-                        "networkFeatures": "[parameters('networkFeatures')]",
-                        "exportPolicy": "[if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null())]""dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
-                        "enabled": "[parameters('backupEnabled')]",
-                        "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]",
-                        "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]"
-                      },
-                      "zones": "[parameters('zones')]",
-                      "dependsOn": [
-                        "netAppAccount"
-                      ]
-                    },
-                    "backupVaults": {
-                      "condition": "[parameters('backupEnabled')]",
-                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-                      "apiVersion": "2023-05-01-preview",
-                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
-                      "location": "[parameters('backupVaultLocation')]",
-                      "properties": {},
-                      "dependsOn": [
-                        "netAppAccount"
-                      ]
-                    },
-                    "backups": {
-                      "condition": "[parameters('backupEnabled')]",
-                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
-                      "apiVersion": "2023-05-01-preview",
-                      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('backupName'))]",
-                      "properties": "[if(parameters('backupEnabled'), createObject('label', parameters('backupLabel'), 'snapshotName', parameters('snapshotName'), 'useExistingSnapshot', parameters('useExistingSnapshot'), 'volumeResourceId', parameters('volumeResourceId')), createObject())]",
-                      "dependsOn": [
-                        "backupVaults"
                       ]
                     },
                     "backupPolicies": {
@@ -1299,7 +1237,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('capacityPool', '2023-11-01', 'full').location]"
+              "value": "[reference('capacityPool', '2023-07-01', 'full').location]"
             },
             "volumeResourceId": {
               "type": "string",
@@ -1343,7 +1281,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('netAppAccount', '2023-11-01', 'full').location]"
+      "value": "[reference('netAppAccount', '2023-07-01', 'full').location]"
     },
     "volumeResourceId": {
       "type": "string",
