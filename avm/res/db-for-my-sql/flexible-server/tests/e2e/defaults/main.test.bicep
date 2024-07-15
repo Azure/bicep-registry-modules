@@ -47,7 +47,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
         startHour: 0
         startMinute: 0
       }
-      skuName: 'Standard_D2ads_v5'
+      skuName: 'Standard_D2ds_v4'
       tier: 'GeneralPurpose'
     }
   }
