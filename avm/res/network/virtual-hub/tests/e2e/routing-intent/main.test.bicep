@@ -93,13 +93,12 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       hubRoutingPreference: 'ASPath'
-      internetToFirewall: true
+      internetToFirewall: false
       privateToFirewall: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
-        fwResourceId: nestedDependencies.outputs.azureFirewallResourceId
       }
     }
   }
