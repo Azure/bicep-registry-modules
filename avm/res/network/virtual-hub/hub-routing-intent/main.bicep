@@ -24,14 +24,14 @@ resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-11-01' 
   properties: {
     routingPolicies: (internetToFirewall == true && privateToFirewall == true) ? [
       {
-        name: 'PublicTraffic'
+        name: '_policy_PublicTraffic'
         destinations: [
           'Internet'
         ]
         nextHop: azureFirewallResourceId
       }
       {
-        name: 'PrivateTraffic'
+        name: '_policy_PrivateTraffic'
         destinations: [
           'PrivateTraffic'
         ]
@@ -39,7 +39,7 @@ resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-11-01' 
       }
     ] : (internetToFirewall == true && privateToFirewall == false) ? [
       {
-        name: 'PublicTraffic'
+        name: '_policy_PublicTraffic'
         destinations: [
           'Internet'
         ]
@@ -47,7 +47,7 @@ resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-11-01' 
       }
     ] : (internetToFirewall == false && privateToFirewall == true) ? [
       {
-        name: 'PrivateTraffic'
+        name: '_policy_PrivateTraffic'
         destinations: [
           'PrivateTraffic'
         ]

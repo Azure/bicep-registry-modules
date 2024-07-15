@@ -99,6 +99,7 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+        fwResourceId: nestedDependencies.outputs.azureFirewallResourceId
       }
     }
   }
