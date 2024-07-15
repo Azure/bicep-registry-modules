@@ -24,6 +24,10 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'northeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -32,7 +36,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -41,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -56,7 +60,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceGroup.location
+      location: enforcedLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_D2ds_v4'
