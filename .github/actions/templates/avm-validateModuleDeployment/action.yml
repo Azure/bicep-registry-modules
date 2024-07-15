@@ -84,6 +84,7 @@ runs:
       # if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
       uses: azure/login@v2
       with:
+        auth-type: IDENTITY
         creds: ${{ env.AZURE_CREDENTIALS }}
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
