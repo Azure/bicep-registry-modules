@@ -86,7 +86,7 @@ param memory string = '2Gi'
 })
 param environmentVariables environmentVariablesType[]?
 
-@description('Optional. The secrets of the Container App.')
+@description('Optional. The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.')
 @metadata({
   example: '''
   [
@@ -222,7 +222,7 @@ module job 'br/public:avm/res/app/job:0.3.0' = {
       !empty(services.outputs.keyVaultAppInsightsConnectionStringUrl)
         ? [
             {
-              name: 'mysecret'
+              name: 'applicationinsightsconnectionstring'
               identity: services.outputs.userManagedIdentityResourceId
               keyVaultUrl: 'https://${services.outputs.vaultName}${environment().suffixes.keyvaultDns}/secrets/applicationinsights-connection-string'
             }
