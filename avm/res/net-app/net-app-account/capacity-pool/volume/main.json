@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1750388407131447050"
+      "templateHash": "12491316968044537439"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -91,6 +91,132 @@
       "type": "string",
       "metadata": {
         "description": "Conditional. The name of the parent capacity pool. Required if the template is used in a standalone deployment."
+      }
+    },
+    "coolAccess": {
+      "type": "bool",
+      "metadata": {
+        "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
+      }
+    },
+    "coolnessPeriod": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+      }
+    },
+    "coolAccessRetrievalPolicy": {
+      "type": "string",
+      "defaultValue": "Default",
+      "metadata": {
+        "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
+      }
+    },
+    "endpointType": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)."
+      }
+    },
+    "remoteVolumeRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The remote region for the other end of the Volume Replication."
+      }
+    },
+    "remoteVolumeResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The resource ID of the remote volume."
+      }
+    },
+    "replicationSchedule": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The replication schedule for the volume."
+      }
+    },
+    "backupEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether the backup policy is enabled."
+      }
+    },
+    "backupPolicyName": {
+      "type": "string",
+      "defaultValue": "backupPolicy",
+      "metadata": {
+        "description": "Optional. The name of the backup policy."
+      }
+    },
+    "backupPolicyLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location of the backup policy."
+      }
+    },
+    "dailyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. The daily backups to keep."
+      }
+    },
+    "monthlyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. The monthly backups to keep."
+      }
+    },
+    "weeklyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. The weekly backups to keep."
+      }
+    },
+    "backupVaultName": {
+      "type": "string",
+      "defaultValue": "vault",
+      "metadata": {
+        "description": "Optional. The name of the backup vault."
+      }
+    },
+    "backupVaultLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location of the backup vault."
+      }
+    },
+    "backupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The name of the backup."
+      }
+    },
+    "backupLabel": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The label of the backup."
+      }
+    },
+    "useExistingSnapshot": {
+      "type": "bool",
+      "metadata": {
+        "description": "Optional. Indicates whether to use an existing snapshot."
+      }
+    },
+    "snapshotName": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The name of the snapshot."
+      }
+    },
+    "volumeResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The resource ID of the volume."
       }
     },
     "name": {
@@ -211,18 +337,47 @@
       "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "properties": {
-        "serviceLevel": "[parameters('serviceLevel')]",
-        "creationToken": "[parameters('creationToken')]",
-        "usageThreshold": "[parameters('usageThreshold')]",
-        "protocolTypes": "[parameters('protocolTypes')]",
-        "subnetId": "[parameters('subnetResourceId')]",
-        "networkFeatures": "[parameters('networkFeatures')]",
-        "exportPolicy": "[if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null())]"
-      },
+      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod')), if(not(equals(parameters('endpointType'), '')), createObject('dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
       "zones": "[parameters('zones')]",
       "dependsOn": [
         "netAppAccount::capacityPool"
+      ]
+    },
+    "backupPolicies": {
+      "condition": "[parameters('backupEnabled')]",
+      "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+      "apiVersion": "2023-11-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
+      "location": "[parameters('backupPolicyLocation')]",
+      "properties": {
+        "dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
+        "enabled": "[parameters('backupEnabled')]",
+        "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]",
+        "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]"
+      },
+      "dependsOn": [
+        "netAppAccount"
+      ]
+    },
+    "backupVaults": {
+      "condition": "[parameters('backupEnabled')]",
+      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
+      "location": "[parameters('backupVaultLocation')]",
+      "properties": {},
+      "dependsOn": [
+        "netAppAccount"
+      ]
+    },
+    "backups": {
+      "condition": "[parameters('backupEnabled')]",
+      "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('backupName'))]",
+      "properties": "[if(parameters('backupEnabled'), createObject('label', parameters('backupLabel'), 'snapshotName', parameters('snapshotName'), 'useExistingSnapshot', parameters('useExistingSnapshot'), 'volumeResourceId', parameters('volumeResourceId')), createObject())]",
+      "dependsOn": [
+        "backupVaults"
       ]
     },
     "volume_roleAssignments": {
