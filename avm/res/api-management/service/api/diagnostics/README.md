@@ -30,9 +30,9 @@ This module deploys an API Management Service API Diagnostics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`httpCorrelationProtocol`](#parameter-httpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights. |
-| [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights. |
-| [`operationNameFormat`](#parameter-operationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights. |
+| [`httpCorrelationProtocol`](#parameter-httpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
+| [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
+| [`operationNameFormat`](#parameter-operationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Required if using Application Insights. |
 
 **Optional parameters**
 
@@ -40,11 +40,11 @@ This module deploys an API Management Service API Diagnostics.
 | :-- | :-- | :-- |
 | [`alwaysLog`](#parameter-alwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
 | [`backend`](#parameter-backend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
-| [`diagnosticName`](#parameter-diagnosticname) | string | Type of diagnostic resource. Default is local. |
 | [`frontend`](#parameter-frontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
-| [`logClientIp`](#parameter-logclientip) | bool | Log the ClientIP. Default is false. |
-| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100. |
-| [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. Default is "error". |
+| [`logClientIp`](#parameter-logclientip) | bool | Log the ClientIP. |
+| [`name`](#parameter-name) | string | Type of diagnostic resource. |
+| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. |
+| [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
 ### Parameter: `apiManagementServiceName`
 
@@ -69,7 +69,7 @@ The name of the logger.
 
 ### Parameter: `httpCorrelationProtocol`
 
-Sets correlation protocol to use for Application Insights diagnostics. Default is Legacy. Required if using Application Insights.
+Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.
 
 - Required: No
 - Type: string
@@ -85,7 +85,7 @@ Sets correlation protocol to use for Application Insights diagnostics. Default i
 
 ### Parameter: `metrics`
 
-Emit custom metrics via emit-metric policy. Default is false. Required if using Application Insights.
+Emit custom metrics via emit-metric policy. Required if using Application Insights.
 
 - Required: No
 - Type: bool
@@ -93,7 +93,7 @@ Emit custom metrics via emit-metric policy. Default is false. Required if using 
 
 ### Parameter: `operationNameFormat`
 
-The format of the Operation Name for Application Insights telemetries. Default is Name. Required if using Application Insights.
+The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.
 
 - Required: No
 - Type: string
@@ -122,9 +122,25 @@ Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
 - Type: object
 - Default: `{}`
 
-### Parameter: `diagnosticName`
+### Parameter: `frontend`
 
-Type of diagnostic resource. Default is local.
+Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `logClientIp`
+
+Log the ClientIP.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `name`
+
+Type of diagnostic resource.
 
 - Required: No
 - Type: string
@@ -138,25 +154,9 @@ Type of diagnostic resource. Default is local.
   ]
   ```
 
-### Parameter: `frontend`
-
-Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `logClientIp`
-
-Log the ClientIP. Default is false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `samplingPercentage`
 
-Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. Default is 100.
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.
 
 - Required: No
 - Type: int
@@ -164,7 +164,7 @@ Rate of sampling for fixed-rate sampling. Specifies the percentage of requests t
 
 ### Parameter: `verbosity`
 
-The verbosity level applied to traces emitted by trace policies. Default is "error".
+The verbosity level applied to traces emitted by trace policies.
 
 - Required: No
 - Type: string
