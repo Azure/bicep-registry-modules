@@ -725,12 +725,32 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Notes
 
-The goal is integrated environment for Data science.
-Monitoring, security, integration with KV, network, AML, Databricks, etc.
+This pattern aims to speed up data science projects and create Azure environments
+for data analysis in a secure and enterprise-ready way.
+
+Data scientists should not worry about infrastructure details.<br>
+Ideally, data scientists should only focus on the data analytics tools they need for the solution. For example Databricks, Machine learning, database, etc.<br>
+Enterprise security, monitoring, secrets storage, databases, access over a private network should be
+integrated into the solution in a transparent way so cloud and security team can approve the whole solution easily.
+
+One of the design goals is to have all the services that are part of the solution
+connected to one virtual network to make the traffic between services private (use of private endpoints).
+A virtual network can be either created along with the solution or
+an existing virtual network (Hub/Spoke model – spoke VNET made by network enterprise team) can be chosen.
+
+The solution's services save diagnostics data to Azure Log Analytics Workspace,
+either existing or new. Secrets such as connection string or data source credentials should
+go to secrets store securely. Analytical tools use secure credentials to access data sources.
+Secrets can go to Azure Key Vault, either existing or new.
+
+The solution will include at least a virtual network (either created or using VNET created
+by enterprise network team), Azure Log Analytics workspace for diagnostics and monitoring
+(either created or given by cloud team) and Azure Key Vault as secrets
+store (either created or given by cloud team).
 
 ### Supported Use Cases
 
-#### Use Case 1: Isolated Virtual Network
+#### Use Case 1: New, Isolated Virtual Network from the enterprise network
 
 - Not reachable from enterprise network.
 - Accessible only from specified public IP addresses.
@@ -741,12 +761,24 @@ Monitoring, security, integration with KV, network, AML, Databricks, etc.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
+  name: 'UC1'
   params: {
     // Required parameters
-    name: 'dpawisolated'
+    name: 'pawuc1'
     // Non-required parameters
-    keyVaultResourceId: '<keyVaultResourceId>'
+    virtualNetworkResourceId: null        // null means new VNET will be created
+    logAnalyticsWorkspaceResourceId: null // null means new Log Analytical Workspace will be created
+    keyVaultResourceId: null              // null means new Azure key Vault will be created
+    enableDatabricks: true                // Part of the solution and VNET will be new instance of the Azure Databricks
+    solutionAdministrators: [
+      {
+        principalId: <EntraGroupId>       // Specified group will have enough permissions to manage the solution
+        principalType: 'Group'            // Group but User type can be specified
+      }
+    ]
+    advancedOptions: {
+      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution
+    }
   }
 }
 ```
