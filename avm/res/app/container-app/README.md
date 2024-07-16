@@ -463,6 +463,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
+| [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
+| [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
 | [`dapr`](#parameter-dapr) | object | Dapr configuration for the Container App. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -859,6 +861,82 @@ Controls how active revisions are handled for the Container app.
     'Single'
   ]
   ```
+
+### Parameter: `clientCertificateMode`
+
+Client certificate mode for mTLS.
+
+- Required: No
+- Type: string
+- Default: `'ignore'`
+- Allowed:
+  ```Bicep
+  [
+    'accept'
+    'ignore'
+    'require'
+  ]
+  ```
+
+### Parameter: `corsPolicy`
+
+Object userd to configure CORS policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowCredentials`](#parameter-corspolicyallowcredentials) | bool | Switch to determine whether the resource allows credentials. |
+| [`allowedHeaders`](#parameter-corspolicyallowedheaders) | array | Specifies the content for the access-control-allow-headers header. |
+| [`allowedMethods`](#parameter-corspolicyallowedmethods) | array | Specifies the content for the access-control-allow-methods header. |
+| [`allowedOrigins`](#parameter-corspolicyallowedorigins) | array | Specifies the content for the access-control-allow-origins header. |
+| [`exposeHeaders`](#parameter-corspolicyexposeheaders) | array | Specifies the content for the access-control-expose-headers header. |
+| [`maxAge`](#parameter-corspolicymaxage) | int | Specifies the content for the access-control-max-age header. |
+
+### Parameter: `corsPolicy.allowCredentials`
+
+Switch to determine whether the resource allows credentials.
+
+- Required: No
+- Type: bool
+
+### Parameter: `corsPolicy.allowedHeaders`
+
+Specifies the content for the access-control-allow-headers header.
+
+- Required: No
+- Type: array
+
+### Parameter: `corsPolicy.allowedMethods`
+
+Specifies the content for the access-control-allow-methods header.
+
+- Required: No
+- Type: array
+
+### Parameter: `corsPolicy.allowedOrigins`
+
+Specifies the content for the access-control-allow-origins header.
+
+- Required: No
+- Type: array
+
+### Parameter: `corsPolicy.exposeHeaders`
+
+Specifies the content for the access-control-expose-headers header.
+
+- Required: No
+- Type: array
+
+### Parameter: `corsPolicy.maxAge`
+
+Specifies the content for the access-control-max-age header.
+
+- Required: No
+- Type: int
 
 ### Parameter: `customDomains`
 

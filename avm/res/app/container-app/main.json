@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8728217426108975166"
+      "templateHash": "3522752943360409250"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -309,6 +309,66 @@
         }
       }
     },
+    "corsPolicyType": {
+      "type": "object",
+      "properties": {
+        "allowCredentials": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Switch to determine whether the resource allows credentials."
+          }
+        },
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-headers header."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-methods header."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-origins header."
+          }
+        },
+        "exposeHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-expose-headers header."
+          }
+        },
+        "maxAge": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-max-age header."
+          }
+        }
+      },
+      "nullable": true
+    },
     "containerAppProbeHttpGet": {
       "type": "object",
       "properties": {
@@ -435,6 +495,24 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Bool indicating if the App exposes an external HTTP endpoint."
+      }
+    },
+    "clientCertificateMode": {
+      "type": "string",
+      "defaultValue": "ignore",
+      "allowedValues": [
+        "accept",
+        "ignore",
+        "require"
+      ],
+      "metadata": {
+        "description": "Optional. Client certificate mode for mTLS."
+      }
+    },
+    "corsPolicy": {
+      "$ref": "#/definitions/corsPolicyType",
+      "metadata": {
+        "description": "Optional. Object userd to configure CORS policy."
       }
     },
     "stickySessionsAffinity": {
@@ -709,6 +787,15 @@
           "ingress": {
             "allowInsecure": "[parameters('ingressAllowInsecure')]",
             "customDomains": "[if(not(empty(parameters('customDomains'))), parameters('customDomains'), null())]",
+            "corsPolicy": {
+              "allowCredentials": "[tryGet(parameters('corsPolicy'), 'allowCredentials')]",
+              "allowedHeaders": "[coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray())]",
+              "allowedMethods": "[coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray())]",
+              "allowedOrigins": "[coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray())]",
+              "exposeHeaders": "[coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray())]",
+              "maxAge": "[tryGet(parameters('corsPolicy'), 'maxAge')]"
+            },
+            "clientCertificateMode": "[parameters('clientCertificateMode')]",
             "exposedPort": "[parameters('exposedPort')]",
             "external": "[parameters('ingressExternal')]",
             "ipSecurityRestrictions": "[if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null())]",

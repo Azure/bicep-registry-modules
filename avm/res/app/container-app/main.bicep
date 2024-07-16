@@ -12,6 +12,17 @@ param location string = resourceGroup().location
 param ingressExternal bool = true
 
 @allowed([
+  'accept'
+  'ignore'
+  'require'
+])
+@description('Optional. Client certificate mode for mTLS.')
+param clientCertificateMode string = 'ignore'
+
+@description('Optional. Object userd to configure CORS policy.')
+param corsPolicy corsPolicyType
+
+@allowed([
   'none'
   'sticky'
 ])
@@ -183,6 +194,15 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
       ingress: {
         allowInsecure: ingressAllowInsecure
         customDomains: !empty(customDomains) ? customDomains : null
+        corsPolicy: {
+          allowCredentials: corsPolicy.?allowCredentials
+          allowedHeaders: corsPolicy.?allowedHeaders ?? []
+          allowedMethods: corsPolicy.?allowedMethods ?? []
+          allowedOrigins: corsPolicy.?allowedOrigins ?? []
+          exposeHeaders: corsPolicy.?exposeHeaders ?? []
+          maxAge: corsPolicy.?maxAge
+        }
+        clientCertificateMode: clientCertificateMode
         exposedPort: exposedPort
         external: ingressExternal
         ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
@@ -230,8 +250,7 @@ resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   scope: containerApp
 }
 
-resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
+resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [ for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
       roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
@@ -386,6 +405,26 @@ type containerAppProbe = {
   @description('Optional. The type of probe.')
   type: ('Liveness' | 'Startup' | 'Readiness')?
 }
+
+type corsPolicyType = {
+  @description('Optional. Switch to determine whether the resource allows credentials.')
+  allowCredentials: bool?
+
+  @description('Optional. Specifies the content for the access-control-allow-headers header.')
+  allowedHeaders: string[]?
+
+  @description('Optional. Specifies the content for the access-control-allow-methods header.')
+  allowedMethods: string[]?
+
+  @description('Optional. Specifies the content for the access-control-allow-origins header.')
+  allowedOrigins: string[]?
+
+  @description('Optional. Specifies the content for the access-control-expose-headers header.')
+  exposeHeaders: string[]?
+
+  @description('Optional. Specifies the content for the access-control-max-age header.')
+  maxAge: int?
+}?
 
 type containerAppProbeHttpGet = {
   @description('Optional. Host name to connect to. Defaults to the pod IP.')
