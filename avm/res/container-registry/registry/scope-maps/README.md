@@ -34,7 +34,7 @@ This module deploys an Azure Container Registry (ACR) scopeMap.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`descriptions`](#parameter-descriptions) | string | The user friendly description of the scope map. |
+| [`description`](#parameter-description) | string | The user friendly description of the scope map. |
 | [`name`](#parameter-name) | string | The name of the scope map. |
 
 ### Parameter: `actions`
@@ -51,7 +51,7 @@ The name of the parent registry. Required if the template is used in a standalon
 - Required: Yes
 - Type: string
 
-### Parameter: `descriptions`
+### Parameter: `description`
 
 The user friendly description of the scope map.
 

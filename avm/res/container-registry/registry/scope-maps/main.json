@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "5342424078056929592"
+      "templateHash": "17598532249668830862"
     },
     "name": "Container Registries scopeMaps",
     "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
@@ -35,7 +35,7 @@
         "description": "Required. The list of scoped permissions for registry artifacts."
       }
     },
-    "descriptions": {
+    "description": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -56,7 +56,7 @@
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "properties": {
         "actions": "[parameters('actions')]",
-        "description": "[parameters('descriptions')]"
+        "description": "[parameters('description')]"
       },
       "dependsOn": [
         "registry"

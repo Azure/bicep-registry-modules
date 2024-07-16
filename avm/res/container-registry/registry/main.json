@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13682483132985909118"
+      "templateHash": "1615984135312876797"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -475,6 +475,38 @@
         }
       },
       "nullable": true
+    },
+    "scopeMapsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the scope map."
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. The list of scoped permissions for registry artifacts."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The user friendly description of the scope map."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -729,8 +761,7 @@
       }
     },
     "scopeMaps": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/scopeMapsType",
       "metadata": {
         "description": "Optional. Scope maps setting."
       }
@@ -934,12 +965,12 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(parameters('scopeMaps'), createArray())[copyIndex()].name]"
+            "value": "[tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'name')]"
           },
           "actions": {
             "value": "[coalesce(parameters('scopeMaps'), createArray())[copyIndex()].actions]"
           },
-          "descriptions": {
+          "description": {
             "value": "[tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'description')]"
           },
           "registryName": {
@@ -954,7 +985,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5342424078056929592"
+              "templateHash": "17598532249668830862"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
@@ -983,7 +1014,7 @@
                 "description": "Required. The list of scoped permissions for registry artifacts."
               }
             },
-            "descriptions": {
+            "description": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -1004,7 +1035,7 @@
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "properties": {
                 "actions": "[parameters('actions')]",
-                "description": "[parameters('descriptions')]"
+                "description": "[parameters('description')]"
               },
               "dependsOn": [
                 "registry"
