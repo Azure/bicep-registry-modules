@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
+metadata name = 'Without ingress enabled'
 metadata description = 'This instance deploys the module with ingress traffic completely disabled.'
 
 // ========== //
