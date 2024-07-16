@@ -8,6 +8,9 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Bool to disable all ingress traffic for the container app.')
+param disableIngress bool = false
+
 @description('Optional. Bool indicating if the App exposes an external HTTP endpoint.')
 param ingressExternal bool = true
 
@@ -180,7 +183,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
-      ingress: {
+      ingress: disableIngress ? null : {
         allowInsecure: ingressAllowInsecure
         customDomains: !empty(customDomains) ? customDomains : null
         exposedPort: exposedPort

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8728217426108975166"
+      "templateHash": "9700354056944181047"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -430,6 +430,13 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "disableIngress": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Bool to disable all ingress traffic for the container app."
+      }
+    },
     "ingressExternal": {
       "type": "bool",
       "defaultValue": true,
@@ -706,26 +713,7 @@
         "configuration": {
           "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
           "dapr": "[if(not(empty(parameters('dapr'))), parameters('dapr'), null())]",
-          "ingress": {
-            "allowInsecure": "[parameters('ingressAllowInsecure')]",
-            "customDomains": "[if(not(empty(parameters('customDomains'))), parameters('customDomains'), null())]",
-            "exposedPort": "[parameters('exposedPort')]",
-            "external": "[parameters('ingressExternal')]",
-            "ipSecurityRestrictions": "[if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null())]",
-            "targetPort": "[parameters('ingressTargetPort')]",
-            "stickySessions": {
-              "affinity": "[parameters('stickySessionsAffinity')]"
-            },
-            "traffic": [
-              {
-                "label": "[parameters('trafficLabel')]",
-                "latestRevision": "[parameters('trafficLatestRevision')]",
-                "revisionName": "[parameters('trafficRevisionName')]",
-                "weight": "[parameters('trafficWeight')]"
-              }
-            ],
-            "transport": "[parameters('ingressTransport')]"
-          },
+          "ingress": "[if(parameters('disableIngress'), null(), createObject('allowInsecure', parameters('ingressAllowInsecure'), 'customDomains', if(not(empty(parameters('customDomains'))), parameters('customDomains'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null()), 'targetPort', parameters('ingressTargetPort'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), 'transport', parameters('ingressTransport')))]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
           "secrets": "[variables('secretList')]"
