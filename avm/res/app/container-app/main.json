@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9700354056944181047"
+      "templateHash": "17800459642895019722"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -782,7 +782,7 @@
       "metadata": {
         "description": "The configuration of ingress fqdn."
       },
-      "value": "[reference('containerApp').configuration.ingress.fqdn]"
+      "value": "[if(parameters('disableIngress'), 'IngressDisabled', reference('containerApp').configuration.ingress.fqdn)]"
     },
     "resourceGroupName": {
       "type": "string",
