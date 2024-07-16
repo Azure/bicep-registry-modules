@@ -1610,40 +1610,6 @@ Scope maps setting.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`actions`](#parameter-scopemapsactions) | array | The list of scoped permissions for registry artifacts. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-scopemapsdescription) | string | The user friendly description of the scope map. |
-| [`name`](#parameter-scopemapsname) | string | The name of the scope map. |
-
-### Parameter: `scopeMaps.actions`
-
-The list of scoped permissions for registry artifacts.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `scopeMaps.description`
-
-The user friendly description of the scope map.
-
-- Required: No
-- Type: string
-
-### Parameter: `scopeMaps.name`
-
-The name of the scope map.
-
-- Required: No
-- Type: string
-
 ### Parameter: `softDeletePolicyDays`
 
 The number of days after which a soft-deleted item is permanently deleted.
