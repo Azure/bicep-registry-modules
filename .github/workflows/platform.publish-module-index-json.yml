@@ -5,9 +5,9 @@ on:
     - cron: 45 11 * * * # Run daily at 3:45 AM PST
   workflow_dispatch:
     inputs:
-      doNotMergeWithLastModuleIndexJsonFileVersion:
+      regenIndexFromBRM:
         type: boolean
-        description: "doNotMergeWithLastModuleIndexJsonFileVersion | If toggled, the last version of the moduleIndex.json file that is downloaded from the storage account will not be merged with the current generated moduleIndex.json file. Effectively creating the moduleIndex.json from scrath based on what is in BRM at the time of the run."
+        description: "regenIndexFromBRM | Regenerate the moduleIndex.json file from scratch based on what is in BRM at the time of the run, instead of integrating it with its previous version."
         required: false
         default: false
 
@@ -55,26 +55,15 @@ jobs:
             ErrorAction                                  = 'Continue'
           }
 
-          if ('${{ (fromJson(inputs.doNotMergeWithLastModuleIndexJsonFileVersion)) }}' -eq '$true' ) {
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-            Write-Verbose "doNotMergeWithLastModuleIndexJsonFileVersion value is..." -Verbose
-            Write-Verbose ('${{ (fromJson(inputs.doNotMergeWithLastModuleIndexJsonFileVersion)) }}' | ConvertTo-Json | Out-String) -Verbose
-
-            if(-not (Invoke-AvmJsonModuleIndexGeneration -doNotMergeWithLastModuleIndexJsonFileVersion @functionInput)) {
-              Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
-            }
+          if ('${{ (fromJson(inputs.regenIndexFromBRM)) }}' -eq $true ) {
+            $functionInput['doNotMergeWithLastModuleIndexJsonFileVersion'] = $true
           }
 
-          if ('${{ (fromJson(inputs.doNotMergeWithLastModuleIndexJsonFileVersion)) }}' -eq '$false' ) {
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-            Write-Verbose "doNotMergeWithLastModuleIndexJsonFileVersion value is..." -Verbose
-            Write-Verbose ('${{ (fromJson(inputs.doNotMergeWithLastModuleIndexJsonFileVersion)) }}' | ConvertTo-Json | Out-String) -Verbose
+          Write-Verbose 'Invoke task with' -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            if(-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
-              Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
-            }
+          if (-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
+            Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
           }
 
       - name: Upload artifacts
