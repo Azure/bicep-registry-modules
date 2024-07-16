@@ -23,6 +23,9 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
+@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
+param networkFeatures string = 'Standard'
+
 @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
 param size int
 
@@ -99,6 +102,28 @@ module capacityPool_volumes 'volume/main.bicep' = [
       roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
       networkFeatures: volume.?networkFeatures
       zones: volume.?zones
+      coolAccess: contains(volume, 'coolAccess') ? volume.coolAccess : false
+      coolAccessRetrievalPolicy: contains(volume, 'coolAccessRetrievalPolicy')
+        ? volume.coolAccessRetrievalPolicy
+        : 'Default'
+      coolnessPeriod: contains(volume, 'coolnessPeriod') ? volume.coolnessPeriod : 0
+      endpointType: contains(volume, 'endpointType') ? volume.endpointType : ''
+      remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
+      remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
+      replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
+      backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : 'backupPolicy'
+      backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
+      dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0
+      backupEnabled: contains(volume, 'backupEnabled') ? volume.backupEnabled : false
+      monthlyBackupsToKeep: contains(volume, 'monthlyBackupsToKeep') ? volume.monthlyBackupsToKeep : 0
+      weeklyBackupsToKeep: contains(volume, 'weeklyBackupsToKeep') ? volume.weeklyBackupsToKeep : 0
+      backupVaultName: contains(volume, 'backupVaultName') ? volume.backupVaultName : 'vault'
+      backupVaultLocation: contains(volume, 'backupVaultLocation') ? volume.backupVaultLocation : ''
+      backupName: contains(volume, 'backupName') ? volume.backupName : 'backup'
+      backupLabel: contains(volume, 'backupLabel') ? volume.backupLabel : ''
+      snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : 'snapshot'
+      useExistingSnapshot: contains(volume, 'useExistingSnapshot') ? volume.useExistingSnapshot : false
+      volumeResourceId: contains(volume, 'volumeResourceId') ? volume.volumeResourceId : ''
     }
   }
 ]
@@ -134,6 +159,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = capacityPool.location
+
+@description('The resource IDs of the volume created in the capacity pool.')
+output volumeResourceId string = (volumes != []) ? capacityPool_volumes[0].outputs.resourceId : ''
 
 // =============== //
 //   Definitions   //
