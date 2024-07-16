@@ -120,13 +120,6 @@
         "description": "Optional. The pool service level."
       }
     },
-    "networkFeatures": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "metadata": {
-        "description": "Required. Network features available to the volume, or current state of update (Basic/Standard)."
-      }
-    },
     "size": {
       "type": "int",
       "metadata": {

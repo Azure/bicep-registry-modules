@@ -94,14 +94,14 @@ module capacityPool_volumes 'volume/main.bicep' = [
       name: volume.name
       location: location
       serviceLevel: serviceLevel
-      networkFeatures: contains(volume, 'networkFeatures') ? volume.networkFeatures : networkFeatures
       creationToken: contains(volume, 'creationToken') ? volume.creationToken : volume.name
       usageThreshold: volume.usageThreshold
       protocolTypes: contains(volume, 'protocolTypes') ? volume.protocolTypes : []
       subnetResourceId: volume.subnetResourceId
       exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
-      zones: contains(volume, 'zones') ? volume.zones : []
       roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
+      networkFeatures: volume.?networkFeatures
+      zones: volume.?zones
       coolAccess: contains(volume, 'coolAccess') ? volume.coolAccess : false
       coolAccessRetrievalPolicy: contains(volume, 'coolAccessRetrievalPolicy')
         ? volume.coolAccessRetrievalPolicy
