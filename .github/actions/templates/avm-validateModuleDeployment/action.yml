@@ -61,44 +61,17 @@ runs:
   steps:
     # [Azure login] task(s)
     # ------------------------------
-    # - name: "Set OIDC exception"
-    #   id: set-oidc-exception
-    #   uses: azure/powershell@v2
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       # Grouping task logs
-    #       Write-Output '::group::Set OIDC exception'
-
-    #       # List of modules requiring more that 1 hour to deploy and delete resources
-    #       $modulePath = "${{ inputs.modulePath }}"
-    #       $exceptionModulePaths = @(
-    #         'avm/res/api-management/service'
-    #         'avm/res/compute/image'
-    #         'avm/res/network/express-route-gateway'
-
-
-    # # Default: support both OIDC and service principal with secret
-    # # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
+    # Supports both OIDC and service principal with secret
+    # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      # if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
       uses: azure/login@v2
       with:
-        auth-type: IDENTITY
         creds: ${{ env.AZURE_CREDENTIALS }}
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
         subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
-
-    # # Exception: module requires login by using service principal with secret
-    # - name: "Azure Login - Exception"
-    #   if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
-    #   uses: azure/login@v2
-    #   with:
-    #     creds: ${{ env.AZURE_CREDENTIALS }}
-    #     enable-AzPSSession: true
-
+        
     # [Set Deployment Location] task(s)
     # ---------------------------
     - name: "Get Resource Location"
