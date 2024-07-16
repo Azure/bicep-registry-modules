@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4498449200728130154"
+      "templateHash": "818996722015925588"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -478,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11473738026956144548"
+              "templateHash": "17205509578682540827"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -734,7 +734,6 @@
                   "serviceLevel": {
                     "value": "[parameters('serviceLevel')]"
                   },
-                  "networkFeatures": "[if(contains(parameters('volumes')[copyIndex()], 'networkFeatures'), createObject('value', parameters('volumes')[copyIndex()].networkFeatures), createObject('value', parameters('networkFeatures')))]",
                   "creationToken": "[if(contains(parameters('volumes')[copyIndex()], 'creationToken'), createObject('value', parameters('volumes')[copyIndex()].creationToken), createObject('value', parameters('volumes')[copyIndex()].name))]",
                   "usageThreshold": {
                     "value": "[parameters('volumes')[copyIndex()].usageThreshold]"
@@ -744,8 +743,13 @@
                     "value": "[parameters('volumes')[copyIndex()].subnetResourceId]"
                   },
                   "exportPolicyRules": "[if(contains(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createObject('value', parameters('volumes')[copyIndex()].exportPolicyRules), createObject('value', createArray()))]",
-                  "zones": "[if(contains(parameters('volumes')[copyIndex()], 'zones'), createObject('value', parameters('volumes')[copyIndex()].zones), createObject('value', createArray()))]",
                   "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+                  "networkFeatures": {
+                    "value": "[tryGet(parameters('volumes')[copyIndex()], 'networkFeatures')]"
+                  },
+                  "zones": {
+                    "value": "[tryGet(parameters('volumes')[copyIndex()], 'zones')]"
+                  },
                   "coolAccess": "[if(contains(parameters('volumes')[copyIndex()], 'coolAccess'), createObject('value', parameters('volumes')[copyIndex()].coolAccess), createObject('value', false()))]",
                   "coolAccessRetrievalPolicy": "[if(contains(parameters('volumes')[copyIndex()], 'coolAccessRetrievalPolicy'), createObject('value', parameters('volumes')[copyIndex()].coolAccessRetrievalPolicy), createObject('value', 'Default'))]",
                   "coolnessPeriod": "[if(contains(parameters('volumes')[copyIndex()], 'coolnessPeriod'), createObject('value', parameters('volumes')[copyIndex()].coolnessPeriod), createObject('value', 0))]",
