@@ -27,6 +27,7 @@ on:
       - ".github/workflows/avm.ptn.lz.sub-vending"
       - "avm/ptn/lz/sub-vending/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
