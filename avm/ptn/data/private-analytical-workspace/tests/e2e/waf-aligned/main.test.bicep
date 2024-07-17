@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
           createMode: 'default'
           sku: 'standard'
           enableSoftDelete: true
-          softDeleteRetentionInDays: 7
+          softDeleteRetentionInDays: 90
           enablePurgeProtection: true
         }
       }

@@ -150,6 +150,21 @@ var nsgRulesDbw = [
       direction: 'Outbound'
     }
   }
+  {
+    name: 'deny-hop-outbound'
+    properties: {
+      priority: 110
+      access: 'Deny'
+      protocol: 'Tcp'
+      direction: 'Outbound'
+      sourceAddressPrefix: 'VirtualNetwork'
+      destinationAddressPrefix: '*'
+      destinationPortRanges: [
+        '3389'
+        '22'
+      ]
+    }
+  }
 ]
 
 var logName = '${name}-log'

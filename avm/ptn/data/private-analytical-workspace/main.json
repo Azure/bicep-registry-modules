@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "2165173513718595260"
+      "templateHash": "16043552897075291286"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -434,6 +434,21 @@
           "access": "Allow",
           "priority": 104,
           "direction": "Outbound"
+        }
+      },
+      {
+        "name": "deny-hop-outbound",
+        "properties": {
+          "priority": 110,
+          "access": "Deny",
+          "protocol": "Tcp",
+          "direction": "Outbound",
+          "sourceAddressPrefix": "VirtualNetwork",
+          "destinationAddressPrefix": "*",
+          "destinationPortRanges": [
+            "3389",
+            "22"
+          ]
         }
       }
     ],

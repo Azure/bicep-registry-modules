@@ -325,7 +325,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         enablePurgeProtection: true
         enableSoftDelete: true
         sku: 'standard'
-        softDeleteRetentionInDays: 7
+        softDeleteRetentionInDays: 90
       }
       logAnalyticsWorkspace: {
         dailyQuotaGb: 1
@@ -368,7 +368,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
           "enablePurgeProtection": true,
           "enableSoftDelete": true,
           "sku": "standard",
-          "softDeleteRetentionInDays": 7
+          "softDeleteRetentionInDays": 90
         },
         "logAnalyticsWorkspace": {
           "dailyQuotaGb": 1,
