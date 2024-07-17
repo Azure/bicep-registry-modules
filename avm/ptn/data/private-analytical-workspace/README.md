@@ -121,6 +121,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Required parameters
     name: 'dpawminkv001'
     // Non-required parameters
+    enableDatabricks: true
     keyVaultResourceId: '<keyVaultResourceId>'
   }
 }
@@ -143,6 +144,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       "value": "dpawminkv001"
     },
     // Non-required parameters
+    "enableDatabricks": {
+      "value": true
+    },
     "keyVaultResourceId": {
       "value": "<keyVaultResourceId>"
     }
@@ -169,6 +173,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Required parameters
     name: 'dpawminlog001'
     // Non-required parameters
+    enableDatabricks: true
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
   }
 }
@@ -191,6 +196,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       "value": "dpawminlog001"
     },
     // Non-required parameters
+    "enableDatabricks": {
+      "value": true
+    },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     }

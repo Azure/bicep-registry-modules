@@ -53,6 +53,7 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      enableDatabricks: true
     }
   }
 ]
@@ -73,9 +74,7 @@ output keyVaultResourceId string = testDeployment[0].outputs.keyVaultResourceId
 output keyVaultName string = testDeployment[0].outputs.keyVaultName
 output keyVaultLocation string = testDeployment[0].outputs.keyVaultLocation
 output keyVaultResourceGroupName string = testDeployment[0].outputs.keyVaultResourceGroupName
-/*
 output databricksResourceId string = testDeployment[0].outputs.databricksResourceId
 output databricksName string = testDeployment[0].outputs.databricksName
 output databricksLocation string = testDeployment[0].outputs.databricksLocation
 output databricksResourceGroupName string = testDeployment[0].outputs.databricksResourceGroupName
-*/
