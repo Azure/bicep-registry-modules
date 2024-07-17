@@ -151,13 +151,15 @@ var nsgRulesDbw = [
     }
   }
   {
-    name: 'deny-hop-outbound'
+    name: 'DenyHopOutbound'
     properties: {
-      priority: 110
+      description: 'Subnet should not initiate any management Outbound Connections'
       access: 'Deny'
-      protocol: 'Tcp'
       direction: 'Outbound'
+      priority: 110
+      protocol: '*'
       sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
       destinationAddressPrefix: '*'
       destinationPortRanges: [
         '3389'
