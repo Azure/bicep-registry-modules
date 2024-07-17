@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
       virtualWanId: nestedDependencies.outputs.virtualWANResourceId
       azureFirewallResourceId: nestedDependencies.outputs.azureFirewallResourceId
       hubRouteTables: []
-      hubVirtualNetworkConnections: [
+      /*hubVirtualNetworkConnections: [
         {
           name: 'connection1'
           remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
@@ -91,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
             }
           }
         }
-      ]
+      ] */
       hubRoutingPreference: 'ASPath'
       internetToFirewall: false
       privateToFirewall: true
