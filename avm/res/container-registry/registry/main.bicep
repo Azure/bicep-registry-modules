@@ -295,7 +295,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
   }
 }
 
-module registry_scopeMaps 'scope-maps/main.bicep' = [
+module registry_scopeMaps 'scope-map/main.bicep' = [
   for (scopeMap, index) in (scopeMaps ?? []): {
     name: '${uniqueString(deployment().name, location)}-Registry-Scope-${index}'
     params: {
