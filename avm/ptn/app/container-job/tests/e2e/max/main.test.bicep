@@ -53,14 +53,13 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      nameSuffix: 'cjob'
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
       // needed for idempotency testing
       overwriteExistingImage: true
       appInsightsConnectionString: dependencies.outputs.appInsightsConnectionString
       // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
-      keyVaultName: 'kv${uniqueString('cjob', resourceLocation, resourceGroupName)}'
+      keyVaultName: 'kv${uniqueString('${namePrefix}${serviceShort}001', resourceLocation, resourceGroupName)}'
       deployInVnet: true
       workloadProfiles: [
         {
@@ -93,6 +92,7 @@ module testDeployment '../../../main.bicep' = [
       tags: {
         environment: 'test'
       }
+      lock: { kind: 'None', name: 'No lock for testing' }
     }
   }
 ]

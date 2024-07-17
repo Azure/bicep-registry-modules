@@ -174,6 +174,10 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
       }
     ]
     location: '<location>'
+    lock: {
+      kind: 'None'
+      name: 'No lock for testing'
+    }
     managedIdentityName: '<managedIdentityName>'
     memory: '8Gi'
     nameSuffix: 'cjob'
@@ -262,6 +266,12 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "None",
+        "name": "No lock for testing"
+      }
     },
     "managedIdentityName": {
       "value": "<managedIdentityName>"
@@ -437,12 +447,13 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentVariables`](#parameter-environmentvariables) | array | The environment variables that will be added to the Container Apps Job. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created. |
 | [`managedIdentityName`](#parameter-managedidentityname) | string | Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created. |
 | [`memory`](#parameter-memory) | string | The memory resources that will be allocated to the Container Apps Job. |
 | [`nameSuffix`](#parameter-namesuffix) | string | The suffix will be used for newly created resources. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The flag that indicates whether the existing image in the Container Registry should be overwritten. |
-| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. |
@@ -595,6 +606,42 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
 The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.
@@ -636,7 +683,7 @@ The flag that indicates whether the existing image in the Container Registry sho
 
 ### Parameter: `secrets`
 
-The secrets of the Container App.
+The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.
 
 - Required: No
 - Type: array

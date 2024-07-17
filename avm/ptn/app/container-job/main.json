@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10341077305432287517"
+      "templateHash": "11474460833853000092"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -34,6 +34,30 @@
           "nullable": true,
           "metadata": {
             "description": "Conditional. The environment variable value. Required if `secretRef` is null."
+          }
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
           }
         }
       }
@@ -219,7 +243,7 @@
       "nullable": true,
       "metadata": {
         "example": "  [\r\n    {\r\n      name: 'mysecret'\r\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      name: 'mysecret'\r\n      identity: 'system'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      // You can do this, but you shouldn't. Use a secret reference instead.\r\n      name: 'mysecret'\r\n      value: 'mysecretvalue'\r\n    }\r\n    {\r\n      name: 'connection-string'\r\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\r\n    }\r\n  ]\r\n  ",
-        "description": "Optional. The secrets of the Container App."
+        "description": "Optional. The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set."
       }
     },
     "workloadProfiles": {
@@ -244,6 +268,13 @@
       "metadata": {
         "example": "  {\r\n      \"key1\": \"value1\"\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
       }
     }
   },
@@ -317,6 +348,9 @@
           "workloadProfiles": "[if(greater(length(coalesce(parameters('workloadProfiles'), createArray())), 0), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
           }
         },
         "template": {
@@ -327,7 +361,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1831159989083907896"
+              "templateHash": "137591437986544789"
             }
           },
           "definitions": {
@@ -366,6 +400,30 @@
               },
               "metadata": {
                 "__bicep_export!": true
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
               }
             }
           },
@@ -467,6 +525,13 @@
               "metadata": {
                 "description": "Optional. Tags of the resource."
               }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
             }
           },
           "variables": {
@@ -566,6 +631,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
                   }
                 },
                 "template": {
@@ -1223,6 +1291,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
                   }
                 },
                 "template": {
@@ -2405,6 +2476,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
                   },
                   "virtualNetworkLinks": {
                     "value": [
@@ -5288,6 +5362,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
                   },
                   "virtualNetworkLinks": {
                     "value": [
@@ -8181,6 +8258,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
                   "privateDnsZoneGroupName": {
                     "value": "default"
                   },
@@ -8834,6 +8914,12 @@
                   "location": {
                     "value": "[parameters('resourceLocation')]"
                   },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
                   "privateDnsZoneGroupName": {
                     "value": "default"
                   },
@@ -9483,6 +9569,9 @@
                   },
                   "tags": {
                     "value": "[union(parameters('tags'), createObject('used-by', 'container-job, deployment-script, container-registry, storage-account'))]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
                   }
                 },
                 "template": {
@@ -9943,6 +10032,9 @@
                   },
                   "tags": {
                     "value": "[union(parameters('tags'), createObject('used-by', 'container-job'))]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
                   },
                   "secrets": {
                     "value": "[union(if(not(empty(coalesce(parameters('appInsightsConnectionString'), ''))), createArray(createObject('name', 'applicationinsights-connection-string', 'value', parameters('appInsightsConnectionString'))), createArray()), variables('secrets'))]"
@@ -12723,6 +12815,9 @@
                   "tags": {
                     "value": "[union(parameters('tags'), createObject('used-by', 'container-job'))]"
                   },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
                   "acrAdminUserEnabled": {
                     "value": false
                   },
@@ -14878,6 +14973,9 @@
                   },
                   "tags": {
                     "value": "[union(parameters('tags'), createObject('used-by', 'deployment-script'))]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
                   },
                   "kind": {
                     "value": "StorageV2"
@@ -19604,6 +19702,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
                   "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
                   "zoneRedundant": "[if(parameters('deployInVnet'), createObject('value', true()), createObject('value', false()))]",
                   "infrastructureResourceGroupName": {
@@ -21046,6 +21147,9 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
           "environmentResourceId": {
             "value": "[reference('services').outputs.managedEnvironmentId.value]"
           },
@@ -21064,7 +21168,7 @@
             }
           },
           "secrets": {
-            "value": "[union(if(not(empty(reference('services').outputs.keyVaultAppInsightsConnectionStringUrl.value)), createArray(createObject('name', 'mysecret', 'identity', reference('services').outputs.userManagedIdentityResourceId.value, 'keyVaultUrl', format('https://{0}{1}/secrets/applicationinsights-connection-string', reference('services').outputs.vaultName.value, environment().suffixes.keyvaultDns))), createArray()), coalesce(parameters('secrets'), createArray()))]"
+            "value": "[union(if(not(empty(reference('services').outputs.keyVaultAppInsightsConnectionStringUrl.value)), createArray(createObject('name', 'applicationinsightsconnectionstring', 'identity', reference('services').outputs.userManagedIdentityResourceId.value, 'keyVaultUrl', format('https://{0}{1}/secrets/applicationinsights-connection-string', reference('services').outputs.vaultName.value, environment().suffixes.keyvaultDns))), createArray()), coalesce(parameters('secrets'), createArray()))]"
           },
           "triggerType": {
             "value": "Schedule"

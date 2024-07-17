@@ -53,8 +53,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
-      // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
-      keyVaultName: 'kv${uniqueString('cjob', resourceLocation, resourceGroupName)}'
       // needed for idempotency testing
       overwriteExistingImage: true
     }

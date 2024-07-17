@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 // Parameters     //
 // ============== //
 
-@description('Required. Name of the resource to create.')
+@description('Required. Name of the resource to create. Will be used for naming the job and other resources.')
 param name string
 
 @description('Optional. Location for all Resources.')
@@ -14,9 +14,6 @@ param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-@description('Optional. The suffix will be used for newly created resources.')
-param nameSuffix string = 'cjob'
 
 @description('Optional. Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created.')
 param managedIdentityName string?
@@ -33,9 +30,9 @@ param logAnalyticsWorkspaceResourceId string
 })
 param appInsightsConnectionString string?
 
-@description('Required. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.')
-@metadata({ example: '''kv${uniqueString(nameSuffix, location, resourceGroup().name)''' })
-param keyVaultName string
+@description('Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.')
+@metadata({ example: '''kv${uniqueString(name, location, resourceGroup().name)})''' })
+param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)})'
 
 // network related parameters
 // -------------------------
@@ -143,6 +140,9 @@ param workloadProfileName string?
 })
 param tags object?
 
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 // ============== //
 // Resources      //
 // ============== //
@@ -170,7 +170,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 module services 'modules/deploy_services.bicep' = {
   name: '${name}-services'
   params: {
-    nameSuffix: nameSuffix
+    name: name
     resourceLocation: location
     resourceGroupName: resourceGroup().name
     managedIdentityName: managedIdentityName
@@ -184,6 +184,7 @@ module services 'modules/deploy_services.bicep' = {
     deployDnsZoneContainerRegistry: deployDnsZoneContainerRegistry
     workloadProfiles: length(workloadProfiles ?? []) > 0 ? workloadProfiles : null
     tags: tags
+    lock: lock
   }
 }
 
@@ -191,7 +192,7 @@ module services 'modules/deploy_services.bicep' = {
 module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.1.0' = {
   name: '${name}-import-image'
   params: {
-    name: '${name}-import-image-${nameSuffix}'
+    name: '${name}-import-image'
     location: location
     acrName: services.outputs.registryName
     image: containerImageSource
@@ -209,8 +210,9 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.1
 module job 'br/public:avm/res/app/job:0.3.0' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
-    name: 'container-job-${nameSuffix}'
+    name: '${name}-container-job'
     tags: tags
+    lock: lock
     environmentResourceId: services.outputs.managedEnvironmentId
     workloadProfileName: workloadProfileName
     location: location
@@ -242,7 +244,7 @@ module job 'br/public:avm/res/app/job:0.3.0' = {
     ]
     containers: [
       {
-        name: 'job-${nameSuffix}'
+        name: '${name}-scheduled-job'
         image: import_image.outputs.importedImage.acrHostedImage
         env: environmentVariables
         resources: {
@@ -286,6 +288,14 @@ type environmentVariablesType = {
 
   @description('Conditional. The environment variable value. Required if `secretRef` is null.')
   value: string?
+}
+
+type lockType = {
+  @description('Optional. Specify the name of lock.')
+  name: string?
+
+  @description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }
 
 import { secretType } from 'modules/deploy_services.bicep'
