@@ -46,7 +46,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       //solutionAdministrators: [
       //  {
-      //    principalId: '053a6e39-3f31-4dc3-b17d-164f5fe7f834'
+      //    principalId: '<EntraGroupId>'
       //    principalType: 'Group'
       //  }
       //]
@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
       //logAnalyticsWorkspaceResourceId: null
       //keyVaultResourceId: null
       advancedOptions: {
-        networkAcls: { ipRules: ['40.92.1.1/32'] }
+        //networkAcls: { ipRules: [<AllowedPublicIPAddress>] }
         logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
         keyVault: {
           createMode: 'default'

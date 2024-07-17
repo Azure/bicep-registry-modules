@@ -108,10 +108,10 @@ Describe 'Validate deployment' {
 
             $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -Name $logAnalyticsWorkspaceName
 
-            # NOT Relevant for this test
-            # $log.Sku | Should -Be 'PerGB2018'
-            # $log.RetentionInDays | Should -Be 365
-            # $log.WorkspaceCapping.DailyQuotaGb | Should -Be -1
+            $log.Sku | Should -Be 'PerGB2018'
+            $log.RetentionInDays | Should -Be 53
+            $log.WorkspaceCapping.DailyQuotaGb | Should -Be 22
+            $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
         }
     }
 }

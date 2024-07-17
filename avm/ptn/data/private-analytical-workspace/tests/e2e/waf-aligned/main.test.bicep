@@ -44,10 +44,32 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      //solutionAdministrators: [
+      //  {
+      //    principalId: '<EntraGroupId>'
+      //    principalType: 'Group'
+      //  }
+      //]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+      }
+      enableTelemetry: true
+      enableDatabricks: true
+      //virtualNetworkResourceId: null
+      //logAnalyticsWorkspaceResourceId: null
+      //keyVaultResourceId: null
+      advancedOptions: {
+        //networkAcls: { ipRules: [<AllowedPublicIPAddress>] }
+        logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
+        keyVault: {
+          createMode: 'default'
+          sku: 'standard'
+          enableSoftDelete: false
+          softDeleteRetentionInDays: 7
+          enablePurgeProtection: true
+        }
       }
     }
   }

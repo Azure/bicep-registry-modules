@@ -237,11 +237,6 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         dailyQuotaGb: 1
         dataRetention: 35
       }
-      networkAcls: {
-        ipRules: [
-          '40.92.1.1/32'
-        ]
-      }
     }
     enableDatabricks: true
     enableTelemetry: true
@@ -283,11 +278,6 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         "logAnalyticsWorkspace": {
           "dailyQuotaGb": 1,
           "dataRetention": 35
-        },
-        "networkAcls": {
-          "ipRules": [
-            "40.92.1.1/32"
-          ]
         }
       }
     },
@@ -329,6 +319,21 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Required parameters
     name: 'dpawwaf001'
     // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        createMode: 'default'
+        enablePurgeProtection: true
+        enableSoftDelete: false
+        sku: 'standard'
+        softDeleteRetentionInDays: 7
+      }
+      logAnalyticsWorkspace: {
+        dailyQuotaGb: 1
+        dataRetention: 35
+      }
+    }
+    enableDatabricks: true
+    enableTelemetry: true
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
@@ -356,6 +361,27 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       "value": "dpawwaf001"
     },
     // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "createMode": "default",
+          "enablePurgeProtection": true,
+          "enableSoftDelete": false,
+          "sku": "standard",
+          "softDeleteRetentionInDays": 7
+        },
+        "logAnalyticsWorkspace": {
+          "dailyQuotaGb": 1,
+          "dataRetention": 35
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },

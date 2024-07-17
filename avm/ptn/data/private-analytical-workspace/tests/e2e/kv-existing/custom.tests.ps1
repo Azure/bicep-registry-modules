@@ -111,6 +111,7 @@ Describe 'Validate deployment' {
             $log.Sku | Should -Be 'PerGB2018'
             $log.RetentionInDays | Should -Be 365
             $log.WorkspaceCapping.DailyQuotaGb | Should -Be -1
+            $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
         }
     }
 }
