@@ -25,11 +25,11 @@ param drainPeriodInSeconds int = 0
 @description('Optional. Backend address synchronous mode for the backend pool.')
 param syncMode string = ''
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' existing = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
   name: loadBalancerName
 }
 
-resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2023-04-01' = {
+resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2023-11-01' = {
   name: name
   properties: {
     loadBalancerBackendAddresses: loadBalancerBackendAddresses
