@@ -20,11 +20,11 @@ param applyOnNetworkIntentPolicyBasedServices applyOnNetworkIntentPolicyBasedSer
 @sys.description('Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules.')
 param ruleCollections ruleCollectionType
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
   name: networkManagerName
 }
 
-resource securityAdminConfigurations 'Microsoft.Network/networkManagers/securityAdminConfigurations@2023-04-01' = {
+resource securityAdminConfigurations 'Microsoft.Network/networkManagers/securityAdminConfigurations@2023-11-01' = {
   name: name
   parent: networkManager
   properties: {
