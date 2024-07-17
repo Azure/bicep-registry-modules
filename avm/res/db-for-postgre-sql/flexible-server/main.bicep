@@ -155,7 +155,7 @@ param enableTelemetry bool = true
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. Configuration details for private endpoints. Used when the desired connectivy mode is \'Public Access\' and required when \'delegatedSubnetResourceId\' is NOT used.')
+@description('Optional. Configuration details for private endpoints. Used when the desired connectivy mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
 param privateEndpoints privateEndpointType
 
 var formattedUserAssignedIdentities = reduce(

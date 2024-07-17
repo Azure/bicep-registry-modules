@@ -1157,7 +1157,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
 | [`passwordAuth`](#parameter-passwordauth) | string | If Enabled, password authentication is enabled. |
 | [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be linked to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and required when 'delegatedSubnetResourceId' is NOT used. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1653,7 +1653,7 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is 'Pr
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and required when 'delegatedSubnetResourceId' is NOT used.
+Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used.
 
 - Required: No
 - Type: array

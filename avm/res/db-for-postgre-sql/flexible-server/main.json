@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2561809051433909440"
+      "templateHash": "13393728962772214334"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -743,7 +743,7 @@
     "privateEndpoints": {
       "$ref": "#/definitions/privateEndpointType",
       "metadata": {
-        "description": "Optional. Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and required when 'delegatedSubnetResourceId' is NOT used."
+        "description": "Optional. Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used."
       }
     }
   },
