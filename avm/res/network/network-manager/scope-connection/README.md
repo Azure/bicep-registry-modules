@@ -15,7 +15,7 @@ Create a cross-tenant connection to manage a resource from another tenant.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkManagers/scopeConnections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkManagers/scopeConnections) |
+| `Microsoft.Network/networkManagers/scopeConnections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/scopeConnections) |
 
 ## Parameters
 
