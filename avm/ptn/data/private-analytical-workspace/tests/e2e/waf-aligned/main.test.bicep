@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
         keyVault: {
           createMode: 'default'
           sku: 'standard'
-          enableSoftDelete: false
+          enableSoftDelete: true
           softDeleteRetentionInDays: 7
           enablePurgeProtection: true
         }

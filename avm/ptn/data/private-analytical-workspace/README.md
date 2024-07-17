@@ -323,7 +323,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       keyVault: {
         createMode: 'default'
         enablePurgeProtection: true
-        enableSoftDelete: false
+        enableSoftDelete: true
         sku: 'standard'
         softDeleteRetentionInDays: 7
       }
@@ -366,7 +366,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         "keyVault": {
           "createMode": "default",
           "enablePurgeProtection": true,
-          "enableSoftDelete": false,
+          "enableSoftDelete": true,
           "sku": "standard",
           "softDeleteRetentionInDays": 7
         },
