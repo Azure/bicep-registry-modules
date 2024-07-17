@@ -474,6 +474,9 @@ output resourceGroupName string = resourceGroup().name
 @description('The service endpoint of the cognitive services account.')
 output endpoint string = cognitiveService.properties.endpoint
 
+@description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
+output endpoints AccountPropertiesEndpoints = cognitiveService.properties.endpoints
+
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = cognitiveService.?identity.?principalId ?? ''
 
@@ -687,3 +690,10 @@ type deploymentsType = {
   @description('Optional. The name of RAI policy.')
   raiPolicyName: string?
 }[]?
+
+type AccountPropertiesEndpoints = {
+  @description('Type of the endpoint.')
+  name: string?
+  @description('The endpoint URI.')
+  endpoint: string?
+}?
