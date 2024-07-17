@@ -623,7 +623,7 @@ type privateEndpointType = {
   @description('Optional. The name of the private link connection to create.')
   privateLinkServiceConnectionName: string?
 
-  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
+  @description('Required. The subresource to deploy the private endpoint for. For example "SQL", "MongoDB", "Cassandra", "Gremlin", "Table".')
   service: string
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
