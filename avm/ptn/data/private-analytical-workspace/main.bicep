@@ -67,23 +67,6 @@ var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
 var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
 var nsgRulesDbw = [
   {
-    name: 'DenyHopOutbound'
-    properties: {
-      description: 'Subnet should not initiate any management Outbound Connections'
-      access: 'Deny'
-      direction: 'Outbound'
-      priority: 100
-      protocol: '*'
-      sourceAddressPrefix: 'VirtualNetwork'
-      sourcePortRange: '*'
-      destinationAddressPrefix: '*'
-      destinationPortRanges: [
-        '3389'
-        '22'
-      ]
-    }
-  }
-  {
     name: 'Microsoft.Databricks-workspaces_UseOnly_databricks-worker-to-worker-inbound'
     properties: {
       description: 'Required for worker nodes communication within a cluster'
@@ -93,7 +76,7 @@ var nsgRulesDbw = [
       sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: 'VirtualNetwork'
       access: 'Allow'
-      priority: 110
+      priority: 100
       direction: 'Inbound'
     }
   }
@@ -107,7 +90,7 @@ var nsgRulesDbw = [
       sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: 'AzureDatabricks'
       access: 'Allow'
-      priority: 111
+      priority: 100
       direction: 'Outbound'
     }
   }
@@ -121,7 +104,7 @@ var nsgRulesDbw = [
       sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: 'Sql'
       access: 'Allow'
-      priority: 112
+      priority: 101
       direction: 'Outbound'
     }
   }
@@ -135,7 +118,7 @@ var nsgRulesDbw = [
       sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: 'Storage'
       access: 'Allow'
-      priority: 113
+      priority: 102
       direction: 'Outbound'
     }
   }
@@ -149,7 +132,7 @@ var nsgRulesDbw = [
       sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: 'VirtualNetwork'
       access: 'Allow'
-      priority: 114
+      priority: 103
       direction: 'Outbound'
     }
   }
@@ -163,8 +146,25 @@ var nsgRulesDbw = [
       sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: 'EventHub'
       access: 'Allow'
-      priority: 115
+      priority: 104
       direction: 'Outbound'
+    }
+  }
+  {
+    name: 'DenyHopOutbound'
+    properties: {
+      description: 'Subnet should not initiate any management Outbound Connections'
+      access: 'Deny'
+      direction: 'Outbound'
+      priority: 200
+      protocol: '*'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+      destinationAddressPrefix: '*'
+      destinationPortRanges: [
+        '3389'
+        '22'
+      ]
     }
   }
 ]
