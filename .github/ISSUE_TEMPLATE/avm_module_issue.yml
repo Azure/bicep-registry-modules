@@ -38,7 +38,6 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - ""
-        - "avm/ptn/app/container-job"
         - "avm/ptn/authorization/policy-assignment"
         - "avm/ptn/authorization/resource-role-assignment"
         - "avm/ptn/authorization/role-assignment"
