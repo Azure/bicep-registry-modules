@@ -85,6 +85,7 @@ Endpoint tags.
 | `name` | string | The name of the endpoint. |
 | `resourceGroupName` | string | The name of the resource group the endpoint was created in. |
 | `resourceId` | string | The resource ID of the endpoint. |
+| `uri` | string | The uri of the endpoint. |
 
 ## Cross-referenced modules
 
