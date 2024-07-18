@@ -152,7 +152,7 @@ Describe 'Validate deployment' {
 
             $kv = Get-AzKeyVault -ResourceGroupName $keyVaultResourceGroupName -VaultName $keyVaultName
 
-            $kv.Sku | Should -Be 'Standard'
+            $kv.Sku | Should -Be 'Premium'
 
             $kv.EnabledForDeployment | Should -Be $false
             $kv.EnabledForTemplateDeployment | Should -Be $false
