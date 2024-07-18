@@ -32,7 +32,7 @@ param managedIdentityName string?
 })
 param image string
 
-@description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g. your build pipeline. Default is the last part of the image name.')
+@description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.')
 @metadata({
   example: 'your-image-name:tag'
 })
