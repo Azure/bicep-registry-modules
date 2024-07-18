@@ -207,7 +207,6 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     // Non-required parameters
     location: '<location>'
     managedIdentities: '<managedIdentities>'
-    newImageName: 'your-image-name:tag'
     overwriteExistingImage: true
   }
 }
@@ -241,9 +240,6 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     "managedIdentities": {
       "value": "<managedIdentities>"
-    },
-    "newImageName": {
-      "value": "your-image-name:tag"
     },
     "overwriteExistingImage": {
       "value": true
@@ -282,7 +278,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`initialScriptDelay`](#parameter-initialscriptdelay) | int | A delay in seconds before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate. Default is 30s. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`newImageName`](#parameter-newimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g. your build pipeline. Default is the last part of the image name. |
+| [`newImageName`](#parameter-newimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The image will be overwritten if it already exists in the ACR with the same tag. Default is false. |
 | [`retryMax`](#parameter-retrymax) | int | The maximum number of retries for the script import operation. Default is 3. |
 | [`runOnce`](#parameter-runonce) | bool | How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time. |
@@ -389,7 +385,7 @@ Location for all Resources.
 
 ### Parameter: `newImageName`
 
-The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g. your build pipeline. Default is the last part of the image name.
+The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.
 
 - Required: No
 - Type: string
