@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2194766388702834701"
+      "templateHash": "5554101983463248531"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace.",
@@ -323,6 +323,279 @@
       },
       "nullable": true
     },
+    "featureStoreSettingType": {
+      "type": "object",
+      "properties": {
+        "computeRuntime": {
+          "type": "object",
+          "properties": {
+            "sparkRuntimeVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The spark runtime version."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Compute runtime config for feature store type workspace."
+          }
+        },
+        "offlineStoreConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The offline store connection name."
+          }
+        },
+        "onlineStoreConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The online store connection name."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "OutboundRuleType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "FQDN": {
+            "$ref": "#/definitions/FqdnOutboundRuleType"
+          },
+          "PrivateEndpoint": {
+            "$ref": "#/definitions/PrivateEndpointOutboundRule"
+          },
+          "ServiceTag": {
+            "$ref": "#/definitions/ServiceTagOutboundRule"
+          }
+        }
+      }
+    },
+    "FqdnOutboundRuleType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "FQDN"
+          ],
+          "metadata": {
+            "description": "Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'."
+          }
+        },
+        "destination": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Fully Qualified Domain Name to allow for outbound traffic."
+          }
+        },
+        "category": {
+          "type": "string",
+          "allowedValues": [
+            "Dependency",
+            "Recommended",
+            "Required",
+            "UserDefined"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Category of a managed network Outbound Rule of a machine learning workspace."
+          }
+        }
+      }
+    },
+    "PrivateEndpointOutboundRule": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "PrivateEndpoint"
+          ],
+          "metadata": {
+            "description": "Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound' or 'AllowInternetOutbound'."
+          }
+        },
+        "destination": {
+          "type": "object",
+          "properties": {
+            "serviceResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the target resource for the private endpoint."
+              }
+            },
+            "sparkEnabled": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether the private endpoint can be used by jobs running on Spark."
+              }
+            },
+            "subresourceTarget": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The sub resource to connect for the private endpoint."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace."
+          }
+        },
+        "category": {
+          "type": "string",
+          "allowedValues": [
+            "Dependency",
+            "Recommended",
+            "Required",
+            "UserDefined"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Category of a managed network Outbound Rule of a machine learning workspace."
+          }
+        }
+      }
+    },
+    "ServiceTagOutboundRule": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "ServiceTag"
+          ],
+          "metadata": {
+            "description": "Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'."
+          }
+        },
+        "destination": {
+          "type": "object",
+          "properties": {
+            "portRanges": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the service tag to allow."
+              }
+            },
+            "protocol": {
+              "type": "string",
+              "allowedValues": [
+                "*",
+                "ICMP",
+                "TCP",
+                "UDP"
+              ],
+              "metadata": {
+                "description": "Required. The protocol to allow. Provide an asterisk(*) to allow any protocol."
+              }
+            },
+            "serviceTag": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace."
+          }
+        },
+        "category": {
+          "type": "string",
+          "allowedValues": [
+            "Dependency",
+            "Recommended",
+            "Required",
+            "UserDefined"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Category of a managed network Outbound Rule of a machine learning workspace."
+          }
+        }
+      }
+    },
+    "managedNetworkSettingType": {
+      "type": "object",
+      "properties": {
+        "isolationMode": {
+          "type": "string",
+          "allowedValues": [
+            "AllowInternetOutbound",
+            "AllowOnlyApprovedOutbound",
+            "Disabled"
+          ],
+          "metadata": {
+            "description": "Required. Isolation mode for the managed network of a machine learning workspace."
+          }
+        },
+        "outboundRules": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "$ref": "#/definitions/OutboundRuleType",
+            "metadata": {
+              "description": "Required. The outbound rule. The name of the rule is the object key."
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Outbound rules for the managed network of a machine learning workspace."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "serverlessComputeSettingType": {
+      "type": "object",
+      "properties": {
+        "serverlessComputeCustomSubnet": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed."
+          }
+        },
+        "serverlessComputeNoPublicIP": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "workspaceHubConfigType": {
+      "type": "object",
+      "properties": {
+        "additionalWorkspaceStorageAccounts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource IDs of additional storage accounts to attach to the workspace."
+          }
+        },
+        "defaultWorkspaceResourceGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the default resource group for projects created in the workspace hub."
+          }
+        }
+      },
+      "nullable": true
+    },
     "diagnosticSettingType": {
       "type": "array",
       "items": {
@@ -502,22 +775,38 @@
         "description": "Required. Specifies the SKU, also referred as 'edition' of the Azure Machine Learning workspace."
       }
     },
+    "kind": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "Project",
+        "Hub",
+        "FeatureStore"
+      ],
+      "metadata": {
+        "description": "Optional. The type of Azure Machine Learning workspace to create."
+      }
+    },
     "associatedStorageAccountResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The resource ID of the associated Storage Account."
+        "description": "Conditional. The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'."
       }
     },
     "associatedKeyVaultResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The resource ID of the associated Key Vault."
+        "description": "Conditional. The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'."
       }
     },
     "associatedApplicationInsightsResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The resource ID of the associated Application Insights."
+        "description": "Conditional. The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'."
       }
     },
     "associatedContainerRegistryResourceId": {
@@ -540,11 +829,11 @@
         "description": "Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service."
       }
     },
-    "allowPublicAccessWhenBehindVnet": {
-      "type": "bool",
-      "defaultValue": false,
+    "hubResourceId": {
+      "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The flag to indicate whether to allow public access when behind VNet."
+        "description": "Conditional. The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'."
       }
     },
     "roleAssignments": {
@@ -587,6 +876,41 @@
       },
       "metadata": {
         "description": "Optional. The managed identity definition for this resource. At least one identity type is required."
+      }
+    },
+    "featureStoreSettings": {
+      "$ref": "#/definitions/featureStoreSettingType",
+      "metadata": {
+        "description": "Conditional. Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'."
+      }
+    },
+    "managedNetworkSettings": {
+      "$ref": "#/definitions/managedNetworkSettingType",
+      "metadata": {
+        "description": "Optional. Managed Network settings for a machine learning workspace."
+      }
+    },
+    "serverlessComputeSettings": {
+      "$ref": "#/definitions/serverlessComputeSettingType",
+      "metadata": {
+        "description": "Optional. Settings for serverless compute created in the workspace."
+      }
+    },
+    "systemDatastoresAuthMode": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "accessKey",
+        "identity"
+      ],
+      "metadata": {
+        "description": "Optional. The authentication mode used by the workspace when connecting to the default storage account."
+      }
+    },
+    "workspaceHubConfig": {
+      "$ref": "#/definitions/workspaceHubConfigType",
+      "metadata": {
+        "description": "Optional. Configuration for workspace hub settings."
       }
     },
     "diagnosticSettings": {
@@ -645,13 +969,13 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "Disabled",
       "allowedValues": [
         "Enabled",
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled."
       }
     }
   },
@@ -723,7 +1047,7 @@
     },
     "workspace": {
       "type": "Microsoft.MachineLearningServices/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2024-04-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -732,7 +1056,8 @@
         "tier": "[parameters('sku')]"
       },
       "identity": "[variables('identity')]",
-      "properties": "[union(createObject('friendlyName', parameters('name'), 'storageAccount', parameters('associatedStorageAccountResourceId'), 'keyVault', parameters('associatedKeyVaultResourceId'), 'applicationInsights', parameters('associatedApplicationInsightsResourceId'), 'containerRegistry', parameters('associatedContainerRegistryResourceId'), 'hbiWorkspace', parameters('hbiWorkspace'), 'allowPublicAccessWhenBehindVnet', parameters('allowPublicAccessWhenBehindVnet'), 'description', parameters('description'), 'discoveryUrl', parameters('discoveryUrl'), 'encryption', if(not(empty(parameters('customerManagedKey'))), createObject('status', 'Enabled', 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', createObject('keyVaultArmId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null()), 'imageBuildCompute', parameters('imageBuildCompute'), 'primaryUserAssignedIdentity', parameters('primaryUserAssignedIdentity'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled')), 'serviceManagedResourcesSettings', parameters('serviceManagedResourcesSettings')), if(not(empty(parameters('sharedPrivateLinkResources'))), createObject('sharedPrivateLinkResources', parameters('sharedPrivateLinkResources')), createObject()))]",
+      "properties": "[union(createObject('friendlyName', parameters('name'), 'storageAccount', parameters('associatedStorageAccountResourceId'), 'keyVault', parameters('associatedKeyVaultResourceId'), 'applicationInsights', parameters('associatedApplicationInsightsResourceId'), 'containerRegistry', parameters('associatedContainerRegistryResourceId'), 'hbiWorkspace', parameters('hbiWorkspace'), 'description', parameters('description'), 'discoveryUrl', parameters('discoveryUrl'), 'encryption', if(not(empty(parameters('customerManagedKey'))), createObject('status', 'Enabled', 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', createObject('keyVaultArmId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null()), 'imageBuildCompute', parameters('imageBuildCompute'), 'primaryUserAssignedIdentity', parameters('primaryUserAssignedIdentity'), 'systemDatastoresAuthMode', parameters('systemDatastoresAuthMode'), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'serviceManagedResourcesSettings', parameters('serviceManagedResourcesSettings'), 'featureStoreSettings', parameters('featureStoreSettings'), 'hubResourceId', parameters('hubResourceId'), 'managedNetwork', parameters('managedNetworkSettings'), 'serverlessComputeSettings', parameters('serverlessComputeSettings'), 'workspaceHubConfig', parameters('workspaceHubConfig')), if(not(empty(parameters('sharedPrivateLinkResources'))), createObject('sharedPrivateLinkResources', parameters('sharedPrivateLinkResources')), createObject()))]",
+      "kind": "[parameters('kind')]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKUserAssignedIdentity"
@@ -1777,14 +2102,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('workspace', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('workspace', '2024-04-01-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('workspace', '2022-10-01', 'full').location]"
+      "value": "[reference('workspace', '2024-04-01-preview', 'full').location]"
     }
   }
 }

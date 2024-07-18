@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9938722199855482315"
+      "templateHash": "15867169553418925622"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -246,7 +246,7 @@
     },
     "retentionInterval": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "P1D",
       "metadata": {
         "description": "Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week)."
       }

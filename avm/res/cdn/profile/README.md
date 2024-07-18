@@ -849,11 +849,14 @@ Endpoint tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpointId` | string | The resource ID of the CDN profile endpoint. |
+| `endpointName` | string | The name of the CDN profile endpoint. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the CDN profile. |
 | `profileType` | string | The type of the CDN profile. |
 | `resourceGroupName` | string | The resource group where the CDN profile is deployed. |
 | `resourceId` | string | The resource ID of the CDN profile. |
+| `uri` | string | The uri of the CDN profile endpoint. |
 
 ## Cross-referenced modules
 

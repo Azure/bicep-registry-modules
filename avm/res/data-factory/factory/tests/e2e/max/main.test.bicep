@@ -96,9 +96,15 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       integrationRuntimes: [
+        // The AutoResolveIntegrationRuntime is the default integration runtime and does not need to be defined. It is not a virtual network managed integration runtime by default
         {
+          name: 'TestRuntime'
+          type: 'SelfHosted'
+        }
+        {
+          // Creating a second integration runtime with a custom name and has a managed virtual network. The name can be anything, but it must be unique within the data factory. We will connect a linked service to this integration runtime.
           managedVirtualNetworkName: 'default'
-          name: 'AutoResolveIntegrationRuntime'
+          name: 'IRvnetManaged'
           type: 'Managed'
           typeProperties: {
             computeProperties: {
@@ -106,10 +112,32 @@ module testDeployment '../../../main.bicep' = [
             }
           }
         }
-
+      ]
+      linkedServices: [
         {
-          name: 'TestRuntime'
-          type: 'SelfHosted'
+          // This will connect to the AutoResolveIntegrationRuntime as it does not have a specific integration runtime defined and by default uses the AutoResolveIntegrationRuntime
+          name: 'SQLdbLinkedservice'
+          type: 'AzureSQLDatabase'
+          typeProperties: {
+            // An example of a connection string to an Azure SQL Database
+            connectionString: 'integrated security=False;encrypt=True;connection timeout=30;data source=mydatabase.${environment().suffixes.sqlServerHostname};initial catalog=mydatabase;user id=myuser'
+          }
+        }
+        {
+          // This will connect to the IRvnetManaged integration runtime as it is specifically defined
+          name: 'LakeStoreLinkedservice'
+          integrationRuntimeName: 'IRvnetManaged'
+          description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
+          parameters: {
+            storageAccountName: {
+              type: 'String'
+              defaultValue: 'madeupstorageaccname'
+            }
+          }
+          type: 'AzureBlobFS'
+          typeProperties: {
+            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.core.windows.net\')}'
+          }
         }
       ]
       lock: {
