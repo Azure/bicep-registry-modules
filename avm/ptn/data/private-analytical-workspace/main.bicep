@@ -293,7 +293,8 @@ var subnets = concat(
 // Resources      //
 // ============== //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.ptn.data-privateanalyticalworkspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -354,7 +355,7 @@ resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!creat
   )
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNET) {
+module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (createNewVNET) {
   name: vnetName
   params: {
     // Required parameters
@@ -388,7 +389,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (createNewVNE
   }
 }
 
-module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET) {
+module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.3.1' = if (createNewVNET) {
   name: nsgNamePrivateLink
   params: {
     // Required parameters
@@ -413,7 +414,7 @@ module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.2.0' =
   }
 }
 
-module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.3.1' = if (createNewVNET && enableDatabricks) {
   name: nsgNameDbwControlPlane
   params: {
     // Required parameters
@@ -438,7 +439,7 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.2.
   }
 }
 
-module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.2.0' = if (createNewVNET && enableDatabricks) {
+module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.3.1' = if (createNewVNET && enableDatabricks) {
   name: nsgNameDbwComputePlane
   params: {
     // Required parameters
@@ -463,7 +464,7 @@ module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.2.
   }
 }
 
-module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (createNewLog) {
+module log 'br/public:avm/res/operational-insights/workspace:0.4.0' = if (createNewLog) {
   name: logName
   params: {
     // Required parameters
@@ -480,7 +481,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.3.0' = if (create
   }
 }
 
-module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
+module kv 'br/public:avm/res/key-vault/vault:0.6.2' = if (createNewKV) {
   name: kvName
   params: {
     // Required parameters
@@ -542,7 +543,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.0' = if (createNewKV) {
   }
 }
 
-module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET && createNewKV) {
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (createNewVNET && createNewKV) {
   name: privateDnsZoneNameKv
   params: {
     // Required parameters
@@ -561,7 +562,7 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (create
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks) {
+module dbw 'br/public:avm/res/databricks/workspace:0.5.0' = if (enableDatabricks) {
   name: dbwName
   params: {
     // Required parameters
@@ -630,7 +631,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.4.0' = if (enableDatabricks
   }
 }
 
-module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.0' = if (createNewVNET && enableDatabricks) {
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (createNewVNET && enableDatabricks) {
   name: privateDnsZoneNameDbw
   params: {
     // Required parameters

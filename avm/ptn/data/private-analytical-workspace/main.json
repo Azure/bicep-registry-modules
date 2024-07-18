@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "10086953989820133893"
+      "templateHash": "3281665659901038895"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -508,7 +508,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.ptn.data-privateanalyticalworkspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -615,8 +615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "7839005038128499146"
+              "version": "0.28.1.47646",
+              "templateHash": "15514917132265298980"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network (vNet).",
@@ -656,7 +656,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -690,7 +690,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -742,14 +742,21 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -760,14 +767,21 @@
                         "category": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -825,7 +839,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The Virtual Network (vNet) Name."
+                "description": "Required. The name of the Virtual Network (vNet)."
               }
             },
             "location": {
@@ -910,7 +924,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "tags": {
@@ -929,12 +943,6 @@
             }
           },
           "variables": {
-            "dnsServersVar": {
-              "dnsServers": "[array(parameters('dnsServers'))]"
-            },
-            "ddosProtectionPlan": {
-              "id": "[parameters('ddosProtectionPlanResourceId')]"
-            },
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -948,8 +956,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.1.8', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -967,7 +975,7 @@
             },
             "virtualNetwork": {
               "type": "Microsoft.Network/virtualNetworks",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -984,11 +992,11 @@
                         "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations'), parameters('subnets')[copyIndex('subnets')].applicationGatewayIPConfigurations, createArray())]",
                         "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
                         "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
-                        "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
-                        "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
+                        "natGateway": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].natGatewayResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
+                        "networkSecurityGroup": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
                         "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
                         "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
-                        "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
+                        "routeTable": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].routeTableResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
                         "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints'), parameters('subnets')[copyIndex('subnets')].serviceEndpoints, createArray())]",
                         "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex('subnets')].serviceEndpointPolicies, createArray())]"
                       }
@@ -998,8 +1006,8 @@
                 "addressSpace": {
                   "addressPrefixes": "[parameters('addressPrefixes')]"
                 },
-                "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), variables('ddosProtectionPlan'), null())]",
-                "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), variables('dnsServersVar'), null())]",
+                "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
+                "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
                 "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
                 "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
                 "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]"
@@ -1029,12 +1037,30 @@
               "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                 "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -1067,7 +1093,9 @@
             "virtualNetwork_subnets": {
               "copy": {
                 "name": "virtualNetwork_subnets",
-                "count": "[length(parameters('subnets'))]"
+                "count": "[length(parameters('subnets'))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1107,8 +1135,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "16295395838729593723"
+                      "version": "0.28.1.47646",
+                      "templateHash": "9634407864982934565"
                     },
                     "name": "Virtual Network Subnets",
                     "description": "This module deploys a Virtual Network Subnet.",
@@ -1123,7 +1151,7 @@
                           "roleDefinitionIdOrName": {
                             "type": "string",
                             "metadata": {
-                              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                             }
                           },
                           "principalId": {
@@ -1157,7 +1185,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -1291,7 +1319,7 @@
                     "roleAssignments": {
                       "$ref": "#/definitions/roleAssignmentType",
                       "metadata": {
-                        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                        "description": "Optional. Array of role assignments to create."
                       }
                     }
                   },
@@ -1309,12 +1337,12 @@
                     "virtualNetwork": {
                       "existing": true,
                       "type": "Microsoft.Network/virtualNetworks",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[parameters('virtualNetworkName')]"
                     },
                     "subnet": {
                       "type": "Microsoft.Network/virtualNetworks/subnets",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
                       "properties": {
                         "addressPrefix": "[parameters('addressPrefix')]",
@@ -1433,8 +1461,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "10220824930947117349"
+                      "version": "0.28.1.47646",
+                      "templateHash": "39994426069187924"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering.",
@@ -1499,7 +1527,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
                       "properties": {
                         "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
@@ -1578,8 +1606,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "10220824930947117349"
+                      "version": "0.28.1.47646",
+                      "templateHash": "39994426069187924"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering.",
@@ -1644,7 +1672,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2023-11-01",
                       "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
                       "properties": {
                         "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
@@ -1735,7 +1763,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('virtualNetwork', '2023-04-01', 'full').location]"
+              "value": "[reference('virtualNetwork', '2023-11-01', 'full').location]"
             }
           }
         }
@@ -1798,8 +1826,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "8543584719514494080"
+              "version": "0.28.1.47646",
+              "templateHash": "2832086720057246360"
             },
             "name": "Network Security Groups",
             "description": "This module deploys a Network security Group (NSG).",
@@ -1991,6 +2019,166 @@
                 }
               },
               "nullable": true
+            },
+            "securityRulesType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the security rule."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "access": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Allow",
+                          "Deny"
+                        ],
+                        "metadata": {
+                          "description": "Required. Whether network traffic is allowed or denied."
+                        }
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The description of the security rule."
+                        }
+                      },
+                      "destinationAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                        }
+                      },
+                      "destinationAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                        }
+                      },
+                      "destinationApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as destination."
+                        }
+                      },
+                      "destinationPortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "destinationPortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port ranges."
+                        }
+                      },
+                      "direction": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Inbound",
+                          "Outbound"
+                        ],
+                        "metadata": {
+                          "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 100,
+                        "maxValue": 4096,
+                        "metadata": {
+                          "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                        }
+                      },
+                      "protocol": {
+                        "type": "string",
+                        "allowedValues": [
+                          "*",
+                          "Ah",
+                          "Esp",
+                          "Icmp",
+                          "Tcp",
+                          "Udp"
+                        ],
+                        "metadata": {
+                          "description": "Required. Network protocol this rule applies to."
+                        }
+                      },
+                      "sourceAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                        }
+                      },
+                      "sourceAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP ranges."
+                        }
+                      },
+                      "sourceApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as source."
+                        }
+                      },
+                      "sourcePortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "sourcePortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port ranges."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. The properties of the security rule."
+                    }
+                  }
+                }
+              },
+              "nullable": true
             }
           },
           "parameters": {
@@ -2008,8 +2196,7 @@
               }
             },
             "securityRules": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/securityRulesType",
               "metadata": {
                 "description": "Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed."
               }
@@ -2068,8 +2255,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2095,25 +2282,25 @@
                 "copy": [
                   {
                     "name": "securityRules",
-                    "count": "[length(parameters('securityRules'))]",
+                    "count": "[length(coalesce(parameters('securityRules'), createArray()))]",
                     "input": {
-                      "name": "[parameters('securityRules')[copyIndex('securityRules')].name]",
+                      "name": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].name]",
                       "properties": {
-                        "protocol": "[parameters('securityRules')[copyIndex('securityRules')].properties.protocol]",
-                        "access": "[parameters('securityRules')[copyIndex('securityRules')].properties.access]",
-                        "priority": "[parameters('securityRules')[copyIndex('securityRules')].properties.priority]",
-                        "direction": "[parameters('securityRules')[copyIndex('securityRules')].properties.direction]",
-                        "description": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'description'), parameters('securityRules')[copyIndex('securityRules')].properties.description, '')]",
-                        "sourcePortRange": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourcePortRange'), parameters('securityRules')[copyIndex('securityRules')].properties.sourcePortRange, '')]",
-                        "sourcePortRanges": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourcePortRanges'), parameters('securityRules')[copyIndex('securityRules')].properties.sourcePortRanges, createArray())]",
-                        "destinationPortRange": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationPortRange'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationPortRange, '')]",
-                        "destinationPortRanges": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationPortRanges'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationPortRanges, createArray())]",
-                        "sourceAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceAddressPrefix'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceAddressPrefix, '')]",
-                        "destinationAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationAddressPrefix'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationAddressPrefix, '')]",
-                        "sourceAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceAddressPrefixes'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceAddressPrefixes, createArray())]",
-                        "destinationAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationAddressPrefixes'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationAddressPrefixes, createArray())]",
-                        "sourceApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceApplicationSecurityGroups'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceApplicationSecurityGroups, createArray())]",
-                        "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationApplicationSecurityGroups'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationApplicationSecurityGroups, createArray())]"
+                        "access": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.access]",
+                        "description": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'description'), '')]",
+                        "destinationAddressPrefix": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationAddressPrefix'), '')]",
+                        "destinationAddressPrefixes": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationAddressPrefixes'), createArray())]",
+                        "destinationApplicationSecurityGroups": "[map(coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationApplicationSecurityGroupResourceIds'), createArray()), lambda('destinationApplicationSecurityGroupResourceId', createObject('id', lambdaVariables('destinationApplicationSecurityGroupResourceId'))))]",
+                        "destinationPortRange": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationPortRange'), '')]",
+                        "destinationPortRanges": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationPortRanges'), createArray())]",
+                        "direction": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.direction]",
+                        "priority": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.priority]",
+                        "protocol": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.protocol]",
+                        "sourceAddressPrefix": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceAddressPrefix'), '')]",
+                        "sourceAddressPrefixes": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceAddressPrefixes'), createArray())]",
+                        "sourceApplicationSecurityGroups": "[map(coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceApplicationSecurityGroupResourceIds'), createArray()), lambda('sourceApplicationSecurityGroupResourceId', createObject('id', lambdaVariables('sourceApplicationSecurityGroupResourceId'))))]",
+                        "sourcePortRange": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourcePortRange'), '')]",
+                        "sourcePortRanges": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourcePortRanges'), createArray())]"
                       }
                     }
                   }
@@ -2184,249 +2371,6 @@
                 "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-              },
-              "dependsOn": [
-                "networkSecurityGroup"
-              ]
-            },
-            "networkSecurityGroup_securityRules": {
-              "copy": {
-                "name": "networkSecurityGroup_securityRules",
-                "count": "[length(parameters('securityRules'))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-NetworkSecurityGroup-SecurityRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[parameters('securityRules')[copyIndex()].name]"
-                  },
-                  "networkSecurityGroupName": {
-                    "value": "[parameters('name')]"
-                  },
-                  "protocol": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.protocol]"
-                  },
-                  "access": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.access]"
-                  },
-                  "priority": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.priority]"
-                  },
-                  "direction": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.direction]"
-                  },
-                  "description": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'description'), createObject('value', parameters('securityRules')[copyIndex()].properties.description), createObject('value', ''))]",
-                  "sourcePortRange": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourcePortRange'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourcePortRange), createObject('value', ''))]",
-                  "sourcePortRanges": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourcePortRanges'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourcePortRanges), createObject('value', createArray()))]",
-                  "destinationPortRange": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationPortRange'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationPortRange), createObject('value', ''))]",
-                  "destinationPortRanges": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationPortRanges'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationPortRanges), createObject('value', createArray()))]",
-                  "sourceAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceAddressPrefix'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceAddressPrefix), createObject('value', ''))]",
-                  "destinationAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationAddressPrefix'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationAddressPrefix), createObject('value', ''))]",
-                  "sourceAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceAddressPrefixes), createObject('value', createArray()))]",
-                  "destinationAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationAddressPrefixes), createObject('value', createArray()))]",
-                  "sourceApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceApplicationSecurityGroups), createObject('value', createArray()))]",
-                  "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationApplicationSecurityGroups), createObject('value', createArray()))]"
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "17252857850318600622"
-                    },
-                    "name": "Network Security Group (NSG) Security Rules",
-                    "description": "This module deploys a Network Security Group (NSG) Security Rule.",
-                    "owner": "Azure/module-maintainers"
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the security rule."
-                      }
-                    },
-                    "networkSecurityGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent network security group to deploy the security rule into. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "access": {
-                      "type": "string",
-                      "defaultValue": "Deny",
-                      "allowedValues": [
-                        "Allow",
-                        "Deny"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Whether network traffic is allowed or denied."
-                      }
-                    },
-                    "description": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "maxLength": 140,
-                      "metadata": {
-                        "description": "Optional. A description for this rule."
-                      }
-                    },
-                    "destinationAddressPrefix": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
-                      }
-                    },
-                    "destinationAddressPrefixes": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
-                      }
-                    },
-                    "destinationApplicationSecurityGroups": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The application security group specified as destination."
-                      }
-                    },
-                    "destinationPortRange": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
-                      }
-                    },
-                    "destinationPortRanges": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The destination port ranges."
-                      }
-                    },
-                    "direction": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Inbound",
-                        "Outbound"
-                      ],
-                      "metadata": {
-                        "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
-                      }
-                    },
-                    "priority": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
-                      }
-                    },
-                    "protocol": {
-                      "type": "string",
-                      "allowedValues": [
-                        "*",
-                        "Ah",
-                        "Esp",
-                        "Icmp",
-                        "Tcp",
-                        "Udp"
-                      ],
-                      "metadata": {
-                        "description": "Required. Network protocol this rule applies to."
-                      }
-                    },
-                    "sourceAddressPrefix": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
-                      }
-                    },
-                    "sourceAddressPrefixes": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The CIDR or source IP ranges."
-                      }
-                    },
-                    "sourceApplicationSecurityGroups": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The application security group specified as source."
-                      }
-                    },
-                    "sourcePortRange": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
-                      }
-                    },
-                    "sourcePortRanges": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The source port ranges."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-                      "apiVersion": "2023-11-01",
-                      "name": "[format('{0}/{1}', parameters('networkSecurityGroupName'), parameters('name'))]",
-                      "properties": {
-                        "access": "[parameters('access')]",
-                        "description": "[parameters('description')]",
-                        "destinationAddressPrefix": "[parameters('destinationAddressPrefix')]",
-                        "destinationAddressPrefixes": "[parameters('destinationAddressPrefixes')]",
-                        "destinationApplicationSecurityGroups": "[parameters('destinationApplicationSecurityGroups')]",
-                        "destinationPortRange": "[parameters('destinationPortRange')]",
-                        "destinationPortRanges": "[parameters('destinationPortRanges')]",
-                        "direction": "[parameters('direction')]",
-                        "priority": "[parameters('priority')]",
-                        "protocol": "[parameters('protocol')]",
-                        "sourceAddressPrefix": "[parameters('sourceAddressPrefix')]",
-                        "sourceAddressPrefixes": "[parameters('sourceAddressPrefixes')]",
-                        "sourceApplicationSecurityGroups": "[parameters('sourceApplicationSecurityGroups')]",
-                        "sourcePortRange": "[parameters('sourcePortRange')]",
-                        "sourcePortRanges": "[parameters('sourcePortRanges')]"
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource group the security rule was deployed into."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the security rule."
-                      },
-                      "value": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroupName'), parameters('name'))]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the security rule."
-                      },
-                      "value": "[parameters('name')]"
-                    }
-                  }
-                }
               },
               "dependsOn": [
                 "networkSecurityGroup"
@@ -2520,8 +2464,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "8543584719514494080"
+              "version": "0.28.1.47646",
+              "templateHash": "2832086720057246360"
             },
             "name": "Network Security Groups",
             "description": "This module deploys a Network security Group (NSG).",
@@ -2713,6 +2657,166 @@
                 }
               },
               "nullable": true
+            },
+            "securityRulesType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the security rule."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "access": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Allow",
+                          "Deny"
+                        ],
+                        "metadata": {
+                          "description": "Required. Whether network traffic is allowed or denied."
+                        }
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The description of the security rule."
+                        }
+                      },
+                      "destinationAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                        }
+                      },
+                      "destinationAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                        }
+                      },
+                      "destinationApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as destination."
+                        }
+                      },
+                      "destinationPortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "destinationPortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port ranges."
+                        }
+                      },
+                      "direction": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Inbound",
+                          "Outbound"
+                        ],
+                        "metadata": {
+                          "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 100,
+                        "maxValue": 4096,
+                        "metadata": {
+                          "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                        }
+                      },
+                      "protocol": {
+                        "type": "string",
+                        "allowedValues": [
+                          "*",
+                          "Ah",
+                          "Esp",
+                          "Icmp",
+                          "Tcp",
+                          "Udp"
+                        ],
+                        "metadata": {
+                          "description": "Required. Network protocol this rule applies to."
+                        }
+                      },
+                      "sourceAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                        }
+                      },
+                      "sourceAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP ranges."
+                        }
+                      },
+                      "sourceApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as source."
+                        }
+                      },
+                      "sourcePortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "sourcePortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port ranges."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. The properties of the security rule."
+                    }
+                  }
+                }
+              },
+              "nullable": true
             }
           },
           "parameters": {
@@ -2730,8 +2834,7 @@
               }
             },
             "securityRules": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/securityRulesType",
               "metadata": {
                 "description": "Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed."
               }
@@ -2790,8 +2893,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2817,25 +2920,25 @@
                 "copy": [
                   {
                     "name": "securityRules",
-                    "count": "[length(parameters('securityRules'))]",
+                    "count": "[length(coalesce(parameters('securityRules'), createArray()))]",
                     "input": {
-                      "name": "[parameters('securityRules')[copyIndex('securityRules')].name]",
+                      "name": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].name]",
                       "properties": {
-                        "protocol": "[parameters('securityRules')[copyIndex('securityRules')].properties.protocol]",
-                        "access": "[parameters('securityRules')[copyIndex('securityRules')].properties.access]",
-                        "priority": "[parameters('securityRules')[copyIndex('securityRules')].properties.priority]",
-                        "direction": "[parameters('securityRules')[copyIndex('securityRules')].properties.direction]",
-                        "description": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'description'), parameters('securityRules')[copyIndex('securityRules')].properties.description, '')]",
-                        "sourcePortRange": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourcePortRange'), parameters('securityRules')[copyIndex('securityRules')].properties.sourcePortRange, '')]",
-                        "sourcePortRanges": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourcePortRanges'), parameters('securityRules')[copyIndex('securityRules')].properties.sourcePortRanges, createArray())]",
-                        "destinationPortRange": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationPortRange'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationPortRange, '')]",
-                        "destinationPortRanges": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationPortRanges'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationPortRanges, createArray())]",
-                        "sourceAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceAddressPrefix'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceAddressPrefix, '')]",
-                        "destinationAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationAddressPrefix'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationAddressPrefix, '')]",
-                        "sourceAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceAddressPrefixes'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceAddressPrefixes, createArray())]",
-                        "destinationAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationAddressPrefixes'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationAddressPrefixes, createArray())]",
-                        "sourceApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceApplicationSecurityGroups'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceApplicationSecurityGroups, createArray())]",
-                        "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationApplicationSecurityGroups'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationApplicationSecurityGroups, createArray())]"
+                        "access": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.access]",
+                        "description": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'description'), '')]",
+                        "destinationAddressPrefix": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationAddressPrefix'), '')]",
+                        "destinationAddressPrefixes": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationAddressPrefixes'), createArray())]",
+                        "destinationApplicationSecurityGroups": "[map(coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationApplicationSecurityGroupResourceIds'), createArray()), lambda('destinationApplicationSecurityGroupResourceId', createObject('id', lambdaVariables('destinationApplicationSecurityGroupResourceId'))))]",
+                        "destinationPortRange": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationPortRange'), '')]",
+                        "destinationPortRanges": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationPortRanges'), createArray())]",
+                        "direction": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.direction]",
+                        "priority": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.priority]",
+                        "protocol": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.protocol]",
+                        "sourceAddressPrefix": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceAddressPrefix'), '')]",
+                        "sourceAddressPrefixes": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceAddressPrefixes'), createArray())]",
+                        "sourceApplicationSecurityGroups": "[map(coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceApplicationSecurityGroupResourceIds'), createArray()), lambda('sourceApplicationSecurityGroupResourceId', createObject('id', lambdaVariables('sourceApplicationSecurityGroupResourceId'))))]",
+                        "sourcePortRange": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourcePortRange'), '')]",
+                        "sourcePortRanges": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourcePortRanges'), createArray())]"
                       }
                     }
                   }
@@ -2906,249 +3009,6 @@
                 "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-              },
-              "dependsOn": [
-                "networkSecurityGroup"
-              ]
-            },
-            "networkSecurityGroup_securityRules": {
-              "copy": {
-                "name": "networkSecurityGroup_securityRules",
-                "count": "[length(parameters('securityRules'))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-NetworkSecurityGroup-SecurityRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[parameters('securityRules')[copyIndex()].name]"
-                  },
-                  "networkSecurityGroupName": {
-                    "value": "[parameters('name')]"
-                  },
-                  "protocol": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.protocol]"
-                  },
-                  "access": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.access]"
-                  },
-                  "priority": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.priority]"
-                  },
-                  "direction": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.direction]"
-                  },
-                  "description": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'description'), createObject('value', parameters('securityRules')[copyIndex()].properties.description), createObject('value', ''))]",
-                  "sourcePortRange": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourcePortRange'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourcePortRange), createObject('value', ''))]",
-                  "sourcePortRanges": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourcePortRanges'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourcePortRanges), createObject('value', createArray()))]",
-                  "destinationPortRange": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationPortRange'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationPortRange), createObject('value', ''))]",
-                  "destinationPortRanges": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationPortRanges'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationPortRanges), createObject('value', createArray()))]",
-                  "sourceAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceAddressPrefix'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceAddressPrefix), createObject('value', ''))]",
-                  "destinationAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationAddressPrefix'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationAddressPrefix), createObject('value', ''))]",
-                  "sourceAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceAddressPrefixes), createObject('value', createArray()))]",
-                  "destinationAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationAddressPrefixes), createObject('value', createArray()))]",
-                  "sourceApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceApplicationSecurityGroups), createObject('value', createArray()))]",
-                  "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationApplicationSecurityGroups), createObject('value', createArray()))]"
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "17252857850318600622"
-                    },
-                    "name": "Network Security Group (NSG) Security Rules",
-                    "description": "This module deploys a Network Security Group (NSG) Security Rule.",
-                    "owner": "Azure/module-maintainers"
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the security rule."
-                      }
-                    },
-                    "networkSecurityGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent network security group to deploy the security rule into. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "access": {
-                      "type": "string",
-                      "defaultValue": "Deny",
-                      "allowedValues": [
-                        "Allow",
-                        "Deny"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Whether network traffic is allowed or denied."
-                      }
-                    },
-                    "description": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "maxLength": 140,
-                      "metadata": {
-                        "description": "Optional. A description for this rule."
-                      }
-                    },
-                    "destinationAddressPrefix": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
-                      }
-                    },
-                    "destinationAddressPrefixes": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
-                      }
-                    },
-                    "destinationApplicationSecurityGroups": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The application security group specified as destination."
-                      }
-                    },
-                    "destinationPortRange": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
-                      }
-                    },
-                    "destinationPortRanges": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The destination port ranges."
-                      }
-                    },
-                    "direction": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Inbound",
-                        "Outbound"
-                      ],
-                      "metadata": {
-                        "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
-                      }
-                    },
-                    "priority": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
-                      }
-                    },
-                    "protocol": {
-                      "type": "string",
-                      "allowedValues": [
-                        "*",
-                        "Ah",
-                        "Esp",
-                        "Icmp",
-                        "Tcp",
-                        "Udp"
-                      ],
-                      "metadata": {
-                        "description": "Required. Network protocol this rule applies to."
-                      }
-                    },
-                    "sourceAddressPrefix": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
-                      }
-                    },
-                    "sourceAddressPrefixes": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The CIDR or source IP ranges."
-                      }
-                    },
-                    "sourceApplicationSecurityGroups": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The application security group specified as source."
-                      }
-                    },
-                    "sourcePortRange": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
-                      }
-                    },
-                    "sourcePortRanges": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The source port ranges."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-                      "apiVersion": "2023-11-01",
-                      "name": "[format('{0}/{1}', parameters('networkSecurityGroupName'), parameters('name'))]",
-                      "properties": {
-                        "access": "[parameters('access')]",
-                        "description": "[parameters('description')]",
-                        "destinationAddressPrefix": "[parameters('destinationAddressPrefix')]",
-                        "destinationAddressPrefixes": "[parameters('destinationAddressPrefixes')]",
-                        "destinationApplicationSecurityGroups": "[parameters('destinationApplicationSecurityGroups')]",
-                        "destinationPortRange": "[parameters('destinationPortRange')]",
-                        "destinationPortRanges": "[parameters('destinationPortRanges')]",
-                        "direction": "[parameters('direction')]",
-                        "priority": "[parameters('priority')]",
-                        "protocol": "[parameters('protocol')]",
-                        "sourceAddressPrefix": "[parameters('sourceAddressPrefix')]",
-                        "sourceAddressPrefixes": "[parameters('sourceAddressPrefixes')]",
-                        "sourceApplicationSecurityGroups": "[parameters('sourceApplicationSecurityGroups')]",
-                        "sourcePortRange": "[parameters('sourcePortRange')]",
-                        "sourcePortRanges": "[parameters('sourcePortRanges')]"
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource group the security rule was deployed into."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the security rule."
-                      },
-                      "value": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroupName'), parameters('name'))]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the security rule."
-                      },
-                      "value": "[parameters('name')]"
-                    }
-                  }
-                }
               },
               "dependsOn": [
                 "networkSecurityGroup"
@@ -3242,8 +3102,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "8543584719514494080"
+              "version": "0.28.1.47646",
+              "templateHash": "2832086720057246360"
             },
             "name": "Network Security Groups",
             "description": "This module deploys a Network security Group (NSG).",
@@ -3435,6 +3295,166 @@
                 }
               },
               "nullable": true
+            },
+            "securityRulesType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the security rule."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "access": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Allow",
+                          "Deny"
+                        ],
+                        "metadata": {
+                          "description": "Required. Whether network traffic is allowed or denied."
+                        }
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The description of the security rule."
+                        }
+                      },
+                      "destinationAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                        }
+                      },
+                      "destinationAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                        }
+                      },
+                      "destinationApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as destination."
+                        }
+                      },
+                      "destinationPortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "destinationPortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port ranges."
+                        }
+                      },
+                      "direction": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Inbound",
+                          "Outbound"
+                        ],
+                        "metadata": {
+                          "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 100,
+                        "maxValue": 4096,
+                        "metadata": {
+                          "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                        }
+                      },
+                      "protocol": {
+                        "type": "string",
+                        "allowedValues": [
+                          "*",
+                          "Ah",
+                          "Esp",
+                          "Icmp",
+                          "Tcp",
+                          "Udp"
+                        ],
+                        "metadata": {
+                          "description": "Required. Network protocol this rule applies to."
+                        }
+                      },
+                      "sourceAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                        }
+                      },
+                      "sourceAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP ranges."
+                        }
+                      },
+                      "sourceApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as source."
+                        }
+                      },
+                      "sourcePortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "sourcePortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port ranges."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. The properties of the security rule."
+                    }
+                  }
+                }
+              },
+              "nullable": true
             }
           },
           "parameters": {
@@ -3452,8 +3472,7 @@
               }
             },
             "securityRules": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/securityRulesType",
               "metadata": {
                 "description": "Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed."
               }
@@ -3512,8 +3531,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3539,25 +3558,25 @@
                 "copy": [
                   {
                     "name": "securityRules",
-                    "count": "[length(parameters('securityRules'))]",
+                    "count": "[length(coalesce(parameters('securityRules'), createArray()))]",
                     "input": {
-                      "name": "[parameters('securityRules')[copyIndex('securityRules')].name]",
+                      "name": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].name]",
                       "properties": {
-                        "protocol": "[parameters('securityRules')[copyIndex('securityRules')].properties.protocol]",
-                        "access": "[parameters('securityRules')[copyIndex('securityRules')].properties.access]",
-                        "priority": "[parameters('securityRules')[copyIndex('securityRules')].properties.priority]",
-                        "direction": "[parameters('securityRules')[copyIndex('securityRules')].properties.direction]",
-                        "description": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'description'), parameters('securityRules')[copyIndex('securityRules')].properties.description, '')]",
-                        "sourcePortRange": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourcePortRange'), parameters('securityRules')[copyIndex('securityRules')].properties.sourcePortRange, '')]",
-                        "sourcePortRanges": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourcePortRanges'), parameters('securityRules')[copyIndex('securityRules')].properties.sourcePortRanges, createArray())]",
-                        "destinationPortRange": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationPortRange'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationPortRange, '')]",
-                        "destinationPortRanges": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationPortRanges'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationPortRanges, createArray())]",
-                        "sourceAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceAddressPrefix'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceAddressPrefix, '')]",
-                        "destinationAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationAddressPrefix'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationAddressPrefix, '')]",
-                        "sourceAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceAddressPrefixes'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceAddressPrefixes, createArray())]",
-                        "destinationAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationAddressPrefixes'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationAddressPrefixes, createArray())]",
-                        "sourceApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'sourceApplicationSecurityGroups'), parameters('securityRules')[copyIndex('securityRules')].properties.sourceApplicationSecurityGroups, createArray())]",
-                        "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex('securityRules')].properties, 'destinationApplicationSecurityGroups'), parameters('securityRules')[copyIndex('securityRules')].properties.destinationApplicationSecurityGroups, createArray())]"
+                        "access": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.access]",
+                        "description": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'description'), '')]",
+                        "destinationAddressPrefix": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationAddressPrefix'), '')]",
+                        "destinationAddressPrefixes": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationAddressPrefixes'), createArray())]",
+                        "destinationApplicationSecurityGroups": "[map(coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationApplicationSecurityGroupResourceIds'), createArray()), lambda('destinationApplicationSecurityGroupResourceId', createObject('id', lambdaVariables('destinationApplicationSecurityGroupResourceId'))))]",
+                        "destinationPortRange": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationPortRange'), '')]",
+                        "destinationPortRanges": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'destinationPortRanges'), createArray())]",
+                        "direction": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.direction]",
+                        "priority": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.priority]",
+                        "protocol": "[coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties.protocol]",
+                        "sourceAddressPrefix": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceAddressPrefix'), '')]",
+                        "sourceAddressPrefixes": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceAddressPrefixes'), createArray())]",
+                        "sourceApplicationSecurityGroups": "[map(coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourceApplicationSecurityGroupResourceIds'), createArray()), lambda('sourceApplicationSecurityGroupResourceId', createObject('id', lambdaVariables('sourceApplicationSecurityGroupResourceId'))))]",
+                        "sourcePortRange": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourcePortRange'), '')]",
+                        "sourcePortRanges": "[coalesce(tryGet(coalesce(parameters('securityRules'), createArray())[copyIndex('securityRules')].properties, 'sourcePortRanges'), createArray())]"
                       }
                     }
                   }
@@ -3628,249 +3647,6 @@
                 "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-              },
-              "dependsOn": [
-                "networkSecurityGroup"
-              ]
-            },
-            "networkSecurityGroup_securityRules": {
-              "copy": {
-                "name": "networkSecurityGroup_securityRules",
-                "count": "[length(parameters('securityRules'))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-NetworkSecurityGroup-SecurityRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[parameters('securityRules')[copyIndex()].name]"
-                  },
-                  "networkSecurityGroupName": {
-                    "value": "[parameters('name')]"
-                  },
-                  "protocol": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.protocol]"
-                  },
-                  "access": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.access]"
-                  },
-                  "priority": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.priority]"
-                  },
-                  "direction": {
-                    "value": "[parameters('securityRules')[copyIndex()].properties.direction]"
-                  },
-                  "description": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'description'), createObject('value', parameters('securityRules')[copyIndex()].properties.description), createObject('value', ''))]",
-                  "sourcePortRange": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourcePortRange'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourcePortRange), createObject('value', ''))]",
-                  "sourcePortRanges": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourcePortRanges'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourcePortRanges), createObject('value', createArray()))]",
-                  "destinationPortRange": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationPortRange'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationPortRange), createObject('value', ''))]",
-                  "destinationPortRanges": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationPortRanges'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationPortRanges), createObject('value', createArray()))]",
-                  "sourceAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceAddressPrefix'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceAddressPrefix), createObject('value', ''))]",
-                  "destinationAddressPrefix": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationAddressPrefix'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationAddressPrefix), createObject('value', ''))]",
-                  "sourceAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceAddressPrefixes), createObject('value', createArray()))]",
-                  "destinationAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationAddressPrefixes), createObject('value', createArray()))]",
-                  "sourceApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceApplicationSecurityGroups), createObject('value', createArray()))]",
-                  "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationApplicationSecurityGroups), createObject('value', createArray()))]"
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "17252857850318600622"
-                    },
-                    "name": "Network Security Group (NSG) Security Rules",
-                    "description": "This module deploys a Network Security Group (NSG) Security Rule.",
-                    "owner": "Azure/module-maintainers"
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the security rule."
-                      }
-                    },
-                    "networkSecurityGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent network security group to deploy the security rule into. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "access": {
-                      "type": "string",
-                      "defaultValue": "Deny",
-                      "allowedValues": [
-                        "Allow",
-                        "Deny"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Whether network traffic is allowed or denied."
-                      }
-                    },
-                    "description": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "maxLength": 140,
-                      "metadata": {
-                        "description": "Optional. A description for this rule."
-                      }
-                    },
-                    "destinationAddressPrefix": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
-                      }
-                    },
-                    "destinationAddressPrefixes": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
-                      }
-                    },
-                    "destinationApplicationSecurityGroups": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The application security group specified as destination."
-                      }
-                    },
-                    "destinationPortRange": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
-                      }
-                    },
-                    "destinationPortRanges": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The destination port ranges."
-                      }
-                    },
-                    "direction": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Inbound",
-                        "Outbound"
-                      ],
-                      "metadata": {
-                        "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
-                      }
-                    },
-                    "priority": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
-                      }
-                    },
-                    "protocol": {
-                      "type": "string",
-                      "allowedValues": [
-                        "*",
-                        "Ah",
-                        "Esp",
-                        "Icmp",
-                        "Tcp",
-                        "Udp"
-                      ],
-                      "metadata": {
-                        "description": "Required. Network protocol this rule applies to."
-                      }
-                    },
-                    "sourceAddressPrefix": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
-                      }
-                    },
-                    "sourceAddressPrefixes": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The CIDR or source IP ranges."
-                      }
-                    },
-                    "sourceApplicationSecurityGroups": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The application security group specified as source."
-                      }
-                    },
-                    "sourcePortRange": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
-                      }
-                    },
-                    "sourcePortRanges": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. The source port ranges."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-                      "apiVersion": "2023-11-01",
-                      "name": "[format('{0}/{1}', parameters('networkSecurityGroupName'), parameters('name'))]",
-                      "properties": {
-                        "access": "[parameters('access')]",
-                        "description": "[parameters('description')]",
-                        "destinationAddressPrefix": "[parameters('destinationAddressPrefix')]",
-                        "destinationAddressPrefixes": "[parameters('destinationAddressPrefixes')]",
-                        "destinationApplicationSecurityGroups": "[parameters('destinationApplicationSecurityGroups')]",
-                        "destinationPortRange": "[parameters('destinationPortRange')]",
-                        "destinationPortRanges": "[parameters('destinationPortRanges')]",
-                        "direction": "[parameters('direction')]",
-                        "priority": "[parameters('priority')]",
-                        "protocol": "[parameters('protocol')]",
-                        "sourceAddressPrefix": "[parameters('sourceAddressPrefix')]",
-                        "sourceAddressPrefixes": "[parameters('sourceAddressPrefixes')]",
-                        "sourceApplicationSecurityGroups": "[parameters('sourceApplicationSecurityGroups')]",
-                        "sourcePortRange": "[parameters('sourcePortRange')]",
-                        "sourcePortRanges": "[parameters('sourcePortRanges')]"
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource group the security rule was deployed into."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the security rule."
-                      },
-                      "value": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroupName'), parameters('name'))]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the security rule."
-                      },
-                      "value": "[parameters('name')]"
-                    }
-                  }
-                }
               },
               "dependsOn": [
                 "networkSecurityGroup"
@@ -3960,8 +3736,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "6610248633645776629"
+              "version": "0.28.1.47646",
+              "templateHash": "15980850410135122025"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace.",
@@ -4110,14 +3886,21 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -4128,14 +3911,21 @@
                         "category": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -4343,6 +4133,13 @@
                 "description": "Optional. The diagnostic settings of the service."
               }
             },
+            "useDeployedWorkspaceForDiagnosticSettings": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings."
+              }
+            },
             "forceCmkForQuery": {
               "type": "bool",
               "defaultValue": true,
@@ -4379,7 +4176,7 @@
           },
           "variables": {
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
@@ -4398,8 +4195,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4450,12 +4247,30 @@
               "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
-                "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                "workspaceId": "[if(parameters('useDeployedWorkspaceForDiagnosticSettings'), resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId'))]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -4529,8 +4344,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "15478499623960222974"
+                      "version": "0.28.1.47646",
+                      "templateHash": "16775981135504794519"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -4669,8 +4484,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "6280157469343577004"
+                      "version": "0.28.1.47646",
+                      "templateHash": "11327223922004680974"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -4791,8 +4606,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "6638579504467134066"
+                      "version": "0.28.1.47646",
+                      "templateHash": "16393542404456450187"
                     },
                     "name": "Log Analytics Workspace Linked Storage Accounts",
                     "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
@@ -4885,7 +4700,9 @@
                   "name": {
                     "value": "[format('{0}{1}', parameters('savedSearches')[copyIndex()].name, uniqueString(deployment().name))]"
                   },
-                  "etag": "[if(contains(parameters('savedSearches')[copyIndex()], 'eTag'), createObject('value', parameters('savedSearches')[copyIndex()].etag), createObject('value', '*'))]",
+                  "etag": {
+                    "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'etag')]"
+                  },
                   "displayName": {
                     "value": "[parameters('savedSearches')[copyIndex()].displayName]"
                   },
@@ -4895,9 +4712,15 @@
                   "query": {
                     "value": "[parameters('savedSearches')[copyIndex()].query]"
                   },
-                  "functionAlias": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionAlias'), createObject('value', parameters('savedSearches')[copyIndex()].functionAlias), createObject('value', ''))]",
-                  "functionParameters": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionParameters'), createObject('value', parameters('savedSearches')[copyIndex()].functionParameters), createObject('value', ''))]",
-                  "version": "[if(contains(parameters('savedSearches')[copyIndex()], 'version'), createObject('value', parameters('savedSearches')[copyIndex()].version), createObject('value', 2))]"
+                  "functionAlias": {
+                    "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionAlias')]"
+                  },
+                  "functionParameters": {
+                    "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionParameters')]"
+                  },
+                  "version": {
+                    "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'version')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4906,8 +4729,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "16157882734705318113"
+                      "version": "0.28.1.47646",
+                      "templateHash": "18166536793397048488"
                     },
                     "name": "Log Analytics Workspace Saved Searches",
                     "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -4967,7 +4790,7 @@
                     },
                     "version": {
                       "type": "int",
-                      "defaultValue": 2,
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The version number of the query language."
                       }
@@ -5066,8 +4889,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "7413462048618089111"
+                      "version": "0.28.1.47646",
+                      "templateHash": "7136569845646186437"
                     },
                     "name": "Log Analytics Workspace Data Exports",
                     "description": "This module deploys a Log Analytics Workspace Data Export.",
@@ -5193,8 +5016,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "12960146774033634359"
+                      "version": "0.28.1.47646",
+                      "templateHash": "13864187993066263466"
                     },
                     "name": "Log Analytics Workspace Datasources",
                     "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -5424,8 +5247,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "14992933806074900242"
+                      "version": "0.28.1.47646",
+                      "templateHash": "9332283068393802804"
                     },
                     "name": "Log Analytics Workspace Tables",
                     "description": "This module deploys a Log Analytics Workspace Table.",
@@ -5861,7 +5684,7 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('logAnalyticsWorkspace', '2022-10-01', 'full').identity, 'principalId')), reference('logAnalyticsWorkspace', '2022-10-01', 'full').identity.principalId, '')]"
+              "value": "[coalesce(tryGet(tryGet(reference('logAnalyticsWorkspace', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
             }
           }
         }
@@ -5957,8 +5780,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "4985037447974653037"
+              "version": "0.28.1.47646",
+              "templateHash": "6639574961348492362"
             },
             "name": "Key Vaults",
             "description": "This module deploys a Key Vault.",
@@ -6979,6 +6802,7 @@
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
               "Key Vault Certificates Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4417e6f-fecd-4de8-b567-7b0420556985')]",
+              "Key Vault Certificate User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db79e9a7-68ee-4b58-9aeb-b90e7c24fcba')]",
               "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
               "Key Vault Crypto Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')]",
               "Key Vault Crypto Service Encryption User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')]",
@@ -6996,8 +6820,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('0.6.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7140,8 +6964,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "13379419349517171769"
+                      "version": "0.28.1.47646",
+                      "templateHash": "9363032158799379271"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy.",
@@ -7409,8 +7233,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "6420465919494344964"
+                      "version": "0.28.1.47646",
+                      "templateHash": "8081761451262814691"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret.",
@@ -7549,11 +7373,7 @@
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
-                      "Key Vault Certificates Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4417e6f-fecd-4de8-b567-7b0420556985')]",
                       "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
-                      "Key Vault Crypto Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')]",
-                      "Key Vault Crypto Service Encryption User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')]",
-                      "Key Vault Crypto User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
                       "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
                       "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
                       "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
@@ -7697,8 +7517,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "8655662111651470037"
+                      "version": "0.28.1.47646",
+                      "templateHash": "6463446681908714455"
                     },
                     "name": "Key Vault Keys",
                     "description": "This module deploys a Key Vault Key.",
@@ -7887,14 +7707,11 @@
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
-                      "Key Vault Certificates Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4417e6f-fecd-4de8-b567-7b0420556985')]",
                       "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
                       "Key Vault Crypto Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')]",
                       "Key Vault Crypto Service Encryption User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')]",
                       "Key Vault Crypto User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
                       "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
-                      "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
-                      "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
@@ -8735,7 +8552,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11412633288570781407"
+              "templateHash": "13567552508326841182"
             },
             "name": "Private DNS Zones",
             "description": "This module deploys a Private DNS zone.",
@@ -9425,8 +9242,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -11654,8 +11471,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "9291240325472913872"
+              "version": "0.28.1.47646",
+              "templateHash": "1935864525472915477"
             },
             "name": "Azure Databricks Workspaces",
             "description": "This module deploys an Azure Databricks Workspace.",
@@ -11704,6 +11521,13 @@
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. The location to deploy the private endpoint to."
+                    }
+                  },
+                  "privateLinkServiceConnectionName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the private link connection to create."
                     }
                   },
                   "service": {
@@ -11863,6 +11687,13 @@
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. Enable/Disable usage telemetry for module."
+                    }
+                  },
+                  "resourceGroupName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
                     }
                   }
                 }
@@ -12344,7 +12175,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.databricks-workspace.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.databricks-workspace.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -12388,7 +12219,7 @@
                 "name": "[parameters('skuName')]"
               },
               "properties": {
-                "managedResourceGroupId": "[if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/{1}-rg', subscription().id, parameters('name')))]",
+                "managedResourceGroupId": "[if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name')))]",
                 "parameters": "[union(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))]",
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
                 "requiredNsgRules": "[parameters('requiredNsgRules')]",
@@ -12476,7 +12307,8 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Databricks-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-workspace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -12486,8 +12318,8 @@
                   "name": {
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
                   },
-                  "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Databricks/workspaces', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
-                  "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Databricks/workspaces', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+                  "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Databricks/workspaces', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+                  "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Databricks/workspaces', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
                   "subnetResourceId": {
                     "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
                   },
@@ -12532,8 +12364,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "2592884001616184297"
+                      "version": "0.25.53.49325",
+                      "templateHash": "4120048060064073955"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint.",
@@ -12898,7 +12730,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -13003,8 +12835,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.24.24.22086",
-                              "templateHash": "9321937464667207030"
+                              "version": "0.25.53.49325",
+                              "templateHash": "11244630631275470040"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -13269,7 +13101,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11412633288570781407"
+              "templateHash": "13567552508326841182"
             },
             "name": "Private DNS Zones",
             "description": "This module deploys a Private DNS zone.",
@@ -13959,8 +13791,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
