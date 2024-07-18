@@ -39,6 +39,7 @@ body:
       options:
         - ""
         - "avm/ptn/ai-platform/baseline"
+        - "avm/ptn/app/container-job"
         - "avm/ptn/authorization/policy-assignment"
         - "avm/ptn/authorization/resource-role-assignment"
         - "avm/ptn/authorization/role-assignment"
