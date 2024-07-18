@@ -114,4 +114,38 @@ Describe 'Validate deployment' {
             $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
         }
     }
+
+    Context 'Secrets - Azure Key Vault Tests' {
+
+        BeforeAll {
+        }
+
+        It 'Check Azure Key Vault Defaults' {
+
+            $kv = Get-AzKeyVault -ResourceGroupName $keyVaultResourceGroupName -VaultName $keyVaultName
+
+            $kv.Sku | Should -Be 'Standard'
+
+            $kv.EnabledForDeployment | Should -Be $false
+            $kv.EnabledForTemplateDeployment | Should -Be $false
+            $kv.EnabledForDiskEncryption | Should -Be $false
+
+            $kv.EnabledForRBACAuthorization | Should -Be $true
+
+            $kv.EnableSoftDelete | Should -Be $true
+            $kv.SoftDeleteRetentionInDays | Should -Be 90
+            $kv.EnablePurgeProtection | Should -Be $true
+
+            $kv.PublicNetworkAccess | Should -Be 'Disabled'
+            $kv.NetworkAcls.Bypass | Should -Be 'None'
+            $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
+
+            # TODO
+            #$kv.NetworkAcls.IpAddressRanges  | Should -Be ''
+            #tags
+            #diag settings
+            #private links
+            #role assignments
+        }
+    }
 }
