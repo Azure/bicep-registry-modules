@@ -39,7 +39,7 @@ param advancedOptions advancedOptionsType?
 // Variables      //
 // ============== //
 
-var diagnosticSettingsName = '${name}-diagnostic-settings'
+var diagnosticSettingsName = 'avm-diagnostic-settings'
 var vnetName = '${name}-vnet'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'

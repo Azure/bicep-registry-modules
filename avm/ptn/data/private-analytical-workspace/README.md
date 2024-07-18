@@ -174,6 +174,10 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     enableDatabricks: true
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -200,6 +204,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }

@@ -97,6 +97,34 @@ Describe 'Validate deployment' {
             $r.Location | Should -Be $databricksLocation
             $r.ResourceGroupName | Should -Be $databricksResourceGroupName
         }
+
+        It 'Check Tags' {
+
+            $tag1 = 'Environment'
+            $tag1Val = 'Non-Prod'
+            $tag2 = 'Role'
+            $tag2Val = 'DeploymentValidation'
+
+            $t = Get-AzTag -ResourceId $resourceId
+            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
+            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
+
+            $t = Get-AzTag -ResourceId $virtualNetworkResourceId
+            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
+            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
+
+            $t = Get-AzTag -ResourceId $logAnalyticsWorkspaceResourceId
+            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
+            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
+
+            $t = Get-AzTag -ResourceId $keyVaultResourceId
+            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
+            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
+
+            $t = Get-AzTag -ResourceId $databricksResourceId
+            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
+            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
+        }
     }
 
     Context 'Monitoring - Azure Log Analytics Workspace Tests' {
@@ -142,7 +170,6 @@ Describe 'Validate deployment' {
 
             # TODO
             #$kv.NetworkAcls.IpAddressRanges  | Should -Be ''
-            #tags
             #diag settings
             #private links
             #role assignments
