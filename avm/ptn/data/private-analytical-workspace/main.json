@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "3281665659901038895"
+      "templateHash": "3157996245566199662"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -353,6 +353,23 @@
     "nsgNameDbwComputePlane": "[format('{0}-nsg-dbw-compute-plane', parameters('name'))]",
     "nsgRulesDbw": [
       {
+        "name": "DenyHopOutbound",
+        "properties": {
+          "description": "Subnet should not initiate any management Outbound Connections",
+          "access": "Deny",
+          "direction": "Outbound",
+          "priority": 100,
+          "protocol": "*",
+          "sourceAddressPrefix": "VirtualNetwork",
+          "sourcePortRange": "*",
+          "destinationAddressPrefix": "*",
+          "destinationPortRanges": [
+            "3389",
+            "22"
+          ]
+        }
+      },
+      {
         "name": "Microsoft.Databricks-workspaces_UseOnly_databricks-worker-to-worker-inbound",
         "properties": {
           "description": "Required for worker nodes communication within a cluster",
@@ -362,7 +379,7 @@
           "sourceAddressPrefix": "VirtualNetwork",
           "destinationAddressPrefix": "VirtualNetwork",
           "access": "Allow",
-          "priority": 100,
+          "priority": 110,
           "direction": "Inbound"
         }
       },
@@ -376,7 +393,7 @@
           "sourceAddressPrefix": "VirtualNetwork",
           "destinationAddressPrefix": "AzureDatabricks",
           "access": "Allow",
-          "priority": 100,
+          "priority": 111,
           "direction": "Outbound"
         }
       },
@@ -390,7 +407,7 @@
           "sourceAddressPrefix": "VirtualNetwork",
           "destinationAddressPrefix": "Sql",
           "access": "Allow",
-          "priority": 101,
+          "priority": 112,
           "direction": "Outbound"
         }
       },
@@ -404,7 +421,7 @@
           "sourceAddressPrefix": "VirtualNetwork",
           "destinationAddressPrefix": "Storage",
           "access": "Allow",
-          "priority": 102,
+          "priority": 113,
           "direction": "Outbound"
         }
       },
@@ -418,7 +435,7 @@
           "sourceAddressPrefix": "VirtualNetwork",
           "destinationAddressPrefix": "VirtualNetwork",
           "access": "Allow",
-          "priority": 103,
+          "priority": 114,
           "direction": "Outbound"
         }
       },
@@ -432,25 +449,8 @@
           "sourceAddressPrefix": "VirtualNetwork",
           "destinationAddressPrefix": "EventHub",
           "access": "Allow",
-          "priority": 104,
+          "priority": 115,
           "direction": "Outbound"
-        }
-      },
-      {
-        "name": "DenyHopOutbound",
-        "properties": {
-          "description": "Subnet should not initiate any management Outbound Connections",
-          "access": "Deny",
-          "direction": "Outbound",
-          "priority": 110,
-          "protocol": "*",
-          "sourceAddressPrefix": "VirtualNetwork",
-          "sourcePortRange": "*",
-          "destinationAddressPrefix": "*",
-          "destinationPortRanges": [
-            "3389",
-            "22"
-          ]
         }
       }
     ],
