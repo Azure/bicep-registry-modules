@@ -23,15 +23,15 @@ param appliesToGroups appliesToGroupsType
 @sys.description('Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.')
 param rules rulesType
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
   name: networkManagerName
 
-  resource securityAdminConfiguration 'securityAdminConfigurations@2023-04-01' existing = {
+  resource securityAdminConfiguration 'securityAdminConfigurations@2023-11-01' existing = {
     name: securityAdminConfigurationName
   }
 }
 
-resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections@2023-04-01' = {
+resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections@2023-11-01' = {
   name: name
   parent: networkManager::securityAdminConfiguration
   properties: {
