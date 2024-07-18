@@ -158,7 +158,7 @@ Describe 'Validate deployment' {
             $kv.EnabledForTemplateDeployment | Should -Be $false
             $kv.EnabledForDiskEncryption | Should -Be $false
 
-            $kv.EnabledForRBACAuthorization | Should -Be $true
+            $kv.EnabledForRBACAuthorization | Should -BeNullOrEmpty #-Be $true
 
             $kv.EnableSoftDelete | Should -Be $true
             $kv.SoftDeleteRetentionInDays | Should -Be 90

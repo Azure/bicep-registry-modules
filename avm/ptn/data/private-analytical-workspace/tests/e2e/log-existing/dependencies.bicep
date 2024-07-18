@@ -16,6 +16,10 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06
       dailyQuotaGb: 22
     }
   }
+  tags: {
+    Environment: 'Non-Prod'
+    Role: 'DeploymentValidation'
+  }
 }
 
 @description('The resource ID of the created Log Analytics Workspace.')
