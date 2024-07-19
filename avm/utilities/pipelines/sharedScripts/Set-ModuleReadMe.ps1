@@ -242,7 +242,11 @@ function Set-DefinitionSection {
         [string[]] $ColumnsInOrder = @('Required', 'Conditional', 'Optional', 'Generated')
     )
 
-    if (-not $Properties) {
+    if (-not $Properties -and -not $TemplateFileContent.parameters) {
+        # no Parameters / properties on this level or in the template
+        return ''
+    } elseif (-not $Properties) {
+
         # Top-level invocation
         # Get all descriptions
         $descriptions = $TemplateFileContent.parameters.Values.metadata.description
@@ -1322,9 +1326,13 @@ function Set-UsageExamplesSection {
 
     $testFilePaths = (Get-ChildItem -Path $ModuleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
 
-    $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
-        Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $TemplateFileContent.parameters[$_]
-    } | Sort-Object -Culture 'en-US'
+    if ($TemplateFileContent.parameters.Count -gt 0) {
+        $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
+            Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $TemplateFileContent.parameters[$_]
+        } | Sort-Object -Culture 'en-US'
+    } else {
+        $RequiredParametersList = @()
+    }
 
     ############################
     ##   Process test files   ##
@@ -1393,92 +1401,145 @@ function Set-UsageExamplesSection {
         #   Prepare Bicep to JSON   #
         # ------------------------- #
 
-        # [1/6] Search for the relevant parameter start & end index
-        $bicepTestStartIndex = ($rawContentArray | Select-String ("^module testDeployment '..\/.*main.bicep' = ") | ForEach-Object { $_.LineNumber - 1 })[0]
+        $isModuleDeploymentRegex = "^module testDeployment '..\/.*main.bicep' = "
 
-        $bicepTestEndIndex = $bicepTestStartIndex
-        do {
-            $bicepTestEndIndex++
-        } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]', ']') -and $bicepTestEndIndex -lt $rawContentArray.Count)
+        if (($rawContentArray | Out-String) -match $isModuleDeploymentRegex) {
+            # Classic module deployment
 
-        if ($bicepTestEndIndex -eq $rawContentArray.Count) {
-            throw "End index of test block for test file [$testFilePath] not found."
-        }
+            # [1/6] Search for the relevant parameter start & end index
+            $bicepTestStartIndex = ($rawContentArray | Select-String ("^module testDeployment '..\/.*main.bicep' = ") | ForEach-Object { $_.LineNumber - 1 })[0]
 
-        $rawBicepExample = $rawContentArray[$bicepTestStartIndex..$bicepTestEndIndex]
+            $bicepTestEndIndex = $bicepTestStartIndex
+            do {
+                $bicepTestEndIndex++
+            } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]', ']') -and $bicepTestEndIndex -lt $rawContentArray.Count)
 
-        if (-not ($rawBicepExample | Select-String ('\s+params:.*'))) {
-            # Handle case where params are not provided
-            $paramsBlockArray = @()
-        } else {
-            # Extract params block out of the Bicep example
-            $paramsStartIndex = ($rawBicepExample | Select-String ('\s+params:.*') | ForEach-Object { $_.LineNumber - 1 })[0]
-            $paramsIndent = ($rawBicepExample[$paramsStartIndex] | Select-String '(\s+).*').Matches.Groups[1].Length
+            if ($bicepTestEndIndex -eq $rawContentArray.Count) {
+                throw "End index of test block for test file [$testFilePath] not found."
+            }
 
+            $rawBicepExample = $rawContentArray[$bicepTestStartIndex..$bicepTestEndIndex]
 
-            # Handle case where params are empty
-            if ($rawBicepExample[$paramsStartIndex] -match '^.*params:\s*\{\s*\}\s*$') {
+            if (-not ($rawBicepExample | Select-String ('\s+params:.*'))) {
+                # Handle case where params are not provided
                 $paramsBlockArray = @()
             } else {
-                # Handle case where params are provided
-                $paramsEndIndex = $paramsStartIndex
-                do {
-                    $paramsEndIndex++
-                } while ($rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}" -and
-                    $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}\]" -and
-                    $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\]" -and
-                    $paramsEndIndex -lt $rawBicepExample.Count)
+                # Extract params block out of the Bicep example
+                $paramsStartIndex = ($rawBicepExample | Select-String ('\s+params:.*') | ForEach-Object { $_.LineNumber - 1 })[0]
+                $paramsIndent = ($rawBicepExample[$paramsStartIndex] | Select-String '(\s+).*').Matches.Groups[1].Length
 
-                if ($paramsEndIndex -eq $rawBicepExample.Count) {
-                    throw "End index of 'params' block for test file [$testFilePath] not found."
+
+                # Handle case where params are empty
+                if ($rawBicepExample[$paramsStartIndex] -match '^.*params:\s*\{\s*\}\s*$') {
+                    $paramsBlockArray = @()
+                } else {
+                    # Handle case where params are provided
+                    $paramsEndIndex = $paramsStartIndex
+                    do {
+                        $paramsEndIndex++
+                    } while ($rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}" -and
+                        $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}\]" -and
+                        $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\]" -and
+                        $paramsEndIndex -lt $rawBicepExample.Count)
+
+                    if ($paramsEndIndex -eq $rawBicepExample.Count) {
+                        throw "End index of 'params' block for test file [$testFilePath] not found."
+                    }
+
+                    $paramsBlock = $rawBicepExample[($paramsStartIndex + 1) .. ($paramsEndIndex - 1)]
+                    $paramsBlockArray = $paramsBlock -replace "^\s{$paramsIndent}" # Remove excess leading spaces
+
+                    # [2/6] Replace placeholders
+                    $serviceShort = ([regex]::Match($rawContent, "(?m)^param serviceShort string = '(.+)'\s*$")).Captures.Groups[1].Value
+
+                    $paramsBlockString = ($paramsBlockArray | Out-String)
+                    $paramsBlockString = $paramsBlockString -replace '\$\{serviceShort\}', $serviceShort
+                    $paramsBlockString = $paramsBlockString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
+                    $paramsBlockString = $paramsBlockString -replace '(?m):\s*location\s*$', ': ''<location>'''
+
+                    # [3/6] Format header, remove scope property & any empty line
+                    $paramsBlockArray = $paramsBlockString -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) }
+                    $paramsBlockArray = $paramsBlockArray | ForEach-Object { "  $_" }
                 }
-
-                $paramsBlock = $rawBicepExample[($paramsStartIndex + 1) .. ($paramsEndIndex - 1)]
-                $paramsBlockArray = $paramsBlock -replace "^\s{$paramsIndent}" # Remove excess leading spaces
-
-                # [2/6] Replace placeholders
-                $serviceShort = ([regex]::Match($rawContent, "(?m)^param serviceShort string = '(.+)'\s*$")).Captures.Groups[1].Value
-
-                $paramsBlockString = ($paramsBlockArray | Out-String)
-                $paramsBlockString = $paramsBlockString -replace '\$\{serviceShort\}', $serviceShort
-                $paramsBlockString = $paramsBlockString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
-                $paramsBlockString = $paramsBlockString -replace '(?m):\s*location\s*$', ': ''<location>'''
-
-                # [3/6] Format header, remove scope property & any empty line
-                $paramsBlockArray = $paramsBlockString -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) }
-                $paramsBlockArray = $paramsBlockArray | ForEach-Object { "  $_" }
             }
-        }
 
-        # [5/6] Convert Bicep parameter block to JSON parameter block to enable processing
-        $conversionInputObject = @{
-            BicepParamBlock = ($paramsBlockArray | Out-String).TrimEnd()
-            CurrentFilePath = $testFilePath
-        }
-        $paramsInJSONFormat = ConvertTo-FormattedJSONParameterObject @conversionInputObject
+            # [5/6] Convert Bicep parameter block to JSON parameter block to enable processing
+            $conversionInputObject = @{
+                BicepParamBlock = ($paramsBlockArray | Out-String).TrimEnd()
+                CurrentFilePath = $testFilePath
+            }
+            $paramsInJSONFormat = ConvertTo-FormattedJSONParameterObject @conversionInputObject
 
-        # [6/6] Convert JSON parameters back to Bicep and order & format them
-        $conversionInputObject = @{
-            JSONParameters         = $paramsInJSONFormat
-            RequiredParametersList = $RequiredParametersList
-        }
-        $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
+            # [6/6] Convert JSON parameters back to Bicep and order & format them
+            $conversionInputObject = @{
+                JSONParameters         = $paramsInJSONFormat
+                RequiredParametersList = $RequiredParametersList
+            }
+            $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
 
-        # --------------------- #
-        #   Add Bicep example   #
-        # --------------------- #
-        if ($addBicep) {
+            # --------------------- #
+            #   Add Bicep example   #
+            # --------------------- #
+            if ($addBicep) {
 
-            $formattedBicepExample = @(
-                "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
-                "  name: '$($moduleNameCamelCase)Deployment'"
-                '  params: {'
-            ) + $bicepExample +
-            @( '  }',
-                '}'
-            )
+                $formattedBicepExample = @(
+                    "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
+                    "  name: '$($moduleNameCamelCase)Deployment'"
+                    '  params: {'
+                ) + $bicepExample +
+                @( '  }',
+                    '}'
+                )
 
-            # Build result
+                # Build result
+                $testFilesContent += @(
+                    '',
+                    '<details>'
+                    ''
+                    '<summary>via Bicep module</summary>'
+                    ''
+                    '```bicep',
+                    ($formattedBicepExample | ForEach-Object { "$_" }).TrimEnd(),
+                    '```',
+                    '',
+                    '</details>',
+                    '<p>'
+                )
+            }
+
+            # -------------------- #
+            #   Add JSON example   #
+            # -------------------- #
+            if ($addJson) {
+
+                # [1/2] Get all parameters from the parameter object and order them recursively
+                $orderingInputObject = @{
+                    ParametersJSON         = $paramsInJSONFormat | ConvertTo-Json -Depth 99
+                    RequiredParametersList = $RequiredParametersList
+                }
+                $orderedJSONExample = Build-OrderedJSONObject @orderingInputObject
+
+                # [2/2] Create the final content block
+                $testFilesContent += @(
+                    '',
+                    '<details>'
+                    ''
+                    '<summary>via JSON Parameter file</summary>'
+                    ''
+                    '```json',
+                    $orderedJSONExample.Trim()
+                    '```',
+                    '',
+                    '</details>',
+                    '<p>'
+                )
+            }
+        } else {
+            # Non-module deployment (e.g., utility deployment)
+
+            # ----------------------------- #
+            #   Add non-formatted example   #
+            # ----------------------------- #
             $testFilesContent += @(
                 '',
                 '<details>'
@@ -1486,35 +1547,7 @@ function Set-UsageExamplesSection {
                 '<summary>via Bicep module</summary>'
                 ''
                 '```bicep',
-                    ($formattedBicepExample | ForEach-Object { "$_" }).TrimEnd(),
-                '```',
-                '',
-                '</details>',
-                '<p>'
-            )
-        }
-
-        # -------------------- #
-        #   Add JSON example   #
-        # -------------------- #
-        if ($addJson) {
-
-            # [1/2] Get all parameters from the parameter object and order them recursively
-            $orderingInputObject = @{
-                ParametersJSON         = $paramsInJSONFormat | ConvertTo-Json -Depth 99
-                RequiredParametersList = $RequiredParametersList
-            }
-            $orderedJSONExample = Build-OrderedJSONObject @orderingInputObject
-
-            # [2/2] Create the final content block
-            $testFilesContent += @(
-                '',
-                '<details>'
-                ''
-                '<summary>via JSON Parameter file</summary>'
-                ''
-                '```json',
-                $orderedJSONExample.Trim()
+                $rawContentArray,
                 '```',
                 '',
                 '</details>',
