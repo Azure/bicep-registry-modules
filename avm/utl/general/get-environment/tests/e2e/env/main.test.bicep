@@ -4,6 +4,7 @@ targetScope = 'subscription'
 // Test Execution //
 // ============== //
 
-import { getGraphEndpoint } from '../../../main.bicep'
+import { getGraphEndpoint, getPortalUrl } from '../../../main.bicep'
 
-output graphEndpoint string = getGraphEndpoint(environment().name)
+output graphEndpoint string = getGraphEndpoint('AzureCloud')
+output portal string = getPortalUrl('AzureCloud')
