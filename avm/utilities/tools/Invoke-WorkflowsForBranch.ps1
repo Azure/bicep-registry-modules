@@ -150,7 +150,7 @@ function Get-GitHubModuleWorkflowList {
         [switch] $IncludeDisabled,
 
         [Parameter(Mandatory = $false)]
-        [string] $Filter = 'avm\.(?:res|ptn|utl|utl)'
+        [string] $Filter = 'avm\.(?:res|ptn|utl)'
     )
 
     $allWorkflows = @()
@@ -228,24 +228,24 @@ Optional. The inputs to pass into the workflows. Defaults to only run static val
 Optional. Trigger workflows only for those who's module files have changed (based on diff of branch to main)
 
 .EXAMPLE
-Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn|utl|utl)' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn|utl)' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
-Run all GitHub workflows that match 'avm\.(?:res|ptn|utl|utl)' using branch 'feature/branch'. Also returns all GitHub status badges.
+Run all GitHub workflows that match 'avm\.(?:res|ptn|utl)' using branch 'feature/branch'. Also returns all GitHub status badges.
 
 .EXAMPLE
-Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn|utl|utl)' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -WhatIf
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn|utl)' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -WhatIf
 
-Only simulate the triggering of all GitHub workflows that match 'avm\.(?:res|ptn|utl|utl)' using branch 'feature/branch'. Hence ONLY returns all GitHub status badges.
+Only simulate the triggering of all GitHub workflows that match 'avm\.(?:res|ptn|utl)' using branch 'feature/branch'. Hence ONLY returns all GitHub status badges.
 
 .EXAMPLE
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'MyFork'
 
-Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res.res|ptn|utl|utl', using the current locally checked out branch. Also returns all GitHub status badges.
+Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res.res|ptn|utl', using the current locally checked out branch. Also returns all GitHub status badges.
 
 .EXAMPLE
 Invoke-WorkflowsForBranch -RepositoryOwner 'MyFork'
 
-Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res|ptn|utl|utl.', using the current locally checked out branch and the GitHub CLI. Also returns all GitHub status badges.
+Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res|ptn|utl.', using the current locally checked out branch and the GitHub CLI. Also returns all GitHub status badges.
 #>
 function Invoke-WorkflowsForBranch {
 
@@ -258,7 +258,7 @@ function Invoke-WorkflowsForBranch {
         [string] $TargetBranch = (git branch --show-current),
 
         [Parameter(Mandatory = $false)]
-        [string] $PipelineFilter = 'avm\.(?:res|ptn|utl|utl)',
+        [string] $PipelineFilter = 'avm\.(?:res|ptn|utl)',
 
         [Parameter(Mandatory = $false)]
         [switch] $InvokeForDiff,

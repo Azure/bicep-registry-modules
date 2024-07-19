@@ -633,8 +633,8 @@ Describe 'Module tests' -Tag 'Module' {
                 $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
                 foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-                    if ($moduleFolderPath -match '[\/|\\]avm[\/|\\]ptn[\/|\\]') {
-                        # Skip UDT interface tests for ptn modules
+                    if ($moduleFolderPath -match '[\/|\\]{1}avm[\/|\\]{1}(ptn|utl)[\/|\\]{1}') {
+                        # Skip UDT interface tests for ptn & utl modules
                         continue
                     }
 
