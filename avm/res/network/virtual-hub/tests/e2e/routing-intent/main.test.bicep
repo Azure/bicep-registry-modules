@@ -18,7 +18,9 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'nvhrtint'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'erschef'
+//param namePrefix string = '#_namePrefix_#'
+
 
 // ============ //
 // Dependencies //
@@ -37,7 +39,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    azureFirewallName: 'dep-${namePrefix}-azfw-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -61,7 +62,6 @@ module testDeployment '../../../main.bicep' = [
       }
       addressPrefix: '10.1.0.0/16'
       virtualWanId: nestedDependencies.outputs.virtualWANResourceId
-      azureFirewallResourceId: nestedDependencies.outputs.azureFirewallResourceId
       hubRouteTables: []
       /*hubVirtualNetworkConnections: [
         {
@@ -103,3 +103,24 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+module nestedDependenciesfirewall 'dependencies-firewall.bicep' ={
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependenciesFirewall'
+  params: {
+    azureFirewallName: 'dep-${namePrefix}-azfw-${serviceShort}'
+    virtualHubResourceId: testDeployment[0].outputs.resourceId
+    location: resourceLocation
+  }
+}
+
+
+module '../../../hub-routing-intent/main.bicep' = {
+  name: '${namePrefix}-${serviceShort}-routingIntent'
+  location: resourceLocation
+  properties: {
+    virtualHubName: testDeployment[0].outputs.name
+    privateToFirewall: true
+    internetToFirewall: false
+  }
+}
