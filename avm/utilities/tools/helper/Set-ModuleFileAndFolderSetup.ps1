@@ -109,7 +109,7 @@ function Set-ModuleFileAndFolderSetup {
         # -----------------
         $testCasesPath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e'
 
-        if (Test-Path $testCasesPath -eq $false) {
+        if (-not (Test-Path $testCasesPath)) {
             $null = New-Item -Path $testCasesPath -ItemType 'Directory' -Force
         }
 
