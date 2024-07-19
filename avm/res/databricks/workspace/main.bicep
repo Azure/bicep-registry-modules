@@ -100,9 +100,8 @@ param requiredNsgRules string = 'AllRules'
 @allowed([
   'Enabled'
   'Disabled'
-  ''
 ])
-param privateStorageAccount string = ''
+param privateStorageAccount string = 'Disabled'
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
