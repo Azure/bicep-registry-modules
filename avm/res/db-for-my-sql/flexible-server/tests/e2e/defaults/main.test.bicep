@@ -53,14 +53,10 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
-      maintenanceWindow: {
-        customWindow: 'Enabled'
-        dayOfWeek: 0
-        startHour: 0
-        startMinute: 0
-      }
       skuName: 'Standard_D2ds_v4'
       tier: 'GeneralPurpose'
+      geoRedundantBackup: 'Disabled'
+      highAvailability: 'Disabled'
     }
   }
 ]
