@@ -1370,11 +1370,10 @@ Determines wether the managed storage account should be private or public. For s
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]

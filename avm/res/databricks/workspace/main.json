@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8090736035505973558"
+      "templateHash": "312949535422928716"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -666,11 +666,10 @@
     },
     "privateStorageAccount": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "Disabled",
       "allowedValues": [
         "Enabled",
-        "Disabled",
-        ""
+        "Disabled"
       ],
       "metadata": {
         "description": "Optional. Determines wether the managed storage account should be private or public. For security reasons, it is recommended Enabled this."
