@@ -47,7 +47,7 @@ function Set-ModuleFileAndFolderSetup {
 
     if ([String]::IsNullOrEmpty($CurrentLevelFolderPath)) {
         # Extract path elements
-        $repoRoot, $moduleType, $resourceTypeIdentifier = $FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}' # .*/bicep-registry-modules, res|ptn, <provider>/<resourceType>
+        $repoRoot, $moduleType, $resourceTypeIdentifier = $FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn|utl)[\/|\\]{1}' # .*/bicep-registry-modules, res|ptn|utl, <provider>/<resourceType>
 
         # Split resource type identifier into components
         $providerNamespace, $resourceType, $childResourceType = $resourceTypeIdentifier -split '[\/|\\]', 3 # <provider>, <resourceType>, <childResourceType>
@@ -57,7 +57,7 @@ function Set-ModuleFileAndFolderSetup {
     }
 
     # Collect data
-    $resourceTypeIdentifier = ($CurrentLevelFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+    $resourceTypeIdentifier = ($CurrentLevelFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn|utl)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
     $isTopLevel = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
 
     # Mandatory files

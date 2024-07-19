@@ -66,7 +66,7 @@ function Get-AvailableResourceLocation {
     . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-SpecsAlignedResourceName.ps1')
 
     # Configure Resource Type
-    $fullModuleIdentifier = ($ModuleRoot -split '[\/|\\]{0,1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/'
+    $fullModuleIdentifier = ($ModuleRoot -split '[\/|\\]{0,1}avm[\/|\\]{1}(res|ptn|utl)[\/|\\]{1}')[2] -replace '\\', '/'
     Write-Verbose "Full module identifier: $fullModuleIdentifier"
     $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $fullModuleIdentifier -Verbose
     Write-Verbose "Formatted resource type: $formattedResourceType"

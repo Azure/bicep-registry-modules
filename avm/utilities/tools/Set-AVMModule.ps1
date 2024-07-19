@@ -186,7 +186,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
-                $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+                $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
                 $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
                 ###############

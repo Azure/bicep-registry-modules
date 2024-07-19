@@ -15,7 +15,7 @@ Mandatory. The owning organization of the repository. For example, 'MyOrg'.
 Optional. The name of the repository. Defaults to 'bicep-registry-modules'.
 
 .PARAMETER IncludePattern
-Optional. A regex pattern to match against the workflow names. Defaults to 'avm\.(?:res|ptn)' - avm.res & avm.ptn.
+Optional. A regex pattern to match against the workflow names. Defaults to 'avm\.(?:res|ptn|utl)' - avm.res & avm.ptn.
 
 .PARAMETER ExlcudePattern
 Optional. A regex pattern that should not match against the workflow names. Defaults to '^$' - empty.
@@ -58,7 +58,7 @@ function Switch-WorkflowState {
         [string] $RepositoryName = 'bicep-registry-modules',
 
         [Parameter(Mandatory = $false)]
-        [string] $IncludePattern = 'avm\.(?:res|ptn)',
+        [string] $IncludePattern = 'avm\.(?:res|ptn|utl)',
 
         [Parameter(Mandatory = $false)]
         [string] $ExlcudePattern = '^$',

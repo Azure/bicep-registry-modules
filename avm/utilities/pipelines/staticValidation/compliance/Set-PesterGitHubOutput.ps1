@@ -135,7 +135,7 @@ function Set-PesterGitHubOutput {
             $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
             $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
-            $errorFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+            $errorFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
             $errorTestFile = ('avm/{0}/{1}' -f $errorFileIdentifier[1], $errorFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
             $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
@@ -182,7 +182,7 @@ function Set-PesterGitHubOutput {
             $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
             $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
-            $testFileIdentifier = $passedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+            $testFileIdentifier = $passedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
             $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
             $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
@@ -230,7 +230,7 @@ function Set-PesterGitHubOutput {
             $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
 
             $testLine = $skippedTest.ScriptBlock.StartPosition.StartLine
-            $testFileIdentifier = $skippedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+            $testFileIdentifier = $skippedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
             $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
             $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
@@ -276,7 +276,7 @@ function Set-PesterGitHubOutput {
                 $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
                 $testLine = $test.ScriptBlock.StartPosition.StartLine
-                $testFileIdentifier = $test.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+                $testFileIdentifier = $test.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
                 $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
                 $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
