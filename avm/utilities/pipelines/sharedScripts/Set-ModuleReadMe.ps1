@@ -87,42 +87,48 @@ function Set-ResourceTypesSection {
         [string[]] $ResourceTypesToExclude = @('Microsoft.Resources/deployments')
     )
 
-    # Process content
-    $SectionContent = [System.Collections.ArrayList]@(
-        '| Resource Type | API Version |',
-        '| :-- | :-- |'
-    )
-
     $RelevantResourceTypeObjects = Get-NestedResourceList $TemplateFileContent | Where-Object {
         $_.type -notin $ResourceTypesToExclude -and $_
     } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object -Culture 'en-US' -Property 'Type'
 
-    $ProgressPreference = 'SilentlyContinue'
-    $VerbosePreference = 'SilentlyContinue'
-    foreach ($resourceTypeObject in $RelevantResourceTypeObjects) {
-        $ProviderNamespace, $ResourceType = $resourceTypeObject.Type -split '/', 2
-        # Validate if Reference URL is working
-        $TemplatesBaseUrl = 'https://learn.microsoft.com/en-us/azure/templates'
+    if (-not $RelevantResourceTypeObjects) {
+        # no resource types in the template
+        $SectionContent = '_None_'
+    } else {
+        # Process content
+        $SectionContent = [System.Collections.ArrayList]@(
+            '| Resource Type | API Version |',
+            '| :-- | :-- |'
+        )
 
-        $ResourceReferenceUrl = '{0}/{1}/{2}/{3}' -f $TemplatesBaseUrl, $ProviderNamespace, $resourceTypeObject.ApiVersion, $ResourceType
-        if (-not (Test-Url $ResourceReferenceUrl)) {
-            # Validate if Reference URL is working using the latest documented API version (with no API version in the URL)
-            $ResourceReferenceUrl = '{0}/{1}/{2}' -f $TemplatesBaseUrl, $ProviderNamespace, $ResourceType
-        }
-        if (-not (Test-Url $ResourceReferenceUrl)) {
-            # Check if the resource is a child resource
-            if ($ResourceType.Split('/').length -gt 1) {
-                $ResourceReferenceUrl = '{0}/{1}/{2}' -f $TemplatesBaseUrl, $ProviderNamespace, $ResourceType.Split('/')[0]
-            } else {
-                # Use the default Templates URL (Last resort)
-                $ResourceReferenceUrl = '{0}' -f $TemplatesBaseUrl
+        $ProgressPreference = 'SilentlyContinue'
+        $VerbosePreference = 'SilentlyContinue'
+
+        foreach ($resourceTypeObject in $RelevantResourceTypeObjects) {
+            $ProviderNamespace, $ResourceType = $resourceTypeObject.Type -split '/', 2
+            # Validate if Reference URL is working
+            $TemplatesBaseUrl = 'https://learn.microsoft.com/en-us/azure/templates'
+
+            $ResourceReferenceUrl = '{0}/{1}/{2}/{3}' -f $TemplatesBaseUrl, $ProviderNamespace, $resourceTypeObject.ApiVersion, $ResourceType
+            if (-not (Test-Url $ResourceReferenceUrl)) {
+                # Validate if Reference URL is working using the latest documented API version (with no API version in the URL)
+                $ResourceReferenceUrl = '{0}/{1}/{2}' -f $TemplatesBaseUrl, $ProviderNamespace, $ResourceType
             }
-        }
+            if (-not (Test-Url $ResourceReferenceUrl)) {
+                # Check if the resource is a child resource
+                if ($ResourceType.Split('/').length -gt 1) {
+                    $ResourceReferenceUrl = '{0}/{1}/{2}' -f $TemplatesBaseUrl, $ProviderNamespace, $ResourceType.Split('/')[0]
+                } else {
+                    # Use the default Templates URL (Last resort)
+                    $ResourceReferenceUrl = '{0}' -f $TemplatesBaseUrl
+                }
+            }
 
-        $SectionContent += ('| `{0}` | [{1}]({2}) |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl)
+            $SectionContent += ('| `{0}` | [{1}]({2}) |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl)
+        }
+        $ProgressPreference = 'Continue'
+        $VerbosePreference = 'Continue'
     }
-    $ProgressPreference = 'Continue'
-    $VerbosePreference = 'Continue'
 
     # Build result
     if ($PSCmdlet.ShouldProcess('Original file with new resource type content', 'Merge')) {
@@ -244,7 +250,7 @@ function Set-DefinitionSection {
 
     if (-not $Properties -and -not $TemplateFileContent.parameters) {
         # no Parameters / properties on this level or in the template
-        return ''
+        return '_None_'
     } elseif (-not $Properties) {
 
         # Top-level invocation
@@ -531,7 +537,10 @@ function Set-OutputsSection {
     )
 
     # Process content
-    if ($TemplateFileContent.outputs.Values.metadata) {
+    if (-not $Properties -and -not $TemplateFileContent.outputs) {
+        # no outputs in the template
+        $SectionContent = '_None_'
+    } elseif ($TemplateFileContent.outputs.Values.metadata) {
         # Template has output descriptions
         $SectionContent = [System.Collections.ArrayList]@(
             '| Output | Type | Description |',

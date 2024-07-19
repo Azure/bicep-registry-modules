@@ -13,8 +13,7 @@ This module provides you with several functions you can import into your templat
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
+_None_
 
 ## Usage examples
 
@@ -51,12 +50,11 @@ output portal string = getPortalUrl('AzureCloud')
 
 ## Parameters
 
-
+_None_
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+_None_
 
 ## Cross-referenced modules
 
