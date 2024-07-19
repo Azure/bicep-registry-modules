@@ -24,6 +24,7 @@ Function Get-AvmCsvData {
     # CSV file URLs
     $BicepResourceUrl = 'https://aka.ms/avm/index/bicep/res/csv'
     $BicepPatternUrl = 'https://aka.ms/avm/index/bicep/ptn/csv'
+    $BicepUtilitiesUrl = 'https://aka.ms/avm/index/bicep/utl/csv'
 
     # Retrieve the CSV file
     switch ($ModuleIndex) {
@@ -37,6 +38,13 @@ Function Get-AvmCsvData {
         'Bicep-Pattern' {
             try {
                 $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
+            } catch {
+                throw 'Unable to retrieve CSV file - Check network connection.'
+            }
+        }
+        'Bicep-Utilities' {
+            try {
+                $unfilteredCSV = Invoke-WebRequest -Uri $BicepUtilitiesUrl
             } catch {
                 throw 'Unable to retrieve CSV file - Check network connection.'
             }

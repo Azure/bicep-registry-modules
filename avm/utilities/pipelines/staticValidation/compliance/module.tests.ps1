@@ -22,6 +22,7 @@ $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-0
 $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
 $script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
 $script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
+$script:telemetryUtlCsvLink = 'https://aka.ms/avm/index/bicep/utl/csv'
 $script:moduleFolderPaths = $moduleFolderPaths
 
 # Shared exception messages
@@ -106,7 +107,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
 
             # Use correct telemetry link based on file path
-            $telemetryCsvLink = $moduleFolderPath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+            switch ($moduleFolderPath) {
+                { $PSItem -match '[\\|\/]res[\\|\/]' } { $telemetryCsvLink = $telemetryResCsvLink }
+                { $PSItem -match '[\\|\/]ptn[\\|\/]' } { $telemetryCsvLink = $telemetryPtnCsvLink }
+                { $PSItem -match '[\\|\/]utl[\\|\/]' } { $telemetryCsvLink = $telemetryUtlCsvLink }
+                Default {}
+            }
 
             # Fetch CSV
             # =========
@@ -904,7 +910,12 @@ Describe 'Module tests' -Tag 'Module' {
                 )
 
                 # Use correct telemetry link based on file path
-                $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+                switch ($moduleFolderPath) {
+                    { $PSItem -match '[\\|\/]res[\\|\/]' } { $telemetryCsvLink = $telemetryResCsvLink }
+                    { $PSItem -match '[\\|\/]ptn[\\|\/]' } { $telemetryCsvLink = $telemetryPtnCsvLink }
+                    { $PSItem -match '[\\|\/]utl[\\|\/]' } { $telemetryCsvLink = $telemetryUtlCsvLink }
+                    Default {}
+                }
 
                 # Fetch CSV
                 # =========
