@@ -23,8 +23,6 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-var localSettings = loadJsonContent('../local.settings.json') // For tenant based settings like the 'AzureDatabricks' Enterprise Application Object Id.
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -49,7 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
-    databricksApplicationObjectId: localSettings.databricksApplicationObjectId // Tenant-specific 'AzureDatabricks' Enterprise Application Object Id
+    databricksApplicationObjectId: 'bdc0d304-6a1d-4b83-a6f8-094e8f6f0e89' // Tenant-specific 'AzureDatabricks' Enterprise Application Object Id
     keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
