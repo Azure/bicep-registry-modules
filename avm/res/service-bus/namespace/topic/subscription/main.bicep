@@ -50,6 +50,9 @@ param maxDeliveryCount int = 10
 @description('Optional. A value that indicates whether the subscription supports the concept of session.')
 param requiresSession bool = false
 
+@description('Optional. The subscription rules')
+param rules array = []
+
 @description('Optional. Enumerates the possible values for the status of a messaging entity.')
 @allowed([
   'Active'
@@ -92,6 +95,16 @@ resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021
     status: status
   }
 }
+
+module subscription_rule 'rule/main.bicep' = [
+  for (rule, index) in (rules ?? []): {
+    name: '${deployment().name}-rule-${index}'
+    params: {
+      name: rule.name
+      subscriptionName: subscription.name
+    }
+  }
+]
 
 @description('The name of the topic subscription.')
 output name string = subscription.name

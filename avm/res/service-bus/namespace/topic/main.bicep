@@ -196,6 +196,7 @@ module topic_subscription 'subscription/main.bicep' = [
       lockDuration: subscription.?lockDuration ?? 'PT1M'
       maxDeliveryCount: subscription.?maxDeliveryCount ?? 10
       requiresSession: subscription.?requiresSession ?? false
+      rules: subscription.?rules
       status: subscription.?status ?? 'Active'
     }
   }
