@@ -4,3 +4,5 @@ moduleIndex.json
 last-moduleIndex.json
 generated-moduleIndex.json
 .DS_Store
+
+local.settings.json
