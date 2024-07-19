@@ -156,6 +156,12 @@ param primaryAgentPoolProfile array
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType
 
+@description('Optional. Whether or not to use AKS Automatic mode.')
+param automatic bool = false
+
+@description('Optional. Maintenance window for the maintenance configuration.')
+param maintenanceWindow object = {}
+
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
 param costAnalysisEnabled bool = false
 
@@ -750,6 +756,15 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     supportPlan: supportPlan
+  }
+}
+
+module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (automatic) {
+  name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
+  params: {
+    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
+    maintenanceWindow: maintenanceWindow
+    managedClusterName: managedCluster.name
   }
 }
 

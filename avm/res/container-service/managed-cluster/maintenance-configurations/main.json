@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.27.1.19265",
+      "templateHash": "18344615743873477382"
+    },
+    "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "maintenanceWindow": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. Maintenance window for the maintenance configuration."
+      }
+    },
+    "managedClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the maintenance configuration."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+      "apiVersion": "2023-10-01",
+      "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
+      "properties": {
+        "maintenanceWindow": "[parameters('maintenanceWindow')]"
+      }
+    }
+  ]
+}
