@@ -108,6 +108,11 @@ function Set-ModuleFileAndFolderSetup {
         # Defaults test file
         # -----------------
         $testCasesPath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e'
+
+        if (Test-Path $testCasesPath -eq $false) {
+            $null = New-Item -Path $testCasesPath -ItemType 'Directory' -Force
+        }
+
         $currentTestFolders = Get-ChildItem -Path $testCasesPath -Directory | ForEach-Object { $_.Name }
 
         if (($currentTestFolders -match '.*defaults').count -eq 0) {
