@@ -56,8 +56,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    geoRedundantBackup: 'Disabled'
-    highAvailability: 'Disabled'
     location: '<location>'
   }
 }
@@ -91,12 +89,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
-    },
-    "geoRedundantBackup": {
-      "value": "Disabled"
-    },
-    "highAvailability": {
-      "value": "Disabled"
     },
     "location": {
       "value": "<location>"

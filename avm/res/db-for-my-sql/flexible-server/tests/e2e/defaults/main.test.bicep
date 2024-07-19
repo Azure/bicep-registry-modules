@@ -55,8 +55,6 @@ module testDeployment '../../../main.bicep' = [
       administratorLoginPassword: password
       skuName: 'Standard_D2ds_v4'
       tier: 'GeneralPurpose'
-      geoRedundantBackup: 'Disabled'
-      highAvailability: 'Disabled'
     }
   }
 ]
