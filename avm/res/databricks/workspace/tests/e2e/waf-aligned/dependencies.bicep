@@ -359,6 +359,22 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
+resource blobStoragePrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.blob.${environment().suffixes.storage}'
+  location: 'global'
+
+  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+    name: '${virtualNetwork.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork.id
+      }
+      registrationEnabled: false
+    }
+  }
+}
+
 @description('The resource ID of the created Virtual Network Default Subnet.')
 output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -373,6 +389,9 @@ output virtualNetworkResourceId string = virtualNetwork.id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The resource ID of the created Private DNS Zone.')
+output blobStoragePrivateDNSZoneResourceId string = blobStoragePrivateDNSZone.id
 
 @description('The resource ID of the created Azure Machine Learning Workspace.')
 output machineLearningWorkspaceResourceId string = machineLearningWorkspace.id

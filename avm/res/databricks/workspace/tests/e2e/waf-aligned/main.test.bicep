@@ -147,6 +147,20 @@ module testDeployment '../../../main.bicep' = [
       managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
+      privateStorageAccount: 'Enabled'
+      storageAccountPrivateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.blobStoragePrivateDNSZoneResourceId
+          ]
+          service: 'blob'
+          subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
+          tags: {
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+      ]
     }
     dependsOn: [
       nestedDependencies
