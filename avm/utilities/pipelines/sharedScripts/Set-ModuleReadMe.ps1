@@ -537,7 +537,7 @@ function Set-OutputsSection {
     )
 
     # Process content
-    if (-not $Properties -and -not $TemplateFileContent.outputs) {
+    if (-not $TemplateFileContent.outputs) {
         # no outputs in the template
         $SectionContent = '_None_'
     } elseif ($TemplateFileContent.outputs.Values.metadata) {
@@ -564,6 +564,76 @@ function Set-OutputsSection {
 
     # Build result
     if ($PSCmdlet.ShouldProcess('Original file with new output content', 'Merge')) {
+        $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
+    }
+    return $updatedFileContent
+}
+
+<#
+.SYNOPSIS
+Update the 'functions' section of the given readme file
+
+.DESCRIPTION
+Update the 'functions' section of the given readme file
+
+.PARAMETER TemplateFileContent
+Mandatory. The template file content object to crawl data from
+
+.PARAMETER ReadMeFileContent
+Mandatory. The readme file content array to update
+
+.PARAMETER SectionStartIdentifier
+Optional. The identifier of the 'functions' section. Defaults to '## Functions'
+
+.EXAMPLE
+Set-FunctionsSection -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
+
+Update the given readme file's 'Functions' section based on the given template file content
+#>
+function Set-FunctionsSection {
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory)]
+        [hashtable] $TemplateFileContent,
+
+        [Parameter(Mandatory)]
+        [object[]] $ReadMeFileContent,
+
+        [Parameter(Mandatory = $false)]
+        [string] $SectionStartIdentifier = '## Functions'
+    )
+
+    # Process content
+    $noFunctions = -not $TemplateFileContent.functions
+    $noExportedFunctions = $templateFileContent.functions.members.Values.metadata.'__bicep_export!' -notcontains 'True'
+
+    if ($noFunctions -or $noExportedFunctions) {
+        # no exported/available functions in the template
+        $SectionContent = '_None_'
+    } elseif ($TemplateFileContent.functions.members.Values.metadata) {
+        # Template has function descriptions
+        $SectionContent = [System.Collections.ArrayList]@(
+            '| Function | Description |',
+            '| :-- | :-- |'
+        )
+        foreach ($functionName in ($templateFileContent.functions.members.Keys | Sort-Object -Culture 'en-US')) {
+            $function = $TemplateFileContent.functions.members[$functionName]
+            $description = $function.metadata.description.Replace("`r`n", '<p>').Replace("`n", '<p>')
+            $SectionContent += ("| ``{0}`` | {1} |" -f $functionName, $description)
+        }
+    } else {
+        $SectionContent = [System.Collections.ArrayList]@(
+            '| Function | Description |',
+            '| :-- | :-- |'
+        )
+        foreach ($functionName in ($templateFileContent.functions.members.Keys | Sort-Object -Culture 'en-US')) {
+            $SectionContent += ("| ``{0}`` |" -f $functionName)
+        }
+    }
+
+    # Build result
+    if ($PSCmdlet.ShouldProcess('Original file with new functions content', 'Merge')) {
         $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
     }
     return $updatedFileContent
@@ -1740,9 +1810,7 @@ function Initialize-ReadMe {
         '',
         '## Outputs',
         '',
-        '## Cross-referenced modules',
-        '',
-        '## Notes'
+        '## Cross-referenced modules'
     ) | Where-Object { $null -ne $_ } # Filter null values
     $readMeFileContent = $initialContent
 
@@ -1766,7 +1834,6 @@ Optional. The path to the readme to update. If not provided assumes a 'README.md
 
 .PARAMETER SectionsToRefresh
 Optional. The sections to update. By default it refreshes all that are supported.
-Currently supports: 'Resource Types', 'Parameters', 'Outputs', 'Template references'
 
 .PARAMETER PreLoadedContent
 Optional. Pre-Loaded content. May be used to reuse the same data for multiple invocations. For example:
@@ -1820,6 +1887,7 @@ function Set-ModuleReadMe {
             'Resource Types',
             'Usage examples',
             'Parameters',
+            'Functions',
             'Outputs',
             'CrossReferences',
             'Template references',
@@ -1830,6 +1898,7 @@ function Set-ModuleReadMe {
             'Resource Types',
             'Usage examples',
             'Parameters',
+            'Functions',
             'Outputs',
             'CrossReferences',
             'Template references',
@@ -1889,7 +1958,11 @@ function Set-ModuleReadMe {
     if ($match = $readMeFileContent | Select-String -Pattern '## Notes') {
         $startIndex = $match.LineNumber
 
-        $endIndex = $startIndex + 1
+        if ($readMeFileContent[($startIndex + 1)] -notlike '## *') {
+            $endIndex = $startIndex + 1
+        } else {
+            $endIndex = $startIndex
+        }
 
         while (-not (($endIndex + 1) -gt $readMeFileContent.count) -and $readMeFileContent[($endIndex + 1)] -notlike '## *') {
             $endIndex++
@@ -1943,6 +2016,16 @@ function Set-ModuleReadMe {
             currentFolderPath   = (Split-Path $TemplateFilePath -Parent)
         }
         $readMeFileContent = Set-ParametersSection @inputObject
+    }
+
+    if ($SectionsToRefresh -contains 'Functions') {
+        # Handle [Functions] section
+        # ===========================
+        $inputObject = @{
+            ReadMeFileContent   = $readMeFileContent
+            TemplateFileContent = $templateFileContent
+        }
+        $readMeFileContent = Set-FunctionsSection @inputObject
     }
 
     if ($SectionsToRefresh -contains 'Outputs') {

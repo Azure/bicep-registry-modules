@@ -9,6 +9,7 @@ This module provides you with several functions you can import into your templat
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Functions](#Functions)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -59,6 +60,13 @@ _None_
 ## Cross-referenced modules
 
 _None_
+
+## Functions
+
+| Function | Description |
+| :-- | :-- |
+| `getGraphEndpoint` | Get the graph endpoint for the given environment |
+| `getPortalUrl` | Get the Portal URL for the given environment |
 
 ## Data Collection
 
