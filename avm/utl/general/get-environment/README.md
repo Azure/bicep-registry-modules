@@ -9,7 +9,7 @@ This module provides you with several functions you can import into your templat
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Functions](#Functions)
+- [Exported functions](#Exported-functions)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -61,7 +61,7 @@ _None_
 
 _None_
 
-## Functions
+## Exported functions
 
 | Function | Description |
 | :-- | :-- |
