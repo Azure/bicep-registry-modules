@@ -9,6 +9,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Exported functions](#Exported-functions)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -4253,6 +4254,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.2.4` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
+
+## Exported functions
+
+_None_
 
 ## Notes
 

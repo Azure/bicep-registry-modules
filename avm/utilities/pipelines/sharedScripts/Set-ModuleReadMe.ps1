@@ -601,7 +601,7 @@ function Set-FunctionsSection {
         [object[]] $ReadMeFileContent,
 
         [Parameter(Mandatory = $false)]
-        [string] $SectionStartIdentifier = '## Functions'
+        [string] $SectionStartIdentifier = '## Exported functions'
     )
 
     # Process content
@@ -1482,7 +1482,7 @@ function Set-UsageExamplesSection {
 
         $isModuleDeploymentRegex = "^module testDeployment '..\/.*main.bicep' = "
 
-        if (($rawContentArray | Out-String) -match $isModuleDeploymentRegex) {
+        if ($rawContentArray -match $isModuleDeploymentRegex) {
             # Classic module deployment
 
             # [1/6] Search for the relevant parameter start & end index
