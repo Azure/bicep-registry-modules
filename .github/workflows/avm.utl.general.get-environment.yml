@@ -29,13 +29,13 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.utl.general.get-environment.yml"
-      - "avm/ptn/general/get-environment/**"
+      - "avm/utl/general/get-environment/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/general/get-environment"
+  modulePath: "avm/utl/general/get-environment"
   workflowPath: ".github/workflows/avm.utl.general.get-environment.yml"
 
 concurrency:
