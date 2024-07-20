@@ -1,4 +1,4 @@
-# general `[General/GetEnvironment]`
+# General environment functions `[General/GetEnvironment]`
 
 This module provides you with several functions you can import into your template.
 

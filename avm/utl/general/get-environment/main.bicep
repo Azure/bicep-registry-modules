@@ -1,4 +1,4 @@
-metadata name = 'general'
+metadata name = 'General environment functions'
 metadata description = 'This module provides you with several functions you can import into your template.'
 metadata owner = 'Azure/module-maintainers'
 
