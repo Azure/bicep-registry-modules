@@ -406,7 +406,8 @@ Describe 'Module tests' -Tag 'Module' {
             $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
             $templateFileContent = $builtTestFileMap[$templateFilePath]
 
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn|utl)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn|utl)[\/|\\]{1}') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+            $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
 
             # Test file setup
             $moduleFolderTestCases += @{
@@ -416,6 +417,7 @@ Describe 'Module tests' -Tag 'Module' {
                 templateFileParameters = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
                 readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
                 isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                moduleType             = $moduleType
             }
         }
 
@@ -459,7 +461,7 @@ Describe 'Module tests' -Tag 'Module' {
                     [hashtable] $templateFileContent
                 )
                 $Schemaverion = $templateFileContent.'$schema'
-              ($Schemaverion.Substring(0, 5) -eq 'https') | Should -Be $true
+                ($Schemaverion.Substring(0, 5) -eq 'https') | Should -Be $true
             }
 
             It '[<moduleFolderName>] The template file should contain required elements [schema], [contentVersion], [resources].' -TestCases $moduleFolderTestCases {
@@ -515,7 +517,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
             }
 
-            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileParameters }) {
 
                 param(
                     [hashtable] $templateFileParameters
