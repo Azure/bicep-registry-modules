@@ -71,7 +71,7 @@ runs:
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
         subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
-        
+
     # [Set Deployment Location] task(s)
     # ---------------------------
     - name: "Get Resource Location"
