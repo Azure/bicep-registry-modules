@@ -20,6 +20,7 @@ This module deploys an Azure Container Registry (ACR).
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
@@ -36,7 +37,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using `scopeMaps` in parameter set](#example-4-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -456,7 +458,79 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Using `scopeMaps` in parameter set_
+
+This instance deploys the module with the scopeMaps feature.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'crrs001'
+    // Non-required parameters
+    acrSku: 'Standard'
+    location: '<location>'
+    scopeMaps: [
+      {
+        actions: [
+          'repositories/*/content/read'
+        ]
+        description: 'This is a test for scopeMaps feature.'
+        name: 'testscopemap'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrs001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "scopeMaps": {
+      "value": [
+        {
+          "actions": [
+            "repositories/*/content/read"
+          ],
+          "description": "This is a test for scopeMaps feature.",
+          "name": "testscopemap"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -634,6 +708,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 | [`retentionPolicyDays`](#parameter-retentionpolicydays) | int | The number of days to retain an untagged manifest after which it gets purged. |
 | [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`scopeMaps`](#parameter-scopemaps) | array | Scope maps setting. |
 | [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
 | [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1527,6 +1602,47 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `scopeMaps`
+
+Scope maps setting.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-scopemapsactions) | array | The list of scoped permissions for registry artifacts. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-scopemapsdescription) | string | The user friendly description of the scope map. |
+| [`name`](#parameter-scopemapsname) | string | The name of the scope map. |
+
+### Parameter: `scopeMaps.actions`
+
+The list of scoped permissions for registry artifacts.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `scopeMaps.description`
+
+The user friendly description of the scope map.
+
+- Required: No
+- Type: string
+
+### Parameter: `scopeMaps.name`
+
+The name of the scope map.
+
+- Required: No
+- Type: string
 
 ### Parameter: `softDeletePolicyDays`
 
