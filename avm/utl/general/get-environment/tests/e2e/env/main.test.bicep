@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'General'
+metadata description = 'This example deploys all available exported functions of the given module.'
+
 // ============== //
 // Test Execution //
 // ============== //

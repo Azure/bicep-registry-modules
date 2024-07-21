@@ -24,9 +24,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/utl/general/get-environment:<version>`.
 
-- [Env](#example-1-env)
+- [General](#example-1-general)
 
-### Example 1: _Env_
+### Example 1: _General_
+
+This example deploys all available exported functions of the given module.
+
 
 <details>
 
@@ -34,6 +37,9 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 targetScope = 'subscription'
+
+metadata name = 'General'
+metadata description = 'This example deploys all available exported functions of the given module.'
 
 // ============== //
 // Test Execution //
