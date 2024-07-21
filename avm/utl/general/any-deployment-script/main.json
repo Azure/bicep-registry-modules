@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.45.22436",
+      "templateHash": "8882871429967928552"
+    },
+    "name": "Any example deployment script utility",
+    "description": "This module provides you with whatever deployment script experience.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "storageDeploymentScriptName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the deployment script."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location to deploy into."
+      }
+    },
+    "managedIdentityResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource Id of the managed identity to use for the deployment script."
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": "Write-Host 'Oh Stanley'\n"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[parameters('storageDeploymentScriptName')]",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', parameters('managedIdentityResourceId'))]": {}
+        }
+      },
+      "properties": {
+        "azPowerShellVersion": "9.7",
+        "retentionInterval": "P1D",
+        "scriptContent": "[variables('$fxv#0')]",
+        "timeout": "PT30M",
+        "cleanupPreference": "Always"
+      }
+    }
+  ]
+}
