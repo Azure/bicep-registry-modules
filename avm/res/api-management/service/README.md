@@ -49,7 +49,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-2-using-only-defaults)
 - [Deploying a Developer SKU](#example-3-deploying-a-developer-sku)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Deploying an APIM v2 sku.](#example-5-deploying-an-apim-v2-sku)
+- [Deploying an APIM v2 sku](#example-5-deploying-an-apim-v2-sku)
 - [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Deploying a Consumption SKU_
@@ -71,9 +71,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
     sku: 'Consumption'
   }
 }
@@ -105,11 +102,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
     "sku": {
       "value": "Consumption"
     }
@@ -139,9 +131,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -177,11 +166,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -215,9 +199,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
     sku: 'Developer'
   }
 }
@@ -248,11 +229,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     },
     "sku": {
       "value": "Developer"
@@ -756,7 +732,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 5: _Deploying an APIM v2 sku._
+### Example 5: _Deploying an APIM v2 sku_
 
 This instance deploys the module using a v2 SKU.
 
@@ -775,9 +751,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
     sku: 'BasicV2'
   }
 }
@@ -808,11 +781,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     },
     "sku": {
       "value": "BasicV2"
@@ -952,7 +920,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -1178,7 +1146,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -1307,7 +1275,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`loggers`](#parameter-loggers) | array | Loggers. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Will default to "SystemAssigned" if not set. |
 | [`minApiVersion`](#parameter-minapiversion) | string | Limit control plane API calls to API Management service with version equal to or newer than this value. |
 | [`namedValues`](#parameter-namedvalues) | array | Named values. |
 | [`newGuidValue`](#parameter-newguidvalue) | string | Necessary to create a new GUID. |
@@ -1678,7 +1646,7 @@ Loggers.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource.
+The managed identity definition for this resource. Will default to "SystemAssigned" if not set.
 
 - Required: No
 - Type: object
@@ -1687,8 +1655,16 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`disabled`](#parameter-managedidentitiesdisabled) | bool | Fully disables mmanaged identities. This will override any other managed identity settings. |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
 | [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.disabled`
+
+Fully disables mmanaged identities. This will override any other managed identity settings.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `managedIdentities.systemAssigned`
 

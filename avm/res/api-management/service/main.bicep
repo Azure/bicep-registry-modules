@@ -36,7 +36,7 @@ param enableClientCertificate bool = false
 @description('Optional. Custom hostname configuration of the API Management service.')
 param hostnameConfigurations array = []
 
-@description('Optional. The managed identity definition for this resource.')
+@description('Optional. The managed identity definition for this resource. Will default to "SystemAssigned" if not set.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Location for all Resources.')
@@ -152,14 +152,24 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) && managedIdentities.?disabled == true
   ? {
-      type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+      type: 'None'
+      userAssignedIdentities: null
     }
-  : null
+  : !empty(managedIdentities) && managedIdentities.?disabled == false
+      ? {
+          type: (managedIdentities.?systemAssigned ?? false)
+            ? (!empty(managedIdentities.?userAssignedResourceIds ?? {})
+                ? 'SystemAssigned,UserAssigned'
+                : 'SystemAssigned')
+            : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+          userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+        }
+      : {
+          type: 'SystemAssigned'
+          userAssignedIdentities: null
+        }
 
 var builtInRoleNames = {
   'API Management Developer Portal Content Editor': subscriptionResourceId(
@@ -596,6 +606,9 @@ type managedIdentitiesType = {
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
+
+  @description('Optional. Fully disables mmanaged identities. This will override any other managed identity settings.')
+  disabled: bool?
 }?
 
 type lockType = {

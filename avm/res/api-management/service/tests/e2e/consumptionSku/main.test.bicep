@@ -46,9 +46,6 @@ module testDeployment '../../../main.bicep' = [
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
       sku: 'Consumption'
-      managedIdentities: {
-        systemAssigned: true
-      }
     }
   }
 ]
