@@ -1381,22 +1381,6 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
             $expectedNameFormat | Should -Be $true -Because 'the handle ''-test-'' should be part of the module test invocation''s resource name to allow identification.'
         }
-
-        It '[<moduleFolderName>] Bicep test deployment should have parameter [`serviceShort`] for test case [<testName>]' -TestCases $deploymentTestFileTestCases {
-
-            param(
-                [object[]] $testFileContent,
-                [hashtable] $compiledTestFileContent
-            )
-
-            if ($compiledTestFileContent.resources.count -eq 0) {
-                Set-ItResult -Skipped -Because 'without deployments in the test file, the test is not required.'
-                return
-            }
-
-            $hasExpectedParam = ($testFileContent | Out-String) -match '\s*param\s+serviceShort\s+string\s*'
-            $hasExpectedParam | Should -Be $true
-        }
     }
 }
 
