@@ -100,7 +100,10 @@ function Remove-Deployment {
             if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
                 $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
             }
-            $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
+
+            # In case the function also returns an error, we'll throw a corresponding exception at the end of this script (see below)
+            $resolveResult = Get-DeploymentTargetResourceList @deploymentsInputObject
+            $deployedTargetResources += $resolveResult.resourcesToRemove
 
             if ($deployedTargetResources.Count -eq 0) {
                 Write-Verbose 'No resources to remove found.'
@@ -172,6 +175,11 @@ function Remove-Deployment {
             }
         } else {
             Write-Verbose 'Found [0] resources to remove'
+        }
+
+        # In case any deployment was not resolved as planned we finally want to throw an exception to make this visible in the pipeline
+        if ($resolveResult.resolveError) {
+            throw $resolveResult.resolveError
         }
     }
 

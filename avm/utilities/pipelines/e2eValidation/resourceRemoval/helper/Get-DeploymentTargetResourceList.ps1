@@ -251,26 +251,33 @@ function Get-DeploymentTargetResourceList {
             }
             try {
                 $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
-                Write-Verbose ('Found & resolved deployment [{0}]' -f $deploymentNameObject.Name) -Verbose
+                Write-Verbose ('Found & resolved deployment [{0}]. [{1}] resources found to remove.' -f $deploymentNameObject.Name, $targetResources.Count) -Verbose
                 $deploymentNameObject.Resolved = $true
                 $resourcesToRemove += $targetResources
-
-                # Break check
-                if ($deploymentNameObjects.Resolved -notcontains $false) {
-                    break
-                }
             } catch {
                 $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
                 Write-Verbose ('No deployment found by name(s) [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f ($remainingDeploymentNames -join ', '), $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
-                Start-Sleep $searchRetryInterval
+                # Start-Sleep $searchRetryInterval
                 $searchRetryCount++
             }
         }
+
+        # Break check
+        if ($deploymentNameObjects.Resolved -notcontains $false) {
+            break
+        }
     } while ($searchRetryCount -le $searchRetryLimit)
 
-    if (-not $resourcesToRemove -and $searchRetryCount -eq $searchRetryLimit) {
-        throw ('No deployment for the deployment name(s) [{0}] found' -f $name)
-    }
+    if ($searchRetryCount -gt $searchRetryLimit) {
+        $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
 
-    return $resourcesToRemove
-}
+        # We don't want to outright throw an exception as we want to remove as many resources as possible before failing the script in the calling functino
+        return @{
+            resolveError      = ('No deployment for the deployment name(s) [{0}] found' -f ($remainingDeploymentNames -join ', '))
+            resourcesToRemove = $resourcesToRemove
+        }
+
+        return @{
+            resourcesToRemove = $resourcesToRemove
+        }
+    }
