@@ -104,11 +104,6 @@ function Remove-Deployment {
             # In case the function also returns an error, we'll throw a corresponding exception at the end of this script (see below)
             $resolveResult = Get-DeploymentTargetResourceList @deploymentsInputObject
             $deployedTargetResources += $resolveResult.resourcesToRemove
-
-            if ($deployedTargetResources.resourcesToRemove.Count -eq 0) {
-                Write-Verbose 'No resources to remove found.'
-                return
-            }
         }
 
         [array] $deployedTargetResources = $deployedTargetResources | Select-Object -Unique
@@ -124,10 +119,6 @@ function Remove-Deployment {
         # ============
         [array] $resourcesToRemove = Get-ResourceIdsAsFormattedObjectList -ResourceIds $rawTargetResourceIdsToRemove
         Write-Verbose ('Total number of deployment target resources after formatting items [{0}]' -f $resourcesToRemove.Count) -Verbose
-
-        if ($resourcesToRemove.Count -eq 0) {
-            return
-        }
 
         # Filter resources
         # ================
@@ -179,7 +170,7 @@ function Remove-Deployment {
 
         # In case any deployment was not resolved as planned we finally want to throw an exception to make this visible in the pipeline
         if ($resolveResult.resolveError) {
-            throw $resolveResult.resolveError
+            throw ('The following error was thrown while resolving the original deployment names: [{0}]' -f $resolveResult.resolveError)
         }
     }
 
