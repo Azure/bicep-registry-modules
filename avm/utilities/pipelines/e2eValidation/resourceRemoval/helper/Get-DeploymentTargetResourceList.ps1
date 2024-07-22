@@ -66,7 +66,11 @@ function Get-DeploymentTargetResourceListInner {
     switch ($Scope) {
         'resourcegroup' {
             if (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue') {
-                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+                if ($op = Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName) {
+                    [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+                } else {
+                    throw 'NoDeploymentFound'
+                }
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
@@ -75,15 +79,25 @@ function Get-DeploymentTargetResourceListInner {
             break
         }
         'subscription' {
-            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            if ($op = Get-AzDeploymentOperation -DeploymentName $name) {
+                [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            } else {
+                throw 'NoDeploymentFound'
+            }
             break
         }
         'managementgroup' {
-            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
-            break
+            if ($op = Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId) {
+                [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            }
+            throw 'NoDeploymentFound'
         }
         'tenant' {
-            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            if ($op = Get-AzTenantDeploymentOperation -DeploymentName $name) {
+                [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            } else {
+                throw 'NoDeploymentFound'
+            }
             break
         }
     }
@@ -219,18 +233,17 @@ function Get-DeploymentTargetResourceList {
         if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
             $innerInputObject['ManagementGroupId'] = $ManagementGroupId
         }
-        [array]$targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
-        if ($targetResources) {
-            break
+        try {
+            return Get-DeploymentTargetResourceListInner @innerInputObject
+        } catch {
+            Write-Verbose ('No deployment found by name [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f $name, $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
+            Start-Sleep $searchRetryInterval
+            $searchRetryCount++
         }
-        Write-Verbose ('No deployment found by name [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f $name, $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
-        Start-Sleep $searchRetryInterval
-        $searchRetryCount++
     } while ($searchRetryCount -le $searchRetryLimit)
 
     if (-not $targetResources) {
-        Write-Warning "No deployment target resources found for [$name]"
-        return @()
+        throw ('No deployment for the deployment name(s) [{0}] found' -f $name)
     }
 
     return $targetResources

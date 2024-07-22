@@ -176,6 +176,8 @@ var builtInRoleNames = {
   )
 }
 
+module test 'br/public:avm/res/compute/virtual-machine:0.5.3'
+
 // ============== //
 // Resources      //
 // ============== //

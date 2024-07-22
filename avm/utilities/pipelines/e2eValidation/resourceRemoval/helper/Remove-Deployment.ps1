@@ -106,7 +106,8 @@ function Remove-Deployment {
             }
 
             if ($deployedTargetResources.Count -eq 0) {
-                throw 'No deployment target resources found.'
+                Write-Verbose 'No resources to remove found.'
+                return
             }
         }
 
