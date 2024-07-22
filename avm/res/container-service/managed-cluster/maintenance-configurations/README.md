@@ -55,8 +55,11 @@ The name of the parent managed cluster. Required if the template is used in a st
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `name` | string | The name of the maintenance configuration. |
+| `resourceGroupName` | string | The resource group the agent pool was deployed into. |
+| `resourceId` | string | The resource ID of the maintenance configuration. |
 
 ## Cross-referenced modules
 

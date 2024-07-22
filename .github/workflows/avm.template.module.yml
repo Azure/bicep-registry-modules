@@ -25,6 +25,9 @@ env:
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
+  AZURE_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+  AZURE_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+  AZURE_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
 
 jobs:
   #########################

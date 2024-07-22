@@ -32,13 +32,124 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-service/managed-cluster:<version>`.
 
-- [Using Azure CNI Network Plugin.](#example-1-using-azure-cni-network-plugin)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using Kubenet Network Plugin.](#example-3-using-kubenet-network-plugin)
-- [Using Private Cluster.](#example-4-using-private-cluster)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using only defaults and use AKS Automatic mode](#example-1-using-only-defaults-and-use-aks-automatic-mode)
+- [Using Azure CNI Network Plugin.](#example-2-using-azure-cni-network-plugin)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using Kubenet Network Plugin.](#example-4-using-kubenet-network-plugin)
+- [Using Private Cluster.](#example-5-using-private-cluster)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using Azure CNI Network Plugin._
+### Example 1: _Using only defaults and use AKS Automatic mode_
+
+This instance deploys the module with the set of automatic parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  name: 'managedClusterDeployment'
+  params: {
+    // Required parameters
+    name: 'csauto001'
+    primaryAgentPoolProfile: [
+      {
+        count: 3
+        mode: 'System'
+        name: 'systempool'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
+    // Non-required parameters
+    automatic: true
+    location: '<location>'
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        absoluteMonthly: '<absoluteMonthly>'
+        daily: '<daily>'
+        relativeMonthly: '<relativeMonthly>'
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-03'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csauto001"
+    },
+    "primaryAgentPoolProfile": {
+      "value": [
+        {
+          "count": 3,
+          "mode": "System",
+          "name": "systempool",
+          "vmSize": "Standard_DS2_v2"
+        }
+      ]
+    },
+    // Non-required parameters
+    "automatic": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "maintenanceWindow": {
+      "value": {
+        "durationHours": 4,
+        "schedule": {
+          "absoluteMonthly": "<absoluteMonthly>",
+          "daily": "<daily>",
+          "relativeMonthly": "<relativeMonthly>",
+          "weekly": {
+            "dayOfWeek": "Sunday",
+            "intervalWeeks": 1
+          }
+        },
+        "startDate": "2024-07-03",
+        "startTime": "00:00",
+        "utcOffset": "+00:00"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using Azure CNI Network Plugin._
 
 This instance deploys the module with Azure CNI network plugin .
 
@@ -538,7 +649,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -612,7 +723,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 3: _Using Kubenet Network Plugin._
+### Example 4: _Using Kubenet Network Plugin._
 
 This instance deploys the module with Kubenet network plugin .
 
@@ -884,7 +995,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 4: _Using Private Cluster._
+### Example 5: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
 
@@ -1102,7 +1213,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 

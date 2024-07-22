@@ -22,3 +22,12 @@ resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedCluste
     maintenanceWindow: maintenanceWindow
   }
 }
+
+@description('The name of the maintenance configuration.')
+output name string = aksManagedAutoUpgradeSchedule.name
+
+@description('The resource ID of the maintenance configuration.')
+output resourceId string = aksManagedAutoUpgradeSchedule.id
+
+@description('The resource group the agent pool was deployed into.')
+output resourceGroupName string = resourceGroup().name

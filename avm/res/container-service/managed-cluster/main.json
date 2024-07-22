@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "14986963864114287459"
+      "templateHash": "2000328037027470902"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1833,7 +1833,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "18344615743873477382"
+              "templateHash": "3745346013567294748"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -1868,7 +1868,30 @@
                 "maintenanceWindow": "[parameters('maintenanceWindow')]"
               }
             }
-          ]
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the maintenance configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the maintenance configuration."
+              },
+              "value": "[resourceId('Microsoft.ContainerService/managedClusters/maintenanceConfigurations', parameters('managedClusterName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the agent pool was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
         }
       },
       "dependsOn": [
