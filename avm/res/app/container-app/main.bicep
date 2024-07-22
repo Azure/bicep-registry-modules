@@ -215,7 +215,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         }
         traffic: [
           {
-            label: trafficLabel
+            label: ingressTransport == 'tcp' ? null : trafficLabel
             latestRevision: trafficLatestRevision
             revisionName: trafficRevisionName
             weight: trafficWeight
