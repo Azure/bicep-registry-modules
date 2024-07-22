@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "312949535422928716"
+      "templateHash": "17457608481119333171"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -666,7 +666,7 @@
     },
     "privateStorageAccount": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "nullable": true,
       "allowedValues": [
         "Enabled",
         "Disabled"
@@ -685,6 +685,13 @@
       "$ref": "#/definitions/privateEndpointType",
       "metadata": {
         "description": "Optional. Configuration details for private endpoints for the managed storage account. For security reasons, it is recommended to use private endpoints whenever possible."
+      }
+    },
+    "accessConnectorId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Required when privateStorageAccount is enabled"
       }
     }
   },
@@ -770,7 +777,8 @@
         "name": "[parameters('skuName')]"
       },
       "properties": {
-        "defaultStorageFirewall": "[parameters('privateStorageAccount')]",
+        "defaultStorageFirewall": "[coalesce(parameters('privateStorageAccount'), null())]",
+        "accessConnector": "[if(not(empty(parameters('accessConnectorId'))), createObject('id', parameters('accessConnectorId'), 'identityType', 'SystemAssigned'), null())]",
         "managedResourceGroupId": "[if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name')))]",
         "parameters": "[union(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",

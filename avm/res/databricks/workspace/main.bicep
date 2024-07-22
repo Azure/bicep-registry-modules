@@ -183,7 +183,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           id: accessConnectorId
           identityType: 'SystemAssigned'
         }
-      : {}
+      : null
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
       : '${subscription().id}/resourceGroups/rg-${name}-managed'

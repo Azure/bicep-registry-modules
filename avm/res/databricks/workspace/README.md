@@ -377,6 +377,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Required parameters
     name: 'dwwaf001'
     // Non-required parameters
+    accessConnectorId: '<accessConnectorId>'
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     customerManagedKey: {
       keyName: '<keyName>'
@@ -479,6 +480,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "dwwaf001"
     },
     // Non-required parameters
+    "accessConnectorId": {
+      "value": "<accessConnectorId>"
+    },
     "amlWorkspaceResourceId": {
       "value": "<amlWorkspaceResourceId>"
     },
@@ -630,6 +634,12 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Azure Databricks workspace to create. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessConnectorId`](#parameter-accessconnectorid) | string | Required when privateStorageAccount is enabled |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -670,6 +680,14 @@ The name of the Azure Databricks workspace to create.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `accessConnectorId`
+
+Required when privateStorageAccount is enabled
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `amlWorkspaceResourceId`
 
@@ -1370,7 +1388,6 @@ Determines wether the managed storage account should be private or public. For s
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
