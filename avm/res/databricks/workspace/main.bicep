@@ -169,6 +169,12 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing 
   }
 }
 
+var defaulStorageFirewallProperty = !empty(privateStorageAccount)
+  ? {
+      defaultStorageFirewall: privateStorageAccount
+    }
+  : {}
+
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
   location: location
@@ -176,8 +182,8 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   sku: {
     name: skuName
   }
-  properties: {
-    defaultStorageFirewall: privateStorageAccount ?? ''
+  // This union is required because the defaultStorageFirewall property is optional and cannot be null or ''
+  properties: union(defaulStorageFirewallProperty, {
     accessConnector: !empty(accessConnectorId)
       ? {
           id: accessConnectorId
@@ -312,7 +318,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           }
         }
       : null
-  }
+  })
 }
 
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
