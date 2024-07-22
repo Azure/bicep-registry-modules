@@ -762,7 +762,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
 module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (automatic) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
   params: {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
+    name: 'aksManagedAutoUpgradeSchedule'
     maintenanceWindow: maintenanceWindow
     managedClusterName: managedCluster.name
   }
