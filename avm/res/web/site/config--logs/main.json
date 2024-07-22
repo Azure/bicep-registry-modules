@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "10404897918297908598"
+      "version": "0.28.1.47646",
+      "templateHash": "2773573331570648620"
     },
     "name": "Site logs Config",
     "description": "This module deploys a Site logs Configuration.",

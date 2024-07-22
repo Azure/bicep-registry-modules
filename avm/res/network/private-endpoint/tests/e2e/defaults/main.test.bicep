@@ -57,16 +57,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      // Workaround for PSRule
-      lock: {}
-      roleAssignments: []
-      applicationSecurityGroupResourceIds: []
-      customNetworkInterfaceName: ''
-      privateDnsZoneGroupName: ''
-      ipConfigurations: []
-      customDnsConfigs: []
-      privateDnsZoneResourceIds: []
-      manualPrivateLinkServiceConnections: []
       privateLinkServiceConnections: [
         {
           name: '${namePrefix}${serviceShort}001'
@@ -78,7 +68,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      tags: {}
     }
   }
 ]
