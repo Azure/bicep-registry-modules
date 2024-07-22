@@ -194,14 +194,14 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
       ingress: {
         allowInsecure: ingressAllowInsecure
         customDomains: !empty(customDomains) ? customDomains : null
-        corsPolicy: {
-          allowCredentials: corsPolicy.?allowCredentials
+        corsPolicy: corsPolicy != null ? {
+          allowCredentials: corsPolicy.?allowCredentials ?? false
           allowedHeaders: corsPolicy.?allowedHeaders ?? []
           allowedMethods: corsPolicy.?allowedMethods ?? []
           allowedOrigins: corsPolicy.?allowedOrigins ?? []
           exposeHeaders: corsPolicy.?exposeHeaders ?? []
           maxAge: corsPolicy.?maxAge
-        }
+        } : null
         clientCertificateMode: clientCertificateMode
         exposedPort: exposedPort
         external: ingressExternal
