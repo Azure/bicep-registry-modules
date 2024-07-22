@@ -109,7 +109,7 @@ param privateEndpoints privateEndpointType
 @description('Optional. Configuration details for private endpoints for the managed storage account. For security reasons, it is recommended to use private endpoints whenever possible.')
 param storageAccountPrivateEndpoints privateEndpointType
 
-@description('Conditional. Required when privateStorageAccount is enabled')
+@description('Conditional. Required if privateStorageAccount is enabled')
 param accessConnectorId string = ''
 
 var builtInRoleNames = {
