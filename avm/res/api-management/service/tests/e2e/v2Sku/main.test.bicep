@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying an APIM v2 sku.'
+metadata name = 'Deploying an APIM v2 sku'
 metadata description = 'This instance deploys the module using a v2 SKU.'
 
 // ========== //
