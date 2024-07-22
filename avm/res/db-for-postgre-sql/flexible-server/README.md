@@ -37,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
 - [Private access](#example-3-private-access)
-- [Public access](#example-4-public-access)
+- [Public access with private endpoints](#example-4-public-access-with-private-endpoints)
 - [Public access](#example-5-public-access)
 - [WAF-aligned](#example-6-waf-aligned)
 
@@ -417,9 +417,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 </details>
 <p>
 
-### Example 4: _Public access_
+### Example 4: _Public access with private endpoints_
 
-This instance deploys the module with public access.
+This instance deploys the module with public access and private endpoints.
 
 
 <details>
@@ -432,68 +432,20 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     name: 'dfpsfspe001'
-    skuName: 'Standard_D2s_v3'
+    skuName: 'Standard_D2ds_v5'
     tier: 'GeneralPurpose'
     // Non-required parameters
-    administrators: [
-      {
-        objectId: '<objectId>'
-        principalName: '<principalName>'
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    backupRetentionDays: 20
-    configurations: [
-      {
-        name: 'log_min_messages'
-        source: 'user-override'
-        value: 'INFO'
-      }
-    ]
-    databases: [
-      {
-        charset: 'UTF8'
-        collation: 'en_US.utf8'
-        name: 'testdb1'
-      }
-      {
-        name: 'testdb2'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    firewallRules: [
-      {
-        endIpAddress: '0.0.0.0'
-        name: 'AllowAllWindowsAzureIps'
-        startIpAddress: '0.0.0.0'
-      }
-      {
-        endIpAddress: '10.10.10.10'
-        name: 'test-rule1'
-        startIpAddress: '10.10.10.1'
-      }
-      {
-        endIpAddress: '100.100.100.10'
-        name: 'test-rule2'
-        startIpAddress: '100.100.100.1'
-      }
-    ]
-    geoRedundantBackup: 'Disabled'
-    highAvailability: 'SameZone'
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    geoRedundantBackup: 'Enabled'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
+    maintenanceWindow: {
+      customWindow: 'Enabled'
+      dayOfWeek: '0'
+      startHour: '1'
+      startMinute: '0'
+    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -507,30 +459,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         }
       }
     ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    storageSizeGB: 1024
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    version: '14'
   }
 }
 ```
@@ -552,88 +480,34 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "dfpsfspe001"
     },
     "skuName": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2ds_v5"
     },
     "tier": {
       "value": "GeneralPurpose"
     },
     // Non-required parameters
-    "administrators": {
-      "value": [
-        {
-          "objectId": "<objectId>",
-          "principalName": "<principalName>",
-          "principalType": "ServicePrincipal"
-        }
-      ]
+    "administratorLogin": {
+      "value": "adminUserName"
     },
-    "backupRetentionDays": {
-      "value": 20
-    },
-    "configurations": {
-      "value": [
-        {
-          "name": "log_min_messages",
-          "source": "user-override",
-          "value": "INFO"
-        }
-      ]
-    },
-    "databases": {
-      "value": [
-        {
-          "charset": "UTF8",
-          "collation": "en_US.utf8",
-          "name": "testdb1"
-        },
-        {
-          "name": "testdb2"
-        }
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "firewallRules": {
-      "value": [
-        {
-          "endIpAddress": "0.0.0.0",
-          "name": "AllowAllWindowsAzureIps",
-          "startIpAddress": "0.0.0.0"
-        },
-        {
-          "endIpAddress": "10.10.10.10",
-          "name": "test-rule1",
-          "startIpAddress": "10.10.10.1"
-        },
-        {
-          "endIpAddress": "100.100.100.10",
-          "name": "test-rule2",
-          "startIpAddress": "100.100.100.1"
-        }
-      ]
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
     },
     "geoRedundantBackup": {
-      "value": "Disabled"
+      "value": "Enabled"
     },
     "highAvailability": {
-      "value": "SameZone"
+      "value": "ZoneRedundant"
     },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceWindow": {
+      "value": {
+        "customWindow": "Enabled",
+        "dayOfWeek": "0",
+        "startHour": "1",
+        "startMinute": "0"
+      }
     },
     "privateEndpoints": {
       "value": [
@@ -649,38 +523,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           }
         }
       ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "storageSizeGB": {
-      "value": 1024
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
-    "version": {
-      "value": "14"
     }
   }
 }
