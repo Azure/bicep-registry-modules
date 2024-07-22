@@ -404,7 +404,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       }
     ]
     environmentId: '<environmentId>'
-    name: 'acapriv001'
+    name: 'acatcp001'
     // Non-required parameters
     ingressTransport: 'tcp'
     location: '<location>'
@@ -441,7 +441,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "<environmentId>"
     },
     "name": {
-      "value": "acapriv001"
+      "value": "acatcp001"
     },
     // Non-required parameters
     "ingressTransport": {
