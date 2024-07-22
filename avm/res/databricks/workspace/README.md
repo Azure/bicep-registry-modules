@@ -97,7 +97,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'dwmax001'
+    name: 'dwmax002'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     customerManagedKey: {
@@ -208,7 +208,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwmax001"
+      "value": "dwmax002"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
