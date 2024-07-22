@@ -63,7 +63,7 @@ runs:
     # ------------------------------
     # Supports both OIDC and service principal with secret
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
-    - name: "Azure Login - Default"
+    - name: "Azure Login"
       uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
