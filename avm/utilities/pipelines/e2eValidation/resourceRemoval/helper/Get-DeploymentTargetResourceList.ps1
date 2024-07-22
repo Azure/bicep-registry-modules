@@ -202,7 +202,8 @@ function Get-DeploymentTargetResourceList {
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $true)]
-        [string] $Name,
+        [Alias('Name', 'Names', 'DeploymentName')]
+        [string[]] $DeploymentNames,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet(
@@ -221,30 +222,55 @@ function Get-DeploymentTargetResourceList {
     )
 
     $searchRetryCount = 1
+    $resourcesToRemove = @()
+    $deploymentNameObjects = $DeploymentNames | ForEach-Object {
+        @{
+            Name     = $_
+            Resolved = $false
+        }
+    }
+
     do {
-        $innerInputObject = @{
-            Name        = $name
-            Scope       = $scope
-            ErrorAction = 'SilentlyContinue'
-        }
-        if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
-            $innerInputObject['resourceGroupName'] = $resourceGroupName
-        }
-        if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-            $innerInputObject['ManagementGroupId'] = $ManagementGroupId
-        }
-        try {
-            return Get-DeploymentTargetResourceListInner @innerInputObject
-        } catch {
-            Write-Verbose ('No deployment found by name [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f $name, $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
-            Start-Sleep $searchRetryInterval
-            $searchRetryCount++
+        foreach ($deploymentNameObject in $deploymentNameObjects) {
+
+            if ($deploymentNameObject.Resolved) {
+                # Skip further invocations for this deployment name if deployment was already found
+                continue
+            }
+
+            $innerInputObject = @{
+                Name        = $deploymentNameObject.Name
+                Scope       = $scope
+                ErrorAction = 'SilentlyContinue'
+            }
+            if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
+                $innerInputObject['resourceGroupName'] = $resourceGroupName
+            }
+            if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+                $innerInputObject['ManagementGroupId'] = $ManagementGroupId
+            }
+            try {
+                $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
+                Write-Verbose ('Found & resolved deployment [{0}]' -f $deploymentNameObject.Name) -Verbose
+                $deploymentNameObject.Resolved = $true
+                $resourcesToRemove += $targetResources
+
+                # Break check
+                if ($deploymentNameObjects.Resolved -notcontains $false) {
+                    break
+                }
+            } catch {
+                $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
+                Write-Verbose ('No deployment found by name(s) [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f ($remainingDeploymentNames -join ', '), $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
+                Start-Sleep $searchRetryInterval
+                $searchRetryCount++
+            }
         }
     } while ($searchRetryCount -le $searchRetryLimit)
 
-    if (-not $targetResources) {
+    if (-not $resourcesToRemove -and $searchRetryCount -eq $searchRetryLimit) {
         throw ('No deployment for the deployment name(s) [{0}] found' -f $name)
     }
 
-    return $targetResources
+    return $resourcesToRemove
 }
