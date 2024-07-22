@@ -546,6 +546,26 @@
         }
       },
       "nullable": true
+    },
+    "AccountPropertiesEndpoints": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Type of the endpoint."
+          }
+        },
+        "endpoint": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The endpoint URI."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -1661,6 +1681,13 @@
         "description": "The service endpoint of the cognitive services account."
       },
       "value": "[reference('cognitiveService').endpoint]"
+    },
+    "endpoints": {
+      "$ref": "#/definitions/AccountPropertiesEndpoints",
+      "metadata": {
+        "description": "All endpoints available for the cognitive services account, types depends on the cognitive service kind."
+      },
+      "value": "[reference('cognitiveService').endpoints]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
