@@ -100,8 +100,9 @@ param requiredNsgRules string = 'AllRules'
 @allowed([
   'Enabled'
   'Disabled'
+  ''
 ])
-param privateStorageAccount string?
+param privateStorageAccount string = ''
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -169,9 +170,14 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing 
   }
 }
 
-var defaulStorageFirewallProperty = !empty(privateStorageAccount)
+// This var is a workaround for the fact both properties can not be null or empty, they either exist or not in the properties object.
+var defaulStorageFirewallProperties = !empty(privateStorageAccount)
   ? {
       defaultStorageFirewall: privateStorageAccount
+      accessConnector: {
+        id: accessConnectorId
+        identityType: 'SystemAssigned'
+      }
     }
   : {}
 
@@ -183,13 +189,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     name: skuName
   }
   // This union is required because the defaultStorageFirewall property is optional and cannot be null or ''
-  properties: union(defaulStorageFirewallProperty, {
-    accessConnector: !empty(accessConnectorId)
-      ? {
-          id: accessConnectorId
-          identityType: 'SystemAssigned'
-        }
-      : null
+  properties: union(defaulStorageFirewallProperties, {
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
       : '${subscription().id}/resourceGroups/rg-${name}-managed'
@@ -429,6 +429,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
   }
 ]
 
+// To reuse at multple places instead to repeat the same code
 var _storageAccountName = workspace.properties.parameters.storageAccountName.value
 var _storageAccountId = resourceId(
   last(split(workspace.properties.managedResourceGroupId, '/')),
