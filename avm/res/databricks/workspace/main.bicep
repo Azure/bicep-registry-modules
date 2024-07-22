@@ -101,7 +101,7 @@ param requiredNsgRules string = 'AllRules'
   'Enabled'
   'Disabled'
 ])
-param privateStorageAccount string = 'Disabled'
+param privateStorageAccount string?
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -174,7 +174,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     name: skuName
   }
   properties: {
-    defaultStorageFirewall: privateStorageAccount
+    defaultStorageFirewall: privateStorageAccount ?? null
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
       : '${subscription().id}/resourceGroups/rg-${name}-managed'
