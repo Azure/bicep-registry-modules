@@ -429,7 +429,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
   }
 ]
 
-// To reuse at multple places instead to repeat the same code
+// To reuse at multiple places instead to repeat the same code
 var _storageAccountName = workspace.properties.parameters.storageAccountName.value
 var _storageAccountId = resourceId(
   last(split(workspace.properties.managedResourceGroupId, '/')),
