@@ -107,11 +107,11 @@ param privateStorageAccount string = ''
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
 
-@description('Optional. Configuration details for private endpoints for the managed storage account. For security reasons, it is recommended to use private endpoints whenever possible.')
+@description('Optional. Configuration details for private endpoints for the managed workspace storage account, required when privateStorageAccount is true. For security reasons, it is recommended to use private endpoints whenever possible.')
 param storageAccountPrivateEndpoints privateEndpointType
 
-@description('Conditional. Required if privateStorageAccount is enabled.')
-param accessConnectorId string = ''
+@description('Conditional. The resource ID of the associated access connector for private acces to the managed workspace storage account. Required if privateStorageAccount is enabled.')
+param accessConnectorResourceId string = ''
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -171,11 +171,11 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing 
 }
 
 // This var is a workaround for the fact both properties can not be null or empty, they either exist or not in the properties object.
-var defaulStorageFirewallProperties = !empty(privateStorageAccount)
+var defaultStorageFirewallProperties = !empty(privateStorageAccount)
   ? {
       defaultStorageFirewall: privateStorageAccount
       accessConnector: {
-        id: accessConnectorId
+        id: accessConnectorResourceId
         identityType: 'SystemAssigned'
       }
     }
@@ -189,7 +189,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     name: skuName
   }
   // This union is required because the defaultStorageFirewall property is optional and cannot be null or ''
-  properties: union(defaulStorageFirewallProperties, {
+  properties: union(defaultStorageFirewallProperties, {
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
       : '${subscription().id}/resourceGroups/rg-${name}-managed'
