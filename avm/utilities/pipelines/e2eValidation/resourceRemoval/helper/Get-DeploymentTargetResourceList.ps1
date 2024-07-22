@@ -257,7 +257,7 @@ function Get-DeploymentTargetResourceList {
             } catch {
                 $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
                 Write-Verbose ('No deployment found by name(s) [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f ($remainingDeploymentNames -join ', '), $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
-                # Start-Sleep $searchRetryInterval
+                Start-Sleep $searchRetryInterval
                 $searchRetryCount++
             }
         }
