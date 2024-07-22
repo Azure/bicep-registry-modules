@@ -177,7 +177,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     name: skuName
   }
   properties: {
-    defaultStorageFirewall: privateStorageAccount ?? null
+    defaultStorageFirewall: privateStorageAccount ?? ''
     accessConnector: !empty(accessConnectorId)
       ? {
           id: accessConnectorId
