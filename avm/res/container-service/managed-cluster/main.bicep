@@ -372,13 +372,6 @@ param kedaAddon bool = false
 @description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
 param vpaAddon bool = false
 
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-@description('Optional. Whether VPA add-on is enabled and configured to scale AKS-managed add-ons.')
-param vpaAddonAutoscaling string = 'Disabled'
-
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -639,7 +632,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
         enabled: kedaAddon
       }
       verticalPodAutoscaler: {
-        addonAutoscaling: vpaAddonAutoscaling
         enabled: vpaAddon
       }
     }

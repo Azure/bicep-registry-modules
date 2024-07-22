@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "9057053312100662890"
+      "version": "0.28.1.47646",
+      "templateHash": "11130979968139246483"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1416,17 +1416,6 @@
         "description": "Optional. Whether to enable VPA add-on in cluster. Default value is false."
       }
     },
-    "vpaAddonAutoscaling": {
-      "type": "string",
-      "defaultValue": "Disabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
-      "metadata": {
-        "description": "Optional. Whether VPA add-on is enabled and configured to scale AKS-managed add-ons."
-      }
-    },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
@@ -1622,7 +1611,6 @@
             "enabled": "[parameters('kedaAddon')]"
           },
           "verticalPodAutoscaler": {
-            "addonAutoscaling": "[parameters('vpaAddonAutoscaling')]",
             "enabled": "[parameters('vpaAddon')]"
           }
         },
@@ -1943,8 +1931,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17795163053989614827"
+              "version": "0.28.1.47646",
+              "templateHash": "6644048800784630485"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
