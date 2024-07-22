@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "723991129039360172"
+      "templateHash": "18410876545978102921"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -105,6 +105,14 @@
       "metadata": {
         "example": "mcr.microsoft.com/k8se/quickstart-jobs:latest",
         "description": "Required. A fully qualified image name to import."
+      }
+    },
+    "newImageName": {
+      "type": "string",
+      "defaultValue": "[last(split(parameters('image'), '/'))]",
+      "metadata": {
+        "example": "your-image-name:tag",
+        "description": "Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline."
       }
     },
     "overwriteExistingImage": {
@@ -301,6 +309,10 @@
                   "value": "[parameters('image')]"
                 },
                 {
+                  "name": "newImageName",
+                  "value": "[parameters('newImageName')]"
+                },
+                {
                   "name": "overwriteExistingImage",
                   "value": "[toLower(string(parameters('overwriteExistingImage')))]"
                 },
@@ -332,7 +344,7 @@
             "value": "[parameters('subnetResourceIds')]"
           },
           "scriptContent": {
-            "value": "#!/bin/bash\n    set -e\n\n    echo \"Waiting on RBAC replication ($initialDelay)\\n\"\n    sleep $initialDelay\n\n    # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\n    retryLoopCount=0\n    until [ $retryLoopCount -ge $retryMax ]\n    do\n      echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n      if [ $overwriteExistingImage = 'true' ]; then\n        az acr import -n $acrName --source $imageName --force\n      else\n        az acr import -n $acrName --source $imageName\n      fi\n\n      sleep $retrySleep\n      retryLoopCount=$((retryLoopCount+1))\n    done\n\n    echo \"done\\n\""
+            "value": "#!/bin/bash\n    set -e\n\n    echo \"Waiting on RBAC replication ($initialDelay)\\n\"\n    sleep $initialDelay\n\n    # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\n    retryLoopCount=0\n    until [ $retryLoopCount -ge $retryMax ]\n    do\n      echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n      if [ $overwriteExistingImage = 'true' ]; then\n        az acr import -n $acrName --source $imageName --image $newImageName --force\n      else\n        az acr import -n $acrName --source $imageName --image $newImageName\n      fi\n\n      sleep $retrySleep\n      retryLoopCount=$((retryLoopCount+1))\n    done\n\n    echo \"done\\n\""
           }
         },
         "template": {

@@ -64,11 +64,10 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' or \'privateEndpoints\' are set.')
 param customSubDomainName string?
@@ -305,7 +304,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
           ipRules: networkAcls.?ipRules ?? []
         }
       : null
-    publicNetworkAccess: !empty(publicNetworkAccess)
+    publicNetworkAccess: publicNetworkAccess != null
       ? publicNetworkAccess
       : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
     allowedFqdnList: allowedFqdnList
