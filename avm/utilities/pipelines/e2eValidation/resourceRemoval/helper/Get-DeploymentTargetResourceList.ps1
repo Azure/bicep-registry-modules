@@ -276,8 +276,8 @@ function Get-DeploymentTargetResourceList {
             resolveError      = ('No deployment for the deployment name(s) [{0}] found' -f ($remainingDeploymentNames -join ', '))
             resourcesToRemove = $resourcesToRemove
         }
-
-        return @{
-            resourcesToRemove = $resourcesToRemove
-        }
     }
+    return @{
+        resourcesToRemove = $resourcesToRemove
+    }
+}

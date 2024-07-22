@@ -105,7 +105,7 @@ function Remove-Deployment {
             $resolveResult = Get-DeploymentTargetResourceList @deploymentsInputObject
             $deployedTargetResources += $resolveResult.resourcesToRemove
 
-            if ($deployedTargetResources.Count -eq 0) {
+            if ($deployedTargetResources.resourcesToRemove.Count -eq 0) {
                 Write-Verbose 'No resources to remove found.'
                 return
             }
