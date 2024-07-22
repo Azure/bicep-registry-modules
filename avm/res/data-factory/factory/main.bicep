@@ -9,13 +9,13 @@ param name string
 param managedVirtualNetworkName string = ''
 
 @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
-param managedPrivateEndpoints array = []
+param managedPrivateEndpoints managedPrivateEndpointsType = []
 
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
-param integrationRuntimes array = []
+param integrationRuntimes integrationRuntimesType = []
 
 @description('Optional. An array of objects for the configuration of Linked Services.')
-param linkedServices array = []
+param linkedServices linkedServicesType = []
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -557,3 +557,54 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type managedPrivateEndpointsType = {
+  @description('Required. Specify the name of managed private endpoint.')
+  name: string
+
+  @description('Required. Specify the sub-resource of the managed private endpoint.')
+  groupId: string
+
+  @description('Required. Specify the resource ID to create the managed private endpoint for.')
+  privateLinkResourceId: string
+
+  @description('Required. Specify the FQDNS of the linked resources to create private endpoints for.')
+  fqdns: string[]
+}[]
+
+type integrationRuntimesType = {
+  @description('Required. Specify the name of integration runtime.')
+  name: string
+
+  @description('Required. Specify the type of the integration runtime.')
+  type: ('Managed' | 'SelfHosted')
+
+  @description('Optional. Specify custom description for the integration runtime.')
+  integrationRuntimeCustomDescription: string?
+
+  @description('Optional. Specify managed vritual network name for the integration runtime to link to.')
+  managedVirtualNetworkName: string?
+
+  @description('Optional. Integration Runtime type properties. Required if type is "Managed".')
+  typeProperties: object
+}[]
+
+type linkedServicesType = {
+  @description('Required. The name of the Linked Service.')
+  name: string
+
+  @description('Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.')
+  type: string
+
+  @description('Optional. Used to add connection properties for your linked services.')
+  typeProperties: object?
+
+  @description('Optional. The name of the Integration Runtime to use.')
+  integrationRuntimeName: string?
+
+  @description('Optional. Use this to add parameters for a linked service connection string.')
+  parameters: object?
+
+  @description('Optional. The description of the Integration Runtime.')
+  description: string?
+}[]

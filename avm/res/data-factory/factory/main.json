@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14871862405495060994"
+      "templateHash": "17762036798795040482"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -475,6 +475,133 @@
         }
       },
       "nullable": true
+    },
+    "managedPrivateEndpointsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Specify the name of managed private endpoint."
+            }
+          },
+          "groupId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Specify the sub-resource of the managed private endpoint."
+            }
+          },
+          "privateLinkResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Specify the resource ID to create the managed private endpoint for."
+            }
+          },
+          "fqdns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. Specify the FQDNS of the linked resources to create private endpoints for."
+            }
+          }
+        }
+      }
+    },
+    "integrationRuntimesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Specify the name of integration runtime."
+            }
+          },
+          "type": {
+            "type": "string",
+            "allowedValues": [
+              "Managed",
+              "SelfHosted"
+            ],
+            "metadata": {
+              "description": "Required. Specify the type of the integration runtime."
+            }
+          },
+          "integrationRuntimeCustomDescription": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify custom description for the integration runtime."
+            }
+          },
+          "managedVirtualNetworkName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify managed vritual network name for the integration runtime to link to."
+            }
+          },
+          "typeProperties": {
+            "type": "object",
+            "metadata": {
+              "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
+            }
+          }
+        }
+      }
+    },
+    "linkedServicesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the Linked Service."
+            }
+          },
+          "type": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information."
+            }
+          },
+          "typeProperties": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Used to add connection properties for your linked services."
+            }
+          },
+          "integrationRuntimeName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the Integration Runtime to use."
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Use this to add parameters for a linked service connection string."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the Integration Runtime."
+            }
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -492,21 +619,21 @@
       }
     },
     "managedPrivateEndpoints": {
-      "type": "array",
+      "$ref": "#/definitions/managedPrivateEndpointsType",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network."
       }
     },
     "integrationRuntimes": {
-      "type": "array",
+      "$ref": "#/definitions/integrationRuntimesType",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An array of objects for the configuration of an Integration Runtime."
       }
     },
     "linkedServices": {
-      "type": "array",
+      "$ref": "#/definitions/linkedServicesType",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An array of objects for the configuration of Linked Services."

@@ -36,8 +36,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -87,10 +87,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Max_
 
 <details>
 
@@ -415,10 +412,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
@@ -865,6 +859,63 @@ An array of objects for the configuration of an Integration Runtime.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-integrationruntimesname) | string | Specify the name of integration runtime. |
+| [`type`](#parameter-integrationruntimestype) | string | Specify the type of the integration runtime. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`integrationRuntimeCustomDescription`](#parameter-integrationruntimesintegrationruntimecustomdescription) | string | Specify custom description for the integration runtime. |
+| [`managedVirtualNetworkName`](#parameter-integrationruntimesmanagedvirtualnetworkname) | string | Specify managed vritual network name for the integration runtime to link to. |
+| [`typeProperties`](#parameter-integrationruntimestypeproperties) | object | Integration Runtime type properties. Required if type is "Managed". |
+
+### Parameter: `integrationRuntimes.name`
+
+Specify the name of integration runtime.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `integrationRuntimes.type`
+
+Specify the type of the integration runtime.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Managed'
+    'SelfHosted'
+  ]
+  ```
+
+### Parameter: `integrationRuntimes.integrationRuntimeCustomDescription`
+
+Specify custom description for the integration runtime.
+
+- Required: No
+- Type: string
+
+### Parameter: `integrationRuntimes.managedVirtualNetworkName`
+
+Specify managed vritual network name for the integration runtime to link to.
+
+- Required: No
+- Type: string
+
+### Parameter: `integrationRuntimes.typeProperties`
+
+Integration Runtime type properties. Required if type is "Managed".
+
+- Required: Yes
+- Type: object
+
 ### Parameter: `linkedServices`
 
 An array of objects for the configuration of Linked Services.
@@ -872,6 +923,64 @@ An array of objects for the configuration of Linked Services.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-linkedservicesname) | string | The name of the Linked Service. |
+| [`type`](#parameter-linkedservicestype) | string | The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-linkedservicesdescription) | string | The description of the Integration Runtime. |
+| [`integrationRuntimeName`](#parameter-linkedservicesintegrationruntimename) | string | The name of the Integration Runtime to use. |
+| [`parameters`](#parameter-linkedservicesparameters) | object | Use this to add parameters for a linked service connection string. |
+| [`typeProperties`](#parameter-linkedservicestypeproperties) | object | Used to add connection properties for your linked services. |
+
+### Parameter: `linkedServices.name`
+
+The name of the Linked Service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedServices.type`
+
+The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedServices.description`
+
+The description of the Integration Runtime.
+
+- Required: No
+- Type: string
+
+### Parameter: `linkedServices.integrationRuntimeName`
+
+The name of the Integration Runtime to use.
+
+- Required: No
+- Type: string
+
+### Parameter: `linkedServices.parameters`
+
+Use this to add parameters for a linked service connection string.
+
+- Required: No
+- Type: object
+
+### Parameter: `linkedServices.typeProperties`
+
+Used to add connection properties for your linked services.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -952,6 +1061,43 @@ An array of managed private endpoints objects created in the Data Factory manage
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for. |
+| [`groupId`](#parameter-managedprivateendpointsgroupid) | string | Specify the sub-resource of the managed private endpoint. |
+| [`name`](#parameter-managedprivateendpointsname) | string | Specify the name of managed private endpoint. |
+| [`privateLinkResourceId`](#parameter-managedprivateendpointsprivatelinkresourceid) | string | Specify the resource ID to create the managed private endpoint for. |
+
+### Parameter: `managedPrivateEndpoints.fqdns`
+
+Specify the FQDNS of the linked resources to create private endpoints for.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `managedPrivateEndpoints.groupId`
+
+Specify the sub-resource of the managed private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.name`
+
+Specify the name of managed private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.privateLinkResourceId`
+
+Specify the resource ID to create the managed private endpoint for.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `managedVirtualNetworkName`
 
