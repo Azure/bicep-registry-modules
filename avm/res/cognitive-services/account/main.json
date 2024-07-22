@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16063130167042223341"
+      "templateHash": "8208951986195706770"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -547,7 +547,7 @@
       },
       "nullable": true
     },
-    "AccountPropertiesEndpoints": {
+    "endpointsType": {
       "type": "object",
       "properties": {
         "name": {
@@ -1683,7 +1683,7 @@
       "value": "[reference('cognitiveService').endpoint]"
     },
     "endpoints": {
-      "$ref": "#/definitions/AccountPropertiesEndpoints",
+      "$ref": "#/definitions/endpointsType",
       "metadata": {
         "description": "All endpoints available for the cognitive services account, types depends on the cognitive service kind."
       },
