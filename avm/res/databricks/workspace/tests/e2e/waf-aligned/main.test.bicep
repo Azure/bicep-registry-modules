@@ -51,6 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    accessConnectorName: 'dep-${namePrefix}-ac-${serviceShort}'
   }
 }
 
@@ -148,6 +149,7 @@ module testDeployment '../../../main.bicep' = [
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
       privateStorageAccount: 'Enabled'
+      accessConnectorId: nestedDependencies.outputs.accessConnectorId
       storageAccountPrivateEndpoints: [
         {
           privateDnsZoneResourceIds: [

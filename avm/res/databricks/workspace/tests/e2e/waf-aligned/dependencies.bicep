@@ -34,6 +34,9 @@ param virtualNetworkName string
 @description('Required. The object ID of the Databricks Enterprise Application. Required for Customer-Managed-Keys.')
 param databricksApplicationObjectId string
 
+@description('Required. The name of the Access Connector to create.')
+param accessConnectorName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
@@ -375,6 +378,15 @@ resource blobStoragePrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01
   }
 }
 
+resource accessConnector 'Microsoft.Databricks/accessConnectors@2024-05-01' = {
+  name: accessConnectorName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {}
+}
+
 @description('The resource ID of the created Virtual Network Default Subnet.')
 output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -419,3 +431,6 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The name of the created Log Analytics Workspace.')
 output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name
+
+@description('The resource ID of the created access connector.')
+output accessConnectorId string = accessConnector.id

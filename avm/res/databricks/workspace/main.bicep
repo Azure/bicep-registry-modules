@@ -109,6 +109,9 @@ param privateEndpoints privateEndpointType
 @description('Optional. Configuration details for private endpoints for the managed storage account. For security reasons, it is recommended to use private endpoints whenever possible.')
 param storageAccountPrivateEndpoints privateEndpointType
 
+@description('Conditional. Required when privateStorageAccount is enabled')
+param accessConnectorId string = ''
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -175,6 +178,12 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   }
   properties: {
     defaultStorageFirewall: privateStorageAccount ?? null
+    accessConnector: !empty(accessConnectorId)
+      ? {
+          id: accessConnectorId
+          identityType: 'SystemAssigned'
+        }
+      : {}
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
       : '${subscription().id}/resourceGroups/rg-${name}-managed'
