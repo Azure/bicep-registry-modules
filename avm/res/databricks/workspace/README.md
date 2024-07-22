@@ -638,7 +638,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessConnectorId`](#parameter-accessconnectorid) | string | Required when privateStorageAccount is enabled |
+| [`accessConnectorId`](#parameter-accessconnectorid) | string | Required if privateStorageAccount is enabled |
 
 **Optional parameters**
 
@@ -683,7 +683,7 @@ The name of the Azure Databricks workspace to create.
 
 ### Parameter: `accessConnectorId`
 
-Required when privateStorageAccount is enabled
+Required if privateStorageAccount is enabled
 
 - Required: No
 - Type: string

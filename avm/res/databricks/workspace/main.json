@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17457608481119333171"
+      "templateHash": "16528540317987513357"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -691,7 +691,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Required when privateStorageAccount is enabled"
+        "description": "Conditional. Required if privateStorageAccount is enabled"
       }
     }
   },
