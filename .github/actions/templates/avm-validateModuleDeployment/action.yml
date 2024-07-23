@@ -215,7 +215,7 @@ runs:
           }
           if($moduleTemplatePossibleParameters -contains 'baseTime') {
             $functionInput.AdditionalParameters += @{
-              baseTime = (Get-Date).ToString('u') # Setting base time explcitly so that any potential retry will reuse the same timestamp
+              baseTime = (Get-Date).ToString('u') # Setting base time explicitly so that any potential retry will reuse the same timestamp
             }
           }
 
