@@ -96,7 +96,7 @@ param publicNetworkAccess string = 'Enabled'
 ])
 param requiredNsgRules string = 'AllRules'
 
-@description('Optional. Determines wether the managed storage account should be private or public. For security reasons, it is recommended Enabled this.')
+@description('Optional. Determines whether the managed storage account should be private or public. For best security practices, it is recommended to set it to Enabled.')
 @allowed([
   'Enabled'
   'Disabled'
@@ -107,10 +107,10 @@ param privateStorageAccount string = ''
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
 
-@description('Optional. Configuration details for private endpoints for the managed workspace storage account, required when privateStorageAccount is true. For security reasons, it is recommended to use private endpoints whenever possible.')
+@description('Optional. Configuration details for private endpoints for the managed workspace storage account, required when privateStorageAccount is set to Enabled. For security reasons, it is recommended to use private endpoints whenever possible.')
 param storageAccountPrivateEndpoints privateEndpointType
 
-@description('Conditional. The resource ID of the associated access connector for private acces to the managed workspace storage account. Required if privateStorageAccount is enabled.')
+@description('Conditional. The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.')
 param accessConnectorResourceId string = ''
 
 var builtInRoleNames = {

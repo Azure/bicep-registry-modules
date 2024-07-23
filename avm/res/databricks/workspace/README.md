@@ -377,7 +377,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Required parameters
     name: 'dwwaf001'
     // Non-required parameters
-    accessConnectorId: '<accessConnectorId>'
+    accessConnectorResourceId: '<accessConnectorResourceId>'
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     customerManagedKey: {
       keyName: '<keyName>'
@@ -480,8 +480,8 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "dwwaf001"
     },
     // Non-required parameters
-    "accessConnectorId": {
-      "value": "<accessConnectorId>"
+    "accessConnectorResourceId": {
+      "value": "<accessConnectorResourceId>"
     },
     "amlWorkspaceResourceId": {
       "value": "<amlWorkspaceResourceId>"
@@ -638,7 +638,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessConnectorId`](#parameter-accessconnectorid) | string | Required if privateStorageAccount is enabled. |
+| [`accessConnectorResourceId`](#parameter-accessconnectorresourceid) | string | The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled. |
 
 **Optional parameters**
 
@@ -661,7 +661,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 | [`natGatewayName`](#parameter-natgatewayname) | string | Name of the NAT gateway for Secure Cluster Connectivity (No Public IP) workspace subnets. |
 | [`prepareEncryption`](#parameter-prepareencryption) | bool | Prepare the workspace for encryption. Enables the Managed Identity for managed storage account. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`privateStorageAccount`](#parameter-privatestorageaccount) | string | Determines wether the managed storage account should be private or public. For security reasons, it is recommended Enabled this. |
+| [`privateStorageAccount`](#parameter-privatestorageaccount) | string | Determines whether the managed storage account should be private or public. For best security practices, it is recommended to set it to Enabled. |
 | [`publicIpName`](#parameter-publicipname) | string | Name of the Public IP for No Public IP workspace with managed vNet. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | The network access type for accessing workspace. Set value to disabled to access workspace only via private link. |
 | [`requiredNsgRules`](#parameter-requirednsgrules) | string | Gets or sets a value indicating whether data plane (clusters) to control plane communication happen over private endpoint. |
@@ -669,7 +669,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The pricing tier of workspace. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | Default DBFS storage account name. |
-| [`storageAccountPrivateEndpoints`](#parameter-storageaccountprivateendpoints) | array | Configuration details for private endpoints for the managed storage account. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`storageAccountPrivateEndpoints`](#parameter-storageaccountprivateendpoints) | array | Configuration details for private endpoints for the managed workspace storage account, required when privateStorageAccount is set to Enabled. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`storageAccountSkuName`](#parameter-storageaccountskuname) | string | Storage account SKU name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for Managed virtual network. |
@@ -681,9 +681,9 @@ The name of the Azure Databricks workspace to create.
 - Required: Yes
 - Type: string
 
-### Parameter: `accessConnectorId`
+### Parameter: `accessConnectorResourceId`
 
-Required if privateStorageAccount is enabled.
+The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.
 
 - Required: No
 - Type: string
@@ -1384,7 +1384,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `privateStorageAccount`
 
-Determines wether the managed storage account should be private or public. For security reasons, it is recommended Enabled this.
+Determines whether the managed storage account should be private or public. For best security practices, it is recommended to set it to Enabled.
 
 - Required: No
 - Type: string
@@ -1559,7 +1559,7 @@ Default DBFS storage account name.
 
 ### Parameter: `storageAccountPrivateEndpoints`
 
-Configuration details for private endpoints for the managed storage account. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints for the managed workspace storage account, required when privateStorageAccount is set to Enabled. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array

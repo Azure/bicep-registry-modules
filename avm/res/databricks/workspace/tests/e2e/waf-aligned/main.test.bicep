@@ -149,7 +149,7 @@ module testDeployment '../../../main.bicep' = [
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
       privateStorageAccount: 'Enabled'
-      accessConnectorId: nestedDependencies.outputs.accessConnectorId
+      accessConnectorResourceId: nestedDependencies.outputs.accessConnectorResourceId
       storageAccountPrivateEndpoints: [
         {
           privateDnsZoneResourceIds: [

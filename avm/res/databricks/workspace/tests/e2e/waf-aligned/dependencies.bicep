@@ -399,10 +399,10 @@ output customPrivateSubnetName string = virtualNetwork.properties.subnets[2].nam
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id
 
-@description('The resource ID of the created Private DNS Zone.')
+@description('The resource ID of the created Private DNS Zone for databricks.')
 output privateDNSZoneResourceId string = privateDNSZone.id
 
-@description('The resource ID of the created Private DNS Zone.')
+@description('The resource ID of the created Private DNS Zone for blob storage.')
 output blobStoragePrivateDNSZoneResourceId string = blobStoragePrivateDNSZone.id
 
 @description('The resource ID of the created Azure Machine Learning Workspace.')
@@ -433,4 +433,4 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name
 
 @description('The resource ID of the created access connector.')
-output accessConnectorId string = accessConnector.id
+output accessConnectorResourceId string = accessConnector.id
