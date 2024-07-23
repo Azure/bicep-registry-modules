@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "11829581770848647649"
+      "version": "0.29.45.22436",
+      "templateHash": "14209173975768378721"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -126,6 +126,354 @@
         }
       },
       "nullable": true
+    },
+    "container": {
+      "type": "object",
+      "properties": {
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command arguments."
+          }
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command."
+          }
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/environmentVar"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container environment variables."
+          }
+        },
+        "image": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Container image tag."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom container name."
+          }
+        },
+        "probes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerAppProbe"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of probes for the container."
+          }
+        },
+        "resources": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Container resource requirements."
+          }
+        },
+        "volumeMounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/volumeMount"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container volume mounts."
+          }
+        }
+      }
+    },
+    "environmentVar": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Environment variable name."
+          }
+        },
+        "secretRef": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the Container App secret from which to pull the environment variable value."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Non-secret environment variable value."
+          }
+        }
+      }
+    },
+    "containerAppProbe": {
+      "type": "object",
+      "properties": {
+        "failureThreshold": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 10,
+          "metadata": {
+            "description": "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3."
+          }
+        },
+        "httpGet": {
+          "$ref": "#/definitions/containerAppProbeHttpGet",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. HTTPGet specifies the http request to perform."
+          }
+        },
+        "initialDelaySeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 60,
+          "metadata": {
+            "description": "Optional. Number of seconds after the container has started before liveness probes are initiated."
+          }
+        },
+        "periodSeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 240,
+          "metadata": {
+            "description": "Optional. How often (in seconds) to perform the probe. Default to 10 seconds."
+          }
+        },
+        "successThreshold": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 10,
+          "metadata": {
+            "description": "Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup."
+          }
+        },
+        "tcpSocket": {
+          "$ref": "#/definitions/containerAppProbeTcpSocket",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported."
+          }
+        },
+        "terminationGracePeriodSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour)."
+          }
+        },
+        "timeoutSeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 240,
+          "metadata": {
+            "description": "Optional. Number of seconds after which the probe times out. Defaults to 1 second."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Liveness",
+            "Readiness",
+            "Startup"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of probe."
+          }
+        }
+      }
+    },
+    "corsPolicyType": {
+      "type": "object",
+      "properties": {
+        "allowCredentials": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Switch to determine whether the resource allows credentials."
+          }
+        },
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-headers header."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-methods header."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-origins header."
+          }
+        },
+        "exposeHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-expose-headers header."
+          }
+        },
+        "maxAge": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-max-age header."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "containerAppProbeHttpGet": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Host name to connect to. Defaults to the pod IP."
+          }
+        },
+        "httpHeaders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerAppProbeHttpGetHeadersItem"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. HTTP headers to set in the request."
+          }
+        },
+        "path": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Path to access on the HTTP server."
+          }
+        },
+        "port": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Name or number of the port to access on the container."
+          }
+        },
+        "scheme": {
+          "type": "string",
+          "allowedValues": [
+            "HTTP",
+            "HTTPS"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Scheme to use for connecting to the host. Defaults to HTTP."
+          }
+        }
+      }
+    },
+    "containerAppProbeHttpGetHeadersItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the header."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Value of the header."
+          }
+        }
+      }
+    },
+    "containerAppProbeTcpSocket": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Host name to connect to, defaults to the pod IP."
+          }
+        },
+        "port": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 65535,
+          "metadata": {
+            "description": "Required. Number of the port to access on the container. Name must be an IANA_SVC_NAME."
+          }
+        }
+      }
+    },
+    "volumeMount": {
+      "type": "object",
+      "properties": {
+        "mountPath": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Path within the container at which the volume should be mounted.Must not contain ':'."
+          }
+        },
+        "subPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root)."
+          }
+        },
+        "volumeName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. This must match the Name of a Volume."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -142,11 +490,47 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "disableIngress": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Bool to disable all ingress traffic for the container app."
+      }
+    },
     "ingressExternal": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Bool indicating if the App exposes an external HTTP endpoint."
+      }
+    },
+    "clientCertificateMode": {
+      "type": "string",
+      "defaultValue": "ignore",
+      "allowedValues": [
+        "accept",
+        "ignore",
+        "require"
+      ],
+      "metadata": {
+        "description": "Optional. Client certificate mode for mTLS."
+      }
+    },
+    "corsPolicy": {
+      "$ref": "#/definitions/corsPolicyType",
+      "metadata": {
+        "description": "Optional. Object userd to configure CORS policy."
+      }
+    },
+    "stickySessionsAffinity": {
+      "type": "string",
+      "defaultValue": "none",
+      "allowedValues": [
+        "none",
+        "sticky"
+      ],
+      "metadata": {
+        "description": "Optional. Bool indicating if the Container App should enable session affinity."
       }
     },
     "ingressTransport": {
@@ -318,6 +702,9 @@
     },
     "containers": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/container"
+      },
       "metadata": {
         "description": "Required. List of container definitions for the Container App."
       }
@@ -375,7 +762,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -404,23 +791,7 @@
         "configuration": {
           "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
           "dapr": "[if(not(empty(parameters('dapr'))), parameters('dapr'), null())]",
-          "ingress": {
-            "allowInsecure": "[parameters('ingressAllowInsecure')]",
-            "customDomains": "[if(not(empty(parameters('customDomains'))), parameters('customDomains'), null())]",
-            "exposedPort": "[parameters('exposedPort')]",
-            "external": "[parameters('ingressExternal')]",
-            "ipSecurityRestrictions": "[if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null())]",
-            "targetPort": "[parameters('ingressTargetPort')]",
-            "traffic": [
-              {
-                "label": "[parameters('trafficLabel')]",
-                "latestRevision": "[parameters('trafficLatestRevision')]",
-                "revisionName": "[parameters('trafficRevisionName')]",
-                "weight": "[parameters('trafficWeight')]"
-              }
-            ],
-            "transport": "[parameters('ingressTransport')]"
-          },
+          "ingress": "[if(parameters('disableIngress'), null(), createObject('allowInsecure', parameters('ingressAllowInsecure'), 'customDomains', if(not(empty(parameters('customDomains'))), parameters('customDomains'), null()), 'corsPolicy', if(not(equals(parameters('corsPolicy'), null())), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', parameters('clientCertificateMode'), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null()), 'targetPort', parameters('ingressTargetPort'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), 'transport', parameters('ingressTransport')))]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
           "secrets": "[variables('secretList')]"
@@ -489,7 +860,7 @@
       "metadata": {
         "description": "The configuration of ingress fqdn."
       },
-      "value": "[reference('containerApp').configuration.ingress.fqdn]"
+      "value": "[if(parameters('disableIngress'), 'IngressDisabled', reference('containerApp').configuration.ingress.fqdn)]"
     },
     "resourceGroupName": {
       "type": "string",

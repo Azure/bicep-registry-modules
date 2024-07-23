@@ -9,11 +9,6 @@ param name string
 @allowed([
   'AIServices'
   'AnomalyDetector'
-  'Bing.Autosuggest.v7'
-  'Bing.CustomSearch'
-  'Bing.EntitySearch'
-  'Bing.Search.v7'
-  'Bing.SpellCheck.v7'
   'CognitiveServices'
   'ComputerVision'
   'ContentModerator'
@@ -69,11 +64,10 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' or \'privateEndpoints\' are set.')
 param customSubDomainName string?
@@ -253,47 +247,44 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: name
@@ -313,7 +304,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
           ipRules: networkAcls.?ipRules ?? []
         }
       : null
-    publicNetworkAccess: !empty(publicNetworkAccess)
+    publicNetworkAccess: publicNetworkAccess != null
       ? publicNetworkAccess
       : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
     allowedFqdnList: allowedFqdnList
@@ -357,17 +348,16 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
   }
 ]
 
-resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: cognitiveService
+resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: cognitiveService
+}
 
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

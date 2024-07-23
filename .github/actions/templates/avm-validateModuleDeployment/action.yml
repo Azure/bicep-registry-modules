@@ -205,8 +205,17 @@ runs:
             SubscriptionId             = $subscriptionId
             ManagementGroupId          = $managementGroupId
             RepoRoot                   = $env:GITHUB_WORKSPACE
-            AdditionalParameters       = @{
+            AdditionalParameters       = @{}
+          }
+
+          if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
+            $functionInput.AdditionalParameters += @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+            }
+          }
+          if($moduleTemplatePossibleParameters -contains 'baseTime') {
+            $functionInput.AdditionalParameters += @{
+              baseTime = (Get-Date).ToString('u') # Setting base time explicitly so that any potential retry will reuse the same timestamp
             }
           }
 
@@ -257,8 +266,17 @@ runs:
             ManagementGroupId          = $managementGroupId
             DoNotThrow                 = $true
             RepoRoot                   = $env:GITHUB_WORKSPACE
-            AdditionalParameters       = @{
+            AdditionalParameters       = @{}
+          }
+
+          if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
+            $functionInput.AdditionalParameters += @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
+            }
+          }
+          if($moduleTemplatePossibleParameters -contains 'baseTime') {
+            $functionInput.AdditionalParameters += @{
+              baseTime = (Get-Date).ToString('u') # Setting base time explicitly so that any potential retry will reuse the same timestamp
             }
           }
 

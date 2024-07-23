@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "5668118199015896027"
+      "version": "0.28.1.47646",
+      "templateHash": "16063130167042223341"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -560,11 +560,6 @@
       "allowedValues": [
         "AIServices",
         "AnomalyDetector",
-        "Bing.Autosuggest.v7",
-        "Bing.CustomSearch",
-        "Bing.EntitySearch",
-        "Bing.Search.v7",
-        "Bing.SpellCheck.v7",
         "CognitiveServices",
         "ComputerVision",
         "ContentModerator",
@@ -633,9 +628,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Enabled",
         "Disabled"
       ],
@@ -815,7 +809,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -864,7 +858,7 @@
       "properties": {
         "customSubDomainName": "[parameters('customSubDomainName')]",
         "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
+        "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
         "allowedFqdnList": "[parameters('allowedFqdnList')]",
         "apiProperties": "[parameters('apiProperties')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",

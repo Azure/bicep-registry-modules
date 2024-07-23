@@ -17,7 +17,7 @@ This module deploys Deployment Scripts.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/deploymentScripts) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
 ## Usage examples
 
@@ -156,7 +156,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
         '<managedIdentityResourceId>'
       ]
     }
-    retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
   }
 }
@@ -194,9 +193,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "retentionInterval": {
-      "value": "P1D"
     },
     "scriptContent": {
       "value": "Write-Host \"AVM Deployment Script test!\""
@@ -884,6 +880,7 @@ Interval for which the service retains the script resource after it reaches a te
 
 - Required: No
 - Type: string
+- Default: `'P1D'`
 
 ### Parameter: `roleAssignments`
 
@@ -1038,6 +1035,7 @@ Do not provide a value! This date value is used to make sure the script run ever
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `deploymentScriptLogs` | array | The logs of the deployment script. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployment script. |
 | `outputs` | object | The output of the deployment script. |

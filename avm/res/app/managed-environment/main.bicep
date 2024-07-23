@@ -14,6 +14,9 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentitiesType
+
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
@@ -69,6 +72,21 @@ param workloadProfiles array = []
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -83,35 +101,35 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
-  if (!empty(logAnalyticsWorkspaceResourceId)) {
-    name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
-    scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
-  }
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
+  name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
+  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
+}
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-preview' = {
   name: name
   location: location
   tags: tags
+  identity: identity
   properties: {
     appLogsConfiguration: {
       destination: logsDestination
@@ -160,17 +178,16 @@ resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignm
   }
 ]
 
-resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: managedEnvironment
+resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: managedEnvironment
+}
 
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -184,12 +201,26 @@ output name string = managedEnvironment.name
 @description('The resource ID of the Managed Environment.')
 output resourceId string = managedEnvironment.id
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = managedEnvironment.?identity.?principalId ?? ''
+
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
+
+@description('The IP address of the Managed Environment.')
+output staticIp string = managedEnvironment.properties.staticIp
 
 // =============== //
 //   Definitions   //
 // =============== //
+
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourceIds: string[]?
+}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

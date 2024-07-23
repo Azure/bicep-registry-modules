@@ -20,7 +20,7 @@ This module deploys a Search Service.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Search/searchServices` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices) |
+| `Microsoft.Search/searchServices` | [2024-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2024-03-01-preview/searchServices) |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices/sharedPrivateLinkResources) |
 
 ## Usage examples
@@ -50,7 +50,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: 'searchServiceDeployment'
   params: {
     // Required parameters
-    name: 'sssmin001'
+    name: 'sssmin002'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +71,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sssmin001"
+      "value": "sssmin002"
     },
     // Non-required parameters
     "location": {
@@ -129,6 +129,9 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     networkRuleSet: {
       ipRules: [
@@ -230,7 +233,10 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "networkRuleSet": {
@@ -889,6 +895,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -896,6 +903,13 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `networkRuleSet`
 

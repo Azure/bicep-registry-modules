@@ -359,17 +359,17 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
 
-@description('Optional. Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled.')
-param enableAzureMonitorProfileLogs bool = false
-
-@description('Optional. Whether the Windows Log Collection for Azure Monitor Container Insights Logs Addon is enabled.')
-param enableWindowsHostLogs bool = false
-
 @description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
 param enableContainerInsights bool = false
 
-@description('Optional. Indicates if Application Monitoring Open Telemetry Metrics is enabled.')
-param enableAppMonitoringOpenTelemetryMetrics bool = false
+@description('Optional. Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false.')
+param disableCustomMetrics bool = false
+
+@description('Optional. Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false.')
+param disablePrometheusMetricsScraping bool = false
+
+@description('Optional. The syslog host port. If not specified, the default port is 28330.')
+param syslogPort int = 28330
 
 @description('Optional. A comma-separated list of kubernetes cluster metrics labels.')
 param metricLabelsAllowlist string = ''
@@ -487,6 +487,24 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
     }
   }
 }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
@@ -504,7 +522,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empt
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -672,23 +690,18 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       privateDNSZone: privateDNSZone
     }
     azureMonitorProfile: {
-      logs: enableAzureMonitorProfileLogs
+      containerInsights: enableContainerInsights
         ? {
-            containerInsights: {
-              enabled: enableContainerInsights
-              logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null
-              windowsHostLogs: {
-                enabled: enableWindowsHostLogs
-              }
-            }
+            enabled: enableContainerInsights
+            logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null
+            disableCustomMetrics: disableCustomMetrics
+            disablePrometheusMetricsScraping: disablePrometheusMetricsScraping
+            syslogPort: syslogPort
           }
         : null
       metrics: enableAzureMonitorProfileMetrics
         ? {
             enabled: enableAzureMonitorProfileMetrics
-            appMonitoringOpenTelemetryMetrics: {
-              enabled: enableAppMonitoringOpenTelemetryMetrics
-            }
             kubeStateMetrics: {
               metricLabelsAllowlist: metricLabelsAllowlist
               metricAnnotationsAllowList: metricAnnotationsAllowList
@@ -1017,7 +1030,7 @@ type agentPoolType = {
   proximityPlacementGroupResourceId: string?
 
   @description('Optional. The scale down mode of the agent pool.')
-  scaleDownMode: ('Delete' | 'Pause' | 'Requeue' | 'DeleteRequeue')?
+  scaleDownMode: ('Delete' | 'Deallocate')?
 
   @description('Optional. The scale set eviction policy of the agent pool.')
   scaleSetEvictionPolicy: ('Delete' | 'Deallocate')?
