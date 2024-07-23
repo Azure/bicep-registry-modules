@@ -137,21 +137,15 @@ var ipConfigurations = concat(
 
 var managementIPConfiguration = {
   name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.outputs.name
-  properties: union(
-    {
-      subnet: {
-        id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
-      }
-    },
-    (!empty(managementIPResourceID) || !empty(managementIPAddressObject))
-      ? {
-          // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
-          publicIPAddress: {
-            id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.outputs.resourceId
-          }
-        }
-      : {}
-  )
+  properties: {
+    subnet: {
+      id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
+    }
+    // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
+    publicIPAddress: {
+      id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.outputs.resourceId
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------

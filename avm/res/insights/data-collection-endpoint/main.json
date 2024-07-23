@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12831608682693267101"
+      "templateHash": "4485952202932766854"
     },
     "name": "Data Collection Endpoints",
     "description": "This module deploys a Data Collection Endpoint.",
@@ -112,6 +112,13 @@
         "description": "Required. The name of the data collection endpoint. The name is case insensitive."
       }
     },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Description of the data collection endpoint."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -200,7 +207,7 @@
     },
     "dataCollectionEndpoint": {
       "type": "Microsoft.Insights/dataCollectionEndpoints",
-      "apiVersion": "2021-04-01",
+      "apiVersion": "2023-03-11",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
       "location": "[parameters('location')]",
@@ -208,7 +215,8 @@
       "properties": {
         "networkAcls": {
           "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
-        }
+        },
+        "description": "[parameters('description')]"
       }
     },
     "dataCollectionEndpoint_lock": {
@@ -275,7 +283,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('dataCollectionEndpoint', '2021-04-01', 'full').location]"
+      "value": "[reference('dataCollectionEndpoint', '2023-03-11', 'full').location]"
     }
   }
 }

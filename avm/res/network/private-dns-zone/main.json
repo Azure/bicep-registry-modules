@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2045878030011082737"
+      "templateHash": "11528489062142335592"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -584,6 +584,51 @@
         }
       },
       "nullable": true
+    },
+    "virtualNetworkLinkType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "maxLength": 80,
+            "metadata": {
+              "description": "Optional. The resource name."
+            }
+          },
+          "virtualNetworkResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the virtual network to link."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Azure Region where the resource lives."
+            }
+          },
+          "registrationEnabled": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource tags."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -642,8 +687,7 @@
       }
     },
     "virtualNetworkLinks": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/virtualNetworkLinkType",
       "metadata": {
         "description": "Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet."
       }
