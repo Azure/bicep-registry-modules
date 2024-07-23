@@ -1,0 +1,279 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.27.1.19265",
+      "templateHash": "13098951415212558525"
+    },
+    "name": "DocumentDB Mongo Clusters",
+    "description": "This module deploys a DocumentDB Mongo Cluster.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Mongo Cluster."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Default to current resource group scope location. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Database Account resource."
+      }
+    },
+    "administratorLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Username for admin user."
+      }
+    },
+    "administratorLoginPassword": {
+      "type": "securestring",
+      "minLength": 8,
+      "maxLength": 128,
+      "metadata": {
+        "description": "Required. Password for admin user."
+      }
+    },
+    "allowAllIPsFirewall": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to allow all IPs or not. Warning: No IP addresses will be blocked and any host on the Internet can access the coordinator in this server group. It is strongly recommended to use this rule only temporarily and only on test clusters that do not contain sensitive data."
+      }
+    },
+    "allowAzureIPsFirewall": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to allow Azure internal IPs or not."
+      }
+    },
+    "allowedSingleIPs": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. IP addresses to allow access to the cluster from."
+      }
+    },
+    "createMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "metadata": {
+        "description": "Optional. Mode to create the mongo cluster."
+      }
+    },
+    "highAvailabilityMode": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether high availability is enabled on the node group."
+      }
+    },
+    "nodeCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Number of nodes in the node group."
+      }
+    },
+    "nodeType": {
+      "type": "string",
+      "defaultValue": "Shard",
+      "metadata": {
+        "description": "Optional. Deployed Node type in the node group."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. SKU defines the CPU and memory that is provisioned for each node."
+      }
+    },
+    "storage": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Disk storage size for the node group in GB."
+      }
+    }
+  },
+  "resources": {
+    "mongoCluster": {
+      "type": "Microsoft.DocumentDB/mongoClusters",
+      "apiVersion": "2024-02-15-preview",
+      "name": "[parameters('name')]",
+      "tags": "[parameters('tags')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "createMode": "[parameters('createMode')]",
+        "nodeGroupSpecs": [
+          {
+            "diskSizeGB": "[parameters('storage')]",
+            "enableHa": "[parameters('highAvailabilityMode')]",
+            "kind": "[parameters('nodeType')]",
+            "nodeCount": "[parameters('nodeCount')]",
+            "sku": "[parameters('sku')]"
+          }
+        ]
+      }
+    },
+    "configFireWallRules": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-configfwr', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "mongoClusterName": {
+            "value": "[parameters('name')]"
+          },
+          "allowAllIPsFirewall": {
+            "value": "[parameters('allowAllIPsFirewall')]"
+          },
+          "allowAzureIPsFirewall": {
+            "value": "[parameters('allowAzureIPsFirewall')]"
+          },
+          "allowedSingleIPs": {
+            "value": "[parameters('allowedSingleIPs')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.27.1.19265",
+              "templateHash": "17644858630860177754"
+            },
+            "name": "DocumentDB Mongo Clusters Config FireWall Rules",
+            "description": "This module config firewall rules for DocumentDB Mongo Cluster.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "allowAllIPsFirewall": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether to allow all IPs or not. Warning: No IP addresses will be blocked and any host on the Internet can access the coordinator in this server group. It is strongly recommended to use this rule only temporarily and only on test clusters that do not contain sensitive data."
+              }
+            },
+            "allowAzureIPsFirewall": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether to allow Azure internal IPs or not."
+              }
+            },
+            "allowedSingleIPs": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. IP addresses to allow access to the cluster from."
+              }
+            },
+            "mongoClusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Mongo Cluster."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('allowAllIPsFirewall')]",
+              "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
+              "apiVersion": "2024-02-15-preview",
+              "name": "[format('{0}/{1}', parameters('mongoClusterName'), 'allow-all-IPs')]",
+              "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "255.255.255.255"
+              }
+            },
+            {
+              "condition": "[parameters('allowAzureIPsFirewall')]",
+              "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
+              "apiVersion": "2024-02-15-preview",
+              "name": "[format('{0}/{1}', parameters('mongoClusterName'), 'allow-all-azure-internal-IPs')]",
+              "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+              }
+            },
+            {
+              "copy": {
+                "name": "firewall_single",
+                "count": "[length(parameters('allowedSingleIPs'))]"
+              },
+              "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
+              "apiVersion": "2024-02-15-preview",
+              "name": "[format('{0}/{1}', parameters('mongoClusterName'), format('allow-single-{0}', replace(parameters('allowedSingleIPs')[copyIndex()], '.', '')))]",
+              "properties": {
+                "startIpAddress": "[parameters('allowedSingleIPs')[copyIndex()]]",
+                "endIpAddress": "[parameters('allowedSingleIPs')[copyIndex()]]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the mongo cluster was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "mongoCluster"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the mongo cluster."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the mongo cluster."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the mongo cluster was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "connectionStringKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The connection string key of the mongo cluster."
+      },
+      "value": "[reference('mongoCluster').connectionString]"
+    }
+  }
+}
