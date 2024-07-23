@@ -61,7 +61,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: resourceLocation

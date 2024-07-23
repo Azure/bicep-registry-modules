@@ -14,6 +14,9 @@ param managedPrivateEndpoints array = []
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
 param integrationRuntimes array = []
 
+@description('Optional. An array of objects for the configuration of Linked Services.')
+param linkedServices array = []
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -138,7 +141,8 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.datafactory-factory.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -229,6 +233,21 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
     dependsOn: [
       dataFactory_managedVirtualNetwork
     ]
+  }
+]
+
+module dataFactory_linkedServices 'linked-service/main.bicep' = [
+  for (linkedService, index) in linkedServices: {
+    name: '${uniqueString(deployment().name, location)}-DataFactory-LinkedServices-${index}'
+    params: {
+      dataFactoryName: dataFactory.name
+      name: linkedService.name
+      type: linkedService.type
+      typeProperties: linkedService.?typeProperties
+      integrationRuntimeName: linkedService.?integrationRuntimeName
+      parameters: linkedService.?parameters
+      description: linkedService.?description
+    }
   }
 ]
 
