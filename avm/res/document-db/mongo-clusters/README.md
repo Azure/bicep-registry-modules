@@ -26,10 +26,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/mongo-clusters:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [WAF-aligned](#example-2-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -42,7 +45,7 @@ module mongoClusters 'br/public:avm/res/document-db/mongo-clusters:<version>' = 
     // Required parameters
     administratorLogin: 'Admin001'
     administratorLoginPassword: 'Admin123'
-    name: 'ddmcdef001'
+    name: 'ddmcdefmin001'
     nodeCount: 2
     sku: 'M30'
     storage: 256
@@ -72,7 +75,7 @@ module mongoClusters 'br/public:avm/res/document-db/mongo-clusters:<version>' = 
       "value": "Admin123"
     },
     "name": {
-      "value": "ddmcdef001"
+      "value": "ddmcdefmin001"
     },
     "nodeCount": {
       "value": 2
@@ -94,7 +97,10 @@ module mongoClusters 'br/public:avm/res/document-db/mongo-clusters:<version>' = 
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -181,6 +187,7 @@ module mongoClusters 'br/public:avm/res/document-db/mongo-clusters:<version>' = 
 | [`allowAzureIPsFirewall`](#parameter-allowazureipsfirewall) | bool | Whether to allow Azure internal IPs or not. |
 | [`allowedSingleIPs`](#parameter-allowedsingleips) | array | IP addresses to allow access to the cluster from. |
 | [`createMode`](#parameter-createmode) | string | Mode to create the mongo cluster. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`highAvailabilityMode`](#parameter-highavailabilitymode) | bool | Whether high availability is enabled on the node group. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`nodeType`](#parameter-nodetype) | string | Deployed Node type in the node group. |
@@ -259,6 +266,14 @@ Mode to create the mongo cluster.
 - Required: No
 - Type: string
 - Default: `'Default'`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `highAvailabilityMode`
 

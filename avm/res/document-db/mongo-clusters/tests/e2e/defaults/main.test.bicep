@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -14,7 +17,7 @@ param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'ddmcdef'
+param serviceShort string = 'ddmcdefmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
