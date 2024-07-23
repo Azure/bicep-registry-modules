@@ -24,6 +24,7 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers) |
@@ -50,10 +51,11 @@ The following section provides usage examples for the module, which were used to
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [With a secondary database](#example-5-with-a-secondary-database)
-- [With vulnerability assessment](#example-6-with-vulnerability-assessment)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-4-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [With a secondary database](#example-6-with-a-secondary-database)
+- [With vulnerability assessment](#example-7-with-vulnerability-assessment)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -249,7 +251,91 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sqlkvs001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        name: 'myDatabase'
+      }
+    ]
+    location: '<location>'
+    secretsExportConfiguration: {
+      appUserPasswordSecretName: 'myName1'
+      appUserPasswordSecretValue: '123456'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      sqlAdminPasswordSecretName: 'myName'
+      sqlAzureConnectionStringSercretName: 'myName3'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlkvs001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "name": "myDatabase"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "appUserPasswordSecretName": "myName1",
+        "appUserPasswordSecretValue": "123456",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "sqlAdminPasswordSecretName": "myName",
+        "sqlAzureConnectionStringSercretName": "myName3"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -593,7 +679,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 5: _With a secondary database_
+### Example 6: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -683,7 +769,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 6: _With vulnerability assessment_
+### Example 7: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -811,7 +897,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1126,6 +1212,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and neither firewall rules nor virtual network rules are set. |
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | string | Whether or not to restrict outbound network access for this server. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`securityAlertPolicies`](#parameter-securityalertpolicies) | array | The security alert policies to create in the server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkRules`](#parameter-virtualnetworkrules) | array | The virtual network rules to create in the server. |
@@ -1874,6 +1961,71 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appUserName`](#parameter-secretsexportconfigurationappusername) | string | The name for secret to create. |
+| [`appUserPasswordSecretName`](#parameter-secretsexportconfigurationappuserpasswordsecretname) | string | The name for secret to create. |
+| [`appUserPasswordSecretValue`](#parameter-secretsexportconfigurationappuserpasswordsecretvalue) | string | The value for secret to create. |
+| [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The name for secret to create. |
+| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The name for secret to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsExportConfiguration.appUserName`
+
+The name for secret to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.appUserPasswordSecretName`
+
+The name for secret to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.appUserPasswordSecretValue`
+
+The value for secret to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.sqlAdminPasswordSecretName`
+
+The name for secret to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSercretName`
+
+The name for secret to create.
+
+- Required: No
+- Type: string
+
 ### Parameter: `securityAlertPolicies`
 
 The security alert policies to create in the server.
@@ -1914,6 +2066,7 @@ The vulnerability assessment configuration.
 | `name` | string | The name of the deployed SQL server. |
 | `resourceGroupName` | string | The resource group of the deployed SQL server. |
 | `resourceId` | string | The resource ID of the deployed SQL server. |
+| `secretResourceIds` | array | The resource ID of the secrets. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
