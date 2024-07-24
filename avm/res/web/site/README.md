@@ -2047,6 +2047,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p> |
 | [`cloningInfo`](#parameter-cloninginfo) | object | If specified during app creation, the app is cloned from a source app. |
 | [`containerSize`](#parameter-containersize) | int | Size of the function container. |
+| [`customDomainVerificationId`](#parameter-customdomainverificationid) | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
 | [`dailyMemoryTimeQuota`](#parameter-dailymemorytimequota) | int | Maximum allowed daily memory-time quota (applicable on dynamic apps only). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enabled`](#parameter-enabled) | bool | Setting this value to false disables the app (takes the app offline). |
@@ -2207,6 +2208,13 @@ Size of the function container.
 
 - Required: No
 - Type: int
+
+### Parameter: `customDomainVerificationId`
+
+Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.
+
+- Required: No
+- Type: string
 
 ### Parameter: `dailyMemoryTimeQuota`
 
@@ -3051,7 +3059,6 @@ Virtual Network Route All enabled. This causes all outbound traffic to have Virt
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `customDomainVerificationId` | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
 | `defaultHostname` | string | Default hostname of the app. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
