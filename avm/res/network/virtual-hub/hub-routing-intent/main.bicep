@@ -1,5 +1,5 @@
 metadata name = 'Virtual Hub Routing Intent'
-metadata description = 'This module configures Routing Intent for a Virtual Hub.'
+metadata description = 'This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Hub firewall Resource ID.')
@@ -8,10 +8,10 @@ param azureFirewallResourceId string
 @description('Required. Name of the Virtual Hub.')
 param virtualHubName string
 
-@description('Required. Forward Private traffic to the Azure firewall (RFC1918).')
+@description('Required. Configures Routing Intent to forward Private traffic to the firewall (RFC1918).')
 param privateToFirewall bool
 
-@description('Required. Forward Internet traffic to the Azure firewall (0.0.0.0/0).')
+@description('Required. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).')
 param internetToFirewall bool
 
 resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' existing = {

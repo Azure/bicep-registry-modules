@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "171995932331882363"
+      "templateHash": "14437175207078546495"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -321,10 +321,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11860030695754255931"
+              "templateHash": "9080948373192033748"
             },
             "name": "Virtual Hub Routing Intent",
-            "description": "This module configures Routing Intent for a Virtual Hub.",
+            "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -343,13 +343,13 @@
             "privateToFirewall": {
               "type": "bool",
               "metadata": {
-                "description": "Required. Forward Private traffic to the Azure firewall (RFC1918)."
+                "description": "Required. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
               }
             },
             "internetToFirewall": {
               "type": "bool",
               "metadata": {
-                "description": "Required. Forward Internet traffic to the Azure firewall (0.0.0.0/0)."
+                "description": "Required. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
               }
             }
           },
@@ -412,12 +412,8 @@
           "name": {
             "value": "[coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].name]"
           },
-          "labels": {
-            "value": "[coalesce(tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels'), coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].labels)]"
-          },
-          "routes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes'), coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].routes)]"
-          }
+          "labels": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].labels), createObject('value', createArray()))]",
+          "routes": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].routes), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
