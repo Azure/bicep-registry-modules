@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4315733021258078545"
+      "templateHash": "1615984135312876797"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -475,6 +475,38 @@
         }
       },
       "nullable": true
+    },
+    "scopeMapsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the scope map."
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. The list of scoped permissions for registry artifacts."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The user friendly description of the scope map."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -727,6 +759,12 @@
       "metadata": {
         "description": "Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview))."
       }
+    },
+    "scopeMaps": {
+      "$ref": "#/definitions/scopeMapsType",
+      "metadata": {
+        "description": "Optional. Scope maps setting."
+      }
     }
   },
   "variables": {
@@ -907,6 +945,127 @@
         "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "registry"
+      ]
+    },
+    "registry_scopeMaps": {
+      "copy": {
+        "name": "registry_scopeMaps",
+        "count": "[length(coalesce(parameters('scopeMaps'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Registry-Scope-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'name')]"
+          },
+          "actions": {
+            "value": "[coalesce(parameters('scopeMaps'), createArray())[copyIndex()].actions]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'description')]"
+          },
+          "registryName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "17598532249668830862"
+            },
+            "name": "Container Registries scopeMaps",
+            "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "registryName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[format('{0}-scopemaps', parameters('registryName'))]",
+              "metadata": {
+                "description": "Optional. The name of the scope map."
+              }
+            },
+            "actions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. The list of scoped permissions for registry artifacts."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The user friendly description of the scope map."
+              }
+            }
+          },
+          "resources": {
+            "registry": {
+              "existing": true,
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[parameters('registryName')]"
+            },
+            "scopeMap": {
+              "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+              "properties": {
+                "actions": "[parameters('actions')]",
+                "description": "[parameters('description')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the scope map."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the scope map was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the scope map."
+              },
+              "value": "[resourceId('Microsoft.ContainerRegistry/registries/scopeMaps', parameters('registryName'), parameters('name'))]"
+            }
+          }
+        }
       },
       "dependsOn": [
         "registry"
