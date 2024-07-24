@@ -53,10 +53,10 @@ param scopes array = [
 ]
 
 @description('Conditional. The resource type of the target resource(s) on which the alert is created/updated. Required if alertCriteriaType is MultipleResourceMultipleMetricCriteria.')
-param targetResourceType string = ''
+param targetResourceType string?
 
 @description('Conditional. The region of the target resource(s) on which the alert is created/updated. Required if alertCriteriaType is MultipleResourceMultipleMetricCriteria.')
-param targetResourceRegion string = ''
+param targetResourceRegion string?
 
 @description('Optional. The flag that indicates whether the alert should be auto resolved or not.')
 param autoMitigate bool = true

@@ -48,11 +48,11 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
       allof: [
         {
           criterionType: 'StaticThresholdCriterion'
+          dimensions: []
           metricName: 'Percentage CPU'
-          metricNamespace: 'microsoft.compute/virtualmachines'
-          name: 'HighCPU'
+          name: '1st criterion'
           operator: 'GreaterThan'
-          threshold: '90'
+          threshold: 80
           timeAggregation: 'Average'
         }
       ]
@@ -61,8 +61,9 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     name: 'imamin001'
     // Non-required parameters
     location: 'Global'
-    targetResourceRegion: 'westeurope'
-    targetResourceType: 'microsoft.compute/virtualmachines'
+    scopes: [
+      '<virtualMachineResourceId>'
+    ]
   }
 }
 ```
@@ -85,11 +86,11 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
         "allof": [
           {
             "criterionType": "StaticThresholdCriterion",
+            "dimensions": [],
             "metricName": "Percentage CPU",
-            "metricNamespace": "microsoft.compute/virtualmachines",
-            "name": "HighCPU",
+            "name": "1st criterion",
             "operator": "GreaterThan",
-            "threshold": "90",
+            "threshold": 80,
             "timeAggregation": "Average"
           }
         ],
@@ -103,11 +104,10 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     "location": {
       "value": "Global"
     },
-    "targetResourceRegion": {
-      "value": "westeurope"
-    },
-    "targetResourceType": {
-      "value": "microsoft.compute/virtualmachines"
+    "scopes": {
+      "value": [
+        "<virtualMachineResourceId>"
+      ]
     }
   }
 }
@@ -409,7 +409,6 @@ The region of the target resource(s) on which the alert is created/updated. Requ
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `targetResourceType`
 
@@ -417,7 +416,6 @@ The resource type of the target resource(s) on which the alert is created/update
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `actions`
 

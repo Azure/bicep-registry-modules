@@ -31,6 +31,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    resourceLocation: resourceLocation
+    virtualMachineName: '${namePrefix}${serviceShort}001'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -46,19 +56,20 @@ module testDeployment '../../../main.bicep' = [
       criteria: {
         allof: [
           {
-            criterionType: 'StaticThresholdCriterion'
+            name: '1st criterion'
             metricName: 'Percentage CPU'
-            metricNamespace: 'microsoft.compute/virtualmachines'
-            name: 'HighCPU'
+            dimensions: []
             operator: 'GreaterThan'
-            threshold: '90'
+            threshold: 80
             timeAggregation: 'Average'
+            criterionType: 'StaticThresholdCriterion'
           }
         ]
         'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       }
-      targetResourceRegion: 'westeurope'
-      targetResourceType: 'microsoft.compute/virtualmachines'
+      scopes: [
+        nestedDependencies.outputs.virtualMachineResourceId
+      ]
     }
   }
 ]
