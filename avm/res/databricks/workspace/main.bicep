@@ -170,17 +170,6 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing 
   }
 }
 
-// This var is a workaround for the fact both properties can not be null or empty, they either exist or not in the properties object.
-var defaultStorageFirewallProperties = !empty(privateStorageAccount)
-  ? {
-      defaultStorageFirewall: privateStorageAccount
-      accessConnector: {
-        id: accessConnectorResourceId
-        identityType: 'SystemAssigned'
-      }
-    }
-  : {}
-
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
   location: location
@@ -189,136 +178,147 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     name: skuName
   }
   // This union is required because the defaultStorageFirewall property is optional and cannot be null or ''
-  properties: union(defaultStorageFirewallProperties, {
-    managedResourceGroupId: !empty(managedResourceGroupResourceId)
-      ? managedResourceGroupResourceId
-      : '${subscription().id}/resourceGroups/rg-${name}-managed'
-    parameters: union(
-      // Always added parameters
-      {
-        enableNoPublicIp: {
-          value: disablePublicIp
-        }
-        prepareEncryption: {
-          value: prepareEncryption
-        }
-        vnetAddressPrefix: {
-          value: vnetAddressPrefix
-        }
-        requireInfrastructureEncryption: {
-          value: requireInfrastructureEncryption
-        }
-      },
-      // Parameters only added if not empty
-      !empty(customVirtualNetworkResourceId)
+  properties: union(
+    {
+      managedResourceGroupId: !empty(managedResourceGroupResourceId)
+        ? managedResourceGroupResourceId
+        : '${subscription().id}/resourceGroups/rg-${name}-managed'
+      parameters: union(
+        // Always added parameters
+        {
+          enableNoPublicIp: {
+            value: disablePublicIp
+          }
+          prepareEncryption: {
+            value: prepareEncryption
+          }
+          vnetAddressPrefix: {
+            value: vnetAddressPrefix
+          }
+          requireInfrastructureEncryption: {
+            value: requireInfrastructureEncryption
+          }
+        },
+        // Parameters only added if not empty
+        !empty(customVirtualNetworkResourceId)
+          ? {
+              customVirtualNetworkId: {
+                value: customVirtualNetworkResourceId
+              }
+            }
+          : {},
+        !empty(amlWorkspaceResourceId)
+          ? {
+              amlWorkspaceId: {
+                value: amlWorkspaceResourceId
+              }
+            }
+          : {},
+        !empty(customPrivateSubnetName)
+          ? {
+              customPrivateSubnetName: {
+                value: customPrivateSubnetName
+              }
+            }
+          : {},
+        !empty(customPublicSubnetName)
+          ? {
+              customPublicSubnetName: {
+                value: customPublicSubnetName
+              }
+            }
+          : {},
+        !empty(loadBalancerBackendPoolName)
+          ? {
+              loadBalancerBackendPoolName: {
+                value: loadBalancerBackendPoolName
+              }
+            }
+          : {},
+        !empty(loadBalancerResourceId)
+          ? {
+              loadBalancerId: {
+                value: loadBalancerResourceId
+              }
+            }
+          : {},
+        !empty(natGatewayName)
+          ? {
+              natGatewayName: {
+                value: natGatewayName
+              }
+            }
+          : {},
+        !empty(publicIpName)
+          ? {
+              publicIpName: {
+                value: publicIpName
+              }
+            }
+          : {},
+        !empty(storageAccountName)
+          ? {
+              storageAccountName: {
+                value: storageAccountName
+              }
+            }
+          : {},
+        !empty(storageAccountSkuName)
+          ? {
+              storageAccountSkuName: {
+                value: storageAccountSkuName
+              }
+            }
+          : {}
+      )
+      // createdBy: {} // This is a read-only property
+      // managedDiskIdentity: {} // This is a read-only property
+      // storageAccountIdentity: {} // This is a read-only property
+      // updatedBy: {} // This is a read-only property
+      publicNetworkAccess: publicNetworkAccess
+      requiredNsgRules: requiredNsgRules
+      encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
         ? {
-            customVirtualNetworkId: {
-              value: customVirtualNetworkResourceId
+            entities: {
+              managedServices: !empty(customerManagedKey)
+                ? {
+                    keySource: 'Microsoft.Keyvault'
+                    keyVaultProperties: {
+                      keyVaultUri: cMKKeyVault.properties.vaultUri
+                      keyName: customerManagedKey!.keyName
+                      keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                        ? customerManagedKey!.keyVersion!
+                        : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    }
+                  }
+                : null
+              managedDisk: !empty(customerManagedKeyManagedDisk)
+                ? {
+                    keySource: 'Microsoft.Keyvault'
+                    keyVaultProperties: {
+                      keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
+                      keyName: customerManagedKeyManagedDisk!.keyName
+                      keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
+                        ? customerManagedKeyManagedDisk!.keyVersion!
+                        : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    }
+                    rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
+                  }
+                : null
             }
           }
-        : {},
-      !empty(amlWorkspaceResourceId)
-        ? {
-            amlWorkspaceId: {
-              value: amlWorkspaceResourceId
-            }
-          }
-        : {},
-      !empty(customPrivateSubnetName)
-        ? {
-            customPrivateSubnetName: {
-              value: customPrivateSubnetName
-            }
-          }
-        : {},
-      !empty(customPublicSubnetName)
-        ? {
-            customPublicSubnetName: {
-              value: customPublicSubnetName
-            }
-          }
-        : {},
-      !empty(loadBalancerBackendPoolName)
-        ? {
-            loadBalancerBackendPoolName: {
-              value: loadBalancerBackendPoolName
-            }
-          }
-        : {},
-      !empty(loadBalancerResourceId)
-        ? {
-            loadBalancerId: {
-              value: loadBalancerResourceId
-            }
-          }
-        : {},
-      !empty(natGatewayName)
-        ? {
-            natGatewayName: {
-              value: natGatewayName
-            }
-          }
-        : {},
-      !empty(publicIpName)
-        ? {
-            publicIpName: {
-              value: publicIpName
-            }
-          }
-        : {},
-      !empty(storageAccountName)
-        ? {
-            storageAccountName: {
-              value: storageAccountName
-            }
-          }
-        : {},
-      !empty(storageAccountSkuName)
-        ? {
-            storageAccountSkuName: {
-              value: storageAccountSkuName
-            }
-          }
-        : {}
-    )
-    // createdBy: {} // This is a read-only property
-    // managedDiskIdentity: {} // This is a read-only property
-    // storageAccountIdentity: {} // This is a read-only property
-    // updatedBy: {} // This is a read-only property
-    publicNetworkAccess: publicNetworkAccess
-    requiredNsgRules: requiredNsgRules
-    encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
+        : null
+    },
+    !empty(privateStorageAccount)
       ? {
-          entities: {
-            managedServices: !empty(customerManagedKey)
-              ? {
-                  keySource: 'Microsoft.Keyvault'
-                  keyVaultProperties: {
-                    keyVaultUri: cMKKeyVault.properties.vaultUri
-                    keyName: customerManagedKey!.keyName
-                    keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                      ? customerManagedKey!.keyVersion!
-                      : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                  }
-                }
-              : null
-            managedDisk: !empty(customerManagedKeyManagedDisk)
-              ? {
-                  keySource: 'Microsoft.Keyvault'
-                  keyVaultProperties: {
-                    keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
-                    keyName: customerManagedKeyManagedDisk!.keyName
-                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                      ? customerManagedKeyManagedDisk!.keyVersion!
-                      : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                  }
-                  rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
-                }
-              : null
+          defaultStorageFirewall: privateStorageAccount
+          accessConnector: {
+            id: accessConnectorResourceId
+            identityType: 'SystemAssigned'
           }
         }
-      : null
-  })
+      : {}
+  )
 }
 
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
