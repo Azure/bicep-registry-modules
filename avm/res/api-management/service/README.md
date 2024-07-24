@@ -908,7 +908,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     managedIdentities: {
-      systemAssigned: false
+      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -1134,7 +1134,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": false,
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -1263,7 +1263,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`loggers`](#parameter-loggers) | array | Loggers. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Will default to "SystemAssigned" if not set. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`minApiVersion`](#parameter-minapiversion) | string | Limit control plane API calls to API Management service with version equal to or newer than this value. |
 | [`namedValues`](#parameter-namedvalues) | array | Named values. |
 | [`newGuidValue`](#parameter-newguidvalue) | string | Necessary to create a new GUID. |
@@ -1634,7 +1634,7 @@ Loggers.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource. Will default to "SystemAssigned" if not set.
+The managed identity definition for this resource.
 
 - Required: No
 - Type: object
@@ -1643,16 +1643,8 @@ The managed identity definition for this resource. Will default to "SystemAssign
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`disabled`](#parameter-managedidentitiesdisabled) | bool | Fully disables mmanaged identities. This will override any other managed identity settings. |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
 | [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
-
-### Parameter: `managedIdentities.disabled`
-
-Fully disables mmanaged identities. This will override any other managed identity settings.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `managedIdentities.systemAssigned`
 

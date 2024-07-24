@@ -36,7 +36,7 @@ param enableClientCertificate bool = false
 @description('Optional. Custom hostname configuration of the API Management service.')
 param hostnameConfigurations array = []
 
-@description('Optional. The managed identity definition for this resource. Will default to "SystemAssigned" if not set.')
+@description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Location for all Resources.')
