@@ -41,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    imageTemplateName: 'dep-${namePrefix}-imgt-${serviceShort}-${baseTime}'
+    imageTemplateName: 'dep-${namePrefix}-imgt-${serviceShort}-${uniqueString(baseTime)}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'
   }
