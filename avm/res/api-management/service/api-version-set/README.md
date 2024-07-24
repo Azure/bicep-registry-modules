@@ -52,7 +52,7 @@ API Version set properties.
 
 - Required: No
 - Type: object
-- Default: `System.Management.Automation.OrderedHashtable`
+- Default: `{}`
 
 
 ## Outputs
