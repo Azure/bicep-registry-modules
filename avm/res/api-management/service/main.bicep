@@ -152,24 +152,14 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) && managedIdentities.?disabled == true
+var identity = !empty(managedIdentities)
   ? {
-      type: 'None'
-      userAssignedIdentities: null
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : !empty(managedIdentities) && managedIdentities.?disabled == false
-      ? {
-          type: (managedIdentities.?systemAssigned ?? false)
-            ? (!empty(managedIdentities.?userAssignedResourceIds ?? {})
-                ? 'SystemAssigned,UserAssigned'
-                : 'SystemAssigned')
-            : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-          userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-        }
-      : {
-          type: 'SystemAssigned'
-          userAssignedIdentities: null
-        }
+  : null
 
 var builtInRoleNames = {
   'API Management Developer Portal Content Editor': subscriptionResourceId(
@@ -607,9 +597,6 @@ type managedIdentitiesType = {
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
-
-  @description('Optional. Fully disables mmanaged identities. This will override any other managed identity settings.')
-  disabled: bool?
 }?
 
 type lockType = {
