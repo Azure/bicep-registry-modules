@@ -20,7 +20,6 @@ param serviceShort string = 'nvhrtint'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -68,29 +67,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'connection1'
           remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
-          routingConfiguration: {
-            associatedRouteTable: {
-              id: resourceId(
-                'Microsoft.Network/virtualHubs/hubRouteTables',
-                '${namePrefix}-${serviceShort}',
-                'defaultRouteTable'
-              )
-            }
-            propagatedRouteTables: {
-              ids: [
-                {
-                  id: resourceId(
-                    'Microsoft.Network/virtualHubs/hubRouteTables',
-                    '${namePrefix}-${serviceShort}',
-                    'defaultRouteTable'
-                  )
-                }
-              ]
-              labels: [
-                'none'
-              ]
-            }
-          }
+          routingConfiguration: {}
         }
       ]
       hubRoutingPreference: 'ASPath'

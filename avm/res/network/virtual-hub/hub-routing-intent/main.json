@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "4853297161423753651"
+      "version": "0.29.47.4906",
+      "templateHash": "11860030695754255931"
     },
     "name": "Virtual Hub Routing Intent",
     "description": "This module configures Routing Intent for a Virtual Hub.",

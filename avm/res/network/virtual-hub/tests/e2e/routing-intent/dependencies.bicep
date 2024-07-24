@@ -77,8 +77,5 @@ output virtualWANResourceId string = virtualWan.id
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id
 
-//@description('The resource ID of the created Azure Firewall Policy')
-//output firewallPolicy string = firewallPolicy.id
-
 @description('The resource ID of the created Azure Firewall')
 output azureFirewallResourceId string = azureFirewall.id

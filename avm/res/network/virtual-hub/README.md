@@ -250,21 +250,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       {
         name: 'connection1'
         remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
-        routingConfiguration: {
-          associatedRouteTable: {
-            id: '<id>'
-          }
-          propagatedRouteTables: {
-            ids: [
-              {
-                id: '<id>'
-              }
-            ]
-            labels: [
-              'none'
-            ]
-          }
-        }
+        routingConfiguration: {}
       }
     ]
     internetToFirewall: false
@@ -320,21 +306,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         {
           "name": "connection1",
           "remoteVirtualNetworkId": "<remoteVirtualNetworkId>",
-          "routingConfiguration": {
-            "associatedRouteTable": {
-              "id": "<id>"
-            },
-            "propagatedRouteTables": {
-              "ids": [
-                {
-                  "id": "<id>"
-                }
-              ],
-              "labels": [
-                "none"
-              ]
-            }
-          }
+          "routingConfiguration": {}
         }
       ]
     },

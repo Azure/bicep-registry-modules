@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "17140762965236648436"
+      "version": "0.29.47.4906",
+      "templateHash": "171995932331882363"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -320,8 +320,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4853297161423753651"
+              "version": "0.29.47.4906",
+              "templateHash": "11860030695754255931"
             },
             "name": "Virtual Hub Routing Intent",
             "description": "This module configures Routing Intent for a Virtual Hub.",
@@ -412,8 +412,12 @@
           "name": {
             "value": "[coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].name]"
           },
-          "labels": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].labels), createObject('value', createArray()))]",
-          "routes": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].routes), createObject('value', createArray()))]"
+          "labels": {
+            "value": "[coalesce(tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels'), coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].labels)]"
+          },
+          "routes": {
+            "value": "[coalesce(tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes'), coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].routes)]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -421,8 +425,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7178717349327479453"
+              "version": "0.29.47.4906",
+              "templateHash": "2767725465951482406"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table.",
@@ -528,8 +532,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "8750805031776310329"
+              "version": "0.29.47.4906",
+              "templateHash": "12641692391238745355"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection.",
