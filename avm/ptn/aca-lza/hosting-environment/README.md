@@ -133,7 +133,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     }
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
-    workloadName: 'acalzaavm'
+    workloadName: '<workloadName>'
   }
 }
 ```
@@ -202,7 +202,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "linux"
     },
     "workloadName": {
-      "value": "acalzaavm"
+      "value": "<workloadName>"
     }
   }
 }
@@ -253,7 +253,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     }
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
-    workloadName: 'acalzaavmw'
+    workloadName: '<workloadName>'
   }
 }
 ```
@@ -346,7 +346,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "linux"
     },
     "workloadName": {
-      "value": "acalzaavmw"
+      "value": "<workloadName>"
     }
   }
 }
@@ -381,6 +381,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 | :-- | :-- | :-- |
 | [`applicationGatewayFqdn`](#parameter-applicationgatewayfqdn) | string | The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty. |
 | [`base64Certificate`](#parameter-base64certificate) | string | The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty. |
+| [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
 | [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
 | [`enableDdosProtection`](#parameter-enableddosprotection) | bool | DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false". |
@@ -492,6 +493,14 @@ The FQDN of the Application Gateway. Required and must match if the TLS Certific
 ### Parameter: `base64Certificate`
 
 The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `bastionResourceId`
+
+The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty.
 
 - Required: No
 - Type: string
