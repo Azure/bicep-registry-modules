@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3902503504661350202"
+      "version": "0.27.1.19265",
+      "templateHash": "2964689426852955307"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -662,6 +662,18 @@
         }
       },
       "nullable": true
+    },
+    "maintenanceConfigurationType": {
+      "type": "object",
+      "properties": {
+        "maintenanceWindow": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Maintenance window for the maintenance configuration."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -966,18 +978,10 @@
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
     },
-    "automatic": {
-      "type": "bool",
-      "defaultValue": false,
+    "maintenanceConfiguration": {
+      "$ref": "#/definitions/maintenanceConfigurationType",
       "metadata": {
         "description": "Optional. Whether or not to use AKS Automatic mode."
-      }
-    },
-    "maintenanceWindow": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Maintenance window for the maintenance configuration."
       }
     },
     "costAnalysisEnabled": {
@@ -1806,7 +1810,7 @@
       ]
     },
     "managedCluster_maintenanceConfigurations": {
-      "condition": "[parameters('automatic')]",
+      "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations', uniqueString(deployment().name, parameters('location')))]",
@@ -1816,11 +1820,8 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "aksManagedAutoUpgradeSchedule"
-          },
           "maintenanceWindow": {
-            "value": "[parameters('maintenanceWindow')]"
+            "value": "[parameters('maintenanceConfiguration').maintenanceWindow]"
           },
           "managedClusterName": {
             "value": "[parameters('name')]"
@@ -1832,8 +1833,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14337718698260952233"
+              "version": "0.27.1.19265",
+              "templateHash": "17618545946010219594"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -1854,8 +1855,9 @@
             },
             "name": {
               "type": "string",
+              "defaultValue": "aksManagedAutoUpgradeSchedule",
               "metadata": {
-                "description": "Required. Name of the maintenance configuration."
+                "description": "Optional. Name of the maintenance configuration."
               }
             }
           },
@@ -2028,8 +2030,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "6644048800784630485"
+              "version": "0.27.1.19265",
+              "templateHash": "17795163053989614827"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
