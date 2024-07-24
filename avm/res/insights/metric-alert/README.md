@@ -44,17 +44,20 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   name: 'metricAlertDeployment'
   params: {
     // Required parameters
-    criterias: [
-      {
-        criterionType: 'StaticThresholdCriterion'
-        metricName: 'Percentage CPU'
-        metricNamespace: 'microsoft.compute/virtualmachines'
-        name: 'HighCPU'
-        operator: 'GreaterThan'
-        threshold: '90'
-        timeAggregation: 'Average'
-      }
-    ]
+    criteria: {
+      allof: [
+        {
+          criterionType: 'StaticThresholdCriterion'
+          metricName: 'Percentage CPU'
+          metricNamespace: 'microsoft.compute/virtualmachines'
+          name: 'HighCPU'
+          operator: 'GreaterThan'
+          threshold: '90'
+          timeAggregation: 'Average'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+    }
     name: 'imamin001'
     // Non-required parameters
     location: 'Global'
@@ -77,18 +80,21 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "criterias": {
-      "value": [
-        {
-          "criterionType": "StaticThresholdCriterion",
-          "metricName": "Percentage CPU",
-          "metricNamespace": "microsoft.compute/virtualmachines",
-          "name": "HighCPU",
-          "operator": "GreaterThan",
-          "threshold": "90",
-          "timeAggregation": "Average"
-        }
-      ]
+    "criteria": {
+      "value": {
+        "allof": [
+          {
+            "criterionType": "StaticThresholdCriterion",
+            "metricName": "Percentage CPU",
+            "metricNamespace": "microsoft.compute/virtualmachines",
+            "name": "HighCPU",
+            "operator": "GreaterThan",
+            "threshold": "90",
+            "timeAggregation": "Average"
+          }
+        ],
+        "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+      }
     },
     "name": {
       "value": "imamin001"
@@ -124,23 +130,25 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   name: 'metricAlertDeployment'
   params: {
     // Required parameters
-    criterias: [
-      {
-        criterionType: 'StaticThresholdCriterion'
-        metricName: 'Percentage CPU'
-        metricNamespace: 'microsoft.compute/virtualmachines'
-        name: 'HighCPU'
-        operator: 'GreaterThan'
-        threshold: '90'
-        timeAggregation: 'Average'
-      }
-    ]
+    criteria: {
+      allof: [
+        {
+          criterionType: 'StaticThresholdCriterion'
+          metricName: 'Percentage CPU'
+          metricNamespace: 'microsoft.compute/virtualmachines'
+          name: 'HighCPU'
+          operator: 'GreaterThan'
+          threshold: '90'
+          timeAggregation: 'Average'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+    }
     name: 'imamax001'
     // Non-required parameters
     actions: [
       '<actionGroupResourceId>'
     ]
-    alertCriteriaType: 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
     location: 'Global'
     roleAssignments: [
       {
@@ -184,18 +192,21 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "criterias": {
-      "value": [
-        {
-          "criterionType": "StaticThresholdCriterion",
-          "metricName": "Percentage CPU",
-          "metricNamespace": "microsoft.compute/virtualmachines",
-          "name": "HighCPU",
-          "operator": "GreaterThan",
-          "threshold": "90",
-          "timeAggregation": "Average"
-        }
-      ]
+    "criteria": {
+      "value": {
+        "allof": [
+          {
+            "criterionType": "StaticThresholdCriterion",
+            "metricName": "Percentage CPU",
+            "metricNamespace": "microsoft.compute/virtualmachines",
+            "name": "HighCPU",
+            "operator": "GreaterThan",
+            "threshold": "90",
+            "timeAggregation": "Average"
+          }
+        ],
+        "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+      }
     },
     "name": {
       "value": "imamax001"
@@ -205,9 +216,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
       "value": [
         "<actionGroupResourceId>"
       ]
-    },
-    "alertCriteriaType": {
-      "value": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
     },
     "location": {
       "value": "Global"
@@ -268,32 +276,29 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   name: 'metricAlertDeployment'
   params: {
     // Required parameters
-    criterias: [
-      {
-        criterionType: 'StaticThresholdCriterion'
-        metricName: 'Percentage CPU'
-        metricNamespace: 'microsoft.compute/virtualmachines'
-        name: 'HighCPU'
-        operator: 'GreaterThan'
-        threshold: '90'
-        timeAggregation: 'Average'
-      }
-    ]
+    criteria: {
+      componentId: '<componentId>'
+      failedLocationCount: 3
+      'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
+      webTestId: '<webTestId>'
+    }
     name: 'imawaf001'
     // Non-required parameters
     actions: [
       '<actionGroupResourceId>'
     ]
-    alertCriteriaType: 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-    location: 'Global'
+    evaluationFrequency: 'PT5M'
+    location: 'global'
+    scopes: [
+      '<appInsightsResourceId>'
+      '<pingTestResourceId>'
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    targetResourceRegion: 'westeurope'
-    targetResourceType: 'microsoft.compute/virtualmachines'
-    windowSize: 'PT15M'
+    windowSize: 'PT5M'
   }
 }
 ```
@@ -311,18 +316,13 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "criterias": {
-      "value": [
-        {
-          "criterionType": "StaticThresholdCriterion",
-          "metricName": "Percentage CPU",
-          "metricNamespace": "microsoft.compute/virtualmachines",
-          "name": "HighCPU",
-          "operator": "GreaterThan",
-          "threshold": "90",
-          "timeAggregation": "Average"
-        }
-      ]
+    "criteria": {
+      "value": {
+        "componentId": "<componentId>",
+        "failedLocationCount": 3,
+        "odata.type": "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria",
+        "webTestId": "<webTestId>"
+      }
     },
     "name": {
       "value": "imawaf001"
@@ -333,11 +333,17 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
         "<actionGroupResourceId>"
       ]
     },
-    "alertCriteriaType": {
-      "value": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+    "evaluationFrequency": {
+      "value": "PT5M"
     },
     "location": {
-      "value": "Global"
+      "value": "global"
+    },
+    "scopes": {
+      "value": [
+        "<appInsightsResourceId>",
+        "<pingTestResourceId>"
+      ]
     },
     "tags": {
       "value": {
@@ -346,14 +352,8 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "targetResourceRegion": {
-      "value": "westeurope"
-    },
-    "targetResourceType": {
-      "value": "microsoft.compute/virtualmachines"
-    },
     "windowSize": {
-      "value": "PT15M"
+      "value": "PT5M"
     }
   }
 }
@@ -369,7 +369,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`criterias`](#parameter-criterias) | array | Criterias to trigger the alert. Array of 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria' or 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria' objects. When using MultipleResourceMultipleMetricCriteria criteria type, some parameters becomes mandatory. It is not possible to convert from SingleResourceMultipleMetricCriteria to MultipleResourceMultipleMetricCriteria. The alert must be deleted and recreated. |
 | [`name`](#parameter-name) | string | The name of the alert. |
 
 **Conditional parameters**
@@ -384,9 +383,9 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`actions`](#parameter-actions) | array | The list of actions to take when alert triggers. |
-| [`alertCriteriaType`](#parameter-alertcriteriatype) | string | Maps to the 'odata.type' field. Specifies the type of the alert criteria. |
 | [`alertDescription`](#parameter-alertdescription) | string | Description of the alert. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be auto resolved or not. |
+| [`criteria`](#parameter-criteria) | object | Maps to the 'odata.type' field. Specifies the type of the alert criteria. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this alert is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | how often the metric alert is evaluated represented in ISO 8601 duration format. |
@@ -396,13 +395,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 | [`severity`](#parameter-severity) | int | The severity of the alert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`windowSize`](#parameter-windowsize) | string | the period of time (in ISO 8601 duration format) that is used to monitor alert activity based on the threshold. |
-
-### Parameter: `criterias`
-
-Criterias to trigger the alert. Array of 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria' or 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria' objects. When using MultipleResourceMultipleMetricCriteria criteria type, some parameters becomes mandatory. It is not possible to convert from SingleResourceMultipleMetricCriteria to MultipleResourceMultipleMetricCriteria. The alert must be deleted and recreated.
-
-- Required: Yes
-- Type: array
 
 ### Parameter: `name`
 
@@ -435,22 +427,6 @@ The list of actions to take when alert triggers.
 - Type: array
 - Default: `[]`
 
-### Parameter: `alertCriteriaType`
-
-Maps to the 'odata.type' field. Specifies the type of the alert criteria.
-
-- Required: No
-- Type: string
-- Default: `'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'`
-- Allowed:
-  ```Bicep
-  [
-    'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-    'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
-    'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
-  ]
-  ```
-
 ### Parameter: `alertDescription`
 
 Description of the alert.
@@ -466,6 +442,13 @@ The flag that indicates whether the alert should be auto resolved or not.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `criteria`
+
+Maps to the 'odata.type' field. Specifies the type of the alert criteria.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `enabled`
 

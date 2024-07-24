@@ -65,15 +65,7 @@ param autoMitigate bool = true
 param actions array = []
 
 @description('Optional. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
-@allowed([
-  'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
-  'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-  'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
-])
-param alertCriteriaType string = 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-
-@description('Required. Criterias to trigger the alert. Array of \'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria\' or \'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria\' objects. When using MultipleResourceMultipleMetricCriteria criteria type, some parameters becomes mandatory. It is not possible to convert from SingleResourceMultipleMetricCriteria to MultipleResourceMultipleMetricCriteria. The alert must be deleted and recreated.')
-param criterias array
+param criteria alertType
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -86,8 +78,8 @@ param enableTelemetry bool = true
 
 var actionGroups = [
   for action in actions: {
-    actionGroupId: contains(action, 'actionGroupId') ? action.actionGroupId : action
-    webHookProperties: contains(action, 'webHookProperties') ? action.webHookProperties : null
+    actionGroupId: action.?actionGroupId ?? action
+    webHookProperties: action.?webHookProperties ?? null
   }
 ]
 
@@ -137,10 +129,7 @@ resource metricAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     windowSize: windowSize
     targetResourceType: targetResourceType
     targetResourceRegion: targetResourceRegion
-    criteria: {
-      'odata.type': any(alertCriteriaType)
-      allOf: criterias
-    }
+    criteria: criteria
     autoMitigate: autoMitigate
     actions: actionGroups
   }
@@ -203,3 +192,20 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@discriminator('odata.type')
+type alertType = alertWebtestType | alertResourceType | alertMultiResourceType
+type alertResourceType = {
+  'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+  allof: array
+}
+type alertMultiResourceType = {
+  'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+  allof: array
+}
+type alertWebtestType = {
+  'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
+  componentId: string
+  failedLocationCount: int
+  webTestId: string
+}

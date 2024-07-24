@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "12888844635682396371"
+      "version": "0.29.45.22436",
+      "templateHash": "14278852936426806763"
     },
     "name": "Metric Alerts",
     "description": "This module deploys a Metric Alert.",
@@ -78,6 +78,71 @@
         }
       },
       "nullable": true
+    },
+    "alertType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "odata.type",
+        "mapping": {
+          "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria": {
+            "$ref": "#/definitions/alertWebtestType"
+          },
+          "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria": {
+            "$ref": "#/definitions/alertResourceType"
+          },
+          "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria": {
+            "$ref": "#/definitions/alertMultiResourceType"
+          }
+        }
+      }
+    },
+    "alertResourceType": {
+      "type": "object",
+      "properties": {
+        "odata.type": {
+          "type": "string",
+          "allowedValues": [
+            "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+          ]
+        },
+        "allof": {
+          "type": "array"
+        }
+      }
+    },
+    "alertMultiResourceType": {
+      "type": "object",
+      "properties": {
+        "odata.type": {
+          "type": "string",
+          "allowedValues": [
+            "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+          ]
+        },
+        "allof": {
+          "type": "array"
+        }
+      }
+    },
+    "alertWebtestType": {
+      "type": "object",
+      "properties": {
+        "odata.type": {
+          "type": "string",
+          "allowedValues": [
+            "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria"
+          ]
+        },
+        "componentId": {
+          "type": "string"
+        },
+        "failedLocationCount": {
+          "type": "int"
+        },
+        "webTestId": {
+          "type": "string"
+        }
+      }
     }
   },
   "parameters": {
@@ -190,22 +255,10 @@
         "description": "Optional. The list of actions to take when alert triggers."
       }
     },
-    "alertCriteriaType": {
-      "type": "string",
-      "defaultValue": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
-      "allowedValues": [
-        "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
-        "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
-        "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria"
-      ],
+    "criteria": {
+      "$ref": "#/definitions/alertType",
       "metadata": {
         "description": "Optional. Maps to the 'odata.type' field. Specifies the type of the alert criteria."
-      }
-    },
-    "criterias": {
-      "type": "array",
-      "metadata": {
-        "description": "Required. Criterias to trigger the alert. Array of 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria' or 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria' objects. When using MultipleResourceMultipleMetricCriteria criteria type, some parameters becomes mandatory. It is not possible to convert from SingleResourceMultipleMetricCriteria to MultipleResourceMultipleMetricCriteria. The alert must be deleted and recreated."
       }
     },
     "roleAssignments": {
@@ -235,8 +288,8 @@
         "name": "actionGroups",
         "count": "[length(parameters('actions'))]",
         "input": {
-          "actionGroupId": "[if(contains(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')].actionGroupId, parameters('actions')[copyIndex('actionGroups')])]",
-          "webHookProperties": "[if(contains(parameters('actions')[copyIndex('actionGroups')], 'webHookProperties'), parameters('actions')[copyIndex('actionGroups')].webHookProperties, null())]"
+          "actionGroupId": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')])]",
+          "webHookProperties": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'webHookProperties'), null())]"
         }
       }
     ],
@@ -284,10 +337,7 @@
         "windowSize": "[parameters('windowSize')]",
         "targetResourceType": "[parameters('targetResourceType')]",
         "targetResourceRegion": "[parameters('targetResourceRegion')]",
-        "criteria": {
-          "odata.type": "[parameters('alertCriteriaType')]",
-          "allOf": "[parameters('criterias')]"
-        },
+        "criteria": "[parameters('criteria')]",
         "autoMitigate": "[parameters('autoMitigate')]",
         "actions": "[variables('actionGroups')]"
       }
