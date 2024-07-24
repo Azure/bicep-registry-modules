@@ -39,7 +39,7 @@ param password string = newGuid()
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    workloadName: 'acalzaavm'
+    workloadName: serviceShort
     tags: {
       environment: 'test'
     }

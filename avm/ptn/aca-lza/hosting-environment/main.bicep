@@ -18,6 +18,9 @@ param workloadName string = 'aca-lza'
 @description('Optional. The resource ID of the hub virtual network. If set, the spoke virtual network will be peered with the hub virtual network. Default is empty.')
 param hubVirtualNetworkResourceId string = ''
 
+@description('Optional. The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty.')
+param bastionResourceId string = ''
+
 @description('Optional. If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty.')
 param networkApplianceIpAddress string = ''
 
@@ -149,6 +152,7 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
     //subscriptionId: subscriptionId
     workloadName: workloadName
     hubVNetId: hubVirtualNetworkResourceId
+    bastionResourceid: bastionResourceId
     spokeApplicationGatewaySubnetAddressPrefix: spokeApplicationGatewaySubnetAddressPrefix
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
     spokePrivateEndpointsSubnetAddressPrefix: spokePrivateEndpointsSubnetAddressPrefix

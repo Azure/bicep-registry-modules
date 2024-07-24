@@ -40,7 +40,7 @@ module hubdeployment 'deploy.hub.bicep' = {
     azureFirewallSubnetManagementAddressPrefix: '10.0.0.128/26'
     gatewaySubnetAddressPrefix: '10.0.0.0/27'
     bastionSubnetAddressPrefix: '10.0.0.192/26'
-    workloadName: 'aca-lza'
+    workloadName: serviceShort
   }
 }
 
@@ -53,7 +53,7 @@ module hubdeployment 'deploy.hub.bicep' = {
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    workloadName: 'acalzaavmw'
+    workloadName: serviceShort
     hubVirtualNetworkResourceId: hubdeployment.outputs.hubVNetId
     networkApplianceIpAddress: hubdeployment.outputs.networkApplianceIpAddress
     tags: {

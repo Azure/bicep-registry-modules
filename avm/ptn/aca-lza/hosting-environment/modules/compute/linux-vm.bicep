@@ -14,7 +14,7 @@ param vmSubnetAddressPrefix string
 param vmNetworkSecurityGroupName string
 param vmNetworkInterfaceName string
 param logAnalyticsWorkspaceResourceId string
-
+param bastionResourceId string
 param vmAdminUsername string
 
 @secure()
@@ -49,22 +49,24 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
     name: vmNetworkSecurityGroupName
     location: location
     tags: tags
-    securityRules: [
-      {
-        name: 'allow-bastion-inbound'
-        properties: {
-          description: 'Allow inbound traffic from Bastion to the JumpBox'
-          protocol: '*'
-          sourceAddressPrefix: 'Bastion'
-          sourcePortRange: '*'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '*'
-          access: 'Allow'
-          priority: 100
-          direction: 'Inbound'
-        }
-      }
-    ]
+    securityRules: !empty(bastionResourceId)
+      ? [
+          {
+            name: 'allow-bastion-inbound'
+            properties: {
+              description: 'Allow inbound traffic from Bastion to the JumpBox'
+              protocol: '*'
+              sourceAddressPrefix: 'Bastion'
+              sourcePortRange: '*'
+              destinationAddressPrefix: '*'
+              destinationPortRange: '*'
+              access: 'Allow'
+              priority: 100
+              direction: 'Inbound'
+            }
+          }
+        ]
+      : []
   }
 }
 

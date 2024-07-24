@@ -29,6 +29,9 @@ param tags object = {}
 @description('The resource ID of the existing hub virtual network.')
 param hubVNetId string
 
+@description('The resource id of the bastion host.')
+param bastionResourceid string
+
 // Spoke
 @description('CIDR of the spoke virtual network. For most landing zone implementations, the spoke network would have been created by your platform team.')
 param spokeVNetAddressPrefixes array
@@ -498,6 +501,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
     location: location
     tags: tags
     vmName: naming.outputs.resourcesNames.vmJumpBox
+    bastionResourceId: bastionResourceid
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmSshPublicKey: vmLinuxSshAuthorizedKey
@@ -522,6 +526,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
     location: location
     tags: tags
     vmName: naming.outputs.resourcesNames.vmJumpBox
+    bastionResourceId: bastionResourceid
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmSize: vmSize
