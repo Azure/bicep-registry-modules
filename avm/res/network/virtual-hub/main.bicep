@@ -193,9 +193,8 @@ module virtualHub_routeTables 'hub-route-table/main.bicep' = [
     params: {
       virtualHubName: virtualHub.name
       name: routeTable.name
-      //labels: contains(routeTable, 'labels') ? routeTable.labels : []
-      labels: routeTable.?labels ?? routeTable.labels
-      routes: routeTable.?routes ?? routeTable.routes
+      labels: contains(routeTable, 'labels') ? routeTable.labels : []
+      routes: contains(routeTable, 'routes') ? routeTable.routes : []
     }
   }
 ]
