@@ -122,10 +122,10 @@ module hubLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspac
 
 @description('The virtual network used as the stand-in for the regional hub. This would normally be already provisioned by your platform team.')
 module vnetHub 'br/public:avm/res/network/virtual-network:0.1.6' = {
-  name: take('vnetSpoke-${deployment().name}', 64)
+  name: take('vnetHub-${deployment().name}', 64)
   scope: resourceGroup(rgHubName)
   params: {
-    name: naming.outputs.resourcesNames.vnetSpoke
+    name: naming.outputs.resourcesNames.vnetHub
     location: location
     tags: tags
     addressPrefixes: vnetAddressPrefixes

@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = {
     tags: {
       environment: 'test'
     }
+    location: resourceLocation
     vmSize: 'Standard_B1s'
     vmAdminUsername: 'vmadmin'
     vmAdminPassword: password
