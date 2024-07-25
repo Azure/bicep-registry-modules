@@ -2210,6 +2210,56 @@ Array of custom objects describing vNet links of the DNS zone. Each object shoul
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworklinksvirtualnetworkresourceid) | string | The resource ID of the virtual network to link. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-virtualnetworklinkslocation) | string | The Azure Region where the resource lives. |
+| [`name`](#parameter-virtualnetworklinksname) | string | The resource name. |
+| [`registrationEnabled`](#parameter-virtualnetworklinksregistrationenabled) | bool | Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?. |
+| [`tags`](#parameter-virtualnetworklinkstags) | object | Resource tags. |
+
+### Parameter: `virtualNetworkLinks.virtualNetworkResourceId`
+
+The resource ID of the virtual network to link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkLinks.location`
+
+The Azure Region where the resource lives.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkLinks.name`
+
+The resource name.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkLinks.registrationEnabled`
+
+Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkLinks.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
+
 
 ## Outputs
 

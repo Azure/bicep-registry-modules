@@ -1,0 +1,100 @@
+name: ".Platform - Run CI tests"
+
+on:
+  workflow_dispatch:
+    inputs:
+      testFileRegex:
+        type: string
+        description: "The regex of the test file(s) to run"
+        required: false
+        default: '.*'
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/platform.ci-tests.yml"
+      - "avm/utilities/**"
+      - "!*/**/README.md"
+  schedule:
+    - cron: "0 0 * * Sun" # Every Sunday
+
+env:
+  workflowPath: ".github/workflows/platform.ci-tests.yml"
+
+
+jobs:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+
+  ###############
+  #   Removal   #
+  ###############
+  job_run_tests:
+    runs-on: ubuntu-20.04
+    name: "Run CI tests"
+    needs:
+      - job_initialize_pipeline
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+
+      - name: Run CI tests
+        id: pester_run_step
+        uses: azure/powershell@v2
+        with:
+          inlineScript: |
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'tests' 'Test-CI.ps1')
+
+            $functionInput = @{
+              RepoRootPath      = $env:GITHUB_WORKSPACE
+              BranchName        = $env:GITHUB_REF
+              GitHubRepository  = $env:GITHUB_REPOSITORY
+              TestFileRegex     = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).testFileRegex }}'
+            }
+
+            Write-Verbose "Invoke task with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            $outputsFilePath = Test-CI @functionInput
+
+            Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $outputsFilePath) >> $env:GITHUB_OUTPUT
+          azPSVersion: "latest"
+
+      - name: "Output to GitHub job summaries"
+        if: always()
+        shell: pwsh
+        run: |
+          # Grouping task logs
+          Write-Output '::group::Output to GitHub job summaries'
+
+          $mdPesterOutputFilePath = '${{ steps.pester_run_step.outputs.formattedPesterResultsPath }}'
+
+          if (-not (Test-Path $mdPesterOutputFilePath)) {
+            Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPesterOutputFilePath)
+          } else {
+            Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+            Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
+          }
+          Write-Output '::endgroup::'
