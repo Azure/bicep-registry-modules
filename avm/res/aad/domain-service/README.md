@@ -236,6 +236,11 @@ The domain name specific to the Azure ADDS service.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  - 'contoso.onmicrosoft.com'
+  - 'aaddscontoso.com'
+  ```
 
 ### Parameter: `pfxCertificate`
 
@@ -260,6 +265,11 @@ The email recipient value to receive alerts.
 - Required: No
 - Type: array
 - Default: `[]`
+- Example:
+  ```Bicep
+  - ['john@doh.org']
+  - ['john@doh.org','jane@doh.org']
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -629,6 +639,7 @@ The id of the subnet that Domain Services will be deployed on. The subnet has so
 
 - Required: Yes
 - Type: string
+- Example: `/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<resourceGroup>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>`
 
 ### Parameter: `roleAssignments`
 
@@ -771,6 +782,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      "key1": "value1",
+      "key2": "value2"
+  }
+  ```
 
 ### Parameter: `tlsV1`
 

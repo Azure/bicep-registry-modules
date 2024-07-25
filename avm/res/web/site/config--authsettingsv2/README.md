@@ -54,6 +54,7 @@ Type of site to deploy.
     'app,linux,container'
     'functionapp'
     'functionapp,linux'
+    'functionapp,linux,container'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
     'linux,api'

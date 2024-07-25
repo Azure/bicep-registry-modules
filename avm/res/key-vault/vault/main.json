@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "18302078907641172783"
+      "version": "0.28.1.47646",
+      "templateHash": "16421400914086569012"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1045,7 +1045,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1189,8 +1189,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "13379419349517171769"
+              "version": "0.28.1.47646",
+              "templateHash": "9363032158799379271"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
@@ -1458,8 +1458,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "5636875941217257115"
+              "version": "0.28.1.47646",
+              "templateHash": "8081761451262814691"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1742,8 +1742,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "2556304156587722941"
+              "version": "0.28.1.47646",
+              "templateHash": "6463446681908714455"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
