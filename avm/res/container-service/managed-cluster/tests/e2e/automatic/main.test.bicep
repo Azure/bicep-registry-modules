@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using only defaults and use AKS Automatic mode'
+metadata description = 'This instance deploys the module with the set of automatic parameters.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-containerservice.managedclusters-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apismin'
+param serviceShort string = 'csauto'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,14 +26,10 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
-
-// ============== //
-// Test Execution //
-// ============== //
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -43,8 +39,35 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-      publisherName: '${namePrefix}-az-amorg-x-001'
+      maintenanceConfiguration: {
+        maintenanceWindow: {
+          schedule: {
+            daily: null
+            weekly: {
+              intervalWeeks: 1
+              dayOfWeek: 'Sunday'
+            }
+            absoluteMonthly: null
+            relativeMonthly: null
+          }
+          durationHours: 4
+          utcOffset: '+00:00'
+          startDate: '2024-07-03'
+          startTime: '00:00'
+        }
+      }
+      managedIdentities: {
+        systemAssigned: true
+      }
+
+      primaryAgentPoolProfile: [
+        {
+          name: 'systempool'
+          count: 3
+          vmSize: 'Standard_DS2_v2'
+          mode: 'System'
+        }
+      ]
     }
   }
 ]
