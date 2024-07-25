@@ -19,6 +19,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ContainerService/managedClusters` | [2024-03-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-03-02-preview/managedClusters) |
 | `Microsoft.ContainerService/managedClusters/agentPools` | [2023-07-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-07-02-preview/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | [2023-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
 | `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
@@ -31,13 +32,124 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-service/managed-cluster:<version>`.
 
-- [Using Azure CNI Network Plugin.](#example-1-using-azure-cni-network-plugin)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using Kubenet Network Plugin.](#example-3-using-kubenet-network-plugin)
-- [Using Private Cluster.](#example-4-using-private-cluster)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using only defaults and use AKS Automatic mode](#example-1-using-only-defaults-and-use-aks-automatic-mode)
+- [Using Azure CNI Network Plugin.](#example-2-using-azure-cni-network-plugin)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using Kubenet Network Plugin.](#example-4-using-kubenet-network-plugin)
+- [Using Private Cluster.](#example-5-using-private-cluster)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using Azure CNI Network Plugin._
+### Example 1: _Using only defaults and use AKS Automatic mode_
+
+This instance deploys the module with the set of automatic parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  name: 'managedClusterDeployment'
+  params: {
+    // Required parameters
+    name: 'csauto001'
+    primaryAgentPoolProfile: [
+      {
+        count: 3
+        mode: 'System'
+        name: 'systempool'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
+    // Non-required parameters
+    location: '<location>'
+    maintenanceConfiguration: {
+      maintenanceWindow: {
+        durationHours: 4
+        schedule: {
+          absoluteMonthly: '<absoluteMonthly>'
+          daily: '<daily>'
+          relativeMonthly: '<relativeMonthly>'
+          weekly: {
+            dayOfWeek: 'Sunday'
+            intervalWeeks: 1
+          }
+        }
+        startDate: '2024-07-03'
+        startTime: '00:00'
+        utcOffset: '+00:00'
+      }
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csauto001"
+    },
+    "primaryAgentPoolProfile": {
+      "value": [
+        {
+          "count": 3,
+          "mode": "System",
+          "name": "systempool",
+          "vmSize": "Standard_DS2_v2"
+        }
+      ]
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "maintenanceConfiguration": {
+      "value": {
+        "maintenanceWindow": {
+          "durationHours": 4,
+          "schedule": {
+            "absoluteMonthly": "<absoluteMonthly>",
+            "daily": "<daily>",
+            "relativeMonthly": "<relativeMonthly>",
+            "weekly": {
+              "dayOfWeek": "Sunday",
+              "intervalWeeks": 1
+            }
+          },
+          "startDate": "2024-07-03",
+          "startTime": "00:00",
+          "utcOffset": "+00:00"
+        }
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using Azure CNI Network Plugin._
 
 This instance deploys the module with Azure CNI network plugin .
 
@@ -537,7 +649,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -611,7 +723,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 3: _Using Kubenet Network Plugin._
+### Example 4: _Using Kubenet Network Plugin._
 
 This instance deploys the module with Kubenet network plugin .
 
@@ -883,7 +995,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 4: _Using Private Cluster._
+### Example 5: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
 
@@ -1101,7 +1213,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1511,6 +1623,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | Whether or not to use AKS Automatic mode. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
 | [`metricAnnotationsAllowList`](#parameter-metricannotationsallowlist) | string | A comma-separated list of Kubernetes cluster metrics annotations. |
@@ -2831,6 +2944,26 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `maintenanceConfiguration`
+
+Whether or not to use AKS Automatic mode.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maintenanceWindow`](#parameter-maintenanceconfigurationmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
+
+### Parameter: `maintenanceConfiguration.maintenanceWindow`
+
+Maintenance window for the maintenance configuration.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `managedIdentities`
 
