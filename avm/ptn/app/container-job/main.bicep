@@ -55,6 +55,8 @@ param deployDnsZoneContainerRegistry bool = true
 @metadata({ example: 'mcr.microsoft.com/k8se/quickstart-jobs:latest' })
 param containerImageSource string
 
+param newContainerImageName string
+
 @sys.description('Optional. The flag that indicates whether the existing image in the Container Registry should be overwritten.')
 param overwriteExistingImage bool = false
 
@@ -196,6 +198,7 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.1
     location: location
     acrName: services.outputs.registryName
     image: containerImageSource
+    newImageName: newContainerImageName
     managedIdentities: { userAssignedResourcesIds: [services.outputs.userManagedIdentityResourceId] }
     overwriteExistingImage: overwriteExistingImage
     initialScriptDelay: 1
