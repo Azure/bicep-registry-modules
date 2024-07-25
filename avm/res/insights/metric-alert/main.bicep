@@ -139,11 +139,12 @@ resource metricAlert_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(metricAlert.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? contains(
+          roleAssignment.roleDefinitionIdOrName,
+          '/providers/Microsoft.Authorization/roleDefinitions/'
+        )
+        ? roleAssignment.roleDefinitionIdOrName
+        : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
