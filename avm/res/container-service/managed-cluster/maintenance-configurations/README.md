@@ -23,13 +23,18 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenanc
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Maintenance window for the maintenance configuration. |
-| [`name`](#parameter-name) | string | Name of the maintenance configuration. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`managedClusterName`](#parameter-managedclustername) | string | The name of the parent managed cluster. Required if the template is used in a standalone deployment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | Name of the maintenance configuration. |
 
 ### Parameter: `maintenanceWindow`
 
@@ -38,19 +43,20 @@ Maintenance window for the maintenance configuration.
 - Required: Yes
 - Type: object
 
-### Parameter: `name`
-
-Name of the maintenance configuration.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `managedClusterName`
 
 The name of the parent managed cluster. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `name`
+
+Name of the maintenance configuration.
+
+- Required: No
+- Type: string
+- Default: `'aksManagedAutoUpgradeSchedule'`
 
 
 ## Outputs

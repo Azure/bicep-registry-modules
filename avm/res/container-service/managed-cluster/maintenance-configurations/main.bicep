@@ -8,8 +8,8 @@ param maintenanceWindow object
 @description('Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment.')
 param managedClusterName string
 
-@description('Required. Name of the maintenance configuration.')
-param name string
+@description('Optional. Name of the maintenance configuration.')
+param name string = 'aksManagedAutoUpgradeSchedule'
 
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' existing = {
   name: managedClusterName

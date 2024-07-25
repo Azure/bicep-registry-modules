@@ -63,22 +63,23 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
-    automatic: true
     location: '<location>'
-    maintenanceWindow: {
-      durationHours: 4
-      schedule: {
-        absoluteMonthly: '<absoluteMonthly>'
-        daily: '<daily>'
-        relativeMonthly: '<relativeMonthly>'
-        weekly: {
-          dayOfWeek: 'Sunday'
-          intervalWeeks: 1
+    maintenanceConfiguration: {
+      maintenanceWindow: {
+        durationHours: 4
+        schedule: {
+          absoluteMonthly: '<absoluteMonthly>'
+          daily: '<daily>'
+          relativeMonthly: '<relativeMonthly>'
+          weekly: {
+            dayOfWeek: 'Sunday'
+            intervalWeeks: 1
+          }
         }
+        startDate: '2024-07-03'
+        startTime: '00:00'
+        utcOffset: '+00:00'
       }
-      startDate: '2024-07-03'
-      startTime: '00:00'
-      utcOffset: '+00:00'
     }
     managedIdentities: {
       systemAssigned: true
@@ -114,27 +115,26 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
-    "automatic": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
-    "maintenanceWindow": {
+    "maintenanceConfiguration": {
       "value": {
-        "durationHours": 4,
-        "schedule": {
-          "absoluteMonthly": "<absoluteMonthly>",
-          "daily": "<daily>",
-          "relativeMonthly": "<relativeMonthly>",
-          "weekly": {
-            "dayOfWeek": "Sunday",
-            "intervalWeeks": 1
-          }
-        },
-        "startDate": "2024-07-03",
-        "startTime": "00:00",
-        "utcOffset": "+00:00"
+        "maintenanceWindow": {
+          "durationHours": 4,
+          "schedule": {
+            "absoluteMonthly": "<absoluteMonthly>",
+            "daily": "<daily>",
+            "relativeMonthly": "<relativeMonthly>",
+            "weekly": {
+              "dayOfWeek": "Sunday",
+              "intervalWeeks": 1
+            }
+          },
+          "startDate": "2024-07-03",
+          "startTime": "00:00",
+          "utcOffset": "+00:00"
+        }
       }
     },
     "managedIdentities": {
@@ -1561,7 +1561,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
-| [`automatic`](#parameter-automatic) | bool | Whether or not to use AKS Automatic mode. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | string | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | string | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
@@ -1624,7 +1623,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Maintenance window for the maintenance configuration. |
+| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | Whether or not to use AKS Automatic mode. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
 | [`metricAnnotationsAllowList`](#parameter-metricannotationsallowlist) | string | A comma-separated list of Kubernetes cluster metrics annotations. |
@@ -2122,14 +2121,6 @@ IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is 
 
 - Required: No
 - Type: array
-
-### Parameter: `automatic`
-
-Whether or not to use AKS Automatic mode.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `autoScalerProfileBalanceSimilarNodeGroups`
 
@@ -2982,13 +2973,25 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `maintenanceWindow`
+### Parameter: `maintenanceConfiguration`
 
-Maintenance window for the maintenance configuration.
+Whether or not to use AKS Automatic mode.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maintenanceWindow`](#parameter-maintenanceconfigurationmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
+
+### Parameter: `maintenanceConfiguration.maintenanceWindow`
+
+Maintenance window for the maintenance configuration.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `managedIdentities`
 
