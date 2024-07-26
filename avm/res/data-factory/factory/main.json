@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17762036798795040482"
+      "templateHash": "12517437380023801495"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -504,8 +504,9 @@
             "items": {
               "type": "string"
             },
+            "nullable": true,
             "metadata": {
-              "description": "Required. Specify the FQDNS of the linked resources to create private endpoints for."
+              "description": "Optional. Specify the FQDNS of the linked resources to create private endpoints for."
             }
           }
         }
@@ -548,6 +549,7 @@
           },
           "typeProperties": {
             "type": "object",
+            "nullable": true,
             "metadata": {
               "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
             }

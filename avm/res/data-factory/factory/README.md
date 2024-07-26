@@ -36,8 +36,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -87,7 +87,10 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -412,7 +415,10 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -913,7 +919,7 @@ Specify managed vritual network name for the integration runtime to link to.
 
 Integration Runtime type properties. Required if type is "Managed".
 
-- Required: Yes
+- Required: No
 - Type: object
 
 ### Parameter: `linkedServices`
@@ -1066,17 +1072,15 @@ An array of managed private endpoints objects created in the Data Factory manage
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for. |
 | [`groupId`](#parameter-managedprivateendpointsgroupid) | string | Specify the sub-resource of the managed private endpoint. |
 | [`name`](#parameter-managedprivateendpointsname) | string | Specify the name of managed private endpoint. |
 | [`privateLinkResourceId`](#parameter-managedprivateendpointsprivatelinkresourceid) | string | Specify the resource ID to create the managed private endpoint for. |
 
-### Parameter: `managedPrivateEndpoints.fqdns`
+**Optional parameters**
 
-Specify the FQDNS of the linked resources to create private endpoints for.
-
-- Required: Yes
-- Type: array
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for. |
 
 ### Parameter: `managedPrivateEndpoints.groupId`
 
@@ -1098,6 +1102,13 @@ Specify the resource ID to create the managed private endpoint for.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `managedPrivateEndpoints.fqdns`
+
+Specify the FQDNS of the linked resources to create private endpoints for.
+
+- Required: No
+- Type: array
 
 ### Parameter: `managedVirtualNetworkName`
 

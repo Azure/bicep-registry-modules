@@ -568,8 +568,8 @@ type managedPrivateEndpointsType = {
   @description('Required. Specify the resource ID to create the managed private endpoint for.')
   privateLinkResourceId: string
 
-  @description('Required. Specify the FQDNS of the linked resources to create private endpoints for.')
-  fqdns: string[]
+  @description('Optional. Specify the FQDNS of the linked resources to create private endpoints for.')
+  fqdns: string[]?
 }[]
 
 type integrationRuntimesType = {
