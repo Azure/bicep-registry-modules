@@ -1080,7 +1080,7 @@ An array of managed private endpoints objects created in the Data Factory manage
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for. |
+| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required. |
 
 ### Parameter: `managedPrivateEndpoints.groupId`
 
@@ -1105,7 +1105,7 @@ Specify the resource ID to create the managed private endpoint for.
 
 ### Parameter: `managedPrivateEndpoints.fqdns`
 
-Specify the FQDNS of the linked resources to create private endpoints for.
+Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.
 
 - Required: No
 - Type: array

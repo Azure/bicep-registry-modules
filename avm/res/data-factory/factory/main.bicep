@@ -568,7 +568,7 @@ type managedPrivateEndpointsType = {
   @description('Required. Specify the resource ID to create the managed private endpoint for.')
   privateLinkResourceId: string
 
-  @description('Optional. Specify the FQDNS of the linked resources to create private endpoints for.')
+  @description('Optional. Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.')
   fqdns: string[]?
 }[]
 
