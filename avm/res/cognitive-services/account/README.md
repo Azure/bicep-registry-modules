@@ -1755,11 +1755,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -1920,6 +1918,7 @@ The storage accounts for this resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `endpoint` | string | The service endpoint of the cognitive services account. |
+| `endpoints` |  | All endpoints available for the cognitive services account, types depends on the cognitive service kind. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the cognitive services account. |
 | `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
