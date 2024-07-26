@@ -586,7 +586,7 @@ type integrationRuntimesType = {
   managedVirtualNetworkName: string?
 
   @description('Optional. Integration Runtime type properties. Required if type is "Managed".')
-  typeProperties: object
+  typeProperties: object?
 }[]
 
 type linkedServicesType = {
