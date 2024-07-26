@@ -488,8 +488,9 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
   }
 }
 
-module secretsExport 'modules/keyVaultExport.bicep' = if (!empty(secretsExportConfiguration)) {
+module server_secrets_export 'modules/key-vault-export.bicep' = if (!empty(secretsExportConfiguration)) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(secretsExportConfiguration.?resourceGroupName ?? resourceGroup().name)
   params: {
     keyVaultName : !empty(secretsExportConfiguration!.keyVaultResourceId) ? last(split(secretsExportConfiguration!.keyVaultResourceId, '/')) : ''
     secrets: union(
@@ -538,7 +539,7 @@ output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
 output location string = server.location
 
 @description('The resource ID of the secrets.')
-output secretResourceIds string[] = !empty(secretsExportConfiguration) ? secretsExport.outputs.secretResourceIds : []
+output secretResourceIds string[] = !empty(secretsExportConfiguration) ? server_secrets_export.outputs.secretResourceIds : []
 
 // =============== //
 //   Definitions   //
@@ -697,6 +698,9 @@ type secretsExportConfigurationType = {
   @description('Required. The resource ID of the key vault where to store the secrets of this module.')
   keyVaultResourceId: string
 
+  @description('Optional. Default to the resource group where this account is. The resource group name where the key vault is.')
+  resourceGroupName: string?
+
   @description('Optional. The name for secret to create.')
   sqlAdminPasswordSecretName: string?
 
@@ -709,6 +713,6 @@ type secretsExportConfigurationType = {
   @description('Optional. The name for secret to create.')
   sqlAzureConnectionStringSercretName: string?
 
-  @description('Optional. The name for secret to create.')
+  @description('Optional. The name of the appUser.')
   appUserName: string?
 }?

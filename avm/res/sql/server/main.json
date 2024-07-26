@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.45.22436",
-      "templateHash": "5209661300118821338"
+      "templateHash": "5784582871739932398"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -414,6 +414,13 @@
             "description": "Required. The resource ID of the key vault where to store the secrets of this module."
           }
         },
+        "resourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to the resource group where this account is. The resource group name where the key vault is."
+          }
+        },
         "sqlAdminPasswordSecretName": {
           "type": "string",
           "nullable": true,
@@ -446,7 +453,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name for secret to create."
+            "description": "Optional. The name of the appUser."
           }
         }
       },
@@ -3442,11 +3449,12 @@
         "server"
       ]
     },
-    "secretsExport": {
+    "server_secrets_export": {
       "condition": "[not(empty(parameters('secretsExportConfiguration')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
+      "resourceGroup": "[coalesce(tryGet(parameters('secretsExportConfiguration'), 'resourceGroupName'), resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3591,7 +3599,7 @@
       "metadata": {
         "description": "The resource ID of the secrets."
       },
-      "value": "[if(not(empty(parameters('secretsExportConfiguration'))), reference('secretsExport').outputs.secretResourceIds.value, createArray())]"
+      "value": "[if(not(empty(parameters('secretsExportConfiguration'))), reference('server_secrets_export').outputs.secretResourceIds.value, createArray())]"
     }
   }
 }

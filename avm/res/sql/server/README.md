@@ -1978,9 +1978,10 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`appUserName`](#parameter-secretsexportconfigurationappusername) | string | The name for secret to create. |
+| [`appUserName`](#parameter-secretsexportconfigurationappusername) | string | The name of the appUser. |
 | [`appUserPasswordSecretName`](#parameter-secretsexportconfigurationappuserpasswordsecretname) | string | The name for secret to create. |
 | [`appUserPasswordSecretValue`](#parameter-secretsexportconfigurationappuserpasswordsecretvalue) | string | The value for secret to create. |
+| [`resourceGroupName`](#parameter-secretsexportconfigurationresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
 | [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The name for secret to create. |
 | [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The name for secret to create. |
 
@@ -1993,7 +1994,7 @@ The resource ID of the key vault where to store the secrets of this module.
 
 ### Parameter: `secretsExportConfiguration.appUserName`
 
-The name for secret to create.
+The name of the appUser.
 
 - Required: No
 - Type: string
@@ -2008,6 +2009,13 @@ The name for secret to create.
 ### Parameter: `secretsExportConfiguration.appUserPasswordSecretValue`
 
 The value for secret to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.resourceGroupName`
+
+Default to the resource group where this account is. The resource group name where the key vault is.
 
 - Required: No
 - Type: string
