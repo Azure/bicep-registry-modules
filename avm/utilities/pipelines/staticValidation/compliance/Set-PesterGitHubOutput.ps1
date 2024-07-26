@@ -304,15 +304,14 @@ function Set-PesterGitHubOutput {
 
                 if ($test.ScriptBlock.File -match $moduleSplitRegex) {
                     # Module test
-                    $testLine = $test.ScriptBlock.StartPosition.StartLine
                     $testFileIdentifier = $test.ScriptBlock.File -split $moduleSplitRegex
+                    $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
                 } else {
                     # None-module test
                     $testFile = $test.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
                 }
 
-                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-
+                $testLine = $test.ScriptBlock.StartPosition.StartLine
                 $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
                 if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
                     # Creating URL to test file to enable users to 'click' on it
