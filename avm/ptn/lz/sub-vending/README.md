@@ -333,7 +333,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignmentEnabled: true
     roleAssignments: [
       {
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: ''
         roleAssignmentCondition: {
@@ -342,7 +342,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
               'Group'
             ]
             rolesToAssign: [
-              '4d97b98b-1d4f-4787-a291-c67834d212e7'
+              'b24988ac-6180-42a0-ab88-20f7382dd24c'
             ]
             templateName: 'constrainRolesAndPrincipalTypes'
           }
@@ -385,7 +385,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "",
           "roleAssignmentCondition": {
@@ -394,7 +394,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
                 "Group"
               ],
               "rolesToAssign": [
-                "4d97b98b-1d4f-4787-a291-c67834d212e7"
+                "b24988ac-6180-42a0-ab88-20f7382dd24c"
               ],
               "templateName": "constrainRolesAndPrincipalTypes"
             }
