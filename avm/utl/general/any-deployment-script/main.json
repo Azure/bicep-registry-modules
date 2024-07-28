@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "2690319078040133058"
+      "templateHash": "8093364813124588489"
     },
     "name": "Any example deployment script utility",
     "description": "This module provides you with whatever deployment script experience.",
@@ -40,7 +40,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "Write-Host 'Oh Stanley'\r\n"
+    "$fxv#0": "Write-Host 'Oh Stanley'\n"
   },
   "resources": [
     {
@@ -83,5 +83,35 @@
         "cleanupPreference": "Always"
       }
     }
-  ]
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the analysis service."
+      },
+      "value": "[parameters('storageDeploymentScriptName')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the analysis service."
+      },
+      "value": "[resourceId('Microsoft.Resources/deploymentScripts', parameters('storageDeploymentScriptName'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the analysis service was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', parameters('storageDeploymentScriptName')), '2023-08-01', 'full').location]"
+    }
+  }
 }

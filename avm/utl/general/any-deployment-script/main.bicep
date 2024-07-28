@@ -52,7 +52,14 @@ resource assetsStorageAccount_upload 'Microsoft.Resources/deploymentScripts@2023
   }
 }
 
-// ================ //
-// Definitions      //
-// ================ //
-//
+@description('The name of the analysis service.')
+output name string = assetsStorageAccount_upload.name
+
+@description('The resource ID of the analysis service.')
+output resourceId string = assetsStorageAccount_upload.id
+
+@description('The resource group the analysis service was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = assetsStorageAccount_upload.location

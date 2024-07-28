@@ -124,7 +124,12 @@ The location to deploy into.
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location the resource was deployed into. |
+| `name` | string | The name of the analysis service. |
+| `resourceGroupName` | string | The resource group the analysis service was deployed into. |
+| `resourceId` | string | The resource ID of the analysis service. |
 
 ## Cross-referenced modules
 
