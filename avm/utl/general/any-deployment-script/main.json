@@ -40,7 +40,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "Write-Host 'Oh Stanley'\n"
+    "$fxv#0": "Write-Host 'Oh Stanley'\r\n"
   },
   "resources": [
     {

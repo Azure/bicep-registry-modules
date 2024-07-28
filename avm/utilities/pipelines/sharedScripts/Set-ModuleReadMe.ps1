@@ -668,6 +668,9 @@ function Set-DataCollectionSection {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory)]
+        [hashtable] $TemplateFileContent,
+
+        [Parameter(Mandatory)]
         [object[]] $ReadMeFileContent,
 
         [Parameter(Mandatory = $false)]
@@ -676,6 +679,11 @@ function Set-DataCollectionSection {
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Data Collection'
     )
+
+    if ($TemplateFileContent.parameters.Keys -notcontains 'enableTelemetry') {
+        # no telemetry in the template
+        return $ReadMeFileContent
+    }
 
     # Load content, if required
     if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent' -or -not $PreLoadedContent['TelemetryFileContent']) {
@@ -766,6 +774,13 @@ function Set-CrossReferencesSection {
         $CrossReferencedModuleList = $PreLoadedContent.CrossReferencedModuleList
     }
 
+    $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
+
+    if (-not $dependencies['localPathReferences'] -and -not $dependencies['remoteReferences']) {
+        # no cross references in the template
+        return $ReadMeFileContent
+    }
+
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
         'This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).',
@@ -773,8 +788,6 @@ function Set-CrossReferencesSection {
         '| Reference | Type |',
         '| :-- | :-- |'
     )
-
-    $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
 
     if ($dependencies.Keys -contains 'localPathReferences' -and $dependencies['localPathReferences']) {
         foreach ($reference in ($dependencies['localPathReferences'] | Sort-Object -Culture 'en-US')) {
@@ -786,12 +799,6 @@ function Set-CrossReferencesSection {
         foreach ($reference in ($dependencies['remoteReferences'] | Sort-Object -Culture 'en-US')) {
             $SectionContent += ("| ``{0}`` | {1} |" -f $reference, 'Remote reference')
         }
-    }
-
-    if ($SectionContent.Count -eq 4) {
-        # No content was added, adding placeholder
-        $SectionContent = @('_None_')
-
     }
 
     # Build result
@@ -1802,15 +1809,15 @@ function Initialize-ReadMe {
         ((Test-Path $movedReadMeFilePath) ? '' : $null),
         $moduleDescription,
         ''
-        '## Resource Types',
-        ''
-        ($hasTests ? '## Usage examples' : $null),
-        ($hasTests ? '' : $null),
-        '## Parameters',
-        '',
-        '## Outputs',
-        '',
-        '## Cross-referenced modules'
+        # '## Resource Types',
+        # ''
+        # ($hasTests ? '## Usage examples' : $null),
+        # ($hasTests ? '' : $null),
+        # '## Parameters',
+        # '',
+        # '## Outputs',
+        # '',
+        # '## Cross-referenced modules'
     ) | Where-Object { $null -ne $_ } # Filter null values
     $readMeFileContent = $initialContent
 
@@ -2062,8 +2069,9 @@ function Set-ModuleReadMe {
         # Handle [DataCollection] section
         # ========================
         $inputObject = @{
-            ReadMeFileContent = $readMeFileContent
-            PreLoadedContent  = $PreLoadedContent
+            TemplateFileContent = $templateFileContent
+            ReadMeFileContent   = $readMeFileContent
+            PreLoadedContent    = $PreLoadedContent
         }
         $readMeFileContent = Set-DataCollectionSection @inputObject
     }

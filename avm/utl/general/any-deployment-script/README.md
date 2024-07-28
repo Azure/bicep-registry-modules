@@ -8,8 +8,6 @@ This module provides you with whatever deployment script experience.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Exported functions](#Exported-functions)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -74,7 +72,6 @@ module anyDeploymentScript 'br/public:avm/utl/general/any-deployment-script:<ver
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -121,7 +118,6 @@ The location to deploy into.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -130,14 +126,6 @@ The location to deploy into.
 | `name` | string | The name of the analysis service. |
 | `resourceGroupName` | string | The resource group the analysis service was deployed into. |
 | `resourceId` | string | The resource ID of the analysis service. |
-
-## Cross-referenced modules
-
-_None_
-
-## Exported functions
-
-_None_
 
 ## Data Collection
 
