@@ -31,13 +31,13 @@ jobs:
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
-      # - name: Log in to Azure
-      #   uses: azure/login@v2
-      #   with:
-      #     client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
-      #     tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
-      #     subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
-      #     enable-AzPSSession: true
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
+          tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
+          subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
 
       - name: Install Azure Powershell Modules
         shell: pwsh
@@ -69,45 +69,45 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-      #     if (-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
-      #       Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
-      #     }
+          if (-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
+            Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
+          }
 
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: publish-module-index-json-artifacts
-      #     path: |
-      #       moduleIndex.json
-      #       last-moduleIndex.json
-      #       generated-moduleIndex.json
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-module-index-json-artifacts
+          path: |
+            moduleIndex.json
+            last-moduleIndex.json
+            generated-moduleIndex.json
 
-      # - name: Upload to blob storage
-      #   shell: pwsh
-      #   run: |
-      #     $storageAccountInfo = @{
-      #         storageAccountName      = 'biceplivedatasaprod'
-      #         storageAccountContainer = 'bicep-cdn-live-data-container'
-      #         storageBlobName         = 'module-index'
-      #         storageBlobContentType  = @{'ContentType' = 'application/json'}
-      #     }
-      #     Write-Verbose ('Uploading [moduleIndex.json] to blob storage account [{0}] in container [{1}] as blob [{2}]' -f $storageAccountInfo.storageAccountName, $storageAccountInfo.storageAccountContainer, $storageAccountInfo.storageBlobName) -Verbose
+      - name: Upload to blob storage
+        shell: pwsh
+        run: |
+          $storageAccountInfo = @{
+              storageAccountName      = 'biceplivedatasaprod'
+              storageAccountContainer = 'bicep-cdn-live-data-container'
+              storageBlobName         = 'module-index'
+              storageBlobContentType  = @{'ContentType' = 'application/json'}
+          }
+          Write-Verbose ('Uploading [moduleIndex.json] to blob storage account [{0}] in container [{1}] as blob [{2}]' -f $storageAccountInfo.storageAccountName, $storageAccountInfo.storageAccountContainer, $storageAccountInfo.storageBlobName) -Verbose
 
-      #     $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
+          $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
 
-      #     $functionInput = @{
-      #         Context    = $storageContext
-      #         Container  = $storageAccountInfo.storageAccountContainer
-      #         Blob       = $storageAccountInfo.storageBlobName
-      #         File       = 'moduleIndex.json'
-      #         Properties = $storageAccountInfo.storageBlobContentType
-      #     }
-      #     Set-AzStorageBlobContent @functionInput -Force
+          $functionInput = @{
+              Context    = $storageContext
+              Container  = $storageAccountInfo.storageAccountContainer
+              Blob       = $storageAccountInfo.storageBlobName
+              File       = 'moduleIndex.json'
+              Properties = $storageAccountInfo.storageBlobContentType
+          }
+          Set-AzStorageBlobContent @functionInput -Force
 
-      #     Write-Verbose ('Upload of [{0}] complete.' -f $storageAccountInfo.storageBlobName) -Verbose
+          Write-Verbose ('Upload of [{0}] complete.' -f $storageAccountInfo.storageBlobName) -Verbose
 
-      # - name: Check if any errors occurred during 'Generate moduleIndex.json'
-      #   if: ${{ env.anyErrorsOccurred == 'true' }}
-      #   shell: pwsh
-      #   run: |
-      #     throw "Errors occurred during 'Generate moduleIndex.json' step. Please check the logs of that step in the workflow."
+      - name: Check if any errors occurred during 'Generate moduleIndex.json'
+        if: ${{ env.anyErrorsOccurred == 'true' }}
+        shell: pwsh
+        run: |
+          throw "Errors occurred during 'Generate moduleIndex.json' step. Please check the logs of that step in the workflow."
