@@ -1,17 +1,309 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "11010234208010675398"
+      "version": "0.29.47.4906",
+      "templateHash": "985985486089183315"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
     "owner": "Azure/module-maintainers",
     "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
   },
+  "definitions": {
+    "_1.constrainedDelegationTemplatesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "templateName",
+        "mapping": {
+          "excludeRoles": {
+            "$ref": "#/definitions/_1.excludeRolesType"
+          },
+          "constrainRoles": {
+            "$ref": "#/definitions/_1.constrainRolesType"
+          },
+          "constrainRolesAndPrincipalTypes": {
+            "$ref": "#/definitions/_1.constrainRolesAndPrincipalTypesType"
+          },
+          "constrainRolesAndPrincipals": {
+            "$ref": "#/definitions/_1.constrainRolesAndPrincipalsType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.constrainRolesAndPrincipalsType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "constrainRolesAndPrincipals"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "rolesToAssign": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+          }
+        },
+        "principalsToAssignTo": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of principals that are allowed to be assigned roles by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.constrainRolesAndPrincipalTypesType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "constrainRolesAndPrincipalTypes"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "rolesToAssign": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+          }
+        },
+        "principleTypesToAssign": {
+          "type": "array",
+          "allowedValues": [
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "metadata": {
+            "description": "Required. The list of principle types that are allowed to be assigned roles by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.constrainRolesType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "constrainRoles"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "rolesToAssign": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.excludeRolesType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "excludeRoles"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "ExludededRoles": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.roleAssignmentCondtionType": {
+      "type": "object",
+      "properties": {
+        "roleConditionType": {
+          "$ref": "#/definitions/_1.constrainedDelegationTemplatesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The type of template for the role assignment condition."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the condition template."
+          }
+        },
+        "delegationCode": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "namespace": "_1",
+      "members": {
+        "generateCodeExcludeRoles": {
+          "parameters": [
+            {
+              "$ref": "#/definitions/_1.excludeRolesType",
+              "name": "excludeRoles"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', _1.joinArray(parameters('excludeRoles').ExludededRoles), _1.joinArray(parameters('excludeRoles').ExludededRoles))]"
+          },
+          "metadata": {
+            "description": "Generates the code for the \"Exclude Roles\" condition template.",
+            "__bicep_imported_from!": {
+              "sourceTemplate": "modules/subResourceWrapper.bicep"
+            }
+          }
+        },
+        "generateCodeRolesAndPrincipals": {
+          "parameters": [
+            {
+              "$ref": "#/definitions/_1.constrainRolesAndPrincipalsType",
+              "name": "constrainRolesAndPrincipals"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{3}}})))', _1.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), _1.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo), _1.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), _1.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo))]"
+          },
+          "metadata": {
+            "description": "Generates the code for the \"Constrain Roles and Principals\" condition template.",
+            "__bicep_imported_from!": {
+              "sourceTemplate": "modules/subResourceWrapper.bicep"
+            }
+          }
+        },
+        "generateCodeRolesAndPrincipalsTypes": {
+          "parameters": [
+            {
+              "$ref": "#/definitions/_1.constrainRolesAndPrincipalTypesType",
+              "name": "constrainRolesAndPrincipalsTypes"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{3}}})))', _1.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), _1.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign), _1.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), _1.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign))]"
+          },
+          "metadata": {
+            "description": "Generates the code for the \"Constrain Roles and Principal types\" condition template.",
+            "__bicep_imported_from!": {
+              "sourceTemplate": "modules/subResourceWrapper.bicep"
+            }
+          }
+        },
+        "generateCodeRolesType": {
+          "parameters": [
+            {
+              "$ref": "#/definitions/_1.constrainRolesType",
+              "name": "constrainRoles"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}})) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}}) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{1}}}))))', _1.joinArray(parameters('constrainRoles').rolesToAssign), _1.joinArray(parameters('constrainRoles').rolesToAssign))]"
+          },
+          "metadata": {
+            "description": "Generates the code for the \"Constrain Roles\" condition template.",
+            "__bicep_imported_from!": {
+              "sourceTemplate": "modules/subResourceWrapper.bicep"
+            }
+          }
+        },
+        "joinArray": {
+          "parameters": [
+            {
+              "type": "array",
+              "name": "roles"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[replace(join(parameters('roles'), ','), '\"', '')]"
+          },
+          "metadata": {
+            "__bicep_imported_from!": {
+              "sourceTemplate": "modules/subResourceWrapper.bicep"
+            }
+          }
+        },
+        "joinArrayIgnoreCase": {
+          "parameters": [
+            {
+              "type": "array",
+              "name": "principalTypes"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[format('''{0}''', replace(replace(join(parameters('principalTypes'), ','), '\"', ''''), ',', ''','''))]"
+          },
+          "metadata": {
+            "__bicep_imported_from!": {
+              "sourceTemplate": "modules/subResourceWrapper.bicep"
+            }
+          }
+        }
+      }
+    }
+  ],
   "parameters": {
     "subscriptionAliasEnabled": {
       "type": "bool",
@@ -241,6 +533,13 @@
         "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
       }
     },
+    "roleAssignmentCondition": {
+      "$ref": "#/definitions/_1.roleAssignmentCondtionType",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Supply a template for the role assignment delegation condition or provide a custom delegation code.\nConditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions\n\n"
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -386,8 +685,8 @@
       "createSubscriptionResources": "[take(format('lz-vend-sub-res-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), parameters('existingSubscriptionId'), deployment().name)), 64)]"
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -408,7 +707,7 @@
         }
       }
     },
-    {
+    "createSubscription": {
       "condition": "[and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -445,8 +744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "3306118610933947345"
+              "version": "0.29.47.4906",
+              "templateHash": "3759867594724381121"
             }
           },
           "parameters": {
@@ -533,7 +832,7 @@
         }
       }
     },
-    {
+    "createSubscriptionResources": {
       "condition": "[or(parameters('subscriptionAliasEnabled'), not(empty(parameters('existingSubscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -545,7 +844,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
+          "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference('createSubscription').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
           "subscriptionManagementGroupAssociationEnabled": {
             "value": "[parameters('subscriptionManagementGroupAssociationEnabled')]"
           },
@@ -615,6 +914,9 @@
           "roleAssignments": {
             "value": "[parameters('roleAssignments')]"
           },
+          "roleAssignmentCondition": {
+            "value": "[parameters('roleAssignmentCondition')]"
+          },
           "deploymentScriptResourceGroupName": {
             "value": "[parameters('deploymentScriptResourceGroupName')]"
           },
@@ -648,17 +950,285 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15097801658394168144"
+              "version": "0.29.47.4906",
+              "templateHash": "9888823952564296260"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
             "details": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
           },
+          "definitions": {
+            "constrainRolesType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "constrainRoles"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "rolesToAssign": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "constrainRolesAndPrincipalTypesType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "constrainRolesAndPrincipalTypes"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "rolesToAssign": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+                  }
+                },
+                "principleTypesToAssign": {
+                  "type": "array",
+                  "allowedValues": [
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "metadata": {
+                    "description": "Required. The list of principle types that are allowed to be assigned roles by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "constrainRolesAndPrincipalsType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "constrainRolesAndPrincipals"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "rolesToAssign": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+                  }
+                },
+                "principalsToAssignTo": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of principals that are allowed to be assigned roles by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "excludeRolesType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "excludeRoles"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "ExludededRoles": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "constrainedDelegationTemplatesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "templateName",
+                "mapping": {
+                  "excludeRoles": {
+                    "$ref": "#/definitions/excludeRolesType"
+                  },
+                  "constrainRoles": {
+                    "$ref": "#/definitions/constrainRolesType"
+                  },
+                  "constrainRolesAndPrincipalTypes": {
+                    "$ref": "#/definitions/constrainRolesAndPrincipalTypesType"
+                  },
+                  "constrainRolesAndPrincipals": {
+                    "$ref": "#/definitions/constrainRolesAndPrincipalsType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "roleAssignmentCondtionType": {
+              "type": "object",
+              "properties": {
+                "roleConditionType": {
+                  "$ref": "#/definitions/constrainedDelegationTemplatesType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. The type of template for the role assignment condition."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The version of the condition template."
+                  }
+                },
+                "delegationCode": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "generateCodeRolesType": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/constrainRolesType",
+                      "name": "constrainRoles"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}})) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}}) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{1}}}))))', __bicep.joinArray(parameters('constrainRoles').rolesToAssign), __bicep.joinArray(parameters('constrainRoles').rolesToAssign))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Constrain Roles\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "generateCodeRolesAndPrincipalsTypes": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/constrainRolesAndPrincipalTypesType",
+                      "name": "constrainRolesAndPrincipalsTypes"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{3}}})))', __bicep.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), __bicep.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign), __bicep.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), __bicep.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Constrain Roles and Principal types\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "generateCodeRolesAndPrincipals": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/constrainRolesAndPrincipalsType",
+                      "name": "constrainRolesAndPrincipals"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{3}}})))', __bicep.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), __bicep.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo), __bicep.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), __bicep.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Constrain Roles and Principals\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "generateCodeExcludeRoles": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/excludeRolesType",
+                      "name": "excludeRoles"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').ExludededRoles), __bicep.joinArray(parameters('excludeRoles').ExludededRoles))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Exclude Roles\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "joinArray": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "name": "roles"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[replace(join(parameters('roles'), ','), '\"', '')]"
+                  },
+                  "metadata": {
+                    "__bicep_export!": true
+                  }
+                },
+                "joinArrayIgnoreCase": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "name": "principalTypes"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('''{0}''', replace(replace(join(parameters('principalTypes'), ','), '\"', ''''), ',', ''','''))]"
+                  },
+                  "metadata": {
+                    "__bicep_export!": true
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "subscriptionId": {
               "type": "string",
@@ -827,6 +1397,13 @@
                 "description": "Supply an array of objects containing the details of the role assignments to create."
               }
             },
+            "roleAssignmentCondition": {
+              "$ref": "#/definitions/roleAssignmentCondtionType",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Supply a template for the role assignment delegation condition or provide a custom delegation code."
+              }
+            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -963,7 +1540,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "Param(\n[string]$subscriptionId,\n[string]$resourceProviders\n)\n\n$ErrorActionPreference = 'SilentlyContinue'\n# Selecting the right subscription\nSelect-AzSubscription -SubscriptionId $subscriptionId\n\n# Defining variables\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\n$failedProviders = ''\n$failedFeatures = ''\n$DeploymentScriptOutputs = @{}\n\n##############################################\n## Registering resource providers and features\n##############################################\n\nif ($providers.Count -gt 0) {\n  foreach ($provider in $providers.keys) {\n    try {\n      # Registering resource providers\n      $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState\n      # Check if the providered is registered\n      if ($providerStatus -eq 'NotRegistered') {\n        Write-Output \"`n Registering the '$provider' provider\"\n        if (Register-AzResourceProvider -ProviderNamespace $provider) {\n          Write-Output \"`n The registration for provider'$provider' has started successfully\"\n        } else {\n          Write-Output \"`n The '$provider' provider has not been registered successfully\"\n          $failedProviders += \",$provider\"\n        }\n      } elseif ($providerStatus -eq 'Registering') {\n        Write-Output \"`n The '$provider' provider is in registering state\"\n        $failedProviders += \",$provider\"\n      } elseif ( $null -eq $providerStatus) {\n        Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n        $failedProviders += \",$provider\"\n      }\n\n      if ($failedProviders.length -gt 0) {\n        $output = $failedProviders.substring(1)\n      } else {\n        $output = 'No failures'\n      }\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n    } catch {\n      Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n      $failedProviders += \",$provider\"\n      if ($failedProviders.length -gt 0) {\n        $output = $failedProviders.substring(1)\n      }\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n    }\n    # Registering resource providers features\n    $features = $providers[$provider]\n    if ($features.length -gt 0) {\n      foreach ($feature in $features) {\n        try {\n          # Define variables\n          $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).RegistrationState\n          # Check if the feature is registered\n          if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\n            Write-Output \"`n Registering the '$feature' feature\"\n            if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\n              Write-Output \"`n The The registration for feature '$feature' has started successfully\"\n            } else {\n              Write-Output \"`n The '$feature' feature has not been registered successfully\"\n              $failedFeatures += \",$feature\"\n            }\n          } elseif ($null -eq $featureStatus) {\n            Write-Output \"`n The '$feature' feature doesn't exist.\"\n            $failedFeatures += \",$feature\"\n          }\n          if ($failedFeatures.length -gt 0) {\n            $output = $failedFeatures.substring(1)\n          } else {\n            $output = 'No failures'\n          }\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        } catch {\n          Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\n          $failedFeatures += \",$feature\"\n          if ($failedFeatures.length -gt 0) {\n            $output = $failedFeatures.substring(1)\n          }\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        }\n      }\n    } else {\n      $output = 'No failures'\n      $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n    }\n  }\n} else {\n  Write-Output \"`n No providers or features to register\"\n}\n",
+            "$fxv#0": "Param(\r\n[string]$subscriptionId,\r\n[string]$resourceProviders\r\n)\r\n\r\n$ErrorActionPreference = 'SilentlyContinue'\r\n# Selecting the right subscription\r\nSelect-AzSubscription -SubscriptionId $subscriptionId\r\n\r\n# Defining variables\r\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\r\n$failedProviders = ''\r\n$failedFeatures = ''\r\n$DeploymentScriptOutputs = @{}\r\n\r\n##############################################\r\n## Registering resource providers and features\r\n##############################################\r\n\r\nif ($providers.Count -gt 0) {\r\n  foreach ($provider in $providers.keys) {\r\n    try {\r\n      # Registering resource providers\r\n      $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState\r\n      # Check if the providered is registered\r\n      if ($providerStatus -eq 'NotRegistered') {\r\n        Write-Output \"`n Registering the '$provider' provider\"\r\n        if (Register-AzResourceProvider -ProviderNamespace $provider) {\r\n          Write-Output \"`n The registration for provider'$provider' has started successfully\"\r\n        } else {\r\n          Write-Output \"`n The '$provider' provider has not been registered successfully\"\r\n          $failedProviders += \",$provider\"\r\n        }\r\n      } elseif ($providerStatus -eq 'Registering') {\r\n        Write-Output \"`n The '$provider' provider is in registering state\"\r\n        $failedProviders += \",$provider\"\r\n      } elseif ( $null -eq $providerStatus) {\r\n        Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\r\n        $failedProviders += \",$provider\"\r\n      }\r\n\r\n      if ($failedProviders.length -gt 0) {\r\n        $output = $failedProviders.substring(1)\r\n      } else {\r\n        $output = 'No failures'\r\n      }\r\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\r\n    } catch {\r\n      Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\r\n      $failedProviders += \",$provider\"\r\n      if ($failedProviders.length -gt 0) {\r\n        $output = $failedProviders.substring(1)\r\n      }\r\n      $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\r\n    }\r\n    # Registering resource providers features\r\n    $features = $providers[$provider]\r\n    if ($features.length -gt 0) {\r\n      foreach ($feature in $features) {\r\n        try {\r\n          # Define variables\r\n          $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).RegistrationState\r\n          # Check if the feature is registered\r\n          if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\r\n            Write-Output \"`n Registering the '$feature' feature\"\r\n            if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\r\n              Write-Output \"`n The The registration for feature '$feature' has started successfully\"\r\n            } else {\r\n              Write-Output \"`n The '$feature' feature has not been registered successfully\"\r\n              $failedFeatures += \",$feature\"\r\n            }\r\n          } elseif ($null -eq $featureStatus) {\r\n            Write-Output \"`n The '$feature' feature doesn't exist.\"\r\n            $failedFeatures += \",$feature\"\r\n          }\r\n          if ($failedFeatures.length -gt 0) {\r\n            $output = $failedFeatures.substring(1)\r\n          } else {\r\n            $output = 'No failures'\r\n          }\r\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\r\n        } catch {\r\n          Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\r\n          $failedFeatures += \",$feature\"\r\n          if ($failedFeatures.length -gt 0) {\r\n            $output = $failedFeatures.substring(1)\r\n          }\r\n          $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\r\n        }\r\n      }\r\n    } else {\r\n      $output = 'No failures'\r\n      $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\r\n    }\r\n  }\r\n} else {\r\n  Write-Output \"`n No providers or features to register\"\r\n}\r\n",
             "deploymentNames": {
               "moveSubscriptionToManagementGroup": "[take(format('lz-vend-move-sub-{0}', uniqueString(parameters('subscriptionId'), parameters('subscriptionManagementGroupId'), deployment().name)), 64)]",
               "tagSubscription": "[take(format('lz-vend-tag-sub-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
@@ -1001,8 +1578,8 @@
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
             "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]"
           },
-          "resources": [
-            {
+          "resources": {
+            "moveSubscriptionToManagementGroup": {
               "condition": "[and(parameters('subscriptionManagementGroupAssociationEnabled'), not(empty(parameters('subscriptionManagementGroupId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1028,8 +1605,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "9313475896614087193"
+                      "version": "0.29.47.4906",
+                      "templateHash": "13961984943235030681"
                     }
                   },
                   "parameters": {
@@ -1057,7 +1634,7 @@
                 }
               }
             },
-            {
+            "tagSubscription": {
               "condition": "[not(empty(parameters('subscriptionTags')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1086,8 +1663,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15181721731905574940"
+                      "version": "0.29.47.4906",
+                      "templateHash": "6592820624705341105"
                     }
                   },
                   "parameters": {
@@ -1146,8 +1723,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "2065450289597496523"
+                              "version": "0.29.47.4906",
+                              "templateHash": "3589833223987550845"
                             }
                           },
                           "parameters": {
@@ -1202,8 +1779,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "4876221897054252048"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "15687156082548283745"
                                     }
                                   },
                                   "parameters": {
@@ -1222,7 +1799,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -1280,8 +1857,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "10772346649778391302"
+                              "version": "0.29.47.4906",
+                              "templateHash": "2885361202003966670"
                             }
                           },
                           "parameters": {
@@ -1335,8 +1912,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "943757300004366392"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "4327209924100539632"
                                     }
                                   },
                                   "parameters": {
@@ -1355,7 +1932,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -1422,7 +1999,7 @@
                 }
               }
             },
-            {
+            "createResourceGroupForLzNetworking": {
               "condition": "[and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1883,7 +2460,7 @@
                 }
               }
             },
-            {
+            "tagResourceGroup": {
               "condition": "[and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(parameters('virtualNetworkResourceGroupTags'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1915,8 +2492,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15181721731905574940"
+                      "version": "0.29.47.4906",
+                      "templateHash": "6592820624705341105"
                     }
                   },
                   "parameters": {
@@ -1975,8 +2552,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "2065450289597496523"
+                              "version": "0.29.47.4906",
+                              "templateHash": "3589833223987550845"
                             }
                           },
                           "parameters": {
@@ -2031,8 +2608,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "4876221897054252048"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "15687156082548283745"
                                     }
                                   },
                                   "parameters": {
@@ -2051,7 +2628,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -2109,8 +2686,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "10772346649778391302"
+                              "version": "0.29.47.4906",
+                              "templateHash": "2885361202003966670"
                             }
                           },
                           "parameters": {
@@ -2164,8 +2741,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "943757300004366392"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "4327209924100539632"
                                     }
                                   },
                                   "parameters": {
@@ -2184,7 +2761,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -2251,10 +2828,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzVnet": {
               "condition": "[and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -3451,10 +4028,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzVirtualWanConnection": {
               "condition": "[and(and(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('virtualHubResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(variables('virtualWanHubResourceGroupName')))), not(empty(variables('virtualWanHubSubscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -3487,8 +4064,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15855049387961116888"
+                      "version": "0.29.47.4906",
+                      "templateHash": "3320668363507906643"
                     }
                   },
                   "parameters": {
@@ -3565,11 +4142,11 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createLzVnet)]",
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createLzVnet",
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzRoleAssignmentsSub": {
               "copy": {
                 "name": "createLzRoleAssignmentsSub",
                 "count": "[length(variables('roleAssignmentsSubscription'))]"
@@ -3596,7 +4173,9 @@
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
-                  }
+                  },
+                  "conditionVersion": "[if(not(empty(coalesce(parameters('roleAssignmentCondition'), createObject()))), createObject('value', coalesce(tryGet(parameters('roleAssignmentCondition'), 'conditionVersion'), '2.0')), createObject('value', null()))]",
+                  "condition": "[if(empty(coalesce(parameters('roleAssignmentCondition'), createObject())), createObject('value', null()), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), createObject('value', ''))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -4266,7 +4845,7 @@
                 }
               }
             },
-            {
+            "createLzRoleAssignmentsRsgsSelf": {
               "copy": {
                 "name": "createLzRoleAssignmentsRsgsSelf",
                 "count": "[length(variables('roleAssignmentsResourceGroupSelf'))]"
@@ -4296,7 +4875,9 @@
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope, '/')[2]]"
-                  }
+                  },
+                  "conditionVersion": "[if(not(empty(coalesce(parameters('roleAssignmentCondition'), createObject()))), createObject('value', coalesce(tryGet(parameters('roleAssignmentCondition'), 'conditionVersion'), '2.0')), createObject('value', null()))]",
+                  "condition": "[if(empty(coalesce(parameters('roleAssignmentCondition'), createObject())), createObject('value', null()), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), createObject('value', ''))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -4966,10 +5547,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzRoleAssignmentsRsgsNotSelf": {
               "copy": {
                 "name": "createLzRoleAssignmentsRsgsNotSelf",
                 "count": "[length(variables('roleAssignmentsResourceGroupNotSelf'))]"
@@ -4999,7 +5580,9 @@
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope, '/')[2]]"
-                  }
+                  },
+                  "conditionVersion": "[if(not(empty(coalesce(parameters('roleAssignmentCondition'), createObject()))), createObject('value', coalesce(tryGet(parameters('roleAssignmentCondition'), 'conditionVersion'), '2.0')), createObject('value', null()))]",
+                  "condition": "[if(empty(coalesce(parameters('roleAssignmentCondition'), createObject())), createObject('value', null()), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), if(equals(tryGet(parameters('roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(parameters('roleAssignmentCondition'), 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(parameters('roleAssignmentCondition').roleConditionType)), createObject('value', tryGet(parameters('roleAssignmentCondition'), 'delegationCode'))), createObject('value', ''))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -5669,7 +6252,7 @@
                 }
               }
             },
-            {
+            "createResourceGroupForDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -6129,7 +6712,7 @@
                 }
               }
             },
-            {
+            "createManagedIdentityForDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -6583,10 +7166,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForDeploymentScript)]"
+                "createResourceGroupForDeploymentScript"
               ]
             },
-            {
+            "createRoleAssignmentsDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -6601,7 +7184,7 @@
                   "location": {
                     "value": "[parameters('deploymentScriptLocation')]"
                   },
-                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createManagedIdentityForDeploymentScript').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "Contributor"
                   },
@@ -7277,10 +7860,10 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity)]"
+                "createManagedIdentityForDeploymentScript"
               ]
             },
-            {
+            "createRoleAssignmentsDeploymentScriptStorageAccount": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -7295,7 +7878,7 @@
                   "location": {
                     "value": "[parameters('deploymentScriptLocation')]"
                   },
-                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createManagedIdentityForDeploymentScript').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd"
                   },
@@ -7974,10 +8557,10 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity)]"
+                "createManagedIdentityForDeploymentScript"
               ]
             },
-            {
+            "createDsNsg": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -8591,10 +9174,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForDeploymentScript)]"
+                "createResourceGroupForDeploymentScript"
               ]
             },
-            {
+            "createDsStorageAccount": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -8626,7 +9209,7 @@
                       "virtualNetworkRules": [
                         {
                           "action": "Allow",
-                          "id": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet), '2022-09-01').outputs.subnetResourceIds.value[0], null())]"
+                          "id": "[if(not(empty(parameters('resourceProviders'))), reference('createDsVnet').outputs.subnetResourceIds.value[0], null())]"
                         }
                       ]
                     }
@@ -13271,11 +13854,11 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet)]",
-                "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', take(format('{0}', variables('deploymentNames').createRoleAssignmentsDeploymentScriptStorageAccount), 64))]"
+                "createDsVnet",
+                "createRoleAssignmentsDeploymentScriptStorageAccount"
               ]
             },
-            {
+            "createDsVnet": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -13304,7 +13887,7 @@
                       {
                         "addressPrefix": "[if(not(empty(parameters('resourceProviders'))), cidrSubnet(parameters('virtualNetworkDeploymentScriptAddressPrefix'), 24, 0), null())]",
                         "name": "ds-subnet-001",
-                        "networkSecurityGroupResourceId": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg), '2022-09-01').outputs.resourceId.value, null())]",
+                        "networkSecurityGroupResourceId": "[if(not(empty(parameters('resourceProviders'))), reference('createDsNsg').outputs.resourceId.value, null())]",
                         "serviceEndpoints": [
                           {
                             "service": "Microsoft.Storage"
@@ -14486,10 +15069,10 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg)]"
+                "createDsNsg"
               ]
             },
-            {
+            "registerResourceProviders": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -14529,9 +15112,9 @@
                   "runOnce": {
                     "value": true
                   },
-                  "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourcesIds', createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity), '2022-09-01').outputs.resourceId.value))), createObject('value', null()))]",
-                  "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsStorageAccount), '2022-09-01').outputs.resourceId.value), createObject('value', null()))]",
-                  "subnetResourceIds": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet), '2022-09-01').outputs.subnetResourceIds.value), createObject('value', null()))]",
+                  "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourcesIds', createArray(reference('createManagedIdentityForDeploymentScript').outputs.resourceId.value))), createObject('value', null()))]",
+                  "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createDsStorageAccount').outputs.resourceId.value), createObject('value', null()))]",
+                  "subnetResourceIds": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createDsVnet').outputs.subnetResourceIds.value), createObject('value', null()))]",
                   "arguments": {
                     "value": "[format('-resourceProviders ''{0}'' -resourceProvidersFeatures -subscriptionId {1}', variables('resourceProvidersFormatted'), parameters('subscriptionId'))]"
                   },
@@ -15036,71 +15619,71 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsStorageAccount)]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet)]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity)]"
+                "createDsStorageAccount",
+                "createDsVnet",
+                "createManagedIdentityForDeploymentScript"
               ]
             }
-          ],
+          },
           "outputs": {
             "failedProviders": {
               "type": "string",
-              "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').registerResourceProviders), '2022-09-01').outputs.outputs.value.failedProvidersRegistrations, '')]"
+              "value": "[if(not(empty(parameters('resourceProviders'))), reference('registerResourceProviders').outputs.outputs.value.failedProvidersRegistrations, '')]"
             },
             "failedFeatures": {
               "type": "string",
-              "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').registerResourceProviders), '2022-09-01').outputs.outputs.value.failedFeaturesRegistrations, '')]"
+              "value": "[if(not(empty(parameters('resourceProviders'))), reference('registerResourceProviders').outputs.outputs.value.failedFeaturesRegistrations, '')]"
             }
           }
         }
       },
       "dependsOn": [
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription)]"
+        "createSubscription"
       ]
     }
-  ],
+  },
   "outputs": {
     "subscriptionId": {
       "type": "string",
       "metadata": {
         "description": "The Subscription ID that has been created or provided."
       },
-      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('{0}', parameters('existingSubscriptionId'))))]"
+      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference('createSubscription').outputs.subscriptionId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('{0}', parameters('existingSubscriptionId'))))]"
     },
     "subscriptionResourceId": {
       "type": "string",
       "metadata": {
         "description": "The Subscription Resource ID that has been created or provided."
       },
-      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionResourceId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('/subscriptions/{0}', parameters('existingSubscriptionId'))))]"
+      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference('createSubscription').outputs.subscriptionResourceId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('/subscriptions/{0}', parameters('existingSubscriptionId'))))]"
     },
     "subscriptionAcceptOwnershipState": {
       "type": "string",
       "metadata": {
         "description": "The Subscription Owner State. Only used when creating MCA Subscriptions across tenants."
       },
-      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipState.value, 'N/A')]"
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference('createSubscription').outputs.subscriptionAcceptOwnershipState.value, 'N/A')]"
     },
     "subscriptionAcceptOwnershipUrl": {
       "type": "string",
       "metadata": {
         "description": "The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants."
       },
-      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipUrl.value, 'N/A')]"
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference('createSubscription').outputs.subscriptionAcceptOwnershipUrl.value, 'N/A')]"
     },
     "failedResourceProviders": {
       "type": "string",
       "metadata": {
         "description": "The resource providers that failed to register."
       },
-      "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscriptionResources), '2022-09-01').outputs.failedProviders.value, '')]"
+      "value": "[if(not(empty(parameters('resourceProviders'))), reference('createSubscriptionResources').outputs.failedProviders.value, '')]"
     },
     "failedResourceProvidersFeatures": {
       "type": "string",
       "metadata": {
         "description": "The resource providers features that failed to register."
       },
-      "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscriptionResources), '2022-09-01').outputs.failedFeatures.value, '')]"
+      "value": "[if(not(empty(parameters('resourceProviders'))), reference('createSubscriptionResources').outputs.failedFeatures.value, '')]"
     }
   }
 }

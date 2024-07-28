@@ -88,6 +88,9 @@ param roleAssignmentEnabled bool = false
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
 param roleAssignments array = []
 
+@sys.description('Supply a template for the role assignment delegation condition or provide a custom delegation code.')
+param roleAssignmentCondition roleAssignmentCondtionType = {}
+
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
 param enableTelemetry bool = true
 
@@ -431,6 +434,28 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
       subscriptionId: subscriptionId
+      conditionVersion: !(empty(roleAssignmentCondition ?? {}))
+        ? (roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(roleAssignmentCondition ?? {}))
+        ? null
+        : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles'
+            ? (empty(roleAssignmentCondition.?delegationCode)
+                ? generateCodeRolesType(any(roleAssignmentCondition.roleConditionType))
+                : roleAssignmentCondition.?delegationCode)
+            : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes'
+                ? (empty(roleAssignmentCondition.?delegationCode)
+                    ? generateCodeRolesAndPrincipalsTypes(any(roleAssignmentCondition.roleConditionType))
+                    : roleAssignmentCondition.?delegationCode)
+                : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals'
+                    ? (empty(roleAssignmentCondition.?delegationCode)
+                        ? generateCodeRolesAndPrincipals(any(roleAssignmentCondition.roleConditionType))
+                        : roleAssignmentCondition.?delegationCode)
+                    : roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles'
+                        ? (empty(roleAssignmentCondition.?delegationCode)
+                            ? generateCodeExcludeRoles(any(roleAssignmentCondition.roleConditionType))
+                            : roleAssignmentCondition.?delegationCode)
+                        : ''
     }
   }
 ]
@@ -450,6 +475,28 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
       roleDefinitionIdOrName: assignment.definition
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      conditionVersion: !(empty(roleAssignmentCondition ?? {}))
+        ? (roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(roleAssignmentCondition ?? {}))
+        ? null
+        : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles'
+            ? (empty(roleAssignmentCondition.?delegationCode)
+                ? generateCodeRolesType(any(roleAssignmentCondition.roleConditionType))
+                : roleAssignmentCondition.?delegationCode)
+            : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes'
+                ? (empty(roleAssignmentCondition.?delegationCode)
+                    ? generateCodeRolesAndPrincipalsTypes(any(roleAssignmentCondition.roleConditionType))
+                    : roleAssignmentCondition.?delegationCode)
+                : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals'
+                    ? (empty(roleAssignmentCondition.?delegationCode)
+                        ? generateCodeRolesAndPrincipals(any(roleAssignmentCondition.roleConditionType))
+                        : roleAssignmentCondition.?delegationCode)
+                    : roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles'
+                        ? (empty(roleAssignmentCondition.?delegationCode)
+                            ? generateCodeExcludeRoles(any(roleAssignmentCondition.roleConditionType))
+                            : roleAssignmentCondition.?delegationCode)
+                        : ''
     }
   }
 ]
@@ -466,6 +513,28 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
       roleDefinitionIdOrName: assignment.definition
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      conditionVersion: !(empty(roleAssignmentCondition ?? {}))
+        ? (roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(roleAssignmentCondition ?? {}))
+        ? null
+        : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles'
+            ? (empty(roleAssignmentCondition.?delegationCode)
+                ? generateCodeRolesType(any(roleAssignmentCondition.roleConditionType))
+                : roleAssignmentCondition.?delegationCode)
+            : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes'
+                ? (empty(roleAssignmentCondition.?delegationCode)
+                    ? generateCodeRolesAndPrincipalsTypes(any(roleAssignmentCondition.roleConditionType))
+                    : roleAssignmentCondition.?delegationCode)
+                : roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals'
+                    ? (empty(roleAssignmentCondition.?delegationCode)
+                        ? generateCodeRolesAndPrincipals(any(roleAssignmentCondition.roleConditionType))
+                        : roleAssignmentCondition.?delegationCode)
+                    : roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles'
+                        ? (empty(roleAssignmentCondition.?delegationCode)
+                            ? generateCodeExcludeRoles(any(roleAssignmentCondition.roleConditionType))
+                            : roleAssignmentCondition.?delegationCode)
+                        : ''
     }
   }
 ]
@@ -619,3 +688,105 @@ output failedProviders string = !empty(resourceProviders)
 output failedFeatures string = !empty(resourceProviders)
   ? registerResourceProviders.outputs.outputs.failedFeaturesRegistrations
   : ''
+
+// ================ //
+// Definitions      //
+// ================ //
+
+// "Constrain Roles" - Condition template
+@export()
+type constrainRolesType = {
+  @description('Required. Name of the RBAC condition template.')
+  templateName: 'constrainRoles'
+
+  @description('Required. The list of roles that are allowed to be assigned by the delegate.')
+  rolesToAssign: array
+}
+
+// "Constrain Roles and Principal types" - Condition template
+@export()
+type constrainRolesAndPrincipalTypesType = {
+  @description('Required. Name of the RBAC condition template.')
+  templateName: 'constrainRolesAndPrincipalTypes'
+
+  @description('Required. The list of roles that are allowed to be assigned by the delegate.')
+  rolesToAssign: array
+
+  @description('Required. The list of principle types that are allowed to be assigned roles by the delegate.')
+  principleTypesToAssign: ('User' | 'Group' | 'ServicePrincipal')[]
+}
+
+// "Constrain Roles and Principals" - Condition template
+@export()
+type constrainRolesAndPrincipalsType = {
+  @description('Required. Name of the RBAC condition template.')
+  templateName: 'constrainRolesAndPrincipals'
+
+  @description('Required. The list of roles that are allowed to be assigned by the delegate.')
+  rolesToAssign: array
+
+  @description('Required. The list of principals that are allowed to be assigned roles by the delegate.')
+  principalsToAssignTo: array
+}
+
+// "Exclude Roles" - Condition template
+@export()
+type excludeRolesType = {
+  @description('Required. Name of the RBAC condition template.')
+  templateName: 'excludeRoles'
+
+  @description('Required. The list of roles that are not allowed to be assigned by the delegate.')
+  ExludededRoles: array
+}
+
+// Discriminator for the constrainedDelegationTemplatesType
+@export()
+@discriminator('templateName')
+type constrainedDelegationTemplatesType =
+  | excludeRolesType
+  | constrainRolesType
+  | constrainRolesAndPrincipalTypesType
+  | constrainRolesAndPrincipalsType
+
+// Role Assignment Condition type
+@export()
+type roleAssignmentCondtionType = {
+  @description('Required. The type of template for the role assignment condition.')
+  roleConditionType: constrainedDelegationTemplatesType?
+
+  @description('Optional. The version of the condition template.')
+  conditionVersion: '2.0'?
+
+  @description('Optional. The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements.')
+  delegationCode: string?
+}
+
+// Functions to generate conditions' code
+
+@description('Generates the code for the "Constrain Roles" condition template.')
+@export()
+func generateCodeRolesType(constrainRoles constrainRolesType) string =>
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'})) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRoles.rolesToAssign)}}) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRoles.rolesToAssign)}}))))'
+
+@description('Generates the code for the "Constrain Roles and Principal types" condition template.')
+@export()
+func generateCodeRolesAndPrincipalsTypes(constrainRolesAndPrincipalsTypes constrainRolesAndPrincipalTypesType) string =>
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRolesAndPrincipalsTypes.rolesToAssign)}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {${joinArrayIgnoreCase(constrainRolesAndPrincipalsTypes.principleTypesToAssign)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRolesAndPrincipalsTypes.rolesToAssign)}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {${joinArrayIgnoreCase(constrainRolesAndPrincipalsTypes.principleTypesToAssign)}})))'
+
+@description('Generates the code for the "Constrain Roles and Principals" condition template.')
+@export()
+func generateCodeRolesAndPrincipals(constrainRolesAndPrincipals constrainRolesAndPrincipalsType) string =>
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRolesAndPrincipals.rolesToAssign)}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRolesAndPrincipals.principalsToAssignTo)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRolesAndPrincipals.rolesToAssign)}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {${joinArray(constrainRolesAndPrincipals.principalsToAssignTo)}})))'
+
+@description('Generates the code for the "Exclude Roles" condition template.')
+@export()
+func generateCodeExcludeRoles(excludeRoles excludeRolesType) string =>
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}}))))'
+
+// Helper functions
+@export()
+func joinArray(roles array) string => replace(join(roles, ','), '"', '')
+
+@export()
+func joinArrayIgnoreCase(principalTypes array) string =>
+  '\'${replace(replace(join(principalTypes, ','),'"','\''),',','\',\'')}\''
