@@ -202,12 +202,11 @@ Each object must contain the following `keys`:
 param roleAssignments array = []
 
 @description('''Optional. Supply a template for the role assignment delegation condition or provide a custom delegation code.
-Conditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions
-
+Conditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions.
 ''')
 param roleAssignmentCondition imports.roleAssignmentCondtionType = {}
 
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The name of the resource group to create the deployment script for resource providers registration.')

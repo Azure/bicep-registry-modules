@@ -88,7 +88,9 @@ param roleAssignmentEnabled bool = false
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
 param roleAssignments array = []
 
-@sys.description('Supply a template for the role assignment delegation condition or provide a custom delegation code.')
+@sys.description('''Optional. Supply a template for the role assignment delegation condition or provide a custom delegation code.
+Conditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions.
+''')
 param roleAssignmentCondition roleAssignmentCondtionType = {}
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')

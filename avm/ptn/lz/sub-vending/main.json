@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "985985486089183315"
+      "templateHash": "17721355887316090327"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -537,7 +537,7 @@
       "$ref": "#/definitions/_1.roleAssignmentCondtionType",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Supply a template for the role assignment delegation condition or provide a custom delegation code.\nConditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions\n\n"
+        "description": "Optional. Supply a template for the role assignment delegation condition or provide a custom delegation code.\nConditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions.\n"
       }
     },
     "enableTelemetry": {
@@ -956,7 +956,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "9888823952564296260"
+              "templateHash": "2649354238201186488"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1401,7 +1401,7 @@
               "$ref": "#/definitions/roleAssignmentCondtionType",
               "defaultValue": {},
               "metadata": {
-                "description": "Supply a template for the role assignment delegation condition or provide a custom delegation code."
+                "description": "Optional. Supply a template for the role assignment delegation condition or provide a custom delegation code.\nConditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions.\n"
               }
             },
             "enableTelemetry": {
