@@ -110,6 +110,11 @@ function Remove-Deployment {
 
         Write-Verbose ('Total number of deployment target resources after fetching deployments [{0}]' -f $deployedTargetResources.Count) -Verbose
 
+        if (-not $deployedTargetResources) {
+            # Nothing to do
+            return
+        }
+
         # Pre-Filter & order items
         # ========================
         $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Culture 'en-US' -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
