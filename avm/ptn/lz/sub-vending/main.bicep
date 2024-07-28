@@ -201,11 +201,6 @@ Each object must contain the following `keys`:
 ''')
 param roleAssignments array = []
 
-@description('''Optional. Supply a template for the role assignment delegation condition or provide a custom delegation code.
-Conditions are only supported for roles with `Microsoft.Authorization/roleAssignments/write` and/or `Microsoft.Authorization/roleAssignments/delete` permissions.
-''')
-param roleAssignmentCondition imports.roleAssignmentCondtionType = {}
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -386,7 +381,6 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
-    roleAssignmentCondition: roleAssignmentCondition
     deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
     deploymentScriptName: deploymentScriptName
     deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
