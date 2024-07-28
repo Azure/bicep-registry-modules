@@ -1786,8 +1786,6 @@ function Initialize-ReadMe {
         $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
     }
 
-    $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
-
     # Orphaned readme existing?
     $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
     if (Test-Path $orphanedReadMeFilePath) {
@@ -1809,15 +1807,6 @@ function Initialize-ReadMe {
         ((Test-Path $movedReadMeFilePath) ? '' : $null),
         $moduleDescription,
         ''
-        # '## Resource Types',
-        # ''
-        # ($hasTests ? '## Usage examples' : $null),
-        # ($hasTests ? '' : $null),
-        # '## Parameters',
-        # '',
-        # '## Outputs',
-        # '',
-        # '## Cross-referenced modules'
     ) | Where-Object { $null -ne $_ } # Filter null values
     $readMeFileContent = $initialContent
 
