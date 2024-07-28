@@ -1069,7 +1069,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/role-assignment:0.1.0` | Remote reference |
+| `br/public:avm/ptn/authorization/role-assignment:0.1.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.3.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.1.7` | Remote reference |

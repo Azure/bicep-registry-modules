@@ -420,7 +420,7 @@ module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (v
   }
 }
 
-module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = [
+module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.1.1' = [
   for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -457,7 +457,7 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
   }
 ]
 
-module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = [
+module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.1.1' = [
   for assignment in roleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupSelf)) {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -498,7 +498,7 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
   }
 ]
 
-module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = [
+module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.1.1' = [
   for assignment in roleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupNotSelf)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -559,7 +559,7 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.1.1' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
@@ -569,7 +569,7 @@ module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/ro
   }
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.1.0' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.1.1' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation
