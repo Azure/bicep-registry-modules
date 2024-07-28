@@ -1,4 +1,4 @@
-name: "avm.ptn.general.any-deployment-script"
+name: "avm.utl.general.any-deployment-script"
 
 on:
   workflow_dispatch:

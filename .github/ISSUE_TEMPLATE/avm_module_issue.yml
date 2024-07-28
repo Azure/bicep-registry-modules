@@ -187,6 +187,8 @@ body:
         - "avm/res/web/serverfarm"
         - "avm/res/web/site"
         - "avm/res/web/static-site"
+        - "avm/utl/general/get-environment"
+        - "avm/utl/general/any-deployment-script"
     validations:
       required: true
   - type: input

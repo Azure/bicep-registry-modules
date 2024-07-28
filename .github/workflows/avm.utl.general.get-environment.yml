@@ -1,4 +1,4 @@
-name: "avm.ptn.general.get-environment"
+name: "avm.utl.general.get-environment"
 
 on:
   workflow_dispatch:
