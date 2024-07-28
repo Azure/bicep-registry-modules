@@ -7,7 +7,7 @@ metadata description = 'This example deploys all available exported functions of
 // Test Execution //
 // ============== //
 
-// Triggering commen
+// Triggering comme
 
 import { getGraphEndpoint, getPortalUrl } from '../../../main.bicep'
 
