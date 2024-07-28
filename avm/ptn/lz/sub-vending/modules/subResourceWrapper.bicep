@@ -86,7 +86,7 @@ param vHubRoutingIntentEnabled bool = false
 param roleAssignmentEnabled bool = false
 
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
-param roleAssignments array = []
+param roleAssignments roleAssignmentType = []
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
 param enableTelemetry bool = true
@@ -438,19 +438,19 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
         ? null
         : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles'
             ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                ? generateCodeRolesType(any(assignment.roleAssignmentCondition.roleConditionType))
+                ? generateCodeRolesType(any(assignment.roleAssignmentCondition.?roleConditionType))
                 : assignment.roleAssignmentCondition.?delegationCode)
             : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes'
                 ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                    ? generateCodeRolesAndPrincipalsTypes(any(assignment.roleAssignmentCondition.roleConditionType))
+                    ? generateCodeRolesAndPrincipalsTypes(any(assignment.roleAssignmentCondition.?roleConditionType))
                     : assignment.roleAssignmentCondition.?delegationCode)
                 : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals'
                     ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                        ? generateCodeRolesAndPrincipals(any(assignment.roleAssignmentCondition.roleConditionType))
+                        ? generateCodeRolesAndPrincipals(any(assignment.roleAssignmentCondition.?roleConditionType))
                         : assignment.roleAssignmentCondition.?delegationCode)
                     : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles'
                         ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                            ? generateCodeExcludeRoles(any(assignment.roleAssignmentCondition.roleConditionType))
+                            ? generateCodeExcludeRoles(any(assignment.roleAssignmentCondition.?roleConditionType))
                             : assignment.roleAssignmentCondition.?delegationCode)
                         : ''
     }
@@ -479,19 +479,19 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
         ? null
         : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles'
             ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                ? generateCodeRolesType(any(assignment.roleAssignmentCondition.roleConditionType))
+                ? generateCodeRolesType(any(assignment.roleAssignmentCondition.?roleConditionType))
                 : assignment.roleAssignmentCondition.?delegationCode)
             : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes'
                 ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                    ? generateCodeRolesAndPrincipalsTypes(any(assignment.roleAssignmentCondition.roleConditionType))
+                    ? generateCodeRolesAndPrincipalsTypes(any(assignment.roleAssignmentCondition.?roleConditionType))
                     : assignment.roleAssignmentCondition.?delegationCode)
                 : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals'
                     ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                        ? generateCodeRolesAndPrincipals(any(assignment.roleAssignmentCondition.roleConditionType))
+                        ? generateCodeRolesAndPrincipals(any(assignment.roleAssignmentCondition.?roleConditionType))
                         : assignment.roleAssignmentCondition.?delegationCode)
                     : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles'
                         ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                            ? generateCodeExcludeRoles(any(assignment.roleAssignmentCondition.roleConditionType))
+                            ? generateCodeExcludeRoles(any(assignment.roleAssignmentCondition.?roleConditionType))
                             : assignment.roleAssignmentCondition.?delegationCode)
                         : ''
     }
@@ -517,19 +517,19 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
         ? null
         : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles'
             ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                ? generateCodeRolesType(any(assignment.roleAssignmentCondition.roleConditionType))
+                ? generateCodeRolesType(any(assignment.roleAssignmentCondition.?roleConditionType))
                 : assignment.roleAssignmentCondition.?delegationCode)
             : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes'
                 ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                    ? generateCodeRolesAndPrincipalsTypes(any(assignment.roleAssignmentCondition.roleConditionType))
+                    ? generateCodeRolesAndPrincipalsTypes(any(assignment.roleAssignmentCondition.?roleConditionType))
                     : assignment.roleAssignmentCondition.?delegationCode)
                 : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals'
                     ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                        ? generateCodeRolesAndPrincipals(any(assignment.roleAssignmentCondition.roleConditionType))
+                        ? generateCodeRolesAndPrincipals(any(assignment.roleAssignmentCondition.?roleConditionType))
                         : assignment.roleAssignmentCondition.?delegationCode)
                     : assignment.roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles'
                         ? (empty(assignment.roleAssignmentCondition.?delegationCode)
-                            ? generateCodeExcludeRoles(any(assignment.roleAssignmentCondition.roleConditionType))
+                            ? generateCodeExcludeRoles(any(assignment.roleAssignmentCondition.?roleConditionType))
                             : assignment.roleAssignmentCondition.?delegationCode)
                         : ''
     }
@@ -689,6 +689,21 @@ output failedFeatures string = !empty(resourceProviders)
 // ================ //
 // Definitions      //
 // ================ //
+
+@export()
+type roleAssignmentType = {
+  @description('Required. The principal ID of the user, group, or service principal.')
+  principalId: string
+
+  @description('Required. The role definition ID or name.')
+  definition: string
+
+  @description('Required. The relative scope of the role assignment.')
+  relativeScope: string
+
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentCondtionType?
+}[]
 
 // "Constrain Roles" - Condition template
 @export()

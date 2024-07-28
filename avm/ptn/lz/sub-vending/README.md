@@ -820,6 +820,88 @@ Supply an array of objects containing the details of the role assignments to cre
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`definition`](#parameter-roleassignmentsdefinition) | string | The role definition ID or name. |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
+| [`relativeScope`](#parameter-roleassignmentsrelativescope) | string | The relative scope of the role assignment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleAssignmentCondition`](#parameter-roleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
+
+### Parameter: `roleAssignments.definition`
+
+The role definition ID or name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the user, group, or service principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.relativeScope`
+
+The relative scope of the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleAssignmentCondition`
+
+The condition for the role assignment.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleConditionType`](#parameter-roleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conditionVersion`](#parameter-roleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
+| [`delegationCode`](#parameter-roleassignmentsroleassignmentconditiondelegationcode) | string | The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType`
+
+The type of template for the role assignment condition.
+
+- Required: No
+- Type: object
+
+### Parameter: `roleAssignments.roleAssignmentCondition.conditionVersion`
+
+The version of the condition template.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `roleAssignments.roleAssignmentCondition.delegationCode`
+
+The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements.
+
+- Required: No
+- Type: string
+
 ### Parameter: `subscriptionAliasEnabled`
 
 Whether to create a new Subscription using the Subscription Alias resource. If `false`, supply an existing Subscription''s ID in the parameter named `existingSubscriptionId` instead to deploy resources to an existing Subscription.

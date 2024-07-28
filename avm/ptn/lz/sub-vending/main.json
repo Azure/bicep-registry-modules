@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "2577368236373545448"
+      "templateHash": "16613823763676292222"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -181,6 +181,44 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the user, group, or service principal."
+            }
+          },
+          "definition": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role definition ID or name."
+            }
+          },
+          "relativeScope": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The relative scope of the role assignment."
+            }
+          },
+          "roleAssignmentCondition": {
+            "$ref": "#/definitions/_1.roleAssignmentCondtionType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The condition for the role assignment."
+            }
           }
         }
       },
@@ -527,7 +565,7 @@
       }
     },
     "roleAssignments": {
-      "type": "array",
+      "$ref": "#/definitions/_1.roleAssignmentType",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
@@ -946,13 +984,49 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "1415361660680983087"
+              "templateHash": "11425384072903606016"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
             "details": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
           },
           "definitions": {
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the user, group, or service principal."
+                    }
+                  },
+                  "definition": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role definition ID or name."
+                    }
+                  },
+                  "relativeScope": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The relative scope of the role assignment."
+                    }
+                  },
+                  "roleAssignmentCondition": {
+                    "$ref": "#/definitions/roleAssignmentCondtionType",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The condition for the role assignment."
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
             "constrainRolesType": {
               "type": "object",
               "properties": {
@@ -1381,7 +1455,7 @@
               }
             },
             "roleAssignments": {
-              "type": "array",
+              "$ref": "#/definitions/roleAssignmentType",
               "defaultValue": [],
               "metadata": {
                 "description": "Supply an array of objects containing the details of the role assignments to create."
@@ -4158,7 +4232,7 @@
                     "value": "[parameters('subscriptionId')]"
                   },
                   "conditionVersion": "[if(not(empty(coalesce(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, createObject()))), createObject('value', coalesce(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'conditionVersion'), '2.0')), createObject('value', null()))]",
-                  "condition": "[if(empty(coalesce(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, createObject())), createObject('value', null()), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), createObject('value', ''))))))]"
+                  "condition": "[if(empty(coalesce(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, createObject())), createObject('value', null()), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsSubscription')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), createObject('value', ''))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -4860,7 +4934,7 @@
                     "value": "[split(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope, '/')[2]]"
                   },
                   "conditionVersion": "[if(not(empty(coalesce(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, createObject()))), createObject('value', coalesce(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'conditionVersion'), '2.0')), createObject('value', null()))]",
-                  "condition": "[if(empty(coalesce(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, createObject())), createObject('value', null()), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), createObject('value', ''))))))]"
+                  "condition": "[if(empty(coalesce(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, createObject())), createObject('value', null()), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), createObject('value', ''))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -5565,7 +5639,7 @@
                     "value": "[split(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope, '/')[2]]"
                   },
                   "conditionVersion": "[if(not(empty(coalesce(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, createObject()))), createObject('value', coalesce(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'conditionVersion'), '2.0')), createObject('value', null()))]",
-                  "condition": "[if(empty(coalesce(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, createObject())), createObject('value', null()), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition.roleConditionType)), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), createObject('value', ''))))))]"
+                  "condition": "[if(empty(coalesce(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, createObject())), createObject('value', null()), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesType(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeRolesAndPrincipals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), if(equals(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType', 'templateName'), 'excludeRoles'), if(empty(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode')), createObject('value', __bicep.generateCodeExcludeRoles(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'roleConditionType'))), createObject('value', tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentCondition, 'delegationCode'))), createObject('value', ''))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
