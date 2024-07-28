@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.45.22436",
-      "templateHash": "10524081774763212931"
+      "version": "0.29.47.4906",
+      "templateHash": "6323411767644370331"
     },
     "name": "General environment functions",
     "description": "This module provides you with several functions you can import into your template.",

@@ -45,6 +45,8 @@ metadata description = 'This example deploys all available exported functions of
 // Test Execution //
 // ============== //
 
+// Triggering comment
+
 import { getGraphEndpoint, getPortalUrl } from '../../../main.bicep'
 
 output graphEndpoint string = getGraphEndpoint('AzureCloud')

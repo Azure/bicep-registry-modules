@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.45.22436",
-      "templateHash": "8882871429967928552"
+      "version": "0.29.47.4906",
+      "templateHash": "204471559312999526"
     },
     "name": "Any example deployment script utility",
     "description": "This module provides you with whatever deployment script experience.",
@@ -33,7 +33,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "Write-Host 'Oh Stanley'\n"
+    "$fxv#0": "Write-Host 'Oh Stanley'\r\n"
   },
   "resources": [
     {

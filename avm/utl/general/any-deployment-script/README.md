@@ -43,7 +43,7 @@ module anyDeploymentScript 'br/public:avm/utl/general/any-deployment-script:<ver
   params: {
     // Required parameters
     managedIdentityResourceId: '<managedIdentityResourceId>'
-    storageDeploymentScriptName: 'gadsd001'
+    storageDeploymentScriptName: 'gadsdmin001'
   }
 }
 ```
@@ -65,7 +65,7 @@ module anyDeploymentScript 'br/public:avm/utl/general/any-deployment-script:<ver
       "value": "<managedIdentityResourceId>"
     },
     "storageDeploymentScriptName": {
-      "value": "gadsd001"
+      "value": "gadsdmin001"
     }
   }
 }
