@@ -8,7 +8,6 @@ This module deploys a Container App.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -525,7 +524,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1402,7 +1400,6 @@ Workload profile name to pin for container app execution.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1413,10 +1410,6 @@ Workload profile name to pin for container app execution.
 | `resourceGroupName` | string | The name of the resource group the Container App was deployed into. |
 | `resourceId` | string | The resource ID of the Container App. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

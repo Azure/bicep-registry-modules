@@ -8,7 +8,6 @@ This module deploys an Alert Processing Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -473,7 +472,6 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -711,7 +709,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -720,10 +717,6 @@ Resource tags.
 | `name` | string | The name of the Alert Processing Rule. |
 | `resourceGroupName` | string | The resource group the action group was deployed into. |
 | `resourceId` | string | The resource ID of the Alert Processing Rule. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

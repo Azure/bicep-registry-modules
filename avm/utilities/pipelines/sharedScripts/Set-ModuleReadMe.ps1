@@ -610,7 +610,7 @@ function Set-FunctionsSection {
 
     if ($noFunctions -or $noExportedFunctions) {
         # no exported/available functions in the template
-        $SectionContent = '_None_'
+        return $ReadMeFileContent
     } elseif ($TemplateFileContent.functions.members.Values.metadata) {
         # Template has function descriptions
         $SectionContent = [System.Collections.ArrayList]@(
