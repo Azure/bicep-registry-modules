@@ -14,7 +14,7 @@ param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAcco
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssamin'
+param serviceShort string = 'ssrbac'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 3))
