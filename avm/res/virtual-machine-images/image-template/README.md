@@ -8,7 +8,6 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -530,7 +529,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -965,7 +963,6 @@ Do not provide a value! This date value is used to generate a unique image templ
 - Type: string
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -976,10 +973,6 @@ Do not provide a value! This date value is used to generate a unique image templ
 | `resourceGroupName` | string | The resource group the image template was deployed into. |
 | `resourceId` | string | The resource ID of the image template. |
 | `runThisCommand` | string | The command to run in order to trigger the image build. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

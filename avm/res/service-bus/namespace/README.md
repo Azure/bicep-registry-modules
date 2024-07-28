@@ -990,7 +990,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2911,7 +2910,6 @@ Enabling this property creates a Premium Service Bus Namespace in regions suppor
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 

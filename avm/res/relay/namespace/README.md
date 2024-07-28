@@ -631,7 +631,6 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1358,7 +1357,6 @@ The wcf relays to create in the relay namespace.
 - Required: No
 - Type: array
 - Default: `[]`
-
 
 ## Outputs
 

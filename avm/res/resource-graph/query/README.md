@@ -8,7 +8,6 @@ This module deploys a Resource Graph Query.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -271,7 +270,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -462,7 +460,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -471,10 +468,6 @@ Resource tags.
 | `name` | string | The name of the query. |
 | `resourceGroupName` | string | The resource group the query was deployed into. |
 | `resourceId` | string | The resource ID of the query. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

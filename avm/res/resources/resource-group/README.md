@@ -8,7 +8,6 @@ This module deploys a Resource Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -255,7 +254,6 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -429,7 +427,6 @@ Tags of the storage account resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -437,10 +434,6 @@ Tags of the storage account resource.
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the resource group. |
 | `resourceId` | string | The resource ID of the resource group. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

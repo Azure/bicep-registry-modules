@@ -2020,7 +2020,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -3045,7 +3044,6 @@ Virtual Network Route All enabled. This causes all outbound traffic to have Virt
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 

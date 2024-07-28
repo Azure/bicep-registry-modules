@@ -8,7 +8,6 @@ This module deploys Deployment Scripts.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -682,7 +681,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1030,7 +1028,6 @@ Do not provide a value! This date value is used to make sure the script run ever
 - Type: string
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1041,10 +1038,6 @@ Do not provide a value! This date value is used to make sure the script run ever
 | `outputs` | object | The output of the deployment script. |
 | `resourceGroupName` | string | The resource group the deployment script was deployed into. |
 | `resourceId` | string | The resource ID of the deployment script. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

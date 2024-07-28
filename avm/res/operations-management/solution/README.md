@@ -8,7 +8,6 @@ This module deploys an Operations Management Solution.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -262,7 +261,6 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -327,7 +325,6 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 - Type: string
 - Default: `'Microsoft'`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -336,10 +333,6 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 | `name` | string | The name of the deployed solution. |
 | `resourceGroupName` | string | The resource group where the solution is deployed. |
 | `resourceId` | string | The resource ID of the deployed solution. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
