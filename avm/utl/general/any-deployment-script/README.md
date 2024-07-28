@@ -88,6 +88,7 @@ module anyDeploymentScript 'br/public:avm/utl/general/any-deployment-script:<ver
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The location to deploy into. |
 
 ### Parameter: `managedIdentityResourceId`
@@ -103,6 +104,14 @@ The name of the deployment script.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `location`
 
