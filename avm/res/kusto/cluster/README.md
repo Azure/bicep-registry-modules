@@ -421,7 +421,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1484,7 +1483,6 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 - Required: Yes
 - Type: string
-
 
 ## Outputs
 

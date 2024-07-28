@@ -8,7 +8,6 @@ This module deploys a Public DNS zone.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -838,7 +837,6 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -2663,7 +2661,6 @@ The text value of this TXT record.
 - Required: Yes
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2672,10 +2669,6 @@ The text value of this TXT record.
 | `name` | string | The name of the DNS zone. |
 | `resourceGroupName` | string | The resource group the DNS zone was deployed into. |
 | `resourceId` | string | The resource ID of the DNS zone. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -8,7 +8,6 @@ This module deploys an Azure Virtual Desktop Application Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -359,7 +358,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -696,7 +694,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -705,10 +702,6 @@ Tags of the resource.
 | `name` | string | The name of the scaling plan. |
 | `resourceGroupName` | string | The name of the resource group the scaling plan was created in. |
 | `resourceId` | string | The resource ID of the scaling plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

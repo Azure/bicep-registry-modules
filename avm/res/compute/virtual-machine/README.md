@@ -9,7 +9,6 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Exported functions](#Exported-functions)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -3084,7 +3083,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -4235,7 +4233,6 @@ Do not provide a value! This date value is used to generate a registration token
 - Type: string
 - Default: `[utcNow('u')]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -4254,10 +4251,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.2.4` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
-
-## Exported functions
-
-_None_
 
 ## Notes
 

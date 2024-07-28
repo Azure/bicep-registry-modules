@@ -8,7 +8,6 @@ This module deploys a Proximity Placement Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -325,7 +324,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -539,7 +537,6 @@ Specifies the Availability Zone where virtual machine, virtual machine scale set
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -548,10 +545,6 @@ Specifies the Availability Zone where virtual machine, virtual machine scale set
 | `name` | string | The name of the proximity placement group. |
 | `resourceGroupName` | string | The resource group the proximity placement group was deployed into. |
 | `resourceId` | string | The resourceId the proximity placement group. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

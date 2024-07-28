@@ -1211,7 +1211,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2196,7 +2195,6 @@ Zone numbers e.g. 1,2,3.
     3
   ]
   ```
-
 
 ## Outputs
 

@@ -486,7 +486,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -873,7 +872,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

@@ -13,7 +13,6 @@ This module deploys a Healthcare API Workspace.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -464,7 +463,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -678,7 +676,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -687,10 +684,6 @@ Tags of the resource.
 | `name` | string | The name of the health data services workspace. |
 | `resourceGroupName` | string | The resource group where the workspace is deployed. |
 | `resourceId` | string | The resource ID of the health data services workspace. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

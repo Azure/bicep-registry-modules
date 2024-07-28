@@ -8,7 +8,6 @@ This module deploys a DDoS Protection Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -255,7 +254,6 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -429,7 +427,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -438,10 +435,6 @@ Tags of the resource.
 | `name` | string | The name of the DDOS protection plan. |
 | `resourceGroupName` | string | The resource group the DDOS protection plan was deployed into. |
 | `resourceId` | string | The resource ID of the DDOS protection plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

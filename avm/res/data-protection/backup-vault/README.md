@@ -8,7 +8,6 @@ This module deploys a Data Protection Backup Vault.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -533,7 +532,6 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -805,7 +803,6 @@ The vault redundancy level to use.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -815,10 +812,6 @@ The vault redundancy level to use.
 | `resourceGroupName` | string | The name of the resource group the recovery services vault was created in. |
 | `resourceId` | string | The resource ID of the backup vault. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

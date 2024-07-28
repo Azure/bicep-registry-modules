@@ -8,7 +8,6 @@ This module deploys a User Defined Route Table (UDR).
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -299,7 +298,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -563,7 +561,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -572,10 +569,6 @@ Tags of the resource.
 | `name` | string | The name of the route table. |
 | `resourceGroupName` | string | The resource group the route table was deployed into. |
 | `resourceId` | string | The resource ID of the route table. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

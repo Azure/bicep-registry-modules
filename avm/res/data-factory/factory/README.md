@@ -511,7 +511,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1415,7 +1414,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

@@ -8,7 +8,6 @@ This module deploys a Network security Group (NSG).
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -483,7 +482,6 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -964,7 +962,6 @@ Tags of the NSG resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -973,10 +970,6 @@ Tags of the NSG resource.
 | `name` | string | The name of the network security group. |
 | `resourceGroupName` | string | The resource group the network security group was deployed into. |
 | `resourceId` | string | The resource ID of the network security group. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

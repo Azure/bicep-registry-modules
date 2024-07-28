@@ -8,7 +8,6 @@ This module deploys an Action Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -288,7 +287,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -522,7 +520,6 @@ The list of webhook receivers that are part of this action group.
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -531,10 +528,6 @@ The list of webhook receivers that are part of this action group.
 | `name` | string | The name of the action group. |
 | `resourceGroupName` | string | The resource group the action group was deployed into. |
 | `resourceId` | string | The resource ID of the action group. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -8,7 +8,6 @@ This module deploys a VPN Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -385,7 +384,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -531,7 +529,6 @@ The scale unit for this VPN gateway.
 - Type: int
 - Default: `2`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -540,10 +537,6 @@ The scale unit for this VPN gateway.
 | `name` | string | The name of the VPN gateway. |
 | `resourceGroupName` | string | The name of the resource group the VPN gateway was deployed into. |
 | `resourceId` | string | The resource ID of the VPN gateway. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

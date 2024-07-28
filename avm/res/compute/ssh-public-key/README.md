@@ -10,7 +10,6 @@ This module deploys a Public SSH Key.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -309,7 +308,6 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -491,7 +489,6 @@ Tags of the availability set resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -500,10 +497,6 @@ Tags of the availability set resource.
 | `name` | string | The name of the Public SSH Key. |
 | `resourceGroupName` | string | The name of the Resource Group the Public SSH Key was created in. |
 | `resourceId` | string | The resource ID of the Public SSH Key. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

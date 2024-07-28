@@ -8,7 +8,6 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -623,7 +622,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1135,7 +1133,6 @@ Tags for all resources.
   }
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1145,10 +1142,6 @@ Tags for all resources.
 | `name` | string | The name of the deployed image gallery. |
 | `resourceGroupName` | string | The resource group of the deployed image gallery. |
 | `resourceId` | string | The resource ID of the deployed image gallery. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

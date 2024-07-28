@@ -8,7 +8,6 @@ This module deploys a CDN Profile.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -570,7 +569,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -844,7 +842,6 @@ Endpoint tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -857,10 +854,6 @@ Endpoint tags.
 | `resourceGroupName` | string | The resource group where the CDN profile is deployed. |
 | `resourceId` | string | The resource ID of the CDN profile. |
 | `uri` | string | The uri of the CDN profile endpoint. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -8,7 +8,6 @@ This module deploys an Email Service
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -347,7 +346,6 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -537,7 +535,6 @@ Endpoint tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -548,10 +545,6 @@ Endpoint tags.
 | `name` | string | The name of the email service. |
 | `resourceGroupName` | string | The resource group the email service was deployed into. |
 | `resourceId` | string | The resource ID of the email service. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

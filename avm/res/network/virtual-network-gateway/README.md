@@ -982,7 +982,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1715,7 +1714,6 @@ Specifies the VPN type.
     'RouteBased'
   ]
   ```
-
 
 ## Outputs
 

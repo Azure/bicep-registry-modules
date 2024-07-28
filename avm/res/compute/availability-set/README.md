@@ -8,7 +8,6 @@ This module deploys an Availability Set.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -263,7 +262,6 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -473,7 +471,6 @@ Tags of the availability set resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -482,10 +479,6 @@ Tags of the availability set resource.
 | `name` | string | The name of the availability set. |
 | `resourceGroupName` | string | The resource group the availability set was deployed into. |
 | `resourceId` | string | The resource ID of the availability set. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

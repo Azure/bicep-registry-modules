@@ -8,7 +8,6 @@ This module deploys an Event Grid System Topic.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -445,7 +444,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -820,7 +818,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -830,10 +827,6 @@ Tags of the resource.
 | `resourceGroupName` | string | The name of the resource group the event grid system topic was deployed into. |
 | `resourceId` | string | The resource ID of the event grid system topic. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

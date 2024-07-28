@@ -8,7 +8,6 @@ This module deploys a Kubernetes Configuration Flux Configuration.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -350,7 +349,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -481,7 +479,6 @@ Whether this configuration should suspend its reconciliation of its kustomizatio
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -489,10 +486,6 @@ Whether this configuration should suspend its reconciliation of its kustomizatio
 | `name` | string | The name of the flux configuration. |
 | `resourceGroupName` | string | The name of the resource group the flux configuration was deployed into. |
 | `resourceId` | string | The resource ID of the flux configuration. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

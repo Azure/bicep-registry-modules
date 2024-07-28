@@ -8,7 +8,6 @@ This module deploys a Load Balancer.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -1175,7 +1174,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1562,7 +1560,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1572,10 +1569,6 @@ Tags of the resource.
 | `name` | string | The name of the load balancer. |
 | `resourceGroupName` | string | The resource group the load balancer was deployed into. |
 | `resourceId` | string | The resource ID of the load balancer. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

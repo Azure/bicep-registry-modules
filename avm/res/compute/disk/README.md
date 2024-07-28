@@ -8,7 +8,6 @@ This module deploys a Compute Disk
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -464,7 +463,6 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -939,7 +937,6 @@ If create option is Upload, this is the size of the contents of the upload inclu
 - Type: int
 - Default: `20972032`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -948,10 +945,6 @@ If create option is Upload, this is the size of the contents of the upload inclu
 | `name` | string | The name of the disk. |
 | `resourceGroupName` | string | The resource group the  disk was deployed into. |
 | `resourceId` | string | The resource ID of the disk. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

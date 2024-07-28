@@ -8,7 +8,6 @@ This module deploys a Virtual Machine Scale Set.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -1590,7 +1589,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2669,7 +2667,6 @@ Do not provide a value! This date value is used to generate a registration token
 - Type: string
 - Default: `[utcNow('u')]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2679,10 +2676,6 @@ Do not provide a value! This date value is used to generate a registration token
 | `resourceGroupName` | string | The resource group of the virtual machine scale set. |
 | `resourceId` | string | The resource ID of the virtual machine scale set. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

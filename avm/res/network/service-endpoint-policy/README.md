@@ -8,7 +8,6 @@ This module deploys a Service Endpoint Policy.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -147,7 +146,6 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -346,7 +344,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -355,10 +352,6 @@ Tags of the resource.
 | `name` | string | The name of the Service Endpoint Policy. |
 | `resourceGroupName` | string | The resource group the Service Endpoint Policy was deployed into. |
 | `resourceId` | string | The resource ID of the Service Endpoint Policy. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

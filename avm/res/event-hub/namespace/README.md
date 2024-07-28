@@ -915,7 +915,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1821,7 +1820,6 @@ Switch to make the Event Hub Namespace zone redundant.
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 

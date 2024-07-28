@@ -9,7 +9,6 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -357,7 +356,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -625,7 +623,6 @@ Resource ID of the VPN Gateway to link to.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -634,10 +631,6 @@ Resource ID of the VPN Gateway to link to.
 | `name` | string | The name of the virtual hub. |
 | `resourceGroupName` | string | The resource group the virtual hub was deployed into. |
 | `resourceId` | string | The resource ID of the virtual hub. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
