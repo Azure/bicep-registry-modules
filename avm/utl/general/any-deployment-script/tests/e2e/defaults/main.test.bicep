@@ -40,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-// Triggering comment
+// Triggering commen
 
 // ============== //
 // Test Execution //
