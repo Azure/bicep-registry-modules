@@ -402,8 +402,6 @@ runs:
           # Grouping task logs
           Write-Output '::group::Remove deployed resources'
 
-          # TODO: Implement handling of deployments that create no resources
-
           # Load used function
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
 
