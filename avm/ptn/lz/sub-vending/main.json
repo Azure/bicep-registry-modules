@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11823227982651635480"
+      "templateHash": "18425457866200980621"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -180,7 +180,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements."
+            "description": "Optional. The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template."
           }
         }
       },
@@ -984,7 +984,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "5263001111218338931"
+              "templateHash": "3166421055791067838"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1183,7 +1183,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements."
+                    "description": "Optional. The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template."
                   }
                 }
               },
