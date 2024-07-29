@@ -769,7 +769,7 @@ type roleAssignmentCondtionType = {
   @description('Optional. The version of the condition template.')
   conditionVersion: '2.0'?
 
-  @description('Optional. The code for the condition if no template is used. The user should supply their own custom code if any of the available templates are matching their requirements.')
+  @description('Optional. The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template.')
   delegationCode: string?
 }
 
