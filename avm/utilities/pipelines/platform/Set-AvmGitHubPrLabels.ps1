@@ -55,7 +55,7 @@ function Set-AvmGitHubPrLabels {
         }
 
         # check for orphanded module
-        $moduleName = $teamMembers[0]
+        $moduleName = $teamNames[0]
         $moduleIndex = $moduleName.StartsWith('avm-res') ? 'Bicep-Resource' : 'Bicep-Pattern'
         # get CSV data
         $modules = Get-AvmCsvData -ModuleIndex $moduleIndex
