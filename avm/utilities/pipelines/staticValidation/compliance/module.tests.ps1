@@ -111,9 +111,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             # Use correct telemetry link based on file path
             switch ($moduleType) {
-                { 'res' } { $telemetryCsvLink = $telemetryResCsvLink; break }
-                { 'ptn' } { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                { 'utl' } { $telemetryCsvLink = $telemetryUtlCsvLink; break }
+                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
+                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
+                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
                 Default {}
             }
 
@@ -933,9 +933,9 @@ Describe 'Module tests' -Tag 'Module' {
 
                 # Use correct telemetry link based on file path
                 switch ($moduleType) {
-                    { 'res' } { $telemetryCsvLink = $telemetryResCsvLink; break }
-                    { 'ptn' } { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                    { 'utl' } { $telemetryCsvLink = $telemetryUtlCsvLink; break }
+                    'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
+                    'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
+                    'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
                     Default {}
                 }
 
