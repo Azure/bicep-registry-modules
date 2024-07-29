@@ -195,7 +195,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
       ingress: disableIngress ? null : {
-        allowInsecure: ingressAllowInsecure
+        allowInsecure: ingressTransport == 'tcp' ? null : ingressAllowInsecure
         customDomains: !empty(customDomains) ? customDomains : null
         corsPolicy: corsPolicy != null ? {
           allowCredentials: corsPolicy.?allowCredentials ?? false
