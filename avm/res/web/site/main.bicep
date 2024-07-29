@@ -132,9 +132,6 @@ param cloningInfo object?
 @description('Optional. Size of the function container.')
 param containerSize int?
 
-@description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
-param customDomainVerificationId string?
-
 @description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
 param dailyMemoryTimeQuota int?
 
@@ -254,7 +251,6 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     clientCertMode: clientCertMode
     cloningInfo: cloningInfo
     containerSize: containerSize
-    customDomainVerificationId: customDomainVerificationId
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
     hostNameSslStates: hostNameSslStates
@@ -270,7 +266,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
   params: {
     appName: app.name
@@ -526,6 +522,9 @@ output location string = app.location
 
 @description('Default hostname of the app.')
 output defaultHostname string = app.properties.defaultHostName
+
+@description('Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
+output customDomainVerificationId string = app.properties.customDomainVerificationId
 
 // =============== //
 //   Definitions   //
