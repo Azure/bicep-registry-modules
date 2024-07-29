@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "535385624688793699"
+      "version": "0.29.47.4906",
+      "templateHash": "10271256088614129674"
     },
     "name": "API Management Service Portal Settings",
     "description": "This module deploys an API Management Service Portal Setting.",

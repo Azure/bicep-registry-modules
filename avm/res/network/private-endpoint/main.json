@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12384550528617388749"
+      "templateHash": "8154060759198198360"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -594,6 +594,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+    },
+    "customDnsConfig": {
+      "$ref": "#/definitions/customDnsConfigType",
+      "metadata": {
+        "description": "The custom DNS configurations of the private endpoint."
+      },
+      "value": "[reference('privateEndpoint').customDnsConfigs]"
     },
     "groupId": {
       "type": "string",
