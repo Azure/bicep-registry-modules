@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Without ingress enabled'
-metadata description = 'This instance deploys the module with ingress traffic set to TCP.'
+metadata name = 'VNet integrated container app deployment'
+metadata description = 'This instance deploys the container app in a managed environment with a virtual network using TCP ingress.'
 
 // ========== //
 // Parameters //
