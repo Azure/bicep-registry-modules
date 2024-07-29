@@ -53,7 +53,10 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
       location: resourceLocation
+      ingressExternal: false
       ingressTransport: 'tcp'
+      ingressAllowInsecure: false
+      ingressTargetPort: 80
       containers: [
         {
           name: 'simple-hello-world-container'

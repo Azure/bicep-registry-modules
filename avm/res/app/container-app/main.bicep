@@ -195,7 +195,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
       ingress: disableIngress ? null : {
-        allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : null
+        allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
         customDomains: !empty(customDomains) ? customDomains : null
         corsPolicy: corsPolicy != null && ingressTransport != 'tcp' ? {
           allowCredentials: corsPolicy.?allowCredentials ?? false
@@ -205,7 +205,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
           exposeHeaders: corsPolicy.?exposeHeaders ?? []
           maxAge: corsPolicy.?maxAge
         } : null
-        clientCertificateMode: clientCertificateMode
+        clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
         exposedPort: exposedPort
         external: ingressExternal
         ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null

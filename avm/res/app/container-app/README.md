@@ -406,6 +406,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentId: '<environmentId>'
     name: 'acavnet001'
     // Non-required parameters
+    ingressAllowInsecure: false
+    ingressExternal: false
+    ingressTargetPort: 80
     ingressTransport: 'tcp'
     location: '<location>'
   }
@@ -444,6 +447,15 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acavnet001"
     },
     // Non-required parameters
+    "ingressAllowInsecure": {
+      "value": false
+    },
+    "ingressExternal": {
+      "value": false
+    },
+    "ingressTargetPort": {
+      "value": 80
+    },
     "ingressTransport": {
       "value": "tcp"
     },
