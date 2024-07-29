@@ -873,7 +873,7 @@ The condition for the role assignment.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`conditionVersion`](#parameter-roleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
-| [`delegationCode`](#parameter-roleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. |
+| [`delegationCode`](#parameter-roleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using ' |
 
 ### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType`
 
@@ -897,7 +897,7 @@ The version of the condition template.
 
 ### Parameter: `roleAssignments.roleAssignmentCondition.delegationCode`
 
-The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template.
+The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '
 
 - Required: No
 - Type: string
