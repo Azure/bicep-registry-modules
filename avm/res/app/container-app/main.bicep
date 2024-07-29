@@ -195,9 +195,9 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
       ingress: disableIngress ? null : {
-        allowInsecure: ingressTransport == 'tcp' ? null : ingressAllowInsecure
+        allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : null
         customDomains: !empty(customDomains) ? customDomains : null
-        corsPolicy: corsPolicy != null ? {
+        corsPolicy: corsPolicy != null && ingressTransport != 'tcp' ? {
           allowCredentials: corsPolicy.?allowCredentials ?? false
           allowedHeaders: corsPolicy.?allowedHeaders ?? []
           allowedMethods: corsPolicy.?allowedMethods ?? []
@@ -213,14 +213,14 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         stickySessions: {
           affinity: stickySessionsAffinity
         }
-        traffic: [
+        traffic: ingressTransport != 'tcp' ? [
           {
-            label: ingressTransport == 'tcp' ? null : trafficLabel
+            label: trafficLabel
             latestRevision: trafficLatestRevision
             revisionName: trafficRevisionName
             weight: trafficWeight
           }
-        ]
+        ] : null
         transport: ingressTransport
       }
       maxInactiveRevisions: maxInactiveRevisions
