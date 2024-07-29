@@ -30,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Without ingress enabled](#example-2-without-ingress-enabled)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Without ingress enabled](#example-4-without-ingress-enabled)
+- [VNet integrated container app deployment](#example-4-vnet-integrated-container-app-deployment)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -379,9 +379,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
-### Example 4: _Without ingress enabled_
+### Example 4: _VNet integrated container app deployment_
 
-This instance deploys the module with ingress traffic set to TCP.
+This instance deploys the container app in a managed environment with a virtual network using TCP ingress.
 
 
 <details>
