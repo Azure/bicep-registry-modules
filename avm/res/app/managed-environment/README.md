@@ -465,6 +465,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`certificateKeyVaultProperties`](#parameter-certificatekeyvaultproperties) | object | A key vault reference to the certificate to use for the custom domain. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -548,6 +549,34 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `certificateKeyVaultProperties`
+
+A key vault reference to the certificate to use for the custom domain.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identityResourceId`](#parameter-certificatekeyvaultpropertiesidentityresourceid) | string | The resoource ID of the identity. This is the identity that will be used to access the key vault. |
+| [`keyVaultUrl`](#parameter-certificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
+
+### Parameter: `certificateKeyVaultProperties.identityResourceId`
+
+The resoource ID of the identity. This is the identity that will be used to access the key vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificateKeyVaultProperties.keyVaultUrl`
+
+A key vault URL referencing the wildcard certificate that will be used for the custom domain.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `certificatePassword`
 

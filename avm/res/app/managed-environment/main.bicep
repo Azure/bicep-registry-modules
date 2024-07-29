@@ -60,6 +60,9 @@ param certificatePassword string = ''
 @secure()
 param certificateValue string = ''
 
+@description('Optional. A key vault reference to the certificate to use for the custom domain.')
+param certificateKeyVaultProperties certificateKeyVaultPropertiesType
+
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
@@ -144,6 +147,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
+      certificateKeyVaultProperties: certificateKeyVaultProperties
     }
     vnetConfiguration: {
       internal: internal
@@ -252,3 +256,11 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type certificateKeyVaultPropertiesType = {
+  @description('Required. The resoource ID of the identity. This is the identity that will be used to access the key vault.')
+  identityResourceId: string
+
+  @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
+  keyVaultUrl: string
+}?
