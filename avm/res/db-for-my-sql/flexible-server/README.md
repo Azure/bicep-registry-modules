@@ -57,6 +57,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     location: '<location>'
+    storageAutoGrow: 'Enabled'
   }
 }
 ```
@@ -92,6 +93,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "location": {
       "value": "<location>"
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
     }
   }
 }

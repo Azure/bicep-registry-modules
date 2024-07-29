@@ -81,3 +81,4 @@ rule:
     - Azure.VM.UseHybridUseBenefit
     - Azure.AppConfig.PurgeProtect
     - Azure.APIM.MultiRegion # Team agreed this is too expensive for most use cases and is safe to ignore.
+    - Azure.MySQL.MaintenanceWindow # https://msdata.visualstudio.com/Database%20Systems/_workitems/edit/2788114
