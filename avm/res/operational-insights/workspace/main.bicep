@@ -232,8 +232,8 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
     name: '${uniqueString(deployment().name, location)}-LAW-StorageInsightsConfig-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
-      containers: contains(storageInsightsConfig, 'containers') ? storageInsightsConfig.containers : []
-      tables: contains(storageInsightsConfig, 'tables') ? storageInsightsConfig.tables : []
+      containers: storageInsightsConfig.?containers ? storageInsightsConfig.containers : []
+      tables: storageInsightsConfig.?tables ? storageInsightsConfig.tables : []
       storageAccountResourceId: storageInsightsConfig.storageAccountResourceId
     }
   }
@@ -245,8 +245,8 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedService.name
-      resourceId: contains(linkedService, 'resourceId') ? linkedService.resourceId : ''
-      writeAccessResourceId: contains(linkedService, 'writeAccessResourceId') ? linkedService.writeAccessResourceId : ''
+      resourceId: linkedService.?resourceId ? linkedService.resourceId : ''
+      writeAccessResourceId: linkedService.?writeAccessResourceId ? linkedService.writeAccessResourceId : ''
     }
   }
 ]
@@ -288,9 +288,9 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
     params: {
       workspaceName: logAnalyticsWorkspace.name
       name: dataExport.name
-      destination: contains(dataExport, 'destination') ? dataExport.destination : {}
-      enable: contains(dataExport, 'enable') ? dataExport.enable : false
-      tableNames: contains(dataExport, 'tableNames') ? dataExport.tableNames : []
+      destination: dataExport.?destination ? dataExport.destination : {}
+      enable: dataExport.?enable ? dataExport.enable : false
+      tableNames: dataExport.?tableNames ? dataExport.tableNames : []
     }
   }
 ]
@@ -302,17 +302,17 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: dataSource.name
       kind: dataSource.kind
-      linkedResourceId: contains(dataSource, 'linkedResourceId') ? dataSource.linkedResourceId : ''
-      eventLogName: contains(dataSource, 'eventLogName') ? dataSource.eventLogName : ''
-      eventTypes: contains(dataSource, 'eventTypes') ? dataSource.eventTypes : []
-      objectName: contains(dataSource, 'objectName') ? dataSource.objectName : ''
-      instanceName: contains(dataSource, 'instanceName') ? dataSource.instanceName : ''
-      intervalSeconds: contains(dataSource, 'intervalSeconds') ? dataSource.intervalSeconds : 60
-      counterName: contains(dataSource, 'counterName') ? dataSource.counterName : ''
-      state: contains(dataSource, 'state') ? dataSource.state : ''
-      syslogName: contains(dataSource, 'syslogName') ? dataSource.syslogName : ''
-      syslogSeverities: contains(dataSource, 'syslogSeverities') ? dataSource.syslogSeverities : []
-      performanceCounters: contains(dataSource, 'performanceCounters') ? dataSource.performanceCounters : []
+      linkedResourceId: dataSource.?linkedResourceId ? dataSource.linkedResourceId : ''
+      eventLogName: dataSource.?eventLogName ? dataSource.eventLogName : ''
+      eventTypes: dataSource.?eventTypes ? dataSource.eventTypes : []
+      objectName: dataSource.?objectName ? dataSource.objectName : ''
+      instanceName: dataSource.?instanceName ? dataSource.instanceName : ''
+      intervalSeconds: dataSource.?intervalSeconds ? dataSource.intervalSeconds : 60
+      counterName: dataSource.?counterName ? dataSource.counterName : ''
+      state: dataSource.?state ? dataSource.state : ''
+      syslogName: dataSource.?syslogName ? dataSource.syslogName : ''
+      syslogSeverities: dataSource.?syslogSeverities ? dataSource.syslogSeverities : []
+      performanceCounters: dataSource.?performanceCounters ? dataSource.performanceCounters : []
     }
   }
 ]
@@ -341,8 +341,8 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
-      product: contains(gallerySolution, 'product') ? gallerySolution.product : 'OMSGallery'
-      publisher: contains(gallerySolution, 'publisher') ? gallerySolution.publisher : 'Microsoft'
+      product: gallerySolution.?product ? gallerySolution.product : 'OMSGallery'
+      publisher: gallerySolution.?publisher ? gallerySolution.publisher : 'Microsoft'
       enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
     }
   }
