@@ -10,7 +10,7 @@ param keyVaultName string
 @description('Required. The name of the Key Vault referenced by the Container Apps.')
 param keyVaultSecretName string
 
-@description('Optional. Secret for Azure Key Vault.')
+@description('Optional. Key vault stored secret to pass into environment variables. The value is a GUID.')
 @secure()
 param myCustomKeyVaultSecret string = newGuid()
 

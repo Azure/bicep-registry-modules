@@ -20,7 +20,7 @@ param serviceShort string = 'acamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. Secret to pass into environment variables. The value is a GUID.')
+@description('Optional. Container app stored secret to pass into environment variables. The value is a GUID.')
 @secure()
 param myCustomContainerAppSecret string = newGuid()
 
