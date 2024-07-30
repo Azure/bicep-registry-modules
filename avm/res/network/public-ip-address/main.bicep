@@ -75,6 +75,17 @@ param tags object?
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+  })
+]
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'DNS Resolver Contributor': subscriptionResourceId(
@@ -164,14 +175,10 @@ resource publicIpAddress_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!
 }
 
 resource publicIpAddress_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(publicIpAddress.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(publicIpAddress.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
