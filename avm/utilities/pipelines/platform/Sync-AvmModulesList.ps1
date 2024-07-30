@@ -58,10 +58,13 @@ function Sync-AvmModulesList {
 
     $missingModules = $targetModules | Where-Object { $listedModules -NotContains $_ }
     $unexpectedModules = $listedModules | Where-Object { $targetModules -NotContains $_ }
-    $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -NotContains $_ }
-    $unexpectedUtilities = $listedUtilities | Where-Object { $targetUtilities -NotContains $_ }
     $missingPatterns = $targetPatterns | Where-Object { $listedPatterns -NotContains $_ }
+    $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -NotContains $_ }
+    $missingUtilities = $targetUtilities | Where-Object { $listedUtilities -NotContains $_ }
+    $unexpectedUtilities = $listedUtilities | Where-Object { $targetUtilities -NotContains $_ }
 
+    # Resource modules
+    # ---------------
     if ($missingModules.Count -gt 0) {
         $body += @"
 **Missing resource modules:**
@@ -80,6 +83,8 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Patterns
+    # --------
     if ($missingPatterns.Count -gt 0) {
         $body += @"
 **Missing pattern modules:**
@@ -98,6 +103,17 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Utilities
+    # ---------
+    if ($missingUtilities.Count -gt 0) {
+        $body += @"
+**Missing utility modules:**
+
+$($missingUtilities -join ([Environment]::NewLine))
+$([Environment]::NewLine)
+"@
+    }
+
     if ($unexpectedUtilities.Count -gt 0) {
         $body += @"
 **Unexpected utility modules:**
@@ -106,6 +122,7 @@ $($unexpectedUtilities -join ([Environment]::NewLine))
 $([Environment]::NewLine)
 "@
     }
+
 
     # Should be at correct location
     $incorrectModuleLines = @()
