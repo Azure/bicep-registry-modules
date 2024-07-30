@@ -6,13 +6,34 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3229797968518545612"
+      "templateHash": "901557491249861564"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "privateDnsZoneGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private DNS Zone Group."
+          }
+        },
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/privateDnsZoneGroupConfigType"
+          },
+          "metadata": {
+            "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+          }
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "array",
       "items": {
@@ -264,6 +285,29 @@
         }
       },
       "nullable": true
+    },
+    "privateDnsZoneGroupConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private DNS zone group config."
+          }
+        },
+        "privateDnsZoneResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource id of the private DNS zone."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "private-dns-zone-group/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -299,25 +343,11 @@
         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
       }
     },
-    "privateDnsZoneGroupName": {
-      "type": "string",
+    "privateDnsZoneGroup": {
+      "$ref": "#/definitions/privateDnsZoneGroupType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
-      }
-    },
-    "privateDnsZoneResourceIds": {
-      "type": "array",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
-      }
-    },
-    "privateDnsZoneConfigurationNames": {
-      "type": "array",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Array of names for each private private DNS zone configuration, in the same order as `privateDnsZoneResourceIds`. Individual values can be set to `null` to use the default name."
+        "description": "Optional. The private DNS zone group to configure for the private endpoint."
       }
     },
     "location": {
@@ -477,7 +507,7 @@
       ]
     },
     "privateEndpoint_privateDnsZoneGroup": {
-      "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
+      "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
@@ -488,16 +518,13 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
-          },
-          "privateDNSResourceIds": {
-            "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
-          },
-          "privateDNSConfigurationNames": {
-            "value": "[coalesce(parameters('privateDnsZoneConfigurationNames'), createArray())]"
+            "value": "[tryGet(parameters('privateDnsZoneGroup'), 'name')]"
           },
           "privateEndpointName": {
             "value": "[parameters('name')]"
+          },
+          "privateDnsZoneConfigs": {
+            "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
           }
         },
         "template": {
@@ -508,11 +535,34 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11108603888482160861"
+              "templateHash": "5805178546717255803"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
             "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "privateDnsZoneGroupConfigType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the private DNS zone group config."
+                  }
+                },
+                "privateDnsZoneResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource id of the private DNS zone."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
           },
           "parameters": {
             "privateEndpointName": {
@@ -521,19 +571,15 @@
                 "description": "Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment."
               }
             },
-            "privateDNSResourceIds": {
+            "privateDnsZoneConfigs": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateDnsZoneGroupConfigType"
+              },
               "minLength": 1,
               "maxLength": 5,
               "metadata": {
-                "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
-              }
-            },
-            "privateDNSConfigurationNames": {
-              "type": "array",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Array of names for each private private DNS zone configuration, in the same order as `privateDNSResourceIds`. Individual values can be set to `null` to use the default name."
+                "description": "Required. Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones."
               }
             },
             "name": {
@@ -547,12 +593,12 @@
           "variables": {
             "copy": [
               {
-                "name": "privateDnsZoneConfigs",
-                "count": "[length(parameters('privateDNSResourceIds'))]",
+                "name": "privateDnsZoneConfigsVar",
+                "count": "[length(parameters('privateDnsZoneConfigs'))]",
                 "input": {
-                  "name": "[coalesce(tryGet(parameters('privateDNSConfigurationNames'), copyIndex('privateDnsZoneConfigs')), last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/')))]",
+                  "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
                   "properties": {
-                    "privateDnsZoneId": "[parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
+                    "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
                   }
                 }
               }
@@ -570,7 +616,7 @@
               "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
               "properties": {
-                "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
+                "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
               },
               "dependsOn": [
                 "privateEndpoint"

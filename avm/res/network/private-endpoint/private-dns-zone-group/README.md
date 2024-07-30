@@ -22,7 +22,7 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDNSResourceIds`](#parameter-privatednsresourceids) | array | Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneConfigs`](#parameter-privatednszoneconfigs) | array | Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones. |
 
 **Conditional parameters**
 
@@ -35,14 +35,39 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the private DNS zone group. |
-| [`privateDNSConfigurationNames`](#parameter-privatednsconfigurationnames) | array | Array of names for each private private DNS zone configuration, in the same order as `privateDNSResourceIds`. Individual values can be set to `null` to use the default name. |
 
-### Parameter: `privateDNSResourceIds`
+### Parameter: `privateDnsZoneConfigs`
 
-Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones.
+Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privatednszoneconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatednszoneconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateDnsZoneConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateDnsZoneConfigs.name`
+
+The name of the private DNS zone group config.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpointName`
 
@@ -58,13 +83,6 @@ The name of the private DNS zone group.
 - Required: No
 - Type: string
 - Default: `'default'`
-
-### Parameter: `privateDNSConfigurationNames`
-
-Array of names for each private private DNS zone configuration, in the same order as `privateDNSResourceIds`. Individual values can be set to `null` to use the default name.
-
-- Required: No
-- Type: array
 
 
 ## Outputs
