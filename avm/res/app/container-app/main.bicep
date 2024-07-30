@@ -64,7 +64,7 @@ param scaleRules array = []
 param activeRevisionsMode string = 'Single'
 
 @description('Required. Resource ID of environment.')
-param environmentId string
+param environmentResourceId string
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -190,14 +190,14 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
   location: location
   identity: identity
   properties: {
-    environmentId: environmentId
+    environmentId: environmentResourceId
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
       ingress: disableIngress ? null : {
-        allowInsecure: ingressAllowInsecure
+        allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
         customDomains: !empty(customDomains) ? customDomains : null
-        corsPolicy: corsPolicy != null ? {
+        corsPolicy: corsPolicy != null && ingressTransport != 'tcp' ? {
           allowCredentials: corsPolicy.?allowCredentials ?? false
           allowedHeaders: corsPolicy.?allowedHeaders ?? []
           allowedMethods: corsPolicy.?allowedMethods ?? []
@@ -205,7 +205,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
           exposeHeaders: corsPolicy.?exposeHeaders ?? []
           maxAge: corsPolicy.?maxAge
         } : null
-        clientCertificateMode: clientCertificateMode
+        clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
         exposedPort: exposedPort
         external: ingressExternal
         ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
@@ -213,14 +213,14 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         stickySessions: {
           affinity: stickySessionsAffinity
         }
-        traffic: [
+        traffic: ingressTransport != 'tcp' ? [
           {
             label: trafficLabel
             latestRevision: trafficLatestRevision
             revisionName: trafficRevisionName
             weight: trafficWeight
           }
-        ]
+        ] : null
         transport: ingressTransport
       }
       maxInactiveRevisions: maxInactiveRevisions
