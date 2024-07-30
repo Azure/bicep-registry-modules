@@ -188,7 +188,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Non-required parameters
     location: '<location>'
     sku: 'Developer'
-    skuCapacity: 1
   }
 }
 ```
@@ -221,9 +220,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "sku": {
       "value": "Developer"
-    },
-    "skuCapacity": {
-      "value": 1
     }
   }
 }
