@@ -64,7 +64,7 @@ param scaleRules array = []
 param activeRevisionsMode string = 'Single'
 
 @description('Required. Resource ID of environment.')
-param environmentId string
+param environmentResourceId string
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -190,7 +190,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
   location: location
   identity: identity
   properties: {
-    environmentId: environmentId
+    environmentId: environmentResourceId
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
