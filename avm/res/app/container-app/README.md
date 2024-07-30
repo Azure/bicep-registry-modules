@@ -203,8 +203,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       {
         env: [
           {
-            name: 'test'
-            value: 'max'
+            name: 'TestGuid'
+            secretRef: 'customtest'
           }
         ]
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
@@ -296,8 +296,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         {
           "env": [
             {
-              "name": "test",
-              "value": "max"
+              "name": "TestGuid",
+              "secretRef": "customtest"
             }
           ],
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
