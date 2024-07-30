@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Without ingress enabled](#example-2-without-ingress-enabled)
-- [Max](#example-3-max)
+- [Using large parameter set](#example-3-using-large-parameter-set)
 - [VNet integrated container app deployment](#example-4-vnet-integrated-container-app-deployment)
 - [WAF-aligned](#example-5-waf-aligned)
 
@@ -185,7 +185,10 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -200,8 +203,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       {
         env: [
           {
-            name: 'test'
-            value: 'max'
+            name: 'TestGuid'
+            secretRef: 'customtest'
           }
         ]
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
@@ -293,8 +296,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         {
           "env": [
             {
-              "name": "test",
-              "value": "max"
+              "name": "TestGuid",
+              "secretRef": "customtest"
             }
           ],
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",

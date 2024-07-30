@@ -131,12 +131,6 @@ module testDeployment '../../../main.bicep' = [
               periodSeconds: 3
             }
           ]
-          env: [
-            {
-              name: 'test'
-              value: 'max'
-            }
-          ]
         }
       ]
     }
