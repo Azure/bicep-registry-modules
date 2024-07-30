@@ -37,7 +37,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
     tenantId: subscription().tenantId
     publicNetworkAccess: 'Enabled'
-
+    enableRbacAuthorization: true
   }
 }
 
@@ -70,8 +70,8 @@ output managedEnvironmentResourceId string = managedEnvironment.id
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
 
-@description('The resource ID of the created Key Vault Secret.')
-output keyVaultSecretResourceId string = keyVaultSecret.id
+@description('The key vault secret URI.')
+output keyVaultSecretURI string = keyVaultSecret.properties.secretUri
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id

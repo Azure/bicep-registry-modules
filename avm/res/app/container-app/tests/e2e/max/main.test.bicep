@@ -96,12 +96,12 @@ module testDeployment '../../../main.bicep' = [
       secrets: {
         secureList: [
           {
-            name: 'ContainerAppStoredSecret'
+            name: 'containerappstoredsecret'
             value: myCustomContainerAppSecret
           }
           {
-            name: 'KeyVaultStoredSecret'
-            keyVaultUrl: nestedDependencies.outputs.keyVaultSecretResourceId
+            name: 'keyvaultstoredsecret'
+            keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
             identity: nestedDependencies.outputs.managedIdentityResourceId
           }
         ]
@@ -118,11 +118,11 @@ module testDeployment '../../../main.bicep' = [
           env: [
             {
               name: 'ContainerAppStoredSecretName'
-              secretRef: 'ContainerAppStoredSecret'
+              secretRef: 'containerappstoredsecret'
             }
             {
               name: 'ContainerAppKeyVaultStoredSecretName'
-              secretRef: 'KeyVaultStoredSecret'
+              secretRef: 'keyvaultstoredsecret'
             }
           ]
           probes: [

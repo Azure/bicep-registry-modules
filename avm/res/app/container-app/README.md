@@ -204,11 +204,11 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         env: [
           {
             name: 'ContainerAppStoredSecretName'
-            secretRef: 'ContainerAppStoredSecret'
+            secretRef: 'containerappstoredsecret'
           }
           {
             name: 'ContainerAppKeyVaultStoredSecretName'
-            secretRef: 'KeyVaultStoredSecret'
+            secretRef: 'keyvaultstoredsecret'
           }
         ]
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
@@ -269,13 +269,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     secrets: {
       secureList: [
         {
-          name: 'ContainerAppStoredSecret'
+          name: 'containerappstoredsecret'
           value: '<value>'
         }
         {
           identity: '<identity>'
           keyVaultUrl: '<keyVaultUrl>'
-          name: 'KeyVaultStoredSecret'
+          name: 'keyvaultstoredsecret'
         }
       ]
     }
@@ -306,11 +306,11 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
           "env": [
             {
               "name": "ContainerAppStoredSecretName",
-              "secretRef": "ContainerAppStoredSecret"
+              "secretRef": "containerappstoredsecret"
             },
             {
               "name": "ContainerAppKeyVaultStoredSecretName",
-              "secretRef": "KeyVaultStoredSecret"
+              "secretRef": "keyvaultstoredsecret"
             }
           ],
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
@@ -385,13 +385,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": {
         "secureList": [
           {
-            "name": "ContainerAppStoredSecret",
+            "name": "containerappstoredsecret",
             "value": "<value>"
           },
           {
             "identity": "<identity>",
             "keyVaultUrl": "<keyVaultUrl>",
-            "name": "KeyVaultStoredSecret"
+            "name": "keyvaultstoredsecret"
           }
         ]
       }
