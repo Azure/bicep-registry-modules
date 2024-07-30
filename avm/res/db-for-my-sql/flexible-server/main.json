@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7334182188876349179"
+      "templateHash": "12896595975186168719"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -568,7 +568,7 @@
       "SameZone": "[parameters('availabilityZone')]",
       "ZoneRedundant": "[parameters('highAvailabilityZone')]"
     },
-    "standByAvailabilityZone": "[if(contains(variables('standByAvailabilityZoneTable'), parameters('highAvailability')), variables('standByAvailabilityZoneTable')[parameters('highAvailability')], null())]",
+    "standByAvailabilityZone": "[tryGet(variables('standByAvailabilityZoneTable'), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {

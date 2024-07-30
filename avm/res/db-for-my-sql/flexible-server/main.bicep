@@ -171,9 +171,7 @@ var standByAvailabilityZoneTable = {
   ZoneRedundant: highAvailabilityZone
 }
 
-var standByAvailabilityZone = contains(standByAvailabilityZoneTable, highAvailability)
-  ? standByAvailabilityZoneTable[highAvailability]
-  : null
+var standByAvailabilityZone = standByAvailabilityZoneTable[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
