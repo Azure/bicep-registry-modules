@@ -117,7 +117,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
     roleAssignments: [
       {
-        name: 'ownerManagedIdentity'
+        name: '902f366b-ba61-4eb6-aa3a-786d317f2dbc'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -204,7 +204,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     "roleAssignments": {
       "value": [
         {
-          "name": "ownerManagedIdentity",
+          "name": "902f366b-ba61-4eb6-aa3a-786d317f2dbc",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
