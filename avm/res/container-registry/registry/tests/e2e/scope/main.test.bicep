@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Test deploying apim v2 sku'
-metadata description = 'This instance deploys the module using a v2 SKU with the minimum set of required parameters.'
+metadata name = 'Using `scopeMaps` in parameter set'
+metadata description = 'This instance deploys the module with the scopeMaps feature.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module using a v2 SKU with the
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-containerregistry.registries-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apisv2s'
+param serviceShort string = 'crrs'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -43,9 +43,16 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      sku: 'BasicV2'
-      publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-      publisherName: '${namePrefix}-az-amorg-x-001'
+      acrSku: 'Standard'
+      scopeMaps: [
+        {
+          name: 'testscopemap'
+          actions: [
+            'repositories/*/content/read'
+          ]
+          description: 'This is a test for scopeMaps feature.'
+        }
+      ]
     }
   }
 ]

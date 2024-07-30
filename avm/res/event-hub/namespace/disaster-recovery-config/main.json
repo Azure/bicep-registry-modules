@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11958192120414683611"
+      "templateHash": "5063457131353044394"
     },
     "name": "Event Hub Namespace Disaster Recovery Configs",
     "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
@@ -35,7 +35,7 @@
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces/disasterRecoveryConfigs",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": {
         "partnerNamespace": "[parameters('partnerNamespaceId')]"

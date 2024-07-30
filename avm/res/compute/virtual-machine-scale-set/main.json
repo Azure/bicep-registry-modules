@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16376458652852426905"
+      "templateHash": "11113445400377232616"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -332,7 +332,6 @@
     },
     "nicConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
         "description": "Required. Configures NICs and PIPs."
       }
@@ -383,7 +382,7 @@
       }
     },
     "extensionDomainJoinConfig": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "enabled": false
       },
@@ -441,6 +440,20 @@
       },
       "metadata": {
         "description": "Optional. The configuration for the [Azure Disk Encryption] extension. Must at least contain the [\"enabled\": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys."
+      }
+    },
+    "extensionHealthConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": true,
+        "settings": {
+          "protocol": "http",
+          "port": 80,
+          "requestPath": "/"
+        }
+      },
+      "metadata": {
+        "description": "Optional. Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
     },
     "extensionDSCConfig": {
@@ -572,7 +585,7 @@
     },
     "automaticRepairsPolicyEnabled": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies whether automatic repairs should be enabled on the virtual machine scale set."
       }
@@ -616,6 +629,51 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning."
+      }
+    },
+    "patchMode": {
+      "type": "string",
+      "defaultValue": "AutomaticByPlatform",
+      "allowedValues": [
+        "AutomaticByPlatform",
+        "AutomaticByOS",
+        "Manual",
+        "ImageDefault",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'."
+      }
+    },
+    "bypassPlatformSafetyChecksOnUserSchedule": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enables customer to schedule patching without accidental upgrades."
+      }
+    },
+    "rebootSetting": {
+      "type": "string",
+      "defaultValue": "IfRequired",
+      "allowedValues": [
+        "Always",
+        "IfRequired",
+        "Never",
+        "Unknown"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the reboot setting for all AutomaticByPlatform patch installation operations."
+      }
+    },
+    "patchAssessmentMode": {
+      "type": "string",
+      "defaultValue": "ImageDefault",
+      "allowedValues": [
+        "AutomaticByPlatform",
+        "ImageDefault"
+      ],
+      "metadata": {
+        "description": "Optional. VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours."
       }
     },
     "timeZone": {
@@ -791,11 +849,13 @@
       "ssh": {
         "publicKeys": "[variables('publicKeysFormatted')]"
       },
-      "provisionVMAgent": "[parameters('provisionVMAgent')]"
+      "provisionVMAgent": "[parameters('provisionVMAgent')]",
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]"
     },
     "windowsConfiguration": {
       "provisionVMAgent": "[parameters('provisionVMAgent')]",
       "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
       "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
       "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
       "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
@@ -949,6 +1009,7 @@
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
+          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '1.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), '/')))))), null())]",
           "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
