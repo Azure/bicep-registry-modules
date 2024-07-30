@@ -846,7 +846,8 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         Context 'Resources' {
-            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileParameters.count -gt 0 }) {
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well
+            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileContent
