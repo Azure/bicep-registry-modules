@@ -33,7 +33,7 @@ function Sync-AvmModulesList {
     # get CSV data
     $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
     $targetPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
-    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utilities' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
 
     $issueTemplatePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
     $issueTemplateContent = Get-Content $issueTemplatePath
