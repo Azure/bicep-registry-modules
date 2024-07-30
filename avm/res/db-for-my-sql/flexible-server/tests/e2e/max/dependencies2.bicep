@@ -36,6 +36,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     enabledForDiskEncryption: true
     enabledForDeployment: true
     enableRbacAuthorization: true
+    enableSoftDelete: true
     accessPolicies: []
   }
 
@@ -80,6 +81,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     enabledForDiskEncryption: true
     enabledForDeployment: true
     enableRbacAuthorization: true
+    enableSoftDelete: true
     accessPolicies: []
   }
 
