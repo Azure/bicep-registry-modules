@@ -250,6 +250,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         ]
         roleAssignments: [
           {
+            name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -410,6 +411,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           ],
           "roleAssignments": [
             {
+              "name": "9afa4fb3-2157-40db-aebb-039ce73c50ca",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -1332,6 +1334,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1378,6 +1381,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1444,6 +1454,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1490,6 +1501,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string

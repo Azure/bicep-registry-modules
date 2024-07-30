@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "15361181633952207113"
+      "version": "0.29.47.4906",
+      "templateHash": "8193333762507562954"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -66,6 +66,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -673,6 +680,13 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -816,20 +830,20 @@
     "automationAccount_roleAssignments": {
       "copy": {
         "name": "automationAccount_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Automation/automationAccounts/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "automationAccount"
@@ -860,8 +874,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "17311442241252857733"
+              "version": "0.29.47.4906",
+              "templateHash": "10580987489047715400"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential.",
@@ -1019,8 +1033,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "1661319858724328950"
+              "version": "0.29.47.4906",
+              "templateHash": "14556422655915492083"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module.",
@@ -1161,8 +1175,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "11730927882334055011"
+              "version": "0.29.47.4906",
+              "templateHash": "6299933839999486418"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule.",
@@ -1340,8 +1354,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "16990805873972671446"
+              "version": "0.29.47.4906",
+              "templateHash": "11653746330709835761"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook.",
@@ -1544,8 +1558,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7852489714477748054"
+              "version": "0.29.47.4906",
+              "templateHash": "10826746631810286901"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule.",
@@ -1672,8 +1686,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "17408217027458282021"
+              "version": "0.29.47.4906",
+              "templateHash": "13284693609482301780"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable.",
@@ -1787,8 +1801,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "11327223922004680974"
+              "version": "0.29.47.4906",
+              "templateHash": "12032441371027552374"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -2106,8 +2120,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "5046214814278705138"
+              "version": "0.29.47.4906",
+              "templateHash": "752305553206238634"
             },
             "name": "Automation Account Software Update Configurations",
             "description": "This module deploys an Azure Automation Account Software Update Configuration.",
