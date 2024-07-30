@@ -113,6 +113,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -174,6 +175,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
