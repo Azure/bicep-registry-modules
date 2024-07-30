@@ -75,6 +75,7 @@ module testDeployment '../../../main.bicep' = [
       publicIPAllocationMethod: 'Static'
       roleAssignments: [
         {
+          name: 'ownerManagedIdentity'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
