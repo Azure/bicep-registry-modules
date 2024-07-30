@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "14468571280924187146"
+      "templateHash": "17937286385182117138"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -22,7 +22,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of the role assignment. If not provided, a GUID will be generated."
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
             }
           },
           "roleDefinitionIdOrName": {
