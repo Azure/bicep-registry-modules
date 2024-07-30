@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. Secret to pass into environment variables. The value is a GUID.')
 @secure()
-param envGuid string = newGuid()
+param myCustomContainerAppSecret string = newGuid()
 
 // =========== //
 // Deployments //
@@ -41,6 +41,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultSecretName: 'dep-${namePrefix}-kv-secret-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -94,8 +96,13 @@ module testDeployment '../../../main.bicep' = [
       secrets: {
         secureList: [
           {
-            name: 'customtest'
-            value: envGuid
+            name: 'ContainerAppStoredSecret'
+            value: myCustomContainerAppSecret
+          }
+          {
+            name: 'KeyVaultStoredSecret'
+            keyVaultUrl: nestedDependencies.outputs.keyVaultSecretResourceId
+            identity: nestedDependencies.outputs.managedIdentityResourceId
           }
         ]
       }
@@ -110,8 +117,12 @@ module testDeployment '../../../main.bicep' = [
           }
           env: [
             {
-              name: 'TestGuid'
-              secretRef: 'customtest'
+              name: 'ContainerAppStoredSecretName'
+              secretRef: 'ContainerAppStoredSecret'
+            }
+            {
+              name: 'ContainerAppKeyVaultStoredSecretName'
+              secretRef: 'KeyVaultStoredSecret'
             }
           ]
           probes: [

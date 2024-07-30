@@ -203,8 +203,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       {
         env: [
           {
-            name: 'TestGuid'
-            secretRef: 'customtest'
+            name: 'ContainerAppStoredSecretName'
+            secretRef: 'ContainerAppStoredSecret'
+          }
+          {
+            name: 'ContainerAppKeyVaultStoredSecretName'
+            secretRef: 'KeyVaultStoredSecret'
           }
         ]
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
@@ -265,8 +269,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     secrets: {
       secureList: [
         {
-          name: 'customtest'
+          name: 'ContainerAppStoredSecret'
           value: '<value>'
+        }
+        {
+          identity: '<identity>'
+          keyVaultUrl: '<keyVaultUrl>'
+          name: 'KeyVaultStoredSecret'
         }
       ]
     }
@@ -296,8 +305,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         {
           "env": [
             {
-              "name": "TestGuid",
-              "secretRef": "customtest"
+              "name": "ContainerAppStoredSecretName",
+              "secretRef": "ContainerAppStoredSecret"
+            },
+            {
+              "name": "ContainerAppKeyVaultStoredSecretName",
+              "secretRef": "KeyVaultStoredSecret"
             }
           ],
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
@@ -372,8 +385,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": {
         "secureList": [
           {
-            "name": "customtest",
+            "name": "ContainerAppStoredSecret",
             "value": "<value>"
+          },
+          {
+            "identity": "<identity>",
+            "keyVaultUrl": "<keyVaultUrl>",
+            "name": "KeyVaultStoredSecret"
           }
         ]
       }
