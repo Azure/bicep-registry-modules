@@ -76,7 +76,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
+      environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       location: resourceLocation
       lock: {
         kind: 'CanNotDelete'
@@ -119,6 +119,12 @@ module testDeployment '../../../main.bicep' = [
               }
               initialDelaySeconds: 3
               periodSeconds: 3
+            }
+          ]
+          env: [
+            {
+              name: 'test'
+              value: 'max'
             }
           ]
         }

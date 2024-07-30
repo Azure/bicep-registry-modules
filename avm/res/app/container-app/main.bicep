@@ -15,6 +15,17 @@ param disableIngress bool = false
 param ingressExternal bool = true
 
 @allowed([
+  'accept'
+  'ignore'
+  'require'
+])
+@description('Optional. Client certificate mode for mTLS.')
+param clientCertificateMode string = 'ignore'
+
+@description('Optional. Object userd to configure CORS policy.')
+param corsPolicy corsPolicyType
+
+@allowed([
   'none'
   'sticky'
 ])
@@ -53,7 +64,7 @@ param scaleRules array = []
 param activeRevisionsMode string = 'Single'
 
 @description('Required. Resource ID of environment.')
-param environmentId string
+param environmentResourceId string
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -179,13 +190,22 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
   location: location
   identity: identity
   properties: {
-    environmentId: environmentId
+    environmentId: environmentResourceId
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
       ingress: disableIngress ? null : {
-        allowInsecure: ingressAllowInsecure
+        allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
         customDomains: !empty(customDomains) ? customDomains : null
+        corsPolicy: corsPolicy != null && ingressTransport != 'tcp' ? {
+          allowCredentials: corsPolicy.?allowCredentials ?? false
+          allowedHeaders: corsPolicy.?allowedHeaders ?? []
+          allowedMethods: corsPolicy.?allowedMethods ?? []
+          allowedOrigins: corsPolicy.?allowedOrigins ?? []
+          exposeHeaders: corsPolicy.?exposeHeaders ?? []
+          maxAge: corsPolicy.?maxAge
+        } : null
+        clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
         exposedPort: exposedPort
         external: ingressExternal
         ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
@@ -193,14 +213,14 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         stickySessions: {
           affinity: stickySessionsAffinity
         }
-        traffic: [
+        traffic: ingressTransport != 'tcp' ? [
           {
             label: trafficLabel
             latestRevision: trafficLatestRevision
             revisionName: trafficRevisionName
             weight: trafficWeight
           }
-        ]
+        ] : null
         transport: ingressTransport
       }
       maxInactiveRevisions: maxInactiveRevisions
@@ -233,8 +253,7 @@ resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   scope: containerApp
 }
 
-resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
+resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [ for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
       roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
@@ -389,6 +408,26 @@ type containerAppProbe = {
   @description('Optional. The type of probe.')
   type: ('Liveness' | 'Startup' | 'Readiness')?
 }
+
+type corsPolicyType = {
+  @description('Optional. Switch to determine whether the resource allows credentials.')
+  allowCredentials: bool?
+
+  @description('Optional. Specifies the content for the access-control-allow-headers header.')
+  allowedHeaders: string[]?
+
+  @description('Optional. Specifies the content for the access-control-allow-methods header.')
+  allowedMethods: string[]?
+
+  @description('Optional. Specifies the content for the access-control-allow-origins header.')
+  allowedOrigins: string[]?
+
+  @description('Optional. Specifies the content for the access-control-expose-headers header.')
+  exposeHeaders: string[]?
+
+  @description('Optional. Specifies the content for the access-control-max-age header.')
+  maxAge: int?
+}?
 
 type containerAppProbeHttpGet = {
   @description('Optional. Host name to connect to. Defaults to the pod IP.')
