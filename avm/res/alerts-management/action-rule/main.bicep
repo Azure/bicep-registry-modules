@@ -102,21 +102,15 @@ resource actionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   scope: actionRule
 }
 
-var formattedRoleAssignments = [
-  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? contains(
-        roleAssignment.roleDefinitionIdOrName,
-        '/providers/Microsoft.Authorization/roleDefinitions/'
-      )
-      ? roleAssignment.roleDefinitionIdOrName
-      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-  })
-]
-resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: roleAssignment.?name ?? guid(actionRule.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+resource actionRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(actionRule.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: roleAssignment.roleDefinitionId
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
