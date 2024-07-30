@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "14664998821480992225"
+      "templateHash": "6375342067837816333"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
