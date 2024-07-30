@@ -54,13 +54,19 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   location: location
 }
 
-resource keyVaultRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().subscriptionId, keyVault.id, managedIdentity.id)
+@description('The the built-in Key Vault Secret User role definition.')
+resource roleDefinitionKeyVault 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  scope: subscription()
+  name: '4633458b-17de-408a-b874-0445c86b69e6'
+}
+
+resource roleAssignmentKeyVault 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, managedIdentity.id)
   scope: keyVault
   properties: {
-    roleDefinitionId: '4633458b-17de-408a-b874-0445c86b69e6'
+    roleDefinitionId: roleDefinitionKeyVault.id
     principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
+    principalType: ''
   }
 }
 
