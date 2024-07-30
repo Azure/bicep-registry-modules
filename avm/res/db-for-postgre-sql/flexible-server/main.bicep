@@ -99,7 +99,7 @@ param version string = '15'
   'ZoneRedundant'
 ])
 @description('Optional. The mode for high availability.')
-param highAvailability string = 'Disabled'
+param highAvailability string = 'ZoneRedundant'
 
 @allowed([
   'Create'
@@ -116,8 +116,13 @@ param managedIdentities managedIdentitiesType
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
-@description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow object = {}
+@description('Required. Default properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
+param maintenanceWindow object = {
+  customWindow: 'Enabled'
+  dayOfWeek: '0'
+  startHour: '1'
+  startMinute: '0'
+}
 
 @description('Conditional. Required if \'createMode\' is set to \'PointInTimeRestore\'.')
 param pointInTimeUTC string = ''

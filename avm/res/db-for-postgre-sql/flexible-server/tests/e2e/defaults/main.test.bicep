@@ -52,13 +52,6 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Standard_D2ds_v5'
       tier: 'GeneralPurpose'
       geoRedundantBackup: 'Enabled'
-      highAvailability: 'ZoneRedundant'
-      maintenanceWindow: {
-        customWindow: 'Enabled'
-        dayOfWeek: '0'
-        startHour: '1'
-        startMinute: '0'
-      }
     }
   }
 ]
