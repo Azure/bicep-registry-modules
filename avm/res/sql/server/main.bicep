@@ -492,7 +492,9 @@ module server_secrets_export 'modules/key-vault-export.bicep' = if (!empty(secre
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(secretsExportConfiguration.?resourceGroupName ?? resourceGroup().name)
   params: {
-    keyVaultName : !empty(secretsExportConfiguration!.keyVaultResourceId) ? last(split(secretsExportConfiguration!.keyVaultResourceId, '/')) : ''
+    keyVaultName: !empty(secretsExportConfiguration!.keyVaultResourceId)
+      ? last(split(secretsExportConfiguration!.keyVaultResourceId, '/'))
+      : ''
     secrets: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
@@ -503,19 +505,11 @@ module server_secrets_export 'modules/key-vault-export.bicep' = if (!empty(secre
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'appUserPasswordSecretName') 
-        ? [
-            {
-              name: secretsExportConfiguration.?appUserPasswordSecretName
-              value: secretsExportConfiguration.?appUserPasswordSecretValue
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName') 
+      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
         ? [
             {
               name: secretsExportConfiguration.?sqlAzureConnectionStringSercretName
-              value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${secretsExportConfiguration.?appUserName}; Password=${secretsExportConfiguration.?appUserPasswordSecretValue}'
+              value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
         : []
@@ -539,7 +533,9 @@ output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
 output location string = server.location
 
 @description('The resource ID of the secrets.')
-output secretResourceIds string[] = !empty(secretsExportConfiguration) ? server_secrets_export.outputs.secretResourceIds : []
+output secretResourceIds string[] = !empty(secretsExportConfiguration)
+  ? server_secrets_export.outputs.secretResourceIds
+  : []
 
 // =============== //
 //   Definitions   //
@@ -701,18 +697,9 @@ type secretsExportConfigurationType = {
   @description('Optional. Default to the resource group where this account is. The resource group name where the key vault is.')
   resourceGroupName: string?
 
-  @description('Optional. The name for secret to create.')
+  @description('Optional. The name of sql admin login password for secret to create.')
   sqlAdminPasswordSecretName: string?
 
-  @description('Optional. The name for secret to create.')
-  appUserPasswordSecretName: string?
-
-  @description('Optional. The value for secret to create.')
-  appUserPasswordSecretValue: string?
-
-  @description('Optional. The name for secret to create.')
+  @description('Optional. The name of sql server connection string for secret to create.')
   sqlAzureConnectionStringSercretName: string?
-
-  @description('Optional. The name of the appUser.')
-  appUserName: string?
 }?

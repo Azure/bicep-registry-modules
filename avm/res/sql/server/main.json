@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.45.22436",
-      "templateHash": "5784582871739932398"
+      "version": "0.27.1.19265",
+      "templateHash": "7154265173160551369"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -425,35 +425,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name for secret to create."
-          }
-        },
-        "appUserPasswordSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name for secret to create."
-          }
-        },
-        "appUserPasswordSecretValue": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The value for secret to create."
+            "description": "Optional. The name of sql admin login password for secret to create."
           }
         },
         "sqlAzureConnectionStringSercretName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name for secret to create."
-          }
-        },
-        "appUserName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the appUser."
+            "description": "Optional. The name of sql server connection string for secret to create."
           }
         }
       },
@@ -804,8 +783,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "4619337592249232173"
+              "version": "0.27.1.19265",
+              "templateHash": "12134464381390659006"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1282,8 +1261,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.45.22436",
-                      "templateHash": "11135986388188992590"
+                      "version": "0.27.1.19265",
+                      "templateHash": "2926597416187477444"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -1384,8 +1363,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.45.22436",
-                      "templateHash": "14844516835695779943"
+                      "version": "0.27.1.19265",
+                      "templateHash": "16658559572890217106"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -1562,8 +1541,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "13755440593371923167"
+              "version": "0.27.1.19265",
+              "templateHash": "2644179357846755230"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -2440,8 +2419,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "15110554784042882565"
+              "version": "0.27.1.19265",
+              "templateHash": "13052043953008277893"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule.",
@@ -2546,8 +2525,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "5261585307631830037"
+              "version": "0.27.1.19265",
+              "templateHash": "128282964192326953"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
@@ -2654,8 +2633,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "385710850995410823"
+              "version": "0.27.1.19265",
+              "templateHash": "15400734019608453223"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -2805,8 +2784,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "14087134709856724639"
+              "version": "0.27.1.19265",
+              "templateHash": "16764860065691621627"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
@@ -2908,8 +2887,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.45.22436",
-                      "templateHash": "6533781513191503612"
+                      "version": "0.27.1.19265",
+                      "templateHash": "11727283911457240904"
                     }
                   },
                   "parameters": {
@@ -2997,8 +2976,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "2307906897606096171"
+              "version": "0.27.1.19265",
+              "templateHash": "11347576893585846919"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -3116,8 +3095,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "9281551588947922115"
+              "version": "0.27.1.19265",
+              "templateHash": "5088776701991421683"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -3249,8 +3228,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "7401820030262851149"
+              "version": "0.27.1.19265",
+              "templateHash": "7109870749141214709"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings.",
@@ -3388,8 +3367,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.45.22436",
-                      "templateHash": "6533781513191503612"
+                      "version": "0.27.1.19265",
+                      "templateHash": "11727283911457240904"
                     }
                   },
                   "parameters": {
@@ -3463,7 +3442,7 @@
         "parameters": {
           "keyVaultName": "[if(not(empty(parameters('secretsExportConfiguration').keyVaultResourceId)), createObject('value', last(split(parameters('secretsExportConfiguration').keyVaultResourceId, '/'))), createObject('value', ''))]",
           "secrets": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'appUserPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'appUserPasswordSecretName'), 'value', tryGet(parameters('secretsExportConfiguration'), 'appUserPasswordSecretValue'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), parameters('databases')[0].name, ''), tryGet(parameters('secretsExportConfiguration'), 'appUserName'), tryGet(parameters('secretsExportConfiguration'), 'appUserPasswordSecretValue')))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), parameters('databases')[0].name, ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
           }
         },
         "template": {
@@ -3473,8 +3452,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.45.22436",
-              "templateHash": "17914579475390594323"
+              "version": "0.27.1.19265",
+              "templateHash": "4981292145166251974"
             }
           },
           "definitions": {

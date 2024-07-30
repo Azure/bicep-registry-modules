@@ -23,7 +23,7 @@ param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-  
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -54,22 +54,20 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name:'${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       secretsExportConfiguration: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        sqlAdminPasswordSecretName: 'myName'
-        appUserPasswordSecretName: 'myName1'
-        appUserPasswordSecretValue: '123456'
-        sqlAzureConnectionStringSercretName: 'myName3'
+        sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
+        sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
       }
       databases: [
         {
           name: 'myDatabase'
         }
       ]
-    } 
+    }
   }
 ]
