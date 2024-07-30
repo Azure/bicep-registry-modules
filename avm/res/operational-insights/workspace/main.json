@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12925967037035427868"
+      "templateHash": "16932080828331107291"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -600,8 +600,12 @@
           "logAnalyticsWorkspaceName": {
             "value": "[parameters('name')]"
           },
-          "containers": "[if(tryGet(parameters('storageInsightsConfigs')[copyIndex()], 'containers'), createObject('value', parameters('storageInsightsConfigs')[copyIndex()].containers), createObject('value', createArray()))]",
-          "tables": "[if(tryGet(parameters('storageInsightsConfigs')[copyIndex()], 'tables'), createObject('value', parameters('storageInsightsConfigs')[copyIndex()].tables), createObject('value', createArray()))]",
+          "containers": {
+            "value": "[tryGet(parameters('storageInsightsConfigs')[copyIndex()], 'containers')]"
+          },
+          "tables": {
+            "value": "[tryGet(parameters('storageInsightsConfigs')[copyIndex()], 'tables')]"
+          },
           "storageAccountResourceId": {
             "value": "[parameters('storageInsightsConfigs')[copyIndex()].storageAccountResourceId]"
           }
@@ -743,8 +747,12 @@
           "name": {
             "value": "[parameters('linkedServices')[copyIndex()].name]"
           },
-          "resourceId": "[if(tryGet(parameters('linkedServices')[copyIndex()], 'resourceId'), createObject('value', parameters('linkedServices')[copyIndex()].resourceId), createObject('value', ''))]",
-          "writeAccessResourceId": "[if(tryGet(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId'), createObject('value', parameters('linkedServices')[copyIndex()].writeAccessResourceId), createObject('value', ''))]"
+          "resourceId": {
+            "value": "[tryGet(parameters('linkedServices')[copyIndex()], 'resourceId')]"
+          },
+          "writeAccessResourceId": {
+            "value": "[tryGet(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1148,9 +1156,15 @@
           "name": {
             "value": "[parameters('dataExports')[copyIndex()].name]"
           },
-          "destination": "[if(tryGet(parameters('dataExports')[copyIndex()], 'destination'), createObject('value', parameters('dataExports')[copyIndex()].destination), createObject('value', createObject()))]",
-          "enable": "[if(tryGet(parameters('dataExports')[copyIndex()], 'enable'), createObject('value', parameters('dataExports')[copyIndex()].enable), createObject('value', false()))]",
-          "tableNames": "[if(tryGet(parameters('dataExports')[copyIndex()], 'tableNames'), createObject('value', parameters('dataExports')[copyIndex()].tableNames), createObject('value', createArray()))]"
+          "destination": {
+            "value": "[tryGet(parameters('dataExports')[copyIndex()], 'destination')]"
+          },
+          "enable": {
+            "value": "[tryGet(parameters('dataExports')[copyIndex()], 'enable')]"
+          },
+          "tableNames": {
+            "value": "[tryGet(parameters('dataExports')[copyIndex()], 'tableNames')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1266,17 +1280,39 @@
           "kind": {
             "value": "[parameters('dataSources')[copyIndex()].kind]"
           },
-          "linkedResourceId": "[if(tryGet(parameters('dataSources')[copyIndex()], 'linkedResourceId'), createObject('value', parameters('dataSources')[copyIndex()].linkedResourceId), createObject('value', ''))]",
-          "eventLogName": "[if(tryGet(parameters('dataSources')[copyIndex()], 'eventLogName'), createObject('value', parameters('dataSources')[copyIndex()].eventLogName), createObject('value', ''))]",
-          "eventTypes": "[if(tryGet(parameters('dataSources')[copyIndex()], 'eventTypes'), createObject('value', parameters('dataSources')[copyIndex()].eventTypes), createObject('value', createArray()))]",
-          "objectName": "[if(tryGet(parameters('dataSources')[copyIndex()], 'objectName'), createObject('value', parameters('dataSources')[copyIndex()].objectName), createObject('value', ''))]",
-          "instanceName": "[if(tryGet(parameters('dataSources')[copyIndex()], 'instanceName'), createObject('value', parameters('dataSources')[copyIndex()].instanceName), createObject('value', ''))]",
-          "intervalSeconds": "[if(tryGet(parameters('dataSources')[copyIndex()], 'intervalSeconds'), createObject('value', parameters('dataSources')[copyIndex()].intervalSeconds), createObject('value', 60))]",
-          "counterName": "[if(tryGet(parameters('dataSources')[copyIndex()], 'counterName'), createObject('value', parameters('dataSources')[copyIndex()].counterName), createObject('value', ''))]",
-          "state": "[if(tryGet(parameters('dataSources')[copyIndex()], 'state'), createObject('value', parameters('dataSources')[copyIndex()].state), createObject('value', ''))]",
-          "syslogName": "[if(tryGet(parameters('dataSources')[copyIndex()], 'syslogName'), createObject('value', parameters('dataSources')[copyIndex()].syslogName), createObject('value', ''))]",
-          "syslogSeverities": "[if(tryGet(parameters('dataSources')[copyIndex()], 'syslogSeverities'), createObject('value', parameters('dataSources')[copyIndex()].syslogSeverities), createObject('value', createArray()))]",
-          "performanceCounters": "[if(tryGet(parameters('dataSources')[copyIndex()], 'performanceCounters'), createObject('value', parameters('dataSources')[copyIndex()].performanceCounters), createObject('value', createArray()))]"
+          "linkedResourceId": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'linkedResourceId')]"
+          },
+          "eventLogName": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'eventLogName')]"
+          },
+          "eventTypes": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'eventTypes')]"
+          },
+          "objectName": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'objectName')]"
+          },
+          "instanceName": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'instanceName')]"
+          },
+          "intervalSeconds": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'intervalSeconds')]"
+          },
+          "counterName": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'counterName')]"
+          },
+          "state": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'state')]"
+          },
+          "syslogName": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'syslogName')]"
+          },
+          "syslogSeverities": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'syslogSeverities')]"
+          },
+          "performanceCounters": {
+            "value": "[tryGet(parameters('dataSources')[copyIndex()], 'performanceCounters')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1773,8 +1809,12 @@
           "logAnalyticsWorkspaceName": {
             "value": "[parameters('name')]"
           },
-          "product": "[if(tryGet(parameters('gallerySolutions')[copyIndex()], 'product'), createObject('value', parameters('gallerySolutions')[copyIndex()].product), createObject('value', 'OMSGallery'))]",
-          "publisher": "[if(tryGet(parameters('gallerySolutions')[copyIndex()], 'publisher'), createObject('value', parameters('gallerySolutions')[copyIndex()].publisher), createObject('value', 'Microsoft'))]",
+          "product": {
+            "value": "[tryGet(parameters('gallerySolutions')[copyIndex()], 'product')]"
+          },
+          "publisher": {
+            "value": "[tryGet(parameters('gallerySolutions')[copyIndex()], 'publisher')]"
+          },
           "enableTelemetry": {
             "value": "[coalesce(tryGet(parameters('gallerySolutions')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           }
