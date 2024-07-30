@@ -50,7 +50,7 @@ function Clear-ManagementGroupDeploymentHistory {
         Method  = 'GET'
         Uri     = "https://management.azure.com/providers/Microsoft.Management/managementGroups/$ManagementGroupId/providers/Microsoft.Resources/deployments/?api-version=2021-04-01"
         Headers = @{
-            Authorization = 'Bearer {0}' -f (Get-AzAccessToken).Token
+            Authorization = 'Bearer {0}' -f ((Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText)
         }
     }
     $response = Invoke-RestMethod @getInputObject
@@ -103,7 +103,7 @@ function Clear-ManagementGroupDeploymentHistory {
             Method  = 'POST'
             Uri     = 'https://management.azure.com/batch?api-version=2020-06-01'
             Headers = @{
-                Authorization  = 'Bearer {0}' -f (Get-AzAccessToken).Token
+                Authorization  = 'Bearer {0}' -f ((Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText)
                 'Content-Type' = 'application/json'
             }
             Body    = @{
