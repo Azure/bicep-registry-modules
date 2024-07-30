@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using Private Endpoint'
+metadata description = 'This instance deploys the module with access to a private endpoint.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-virtualmachineimages.imagetemplates-${serviceShort}-rg'
+param resourceGroupName string = 'avm-${namePrefix}-resources.deploymentscripts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'vmiitmin'
+param serviceShort string = 'rdspe'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,46 +35,39 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    privateEndpointName: 'dep-${namePrefix}-pe-${serviceShort}'
+    location: resourceLocation
   }
 }
 
 // ============== //
 // Test Execution //
 // ============== //
-// No idempotency test as the resource is, by design, not idempotent.
+
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    customizationSteps: [
-      {
-        restartTimeout: '30m'
-        type: 'WindowsRestart'
-      }
+    azCliVersion: '2.9.1'
+    kind: 'AzureCLI'
+    retentionInterval: 'P1D'
+    cleanupPreference: 'Always'
+    subnetResourceIds: [
+      nestedDependencies.outputs.subnetResourceId
     ]
-    imageSource: {
-      offer: 'Windows-11'
-      publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win11-23h2-ent'
-      type: 'PlatformImage'
-      version: 'latest'
-    }
-
-    distributions: [
-      {
-        imageName: '${namePrefix}-mi-${serviceShort}-001'
-        type: 'ManagedImage'
-      }
-    ]
-
     managedIdentities: {
-      userAssignedResourceIds: [
+      userAssignedResourcesIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
+    timeout: 'PT1H'
+    runOnce: true
+    scriptContent: 'echo \'AVM Deployment Script test!\''
+    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
   }
 }
