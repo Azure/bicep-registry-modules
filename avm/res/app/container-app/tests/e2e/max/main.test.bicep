@@ -20,6 +20,10 @@ param serviceShort string = 'acamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Secret to pass into environment variables. The value is a GUID.')
+@secure()
+param envGuid string = newGuid()
+
 // =========== //
 // Deployments //
 // =========== //
@@ -91,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
         secureList: [
           {
             name: 'customtest'
-            value: guid(deployment().name)
+            value: envGuid
           }
         ]
       }
@@ -104,6 +108,12 @@ module testDeployment '../../../main.bicep' = [
             cpu: json('0.25')
             memory: '0.5Gi'
           }
+          env: [
+            {
+              name: 'TestGuid'
+              secretRef: 'customtest'
+            }
+          ]
           probes: [
             {
               type: 'Liveness'
