@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "3755993319783141806"
+      "version": "0.29.45.22436",
+      "templateHash": "10502353515567896198"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -662,6 +662,18 @@
         }
       },
       "nullable": true
+    },
+    "maintenanceConfigurationType": {
+      "type": "object",
+      "properties": {
+        "maintenanceWindow": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Maintenance window for the maintenance configuration."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -966,6 +978,12 @@
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
     },
+    "maintenanceConfiguration": {
+      "$ref": "#/definitions/maintenanceConfigurationType",
+      "metadata": {
+        "description": "Optional. Whether or not to use AKS Automatic mode."
+      }
+    },
     "costAnalysisEnabled": {
       "type": "bool",
       "defaultValue": false,
@@ -1058,12 +1076,8 @@
       }
     },
     "enableSecretRotation": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation."
       }
@@ -1125,12 +1139,8 @@
       }
     },
     "autoScalerProfileBalanceSimilarNodeGroups": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster."
       }
@@ -1184,23 +1194,15 @@
       }
     },
     "autoScalerProfileSkipNodesWithLocalStorage": {
-      "type": "string",
-      "defaultValue": "true",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster."
       }
     },
     "autoScalerProfileSkipNodesWithSystemPods": {
-      "type": "string",
-      "defaultValue": "true",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster."
       }
@@ -1591,7 +1593,7 @@
           },
           "azureKeyvaultSecretsProvider": {
             "enabled": "[parameters('enableKeyvaultSecretsProvider')]",
-            "config": "[if(parameters('enableKeyvaultSecretsProvider'), createObject('enableSecretRotation', parameters('enableSecretRotation')), null())]"
+            "config": "[if(parameters('enableKeyvaultSecretsProvider'), createObject('enableSecretRotation', toLower(string(parameters('enableSecretRotation')))), null())]"
           }
         },
         "oidcIssuerProfile": "[if(parameters('enableOidcIssuerProfile'), createObject('enabled', parameters('enableOidcIssuerProfile')), null())]",
@@ -1631,7 +1633,7 @@
           "tenantID": "[parameters('aadProfileTenantId')]"
         },
         "autoScalerProfile": {
-          "balance-similar-node-groups": "[parameters('autoScalerProfileBalanceSimilarNodeGroups')]",
+          "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
           "expander": "[parameters('autoScalerProfileExpander')]",
           "max-empty-bulk-delete": "[parameters('autoScalerProfileMaxEmptyBulkDelete')]",
           "max-graceful-termination-sec": "[parameters('autoScalerProfileMaxGracefulTerminationSec')]",
@@ -1646,8 +1648,8 @@
           "scale-down-unready-time": "[parameters('autoScalerProfileScaleDownUnreadyTime')]",
           "scale-down-utilization-threshold": "[parameters('autoScalerProfileUtilizationThreshold')]",
           "scan-interval": "[parameters('autoScalerProfileScanInterval')]",
-          "skip-nodes-with-local-storage": "[parameters('autoScalerProfileSkipNodesWithLocalStorage')]",
-          "skip-nodes-with-system-pods": "[parameters('autoScalerProfileSkipNodesWithSystemPods')]"
+          "skip-nodes-with-local-storage": "[toLower(string(parameters('autoScalerProfileSkipNodesWithLocalStorage')))]",
+          "skip-nodes-with-system-pods": "[toLower(string(parameters('autoScalerProfileSkipNodesWithSystemPods')))]"
         },
         "autoUpgradeProfile": {
           "upgradeChannel": "[parameters('autoUpgradeProfileUpgradeChannel')]"
@@ -1791,6 +1793,97 @@
         "managedCluster"
       ]
     },
+    "managedCluster_maintenanceConfigurations": {
+      "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "maintenanceWindow": {
+            "value": "[parameters('maintenanceConfiguration').maintenanceWindow]"
+          },
+          "managedClusterName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.27.1.19265",
+              "templateHash": "17618545946010219594"
+            },
+            "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
+            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "maintenanceWindow": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. Maintenance window for the maintenance configuration."
+              }
+            },
+            "managedClusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "aksManagedAutoUpgradeSchedule",
+              "metadata": {
+                "description": "Optional. Name of the maintenance configuration."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+              "apiVersion": "2023-10-01",
+              "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
+              "properties": {
+                "maintenanceWindow": "[parameters('maintenanceWindow')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the maintenance configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the maintenance configuration."
+              },
+              "value": "[resourceId('Microsoft.ContainerService/managedClusters/maintenanceConfigurations', parameters('managedClusterName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the agent pool was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "managedCluster"
+      ]
+    },
     "managedCluster_agentPools": {
       "copy": {
         "name": "managedCluster_agentPools",
@@ -1921,8 +2014,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17795163053989614827"
+              "version": "0.29.45.22436",
+              "templateHash": "3508941630816522183"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
