@@ -66,7 +66,7 @@ resource roleAssignmentKeyVault 'Microsoft.Authorization/roleAssignments@2022-04
   properties: {
     roleDefinitionId: roleDefinitionKeyVault.id
     principalId: managedIdentity.properties.principalId
-    principalType: ''
+    principalType: 'ServicePrincipal'
   }
 }
 
