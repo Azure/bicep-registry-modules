@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'VNet integrated container app deployment'
+metadata description = 'This instance deploys the container app in a managed environment with a virtual network using TCP ingress.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-app.containerApps-${serviceS
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'acamax'
+param serviceShort string = 'acavnet'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -52,49 +51,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Env: 'test'
-      }
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
-      secrets: {
-        secureList: [
-          {
-            name: 'customtest'
-            value: guid(deployment().name)
-          }
-        ]
-      }
+      ingressExternal: false
+      ingressTransport: 'tcp'
+      ingressAllowInsecure: false
+      ingressTargetPort: 80
       containers: [
         {
           name: 'simple-hello-world-container'
@@ -104,34 +66,8 @@ module testDeployment '../../../main.bicep' = [
             cpu: json('0.25')
             memory: '0.5Gi'
           }
-          probes: [
-            {
-              type: 'Liveness'
-              httpGet: {
-                path: '/health'
-                port: 8080
-                httpHeaders: [
-                  {
-                    name: 'Custom-Header'
-                    value: 'Awesome'
-                  }
-                ]
-              }
-              initialDelaySeconds: 3
-              periodSeconds: 3
-            }
-          ]
-          env: [
-            {
-              name: 'test'
-              value: 'max'
-            }
-          ]
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
