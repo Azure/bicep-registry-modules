@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'VNet integrated container app deployment'
+metadata description = 'This instance deploys the container app in a managed environment with a virtual network using TCP ingress.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-app.containerApps-${serviceS
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'acawaf'
+param serviceShort string = 'acavnet'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -52,23 +51,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      ingressExternal: false
-      ingressAllowInsecure: false
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Env: 'test'
-      }
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
+      ingressExternal: false
+      ingressTransport: 'tcp'
+      ingressAllowInsecure: false
+      ingressTargetPort: 80
       containers: [
         {
           name: 'simple-hello-world-container'
@@ -78,28 +66,8 @@ module testDeployment '../../../main.bicep' = [
             cpu: json('0.25')
             memory: '0.5Gi'
           }
-          probes: [
-            {
-              type: 'Liveness'
-              httpGet: {
-                path: '/health'
-                port: 8080
-                httpHeaders: [
-                  {
-                    name: 'Custom-Header'
-                    value: 'Awesome'
-                  }
-                ]
-              }
-              initialDelaySeconds: 3
-              periodSeconds: 3
-            }
-          ]
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
