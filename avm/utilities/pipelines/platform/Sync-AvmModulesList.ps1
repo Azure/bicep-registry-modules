@@ -58,13 +58,15 @@ function Sync-AvmModulesList {
 
     $missingModules = $targetModules | Where-Object { $listedModules -NotContains $_ }
     $unexpectedModules = $listedModules | Where-Object { $targetModules -NotContains $_ }
+
     $missingPatterns = $targetPatterns | Where-Object { $listedPatterns -NotContains $_ }
     $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -NotContains $_ }
+
     $missingUtilities = $targetUtilities | Where-Object { $listedUtilities -NotContains $_ }
     $unexpectedUtilities = $listedUtilities | Where-Object { $targetUtilities -NotContains $_ }
 
     # Resource modules
-    # ---------------
+    # ----------------
     if ($missingModules.Count -gt 0) {
         $body += @"
 **Missing resource modules:**
@@ -124,6 +126,8 @@ $([Environment]::NewLine)
     }
 
 
+    # Resource modules
+    # ----------------
     # Should be at correct location
     $incorrectModuleLines = @()
     foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
@@ -142,6 +146,8 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Patterns
+    # --------
     $incorrectPatternLines = @()
     foreach ($finding in (Compare-Object $listedPatterns ($listedPatterns | Sort-Object) -SyncWindow 0)) {
         if ($finding.SideIndicator -eq '<=') {
@@ -159,6 +165,8 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Utilities
+    # ---------
     $incorrectUtilityLines = @()
     foreach ($finding in (Compare-Object $listedUtilities ($listedUtilities | Sort-Object) -SyncWindow 0)) {
         if ($finding.SideIndicator -eq '<=') {
