@@ -111,6 +111,7 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: '695044c2-3f1f-4843-970a-bed584b95a9a'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
