@@ -1,3 +1,7 @@
+metadata name = 'Managed DevOps Pools'
+metadata description = 'This module deploys the Managed DevOps Pools resource.'
+metadata owner = 'Azure/module-maintainers'
+
 @description('Required. Name of the pool. It needs to be globally unique.')
 param name string
 
@@ -19,7 +23,7 @@ param location string = resourceGroup().location
 param devCenterProjectResourceId string
 
 @description('Optional. The subnet id on which to put all machines created in the pool.')
-param subnetId string?
+param subnetResourceId string?
 
 @description('Optional. The secret management settings of the machines in the pool.')
 #disable-next-line secure-secrets-in-params
@@ -111,7 +115,7 @@ var identity = !empty(managedIdentities)
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.di-mdp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.di.mdp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -140,9 +144,9 @@ resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-04-04-prev
       sku: {
         name: fabricProfileSkuName
       }
-      networkProfile: !empty(subnetId)
+      networkProfile: !empty(subnetResourceId)
         ? {
-            subnetId: subnetId!
+            subnetId: subnetResourceId!
           }
         : null
       osProfile: {

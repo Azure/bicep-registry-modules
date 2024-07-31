@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'Stateless'
       }
       concurrency: 1
-      devCenterProjectResourceId: nestedDependencies.outputs.devCenterProjectId
+      devCenterProjectResourceId: nestedDependencies.outputs.devCenterProjectResourceId
       images: [
         {
           aliases: [

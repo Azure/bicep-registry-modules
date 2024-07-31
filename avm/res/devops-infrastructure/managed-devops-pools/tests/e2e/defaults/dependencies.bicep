@@ -21,7 +21,7 @@ resource devCenterProject 'Microsoft.DevCenter/projects@2024-02-01' = {
 }
 
 @description('The resource ID of the created DevCenter.')
-output devCenterId string = devCenter.id
+output devCenterResourceId string = devCenter.id
 
 @description('The resource ID of the created DevCenter Project.')
-output devCenterProjectId string = devCenterProject.id
+output devCenterProjectResourceId string = devCenterProject.id

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       concurrency: 1
-      devCenterProjectResourceId: nestedDependencies.outputs.devCenterProjectId
+      devCenterProjectResourceId: nestedDependencies.outputs.devCenterProjectResourceId
       images: [
         {
           aliases: [
@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       fabricProfileSkuName: 'Standard_DS2_v2'
-      subnetId: nestedDependencies.outputs.subnetId
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
       organizationProfile: {
         kind: 'AzureDevOps'
         organizations: [

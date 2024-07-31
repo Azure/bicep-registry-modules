@@ -1,5 +1,6 @@
-#  `[Microsoft.DevOpsInfrastructure/manageddevopspools]`
+# Managed DevOps Pools `[Microsoft.DevOpsInfrastructure/manageddevopspools]`
 
+This module deploys the Managed DevOps Pools resource.
 
 ## Navigation
 
@@ -46,7 +47,7 @@
 | [`osDiskStorageAccount`](#parameter-osdiskstorageaccount) | string | The Azure SKU name of the machines in the pool. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsManagementSettings`](#parameter-secretsmanagementsettings) | object | The secret management settings of the machines in the pool. |
-| [`subnetId`](#parameter-subnetid) | string | The subnet id on which to put all machines created in the pool. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet id on which to put all machines created in the pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `agentProfile`
@@ -594,7 +595,7 @@ Where to store certificates on the machine.
 - Required: No
 - Type: string
 
-### Parameter: `subnetId`
+### Parameter: `subnetResourceId`
 
 The subnet id on which to put all machines created in the pool.
 

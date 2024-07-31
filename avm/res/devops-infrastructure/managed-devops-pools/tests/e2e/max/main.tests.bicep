@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       concurrency: 1
-      devCenterProjectResourceId: nestedDependencies.outputs.devCenterProjectId
+      devCenterProjectResourceId: nestedDependencies.outputs.devCenterProjectResourceId
       images: [
         {
           aliases: [
@@ -117,7 +117,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       logonType: 'Interactive'
-      subnetId: nestedDependencies.outputs.subnetId
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
       osDiskStorageAccount: 'Standard'
       secretsManagementSettings: {
         keyExportable: true

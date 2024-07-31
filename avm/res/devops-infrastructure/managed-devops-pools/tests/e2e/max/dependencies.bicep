@@ -52,13 +52,13 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
 }
 
 @description('The resource ID of the created DevCenter.')
-output devCenterId string = devCenter.id
+output devCenterResourceId string = devCenter.id
 
 @description('The resource ID of the created DevCenter Project.')
-output devCenterProjectId string = devCenterProject.id
+output devCenterProjectResourceId string = devCenterProject.id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The resource ID of the created subnet.')
-output subnetId string = first(virtualNetwork.properties.subnets)!.id
+output subnetResourceId string = first(virtualNetwork.properties.subnets)!.id

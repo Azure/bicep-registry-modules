@@ -6,8 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3996819697711395366"
-    }
+      "templateHash": "4694919601345770866"
+    },
+    "name": "Managed DevOps Pools",
+    "description": "This module deploys the Managed DevOps Pools resource.",
+    "owner": "Azure/module-maintainers"
   },
   "definitions": {
     "imageType": {
@@ -710,7 +713,7 @@
         "description": "Required. The resource id of the DevCenter Project the pool belongs to."
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -820,7 +823,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.di-mdp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.di.mdp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -850,7 +853,7 @@
           "sku": {
             "name": "[parameters('fabricProfileSkuName')]"
           },
-          "networkProfile": "[if(not(empty(parameters('subnetId'))), createObject('subnetId', parameters('subnetId')), null())]",
+          "networkProfile": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())]",
           "osProfile": {
             "secretsManagementSettings": "[parameters('secretsManagementSettings')]",
             "logonType": "[parameters('logonType')]"
