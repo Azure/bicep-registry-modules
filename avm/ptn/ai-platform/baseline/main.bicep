@@ -38,6 +38,41 @@ param applicationInsightsSettings applicationInsightsSettingType
 @description('Optional. Settings for the AI Studio workspace hub.')
 param workspaceHubSettings workspaceHubSettingType
 
+@description('Optional. Settings for the virtual network.')
+param virtualNetworkSettings virtualNetworkSettingType
+
+@description('Optional. Settings for the Azure Bastion host.')
+param bastionSettings bastionSettingType
+
+@description('Optional. Settings for the virtual machine.')
+param virtualMachineSettings virtualMachineSettingType
+
+// ============== //
+// Variables      //
+// ============== //
+
+var createVirtualNetwork = virtualNetworkSettings.?enabled != false
+
+var createBastion = createVirtualNetwork && bastionSettings.?enabled != false
+
+var createVirtualMachine = createVirtualNetwork && virtualMachineSettings.?enabled != false
+
+var createDefaultNsg = virtualNetworkSettings.?subnet.networkSecurityGroupResourceId == null
+
+var subnetResourceId = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : null
+
+var mlTargetSubResource = 'amlworkspace'
+
+var mlPrivateDnsZones = {
+  'privatelink.api.azureml.ms': mlTargetSubResource
+  'privatelink.notebooks.azure.net': mlTargetSubResource
+}
+
+var storagePrivateDnsZones = {
+  'privatelink.blob.${environment().suffixes.storage}': 'blob'
+  'privatelink.file.${environment().suffixes.storage}': 'file'
+}
+
 // ============== //
 // Resources      //
 // ============== //
@@ -61,6 +96,177 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+module storageAccount_privateDnsZones 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
+  for zone in objectKeys(storagePrivateDnsZones): if (createVirtualNetwork) {
+    name: '${uniqueString(deployment().name, location, zone)}-storage-private-dns-zones'
+    params: {
+      name: zone
+      virtualNetworkLinks: [
+        {
+          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        }
+      ]
+    }
+  }
+]
+
+module workspaceHub_privateDnsZones 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
+  for zone in objectKeys(mlPrivateDnsZones): if (createVirtualNetwork) {
+    name: '${uniqueString(deployment().name, location, zone)}-workspace-private-dns-zones'
+    params: {
+      name: zone
+      virtualNetworkLinks: [
+        {
+          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        }
+      ]
+      roleAssignments: [
+        {
+          principalId: managedIdentity.properties.principalId
+          roleDefinitionIdOrName: 'Contributor'
+          principalType: 'ServicePrincipal'
+        }
+      ]
+    }
+  }
+]
+
+module defaultNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.3.1' = if (createDefaultNsg) {
+  name: '${uniqueString(deployment().name, location)}-nsg'
+  params: {
+    name: 'nsg-${name}'
+    location: location
+    securityRules: [
+      {
+        name: 'DenySshRdpOutbound'
+        properties: {
+          priority: 200
+          access: 'Deny'
+          protocol: '*'
+          direction: 'Outbound'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRanges: [
+            '3389'
+            '22'
+          ]
+        }
+      }
+    ]
+    tags: tags
+  }
+}
+
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = if (createVirtualNetwork) {
+  name: '${uniqueString(deployment().name, location)}-virtual-network'
+  params: {
+    name: virtualNetworkSettings.?name ?? 'vnet-${name}'
+    location: location
+    enableTelemetry: enableTelemetry
+    addressPrefixes: [
+      virtualNetworkSettings.?addressPrefix ?? '10.0.0.0/16'
+    ]
+    subnets: union(
+      [
+        {
+          addressPrefix: virtualNetworkSettings.?subnet.addressPrefix ?? '10.0.0.0/24'
+          name: virtualNetworkSettings.?subnet.name ?? 'default'
+          networkSecurityGroupResourceId: createDefaultNsg
+            ? defaultNetworkSecurityGroup.outputs.resourceId
+            : virtualNetworkSettings.?subnet.networkSecurityGroupResourceId
+        }
+      ],
+      createBastion
+        ? [
+            {
+              addressPrefix: bastionSettings.?subnetAddressPrefix ?? '10.0.1.0/26'
+              name: 'AzureBastionSubnet'
+              networkSecurityGroupResourceId: bastionSettings.?networkSecurityGroupResourceId
+            }
+          ]
+        : []
+    )
+    tags: tags
+  }
+}
+
+module bastion 'br/public:avm/res/network/bastion-host:0.2.2' = if (createBastion) {
+  name: '${uniqueString(deployment().name, location)}-bastion-host'
+  params: {
+    name: bastionSettings.?name ?? 'bas-${name}'
+    location: location
+    skuName: bastionSettings.?sku ?? 'Standard'
+    enableTelemetry: enableTelemetry
+    virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    disableCopyPaste: bastionSettings.?disableCopyPaste
+    enableFileCopy: bastionSettings.?enableFileCopy
+    enableIpConnect: bastionSettings.?enableIpConnect
+    enableKerberos: bastionSettings.?enableKerberos
+    enableShareableLink: bastionSettings.?enableShareableLink
+    scaleUnits: bastionSettings.?scaleUnits
+    tags: tags
+  }
+}
+
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (createVirtualMachine) {
+  name: '${uniqueString(deployment().name, location)}-virtual-machine'
+  params: {
+    name: virtualMachineSettings.?name ?? 'vm-${name}'
+    computerName: take(virtualMachineSettings.?name ?? 'vm-${name}', 15)
+    location: location
+    enableTelemetry: enableTelemetry
+    adminUsername: virtualMachineSettings.?adminUsername ?? ''
+    adminPassword: virtualMachineSettings.?adminPassword
+    nicConfigurations: [
+      {
+        name: virtualMachineSettings.?nicConfigurationSettings.name ?? 'nic-vm-${name}'
+        location: location
+        networkSecurityGroupResourceId: virtualMachineSettings.?nicConfigurationSettings.networkSecurityGroupResourceId
+        ipConfigurations: [
+          {
+            name: virtualMachineSettings.?nicConfigurationSettings.ipConfigName ?? 'nic-vm-${name}-ipconfig'
+            privateIPAllocationMethod: virtualMachineSettings.?nicConfigurationSettings.privateIPAllocationMethod ?? 'Dynamic'
+            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+          }
+        ]
+      }
+    ]
+    imageReference: virtualMachineSettings.?imageReference ?? {
+      publisher: 'microsoft-dsvm'
+      offer: 'dsvm-win-2022'
+      sku: 'winserver-2022'
+      version: 'latest'
+    }
+    osDisk: virtualMachineSettings.?osDisk ?? {
+      createOption: 'FromImage'
+      managedDisk: {
+        storageAccountType: 'Premium_ZRS'
+      }
+      diskSizeGB: 128
+      caching: 'ReadWrite'
+    }
+    patchMode: virtualMachineSettings.?patchMode
+    osType: 'Windows'
+    encryptionAtHost: virtualMachineSettings.?encryptionAtHost ?? true
+    vmSize: virtualMachineSettings.?size ?? 'Standard_D2s_v3'
+    zone: virtualMachineSettings.?zone ?? 0
+    extensionAadJoinConfig: virtualMachineSettings.?enableAadLoginExtension == true
+      ? {
+          enabled: true
+          typeHandlerVersion: '1.0'
+        }
+      : null
+    extensionMonitoringAgentConfig: virtualMachineSettings.?enableAzureMonitorAgent == true
+      ? {
+          enabled: true
+        }
+      : null
+    maintenanceConfigurationResourceId: virtualMachineSettings.?maintenanceConfigurationResourceId
+    tags: tags
+  }
+}
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: managedIdentitySettings.?name ?? 'id-${name}'
   location: location
@@ -71,6 +277,18 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
   name: logAnalyticsSettings.?name ?? 'log-${name}'
   location: location
   tags: tags
+}
+
+resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, name)
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
+    )
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
 }
 
 module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
@@ -93,10 +311,12 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
       }
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Key Vault Administrator'
+        principalType: 'ServicePrincipal'
       }
     ]
     diagnosticSettings: [
@@ -121,30 +341,41 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     location: location
     skuName: storageAccountSettings.?sku ?? 'Standard_RAGZRS'
     enableTelemetry: enableTelemetry
-    allowBlobPublicAccess: false
-    allowSharedKeyAccess: storageAccountSettings.?allowSharedKeyAccess ?? false
-    defaultToOAuthAuthentication: !(storageAccountSettings.?allowSharedKeyAccess ?? false)
     publicNetworkAccess: 'Disabled'
     networkAcls: {
       defaultAction: 'Deny'
       bypass: 'AzureServices'
     }
+    privateEndpoints: subnetResourceId != null
+      ? map(items(storagePrivateDnsZones), zone => {
+          name: 'pep-${zone.value}-${name}'
+          customNetworkInterfaceName: 'nic-${zone.value}-${name}'
+          service: zone.value
+          subnetResourceId: subnetResourceId
+          privateDnsZoneResourceIds: [resourceId('Microsoft.Network/privateDnsZones', zone.key)]
+        })
+      : null
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
       }
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalType: 'ServicePrincipal'
       }
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+        principalType: 'ServicePrincipal'
       }
     ]
     tags: tags
   }
+
+  dependsOn: storageAccount_privateDnsZones
 }
 
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' = {
@@ -162,10 +393,12 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' =
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
       }
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'AcrPull'
+        principalType: 'ServicePrincipal'
       }
     ]
     tags: tags
@@ -184,13 +417,14 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
       }
     ]
     tags: tags
   }
 }
 
-module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.4.0' = {
+module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-hub'
   params: {
     name: workspaceHubSettings.?name ?? 'hub-${name}'
@@ -216,15 +450,34 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.4.0
       isolationMode: workspaceHubSettings.?networkIsolationMode ?? 'AllowInternetOutbound'
       outboundRules: workspaceHubSettings.?networkOutboundRules
     }
+    privateEndpoints: subnetResourceId != null
+      ? [
+          {
+            name: 'pep-${mlTargetSubResource}-${name}'
+            customNetworkInterfaceName: 'nic-${mlTargetSubResource}-${name}'
+            service: mlTargetSubResource
+            subnetResourceId: subnetResourceId
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: map(objectKeys(mlPrivateDnsZones), zone => {
+                name: replace(zone, '.', '-')
+                privateDnsZoneResourceId: resourceId('Microsoft.Network/privateDnsZones', zone)
+              })
+            }
+          }
+        ]
+      : null
     systemDatastoresAuthMode: 'identity'
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
       }
     ]
     tags: tags
   }
+
+  dependsOn: workspaceHub_privateDnsZones
 }
 
 // ============ //
@@ -297,6 +550,30 @@ output workspaceHubResourceId string = workspaceHub.outputs.resourceId
 @description('The name of the workspace hub.')
 output workspaceHubName string = workspaceHub.outputs.name
 
+@description('The resource ID of the virtual network.')
+output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork.outputs.resourceId : ''
+
+@description('The name of the virtual network.')
+output virtualNetworkName string = createVirtualNetwork ? virtualNetwork.outputs.name : ''
+
+@description('The resource ID of the subnet in the virtual network.')
+output virtualNetworkSubnetResourceId string = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : ''
+
+@description('The name of the subnet in the virtual network.')
+output virtualNetworkSubnetName string = createVirtualNetwork ? virtualNetwork.outputs.subnetNames[0] : ''
+
+@description('The resource ID of the Azure Bastion host.')
+output bastionResourceId string = createBastion ? bastion.outputs.resourceId : ''
+
+@description('The name of the Azure Bastion host.')
+output bastionName string = createBastion ? bastion.outputs.name : ''
+
+@description('The resource ID of the virtual machine.')
+output virtualMachineResourceId string = createVirtualMachine ? virtualMachine.outputs.resourceId : ''
+
+@description('The name of the virtual machine.')
+output virtualMachineName string = createVirtualMachine ? virtualMachine.outputs.name : ''
+
 // ================ //
 // Definitions      //
 // ================ //
@@ -333,9 +610,6 @@ type storageAccountSettingType = {
     | 'Premium_ZRS'
     | 'Standard_GZRS'
     | 'Standard_RAGZRS'?
-
-  @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to \'false\'.')
-  allowSharedKeyAccess: bool?
 }?
 
 type containerRegistrySettingType = {
@@ -363,6 +637,158 @@ type workspaceHubSettingType = {
 
   @description('Optional. The outbound rules for the managed network of the workspace hub.')
   networkOutboundRules: networkOutboundRuleType
+}?
+
+type virtualNetworkSubnetSettingType = {
+  @description('Optional. The name of the subnet to create.')
+  name: string?
+
+  @description('Optional. The address prefix of the subnet to create.')
+  addressPrefix: string?
+
+  @description('Optional. The resource ID of an existing network security group to associate with the subnet.')
+  networkSecurityGroupResourceId: string?
+}?
+
+type virtualNetworkSettingType = {
+  @description('Optional. Whether to create an associated virtual network. Defaults to \'true\'.')
+  enabled: bool?
+
+  @description('Optional. The name of the virtual network to create.')
+  name: string?
+
+  @description('Optional. The address prefix of the virtual network to create.')
+  addressPrefix: string?
+
+  @description('Optional. Settings for the virual network subnet.')
+  subnet: virtualNetworkSubnetSettingType
+}?
+
+type bastionSettingType = {
+  @description('Optional. Whether to create a Bastion host in the virtual network. Defaults to \'true\'.')
+  enabled: bool?
+
+  @description('Optional. The name of the Bastion host to create.')
+  name: string?
+
+  @description('Optional. The SKU of the Bastion host to create.')
+  sku: 'Basic' | 'Standard'?
+
+  @description('Optional. The resource ID of an existing network security group to associate with the Azure Bastion subnet.')
+  networkSecurityGroupResourceId: string?
+
+  @description('Optional. The address prefix of the Azure Bastion subnet.')
+  subnetAddressPrefix: string?
+
+  @description('Optional. Choose to disable or enable Copy Paste.')
+  disableCopyPaste: bool?
+
+  @description('Optional. Choose to disable or enable File Copy.')
+  enableFileCopy: bool?
+
+  @description('Optional. Choose to disable or enable IP Connect.')
+  enableIpConnect: bool?
+
+  @description('Optional. Choose to disable or enable Kerberos authentication.')
+  enableKerberos: bool?
+
+  @description('Optional. Choose to disable or enable Shareable Link.')
+  enableShareableLink: bool?
+
+  @description('Optional. The scale units for the Bastion Host resource.')
+  scaleUnits: int?
+}?
+
+type nicConfigurationSettingType = {
+  @description('Optional. The name of the network interface.')
+  name: string?
+
+  @description('Optional. The name of the IP configuration.')
+  ipConfigName: string?
+
+  @description('Optional. The private IP address allocation method.')
+  privateIPAllocationMethod: 'Dynamic' | 'Static'?
+
+  @description('Optional. The resource ID of an existing network security group to associate with the network interface.')
+  networkSecurityGroupResourceId: string?
+}?
+
+type osDiskType = {
+  @description('Optional. The disk name.')
+  name: string?
+
+  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  diskSizeGB: int?
+
+  @description('Optional. Specifies how the virtual machine should be created.')
+  createOption: 'Attach' | 'Empty' | 'FromImage'?
+
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. Specifies the caching requirements.')
+  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Required. The managed disk parameters.')
+  managedDisk: {
+    @description('Optional. Specifies the storage account type for the managed disk.')
+    storageAccountType:
+      | 'PremiumV2_LRS'
+      | 'Premium_LRS'
+      | 'Premium_ZRS'
+      | 'StandardSSD_LRS'
+      | 'StandardSSD_ZRS'
+      | 'Standard_LRS'
+      | 'UltraSSD_LRS'?
+
+    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+    diskEncryptionSetResourceId: string?
+  }
+}?
+
+@secure()
+type virtualMachineSettingType = {
+  @description('Optional. Whether to create a virtual machine in the associated virtual network. Defaults to \'true\'.')
+  enabled: bool?
+
+  @description('Optional. The name of the virtual machine.')
+  name: string?
+
+  @description('Optional. The availability zone of the virtual machine. If set to 0, no availability zone is used (default).')
+  zone: 0 | 1 | 2 | 3?
+
+  @description('Required. The virtual machine size. Defaults to \'Standard_D2s_v3\'.')
+  size: string?
+
+  @description('Conditional. The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  adminUsername: string?
+
+  @description('Conditional. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  adminPassword: string?
+
+  @description('Optional. Settings for the virtual machine network interface.')
+  nicConfigurationSettings: nicConfigurationSettingType
+
+  @description('Optional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
+  imageReference: object?
+
+  @description('Optional. Specifies the OS disk.')
+  osDisk: osDiskType
+
+  @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to \'true\'.')
+  encryptionAtHost: bool?
+
+  @description('Optional. VM guest patching orchestration mode. Refer to \'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching\'.')
+  patchMode: 'AutomaticByPlatform' | 'AutomaticByOS' | 'Manual'?
+
+  @description('Optional. Whether to enable the Microsoft.Azure.ActiveDirectory AADLoginForWindows extension, allowing users to log in to the virtual machine using Microsoft Entra. Defaults to \'false\'.')
+  enableAadLoginExtension: bool?
+
+  @description('Optional. Whether to enable the Microsoft.Azure.Monitor AzureMonitorWindowsAgent extension. Defaults to \'false\'.')
+  enableAzureMonitorAgent: bool?
+
+  @description('Optional. The resource Id of a maintenance configuration for the virtual machine.')
+  maintenanceConfigurationResourceId: string?
 }?
 
 @discriminator('type')
