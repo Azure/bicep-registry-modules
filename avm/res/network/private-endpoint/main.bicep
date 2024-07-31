@@ -17,11 +17,8 @@ param customNetworkInterfaceName string?
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
 param ipConfigurations ipConfigurationsType
 
-@description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-param privateDnsZoneGroupName string?
-
-@description('Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-param privateDnsZoneResourceIds array?
+@description('Optional. The private DNS zone group to configure for the private endpoint.')
+param privateDnsZoneGroup privateDnsZoneGroupType?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -132,12 +129,12 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   }
 }
 
-module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' = if (!empty(privateDnsZoneResourceIds)) {
+module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' = if (!empty(privateDnsZoneGroup)) {
   name: '${uniqueString(deployment().name)}-PrivateEndpoint-PrivateDnsZoneGroup'
   params: {
-    name: privateDnsZoneGroupName ?? 'default'
-    privateDNSResourceIds: privateDnsZoneResourceIds ?? []
+    name: privateDnsZoneGroup.?name
     privateEndpointName: privateEndpoint.name
+    privateDnsZoneConfigs: privateDnsZoneGroup!.privateDnsZoneGroupConfigs
   }
 }
 
@@ -193,6 +190,16 @@ output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServi
 // ================ //
 // Definitions      //
 // ================ //
+
+import { privateDnsZoneGroupConfigType } from 'private-dns-zone-group/main.bicep'
+
+type privateDnsZoneGroupType = {
+  @description('Optional. The name of the Private DNS Zone Group.')
+  name: string?
+
+  @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+  privateDnsZoneGroupConfigs: privateDnsZoneGroupConfigType[]
+}
 
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
