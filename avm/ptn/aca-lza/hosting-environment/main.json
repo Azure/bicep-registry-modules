@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "594562142750835301"
+      "templateHash": "10562968288430393552"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -474,7 +474,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "14228018662099198507"
+              "templateHash": "13848869673091050708"
             }
           },
           "parameters": {
@@ -7301,7 +7301,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "13880913622847848582"
+                      "templateHash": "8837501482328404114"
                     }
                   },
                   "parameters": {
@@ -8156,7 +8156,7 @@
                           "maintenanceConfigurationResourceId": {
                             "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]"
                           },
-                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', parameters('vmSshPublicKey'), 'path', format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))))), createObject('value', createArray()))]",
+                          "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', parameters('vmSshPublicKey')))), createObject('value', createArray()))]",
                           "nicConfigurations": {
                             "value": [
                               {
