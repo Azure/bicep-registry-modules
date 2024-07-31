@@ -191,7 +191,7 @@ module digitalTwinsInstance_serviceBusEndpoints 'endpoint--service-bus/main.bice
   }
 ]
 
-module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-digitalTwinsInstance-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

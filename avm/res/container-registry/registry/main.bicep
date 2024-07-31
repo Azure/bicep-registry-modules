@@ -424,7 +424,7 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   }
 ]
 
-module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

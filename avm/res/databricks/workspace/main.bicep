@@ -383,7 +383,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.3' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -445,7 +445,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.3' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

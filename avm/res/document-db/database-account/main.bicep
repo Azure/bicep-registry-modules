@@ -463,7 +463,7 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

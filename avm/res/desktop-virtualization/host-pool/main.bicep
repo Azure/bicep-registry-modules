@@ -211,7 +211,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-hostPool-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
