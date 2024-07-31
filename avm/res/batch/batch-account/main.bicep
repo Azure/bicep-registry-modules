@@ -261,7 +261,7 @@ resource batchAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
   }
 ]
 
-module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.0' = [
+module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-batchAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
