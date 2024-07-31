@@ -128,6 +128,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
     vmSize: 'Standard_B1s'
     // Non-required parameters
+    location: '<location>'
     tags: {
       environment: 'test'
     }
@@ -190,6 +191,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "Standard_B1s"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "tags": {
       "value": {
         "environment": "test"
