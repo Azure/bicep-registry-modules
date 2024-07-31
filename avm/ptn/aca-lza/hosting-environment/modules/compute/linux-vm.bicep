@@ -127,7 +127,6 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
       ? [
           {
             keyData: vmSshPublicKey
-            path: '/home/${vmAdminUsername}/.ssh/authorized_keys'
           }
         ]
       : [])

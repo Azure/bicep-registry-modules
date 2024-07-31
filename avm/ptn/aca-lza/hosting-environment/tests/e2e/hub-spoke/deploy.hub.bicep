@@ -415,6 +415,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:0.3.2' = {
   scope: resourceGroup(rgHubName)
   params: {
     name: take('afw-${deployment().name}', 64)
+    azureSkuTier: 'Standard'
     location: location
     tags: tags
     virtualNetworkResourceId: vnetHub.outputs.resourceId
