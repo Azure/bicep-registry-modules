@@ -97,7 +97,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/aca-lza/hosting-environment:<version>`.
 
 - [Using only defaults.](#example-1-using-only-defaults)
-- [Using all the available options in WAF aligned values.](#example-2-using-all-the-available-options-in-waf-aligned-values)
+- [Using a hub and spoke deployment.](#example-2-using-a-hub-and-spoke-deployment)
+- [Using all the available options in WAF aligned values.](#example-3-using-all-the-available-options-in-waf-aligned-values)
 
 ### Example 1: _Using only defaults._
 
@@ -215,9 +216,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 </details>
 <p>
 
-### Example 2: _Using all the available options in WAF aligned values._
+### Example 2: _Using a hub and spoke deployment._
 
-This instance deploys the module with the all the available parameters in WAF aligned values.
+This instance deploys the module including a Hub to peer to.
 
 
 <details>
@@ -334,6 +335,142 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "networkApplianceIpAddress": {
       "value": "<networkApplianceIpAddress>"
+    },
+    "storageAccountType": {
+      "value": "Premium_LRS"
+    },
+    "tags": {
+      "value": {
+        "environment": "test"
+      }
+    },
+    "vmAuthenticationType": {
+      "value": "sshPublicKey"
+    },
+    "vmJumpboxOSType": {
+      "value": "linux"
+    },
+    "workloadName": {
+      "value": "<workloadName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using all the available options in WAF aligned values._
+
+This instance deploys the module with the all the available parameters in WAF aligned values.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<version>' = {
+  name: 'hostingEnvironmentDeployment'
+  params: {
+    // Required parameters
+    applicationGatewayCertificateKeyName: 'appgwcert'
+    enableApplicationInsights: true
+    enableDaprInstrumentation: false
+    spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
+    spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
+    spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
+    spokeVNetAddressPrefixes: [
+      '10.1.0.0/22'
+    ]
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'vmadmin'
+    vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
+    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+    vmSize: 'Standard_B1s'
+    // Non-required parameters
+    deployZoneRedundantResources: true
+    enableDdosProtection: true
+    environment: 'dev'
+    exposeContainerAppsWith: 'applicationGateway'
+    location: '<location>'
+    storageAccountType: 'Premium_LRS'
+    tags: {
+      environment: 'test'
+    }
+    vmAuthenticationType: 'sshPublicKey'
+    vmJumpboxOSType: 'linux'
+    workloadName: '<workloadName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "applicationGatewayCertificateKeyName": {
+      "value": "appgwcert"
+    },
+    "enableApplicationInsights": {
+      "value": true
+    },
+    "enableDaprInstrumentation": {
+      "value": false
+    },
+    "spokeApplicationGatewaySubnetAddressPrefix": {
+      "value": "10.1.3.0/24"
+    },
+    "spokeInfraSubnetAddressPrefix": {
+      "value": "10.1.0.0/23"
+    },
+    "spokePrivateEndpointsSubnetAddressPrefix": {
+      "value": "10.1.2.0/27"
+    },
+    "spokeVNetAddressPrefixes": {
+      "value": [
+        "10.1.0.0/22"
+      ]
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "vmadmin"
+    },
+    "vmJumpBoxSubnetAddressPrefix": {
+      "value": "10.1.2.32/27"
+    },
+    "vmLinuxSshAuthorizedKey": {
+      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
+    },
+    "vmSize": {
+      "value": "Standard_B1s"
+    },
+    // Non-required parameters
+    "deployZoneRedundantResources": {
+      "value": true
+    },
+    "enableDdosProtection": {
+      "value": true
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "exposeContainerAppsWith": {
+      "value": "applicationGateway"
+    },
+    "location": {
+      "value": "<location>"
     },
     "storageAccountType": {
       "value": "Premium_LRS"

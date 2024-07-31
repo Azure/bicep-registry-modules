@@ -1,5 +1,5 @@
-metadata name = 'Using all the available options in WAF aligned values.'
-metadata description = 'This instance deploys the module with the all the available parameters in WAF aligned values.'
+metadata name = 'Using a hub and spoke deployment.'
+metadata description = 'This instance deploys the module including a Hub to peer to.'
 
 targetScope = 'subscription'
 
