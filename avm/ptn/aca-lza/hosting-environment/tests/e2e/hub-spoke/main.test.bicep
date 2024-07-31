@@ -12,7 +12,7 @@ param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'acawaf'
+param serviceShort string = 'hubspoke'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
@@ -28,6 +28,21 @@ param password string = newGuid()
 // ============ //
 // Dependencies //
 // ============ //
+module hubdeployment 'deploy.hub.bicep' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-hub-${serviceShort}'
+  params: {
+    location: resourceLocation
+    tags: {
+      environment: 'test'
+    }
+    vnetAddressPrefixes: ['10.0.0.0/24']
+    azureFirewallSubnetAddressPrefix: '10.0.0.64/26'
+    azureFirewallSubnetManagementAddressPrefix: '10.0.0.128/26'
+    gatewaySubnetAddressPrefix: '10.0.0.0/27'
+    bastionSubnetAddressPrefix: '10.0.0.192/26'
+    workloadName: serviceShort
+  }
+}
 
 // General resources
 // =================
@@ -39,6 +54,8 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     workloadName: serviceShort
+    hubVirtualNetworkResourceId: hubdeployment.outputs.hubVNetId
+    networkApplianceIpAddress: hubdeployment.outputs.networkApplianceIpAddress
     tags: {
       environment: 'test'
     }
