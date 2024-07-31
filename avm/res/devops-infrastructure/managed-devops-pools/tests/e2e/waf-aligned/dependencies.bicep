@@ -13,6 +13,8 @@ param virtualNetworkName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
+var addressPrefix = '192.168.1.0'
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -37,14 +39,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '192.168.1.0/24'
+        cidrSubnet(addressPrefix, 24, 0)
       ]
     }
     subnets: [
       {
         name: 'default'
         properties: {
-          addressPrefix: '192.168.1.0/24'
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
         }
       }
     ]
