@@ -38,7 +38,7 @@ function Get-ModuleTargetPatchVersion {
         [string] $MajMinVersion
     )
 
-    $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
 
     # Get all released module tags (using upstream specifically to work in forks)
     $existingTagList = git ls-remote --tag 'https://github.com/Azure/bicep-registry-modules.git' "$ModuleRelativeFolderPath/$MajMinVersion*"
