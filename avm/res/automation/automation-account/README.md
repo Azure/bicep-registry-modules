@@ -2032,7 +2032,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/operational-insights/workspace/linked-service` | Local reference |
 | `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
 
