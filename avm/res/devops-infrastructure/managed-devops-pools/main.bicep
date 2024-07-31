@@ -350,6 +350,7 @@ type agentStatelessType = {
 
   @description('Optional. Defines pool buffer/stand-by agents.')
   resourcePredictions: {
+    @description('Required. The time zone in which the daysData is provided.')
     timeZone: (
       | 'W. Europe Standard Time'
       | 'Magallanes Standard Time'
@@ -357,6 +358,8 @@ type agentStatelessType = {
       | 'UTC'
       | 'Central Europe Standard Time'
       | 'Libya Standard Time')
+
+    @description('Optional. The number of agents needed at a specific time.')
     daysData: object[]?
   }?
 
