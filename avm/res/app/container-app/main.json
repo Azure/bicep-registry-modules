@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "9180046963184653073"
+      "version": "0.29.47.4906",
+      "templateHash": "6375342067837816333"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -309,6 +309,66 @@
         }
       }
     },
+    "corsPolicyType": {
+      "type": "object",
+      "properties": {
+        "allowCredentials": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Switch to determine whether the resource allows credentials."
+          }
+        },
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-headers header."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-methods header."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-origins header."
+          }
+        },
+        "exposeHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-expose-headers header."
+          }
+        },
+        "maxAge": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-max-age header."
+          }
+        }
+      },
+      "nullable": true
+    },
     "containerAppProbeHttpGet": {
       "type": "object",
       "properties": {
@@ -430,11 +490,36 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "disableIngress": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Bool to disable all ingress traffic for the container app."
+      }
+    },
     "ingressExternal": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Bool indicating if the App exposes an external HTTP endpoint."
+      }
+    },
+    "clientCertificateMode": {
+      "type": "string",
+      "defaultValue": "ignore",
+      "allowedValues": [
+        "accept",
+        "ignore",
+        "require"
+      ],
+      "metadata": {
+        "description": "Optional. Client certificate mode for mTLS."
+      }
+    },
+    "corsPolicy": {
+      "$ref": "#/definitions/corsPolicyType",
+      "metadata": {
+        "description": "Optional. Object userd to configure CORS policy."
       }
     },
     "stickySessionsAffinity": {
@@ -507,7 +592,7 @@
         "description": "Optional. Controls how active revisions are handled for the Container app."
       }
     },
-    "environmentId": {
+    "environmentResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of environment."
@@ -677,7 +762,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -702,30 +787,11 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "environmentId": "[parameters('environmentId')]",
+        "environmentId": "[parameters('environmentResourceId')]",
         "configuration": {
           "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
           "dapr": "[if(not(empty(parameters('dapr'))), parameters('dapr'), null())]",
-          "ingress": {
-            "allowInsecure": "[parameters('ingressAllowInsecure')]",
-            "customDomains": "[if(not(empty(parameters('customDomains'))), parameters('customDomains'), null())]",
-            "exposedPort": "[parameters('exposedPort')]",
-            "external": "[parameters('ingressExternal')]",
-            "ipSecurityRestrictions": "[if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null())]",
-            "targetPort": "[parameters('ingressTargetPort')]",
-            "stickySessions": {
-              "affinity": "[parameters('stickySessionsAffinity')]"
-            },
-            "traffic": [
-              {
-                "label": "[parameters('trafficLabel')]",
-                "latestRevision": "[parameters('trafficLatestRevision')]",
-                "revisionName": "[parameters('trafficRevisionName')]",
-                "weight": "[parameters('trafficWeight')]"
-              }
-            ],
-            "transport": "[parameters('ingressTransport')]"
-          },
+          "ingress": "[if(parameters('disableIngress'), null(), createObject('allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', if(not(empty(parameters('customDomains'))), parameters('customDomains'), null()), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null()), 'targetPort', parameters('ingressTargetPort'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), null()), 'transport', parameters('ingressTransport')))]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
           "secrets": "[variables('secretList')]"
@@ -794,7 +860,7 @@
       "metadata": {
         "description": "The configuration of ingress fqdn."
       },
-      "value": "[reference('containerApp').configuration.ingress.fqdn]"
+      "value": "[if(parameters('disableIngress'), 'IngressDisabled', reference('containerApp').configuration.ingress.fqdn)]"
     },
     "resourceGroupName": {
       "type": "string",
