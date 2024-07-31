@@ -539,6 +539,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.2' = if (createNewKV) {
             tags: tags
             enableTelemetry: enableTelemetry
             lock: lock
+            roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
           }
         ]
       : []
@@ -612,6 +613,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.5.0' = if (enableDatabricks
             tags: tags
             enableTelemetry: enableTelemetry
             lock: lock
+            roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
           }
           {
             name: '${name}-dbw-auth-pep'
@@ -622,6 +624,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.5.0' = if (enableDatabricks
             tags: tags
             enableTelemetry: enableTelemetry
             lock: lock
+            roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
           }
         ]
       : [] // In customer provided VNET, customer must create PEPs on their own
