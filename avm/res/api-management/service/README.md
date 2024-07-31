@@ -126,7 +126,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apismin001'
+    name: 'apismin002'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -149,7 +149,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismin001"
+      "value": "apismin002"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -242,7 +242,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apismax001'
+    name: 'apismax002'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -464,7 +464,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismax001"
+      "value": "apismax002"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -798,7 +798,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apiswaf001'
+    name: 'apiswaf002'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -998,7 +998,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apiswaf001"
+      "value": "apiswaf002"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
