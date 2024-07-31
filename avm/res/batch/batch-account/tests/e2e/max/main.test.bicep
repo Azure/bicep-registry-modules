@@ -103,6 +103,12 @@ module testDeployment '../../../main.bicep' = [
               principalType: 'ServicePrincipal'
             }
             {
+              name: guid('Custom seed')
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
                 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
@@ -170,11 +176,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

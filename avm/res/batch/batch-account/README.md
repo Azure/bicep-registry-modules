@@ -19,8 +19,8 @@ This module deploys a Batch Account.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Batch/batchAccounts` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Batch/2022-06-01/batchAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -256,6 +256,12 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             roleDefinitionIdOrName: 'Owner'
           }
           {
+            name: '<name>'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -296,11 +302,13 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     ]
     roleAssignments: [
       {
+        name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -417,6 +425,12 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "roleDefinitionIdOrName": "Owner"
             },
             {
+              "name": "<name>",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
@@ -459,11 +473,13 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "d57821b0-52b3-4a42-9799-533a9cdb7eec",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1575,7 +1591,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.6.0` | Remote reference |
 
 ## Data Collection
 

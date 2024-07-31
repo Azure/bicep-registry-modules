@@ -279,7 +279,7 @@ resource configurationStore_roleAssignments 'Microsoft.Authorization/roleAssignm
 ]
 
 @batchSize(1)
-module configurationStore_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module configurationStore_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-configurationStore-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

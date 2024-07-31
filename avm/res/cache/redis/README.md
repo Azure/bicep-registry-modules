@@ -21,8 +21,8 @@ This module deploys a Redis Cache.
 | `Microsoft.Cache/redis` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis) |
 | `Microsoft.Cache/redis/linkedServers` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/redis/linkedServers) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -193,11 +193,13 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         ]
         roleAssignments: [
           {
+            name: '8d6043f5-8a22-447f-bc31-23d23e09de6c'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
           }
           {
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -324,11 +326,13 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
           ],
           "roleAssignments": [
             {
+              "name": "8d6043f5-8a22-447f-bc31-23d23e09de6c",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
             },
             {
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1618,7 +1622,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.6.0` | Remote reference |
 
 ## Notes
 
