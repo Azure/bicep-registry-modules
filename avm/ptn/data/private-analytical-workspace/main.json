@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "1920529349099242082"
+      "version": "0.29.47.4906",
+      "templateHash": "10433693983114352432"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -291,6 +291,16 @@
   "variables": {
     "copy": [
       {
+        "name": "ownerRoleAssignments",
+        "count": "[length(if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators')))]",
+        "input": {
+          "roleDefinitionIdOrName": "Owner",
+          "principalId": "[if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators'))[copyIndex('ownerRoleAssignments')].principalId]",
+          "principalType": "[if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators'))[copyIndex('ownerRoleAssignments')].principalType]",
+          "description": "Full access to manage this resource, including the ability to assign roles in Azure RBAC."
+        }
+      },
+      {
         "name": "kvIpRules",
         "count": "[length(if(empty(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules')), createArray(), parameters('advancedOptions').networkAcls.ipRules))]",
         "input": {
@@ -312,16 +322,6 @@
         "count": "[length(if(empty(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules')), createArray(), parameters('advancedOptions').networkAcls.ipRules))]",
         "input": {
           "value": "[if(empty(tryGet(tryGet(parameters('advancedOptions'), 'networkAcls'), 'ipRules')), createArray(), parameters('advancedOptions').networkAcls.ipRules)[copyIndex('dbwIpRules')]]"
-        }
-      },
-      {
-        "name": "dbwRoleAssignments",
-        "count": "[length(if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators')))]",
-        "input": {
-          "roleDefinitionIdOrName": "Owner",
-          "principalId": "[if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators'))[copyIndex('dbwRoleAssignments')].principalId]",
-          "principalType": "[if(empty(parameters('solutionAdministrators')), createArray(), parameters('solutionAdministrators'))[copyIndex('dbwRoleAssignments')].principalType]",
-          "description": "Full access to manage this resource, including the ability to assign roles in Azure RBAC."
         }
       }
     ],
@@ -466,7 +466,8 @@
     "dbwName": "[format('{0}-dbw', parameters('name'))]",
     "createNewVNET": "[empty(parameters('virtualNetworkResourceId'))]",
     "createNewLog": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
-    "createNewKV": "[empty(parameters('keyVaultResourceId'))]"
+    "createNewKV": "[empty(parameters('keyVaultResourceId'))]",
+    "kvMultipleRoleAssignments": "[concat(variables('ownerRoleAssignments'), variables('kvRoleAssignments'))]"
   },
   "resources": {
     "vnetExisting::subnetPrivateLink": {
@@ -598,6 +599,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -1809,6 +1811,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -2447,6 +2450,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -3085,6 +3089,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -3719,6 +3724,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -5764,7 +5770,7 @@
           },
           "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-kv-pep', parameters('name')), 'location', parameters('location'), 'subnetResourceId', createObject('resourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))))), 'name', if(variables('createNewVNET'), reference('vnet').outputs.name.value, if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), 'location', if(variables('createNewVNET'), reference('vnet').outputs.location.value, reference('vnetExisting', '2023-11-01', 'full').location), 'resourceGroupName', if(variables('createNewVNET'), reference('vnet').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), '/')[4]), 'subnetResourceIdPrivateLink', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks/subnets', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))), 'subnetNameDbwControlPlane', if(variables('createNewVNET'), variables('subnetNameDbwControlPlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), 'dummyName')), 'subnetNameDbwComputePlane', if(variables('createNewVNET'), variables('subnetNameDbwComputePlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'), 'dummyName'))).subnetResourceIdPrivateLink, 'privateDnsZoneResourceIds', createArray(reference('dnsZoneKv').outputs.resourceId.value), 'tags', parameters('tags'), 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "publicNetworkAccess": "[if(empty(variables('kvIpRules')), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "roleAssignments": "[if(empty(variables('kvRoleAssignments')), createObject('value', createArray()), createObject('value', variables('kvRoleAssignments')))]",
+          "roleAssignments": "[if(empty(variables('kvMultipleRoleAssignments')), createObject('value', createArray()), createObject('value', variables('kvMultipleRoleAssignments')))]",
           "sku": "[if(equals(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'sku'), 'standard'), createObject('value', 'standard'), createObject('value', variables('kvDefaultSku')))]",
           "softDeleteRetentionInDays": {
             "value": "[coalesce(tryGet(tryGet(parameters('advancedOptions'), 'keyVault'), 'softDeleteRetentionInDays'), variables('kvDefaultSoftDeleteRetentionInDays'))]"
@@ -8529,6 +8535,7 @@
           "location": {
             "value": "global"
           },
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -11453,7 +11460,7 @@
           "privateEndpoints": "[if(variables('createNewVNET'), createObject('value', createArray(createObject('name', format('{0}-dbw-ui-pep', parameters('name')), 'location', parameters('location'), 'service', 'databricks_ui_api', 'subnetResourceId', createObject('resourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))))), 'name', if(variables('createNewVNET'), reference('vnet').outputs.name.value, if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), 'location', if(variables('createNewVNET'), reference('vnet').outputs.location.value, reference('vnetExisting', '2023-11-01', 'full').location), 'resourceGroupName', if(variables('createNewVNET'), reference('vnet').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), '/')[4]), 'subnetResourceIdPrivateLink', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks/subnets', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))), 'subnetNameDbwControlPlane', if(variables('createNewVNET'), variables('subnetNameDbwControlPlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), 'dummyName')), 'subnetNameDbwComputePlane', if(variables('createNewVNET'), variables('subnetNameDbwComputePlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'), 'dummyName'))).subnetResourceIdPrivateLink, 'privateDnsZoneResourceIds', createArray(reference('dnsZoneDbw').outputs.resourceId.value), 'tags', parameters('tags'), 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')), createObject('name', format('{0}-dbw-auth-pep', parameters('name')), 'location', parameters('location'), 'service', 'browser_authentication', 'subnetResourceId', createObject('resourceId', if(variables('createNewVNET'), reference('vnet').outputs.resourceId.value, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))))), 'name', if(variables('createNewVNET'), reference('vnet').outputs.name.value, if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), 'location', if(variables('createNewVNET'), reference('vnet').outputs.location.value, reference('vnetExisting', '2023-11-01', 'full').location), 'resourceGroupName', if(variables('createNewVNET'), reference('vnet').outputs.resourceGroupName.value, split(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/')))), '/')[4]), 'subnetResourceIdPrivateLink', if(variables('createNewVNET'), reference('vnet').outputs.subnetResourceIds.value[0], extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', if(variables('createNewVNET'), subscription().id, split(parameters('virtualNetworkResourceId'), '/')[2]), if(variables('createNewVNET'), resourceGroup().id, split(parameters('virtualNetworkResourceId'), '/')[4])), 'Microsoft.Network/virtualNetworks/subnets', if(variables('createNewVNET'), 'dummyName', last(split(parameters('virtualNetworkResourceId'), '/'))), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'virtualNetwork'), 'subnetNamePrivateLink'), 'dummyName'))), 'subnetNameDbwControlPlane', if(variables('createNewVNET'), variables('subnetNameDbwControlPlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameControlPlane'), 'dummyName')), 'subnetNameDbwComputePlane', if(variables('createNewVNET'), variables('subnetNameDbwComputePlane'), coalesce(tryGet(tryGet(parameters('advancedOptions'), 'databricks'), 'subnetNameComputePlane'), 'dummyName'))).subnetResourceIdPrivateLink, 'privateDnsZoneResourceIds', createArray(reference('dnsZoneDbw').outputs.resourceId.value), 'tags', parameters('tags'), 'enableTelemetry', parameters('enableTelemetry'), 'lock', parameters('lock')))), createObject('value', createArray()))]",
           "publicNetworkAccess": "[if(empty(variables('dbwIpRules')), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "requiredNsgRules": "[if(empty(variables('dbwIpRules')), createObject('value', 'NoAzureDatabricksRules'), createObject('value', 'AllRules'))]",
-          "roleAssignments": "[if(empty(variables('dbwRoleAssignments')), createObject('value', createArray()), createObject('value', variables('dbwRoleAssignments')))]",
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "skuName": {
             "value": "premium"
           },
@@ -13078,6 +13085,7 @@
           "location": {
             "value": "global"
           },
+          "roleAssignments": "[if(empty(variables('ownerRoleAssignments')), createObject('value', createArray()), createObject('value', variables('ownerRoleAssignments')))]",
           "lock": {
             "value": "[parameters('lock')]"
           },

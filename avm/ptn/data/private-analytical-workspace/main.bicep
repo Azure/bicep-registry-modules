@@ -186,6 +186,15 @@ var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
 var createNewKV = empty(keyVaultResourceId)
 
+var ownerRoleAssignments = [
+  for (item, i) in empty(solutionAdministrators) ? [] : solutionAdministrators!: {
+    roleDefinitionIdOrName: 'Owner'
+    principalId: item.principalId
+    principalType: item.principalType
+    description: 'Full access to manage this resource, including the ability to assign roles in Azure RBAC.'
+  }
+]
+
 var vnetCfg = ({
   resourceId: createNewVNET ? vnet.outputs.resourceId : vnetExisting.id
   name: createNewVNET ? vnet.outputs.name : vnetExisting.name
@@ -228,18 +237,11 @@ var kvRoleAssignments = [
   }
 ]
 
+var kvMultipleRoleAssignments = concat(ownerRoleAssignments, kvRoleAssignments)
+
 var dbwIpRules = [
   for (item, i) in empty(advancedOptions.?networkAcls.?ipRules) ? [] : advancedOptions!.networkAcls!.ipRules!: {
     value: item
-  }
-]
-
-var dbwRoleAssignments = [
-  for (item, i) in empty(solutionAdministrators) ? [] : solutionAdministrators!: {
-    roleDefinitionIdOrName: 'Owner'
-    principalId: item.principalId
-    principalType: item.principalType
-    description: 'Full access to manage this resource, including the ability to assign roles in Azure RBAC.'
   }
 ]
 
@@ -383,6 +385,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (createNewVNE
     dnsServers: []
     enableTelemetry: enableTelemetry
     location: location
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     lock: lock
     subnets: subnets
     tags: tags
@@ -408,6 +411,7 @@ module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.3.1' =
     ]
     enableTelemetry: enableTelemetry
     location: location
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     lock: lock
     tags: tags
     securityRules: nsgRulesPrivateLink
@@ -433,6 +437,7 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.3.
     ]
     enableTelemetry: enableTelemetry
     location: location
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     lock: lock
     tags: tags
     securityRules: nsgRulesDbw
@@ -458,6 +463,7 @@ module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.3.
     ]
     enableTelemetry: enableTelemetry
     location: location
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     lock: lock
     tags: tags
     securityRules: nsgRulesDbw
@@ -475,6 +481,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.4.0' = if (create
     diagnosticSettings: []
     enableTelemetry: enableTelemetry
     location: location
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     lock: lock
     skuName: 'PerGB2018'
     tags: tags
@@ -536,7 +543,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.6.2' = if (createNewKV) {
         ]
       : []
     publicNetworkAccess: empty(kvIpRules) ? 'Disabled' : 'Enabled'
-    roleAssignments: empty(kvRoleAssignments) ? [] : kvRoleAssignments
+    roleAssignments: empty(kvMultipleRoleAssignments) ? [] : kvMultipleRoleAssignments
     sku: advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku
     softDeleteRetentionInDays: advancedOptions.?keyVault.?softDeleteRetentionInDays ?? kvDefaultSoftDeleteRetentionInDays
     tags: tags
@@ -551,6 +558,7 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (create
     // Non-required parameters
     enableTelemetry: enableTelemetry
     location: 'global'
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     lock: lock
     tags: tags
     virtualNetworkLinks: [
@@ -624,7 +632,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.5.0' = if (enableDatabricks
     // which means that your workspace data plane does not need network security group rules
     // to connect to the Azure Databricks control plane. Otherwise, select All Rules.
     requiredNsgRules: empty(dbwIpRules) ? 'NoAzureDatabricksRules' : 'AllRules' // In some environments with 'NoAzureDatabricksRules' cluster cannot be created
-    roleAssignments: empty(dbwRoleAssignments) ? [] : dbwRoleAssignments
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
     tags: tags
@@ -639,6 +647,7 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (creat
     // Non-required parameters
     enableTelemetry: enableTelemetry
     location: 'global'
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     lock: lock
     tags: tags
     virtualNetworkLinks: [

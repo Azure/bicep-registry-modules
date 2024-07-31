@@ -835,7 +835,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   - Each subnet for Azure Databricks must have same NSG associated
   - NSG for ADb must have following rules - https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#network-security-group-rules-for-workspaces
   - ADB PEPs
+  - Delegation, RT, NSG, subnets, VNET with large size, DNS, Peerings, PL DNS
   - ADB UDR?? https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/udr
+  - solutionAdministrators are owners for all resources, KV administrator
 
 
 ## Data Collection
