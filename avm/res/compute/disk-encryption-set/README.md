@@ -237,11 +237,13 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
     }
     roleAssignments: [
       {
+        name: 'c331c327-6458-473a-9398-95b382c6f04f'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -303,11 +305,13 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
     "roleAssignments": {
       "value": [
         {
+          "name": "c331c327-6458-473a-9398-95b382c6f04f",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"

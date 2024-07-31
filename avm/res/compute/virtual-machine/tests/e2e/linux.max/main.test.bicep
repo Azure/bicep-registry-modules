@@ -107,7 +107,22 @@ module testDeployment '../../../main.bicep' = {
               ]
               roleAssignments: [
                 {
-                  roleDefinitionIdOrName: 'Reader'
+                  name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+                  roleDefinitionIdOrName: 'Owner'
+                  principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                  principalType: 'ServicePrincipal'
+                }
+                {
+                  name: guid('Custom seed')
+                  roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                  principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                  principalType: 'ServicePrincipal'
+                }
+                {
+                  roleDefinitionIdOrName: subscriptionResourceId(
+                    'Microsoft.Authorization/roleDefinitions',
+                    'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                  )
                   principalId: nestedDependencies.outputs.managedIdentityPrincipalId
                   principalType: 'ServicePrincipal'
                 }
@@ -133,7 +148,22 @@ module testDeployment '../../../main.bicep' = {
         name: 'nic-test-01'
         roleAssignments: [
           {
-            roleDefinitionIdOrName: 'Reader'
+            name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+            roleDefinitionIdOrName: 'Owner'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            name: guid('Custom seed')
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: subscriptionResourceId(
+              'Microsoft.Authorization/roleDefinitions',
+              'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            )
             principalId: nestedDependencies.outputs.managedIdentityPrincipalId
             principalType: 'ServicePrincipal'
           }

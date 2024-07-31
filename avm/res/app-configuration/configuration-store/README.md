@@ -247,9 +247,21 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         name: 'keyName'
         roleAssignments: [
           {
+            name: '56e2c190-b31e-4518-84de-170b8a5c1b24'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            name: '<name>'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         value: 'valueName'
@@ -282,6 +294,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -351,9 +364,21 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "name": "keyName",
           "roleAssignments": [
             {
+              "name": "56e2c190-b31e-4518-84de-170b8a5c1b24",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "name": "<name>",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "value": "valueName"
@@ -396,6 +421,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"

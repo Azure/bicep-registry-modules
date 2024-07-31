@@ -106,9 +106,21 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         name: 'cgmax-appd-002'
         roleAssignments: [
           {
+            name: '4ef8d3d3-54be-4522-92c3-284977292d87'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            name: '<name>'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         supportedOSType: 'Windows'
@@ -323,9 +335,21 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "name": "cgmax-appd-002",
           "roleAssignments": [
             {
+              "name": "4ef8d3d3-54be-4522-92c3-284977292d87",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "name": "<name>",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "supportedOSType": "Windows"
