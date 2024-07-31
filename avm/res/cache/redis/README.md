@@ -199,7 +199,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
             roleDefinitionIdOrName: 'Owner'
           }
           {
-            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -332,7 +331,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
               "roleDefinitionIdOrName": "Owner"
             },
             {
-              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
