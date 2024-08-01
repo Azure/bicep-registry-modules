@@ -97,7 +97,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/aca-lza/hosting-environment:<version>`.
 
 - [Using only defaults.](#example-1-using-only-defaults)
-- [Hub-Spoke](#example-2-hub-spoke)
+- [Using a hub and spoke deployment.](#example-2-using-a-hub-and-spoke-deployment)
 - [Using all the available options in WAF aligned values.](#example-3-using-all-the-available-options-in-waf-aligned-values)
 
 ### Example 1: _Using only defaults._
@@ -216,7 +216,10 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 </details>
 <p>
 
-### Example 2: _Hub-Spoke_
+### Example 2: _Using a hub and spoke deployment._
+
+This instance deploys the module including a Hub to peer to.
+
 
 <details>
 
