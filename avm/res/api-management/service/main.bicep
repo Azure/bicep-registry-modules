@@ -218,14 +218,14 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     name: sku
     capacity: contains(sku, 'Consumption') ? 0 : contains(sku, 'Developer') ? 1 : skuCapacity
   }
-  zones: contains(sku, 'Premium') ? zones : null
+  zones: contains(sku, 'Premium') ? zones : []
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: contains(sku, 'Premium') ? additionalLocations : null
+    additionalLocations: contains(sku, 'Premium') ? additionalLocations : []
     customProperties: contains(sku, 'Consumption') ? null : customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null

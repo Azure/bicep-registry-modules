@@ -153,10 +153,15 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    privateDnsZoneGroup: {
+      name: 'default'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'config'
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
     privateLinkServiceConnections: [
       {
         name: 'npemax001'
@@ -256,13 +261,16 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
-    "privateDnsZoneResourceIds": {
-      "value": [
-        "<privateDNSZoneResourceId>"
-      ]
+    "privateDnsZoneGroup": {
+      "value": {
+        "name": "default",
+        "privateDnsZoneGroupConfigs": [
+          {
+            "name": "config",
+            "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+          }
+        ]
+      }
     },
     "privateLinkServiceConnections": {
       "value": [
@@ -443,9 +451,13 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
     privateLinkServiceConnections: [
       {
         name: 'npewaf001'
@@ -515,10 +527,14 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "privateDnsZoneResourceIds": {
-      "value": [
-        "<privateDNSZoneResourceId>"
-      ]
+    "privateDnsZoneGroup": {
+      "value": {
+        "privateDnsZoneGroupConfigs": [
+          {
+            "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+          }
+        ]
+      }
     },
     "privateLinkServiceConnections": {
       "value": [
@@ -569,8 +585,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. |
-| [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -802,19 +817,64 @@ A message passed to the owner of the remote resource with this connection reques
 - Required: Yes
 - Type: string
 
-### Parameter: `privateDnsZoneGroupName`
+### Parameter: `privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateDnsZoneResourceIds`
+### Parameter: `privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateLinkServiceConnections`
 
