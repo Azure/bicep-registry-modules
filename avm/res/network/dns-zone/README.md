@@ -2670,6 +2670,7 @@ The text value of this TXT record.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the DNS zone. |
+| `nameServers` | array | The name servers of the DNS zone. |
 | `resourceGroupName` | string | The resource group the DNS zone was deployed into. |
 | `resourceId` | string | The resource ID of the DNS zone. |
 
