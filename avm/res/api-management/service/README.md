@@ -126,7 +126,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apismin002'
+    name: 'apismin001'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -149,7 +149,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismin002"
+      "value": "apismin001"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -242,7 +242,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apismax002'
+    name: 'apismax001'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -416,13 +416,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publicIpAddressResourceId: '<publicIpAddressResourceId>'
     roleAssignments: [
       {
-        name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -464,7 +462,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismax002"
+      "value": "apismax001"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -678,13 +676,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "6352c3e3-ac6b-43d5-ac43-1077ff373721",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -798,7 +794,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apiswaf002'
+    name: 'apiswaf001'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -998,7 +994,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apiswaf002"
+      "value": "apiswaf001"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -1756,7 +1752,6 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1803,13 +1798,6 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `roleAssignments.name`
-
-The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
