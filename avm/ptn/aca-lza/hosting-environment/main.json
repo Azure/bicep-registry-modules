@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "594562142750835301"
+      "templateHash": "5312676994289851146"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -31906,7 +31906,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "16708152172536692513"
+              "templateHash": "6489695255574859573"
             }
           },
           "parameters": {
@@ -32161,8 +32161,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "4907651770505299610"
+                      "version": "0.28.1.47646",
+                      "templateHash": "15992072010754675807"
                     },
                     "name": "Application Insights",
                     "description": "This component deploys an Application Insights instance.",
@@ -32511,8 +32511,8 @@
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.insights-component.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.insights-component.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -32634,8 +32634,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.25.53.49325",
-                              "templateHash": "15515506165880058222"
+                              "version": "0.28.1.47646",
+                              "templateHash": "11213930862679606021"
                             },
                             "name": "Application Insights Linked Storage Account",
                             "description": "This component deploys an Application Insights Linked Storage Account.",
@@ -32787,7 +32787,7 @@
                       ]
                     }
                   },
-                  "daprAIInstrumentationKey": "[if(parameters('enableDaprInstrumentation'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.instrumentationKey.value), createObject('value', ''))]",
+                  "daprAIInstrumentationKey": "[if(and(parameters('enableDaprInstrumentation'), parameters('enableApplicationInsights')), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('applicationInsights-{0}', uniqueString(resourceGroup().id)), 64)), '2022-09-01').outputs.instrumentationKey.value), createObject('value', null()))]",
                   "infrastructureSubnetId": {
                     "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('spokeVNetName'), parameters('spokeInfraSubnetName'))]"
                   },
@@ -37248,7 +37248,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "1734261927469278312"
+              "templateHash": "8008767038315578533"
             }
           },
           "parameters": {
@@ -38703,8 +38703,8 @@
                   "name": {
                     "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway]"
                   },
-                  "backendAddressPools": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'acaServiceBackend', 'properties', createObject('backendAddresses', createArray(createObject('fqdn', parameters('applicationGatewayPrimaryBackendEndFqdn'))))))), createObject('value', createArray()))]",
-                  "backendHttpSettingsCollection": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'https', 'properties', createObject('port', 443, 'protocol', 'Https', 'cookieBasedAffinity', 'Disabled', 'pickHostNameFromBackendAddress', true(), 'requestTimeout', 20, 'probe', createObject('id', resourceId('Microsoft.Network/applicationGateways/probes', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway, 'webProbe')))))), createObject('value', createArray()))]",
+                  "backendAddressPools": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'acaServiceBackend', 'properties', createObject('backendAddresses', createArray(createObject('fqdn', parameters('applicationGatewayPrimaryBackendEndFqdn'))))))), createObject('value', null()))]",
+                  "backendHttpSettingsCollection": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'https', 'properties', createObject('port', 443, 'protocol', 'Https', 'cookieBasedAffinity', 'Disabled', 'pickHostNameFromBackendAddress', true(), 'requestTimeout', 20, 'probe', createObject('id', resourceId('Microsoft.Network/applicationGateways/probes', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway, 'webProbe')))))), createObject('value', null()))]",
                   "diagnosticSettings": {
                     "value": [
                       {
@@ -38780,7 +38780,7 @@
                       }
                     ]
                   },
-                  "requestRoutingRules": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'routingRules', 'properties', createObject('ruleType', 'Basic', 'priority', 100, 'httpListener', createObject('id', format('{0}/httpListeners/httpListener', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendAddressPool', createObject('id', format('{0}/backendAddressPools/acaServiceBackend', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendHttpSettings', createObject('id', format('{0}/backendHttpSettingsCollection/https', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))))))), createObject('value', createArray()))]",
+                  "requestRoutingRules": "[if(not(empty(parameters('applicationGatewayPrimaryBackendEndFqdn'))), createObject('value', createArray(createObject('name', 'routingRules', 'properties', createObject('ruleType', 'Basic', 'priority', 100, 'httpListener', createObject('id', format('{0}/httpListeners/httpListener', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendAddressPool', createObject('id', format('{0}/backendAddressPools/acaServiceBackend', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))), 'backendHttpSettings', createObject('id', format('{0}/backendHttpSettingsCollection/https', resourceId('Microsoft.Network/applicationGateways', reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway))))))), createObject('value', null()))]",
                   "sku": {
                     "value": "WAF_v2"
                   },
