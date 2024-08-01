@@ -96,7 +96,7 @@ function Set-AvmGithubIssueForWorkflow {
                     $comment = @"
 > [!IMPORTANT]
 > This module is currently orphaned (has no owner), therefore expect a higher response time.
-> @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
+> @Azure/avm-core-team-technical-bicep, the workflow for the ``$workflowRun.workflowName.Replace('.', '/')`` module has failed. Please investigate the failed workflow run.
 "@
 
                     if ($workflowRun.workflowName -match 'avm.(?:res|ptn)') {
