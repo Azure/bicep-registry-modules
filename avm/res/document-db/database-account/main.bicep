@@ -534,10 +534,59 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
               value: databaseAccount.listKeys().primaryReadonlyMasterKey
             }
           ]
+        : [],
+      contains(secretsExportConfiguration!, 'primaryWriteConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.primaryWriteConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'primaryReadonlyConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.primaryReadonlyConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryWriteKeySecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.secondaryWriteKeySecretName
+              value: databaseAccount.listKeys().secondaryMasterKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryReadonlyKeySecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.secondaryReadonlyKeySecretName
+              value: databaseAccount.listKeys().secondaryReadonlyMasterKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryWriteConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.secondaryWriteConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryReadonlyConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.secondaryReadonlyConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
+            }
+          ]
         : []
     )
   }
 }
+
 output exportedSecrets secretsOutputType = toObject(
   secretsExport.outputs.secretsSet,
   secret => last(split(secret.secretResourceId, '/')),
@@ -820,11 +869,29 @@ type secretsExportConfigurationType = {
   @description('Required. The resource ID of the key vault where to store the secrets of this module.')
   keyVaultResourceId: string
 
-  @description('Optional. The name for secret to create.')
+  @description('Optional. The primary write key secret name to create.')
   primaryWriteKeySecretName: string?
 
-  @description('Optional. The name for secret to create.')
+  @description('Optional. The primary readonly key secret name to create.')
   primaryReadOnlyKeySecretName: string?
+
+  @description('Optional. The primary write connection string secret name to create.')
+  primaryWriteConnectionStringSecretName: string?
+
+  @description('Optional. The primary readonly connection string secret name to create.')
+  primaryReadonlyConnectionStringSecretName: string?
+
+  @description('Optional. The primary write key secret name to create.')
+  secondaryWriteKeySecretName: string?
+
+  @description('Optional. The primary readonly key secret name to create.')
+  secondaryReadonlyKeySecretName: string?
+
+  @description('Optional. The primary write connection string secret name to create.')
+  secondaryWriteConnectionStringSecretName: string?
+
+  @description('Optional. The primary readonly connection string secret name to create.')
+  secondaryReadonlyConnectionStringSecretName: string?
 }
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'

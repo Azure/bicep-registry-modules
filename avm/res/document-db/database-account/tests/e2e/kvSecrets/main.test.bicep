@@ -50,8 +50,14 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}-kv-ref'
     secretsExportConfiguration: {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      primaryReadOnlyKeySecretName: 'myPrimarySecret'
-      primaryWriteKeySecretName: 'mySecondarySecret'
+      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
+      primaryWriteKeySecretName: 'primaryWriteKey'
+      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
+      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
+      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
+      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
+      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
+      secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
   }
 }
