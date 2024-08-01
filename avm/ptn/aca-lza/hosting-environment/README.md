@@ -97,7 +97,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/aca-lza/hosting-environment:<version>`.
 
 - [Using only defaults.](#example-1-using-only-defaults)
-- [Using a hub and spoke deployment.](#example-2-using-a-hub-and-spoke-deployment)
+- [Hub-Spoke](#example-2-hub-spoke)
 - [Using all the available options in WAF aligned values.](#example-3-using-all-the-available-options-in-waf-aligned-values)
 
 ### Example 1: _Using only defaults._
@@ -216,10 +216,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 </details>
 <p>
 
-### Example 2: _Using a hub and spoke deployment._
-
-This instance deploys the module including a Hub to peer to.
-
+### Example 2: _Hub-Spoke_
 
 <details>
 
@@ -828,7 +825,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/cdn/profile:0.3.0` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.5.1` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.3.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.3.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.3.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.2.1` | Remote reference |
 | `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.0` | Remote reference |
