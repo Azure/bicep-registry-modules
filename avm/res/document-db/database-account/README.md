@@ -27,7 +27,7 @@ This module deploys a DocumentDB Database Account.
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -342,6 +342,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -480,6 +481,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -522,9 +524,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'kv-ref'
     // Non-required parameters
     location: '<location>'
-    secretsKeyVault: {
-      keyVaultName: '<keyVaultName>'
-      primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
+      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
+      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
+      primaryWriteKeySecretName: 'primaryWriteKey'
+      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
+      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
+      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
+      secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
   }
 }
@@ -550,10 +559,17 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "location": {
       "value": "<location>"
     },
-    "secretsKeyVault": {
+    "secretsExportConfiguration": {
       "value": {
-        "keyVaultName": "<keyVaultName>",
-        "primaryReadonlyConnectionStringSecretName": "custom-secret-name"
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryReadonlyConnectionStringSecretName": "primaryReadonlyConnectionString",
+        "primaryReadOnlyKeySecretName": "primaryReadOnlyKey",
+        "primaryWriteConnectionStringSecretName": "primaryWriteConnectionString",
+        "primaryWriteKeySecretName": "primaryWriteKey",
+        "secondaryReadonlyConnectionStringSecretName": "secondaryReadonlyConnectionString",
+        "secondaryReadonlyKeySecretName": "secondaryReadonlyKey",
+        "secondaryWriteConnectionStringSecretName": "secondaryWriteConnectionString",
+        "secondaryWriteKeySecretName": "secondaryWriteKey"
       }
     }
   }
@@ -593,6 +609,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -643,6 +660,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -900,6 +918,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -1170,6 +1189,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -2319,7 +2339,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`secretsKeyVault`](#parameter-secretskeyvault) | object | Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
 | [`sqlRoleAssignmentsPrincipalIds`](#parameter-sqlroleassignmentsprincipalids) | array | SQL Role Definitions configurations. |
@@ -3134,6 +3154,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -3184,6 +3205,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -3230,6 +3258,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -3280,6 +3309,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -3297,9 +3333,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsKeyVault`
+### Parameter: `secretsExportConfiguration`
 
-Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account.
+Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
@@ -3308,88 +3344,80 @@ Key vault reference and secret settings to add the connection strings and keys g
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultName`](#parameter-secretskeyvaultkeyvaultname) | string | The key vault name where to store the keys and connection strings generated by the modules. |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretskeyvaultprimaryreadonlyconnectionstringsecretname) | string | Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create. |
-| [`primaryReadOnlyKeySecretName`](#parameter-secretskeyvaultprimaryreadonlykeysecretname) | string | Default to Primary-Readonly-Key. The primary readonly key secret name to create. |
-| [`primaryWriteConnectionStringSecretName`](#parameter-secretskeyvaultprimarywriteconnectionstringsecretname) | string | Default to Primary-Write-ConnectionString. The primary write connection string secret name to create. |
-| [`primaryWriteKeySecretName`](#parameter-secretskeyvaultprimarywritekeysecretname) | string | Default to Primary-Write-Key. The primary write key secret name to create. |
-| [`resourceGroupName`](#parameter-secretskeyvaultresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
-| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretskeyvaultsecondaryreadonlyconnectionstringsecretname) | string | Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create. |
-| [`secondaryReadonlyKeySecretName`](#parameter-secretskeyvaultsecondaryreadonlykeysecretname) | string | Default to Secondary-Readonly-Key. The primary readonly key secret name to create. |
-| [`secondaryWriteConnectionStringSecretName`](#parameter-secretskeyvaultsecondarywriteconnectionstringsecretname) | string | Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create. |
-| [`secondaryWriteKeySecretName`](#parameter-secretskeyvaultsecondarywritekeysecretname) | string | Default to Secondary-Write-Key. The primary write key secret name to create. |
+| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationprimaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
+| [`primaryReadOnlyKeySecretName`](#parameter-secretsexportconfigurationprimaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
+| [`primaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationprimarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
+| [`primaryWriteKeySecretName`](#parameter-secretsexportconfigurationprimarywritekeysecretname) | string | The primary write key secret name to create. |
+| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
+| [`secondaryReadonlyKeySecretName`](#parameter-secretsexportconfigurationsecondaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
+| [`secondaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
+| [`secondaryWriteKeySecretName`](#parameter-secretsexportconfigurationsecondarywritekeysecretname) | string | The primary write key secret name to create. |
 
-### Parameter: `secretsKeyVault.keyVaultName`
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
-The key vault name where to store the keys and connection strings generated by the modules.
+The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsKeyVault.primaryReadonlyConnectionStringSecretName`
+### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
 
-Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.primaryReadOnlyKeySecretName`
-
-Default to Primary-Readonly-Key. The primary readonly key secret name to create.
+The primary readonly connection string secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.primaryWriteConnectionStringSecretName`
+### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
 
-Default to Primary-Write-ConnectionString. The primary write connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.primaryWriteKeySecretName`
-
-Default to Primary-Write-Key. The primary write key secret name to create.
+The primary readonly key secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.resourceGroupName`
+### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
 
-Default to the resource group where this account is. The resource group name where the key vault is.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.secondaryReadonlyConnectionStringSecretName`
-
-Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create.
+The primary write connection string secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.secondaryReadonlyKeySecretName`
+### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
 
-Default to Secondary-Readonly-Key. The primary readonly key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.secondaryWriteConnectionStringSecretName`
-
-Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create.
+The primary write key secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.secondaryWriteKeySecretName`
+### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
 
-Default to Secondary-Write-Key. The primary write key secret name to create.
+The primary readonly connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
+
+The primary readonly key secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
+
+The primary write connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
+
+The primary write key secret name to create.
 
 - Required: No
 - Type: string
@@ -3704,6 +3732,7 @@ Tags of the Database Account resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `endpoint` | string | The endpoint of the database account. |
+| `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |

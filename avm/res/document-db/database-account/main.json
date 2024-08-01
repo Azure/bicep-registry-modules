@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16392707652686050125"
+      "templateHash": "14627114146661882432"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -66,6 +66,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -688,14 +695,56 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name for secret to create."
+            "description": "Optional. The primary write key secret name to create."
           }
         },
         "primaryReadOnlyKeySecretName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name for secret to create."
+            "description": "Optional. The primary readonly key secret name to create."
+          }
+        },
+        "primaryWriteConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primary write connection string secret name to create."
+          }
+        },
+        "primaryReadonlyConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primary readonly connection string secret name to create."
+          }
+        },
+        "secondaryWriteKeySecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primary write key secret name to create."
+          }
+        },
+        "secondaryReadonlyKeySecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primary readonly key secret name to create."
+          }
+        },
+        "secondaryWriteConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primary write connection string secret name to create."
+          }
+        },
+        "secondaryReadonlyConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primary readonly connection string secret name to create."
           }
         }
       }
@@ -704,9 +753,9 @@
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "$ref": "#/definitions/outputType",
+        "$ref": "#/definitions/secretSetType",
         "metadata": {
-          "description": "The references to an exported secret."
+          "description": "An exported secret's references."
         }
       }
     },
@@ -763,14 +812,20 @@
         }
       }
     },
-    "outputType": {
+    "secretSetType": {
       "type": "object",
       "properties": {
         "secretResourceId": {
-          "type": "string"
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
         },
-        "secretUrl": {
-          "type": "string"
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
         }
       },
       "metadata": {
@@ -1099,6 +1154,11 @@
           "id": "[coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray())[copyIndex('virtualNetworkRules')].subnetResourceId]",
           "ignoreMissingVnetServiceEndpoint": false
         }
+      },
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1231,23 +1291,23 @@
         "databaseAccount"
       ]
     },
-    "databaseAccount_roleAssignments": {
+    "databaseAccount__roleAssignments": {
       "copy": {
-        "name": "databaseAccount_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "name": "databaseAccount__roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "databaseAccount"
@@ -1988,7 +2048,9 @@
           "tags": {
             "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "collections": "[if(contains(parameters('mongodbDatabases')[copyIndex()], 'collections'), createObject('value', parameters('mongodbDatabases')[copyIndex()].collections), createObject('value', createArray()))]",
+          "collections": {
+            "value": "[tryGet(parameters('mongodbDatabases')[copyIndex()], 'collections')]"
+          },
           "throughput": {
             "value": "[tryGet(parameters('mongodbDatabases')[copyIndex()], 'throughput')]"
           }
@@ -2246,8 +2308,12 @@
           "tags": {
             "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "graphs": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'graphs'), createObject('value', parameters('gremlinDatabases')[copyIndex()].graphs), createObject('value', createArray()))]",
-          "maxThroughput": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'maxThroughput'), createObject('value', parameters('gremlinDatabases')[copyIndex()].maxThroughput), createObject('value', 4000))]",
+          "graphs": {
+            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'graphs')]"
+          },
+          "maxThroughput": {
+            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'maxThroughput')]"
+          },
           "throughput": {
             "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'throughput')]"
           }
@@ -3184,7 +3250,7 @@
             "value": "[last(split(parameters('secretsExportConfiguration').keyVaultResourceId, '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadOnlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryReadonlyMasterKey)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadOnlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[3].connectionString)), createArray()))]"
           }
         },
         "template": {
@@ -3195,25 +3261,31 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "4487378674748861106"
+              "templateHash": "986606208324987345"
             }
           },
           "definitions": {
-            "outputType": {
+            "secretSetType": {
               "type": "object",
               "properties": {
                 "secretResourceId": {
-                  "type": "string"
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
                 },
-                "secretUrl": {
-                  "type": "string"
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
                 }
               },
               "metadata": {
                 "__bicep_export!": true
               }
             },
-            "secretsType": {
+            "secretToSetType": {
               "type": "object",
               "properties": {
                 "name": {
@@ -3241,7 +3313,7 @@
             "secretsToSet": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/secretsType"
+                "$ref": "#/definitions/secretToSetType"
               },
               "metadata": {
                 "description": "Required. The secrets to set in the Key Vault."
@@ -3275,13 +3347,16 @@
             "secretsSet": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/outputType"
+                "$ref": "#/definitions/secretSetType"
+              },
+              "metadata": {
+                "description": "The references to the secrets exported to the provided Key Vault."
               },
               "copy": {
                 "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
                 "input": {
                   "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
-                  "secretUrl": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
+                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
                 }
               }
             }
@@ -3296,6 +3371,9 @@
   "outputs": {
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "The references to the secrets exported to the provided Key Vault."
+      },
       "value": "[toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret')))]"
     },
     "name": {
