@@ -15,7 +15,7 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkManagers/connectivityConfigurations` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkManagers/connectivityConfigurations) |
+| `Microsoft.Network/networkManagers/connectivityConfigurations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/connectivityConfigurations) |
 
 ## Parameters
 
@@ -24,7 +24,7 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appliesToGroups`](#parameter-appliestogroups) | array | Network Groups for the configuration. A connectivity configuration must be associated to at least one network group. |
-| [`connectivityTopology`](#parameter-connectivitytopology) | string | Connectivity topology type. "Mesh" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
+| [`connectivityTopology`](#parameter-connectivitytopology) | string | Connectivity topology type. |
 | [`name`](#parameter-name) | string | The name of the connectivity configuration. |
 
 **Conditional parameters**
@@ -100,7 +100,7 @@ Flag if use hub gateway.
 
 ### Parameter: `connectivityTopology`
 
-Connectivity topology type. "Mesh" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.
+Connectivity topology type.
 
 - Required: Yes
 - Type: string

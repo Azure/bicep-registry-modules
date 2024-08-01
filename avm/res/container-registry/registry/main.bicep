@@ -139,6 +139,9 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).')
 param cacheRules array?
 
+@description('Optional. Scope maps setting.')
+param scopeMaps scopeMapsType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -291,6 +294,18 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
     zoneRedundancy: acrSku == 'Premium' ? zoneRedundancy : null
   }
 }
+
+module registry_scopeMaps 'scope-map/main.bicep' = [
+  for (scopeMap, index) in (scopeMaps ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-Scope-${index}'
+    params: {
+      name: scopeMap.?name
+      actions: scopeMap.actions
+      description: scopeMap.?description
+      registryName: registry.name
+    }
+  }
+]
 
 module registry_replications 'replication/main.bicep' = [
   for (replication, index) in (replications ?? []): {
@@ -651,3 +666,14 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type scopeMapsType = {
+  @description('Optional. The name of the scope map.')
+  name: string?
+
+  @description('Required. The list of scoped permissions for registry artifacts.')
+  actions: string[]
+
+  @description('Optional. The user friendly description of the scope map.')
+  description: string?
+}[]?
