@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11275977540757146961"
+      "templateHash": "2452303956666462687"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -757,7 +757,8 @@
         "metadata": {
           "description": "An exported secret's references."
         }
-      }
+      },
+      "nullable": true
     },
     "networkRestrictionsType": {
       "type": "object",
@@ -3240,8 +3241,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(parameters('secretsExportConfiguration').keyVaultResourceId, '/')[2]]",
-      "resourceGroup": "[split(parameters('secretsExportConfiguration').keyVaultResourceId, '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3249,7 +3250,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[last(split(parameters('secretsExportConfiguration').keyVaultResourceId, '/'))]"
+            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
             "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadOnlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[3].connectionString)), createArray()))]"
@@ -3376,7 +3377,7 @@
       "metadata": {
         "description": "The references to the secrets exported to the provided Key Vault."
       },
-      "value": "[toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret')))]"
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), null())]"
     },
     "name": {
       "type": "string",
