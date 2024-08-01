@@ -141,13 +141,11 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: 'febef197-b2b1-434a-a32a-2f0c99ccb1a0'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
