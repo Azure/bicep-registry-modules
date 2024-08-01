@@ -149,18 +149,20 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
     // Required parameters
     name: naming.outputs.resourcesNames.applicationGateway
     // Non-required parameters
-    backendAddressPools: [
-      {
-        name: 'acaServiceBackend'
-        properties: {
-          backendAddresses: [
-            {
-              fqdn: (!empty(applicationGatewayPrimaryBackendEndFqdn)) ? applicationGatewayPrimaryBackendEndFqdn : ''
+    backendAddressPools: (!empty(applicationGatewayPrimaryBackendEndFqdn))
+      ? [
+          {
+            name: 'acaServiceBackend'
+            properties: {
+              backendAddresses: [
+                {
+                  fqdn: applicationGatewayPrimaryBackendEndFqdn
+                }
+              ]
             }
-          ]
-        }
-      }
-    ]
+          }
+        ]
+      : null
     backendHttpSettingsCollection: (!empty(applicationGatewayPrimaryBackendEndFqdn))
       ? [
           {
@@ -181,7 +183,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
             }
           }
         ]
-      : []
+      : null
     diagnosticSettings: [
       {
         metricCategories: [
@@ -327,7 +329,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
             }
           }
         ]
-      : []
+      : null
     sku: 'WAF_v2'
     sslCertificates: (!empty(base64Certificate))
       ? [
