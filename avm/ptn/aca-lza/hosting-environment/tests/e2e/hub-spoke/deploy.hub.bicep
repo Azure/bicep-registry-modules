@@ -41,8 +41,8 @@ param gatewaySubnetAddressPrefix string
 @description('CIDR to use for the azureFirewallSubnet.')
 param azureFirewallSubnetAddressPrefix string
 
-@description('CIDR to use for the AzureFirewallManagementSubnet, which is required by AzFW Basic.')
-param azureFirewallSubnetManagementAddressPrefix string
+//@description('CIDR to use for the AzureFirewallManagementSubnet, which is required by AzFW Basic.')
+//param azureFirewallSubnetManagementAddressPrefix string
 
 // ------------------
 // VARIABLES
@@ -51,7 +51,7 @@ param azureFirewallSubnetManagementAddressPrefix string
 // These cannot be another value
 var gatewaySubnetName = 'GatewaySubnet'
 var azureFirewallSubnetName = 'AzureFirewallSubnet'
-var AzureFirewallManagementSubnetName = 'AzureFirewallManagementSubnet'
+//var AzureFirewallManagementSubnetName = 'AzureFirewallManagementSubnet'
 var bastionSubnetName = 'AzureBastionSubnet'
 
 //Subnet definition taking in consideration feature flags
@@ -64,10 +64,10 @@ var defaultSubnets = [
     name: azureFirewallSubnetName
     addressPrefix: azureFirewallSubnetAddressPrefix
   }
-  {
-    name: AzureFirewallManagementSubnetName
-    addressPrefix: azureFirewallSubnetManagementAddressPrefix
-  }
+  // {
+  //   name: AzureFirewallManagementSubnetName
+  //   addressPrefix: azureFirewallSubnetManagementAddressPrefix
+  // }
 ]
 
 // Append optional bastion subnet, if required
