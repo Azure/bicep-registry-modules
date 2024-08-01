@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5315808598274008522"
+      "templateHash": "1184108192387381357"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -356,6 +356,13 @@
         "description": "Optional. Availability zone information of the server. Default will have no preference set."
       }
     },
+    "highAvailabilityZone": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Standby availability zone information of the server. Default will have no preference set."
+      }
+    },
     "backupRetentionDays": {
       "type": "int",
       "defaultValue": 7,
@@ -409,7 +416,7 @@
     },
     "highAvailability": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "defaultValue": "ZoneRedundant",
       "allowedValues": [
         "Disabled",
         "SameZone",
@@ -519,7 +526,7 @@
     },
     "version": {
       "type": "string",
-      "defaultValue": "5.7",
+      "defaultValue": "8.0.21",
       "allowedValues": [
         "5.7",
         "8.0.21"
@@ -570,6 +577,12 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "standByAvailabilityZoneTable": {
+      "Disabled": null,
+      "SameZone": "[parameters('availabilityZone')]",
+      "ZoneRedundant": "[parameters('highAvailabilityZone')]"
+    },
+    "standByAvailabilityZone": "[tryGet(variables('standByAvailabilityZoneTable'), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -664,7 +677,7 @@
     },
     "flexibleServer": {
       "type": "Microsoft.DBforMySQL/flexibleServers",
-      "apiVersion": "2022-09-30-preview",
+      "apiVersion": "2023-12-30",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -685,7 +698,7 @@
         "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('type', 'AzureKeyVault', 'geoBackupKeyURI', if(equals(parameters('geoRedundantBackup'), 'Enabled'), if(not(empty(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKGeoKeyVault::cMKKey').keyUri, parameters('customerManagedKeyGeo').keyVersion), reference('cMKGeoKeyVault::cMKKey').keyUriWithVersion), null()), 'geoBackupUserAssignedIdentityId', if(equals(parameters('geoRedundantBackup'), 'Enabled'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",
-          "standbyAvailabilityZone": "[if(equals(parameters('highAvailability'), 'SameZone'), parameters('availabilityZone'), null())]"
+          "standbyAvailabilityZone": "[variables('standByAvailabilityZone')]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
         "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')), null())]",
@@ -814,7 +827,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "3899016958678961956"
+              "templateHash": "11351866916144767840"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database.",
@@ -851,7 +864,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/databases",
-              "apiVersion": "2022-01-01",
+              "apiVersion": "2023-06-30",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
@@ -922,7 +935,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "3603204616530956637"
+              "templateHash": "17406464450077393680"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
@@ -957,7 +970,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
-              "apiVersion": "2022-01-01",
+              "apiVersion": "2023-06-30",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -1029,7 +1042,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "10716181569874218665"
+              "templateHash": "166868353165081250"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
@@ -1071,7 +1084,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
-              "apiVersion": "2022-01-01",
+              "apiVersion": "2023-06-30",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
               "properties": {
                 "administratorType": "ActiveDirectory",
@@ -1139,7 +1152,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flexibleServer', '2022-09-30-preview', 'full').location]"
+      "value": "[reference('flexibleServer', '2023-12-30', 'full').location]"
     }
   }
 }
