@@ -2,7 +2,7 @@
 param keyVaultName string
 
 @description('Required. The secrets to set in the Key Vault.')
-param secretsToSet secretsType[]
+param secretsToSet secretToSetType[]
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
@@ -18,21 +18,29 @@ resource secrets 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = [
   }
 ]
 
-output secretsSet outputType[] = [
-  #disable-next-line outputs-should-not-contain-secrets // Only returning the resource ID, not a secret value
+@description('The references to the secrets exported to the provided Key Vault.')
+output secretsSet secretSetType[] = [
+  #disable-next-line outputs-should-not-contain-secrets // Only returning the references, not a secret value
   for index in range(0, length(secretsToSet ?? [])): {
     secretResourceId: secrets[index].id
-    secretUrl: secrets[index].properties.secretUri
+    secretUri: secrets[index].properties.secretUri
   }
 ]
 
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
-type outputType = {
+type secretSetType = {
+  @description('The resourceId of the exported secret.')
   secretResourceId: string
-  secretUrl: string
+
+  @description('The secret URI of the exported secret.')
+  secretUri: string
 }
 
-type secretsType = {
+type secretToSetType = {
   @description('Required. The name of the secret to set.')
   name: string
 

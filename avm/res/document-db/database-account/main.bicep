@@ -827,10 +827,10 @@ type secretsExportConfigurationType = {
   primaryReadOnlyKeySecretName: string?
 }
 
-import { outputType } from 'modules/keyVaultExport.bicep'
+import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
-  @description('The references to an exported secret.')
-  *: outputType
+  @description('An exported secret\'s references.')
+  *: secretSetType
 }
 
 type networkRestrictionsType = {
