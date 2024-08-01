@@ -472,7 +472,7 @@ module peerSpokeToHub '../networking/peering.bicep' = if (!empty(hubVNetId)) {
 @description('Regional hub peering to this spoke network. This peering would normally already be provisioned by your subscription vending process.')
 module peerHubToSpoke '../networking/peering.bicep' = if (!empty(hubVNetId)) {
   name: take('${deployment().name}-peerHubToSpokeDeployment', 64)
-  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
+  scope: resourceGroup(rgSpokeName)
   params: {
     localVnetName: hubVNetName
     remoteSubscriptionId: last(split(subscription().id, '/'))!
