@@ -345,7 +345,7 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!
       {
         name: 'HealthProbes'
         properties: {
-          description: 'Sllow HealthProbes from gateway Manager.'
+          description: 'allow HealthProbes from gateway Manager.'
           protocol: '*'
           sourceAddressPrefix: 'GatewayManager'
           sourcePortRange: '*'
@@ -399,16 +399,13 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!
         }
       }
       {
-        name: 'deny-hop-outbound'
+        name: 'allow-all-outbound'
         properties: {
           protocol: '*'
           sourcePortRange: '*'
-          destinationPortRanges: [
-            '3389'
-            '22'
-          ]
-          access: 'Deny'
-          priority: 200
+          destinationPortRange: '*'
+          access: 'Allow'
+          priority: 210
           direction: 'Outbound'
           sourceAddressPrefix: 'VirtualNetwork'
           destinationAddressPrefix: '*'
@@ -469,6 +466,18 @@ module peerSpokeToHub '../networking/peering.bicep' = if (!empty(hubVNetId)) {
     remoteSubscriptionId: hubSubscriptionId
     remoteRgName: hubResourceGroupName
     remoteVnetName: hubVNetName
+  }
+}
+
+@description('Regional hub peering to this spoke network. This peering would normally already be provisioned by your subscription vending process.')
+module peerHubToSpoke '../networking/peering.bicep' = if (!empty(hubVNetId)) {
+  name: take('${deployment().name}-peerHubToSpokeDeployment', 64)
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
+  params: {
+    localVnetName: hubVNetName
+    remoteSubscriptionId: last(split(subscription().id, '/'))!
+    remoteRgName: spokeResourceGroup.name
+    remoteVnetName: naming.outputs.resourcesNames.vnetSpoke
   }
 }
 

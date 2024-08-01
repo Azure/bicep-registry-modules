@@ -411,10 +411,10 @@ module vnetHub 'br/public:avm/res/network/virtual-network:0.1.6' = {
 
 @description('The Azure Firewall deployment. This would normally be already provisioned by your platform team.')
 module azureFirewall 'br/public:avm/res/network/azure-firewall:0.3.2' = {
-  name: 'azureFirewallDeployment'
+  name: take('afw-${deployment().name}', 64)
   scope: resourceGroup(rgHubName)
   params: {
-    name: take('afw-${deployment().name}', 64)
+    name: naming.outputs.resourcesNames.azureFirewall
     azureSkuTier: 'Standard'
     location: location
     tags: tags

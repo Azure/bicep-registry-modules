@@ -149,41 +149,41 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
     // Required parameters
     name: naming.outputs.resourcesNames.applicationGateway
     // Non-required parameters
-    backendAddressPools: (!empty(applicationGatewayPrimaryBackendEndFqdn))
-      ? [
-          {
-            name: 'acaServiceBackend'
-            properties: {
-              backendAddresses: [
+    backendAddressPools: [
+      {
+        name: 'acaServiceBackend'
+        properties: {
+          backendAddresses: (!empty(applicationGatewayPrimaryBackendEndFqdn))
+            ? [
                 {
                   fqdn: applicationGatewayPrimaryBackendEndFqdn
                 }
               ]
-            }
-          }
-        ]
-      : null
-    backendHttpSettingsCollection: (!empty(applicationGatewayPrimaryBackendEndFqdn))
-      ? [
-          {
-            name: 'https'
-            properties: {
-              port: 443
-              protocol: 'Https'
-              cookieBasedAffinity: 'Disabled'
-              pickHostNameFromBackendAddress: true
-              requestTimeout: 20
-              probe: {
+            : null
+        }
+      }
+    ]
+    backendHttpSettingsCollection: [
+      {
+        name: 'https'
+        properties: {
+          port: 443
+          protocol: 'Https'
+          cookieBasedAffinity: 'Disabled'
+          pickHostNameFromBackendAddress: true
+          requestTimeout: 20
+          probe: (!empty(applicationGatewayPrimaryBackendEndFqdn))
+            ? {
                 id: resourceId(
                   'Microsoft.Network/applicationGateways/probes',
                   naming.outputs.resourcesNames.applicationGateway,
                   'webProbe'
                 )
               }
-            }
-          }
-        ]
-      : null
+            : null
+        }
+      }
+    ]
     diagnosticSettings: [
       {
         metricCategories: [
@@ -287,49 +287,49 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
         userAssignedIdentity.outputs.resourceId
       ]
     }
-    probes: [
-      {
-        name: 'webProbe'
-        properties: {
-          protocol: 'Https'
-          host: applicationGatewayPrimaryBackendEndFqdn
-          path: appGatewayBackendHealthProbePath
-          interval: 30
-          timeout: 30
-          unhealthyThreshold: 3
-          pickHostNameFromBackendHttpSettings: false
-          minServers: 0
-          match: {
-            statusCodes: [
-              '200-499'
-            ]
-          }
-        }
-      }
-    ]
-    requestRoutingRules: (!empty(applicationGatewayPrimaryBackendEndFqdn))
+    probes: (!empty(applicationGatewayPrimaryBackendEndFqdn))
       ? [
           {
-            name: 'routingRules'
+            name: 'webProbe'
             properties: {
-              ruleType: 'Basic'
-              priority: 100
-              httpListener: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
-              }
-              backendAddressPool: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
-              }
-              backendHttpSettings: {
-                #disable-next-line use-resource-id-functions
-                id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
+              protocol: 'Https'
+              host: applicationGatewayPrimaryBackendEndFqdn
+              path: appGatewayBackendHealthProbePath
+              interval: 30
+              timeout: 30
+              unhealthyThreshold: 3
+              pickHostNameFromBackendHttpSettings: false
+              minServers: 0
+              match: {
+                statusCodes: [
+                  '200-499'
+                ]
               }
             }
           }
         ]
       : null
+    requestRoutingRules: [
+      {
+        name: 'routingRules'
+        properties: {
+          ruleType: 'Basic'
+          priority: 100
+          httpListener: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
+          }
+          backendAddressPool: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
+          }
+          backendHttpSettings: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
+          }
+        }
+      }
+    ]
     sku: 'WAF_v2'
     sslCertificates: (!empty(base64Certificate))
       ? [
