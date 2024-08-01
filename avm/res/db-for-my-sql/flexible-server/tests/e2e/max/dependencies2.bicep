@@ -30,6 +30,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
+    softDeleteRetentionInDays: 90 // Soft Delete requires a 90 day retention period. Anything less will cause the deployment to fail.
     enablePurgeProtection: true // Required for encryption to work
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
@@ -73,6 +74,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
+    softDeleteRetentionInDays: 90 // Soft Delete requires a 90 day retention period. Anything less will cause the deployment to fail.
     enablePurgeProtection: true // Required for encryption to work
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
