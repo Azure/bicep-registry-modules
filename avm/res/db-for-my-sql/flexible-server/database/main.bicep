@@ -14,11 +14,11 @@ param collation string = 'utf8'
 @description('Optional. The charset of the database.')
 param charset string = 'utf8_general_ci'
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview' existing = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' existing = {
   name: flexibleServerName
 }
 
-resource database 'Microsoft.DBforMySQL/flexibleServers/databases@2022-01-01' = {
+resource database 'Microsoft.DBforMySQL/flexibleServers/databases@2023-06-30' = {
   name: name
   parent: flexibleServer
   properties: {
