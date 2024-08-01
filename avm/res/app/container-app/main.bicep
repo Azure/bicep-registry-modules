@@ -64,7 +64,7 @@ param scaleRules array = []
 param activeRevisionsMode string = 'Single'
 
 @description('Required. Resource ID of environment.')
-param environmentId string
+param environmentResourceId string
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -165,6 +165,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -190,39 +201,45 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
   location: location
   identity: identity
   properties: {
-    environmentId: environmentId
+    environmentId: environmentResourceId
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
-      ingress: disableIngress ? null : {
-        allowInsecure: ingressAllowInsecure
-        customDomains: !empty(customDomains) ? customDomains : null
-        corsPolicy: corsPolicy != null ? {
-          allowCredentials: corsPolicy.?allowCredentials ?? false
-          allowedHeaders: corsPolicy.?allowedHeaders ?? []
-          allowedMethods: corsPolicy.?allowedMethods ?? []
-          allowedOrigins: corsPolicy.?allowedOrigins ?? []
-          exposeHeaders: corsPolicy.?exposeHeaders ?? []
-          maxAge: corsPolicy.?maxAge
-        } : null
-        clientCertificateMode: clientCertificateMode
-        exposedPort: exposedPort
-        external: ingressExternal
-        ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
-        targetPort: ingressTargetPort
-        stickySessions: {
-          affinity: stickySessionsAffinity
-        }
-        traffic: [
-          {
-            label: trafficLabel
-            latestRevision: trafficLatestRevision
-            revisionName: trafficRevisionName
-            weight: trafficWeight
+      ingress: disableIngress
+        ? null
+        : {
+            allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
+            customDomains: !empty(customDomains) ? customDomains : null
+            corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
+              ? {
+                  allowCredentials: corsPolicy.?allowCredentials ?? false
+                  allowedHeaders: corsPolicy.?allowedHeaders ?? []
+                  allowedMethods: corsPolicy.?allowedMethods ?? []
+                  allowedOrigins: corsPolicy.?allowedOrigins ?? []
+                  exposeHeaders: corsPolicy.?exposeHeaders ?? []
+                  maxAge: corsPolicy.?maxAge
+                }
+              : null
+            clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
+            exposedPort: exposedPort
+            external: ingressExternal
+            ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
+            targetPort: ingressTargetPort
+            stickySessions: {
+              affinity: stickySessionsAffinity
+            }
+            traffic: ingressTransport != 'tcp'
+              ? [
+                  {
+                    label: trafficLabel
+                    latestRevision: trafficLatestRevision
+                    revisionName: trafficRevisionName
+                    weight: trafficWeight
+                  }
+                ]
+              : null
+            transport: ingressTransport
           }
-        ]
-        transport: ingressTransport
-      }
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
@@ -253,14 +270,11 @@ resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   scope: containerApp
 }
 
-resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [ for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -276,7 +290,7 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 output resourceId string = containerApp.id
 
 @description('The configuration of ingress fqdn.')
-output fqdn string = disableIngress ? 'IngressDisabled' :  containerApp.properties.configuration.ingress.fqdn
+output fqdn string = disableIngress ? 'IngressDisabled' : containerApp.properties.configuration.ingress.fqdn
 
 @description('The name of the resource group the Container App was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -311,6 +325,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
