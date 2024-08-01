@@ -94,7 +94,7 @@ module naming '../naming/naming.module.bicep' = {
 }
 
 @description('Azure Application Insights, the workload\' log & metric sink and APM tool')
-module applicationInsights 'br/public:avm/res/insights/component:0.3.0' = if (enableApplicationInsights) {
+module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = if (enableApplicationInsights) {
   name: take('applicationInsights-${uniqueString(resourceGroup().id)}', 64)
   params: {
     name: naming.outputs.resourcesNames.applicationInsights
@@ -118,7 +118,9 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1
         containerRegistryUserAssignedIdentityId
       ]
     }
-    daprAIInstrumentationKey: (enableDaprInstrumentation) ? applicationInsights.outputs.instrumentationKey : ''
+    daprAIInstrumentationKey: (enableDaprInstrumentation && enableApplicationInsights)
+      ? applicationInsights.outputs.instrumentationKey
+      : null
     infrastructureSubnetId: spokeVNet::infraSubnet.id
     workloadProfiles: [
       {
