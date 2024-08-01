@@ -467,19 +467,19 @@ This parameter allows you to specify additional settings for Azure Databricks if
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`subnetNameComputePlane`](#parameter-advancedoptionsdatabrickssubnetnamecomputeplane) | string | The name of the existing Compute Plane Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'. |
-| [`subnetNameControlPlane`](#parameter-advancedoptionsdatabrickssubnetnamecontrolplane) | string | The name of the existing Control Plane Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'. |
+| [`subnetNameBackend`](#parameter-advancedoptionsdatabrickssubnetnamebackend) | string | The name of the existing backend Subnet for Azure Databricks within the Virtual Network in the parameter: 'virtualNetworkResourceId'. |
+| [`subnetNameFrontend`](#parameter-advancedoptionsdatabrickssubnetnamefrontend) | string | The name of the existing frontend Subnet for Azure Databricks within the Virtual Network in the parameter: 'virtualNetworkResourceId'. |
 
-### Parameter: `advancedOptions.databricks.subnetNameComputePlane`
+### Parameter: `advancedOptions.databricks.subnetNameBackend`
 
-The name of the existing Compute Plane Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'.
+The name of the existing backend Subnet for Azure Databricks within the Virtual Network in the parameter: 'virtualNetworkResourceId'.
 
 - Required: No
 - Type: string
 
-### Parameter: `advancedOptions.databricks.subnetNameControlPlane`
+### Parameter: `advancedOptions.databricks.subnetNameFrontend`
 
-The name of the existing Control Plane Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'.
+The name of the existing frontend Subnet for Azure Databricks within the Virtual Network in the parameter: 'virtualNetworkResourceId'.
 
 - Required: No
 - Type: string
@@ -830,7 +830,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 - Customer needs to provide Spoke Virtual Network dedicated to the workload with subnets for the solution.
   - Spoke Network needs to be peered with Hub Network - typically with central Firewall and connectivity to enterprise network.
-  - Private Link Subnet, control plane and compute plane subnet for Azure Databricks
+  - Private Link Subnet, front-end and backend-end subnet for Azure Databricks
   - !!! Subnets for Azure Databricks must have delegations for 'Microsoft.Databricks/workspaces' enabled
   - Each subnet for Azure Databricks must have same NSG associated
   - NSG for ADb must have following rules - https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#network-security-group-rules-for-workspaces

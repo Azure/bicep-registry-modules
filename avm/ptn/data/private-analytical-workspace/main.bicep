@@ -44,8 +44,8 @@ var vnetName = '${name}-vnet'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
 var subnetNamePrivateLink = 'private-link-subnet'
-var subnetNameDbwControlPlane = 'dbw-control-plane-subnet'
-var subnetNameDbwComputePlane = 'dbw-compute-plane-subnet'
+var subnetNameDbwFrontend = 'dbw-frontend-subnet'
+var subnetNameDbwBackend = 'dbw-backend-subnet'
 var nsgNamePrivateLink = '${name}-nsg-private-link'
 var nsgRulesPrivateLink = [
   {
@@ -63,8 +63,8 @@ var nsgRulesPrivateLink = [
     }
   }
 ]
-var nsgNameDbwControlPlane = '${name}-nsg-dbw-control-plane'
-var nsgNameDbwComputePlane = '${name}-nsg-dbw-compute-plane'
+var nsgNameDbwFrontend = '${name}-nsg-dbw-frontend'
+var nsgNameDbwBackend = '${name}-nsg-dbw-backend'
 var nsgRulesDbw = [
   {
     name: 'Microsoft.Databricks-workspaces_UseOnly_databricks-worker-to-worker-inbound'
@@ -204,8 +204,8 @@ var vnetCfg = ({
   subnetResourceIdPrivateLink: createNewVNET
     ? vnet.outputs.subnetResourceIds[0] // private link subnet should be always available at zero index
     : vnetExisting::subnetPrivateLink.id
-  subnetNameDbwControlPlane: createNewVNET ? subnetNameDbwControlPlane : vnetExisting::subnetDbwControlPlane.name
-  subnetNameDbwComputePlane: createNewVNET ? subnetNameDbwComputePlane : vnetExisting::subnetDbwComputePlane.name
+  subnetNameDbwFrontend: createNewVNET ? subnetNameDbwFrontend : vnetExisting::subnetDbwFrontend.name
+  subnetNameDbwBackend: createNewVNET ? subnetNameDbwBackend : vnetExisting::subnetDbwBackend.name
 })
 
 var logCfg = ({
@@ -260,10 +260,10 @@ var subnets = concat(
     ? [
         // DBW - 192.168.228.0/22
         {
-          // a container subnet (sometimes called the private subnet, control plane)
-          name: subnetNameDbwControlPlane
+          // a host subnet (sometimes called the public subnet)
+          name: subnetNameDbwFrontend
           addressPrefix: '192.168.228.0/23'
-          networkSecurityGroupResourceId: nsgDbwControlPlane.outputs.resourceId
+          networkSecurityGroupResourceId: nsgDbwFrontend.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -274,10 +274,10 @@ var subnets = concat(
           ]
         }
         {
-          // host subnet (sometimes called the public subnet, compute plane).
-          name: subnetNameDbwComputePlane
+          // a container subnet (sometimes called the private subnet)
+          name: subnetNameDbwBackend
           addressPrefix: '192.168.230.0/23'
-          networkSecurityGroupResourceId: nsgDbwComputePlane.outputs.resourceId
+          networkSecurityGroupResourceId: nsgDbwBackend.outputs.resourceId
           delegations: [
             {
               name: 'Microsoft.Databricks/workspaces'
@@ -332,12 +332,12 @@ resource vnetExisting 'Microsoft.Network/virtualNetworks@2023-11-01' existing = 
     name: advancedOptions.?virtualNetwork.?subnetNamePrivateLink ?? 'dummyName'
   }
 
-  resource subnetDbwControlPlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions.?databricks.?subnetNameControlPlane)) {
-    name: advancedOptions.?databricks.?subnetNameControlPlane ?? 'dummyName'
+  resource subnetDbwFrontend 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions.?databricks.?subnetNameFrontend)) {
+    name: advancedOptions.?databricks.?subnetNameFrontend ?? 'dummyName'
   }
 
-  resource subnetDbwComputePlane 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions.?databricks.?subnetNameComputePlane)) {
-    name: advancedOptions.?databricks.?subnetNameComputePlane ?? 'dummyName'
+  resource subnetDbwBackend 'subnets@2023-11-01' existing = if (enableDatabricks && !empty(advancedOptions.?databricks.?subnetNameBackend)) {
+    name: advancedOptions.?databricks.?subnetNameBackend ?? 'dummyName'
   }
 }
 
@@ -418,11 +418,11 @@ module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.3.1' =
   }
 }
 
-module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.3.1' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwControlPlane
+module nsgDbwFrontend 'br/public:avm/res/network/network-security-group:0.3.1' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwFrontend
   params: {
     // Required parameters
-    name: nsgNameDbwControlPlane
+    name: nsgNameDbwFrontend
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -444,11 +444,11 @@ module nsgDbwControlPlane 'br/public:avm/res/network/network-security-group:0.3.
   }
 }
 
-module nsgDbwComputePlane 'br/public:avm/res/network/network-security-group:0.3.1' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwComputePlane
+module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.3.1' = if (createNewVNET && enableDatabricks) {
+  name: nsgNameDbwBackend
   params: {
     // Required parameters
-    name: nsgNameDbwComputePlane
+    name: nsgNameDbwBackend
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -577,12 +577,8 @@ module dbw 'br/public:avm/res/databricks/workspace:0.5.0' = if (enableDatabricks
     // Required parameters
     name: dbwName
     // Non-required parameters
-    customPrivateSubnetName: createNewVNET
-      ? subnetNameDbwControlPlane
-      : advancedOptions.?databricks.?subnetNameControlPlane
-    customPublicSubnetName: createNewVNET
-      ? subnetNameDbwComputePlane
-      : advancedOptions.?databricks.?subnetNameComputePlane
+    customPublicSubnetName: createNewVNET ? subnetNameDbwFrontend : advancedOptions.?databricks.?subnetNameFrontend
+    customPrivateSubnetName: createNewVNET ? subnetNameDbwBackend : advancedOptions.?databricks.?subnetNameBackend
     customVirtualNetworkResourceId: vnetCfg.resourceId
     diagnosticSettings: [
       {
@@ -786,11 +782,11 @@ type keyVaultType = {
 
 type databricksType = {
   // must be providied when DBW is going to be enabled and VNET is provided
-  @description('Optional. The name of the existing Control Plane Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
-  subnetNameControlPlane: string?
+  @description('Optional. The name of the existing frontend Subnet for Azure Databricks within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
+  subnetNameFrontend: string?
 
-  @description('Optional. The name of the existing Compute Plane Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
-  subnetNameComputePlane: string?
+  @description('Optional. The name of the existing backend Subnet for Azure Databricks within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
+  subnetNameBackend: string?
 }
 
 type advancedOptionsType = {
