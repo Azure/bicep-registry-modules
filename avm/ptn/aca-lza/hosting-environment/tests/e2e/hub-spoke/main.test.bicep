@@ -37,7 +37,7 @@ module hubdeployment 'deploy.hub.bicep' = {
     }
     vnetAddressPrefixes: ['10.0.0.0/24']
     azureFirewallSubnetAddressPrefix: '10.0.0.64/26'
-    azureFirewallSubnetManagementAddressPrefix: '10.0.0.128/26'
+    //azureFirewallSubnetManagementAddressPrefix: '10.0.0.128/26'
     gatewaySubnetAddressPrefix: '10.0.0.0/27'
     bastionSubnetAddressPrefix: '10.0.0.192/26'
     workloadName: serviceShort
