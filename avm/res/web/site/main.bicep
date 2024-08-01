@@ -71,6 +71,9 @@ param storageAccountResourceId string?
 @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
 param storageAccountUseIdentityAuthentication bool = false
 
+@description('Optional. The web settings api management configuration.')
+param apiManagementConfiguration object?
+
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
 param appInsightResourceId string?
 
@@ -82,6 +85,9 @@ param authSettingV2Configuration object?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
+
+@description('Optional. The logs settings configuration.')
+param logsConfiguration object?
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -125,9 +131,6 @@ param cloningInfo object?
 
 @description('Optional. Size of the function container.')
 param containerSize int?
-
-@description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
-param customDomainVerificationId string?
 
 @description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
 param dailyMemoryTimeQuota int?
@@ -248,7 +251,6 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     clientCertMode: clientCertMode
     cloningInfo: cloningInfo
     containerSize: containerSize
-    customDomainVerificationId: customDomainVerificationId
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
     hostNameSslStates: hostNameSslStates
@@ -264,7 +266,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
   params: {
     appName: app.name
@@ -282,6 +284,25 @@ module app_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authS
     appName: app.name
     kind: kind
     authSettingV2Configuration: authSettingV2Configuration ?? {}
+  }
+}
+
+module app_logssettings 'config--logs/main.bicep' = if (!empty(logsConfiguration ?? {})) {
+  name: '${uniqueString(deployment().name, location)}-Site-Config-Logs'
+  params: {
+    appName: app.name
+    logsConfiguration: logsConfiguration
+  }
+  dependsOn: [
+    app_appsettings
+  ]
+}
+
+module app_websettings 'config--web/main.bicep' = if (!empty(apiManagementConfiguration ?? {})) {
+  name: '${uniqueString(deployment().name, location)}-Site-Config-Web'
+  params: {
+    appName: app.name
+    apiManagementConfiguration: apiManagementConfiguration
   }
 }
 
@@ -501,6 +522,9 @@ output location string = app.location
 
 @description('Default hostname of the app.')
 output defaultHostname string = app.properties.defaultHostName
+
+@description('Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
+output customDomainVerificationId string = app.properties.customDomainVerificationId
 
 // =============== //
 //   Definitions   //

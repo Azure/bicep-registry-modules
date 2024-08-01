@@ -27,11 +27,86 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/job:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using a consumption plan](#example-1-using-a-consumption-plan)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using a consumption plan_
+
+This instance deploys the module to a Container Apps Environment with a consumption plan.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module job 'br/public:avm/res/app/job:<version>' = {
+  name: 'jobDeployment'
+  params: {
+    // Required parameters
+    containers: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'simple-hello-world-container'
+      }
+    ]
+    environmentResourceId: '<environmentResourceId>'
+    name: 'ajcon001'
+    triggerType: 'Manual'
+    // Non-required parameters
+    location: '<location>'
+    manualTriggerConfig: {}
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containers": {
+      "value": [
+        {
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "simple-hello-world-container"
+        }
+      ]
+    },
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
+    },
+    "name": {
+      "value": "ajcon001"
+    },
+    "triggerType": {
+      "value": "Manual"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "manualTriggerConfig": {
+      "value": {}
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -113,7 +188,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -232,11 +307,13 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -403,11 +480,13 @@ module job 'br/public:avm/res/app/job:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "be1bb251-6a44-49f7-8658-d836d0049fc4",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -451,7 +530,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -621,7 +700,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
-| [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. |
+| [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. Leave empty to use a consumption based profile. |
 
 ### Parameter: `containers`
 
@@ -1680,6 +1759,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1730,6 +1810,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1767,6 +1854,7 @@ The secrets of the Container App.
       keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
     }
     {
+      // You can do this, but you shouldn't. Use a secret reference instead.
       name: 'mysecret'
       value: 'mysecretvalue'
     }
@@ -1928,11 +2016,10 @@ Name of the Container App secret from which to pull the secret value.
 
 ### Parameter: `workloadProfileName`
 
-The name of the workload profile to use.
+The name of the workload profile to use. Leave empty to use a consumption based profile.
 
 - Required: No
 - Type: string
-- Default: `'Consumption'`
 
 
 ## Outputs

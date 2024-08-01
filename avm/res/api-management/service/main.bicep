@@ -1,5 +1,5 @@
 metadata name = 'API Management Services'
-metadata description = 'This module deploys an API Management Service.'
+metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
@@ -15,7 +15,7 @@ param certificates array = []
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Custom properties of the API Management service.')
+@description('Optional. Custom properties of the API Management service. Not supported if SKU is Consumption.')
 param customProperties object = {
   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
@@ -75,14 +75,8 @@ param roleAssignments roleAssignmentType
 ])
 param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0.')
-@allowed([
-  0
-  1
-  2
-  3
-])
-param skuCount int = 2
+@description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
+param skuCapacity int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string?
@@ -101,7 +95,7 @@ param virtualNetworkType string = 'None'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.')
+@description('Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.')
 param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
@@ -197,7 +191,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -221,17 +216,17 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   tags: tags
   sku: {
     name: sku
-    capacity: contains(sku, 'V2') ? 1 : contains(sku, 'Consumption') ? 0 : skuCount
+    capacity: contains(sku, 'Consumption') ? 0 : contains(sku, 'Developer') ? 1 : skuCapacity
   }
-  zones: contains(sku, 'V2') ? null : zones
+  zones: contains(sku, 'Premium') ? zones : []
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: contains(sku, 'V2') ? null : additionalLocations
-    customProperties: customProperties
+    additionalLocations: contains(sku, 'Premium') ? additionalLocations : []
+    customProperties: contains(sku, 'Consumption') ? null : customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
     disableGateway: disableGateway
@@ -437,6 +432,9 @@ module service_loggers 'loggers/main.bicep' = [
       loggerType: contains(logger, 'loggerType') ? logger.loggerType : 'azureMonitor'
       targetResourceId: contains(logger, 'targetResourceId') ? logger.targetResourceId : ''
     }
+    dependsOn: [
+      service_namedValues
+    ]
   }
 ]
 

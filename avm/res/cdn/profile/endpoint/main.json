@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "2906172435071993445"
+      "version": "0.29.47.4906",
+      "templateHash": "6371656015674390162"
     },
     "name": "CDN Profiles Endpoints",
     "description": "This module deploys a CDN Profile Endpoint.",
@@ -125,8 +125,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "3665403791951260301"
+              "version": "0.29.47.4906",
+              "templateHash": "11976988406992266750"
             },
             "name": "CDN Profiles Endpoints Origins",
             "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -321,6 +321,13 @@
         "description": "The properties of the endpoint."
       },
       "value": "[reference('endpoint')]"
+    },
+    "uri": {
+      "type": "string",
+      "metadata": {
+        "description": "The uri of the endpoint."
+      },
+      "value": "[format('https://{0}', reference('endpoint').hostName)]"
     }
   }
 }

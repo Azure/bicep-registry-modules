@@ -3,6 +3,8 @@ metadata description = 'This module deploys an Azure Compute Gallery Image Defin
 metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the image definition.')
+@minLength(1)
+@maxLength(80)
 param name string
 
 @sys.description('Optional. Location for all resources.')
@@ -12,108 +14,69 @@ param location string = resourceGroup().location
 @minLength(1)
 param galleryName string
 
-@sys.description('Required. OS type of the image to be created.')
-@allowed([
-  'Windows'
-  'Linux'
-])
-param osType string
+@sys.description('Required. This is the gallery image definition identifier.')
+param identifier identifierType
 
-@sys.description('Optional. This property allows the user to specify whether the virtual machines created under this image are \'Generalized\' or \'Specialized\'.')
-@allowed([
-  'Generalized'
-  'Specialized'
-])
-param osState string = 'Generalized'
+@sys.description('Required. This property allows the user to specify the state of the OS of the image.')
+param osState ('Generalized' | 'Specialized')
 
-@sys.description('Required. The name of the gallery Image Definition publisher.')
-param publisher string
+@sys.description('Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image.')
+param osType ('Linux' | 'Windows')
 
-@sys.description('Required. The name of the gallery Image Definition offer.')
-param offer string
-
-@sys.description('Required. The name of the gallery Image Definition SKU.')
-param sku string
-
-@sys.description('Optional. The minimum number of the CPU cores recommended for this image.')
-@minValue(1)
-@maxValue(128)
-param minRecommendedvCPUs int = 1
-
-@sys.description('Optional. The maximum number of the CPU cores recommended for this image.')
-@minValue(1)
-@maxValue(128)
-param maxRecommendedvCPUs int = 4
-
-@sys.description('Optional. The minimum amount of RAM in GB recommended for this image.')
-@minValue(1)
-@maxValue(4000)
-param minRecommendedMemory int = 4
-
-@sys.description('Optional. The maximum amount of RAM in GB recommended for this image.')
-@minValue(1)
-@maxValue(4000)
-param maxRecommendedMemory int = 16
-
-@sys.description('''Optional. The hypervisor generation of the Virtual Machine.
-- If this value is not specified, then it is determined by the securityType parameter.
-- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
-''')
-@allowed([
-  'V1'
-  'V2'
-])
-param hyperVGeneration string?
-
-@sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
-@allowed([
-  'Standard'
-  'TrustedLaunch'
-  'ConfidentialVM'
-  'ConfidentialVMSupported'
-])
-param securityType string = 'Standard'
-
-@sys.description('Optional. Specifiy if the image supports hibernation.')
-param isHibernateSupported bool = false
-
-@sys.description('''Optional. Specify if the image supports accelerated networking.
-Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
-This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
-''')
-param isAcceleratedNetworkSupported bool = true
-
-@sys.description('Optional. The description of this gallery Image Definition resource. This property is updatable.')
-param description string?
-
-@sys.description('Optional. The Eula agreement for the gallery Image Definition. Has to be a valid URL.')
-param eula string?
-
-@sys.description('Optional. The privacy statement uri. Has to be a valid URL.')
+@sys.description('Optional. The privacy statement uri.')
 param privacyStatementUri string?
+
+@sys.description('Optional. Describes the gallery image definition purchase plan. This is used by marketplace images.')
+param purchasePlan purchasePlanType?
+
+@sys.description('Optional. Describes the resource range (1-128 CPU cores).')
+param vCPUs resourceRangeType = { min: 1, max: 4 }
+
+@sys.description('Optional. Describes the resource range (1-4000 GB RAM).')
+param memory resourceRangeType = { min: 4, max: 16 }
 
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
 param releaseNoteUri string?
 
-@sys.description('Optional. The product ID.')
-param productName string?
+@sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
+param securityType ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
 
-@sys.description('Optional. The plan ID.')
-param planName string?
+@sys.description('Optional. Specify if the image supports accelerated networking.')
+param isAcceleratedNetworkSupported bool = true
 
-@sys.description('Optional. The publisher ID.')
-param planPublisherName string?
+@sys.description('Optional. Specifiy if the image supports hibernation.')
+param isHibernateSupported bool?
 
-@sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
-param endOfLife string = ''
+@sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
+param architecture ('x64' | 'Arm64')?
 
-@sys.description('Optional. List of the excluded disk types (e.g., Standard_LRS).')
-param excludedDiskTypes array = []
+@sys.description('Optional. The description of this gallery image definition resource. This property is updatable.')
+param description string?
+
+@sys.description('Optional. Describes the disallowed disk types.')
+param disallowed disallowedType?
+
+@sys.description('Optional. The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.')
+param endOfLifeDate string?
+
+@sys.description('Optional. The Eula agreement for the gallery image definition.')
+param eula string?
+
+@sys.description('Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
+param hyperVGeneration ('V1' | 'V2')?
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@sys.description('Optional. Tags for all resources.')
+@sys.description('Optional. Tags for all the image.')
+@metadata({
+  example: '''
+{
+    key1: 'value1'
+    key2: 'value2'
+}
+'''
+})
 param tags object?
 
 var builtInRoleNames = {
@@ -134,79 +97,78 @@ var builtInRoleNames = {
   )
 }
 
-resource gallery 'Microsoft.Compute/galleries@2022-03-03' existing = {
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+resource gallery 'Microsoft.Compute/galleries@2023-07-03' existing = {
   name: galleryName
 }
 
-resource image 'Microsoft.Compute/galleries/images@2022-03-03' = {
+resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
   name: name
   parent: gallery
   location: location
   tags: tags
   properties: {
-    osType: osType
-    osState: osState
-    identifier: {
-      publisher: publisher
-      offer: offer
-      sku: sku
+    architecture: architecture
+    description: description
+    disallowed: {
+      diskTypes: disallowed.?diskTypes ?? []
     }
-    recommended: {
-      vCPUs: {
-        min: minRecommendedvCPUs
-        max: maxRecommendedvCPUs
-      }
-      memory: {
-        min: minRecommendedMemory
-        max: maxRecommendedMemory
-      }
-    }
-    hyperVGeneration: hyperVGeneration ?? (!empty(securityType) ? 'V2' : 'V1')
+    endOfLifeDate: endOfLifeDate
+    eula: eula
     features: union(
       [
         {
           name: 'IsAcceleratedNetworkSupported'
           value: '${isAcceleratedNetworkSupported}'
         }
-        {
-          name: 'IsHibernateSupported'
-          value: '${isHibernateSupported}'
-        }
       ],
-      (securityType != 'Standard'
+      (securityType != null
         ? [
             {
               name: 'SecurityType'
-              value: securityType
+              value: '${securityType}'
+            }
+          ]
+        : []),
+      (isHibernateSupported != null
+        ? [
+            {
+              name: 'IsHibernateSupported'
+              value: '${isHibernateSupported}'
             }
           ]
         : [])
     )
-    description: description
-    eula: eula
+    hyperVGeneration: hyperVGeneration ?? (!empty(securityType ?? '') ? 'V2' : 'V1')
+    identifier: {
+      publisher: identifier.publisher
+      offer: identifier.offer
+      sku: identifier.sku
+    }
+    osState: osState
+    osType: osType
     privacyStatementUri: privacyStatementUri
+    purchasePlan: purchasePlan ?? null
+    recommended: { vCPUs: vCPUs, memory: memory }
     releaseNoteUri: releaseNoteUri
-    purchasePlan: {
-      product: productName
-      name: planName
-      publisher: planPublisherName
-    }
-    endOfLifeDate: endOfLife
-    disallowed: {
-      diskTypes: excludedDiskTypes
-    }
   }
 }
 
 resource image_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(image.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(image.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -235,6 +197,9 @@ output location string = image.location
 // =============== //
 
 type roleAssignmentType = {
+  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -256,3 +221,46 @@ type roleAssignmentType = {
   @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@export()
+type resourceRangeType = {
+  @sys.description('Optional. The minimum number of the resource.')
+  @minValue(1)
+  min: int?
+
+  @sys.description('Optional. The minimum number of the resource.')
+  max: int?
+}
+
+type disallowedType = {
+  @sys.description('Required. A list of disk types.')
+  @metadata({ example: '''
+  [
+    'Standard_LRS'
+  ]''' })
+  diskTypes: string[]
+}?
+
+@export()
+type identifierType = {
+  @sys.description('Required. The name of the gallery image definition publisher.')
+  publisher: string
+
+  @sys.description('Required. The name of the gallery image definition offer.')
+  offer: string
+
+  @sys.description('Required. The name of the gallery image definition SKU.')
+  sku: string
+}
+
+@export()
+type purchasePlanType = {
+  @sys.description('Required. The plan ID.')
+  name: string
+
+  @sys.description('Required. The product ID.')
+  product: string
+
+  @sys.description('Required. The publisher ID.')
+  publisher: string
+}?

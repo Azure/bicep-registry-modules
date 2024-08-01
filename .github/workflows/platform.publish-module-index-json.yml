@@ -4,10 +4,19 @@ on:
   schedule:
     - cron: 45 11 * * * # Run daily at 3:45 AM PST
   workflow_dispatch:
+    inputs:
+      regenIndexFromBRM:
+        type: boolean
+        description: "regenIndexFromBRM | Regenerate the moduleIndex.json file from scratch based on what is in BRM at the time of the run, instead of integrating it with its previous version."
+        required: false
+        default: false
 
 permissions:
   id-token: write
   contents: read
+
+env:
+  workflowPath: ".github/workflows/avm.res.app.job.yml"
 
 jobs:
   upload-index-data:
@@ -17,7 +26,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 // Needed to fetch all history and tags
-
+      - name: "Set input parameter``s to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
       - name: Log in to Azure
         uses: azure/login@v2
         with:
@@ -49,15 +62,19 @@ jobs:
             ErrorAction                                  = 'Continue'
           }
 
-          Write-Verbose "Invoke task with" -Verbose
+          if ('${{ (fromJson(steps.get-workflow-param.outputs.workflowInput)).regenIndexFromBRM }}' -eq $true ) {
+            $functionInput['doNotMergeWithLastModuleIndexJsonFileVersion'] = $true
+          }
+
+          Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          if(-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
+          if (-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
             Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
           }
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: publish-module-index-json-artifacts
           path: |

@@ -30,7 +30,7 @@ param srv srvType
 param txt txtType
 
 @description('Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties \'virtualNetworkResourceId\' and \'registrationEnabled\'. The \'vnetResourceId\' is a resource ID of a vNet to link, \'registrationEnabled\' (bool) enables automatic DNS registration in the zone for the linked vNet.')
-param virtualNetworkLinks array?
+param virtualNetworkLinks virtualNetworkLinkType
 
 @description('Optional. The location of the PrivateDNSZone. Should be global.')
 param location string = 'global'
@@ -65,7 +65,8 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-privatednszone.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -481,4 +482,23 @@ type txtType = {
     @description('Required. The text value of this TXT record.')
     value: string[]
   }[]?
+}[]?
+
+type virtualNetworkLinkType = {
+  @description('Optional. The resource name.')
+  @minLength(1)
+  @maxLength(80)
+  name: string?
+
+  @description('Required. The resource ID of the virtual network to link.')
+  virtualNetworkResourceId: string
+
+  @description('Optional. The Azure Region where the resource lives.')
+  location: string?
+
+  @description('Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?.')
+  registrationEnabled: bool?
+
+  @description('Optional. Resource tags.')
+  tags: object?
 }[]?

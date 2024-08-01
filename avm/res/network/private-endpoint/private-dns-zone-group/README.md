@@ -14,7 +14,7 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Parameters
 
@@ -22,7 +22,7 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDNSResourceIds`](#parameter-privatednsresourceids) | array | Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneConfigs`](#parameter-privatednszoneconfigs) | array | Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones. |
 
 **Conditional parameters**
 
@@ -36,12 +36,38 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the private DNS zone group. |
 
-### Parameter: `privateDNSResourceIds`
+### Parameter: `privateDnsZoneConfigs`
 
-Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones.
+Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privatednszoneconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatednszoneconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateDnsZoneConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateDnsZoneConfigs.name`
+
+The name of the private DNS zone group config.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpointName`
 
