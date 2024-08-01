@@ -149,20 +149,18 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
     // Required parameters
     name: naming.outputs.resourcesNames.applicationGateway
     // Non-required parameters
-    backendAddressPools: (!empty(applicationGatewayPrimaryBackendEndFqdn))
-      ? [
-          {
-            name: 'acaServiceBackend'
-            properties: {
-              backendAddresses: [
-                {
-                  fqdn: applicationGatewayPrimaryBackendEndFqdn
-                }
-              ]
+    backendAddressPools: [
+      {
+        name: 'acaServiceBackend'
+        properties: {
+          backendAddresses: [
+            {
+              fqdn: (!empty(applicationGatewayPrimaryBackendEndFqdn)) ? applicationGatewayPrimaryBackendEndFqdn : ''
             }
-          }
-        ]
-      : []
+          ]
+        }
+      }
+    ]
     backendHttpSettingsCollection: (!empty(applicationGatewayPrimaryBackendEndFqdn))
       ? [
           {
