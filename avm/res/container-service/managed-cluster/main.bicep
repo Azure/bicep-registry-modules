@@ -156,6 +156,9 @@ param primaryAgentPoolProfile array
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType
 
+@description('Optional. Whether or not to use AKS Automatic mode.')
+param maintenanceConfiguration maintenanceConfigurationType
+
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
 param costAnalysisEnabled bool = false
 
@@ -737,6 +740,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
   }
 }
 
+module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(maintenanceConfiguration)) {
+  name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
+  params: {
+    maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
+    managedClusterName: managedCluster.name
+  }
+}
+
 module managedCluster_agentPools 'agent-pool/main.bicep' = [
   for (agentPool, index) in (agentPools ?? []): {
     name: '${uniqueString(deployment().name, location)}-ManagedCluster-AgentPool-${index}'
@@ -1172,4 +1183,9 @@ type customerManagedKeyType = {
 
   @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
   keyVaultNetworkAccess: ('Private' | 'Public')
+}?
+
+type maintenanceConfigurationType = {
+  @description('Required. Maintenance window for the maintenance configuration.')
+  maintenanceWindow: object
 }?
