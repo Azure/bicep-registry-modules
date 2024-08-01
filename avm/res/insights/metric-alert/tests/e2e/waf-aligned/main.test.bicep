@@ -58,10 +58,10 @@ module testDeployment '../../../main.bicep' = [
         nestedDependencies.outputs.appInsightsResourceId
       ]
       criteria: {
-        componentId: nestedDependencies.outputs.appInsightsResourceId
+        componentResourceId: nestedDependencies.outputs.appInsightsResourceId
         failedLocationCount: 3
         'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
-        webTestId: nestedDependencies.outputs.pingTestResourceId
+        webTestResourceId: nestedDependencies.outputs.pingTestResourceId
       }
       actions: [
         nestedDependencies.outputs.actionGroupResourceId

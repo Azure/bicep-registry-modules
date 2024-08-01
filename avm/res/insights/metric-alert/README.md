@@ -277,10 +277,10 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   params: {
     // Required parameters
     criteria: {
-      componentId: '<componentId>'
+      componentResourceId: '<componentResourceId>'
       failedLocationCount: 3
       'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
-      webTestId: '<webTestId>'
+      webTestResourceId: '<webTestResourceId>'
     }
     name: 'imawaf001'
     // Non-required parameters
@@ -318,10 +318,10 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     // Required parameters
     "criteria": {
       "value": {
-        "componentId": "<componentId>",
+        "componentResourceId": "<componentResourceId>",
         "failedLocationCount": 3,
         "odata.type": "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria",
-        "webTestId": "<webTestId>"
+        "webTestResourceId": "<webTestResourceId>"
       }
     },
     "name": {
@@ -369,6 +369,7 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`criteria`](#parameter-criteria) | object | Maps to the 'odata.type' field. Specifies the type of the alert criteria. |
 | [`name`](#parameter-name) | string | The name of the alert. |
 
 **Conditional parameters**
@@ -385,7 +386,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 | [`actions`](#parameter-actions) | array | The list of actions to take when alert triggers. |
 | [`alertDescription`](#parameter-alertdescription) | string | Description of the alert. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be auto resolved or not. |
-| [`criteria`](#parameter-criteria) | object | Maps to the 'odata.type' field. Specifies the type of the alert criteria. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this alert is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | how often the metric alert is evaluated represented in ISO 8601 duration format. |
@@ -395,6 +395,13 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 | [`severity`](#parameter-severity) | int | The severity of the alert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`windowSize`](#parameter-windowsize) | string | the period of time (in ISO 8601 duration format) that is used to monitor alert activity based on the threshold. |
+
+### Parameter: `criteria`
+
+Maps to the 'odata.type' field. Specifies the type of the alert criteria.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `name`
 
@@ -440,13 +447,6 @@ The flag that indicates whether the alert should be auto resolved or not.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `criteria`
-
-Maps to the 'odata.type' field. Specifies the type of the alert criteria.
-
-- Required: Yes
-- Type: object
 
 ### Parameter: `enabled`
 

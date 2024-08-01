@@ -64,7 +64,7 @@ param autoMitigate bool = true
 @description('Optional. The list of actions to take when alert triggers.')
 param actions array = []
 
-@description('Optional. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
+@description('Required. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
 param criteria alertType
 
 @description('Optional. Array of role assignments to create.')
@@ -79,7 +79,7 @@ param enableTelemetry bool = true
 var actionGroups = [
   for action in actions: {
     actionGroupId: action.?actionGroupId ?? action
-    webHookProperties: action.?webHookProperties ?? null
+    webHookProperties: action.?webHookProperties
   }
 ]
 
@@ -129,7 +129,15 @@ resource metricAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     windowSize: windowSize
     targetResourceType: targetResourceType
     targetResourceRegion: targetResourceRegion
-    criteria: criteria
+    criteria: union(
+      {
+        'odata.type': criteria['odata.type']
+      },
+      (contains(criteria, 'allof') ? { allof: criteria.allof } : {}),
+      (contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {}),
+      (contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {}),
+      (contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
+    )
     autoMitigate: autoMitigate
     actions: actionGroups
   }
@@ -205,7 +213,7 @@ type alertMultiResourceType = {
 }
 type alertWebtestType = {
   'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
-  componentId: string
+  componentResourceId: string
   failedLocationCount: int
-  webTestId: string
+  webTestResourceId: string
 }

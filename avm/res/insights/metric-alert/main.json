@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3270167901837280444"
+      "templateHash": "4628455390866355711"
     },
     "name": "Metric Alerts",
     "description": "This module deploys a Metric Alert.",
@@ -133,13 +133,13 @@
             "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria"
           ]
         },
-        "componentId": {
+        "componentResourceId": {
           "type": "string"
         },
         "failedLocationCount": {
           "type": "int"
         },
-        "webTestId": {
+        "webTestResourceId": {
           "type": "string"
         }
       }
@@ -258,7 +258,7 @@
     "criteria": {
       "$ref": "#/definitions/alertType",
       "metadata": {
-        "description": "Optional. Maps to the 'odata.type' field. Specifies the type of the alert criteria."
+        "description": "Required. Maps to the 'odata.type' field. Specifies the type of the alert criteria."
       }
     },
     "roleAssignments": {
@@ -289,7 +289,7 @@
         "count": "[length(parameters('actions'))]",
         "input": {
           "actionGroupId": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')])]",
-          "webHookProperties": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'webHookProperties'), null())]"
+          "webHookProperties": "[tryGet(parameters('actions')[copyIndex('actionGroups')], 'webHookProperties')]"
         }
       }
     ],
@@ -337,7 +337,7 @@
         "windowSize": "[parameters('windowSize')]",
         "targetResourceType": "[parameters('targetResourceType')]",
         "targetResourceRegion": "[parameters('targetResourceRegion')]",
-        "criteria": "[parameters('criteria')]",
+        "criteria": "[union(createObject('odata.type', parameters('criteria')['odata.type']), if(contains(parameters('criteria'), 'allof'), createObject('allof', parameters('criteria').allof), createObject()), if(contains(parameters('criteria'), 'componentResourceId'), createObject('componentId', parameters('criteria').componentResourceId), createObject()), if(contains(parameters('criteria'), 'failedLocationCount'), createObject('failedLocationCount', parameters('criteria').failedLocationCount), createObject()), if(contains(parameters('criteria'), 'webTestResourceId'), createObject('webTestId', parameters('criteria').webTestResourceId), createObject()))]",
         "autoMitigate": "[parameters('autoMitigate')]",
         "actions": "[variables('actionGroups')]"
       }
