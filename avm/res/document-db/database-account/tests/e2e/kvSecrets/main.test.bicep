@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = {
   }
 }
 
-output specificSecret string = testDeployment.outputs.exportedSecrets.myPrimarySecret.secretResourceId
+output specificSecret string = testDeployment.outputs.exportedSecrets.primaryReadOnlyKey.secretResourceId
 output allEportedSecrets object = testDeployment.outputs.exportedSecrets
 output allExportedSecretResourceIds array = map(
   items(testDeployment.outputs.exportedSecrets),

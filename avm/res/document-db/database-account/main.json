@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "2452303956666462687"
+      "templateHash": "2648156843742936599"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -757,8 +757,7 @@
         "metadata": {
           "description": "An exported secret's references."
         }
-      },
-      "nullable": true
+      }
     },
     "networkRestrictionsType": {
       "type": "object",
@@ -3377,7 +3376,7 @@
       "metadata": {
         "description": "The references to the secrets exported to the provided Key Vault."
       },
-      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), null())]"
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     },
     "name": {
       "type": "string",
