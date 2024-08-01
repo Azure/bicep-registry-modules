@@ -30,7 +30,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
-    softDeleteRetentionInDays: 90 // Soft Delete requires a 90 day retention period. Anything less will cause the deployment to fail.
+    softDeleteRetentionInDays: 90 // The resource provider requires a 90 day retention period for encryption. Anything less will cause the deployment to fail. Ref: https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-customer-managed-key#requirements-for-configuring-data-encryption-for-azure-database-for-mysql-flexible-server
     enablePurgeProtection: true // Required for encryption to work
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
@@ -74,7 +74,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
-    softDeleteRetentionInDays: 90 // Soft Delete requires a 90 day retention period. Anything less will cause the deployment to fail.
+    softDeleteRetentionInDays: 90 // The resource provider requires a 90 day retention period for encryption. Anything less will cause the deployment to fail. Ref: https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-customer-managed-key#requirements-for-configuring-data-encryption-for-azure-database-for-mysql-flexible-server
     enablePurgeProtection: true // Required for encryption to work
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
