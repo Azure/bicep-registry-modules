@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = {
   }
 }
 
+// Output usage examples
 output specificSecret string = testDeployment.outputs.exportedSecrets.primaryReadOnlyKey.secretResourceId
 output allEportedSecrets object = testDeployment.outputs.exportedSecrets
 output allExportedSecretResourceIds array = map(

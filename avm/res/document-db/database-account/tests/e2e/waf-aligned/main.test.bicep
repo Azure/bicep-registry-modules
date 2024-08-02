@@ -82,9 +82,13 @@ module testDeployment '../../../main.bicep' = {
     ]
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         service: 'Sql'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
@@ -114,8 +118,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }
