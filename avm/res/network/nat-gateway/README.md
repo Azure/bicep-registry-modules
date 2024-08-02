@@ -400,9 +400,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
         name: 'nngwaf001-pip'
         skuTier: 'Regional'
         zones: [
-          '1'
-          '2'
-          '3'
+          1
+          2
+          3
         ]
       }
     ]
@@ -464,9 +464,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
           "name": "nngwaf001-pip",
           "skuTier": "Regional",
           "zones": [
-            "1",
-            "2",
-            "3"
+            1,
+            2,
+            3
           ]
         }
       ]
