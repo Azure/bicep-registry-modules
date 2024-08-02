@@ -73,11 +73,11 @@ param vNetResourceId string
 @description('Optional. Value to specify if the Gateway should be deployed in active-active or active-passive configuration.')
 param activeActive bool = true
 
-@description('Optional. Value to specify if BGP is enabled or not.')
-param enableBgp bool = true
+// @description('Optional. Value to specify if BGP is enabled or not.')
+// param enableBgp bool = true
 
-@description('Optional. ASN value.')
-param asn int = 65815
+@description('Optional. BGP Settings.')
+param bgpSettings bgpSettingType?
 
 @description('Optional. The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network.')
 param vpnClientAddressPoolPrefix string = ''
@@ -154,10 +154,33 @@ var virtualGatewayPipNameVar = isActiveActiveValid
 
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
-var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
-var bgpSettings = {
-  asn: asn
-}
+//var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
+
+// Potential configurations (active-active vs active-passive)
+var bgpSettingsVar = bgpSettings.?activeActive == 'false'
+  ? {
+      asn: bgpSettings.?asn ?? 65815
+      bgpPeeringAddresses: [
+        {
+          customBgpIpAddresses: bgpSettings.?customBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+        }
+      ]
+    }
+  : {
+      asn: bgpSettings.?asn ?? 65815
+      bgpPeeringAddresses: [
+        {
+          customBgpIpAddresses: bgpSettings.?customBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+        }
+        {
+          customBgpIpAddresses: bgpSettings.?secondCustomBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
+        }
+      ]
+    }
+
 
 // Potential configurations (active-active vs active-passive)
 var ipConfiguration = isActiveActiveValid
@@ -325,8 +348,8 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     activeActive: isActiveActiveValid
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
-    enableBgp: isBgpValid
-    bgpSettings: isBgpValid ? bgpSettings : null
+    enableBgp: !empty(bgpSettings)
+    bgpSettings: !empty(bgpSettings) ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
     enableDnsForwarding: gatewayType == 'ExpressRoute' ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
@@ -521,3 +544,35 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type bgpSingleApipaType = {
+  activeActive: 'false'
+  
+  @description('Optional. The Autonomous System Number value.')
+  @minValue(0)
+  @maxValue(4294967295)
+  asn: int? 
+
+  @description('Optional. The list of custom BGP Address (APIPA) peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]?
+}
+
+type bgpDoubleApipaType = {
+  activeActive: 'true'
+  
+  @description('Optional. The Autonomous System Number value.')
+  @minValue(0)
+  @maxValue(4294967295)
+  asn: int? 
+
+  @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]?
+  
+  @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
+  secondCustomBgpIpAddresses: string[]?
+}
+
+@discriminator('activeActive')
+type bgpSettingType = bgpSingleApipaType | bgpDoubleApipaType
+
+
