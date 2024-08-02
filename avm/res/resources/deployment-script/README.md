@@ -29,9 +29,10 @@ The following section provides usage examples for the module, which were used to
 - [Using Azure CLI](#example-1-using-azure-cli)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using Private Networking](#example-4-using-private-networking)
-- [Using Azure PowerShell](#example-5-using-azure-powershell)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using Private Endpoint](#example-4-using-private-endpoint)
+- [Using Private Networking](#example-5-using-private-networking)
+- [Using Azure PowerShell](#example-6-using-azure-powershell)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using Azure CLI_
 
@@ -385,7 +386,107 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 4: _Using Private Networking_
+### Example 4: _Using Private Endpoint_
+
+This instance deploys the module with access to a private endpoint.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
+  name: 'deploymentScriptDeployment'
+  params: {
+    // Required parameters
+    kind: 'AzureCLI'
+    name: 'rdspe001'
+    // Non-required parameters
+    azCliVersion: '2.9.1'
+    cleanupPreference: 'Always'
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    retentionInterval: 'P1D'
+    runOnce: true
+    scriptContent: 'echo \'AVM Deployment Script test!\''
+    storageAccountResourceId: '<storageAccountResourceId>'
+    subnetResourceIds: [
+      '<subnetResourceId>'
+    ]
+    timeout: 'PT1H'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AzureCLI"
+    },
+    "name": {
+      "value": "rdspe001"
+    },
+    // Non-required parameters
+    "azCliVersion": {
+      "value": "2.9.1"
+    },
+    "cleanupPreference": {
+      "value": "Always"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "retentionInterval": {
+      "value": "P1D"
+    },
+    "runOnce": {
+      "value": true
+    },
+    "scriptContent": {
+      "value": "echo \"AVM Deployment Script test!\""
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "subnetResourceIds": {
+      "value": [
+        "<subnetResourceId>"
+      ]
+    },
+    "timeout": {
+      "value": "PT1H"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Private Networking_
 
 This instance deploys the module with access to a private network.
 
@@ -485,7 +586,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 5: _Using Azure PowerShell_
+### Example 6: _Using Azure PowerShell_
 
 This instance deploys the module with an Azure PowerShell script.
 
@@ -569,7 +670,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 

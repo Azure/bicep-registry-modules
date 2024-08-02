@@ -63,9 +63,13 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      privateDnsZoneResourceIds: [
-        nestedDependencies.outputs.privateDNSZoneResourceId
-      ]
+      privateDnsZoneGroup: {
+        privateDnsZoneGroupConfigs: [
+          {
+            privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+          }
+        ]
+      }
       ipConfigurations: [
         {
           name: 'myIPconfig'

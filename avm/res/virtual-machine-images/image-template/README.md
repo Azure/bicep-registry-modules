@@ -58,9 +58,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     imageSource: {
-      offer: 'Windows-10'
+      offer: 'Windows-11'
       publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win10-22h2-ent'
+      sku: 'win11-23h2-ent'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -107,9 +107,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "imageSource": {
       "value": {
-        "offer": "Windows-10",
+        "offer": "Windows-11",
         "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win10-22h2-ent",
+        "sku": "win11-23h2-ent",
         "type": "PlatformImage",
         "version": "latest"
       }
@@ -188,9 +188,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     imageSource: {
-      offer: '0001-com-ubuntu-server-lunar'
+      offer: 'ubuntu-24_04-lts'
       publisher: 'canonical'
-      sku: '23_04-gen2'
+      sku: 'server'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -311,9 +311,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "imageSource": {
       "value": {
-        "offer": "0001-com-ubuntu-server-lunar",
+        "offer": "ubuntu-24_04-lts",
         "publisher": "canonical",
-        "sku": "23_04-gen2",
+        "sku": "server",
         "type": "PlatformImage",
         "version": "latest"
       }
