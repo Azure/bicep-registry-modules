@@ -110,7 +110,7 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.5.1' = [
       skuName: 'Standard' // Must be standard
       skuTier: publicIPAddressObject.?skuTier
       tags: publicIPAddressObject.?tags ?? tags
-      zones: publicIPAddressObject.?zones ?? (zone != 0 ? [string(zone)] : null)
+      zones: publicIPAddressObject.?zones
       enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
       ddosSettings: publicIPAddressObject.?ddosSettings
       dnsSettings: publicIPAddressObject.?dnsSettings
