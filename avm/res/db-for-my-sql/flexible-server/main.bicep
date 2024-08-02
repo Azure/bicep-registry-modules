@@ -44,6 +44,9 @@ param tier string
 @description('Optional. Availability zone information of the server. Default will have no preference set.')
 param availabilityZone string = ''
 
+@description('Optional. Standby availability zone information of the server. Default will have no preference set.')
+param highAvailabilityZone string = ''
+
 @minValue(1)
 @maxValue(35)
 @description('Optional. Backup retention days for the server.')
@@ -80,7 +83,7 @@ param customerManagedKeyGeo customerManagedKeyType
   'ZoneRedundant'
 ])
 @description('Optional. The mode for High Availability (HA). It is not supported for the Burstable pricing tier and Zone redundant HA can only be set during server provisioning.')
-param highAvailability string = 'Disabled'
+param highAvailability string = 'ZoneRedundant'
 
 @description('Optional. Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".')
 param maintenanceWindow object = {}
@@ -145,7 +148,7 @@ param storageSizeGB int = 64
   '8.0.21'
 ])
 @description('Optional. MySQL Server version.')
-param version string = '5.7'
+param version string = '8.0.21'
 
 @description('Optional. The databases to create in the server.')
 param databases array = []
@@ -161,6 +164,14 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+var standByAvailabilityZoneTable = {
+  Disabled: null
+  SameZone: availabilityZone
+  ZoneRedundant: highAvailabilityZone
+}
+
+var standByAvailabilityZone = standByAvailabilityZoneTable[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -193,7 +204,6 @@ var builtInRoleNames = {
   )
 }
 
-#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.dbformysql-flexibleserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -252,7 +262,7 @@ resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdent
   )
 }
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview' = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
   name: name
   location: location
   tags: tags
@@ -287,7 +297,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: highAvailability == 'SameZone' ? availabilityZone : null
+      standbyAvailabilityZone: standByAvailabilityZone
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
