@@ -17,8 +17,8 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cdimp'
 
-@description('Generated. Do not provide a value! This date value is used to generate a unique image template name.')
-param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
+@description('Generated. Do not provide a value! This date value is used to generate a unique image template name as the resource is not idempotent.')
+param uniqueBaseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -41,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    imageTemplateName: 'dep-${namePrefix}-imgt-${serviceShort}-${baseTime}'
+    imageTemplateName: 'dep-${namePrefix}-imgt-${serviceShort}-${uniqueString(uniqueBaseTime)}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'
   }
