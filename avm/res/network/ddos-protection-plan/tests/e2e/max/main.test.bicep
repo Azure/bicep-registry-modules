@@ -21,7 +21,7 @@ param serviceShort string = 'ndppmax'
 param namePrefix string = '#_namePrefix_#'
 
 // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-#disable-next-line no-hardcoded-location 
+#disable-next-line no-hardcoded-location
 var enforcedLocation = 'northeurope'
 
 // ============ //
@@ -60,11 +60,13 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
+        name: '60339368-138d-4667-988a-5431c156f6ff'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
