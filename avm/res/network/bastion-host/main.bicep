@@ -130,7 +130,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.4.0' = if (empty(bastionSubnetPublicIpResourceId)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(bastionSubnetPublicIpResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name

@@ -95,7 +95,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [
+module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.5.1' = [
   for (publicIPAddressObject, index) in (publicIPAddressObjects ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-PIP-${index}'
     params: {
@@ -129,7 +129,7 @@ module formattedPublicIpResourceIds 'modules/formatResourceId.bicep' = {
   }
 }
 
-module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.1.0' = [
+module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.4.1' = [
   for (publicIPPrefixObject, index) in (publicIPPrefixObjects ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
     params: {

@@ -378,7 +378,7 @@ resource applicationGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSet
   }
 ]
 
-module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-applicationGateway-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

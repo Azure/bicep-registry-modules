@@ -138,8 +138,6 @@ param vpnClientAadConfiguration object = {}
 // ================//
 
 // Other Variables
-var zones = [for zone in publicIpZones: string(zone)]
-
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
@@ -302,7 +300,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // Public IPs
 @batchSize(1)
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
   for (virtualGatewayPublicIpName, index) in virtualGatewayPipNameVar: {
     name: virtualGatewayPublicIpName
     params: {
@@ -314,7 +312,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
       skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
-      zones: skuName != 'Basic' ? zones : []
+      zones: skuName != 'Basic' ? publicIpZones : []
       dnsSettings: {
         domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]
