@@ -2312,7 +2312,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Default to true. Enable automatic failover for regions. |
+| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
 | [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
@@ -2322,11 +2322,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Cosmos DB database account. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
-| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
-| [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
-| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
+| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
+| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. |
+| [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether Free Tier is enabled. |
+| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
@@ -2355,7 +2355,7 @@ Name of the Database Account.
 
 ### Parameter: `automaticFailover`
 
-Default to true. Enable automatic failover for regions.
+Enable automatic failover for regions.
 
 - Required: No
 - Type: bool
@@ -2622,7 +2622,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `disableKeyBasedMetadataWriteAccess`
 
-Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys.
+Disable write operations on metadata resources (databases, containers, throughput) via account keys.
 
 - Required: No
 - Type: bool
@@ -2630,15 +2630,15 @@ Default to false. Disable write operations on metadata resources (databases, con
 
 ### Parameter: `disableLocalAuth`
 
-Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
+Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableAnalyticalStorage`
 
-Default to false. Flag to indicate whether to enable storage analytics.
+Flag to indicate whether to enable storage analytics.
 
 - Required: No
 - Type: bool
@@ -2646,7 +2646,7 @@ Default to false. Flag to indicate whether to enable storage analytics.
 
 ### Parameter: `enableFreeTier`
 
-Default to false. Flag to indicate whether Free Tier is enabled.
+Flag to indicate whether Free Tier is enabled.
 
 - Required: No
 - Type: bool
@@ -2654,7 +2654,7 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 ### Parameter: `enableMultipleWriteLocations`
 
-Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.
+Enables the account to write in multiple locations. Periodic backup must be used if enabled.
 
 - Required: No
 - Type: bool

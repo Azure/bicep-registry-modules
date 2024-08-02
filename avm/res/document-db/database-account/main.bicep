@@ -33,22 +33,22 @@ param locations failoverLocationsType[] = []
 @description('Optional. Default to Session. The default consistency level of the Cosmos DB account.')
 param defaultConsistencyLevel string = 'Session'
 
-@description('Optional. Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
-param disableLocalAuth bool = false
+@description('Optional. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
+param disableLocalAuth bool = true
 
-@description('Optional. Default to false. Flag to indicate whether to enable storage analytics.')
+@description('Optional. Flag to indicate whether to enable storage analytics.')
 param enableAnalyticalStorage bool = false
 
-@description('Optional. Default to true. Enable automatic failover for regions.')
+@description('Optional. Enable automatic failover for regions.')
 param automaticFailover bool = true
 
-@description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
+@description('Optional. Flag to indicate whether Free Tier is enabled.')
 param enableFreeTier bool = false
 
-@description('Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
+@description('Optional. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
 param enableMultipleWriteLocations bool = false
 
-@description('Optional. Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
+@description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
 param disableKeyBasedMetadataWriteAccess bool = false
 
 @minValue(1)
@@ -242,6 +242,7 @@ var virtualNetworkRules = [
 var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
+    backupPolicy: backupPolicy
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
     ? {
@@ -258,7 +259,6 @@ var databaseAccountProperties = union(
 
         capabilities: capabilities
         enableFreeTier: enableFreeTier
-        backupPolicy: backupPolicy
         enableAutomaticFailover: automaticFailover
         enableAnalyticalStorage: enableAnalyticalStorage
       }
