@@ -145,9 +145,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
         ]
         skuTier: 'Regional'
         zones: [
-          '1'
-          '2'
-          '3'
+          1
+          2
+          3
         ]
       }
     ]
@@ -245,9 +245,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
           ],
           "skuTier": "Regional",
           "zones": [
-            "1",
-            "2",
-            "3"
+            1,
+            2,
+            3
           ]
         }
       ]

@@ -95,11 +95,7 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           skuTier: 'Regional'
-          zones: [
-            '1'
-            '2'
-            '3'
-          ]
+          zones: [1, 2, 3]
           diagnosticSettings: [
             {
               name: 'customSetting'
