@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13643575311996891390"
+      "templateHash": "2207071740510331874"
     },
     "name": "Managed DevOps Pools",
     "description": "This module deploys the Managed DevOps Pools resource.",
@@ -991,10 +991,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('managedDevOpsPool', '2024-04-04-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2024-04-04-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

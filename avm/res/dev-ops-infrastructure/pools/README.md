@@ -5,6 +5,7 @@ This module deploys the Managed DevOps Pools resource.
 ## Navigation
 
 - [Resource Types](#Resource-Types)
+- [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
@@ -18,6 +19,563 @@ This module deploys the Managed DevOps Pools resource.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DevOpsInfrastructure/pools` | [2024-04-04-preview](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+
+## Usage examples
+
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/dev-ops-infrastructure/pools:<version>`.
+
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
+  name: 'poolsDeployment'
+  params: {
+    // Required parameters
+    agentProfile: {
+      kind: 'Stateless'
+    }
+    concurrency: 1
+    devCenterProjectResourceId: '<devCenterProjectResourceId>'
+    fabricProfileSkuName: 'Standard_DS2_v2'
+    images: [
+      {
+        aliases: [
+          'windows-2022'
+        ]
+        buffer: '*'
+      }
+    ]
+    name: 'mdpmin001'
+    organizationProfile: {
+      kind: 'AzureDevOps'
+      organizations: [
+        {
+          parallelism: 1
+          url: '<url>'
+        }
+      ]
+      permissionProfile: {
+        kind: 'Inherit'
+      }
+    }
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "agentProfile": {
+      "value": {
+        "kind": "Stateless"
+      }
+    },
+    "concurrency": {
+      "value": 1
+    },
+    "devCenterProjectResourceId": {
+      "value": "<devCenterProjectResourceId>"
+    },
+    "fabricProfileSkuName": {
+      "value": "Standard_DS2_v2"
+    },
+    "images": {
+      "value": [
+        {
+          "aliases": [
+            "windows-2022"
+          ],
+          "buffer": "*"
+        }
+      ]
+    },
+    "name": {
+      "value": "mdpmin001"
+    },
+    "organizationProfile": {
+      "value": {
+        "kind": "AzureDevOps",
+        "organizations": [
+          {
+            "parallelism": 1,
+            "url": "<url>"
+          }
+        ],
+        "permissionProfile": {
+          "kind": "Inherit"
+        }
+      }
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
+  name: 'poolsDeployment'
+  params: {
+    // Required parameters
+    agentProfile: {
+      kind: 'Stateless'
+      resourcePredictions: {
+        daysData: [
+          {
+            '09:00:00': 1
+            '17:00:00': 0
+          }
+          {}
+          {}
+          {}
+          {
+            '09:00:00': 1
+            '17:00:00': 0
+          }
+          {}
+          {}
+        ]
+        timeZone: 'Central Europe Standard Time'
+      }
+      resourcePredictionsProfile: {
+        kind: 'Automatic'
+        predictionPreference: 'Balanced'
+      }
+    }
+    concurrency: 1
+    devCenterProjectResourceId: '<devCenterProjectResourceId>'
+    fabricProfileSkuName: 'Standard_DS2_v2'
+    images: [
+      {
+        aliases: [
+          'windows-2022'
+        ]
+        buffer: '*'
+        wellKnownImageName: 'windows-2022/latest'
+      }
+    ]
+    name: 'mdpmax001'
+    organizationProfile: {
+      kind: 'AzureDevOps'
+      organizations: [
+        {
+          parallelism: 1
+          projects: [
+            '<azureDevOpsProjectName>'
+          ]
+          url: '<url>'
+        }
+      ]
+      permissionProfile: {
+        kind: 'CreatorOnly'
+      }
+    }
+    // Non-required parameters
+    dataDisks: [
+      {
+        caching: 'ReadWrite'
+        diskSizeGiB: 100
+        driveLetter: 'B'
+        storageAccountType: 'Standard_LRS'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    logonType: 'Interactive'
+    osDiskStorageAccount: 'Standard'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+    ]
+    secretsManagementSettings: {
+      keyExportable: true
+      observedCertificates: [
+        ''
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "agentProfile": {
+      "value": {
+        "kind": "Stateless",
+        "resourcePredictions": {
+          "daysData": [
+            {
+              "09:00:00": 1,
+              "17:00:00": 0
+            },
+            {},
+            {},
+            {},
+            {
+              "09:00:00": 1,
+              "17:00:00": 0
+            },
+            {},
+            {}
+          ],
+          "timeZone": "Central Europe Standard Time"
+        },
+        "resourcePredictionsProfile": {
+          "kind": "Automatic",
+          "predictionPreference": "Balanced"
+        }
+      }
+    },
+    "concurrency": {
+      "value": 1
+    },
+    "devCenterProjectResourceId": {
+      "value": "<devCenterProjectResourceId>"
+    },
+    "fabricProfileSkuName": {
+      "value": "Standard_DS2_v2"
+    },
+    "images": {
+      "value": [
+        {
+          "aliases": [
+            "windows-2022"
+          ],
+          "buffer": "*",
+          "wellKnownImageName": "windows-2022/latest"
+        }
+      ]
+    },
+    "name": {
+      "value": "mdpmax001"
+    },
+    "organizationProfile": {
+      "value": {
+        "kind": "AzureDevOps",
+        "organizations": [
+          {
+            "parallelism": 1,
+            "projects": [
+              "<azureDevOpsProjectName>"
+            ],
+            "url": "<url>"
+          }
+        ],
+        "permissionProfile": {
+          "kind": "CreatorOnly"
+        }
+      }
+    },
+    // Non-required parameters
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "ReadWrite",
+          "diskSizeGiB": 100,
+          "driveLetter": "B",
+          "storageAccountType": "Standard_LRS"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "logonType": {
+      "value": "Interactive"
+    },
+    "osDiskStorageAccount": {
+      "value": "Standard"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        }
+      ]
+    },
+    "secretsManagementSettings": {
+      "value": {
+        "keyExportable": true,
+        "observedCertificates": [
+          ""
+        ]
+      }
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
+  name: 'poolsDeployment'
+  params: {
+    // Required parameters
+    agentProfile: {
+      kind: 'Stateless'
+      resourcePredictions: {
+        daysData: [
+          {
+            '09:00:00': 1
+            '17:00:00': 0
+          }
+          {}
+          {}
+          {}
+          {
+            '09:00:00': 1
+            '17:00:00': 0
+          }
+          {}
+          {}
+        ]
+        timeZone: 'Central Europe Standard Time'
+      }
+      resourcePredictionsProfile: {
+        kind: 'Automatic'
+        predictionPreference: 'Balanced'
+      }
+    }
+    concurrency: 1
+    devCenterProjectResourceId: '<devCenterProjectResourceId>'
+    fabricProfileSkuName: 'Standard_DS2_v2'
+    images: [
+      {
+        aliases: [
+          'windows-2022'
+        ]
+        buffer: '*'
+      }
+    ]
+    name: 'mdpwaf001'
+    organizationProfile: {
+      kind: 'AzureDevOps'
+      organizations: [
+        {
+          parallelism: 1
+          projects: [
+            '<azureDevOpsProjectName>'
+          ]
+          url: '<url>'
+        }
+      ]
+      permissionProfile: {
+        kind: 'CreatorOnly'
+      }
+    }
+    // Non-required parameters
+    location: '<location>'
+    subnetResourceId: '<subnetResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "agentProfile": {
+      "value": {
+        "kind": "Stateless",
+        "resourcePredictions": {
+          "daysData": [
+            {
+              "09:00:00": 1,
+              "17:00:00": 0
+            },
+            {},
+            {},
+            {},
+            {
+              "09:00:00": 1,
+              "17:00:00": 0
+            },
+            {},
+            {}
+          ],
+          "timeZone": "Central Europe Standard Time"
+        },
+        "resourcePredictionsProfile": {
+          "kind": "Automatic",
+          "predictionPreference": "Balanced"
+        }
+      }
+    },
+    "concurrency": {
+      "value": 1
+    },
+    "devCenterProjectResourceId": {
+      "value": "<devCenterProjectResourceId>"
+    },
+    "fabricProfileSkuName": {
+      "value": "Standard_DS2_v2"
+    },
+    "images": {
+      "value": [
+        {
+          "aliases": [
+            "windows-2022"
+          ],
+          "buffer": "*"
+        }
+      ]
+    },
+    "name": {
+      "value": "mdpwaf001"
+    },
+    "organizationProfile": {
+      "value": {
+        "kind": "AzureDevOps",
+        "organizations": [
+          {
+            "parallelism": 1,
+            "projects": [
+              "<azureDevOpsProjectName>"
+            ],
+            "url": "<url>"
+          }
+        ],
+        "permissionProfile": {
+          "kind": "CreatorOnly"
+        }
+      }
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -620,8 +1178,13 @@ Tags of the resource.
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location the Managed DevOps Pool resource was deployed into. |
+| `name` | string | The name of the Managed DevOps Pool. |
+| `resourceGroupName` | string | The name of the resource group the Managed DevOps Pool resource was deployed into. |
+| `resourceId` | string | The resource ID of the Managed DevOps Pool. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 

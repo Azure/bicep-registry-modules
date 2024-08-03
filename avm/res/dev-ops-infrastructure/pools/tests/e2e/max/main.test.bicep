@@ -64,21 +64,26 @@ module testDeployment '../../../main.bicep' = [
         resourcePredictions: {
           timeZone: 'Central Europe Standard Time'
           daysData: [
+            // Monday
             {
-              // Monday
               '09:00:00': 1
               '17:00:00': 0
             }
-            {} // Tuesday
-            {} // Wednesday
-            {} // Thursday
+            // Tuesday
+            {}
+            // Wednesday
+            {}
+            // Thursday
+            {}
+            // Friday
             {
-              // Friday
               '09:00:00': 1
               '17:00:00': 0
             }
-            {} // Saturday
-            {} // Sunday
+            // Saturday
+            {}
+            // Sunday
+            {}
           ]
         }
         resourcePredictionsProfile: {

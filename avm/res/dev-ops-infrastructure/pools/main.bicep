@@ -249,7 +249,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = managedDevOpsPool.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedDevOpsPool.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?principalId
 
 type imageType = {
   @description('Optional. List of aliases to reference the image by.')
