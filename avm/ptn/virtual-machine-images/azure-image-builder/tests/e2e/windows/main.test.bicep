@@ -25,70 +25,72 @@ var assetsStorageAccountContainerName = 'aibscripts'
 var installPwshScriptName = 'Install-WindowsPowerShell.ps1'
 var initializeSoftwareScriptName = 'Initialize-WindowsSoftware.ps1'
 
-module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name)}-image-sbx'
-  params: {
-    location: resourceLocation
-    deploymentsToPerform: 'All'
-    assetsStorageAccountName: assetsStorageAccountName
-    assetsStorageAccountContainerName: assetsStorageAccountContainerName
-    computeGalleryName: 'gal${namePrefix}${serviceShort}'
-    computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
-    storageAccountFilesToUpload: {
-      secureList: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      deploymentsToPerform: 'All'
+      assetsStorageAccountName: assetsStorageAccountName
+      assetsStorageAccountContainerName: assetsStorageAccountContainerName
+      computeGalleryName: 'gal${namePrefix}${serviceShort}'
+      computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
+      storageAccountFilesToUpload: {
+        secureList: [
+          {
+            name: 'script_${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__WindowsPowerShell_ps1 will be Install-WindowsPowerShell.ps1
+            value: loadTextContent('scripts/${installPwshScriptName}')
+          }
+          {
+            name: 'script_${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__WindowsSoftware_ps1 will be Initialize-WindowsSoftware.ps1
+            value: loadTextContent('scripts/${initializeSoftwareScriptName}')
+          }
+        ]
+      }
+      computeGalleryImageDefinitions: [
         {
-          name: 'script_${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__WindowsPowerShell_ps1 will be Install-WindowsPowerShell.ps1
-          value: loadTextContent('scripts/${installPwshScriptName}')
+          name: computeGalleryImageDefinitionName
+          osType: 'Windows'
+          publisher: 'devops'
+          offer: 'devops_windows'
+          sku: 'devops_windows_az'
+        }
+      ]
+      imageTemplateImageSource: {
+        type: 'PlatformImage'
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'Windows-10'
+        sku: '19h2-evd'
+        version: 'latest'
+      }
+      imageTemplateCustomizationSteps: [
+        {
+          type: 'PowerShell'
+          name: 'PowerShell installation'
+          inline: [
+            'Write-Output "Download"'
+            'wget \'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}?\' -O \'${installPwshScriptName}\''
+            'Write-Output "Invocation"'
+            '. \'${installPwshScriptName}\''
+          ]
+          runElevated: true
         }
         {
-          name: 'script_${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__WindowsSoftware_ps1 will be Initialize-WindowsSoftware.ps1
-          value: loadTextContent('scripts/${initializeSoftwareScriptName}')
+          type: 'File'
+          name: 'Download ${initializeSoftwareScriptName}'
+          sourceUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
+          destination: initializeSoftwareScriptName
+        }
+        {
+          type: 'PowerShell'
+          name: 'Software installation'
+          inline: [
+            'wget \'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}?\' -O \'${initializeSoftwareScriptName}\''
+            'pwsh \'${initializeSoftwareScriptName}\''
+          ]
+          runElevated: true
         }
       ]
     }
-    computeGalleryImageDefinitions: [
-      {
-        name: computeGalleryImageDefinitionName
-        osType: 'Windows'
-        publisher: 'devops'
-        offer: 'devops_windows'
-        sku: 'devops_windows_az'
-      }
-    ]
-    imageTemplateImageSource: {
-      type: 'PlatformImage'
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'Windows-10'
-      sku: '19h2-evd'
-      version: 'latest'
-    }
-    imageTemplateCustomizationSteps: [
-      {
-        type: 'PowerShell'
-        name: 'PowerShell installation'
-        inline: [
-          'Write-Output "Download"'
-          'wget \'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}?\' -O \'${installPwshScriptName}\''
-          'Write-Output "Invocation"'
-          '. \'${installPwshScriptName}\''
-        ]
-        runElevated: true
-      }
-      {
-        type: 'File'
-        name: 'Download ${initializeSoftwareScriptName}'
-        sourceUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
-        destination: initializeSoftwareScriptName
-      }
-      {
-        type: 'PowerShell'
-        name: 'Software installation'
-        inline: [
-          'wget \'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}?\' -O \'${initializeSoftwareScriptName}\''
-          'pwsh \'${initializeSoftwareScriptName}\''
-        ]
-        runElevated: true
-      }
-    ]
   }
-}
+]

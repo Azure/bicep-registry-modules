@@ -25,63 +25,65 @@ var assetsStorageAccountContainerName = 'aibscripts'
 var installPwshScriptName = 'Install-LinuxPowerShell.sh'
 var initializeSoftwareScriptName = 'Initialize-LinuxSoftware.ps1'
 
-module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name)}-image-sbx'
-  params: {
-    location: resourceLocation
-    deploymentsToPerform: 'All'
-    assetsStorageAccountName: assetsStorageAccountName
-    assetsStorageAccountContainerName: assetsStorageAccountContainerName
-    computeGalleryName: 'gal${namePrefix}${serviceShort}'
-    computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
-    computeGalleryImageDefinitions: [
-      {
-        hyperVGeneration: 'V2'
-        name: 'sid-linux'
-        osType: 'Linux'
-        publisher: 'devops'
-        offer: 'devops_linux'
-        sku: 'devops_linux_az'
-      }
-    ]
-    storageAccountFilesToUpload: {
-      secureList: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      deploymentsToPerform: iteration == 'init' ? 'All' : 'Only infrastructure' // Restricting to only infra on re-run as we don't want to back 2 images but only test idempotency
+      location: resourceLocation
+      assetsStorageAccountName: assetsStorageAccountName
+      assetsStorageAccountContainerName: assetsStorageAccountContainerName
+      computeGalleryName: 'gal${namePrefix}${serviceShort}'
+      computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
+      computeGalleryImageDefinitions: [
         {
-          name: 'script_${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
-          value: loadTextContent('scripts/${installPwshScriptName}')
+          hyperVGeneration: 'V2'
+          name: 'sid-linux'
+          osType: 'Linux'
+          publisher: 'devops'
+          offer: 'devops_linux'
+          sku: 'devops_linux_az'
+        }
+      ]
+      storageAccountFilesToUpload: {
+        secureList: [
+          {
+            name: 'script_${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
+            value: loadTextContent('scripts/${installPwshScriptName}')
+          }
+          {
+            name: 'script_${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__LinuxSoftware_ps1 will be Initialize-LinuxSoftware.ps1
+            value: loadTextContent('scripts/${initializeSoftwareScriptName}')
+          }
+        ]
+      }
+      imageTemplateImageSource: {
+        type: 'PlatformImage'
+        publisher: 'canonical'
+        offer: 'ubuntu-24_04-lts'
+        sku: 'server'
+        version: 'latest'
+      }
+      imageTemplateCustomizationSteps: [
+        {
+          type: 'Shell'
+          name: 'PowerShell installation'
+          scriptUri: 'https://${assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}'
         }
         {
-          name: 'script_${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__LinuxSoftware_ps1 will be Initialize-LinuxSoftware.ps1
-          value: loadTextContent('scripts/${initializeSoftwareScriptName}')
+          type: 'File'
+          name: 'Download ${initializeSoftwareScriptName}'
+          sourceUri: 'https://${assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
+          destination: initializeSoftwareScriptName
+        }
+        {
+          type: 'Shell'
+          name: 'Software installation'
+          inline: [
+            'pwsh \'${initializeSoftwareScriptName}\''
+          ]
         }
       ]
     }
-    imageTemplateImageSource: {
-      type: 'PlatformImage'
-      publisher: 'canonical'
-      offer: 'ubuntu-24_04-lts'
-      sku: 'server'
-      version: 'latest'
-    }
-    imageTemplateCustomizationSteps: [
-      {
-        type: 'Shell'
-        name: 'PowerShell installation'
-        scriptUri: 'https://${assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}'
-      }
-      {
-        type: 'File'
-        name: 'Download ${initializeSoftwareScriptName}'
-        sourceUri: 'https://${assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
-        destination: initializeSoftwareScriptName
-      }
-      {
-        type: 'Shell'
-        name: 'Software installation'
-        inline: [
-          'pwsh \'${initializeSoftwareScriptName}\''
-        ]
-      }
-    ]
   }
-}
+]

@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+metadata name = 'Custom Images using Azure Image Builder'
+metadata description = 'This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.'
+metadata owner = 'AlexanderSehr'
+
 // ================ //
 // Input Parameters //
 // ================ //
@@ -58,7 +62,7 @@ param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virt
 @description('Optional. The name of the Deployment Script to trigger the Image Template baking.')
 param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 
-@description('Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: \'script_Install-LinuxPowerShell_sh\' \n value: loadTextContent(\'../scripts/uploads/linux/Install-LinuxPowerShell.sh\') }')
+@description('Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: \'script_Install-LinuxPowerShell_sh\' \n value: loadTextContent(\'../scripts/uploads/linux/Install-LinuxPowerShell.sh\') }.')
 param storageAccountFilesToUpload object = {}
 
 @description('Optional. The name of the Deployment Script to trigger the image tempalte baking.')
@@ -78,7 +82,7 @@ param imageTemplateCustomizationSteps array
 param computeGalleryImageDefinitionName string
 
 // Shared Parameters
-@description('Optional. The location to deploy into')
+@description('Optional. The location to deploy into.')
 param location string = deployment().location
 
 @description('Optional. A parameter to control which deployments should be executed.')
@@ -90,6 +94,9 @@ param location string = deployment().location
 ])
 param deploymentsToPerform string = 'Only storage & image'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Generated. Do not provide a value! This date value is used to generate a SAS token to access the modules.')
 param baseTime string = utcNow()
 
@@ -98,6 +105,25 @@ var formattedTime = replace(replace(replace(baseTime, ':', ''), '-', ''), ' ', '
 // =========== //
 // Deployments //
 // =========== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.virtualmachineimages-aib.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 // Resource Groups
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
