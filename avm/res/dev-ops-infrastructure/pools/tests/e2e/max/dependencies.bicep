@@ -47,6 +47,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         name: 'default'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+          delegations: [
+            {
+              name: 'Microsoft.DevOpsInfrastructure/pools'
+              properties: {
+                serviceName: 'Microsoft.DevOpsInfrastructure/pools'
+              }
+            }
+          ]
         }
       }
     ]
