@@ -23,6 +23,9 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
+@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
+param networkFeatures string = 'Standard'
+
 @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
 param size int
 
@@ -63,11 +66,22 @@ var builtInRoleNames = {
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-11-01' existing = {
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2023-11-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2023-07-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -97,19 +111,39 @@ module capacityPool_volumes 'volume/main.bicep' = [
       subnetResourceId: volume.subnetResourceId
       exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
       roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
+      networkFeatures: volume.?networkFeatures
+      zones: volume.?zones
+      coolAccess: contains(volume, 'coolAccess') ? volume.coolAccess : false
+      coolAccessRetrievalPolicy: contains(volume, 'coolAccessRetrievalPolicy')
+        ? volume.coolAccessRetrievalPolicy
+        : 'Default'
+      coolnessPeriod: contains(volume, 'coolnessPeriod') ? volume.coolnessPeriod : 0
+      endpointType: contains(volume, 'endpointType') ? volume.endpointType : ''
+      remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
+      remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
+      replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
+      backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : 'backupPolicy'
+      backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
+      dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0
+      backupEnabled: contains(volume, 'backupEnabled') ? volume.backupEnabled : false
+      monthlyBackupsToKeep: contains(volume, 'monthlyBackupsToKeep') ? volume.monthlyBackupsToKeep : 0
+      weeklyBackupsToKeep: contains(volume, 'weeklyBackupsToKeep') ? volume.weeklyBackupsToKeep : 0
+      backupVaultName: contains(volume, 'backupVaultName') ? volume.backupVaultName : 'vault'
+      backupVaultLocation: contains(volume, 'backupVaultLocation') ? volume.backupVaultLocation : ''
+      backupName: contains(volume, 'backupName') ? volume.backupName : 'backup'
+      backupLabel: contains(volume, 'backupLabel') ? volume.backupLabel : ''
+      snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : 'snapshot'
+      useExistingSnapshot: contains(volume, 'useExistingSnapshot') ? volume.useExistingSnapshot : false
+      volumeResourceId: contains(volume, 'volumeResourceId') ? volume.volumeResourceId : ''
     }
   }
 ]
 
 resource capacityPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(capacityPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(capacityPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -133,11 +167,17 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = capacityPool.location
 
+@description('The resource IDs of the volume created in the capacity pool.')
+output volumeResourceId string = (volumes != []) ? capacityPool_volumes[0].outputs.resourceId : ''
+
 // =============== //
 //   Definitions   //
 // =============== //
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

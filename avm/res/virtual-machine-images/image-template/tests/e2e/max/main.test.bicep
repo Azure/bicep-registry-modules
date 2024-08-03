@@ -98,8 +98,8 @@ module testDeployment '../../../main.bicep' = {
     imageSource: {
       type: 'PlatformImage'
       publisher: 'canonical'
-      offer: '0001-com-ubuntu-server-lunar'
-      sku: '23_04-gen2'
+      offer: 'ubuntu-24_04-lts'
+      sku: 'server'
       version: 'latest'
     }
     buildTimeoutInMinutes: 60

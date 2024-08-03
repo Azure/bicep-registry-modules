@@ -19,10 +19,10 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/workspaces) |
+| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -61,6 +61,10 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     kind: 'Hub'
     location: '<location>'
+    workspaceHubConfig: {
+      additionalWorkspaceStorageAccounts: '<additionalWorkspaceStorageAccounts>'
+      defaultWorkspaceResourceGroup: '<defaultWorkspaceResourceGroup>'
+    }
   }
 }
 ```
@@ -99,6 +103,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "location": {
       "value": "<location>"
+    },
+    "workspaceHubConfig": {
+      "value": {
+        "additionalWorkspaceStorageAccounts": "<additionalWorkspaceStorageAccounts>",
+        "defaultWorkspaceResourceGroup": "<defaultWorkspaceResourceGroup>"
+      }
     }
   }
 }
@@ -203,6 +213,19 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         '<managedIdentityResourceId>'
       ]
     }
+    managedNetworkSettings: {
+      isolationMode: 'AllowInternetOutbound'
+      outboundRules: {
+        rule: {
+          category: 'UserDefined'
+          destination: {
+            serviceResourceId: '<serviceResourceId>'
+            subresourceTarget: 'blob'
+          }
+          type: 'PrivateEndpoint'
+        }
+      }
+    }
     primaryUserAssignedIdentity: '<primaryUserAssignedIdentity>'
   }
 }
@@ -253,6 +276,21 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "managedNetworkSettings": {
+      "value": {
+        "isolationMode": "AllowInternetOutbound",
+        "outboundRules": {
+          "rule": {
+            "category": "UserDefined",
+            "destination": {
+              "serviceResourceId": "<serviceResourceId>",
+              "subresourceTarget": "blob"
+            },
+            "type": "PrivateEndpoint"
+          }
+        }
       }
     },
     "primaryUserAssignedIdentity": {
@@ -424,12 +462,21 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         '<managedIdentityResourceId>'
       ]
     }
+    managedNetworkSettings: {
+      isolationMode: 'Disabled'
+    }
     primaryUserAssignedIdentity: '<primaryUserAssignedIdentity>'
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          name: 'group1'
+          privateDnsZoneGroupConfigs: [
+            {
+              name: 'config1'
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -438,19 +485,27 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          name: 'group2'
+          privateDnsZoneGroupConfigs: [
+            {
+              name: 'config2'
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: [
       {
+        name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -461,6 +516,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    serverlessComputeSettings: {
+      serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
+      serverlessComputeNoPublicIP: true
+    }
+    systemDatastoresAuthMode: 'accessKey'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -576,15 +636,26 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         ]
       }
     },
+    "managedNetworkSettings": {
+      "value": {
+        "isolationMode": "Disabled"
+      }
+    },
     "primaryUserAssignedIdentity": {
       "value": "<primaryUserAssignedIdentity>"
     },
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "name": "group1",
+            "privateDnsZoneGroupConfigs": [
+              {
+                "name": "config1",
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -593,9 +664,15 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "name": "group2",
+            "privateDnsZoneGroupConfigs": [
+              {
+                "name": "config2",
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -603,11 +680,13 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "roleAssignments": {
       "value": [
         {
+          "name": "f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -618,6 +697,15 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "serverlessComputeSettings": {
+      "value": {
+        "serverlessComputeCustomSubnet": "<serverlessComputeCustomSubnet>",
+        "serverlessComputeNoPublicIP": true
+      }
+    },
+    "systemDatastoresAuthMode": {
+      "value": "accessKey"
     },
     "tags": {
       "value": {
@@ -662,11 +750,43 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       }
     ]
     location: '<location>'
+    managedNetworkSettings: {
+      isolationMode: 'AllowOnlyApprovedOutbound'
+      outboundRules: {
+        rule1: {
+          category: 'UserDefined'
+          destination: {
+            serviceResourceId: '<serviceResourceId>'
+            sparkEnabled: true
+            subresourceTarget: 'blob'
+          }
+          type: 'PrivateEndpoint'
+        }
+        rule2: {
+          category: 'UserDefined'
+          destination: 'pypi.org'
+          type: 'FQDN'
+        }
+        rule3: {
+          category: 'UserDefined'
+          destination: {
+            portRanges: '80,443'
+            protocol: 'TCP'
+            serviceTag: 'AppService'
+          }
+          type: 'ServiceTag'
+        }
+      }
+    }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -675,6 +795,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
     ]
+    systemDatastoresAuthMode: 'identity'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -726,12 +847,46 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "location": {
       "value": "<location>"
     },
+    "managedNetworkSettings": {
+      "value": {
+        "isolationMode": "AllowOnlyApprovedOutbound",
+        "outboundRules": {
+          "rule1": {
+            "category": "UserDefined",
+            "destination": {
+              "serviceResourceId": "<serviceResourceId>",
+              "sparkEnabled": true,
+              "subresourceTarget": "blob"
+            },
+            "type": "PrivateEndpoint"
+          },
+          "rule2": {
+            "category": "UserDefined",
+            "destination": "pypi.org",
+            "type": "FQDN"
+          },
+          "rule3": {
+            "category": "UserDefined",
+            "destination": {
+              "portRanges": "80,443",
+              "protocol": "TCP",
+              "serviceTag": "AppService"
+            },
+            "type": "ServiceTag"
+          }
+        }
+      }
+    },
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -740,6 +895,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           }
         }
       ]
+    },
+    "systemDatastoresAuthMode": {
+      "value": "identity"
     },
     "tags": {
       "value": {
@@ -780,7 +938,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowPublicAccessWhenBehindVnet`](#parameter-allowpublicaccesswhenbehindvnet) | bool | The flag to indicate whether to allow public access when behind VNet. |
 | [`associatedContainerRegistryResourceId`](#parameter-associatedcontainerregistryresourceid) | string | The resource ID of the associated Container Registry. |
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -794,12 +951,16 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. At least one identity type is required. |
+| [`managedNetworkSettings`](#parameter-managednetworksettings) | object | Managed Network settings for a machine learning workspace. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`serverlessComputeSettings`](#parameter-serverlesscomputesettings) | object | Settings for serverless compute created in the workspace. |
 | [`serviceManagedResourcesSettings`](#parameter-servicemanagedresourcessettings) | object | The service managed resource settings. |
 | [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The list of shared private link resources in this workspace. Note: This property is not idempotent. |
+| [`systemDatastoresAuthMode`](#parameter-systemdatastoresauthmode) | string | The authentication mode used by the workspace when connecting to the default storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
+| [`workspaceHubConfig`](#parameter-workspacehubconfig) | object | Configuration for workspace hub settings. |
 
 ### Parameter: `name`
 
@@ -907,14 +1068,6 @@ The user assigned identity resource ID that represents the workspace identity. R
 
 - Required: No
 - Type: string
-
-### Parameter: `allowPublicAccessWhenBehindVnet`
-
-The flag to indicate whether to allow public access when behind VNet.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `associatedContainerRegistryResourceId`
 
@@ -1257,6 +1410,60 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
+### Parameter: `managedNetworkSettings`
+
+Managed Network settings for a machine learning workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isolationMode`](#parameter-managednetworksettingsisolationmode) | string | Isolation mode for the managed network of a machine learning workspace. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`outboundRules`](#parameter-managednetworksettingsoutboundrules) | object | Outbound rules for the managed network of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.isolationMode`
+
+Isolation mode for the managed network of a machine learning workspace.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AllowInternetOutbound'
+    'AllowOnlyApprovedOutbound'
+    'Disabled'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules`
+
+Outbound rules for the managed network of a machine learning workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-managednetworksettingsoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<`
+
+The outbound rule. The name of the rule is the object key.
+
+- Required: Yes
+- Type: object
+
 ### Parameter: `privateEndpoints`
 
 Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
@@ -1284,8 +1491,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1469,19 +1675,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1519,6 +1770,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1569,6 +1821,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1602,10 +1861,11 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled.
 
 - Required: No
 - Type: string
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -1636,6 +1896,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1686,6 +1947,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1703,6 +1971,34 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `serverlessComputeSettings`
+
+Settings for serverless compute created in the workspace.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serverlessComputeCustomSubnet`](#parameter-serverlesscomputesettingsserverlesscomputecustomsubnet) | string | The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed. |
+| [`serverlessComputeNoPublicIP`](#parameter-serverlesscomputesettingsserverlesscomputenopublicip) | bool | The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint. |
+
+### Parameter: `serverlessComputeSettings.serverlessComputeCustomSubnet`
+
+The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed.
+
+- Required: No
+- Type: string
+
+### Parameter: `serverlessComputeSettings.serverlessComputeNoPublicIP`
+
+The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `serviceManagedResourcesSettings`
 
 The service managed resource settings.
@@ -1717,12 +2013,54 @@ The list of shared private link resources in this workspace. Note: This property
 - Required: No
 - Type: array
 
+### Parameter: `systemDatastoresAuthMode`
+
+The authentication mode used by the workspace when connecting to the default storage account.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'accessKey'
+    'identity'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Resource tags.
 
 - Required: No
 - Type: object
+
+### Parameter: `workspaceHubConfig`
+
+Configuration for workspace hub settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`additionalWorkspaceStorageAccounts`](#parameter-workspacehubconfigadditionalworkspacestorageaccounts) | array | The resource IDs of additional storage accounts to attach to the workspace. |
+| [`defaultWorkspaceResourceGroup`](#parameter-workspacehubconfigdefaultworkspaceresourcegroup) | string | The resource ID of the default resource group for projects created in the workspace hub. |
+
+### Parameter: `workspaceHubConfig.additionalWorkspaceStorageAccounts`
+
+The resource IDs of additional storage accounts to attach to the workspace.
+
+- Required: No
+- Type: array
+
+### Parameter: `workspaceHubConfig.defaultWorkspaceResourceGroup`
+
+The resource ID of the default resource group for projects created in the workspace hub.
+
+- Required: No
+- Type: string
 
 
 ## Outputs
@@ -1741,7 +2079,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.0` | Remote reference |
 
 ## Notes
 
