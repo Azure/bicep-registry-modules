@@ -52,6 +52,7 @@ body:
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/security/security-center"
+        - "avm/ptn/virtual-machine-images/image-template"
         - "avm/res/aad/domain-service"
         - "avm/res/alerts-management/action-rule"
         - "avm/res/analysis-services/server"

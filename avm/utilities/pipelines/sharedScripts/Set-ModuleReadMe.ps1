@@ -1030,20 +1030,20 @@ function ConvertTo-FormattedJSONParameterObject {
         $mayHaveValue = $line -match '\s*.+:\s+'
         if ($mayHaveValue) {
 
-            $lineValue = ($line -split '\s*.+:\s+')[1].Trim() # i.e. optional spaces, followed by a name ("xzy"), followed by ':', folowed by at least a space
+            $lineValue = ($line -split '\s*.+:\s+')[1].Trim() # i.e., optional spaces, followed by a name ("xzy"), followed by ':', folowed by at least a space
 
             # Individual checks
-            $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g. test: {}
-            $isLineWithObjectPropertyReferenceValue = $lineValue -like '*.*' # e.g. resourceGroupResources.outputs.virtualWWANResourceId`
+            $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g., test: {}
+            $isLineWithObjectPropertyReferenceValue = $lineValue -like '*.*' # e.g., resourceGroupResources.outputs.virtualWWANResourceId`
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
-
+            $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}'
             $isLineWithStringValue = $lineValue -match '".+"' # e.g. "value"
-            $isLineWithStringNestedFunction = $lineValue -match "^['|`"]{1}.*\$\{.+['|`"]{1}$|^['|`"]{0}[a-zA-Z\(]+\(.+" # e.g. (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4] or '${last(...)}' or last() or "test${environment()}"
+            $isLineWithFunction = $lineValue -match '^[a-zA-Z]+\(.+' # e.g., split(something)
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
-            $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g. isSecure: true
+            $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g., isSecure: true
 
             # Special case: Multi-line function
-            $isLineWithMultilineFunction = $lineValue -match '[a-zA-Z]+\s*\([^\)]*\){0}\s*$' # e.g. roleDefinitionIdOrName: subscriptionResourceId( \n 'Microsoft.Authorization/roleDefinitions', \n 'acdd72a7-3385-48ef-bd42-f606fba81ae7' \n )
+            $isLineWithMultilineFunction = $lineValue -match '[a-zA-Z]+\s*\([^\)]*\){0}\s*$' # e.g., roleDefinitionIdOrName: subscriptionResourceId( \n 'Microsoft.Authorization/roleDefinitions', \n 'acdd72a7-3385-48ef-bd42-f606fba81ae7' \n )
             if ($isLineWithMultilineFunction) {
                 # Search leading indent so that we can use it to identify at which line the function ends
                 $indent = ([regex]::Match($paramInJSONFormatArray[$index], '^(\s+)')).Captures.Groups[1].Value.Length
@@ -1081,7 +1081,7 @@ function ConvertTo-FormattedJSONParameterObject {
                 $isLineWithObjectReferenceKeyAndEmptyObjectValue = $isLineWithEmptyObjectValue -and $isLineWithReferenceInLineKey
                 # In case of any contained function like '"backupVaultResourceGroup": (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4]' we'll only show "<backupVaultResourceGroup>"
 
-                if ($isLineWithObjectPropertyReference -or $isLineWithStringNestedFunction -or $isLineWithParameterOrVariableReferenceValue) {
+                if ($isLineWithObjectPropertyReference -or $isLineWithStringNestedReference -or $isLineWithFunction -or $isLineWithParameterOrVariableReferenceValue) {
                     $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
                 } elseif ($isLineWithObjectReferenceKeyAndEmptyObjectValue) {
                     $line = '"<{0}>": {1}' -f (($line -split ':')[0] -split '\.')[-1].TrimEnd('}"'), $lineValue
@@ -1094,6 +1094,9 @@ function ConvertTo-FormattedJSONParameterObject {
             } elseif ($line -match '^\s*[a-zA-Z]+\s*$') {
                 # If there is simply only a value such as a variable reference, we'll wrap it as a string to replace. For example a reference of a variable `addressPrefix` will be replaced with `"<addressPrefix>"`
                 $line = '"<{0}>"' -f $line.Trim()
+            } elseif ($line -match "['|`"]{1}.*\$\{.+") {
+                # If the line contains a string with a reference, we're replacing the reference with a placeholder. For example "pwsh \"${initializeSoftwareScriptName}\"" would only show "pwsh <value>"
+                $line = $line -replace '\$\{.+\}', '<value>'
             }
         }
 
