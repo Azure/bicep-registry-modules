@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "8728217426108975166"
+      "version": "0.29.47.4906",
+      "templateHash": "1745132524255069510"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
