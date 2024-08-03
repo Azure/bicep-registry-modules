@@ -431,7 +431,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the Managed Identity used by deployment scripts. |
 | [`deploymentScriptStorageAccountName`](#parameter-deploymentscriptstorageaccountname) | string | The name of the storage account. |
 | [`deploymentScriptSubnet`](#parameter-deploymentscriptsubnet) | string | The name of the Image Template Virtual Network Subnet to create. |
-| [`deploymentsToPerform`](#parameter-deploymentstoperform) | string | A parameter to control which deployments should be executed |
+| [`deploymentsToPerform`](#parameter-deploymentstoperform) | string | A parameter to control which deployments should be executed. |
 | [`imageManagedIdentityName`](#parameter-imagemanagedidentityname) | string | The name of the Managed Identity used by the Azure Image Builder. |
 | [`imageSubnetName`](#parameter-imagesubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
 | [`imageTemplateDeploymentScriptName`](#parameter-imagetemplatedeploymentscriptname) | string | The name of the Deployment Script to trigger the image tempalte baking. |
@@ -528,7 +528,7 @@ The name of the Image Template Virtual Network Subnet to create.
 
 ### Parameter: `deploymentsToPerform`
 
-A parameter to control which deployments should be executed
+A parameter to control which deployments should be executed.
 
 - Required: No
 - Type: string

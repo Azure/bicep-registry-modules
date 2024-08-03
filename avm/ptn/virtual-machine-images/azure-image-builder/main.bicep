@@ -81,7 +81,7 @@ param computeGalleryImageDefinitionName string
 @description('Optional. The location to deploy into')
 param location string = deployment().location
 
-@description('Optional. A parameter to control which deployments should be executed')
+@description('Optional. A parameter to control which deployments should be executed.')
 @allowed([
   'All'
   'Only infrastructure'
