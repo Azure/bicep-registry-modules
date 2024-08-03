@@ -131,9 +131,7 @@ module testDeployment '../../../main.bicep' = [
       osDiskStorageAccount: 'Standard'
       secretsManagementSettings: {
         keyExportable: true
-        observedCertificates: [
-          ''
-        ]
+        observedCertificates: []
       }
       roleAssignments: [
         {
