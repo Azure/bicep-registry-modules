@@ -127,7 +127,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       }
     ]
     notScopes: [
-      '/subscriptions/${subscriptionId}/resourceGroups/validation-rg'
+      '/subscriptions/<value>/resourceGroups/validation-rg'
     ]
     overrides: [
       {
@@ -232,7 +232,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "notScopes": {
       "value": [
-        "/subscriptions/${subscriptionId}/resourceGroups/validation-rg"
+        "/subscriptions/<value>/resourceGroups/validation-rg"
       ]
     },
     "overrides": {
@@ -674,7 +674,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       }
     ]
     notScopes: [
-      '/subscriptions/${subscriptionId}/resourceGroups/validation-rg'
+      '/subscriptions/<value>/resourceGroups/validation-rg'
     ]
     overrides: [
       {
@@ -778,7 +778,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "notScopes": {
       "value": [
-        "/subscriptions/${subscriptionId}/resourceGroups/validation-rg"
+        "/subscriptions/<value>/resourceGroups/validation-rg"
       ]
     },
     "overrides": {
