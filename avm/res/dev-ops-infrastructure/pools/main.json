@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3939258903516550212"
+      "templateHash": "13643575311996891390"
     },
     "name": "Managed DevOps Pools",
     "description": "This module deploys the Managed DevOps Pools resource.",
@@ -958,6 +958,43 @@
       "dependsOn": [
         "managedDevOpsPool"
       ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Managed DevOps Pool."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Managed DevOps Pool."
+      },
+      "value": "[resourceId('Microsoft.DevOpsInfrastructure/pools', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Managed DevOps Pool resource was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the Managed DevOps Pool resource was deployed into."
+      },
+      "value": "[reference('managedDevOpsPool', '2024-04-04-preview', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('managedDevOpsPool', '2024-04-04-preview', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }
