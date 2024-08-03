@@ -340,7 +340,7 @@ module app_slots 'slot/main.bicep' = [
       appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
       authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
       diagnosticSettings: slot.?diagnosticSettings
-      roleAssignments: slot.?roleAssignments ?? roleAssignments
+      roleAssignments: slot.?roleAssignments
       appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
       lock: slot.?lock ?? lock

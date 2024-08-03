@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17897478521194525475"
+      "templateHash": "15924562884872907151"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1462,7 +1462,7 @@
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'roleAssignments'), parameters('roleAssignments'))]"
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "appSettingsKeyValuePairs": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'appSettingsKeyValuePairs'), parameters('appSettingsKeyValuePairs'))]"
