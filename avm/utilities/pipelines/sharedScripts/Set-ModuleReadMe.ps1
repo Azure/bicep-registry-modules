@@ -1109,13 +1109,26 @@ function ConvertTo-FormattedJSONParameterObject {
 
     # [2.7] Syntax: Add comma everywhere unless:
     # - the current line has an opening 'object: {' or 'array: [' character
-    # - the line after the current line has a closing 'object: {' or 'array: [' character
+    # - the line after the current line has a closing 'object: }' or 'array: ]' character
     # - it's the last closing bracket
+    # - is a comment
     for ($index = 0; $index -lt $paramInJSONFormatArray.Count; $index++) {
-        if (($paramInJSONFormatArray[$index] -match '[\{|\[]\s*$') -or (($index -lt $paramInJSONFormatArray.Count - 1) -and $paramInJSONFormatArray[$index + 1] -match '^\s*[\]|\}]\s*$') -or ($index -eq $paramInJSONFormatArray.Count - 1)) {
+        $isOpeningObjectOrArray = $paramInJSONFormatArray[$index] -match '[\{|\[]\s*$'
+        $nextLineIsClosingObjectOrArray = ($index -lt $paramInJSONFormatArray.Count - 1) -and $paramInJSONFormatArray[$index + 1] -match '^\s*[\]|\}]\s*$'
+        $isLastLine = $index -eq $paramInJSONFormatArray.Count - 1
+        $isComment = $paramInJSONFormatArray[$index] -match '^\s*\/\/.*'
+        if ($isOpeningObjectOrArray -or $nextLineIsClosingObjectOrArray -or $isLastLine -or $isComment) {
             continue
         }
-        $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
+
+        if ( $paramInJSONFormatArray[$index] -match '(?<![:\/])\/\/.*$' ) {
+            # Has inline comment (i.e., a situation where you have '//' not enclosed by quotes)
+            $lineElements = $paramInJSONFormatArray[$index] -split '(?<![:\/])\/\/.*$'
+            $paramInJSONFormatArray[$index] = '{0}, // {1}' -f $lineElements[0].Trim(), $lineElements[1].Trim()
+
+        } else {
+            $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
+        }
     }
 
     # [2.8] Format the final JSON string to an object to enable processing
