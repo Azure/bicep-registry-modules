@@ -103,6 +103,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-expressroutecircuit.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -122,7 +133,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource expressRouteCircuits 'Microsoft.Network/expressRouteCircuits@2023-04-01' = {
+resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2023-04-01' = {
   name: name
   location: location
   tags: tags
@@ -163,7 +174,7 @@ resource expressRouteCircuits 'Microsoft.Network/expressRouteCircuits@2023-04-01
   }
 }
 
-resource expressRouteCircuits_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+resource expressRouteCircuit_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
@@ -171,10 +182,10 @@ resource expressRouteCircuits_lock 'Microsoft.Authorization/locks@2020-05-01' = 
       ? 'Cannot delete resource or child resources.'
       : 'Cannot delete or modify the resource or child resources.'
   }
-  scope: expressRouteCircuits
+  scope: expressRouteCircuit
 }
 
-resource expressRouteCircuits_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+resource expressRouteCircuit_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
     properties: {
@@ -199,19 +210,19 @@ resource expressRouteCircuits_diagnosticSettings 'Microsoft.Insights/diagnosticS
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
-    scope: expressRouteCircuits
+    scope: expressRouteCircuit
   }
 ]
 
-resource expressRouteCircuits_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(expressRouteCircuits.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource expressRouteCircuit_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      expressRouteCircuit.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -219,24 +230,24 @@ resource expressRouteCircuits_roleAssignments 'Microsoft.Authorization/roleAssig
       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
-    scope: expressRouteCircuits
+    scope: expressRouteCircuit
   }
 ]
 
 @description('The resource ID of express route curcuit.')
-output resourceId string = expressRouteCircuits.id
+output resourceId string = expressRouteCircuit.id
 
 @description('The resource group the express route curcuit was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The name of express route curcuit.')
-output name string = expressRouteCircuits.name
+output name string = expressRouteCircuit.name
 
 @description('The service key of the express route circuit.')
-output serviceKey string = expressRouteCircuits.properties.serviceKey
+output serviceKey string = expressRouteCircuit.properties.serviceKey
 
 @description('The location the resource was deployed into.')
-output location string = expressRouteCircuits.location
+output location string = expressRouteCircuit.location
 
 // =============== //
 //   Definitions   //
@@ -251,6 +262,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
