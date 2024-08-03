@@ -5,8 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "129143249030329306"
-    }
+      "templateHash": "9414995170339455848"
+    },
+    "name": "Custom Images using Azure Image Builder",
+    "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
+    "owner": "AlexanderSehr"
   },
   "parameters": {
     "resourceGroupName": {
@@ -122,14 +125,14 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: 'script_Install-LinuxPowerShell_sh' \n value: loadTextContent('../scripts/uploads/linux/Install-LinuxPowerShell.sh') }"
+        "description": "Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: 'script_Install-LinuxPowerShell_sh' \n value: loadTextContent('../scripts/uploads/linux/Install-LinuxPowerShell.sh') }."
       }
     },
     "imageTemplateDeploymentScriptName": {
       "type": "string",
       "defaultValue": "ds-triggerBuild-imageTemplate",
       "metadata": {
-        "description": "Optional. The name of the Deployment Script to trigger the image tempalte baking."
+        "description": "Optional. The name of the Deployment Script to trigger the image template baking."
       }
     },
     "imageTemplateName": {
@@ -161,7 +164,7 @@
       "type": "string",
       "defaultValue": "[deployment().location]",
       "metadata": {
-        "description": "Optional. The location to deploy into"
+        "description": "Optional. The location to deploy into."
       }
     },
     "deploymentsToPerform": {
@@ -177,6 +180,13 @@
         "description": "Optional. A parameter to control which deployments should be executed."
       }
     },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
     "baseTime": {
       "type": "string",
       "defaultValue": "[utcNow()]",
@@ -190,6 +200,26 @@
     "formattedTime": "[replace(replace(replace(parameters('baseTime'), ':', ''), '-', ''), ' ', '')]"
   },
   "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.ptn.virtualmachineimages-aib.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
       "type": "Microsoft.Resources/resourceGroups",

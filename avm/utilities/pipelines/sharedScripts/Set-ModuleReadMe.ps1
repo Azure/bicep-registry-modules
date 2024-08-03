@@ -1027,10 +1027,10 @@ function ConvertTo-FormattedJSONParameterObject {
         $line = $pattern.replace($line, '"$1":', 1)
 
         # [2.5] Syntax: Replace Bicep resource ID references
-        $mayHaveValue = $line -match '\s*.+:\s+'
+        $mayHaveValue = $line -match '^\s*.+?:\s+'
         if ($mayHaveValue) {
 
-            $lineValue = ($line -split '\s*.+:\s+')[1].Trim() # i.e., optional spaces, followed by a name ("xzy"), followed by ':', folowed by at least a space
+            $lineValue = ($line -split '^\s*.+?:\s+')[1].Trim() # i.e., optional spaces, followed by a name ("xzy"), followed by ':', folowed by at least a space
 
             # Individual checks
             $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g., test: {}
@@ -1041,6 +1041,7 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithFunction = $lineValue -match '^[a-zA-Z]+\(.+' # e.g., split(something)
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
             $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g., isSecure: true
+            $isLineContainingCondition = $lineValue -match '^\w+ [=!?|&]{2} .+\?.+\:.+$' # e.g., iteration == "init" ? "A" : "B"
 
             # Special case: Multi-line function
             $isLineWithMultilineFunction = $lineValue -match '[a-zA-Z]+\s*\([^\)]*\){0}\s*$' # e.g., roleDefinitionIdOrName: subscriptionResourceId( \n 'Microsoft.Authorization/roleDefinitions', \n 'acdd72a7-3385-48ef-bd42-f606fba81ae7' \n )
@@ -1081,7 +1082,7 @@ function ConvertTo-FormattedJSONParameterObject {
                 $isLineWithObjectReferenceKeyAndEmptyObjectValue = $isLineWithEmptyObjectValue -and $isLineWithReferenceInLineKey
                 # In case of any contained function like '"backupVaultResourceGroup": (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4]' we'll only show "<backupVaultResourceGroup>"
 
-                if ($isLineWithObjectPropertyReference -or $isLineWithStringNestedReference -or $isLineWithFunction -or $isLineWithParameterOrVariableReferenceValue) {
+                if ($isLineWithObjectPropertyReference -or $isLineWithStringNestedReference -or $isLineWithFunction -or $isLineWithParameterOrVariableReferenceValue -or $isLineContainingCondition) {
                     $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
                 } elseif ($isLineWithObjectReferenceKeyAndEmptyObjectValue) {
                     $line = '"<{0}>": {1}' -f (($line -split ':')[0] -split '\.')[-1].TrimEnd('}"'), $lineValue

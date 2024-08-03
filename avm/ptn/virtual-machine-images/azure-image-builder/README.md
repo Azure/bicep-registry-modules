@@ -1,5 +1,6 @@
-#  `[VirtualMachineImages/AzureImageBuilder]`
+# Custom Images using Azure Image Builder `[VirtualMachineImages/AzureImageBuilder]`
 
+This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.
 
 ## Navigation
 
@@ -111,7 +112,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     }
     // Non-required parameters
     assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
-    deploymentsToPerform: 'All'
+    deploymentsToPerform: '<deploymentsToPerform>'
     location: '<location>'
     storageAccountFilesToUpload: {
       secureList: [
@@ -199,7 +200,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": "<assetsStorageAccountContainerName>"
     },
     "deploymentsToPerform": {
-      "value": "All"
+      "value": "<deploymentsToPerform>"
     },
     "location": {
       "value": "<location>"
@@ -432,14 +433,15 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 | [`deploymentScriptStorageAccountName`](#parameter-deploymentscriptstorageaccountname) | string | The name of the storage account. |
 | [`deploymentScriptSubnet`](#parameter-deploymentscriptsubnet) | string | The name of the Image Template Virtual Network Subnet to create. |
 | [`deploymentsToPerform`](#parameter-deploymentstoperform) | string | A parameter to control which deployments should be executed. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`imageManagedIdentityName`](#parameter-imagemanagedidentityname) | string | The name of the Managed Identity used by the Azure Image Builder. |
 | [`imageSubnetName`](#parameter-imagesubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
-| [`imageTemplateDeploymentScriptName`](#parameter-imagetemplatedeploymentscriptname) | string | The name of the Deployment Script to trigger the image tempalte baking. |
+| [`imageTemplateDeploymentScriptName`](#parameter-imagetemplatedeploymentscriptname) | string | The name of the Deployment Script to trigger the image template baking. |
 | [`imageTemplateName`](#parameter-imagetemplatename) | string | The name of the Image Template. |
 | [`imageTemplateResourceGroupName`](#parameter-imagetemplateresourcegroupname) | string | The name of the Resource Group to deploy the Image Template resources into. |
-| [`location`](#parameter-location) | string | The location to deploy into |
+| [`location`](#parameter-location) | string | The location to deploy into. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The name of the Resource Group. |
-| [`storageAccountFilesToUpload`](#parameter-storageaccountfilestoupload) | object | The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: 'script_Install-LinuxPowerShell_sh' <p> value: loadTextContent('../scripts/uploads/linux/Install-LinuxPowerShell.sh') } |
+| [`storageAccountFilesToUpload`](#parameter-storageaccountfilestoupload) | object | The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: 'script_Install-LinuxPowerShell_sh' <p> value: loadTextContent('../scripts/uploads/linux/Install-LinuxPowerShell.sh') }. |
 | [`storageDeploymentScriptName`](#parameter-storagedeploymentscriptname) | string | The name of the Deployment Script to trigger the Image Template baking. |
 | [`virtualNetworkAddressPrefix`](#parameter-virtualnetworkaddressprefix) | string | The address space of the Virtual Network. |
 | [`virtualNetworkDeploymentScriptSubnetAddressPrefix`](#parameter-virtualnetworkdeploymentscriptsubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the deployment script. |
@@ -543,6 +545,14 @@ A parameter to control which deployments should be executed.
   ]
   ```
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `imageManagedIdentityName`
 
 The name of the Managed Identity used by the Azure Image Builder.
@@ -561,7 +571,7 @@ The name of the Image Template Virtual Network Subnet to create.
 
 ### Parameter: `imageTemplateDeploymentScriptName`
 
-The name of the Deployment Script to trigger the image tempalte baking.
+The name of the Deployment Script to trigger the image template baking.
 
 - Required: No
 - Type: string
@@ -585,7 +595,7 @@ The name of the Resource Group to deploy the Image Template resources into.
 
 ### Parameter: `location`
 
-The location to deploy into
+The location to deploy into.
 
 - Required: No
 - Type: string
@@ -601,7 +611,7 @@ The name of the Resource Group.
 
 ### Parameter: `storageAccountFilesToUpload`
 
-The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: 'script_Install-LinuxPowerShell_sh' <p> value: loadTextContent('../scripts/uploads/linux/Install-LinuxPowerShell.sh') }
+The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: 'script_Install-LinuxPowerShell_sh' <p> value: loadTextContent('../scripts/uploads/linux/Install-LinuxPowerShell.sh') }.
 
 - Required: No
 - Type: object

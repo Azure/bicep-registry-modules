@@ -65,7 +65,7 @@ param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 @description('Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: \'script_Install-LinuxPowerShell_sh\' \n value: loadTextContent(\'../scripts/uploads/linux/Install-LinuxPowerShell.sh\') }.')
 param storageAccountFilesToUpload object = {}
 
-@description('Optional. The name of the Deployment Script to trigger the image tempalte baking.')
+@description('Optional. The name of the Deployment Script to trigger the image template baking.')
 param imageTemplateDeploymentScriptName string = 'ds-triggerBuild-imageTemplate'
 
 // Image Template Parameters
