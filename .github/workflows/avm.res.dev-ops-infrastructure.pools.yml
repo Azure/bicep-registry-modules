@@ -1,4 +1,4 @@
-name: "avm.res.devops-infrastructure.managed-devops-pools"
+name: "avm.res.dev-ops-infrastructure.pools"
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.devops-infrastructure.managed-devops-pools.yml"
-      - "avm/res/devops-infrastructure/managed-devops-pools/**"
+      - ".github/workflows/avm.res.dev-ops-infrastructure.pools.yml"
+      - "avm/res/dev-ops-infrastructure/pools/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/devops-infrastructure/managed-devops-pools"
-  workflowPath: ".github/workflows/avm.res.devops-infrastructure.managed-devops-pools.yml"
+  modulePath: "avm/res/dev-ops-infrastructure/pools"
+  workflowPath: ".github/workflows/avm.res.dev-ops-infrastructure.pools.yml"
 
 concurrency:
   group: ${{ github.workflow }}
