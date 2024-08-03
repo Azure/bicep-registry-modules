@@ -364,6 +364,25 @@ type agentStatelessType = {
     timeZone: string
 
     @description('Optional. The number of agents needed at a specific time.')
+    @metadata({
+      example: '''
+      [
+        { // Monday
+          '09:00': 5
+          '22:00': 0
+        }
+        {} // Tuesday
+        {} // Wednesday
+        {} // Thursday
+        { // Friday
+          '09:00': 5
+          '22:00': 0
+        }
+        {} // Saturday
+        {} // Sunday
+      ]
+      '''
+    })
     daysData: object[]?
   }?
 

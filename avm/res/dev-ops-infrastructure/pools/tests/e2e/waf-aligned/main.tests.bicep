@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-di.mdp-${serviceShort}-rg'
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mdpmax'
+param serviceShort string = 'mdpwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -65,15 +65,20 @@ module testDeployment '../../../main.bicep' = [
           timeZone: 'Central Europe Standard Time'
           daysData: [
             {
+              // Monday
               '09:00:00': 1
               '17:00:00': 0
             }
-            {}
-            {}
-            {}
-            {}
-            {}
-            {}
+            {} // Tuesday
+            {} // Wednesday
+            {} // Thursday
+            {
+              // Friday
+              '09:00:00': 1
+              '17:00:00': 0
+            }
+            {} // Saturday
+            {} // Sunday
           ]
         }
         resourcePredictionsProfile: {
@@ -89,70 +94,24 @@ module testDeployment '../../../main.bicep' = [
             'windows-2022'
           ]
           buffer: '*'
-          wellKnownImageName: 'windows-2022/latest'
         }
       ]
       fabricProfileSkuName: 'Standard_DS2_v2'
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
       organizationProfile: {
         kind: 'AzureDevOps'
         organizations: [
           {
             url: 'https://dev.azure.com/${azureDevOpsOrganizationName}'
-            parallelism: 1
             projects: [
               azureDevOpsProjectName
             ]
+            parallelism: 1
           }
         ]
         permissionProfile: {
           kind: 'CreatorOnly'
         }
-      }
-      dataDisks: [
-        {
-          caching: 'ReadWrite'
-          diskSizeGiB: 100
-          driveLetter: 'B'
-          storageAccountType: 'Standard_LRS'
-        }
-      ]
-      logonType: 'Interactive'
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      osDiskStorageAccount: 'Standard'
-      secretsManagementSettings: {
-        keyExportable: true
-        observedCertificates: [
-          ''
-        ]
-      }
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
       }
     }
   }
