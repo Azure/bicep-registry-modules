@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 // ========= //
 // Variables //
 // ========= //
-var azureDevOpsOrganizationName = 'contoso'
+var azureDevOpsOrganizationName = 'john-lokerse'
 var azureDevOpsProjectName = 'ContosoProject'
 
 // ============ //
