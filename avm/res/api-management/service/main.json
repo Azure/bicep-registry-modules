@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "6395782495647847617"
+      "templateHash": "17801704016046413855"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
@@ -590,14 +590,14 @@
         "name": "[parameters('sku')]",
         "capacity": "[if(contains(parameters('sku'), 'Consumption'), 0, if(contains(parameters('sku'), 'Developer'), 1, parameters('skuCapacity')))]"
       },
-      "zones": "[if(contains(parameters('sku'), 'Premium'), parameters('zones'), null())]",
+      "zones": "[if(contains(parameters('sku'), 'Premium'), parameters('zones'), createArray())]",
       "identity": "[variables('identity')]",
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[if(contains(parameters('sku'), 'Premium'), parameters('additionalLocations'), null())]",
+        "additionalLocations": "[if(contains(parameters('sku'), 'Premium'), parameters('additionalLocations'), createArray())]",
         "customProperties": "[if(contains(parameters('sku'), 'Consumption'), null(), parameters('customProperties'))]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
