@@ -189,7 +189,7 @@ resource webPubSub 'Microsoft.SignalRService/webPubSub@2021-10-01' = {
   }
 }
 
-module webPubSub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module webPubSub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-webPubSub-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

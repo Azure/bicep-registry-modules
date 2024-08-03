@@ -240,7 +240,7 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
   }
 }
 
-module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-signalR-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')

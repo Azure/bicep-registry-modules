@@ -254,7 +254,7 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
