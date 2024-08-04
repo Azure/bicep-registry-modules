@@ -7,6 +7,10 @@ metadata description = 'This instance deploy a Linux-flavored image definition a
 // Parameters //
 // ========== //
 
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-virtualmachineimages.azureimagebuilder-${serviceShort}-rg'
+
 @description('Optional. The location to deploy resource group to.')
 param resourceLocation string = deployment().location
 
@@ -25,11 +29,13 @@ var assetsStorageAccountContainerName = 'aibscripts'
 var installPwshScriptName = 'Install-LinuxPowerShell.sh'
 var initializeSoftwareScriptName = 'Initialize-LinuxSoftware.ps1'
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      deploymentsToPerform: iteration == 'init' ? 'All' : 'Only infrastructure' // Restricting to only infra on re-run as we don't want to back 2 images but only test idempotency
+      deploymentsToPerform: iteration == 'init' ? 'All' : 'Only base' // Restricting to only infra on re-run as we don't want to back 2 images but only test idempotency
+      resourceGroupName: resourceGroupName
       location: resourceLocation
       assetsStorageAccountName: assetsStorageAccountName
       assetsStorageAccountContainerName: assetsStorageAccountContainerName

@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9382381343789512610"
+      "templateHash": "12242536385709111074"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -54,8 +55,9 @@
     },
     "assetsStorageAccountName": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The name of the storage account."
+        "description": "Optional. The name of the storage account. Only needed if you want to upload scripts to be used during image baking."
       }
     },
     "deploymentScriptStorageAccountName": {
@@ -100,7 +102,7 @@
         "description": "Optional. The address space of the Virtual Network Subnet."
       }
     },
-    "deploymentScriptSubnet": {
+    "deploymentScriptSubnetName": {
       "type": "string",
       "defaultValue": "subnet-ds",
       "metadata": {
@@ -135,6 +137,13 @@
         "description": "Optional. The name of the Deployment Script to trigger the image template baking."
       }
     },
+    "waitDeploymentScriptName": {
+      "type": "string",
+      "defaultValue": "ds-wait-imageTemplate-build",
+      "metadata": {
+        "description": "Optional. The name of the Deployment Script to wait for the the image template baking."
+      }
+    },
     "imageTemplateName": {
       "type": "string",
       "defaultValue": "it-aib",
@@ -150,8 +159,9 @@
     },
     "imageTemplateCustomizationSteps": {
       "type": "array",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The customization steps to use for the Image Template."
+        "description": "Optional. The customization steps to use for the Image Template."
       }
     },
     "computeGalleryImageDefinitionName": {
@@ -169,15 +179,22 @@
     },
     "deploymentsToPerform": {
       "type": "string",
-      "defaultValue": "Only storage & image",
+      "defaultValue": "Only assets & image",
       "allowedValues": [
         "All",
-        "Only infrastructure",
-        "Only storage & image",
+        "Only base",
+        "Only assets & image",
         "Only image"
       ],
       "metadata": {
         "description": "Optional. A parameter to control which deployments should be executed."
+      }
+    },
+    "waitForImageBuild": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. A parameter to control if the deployment should wait for the image build to complete."
       }
     },
     "enableTelemetry": {
@@ -196,11 +213,26 @@
     }
   },
   "variables": {
-    "$fxv#0": "<#\r\n.SYNOPSIS\r\nRun the Post-Deployment for the storage account deployment & upload required data to the storage account.\r\n\r\n.DESCRIPTION\r\nRun the Post-Deployment for the storage account deployment & upload required data to the storage account.\r\nAny content that should be uploaded must exist as an environment variable with a 'script_' prefix (for example 'script_Initialize-LinuxSoftware_ps1').\r\nThe script will fetch any matching environment variable, store it as a file (for example 'script_Initialize__LinuxSoftware_ps1' is stored as 'Initialize-LinuxSoftware.ps1')\r\nand uploade it as blob to the given container.\r\n\r\n.PARAMETER StorageAccountName\r\nRequired. The name of the Storage Account to upload to\r\n\r\n.PARAMETER TargetContainer\r\nRequired. The container to upload the files to\r\n\r\n.EXAMPLE\r\nSet-StorageContainerContentByEnvVar -StorageAccountName 'mystorage' -TargetContainer 'myContainer'\r\n\r\nUpload any required data to the storage account 'mystorage' and container 'myContainer'.\r\n#>\r\n\r\n[CmdletBinding(SupportsShouldProcess = $True)]\r\nparam(\r\n    [Parameter(Mandatory = $true)]\r\n    [string] $StorageAccountName,\r\n\r\n    [Parameter(Mandatory = $true)]\r\n    [string] $TargetContainer\r\n)\r\n\r\nWrite-Verbose 'Fetching & storing scripts' -Verbose\r\n$contentDirectoryName = 'scripts'\r\n$contentDirectory = (New-Item $contentDirectoryName -ItemType 'Directory' -Force).FullName\r\n$scriptPaths = @()\r\nforeach ($scriptEnvVar in (Get-ChildItem 'env:*').Name | Where-Object { $_ -like 'script_*' }) {\r\n    # Handle value like 'script_Initialize__LinuxSoftware_ps1'\r\n    $scriptName = $scriptEnvVar -replace 'script_', '' -replace '__', '-' -replace '_', '.'\r\n    $scriptContent = (Get-Item env:$scriptEnvVar).Value\r\n\r\n    Write-Verbose ('Storing file [{0}] with length [{1}]' -f $scriptName, $scriptContent.Length) -Verbose\r\n    $scriptPaths += (New-Item (Join-Path $contentDirectoryName $scriptName) -ItemType 'File' -Value $scriptContent -Force).FullName\r\n}\r\n\r\nWrite-Verbose 'Getting storage account context.' -Verbose\r\n$ctx = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount\r\n\r\nWrite-Verbose 'Building paths to the local folders to upload.' -Verbose\r\nWrite-Verbose \"Content directory: '$contentDirectory'\" -Verbose\r\n\r\nforeach ($scriptPath in $scriptPaths) {\r\n\r\n    try {\r\n        Write-Verbose 'Testing blob container' -Verbose\r\n        Get-AzStorageContainer -Name $targetContainer -Context $ctx -ErrorAction 'Stop'\r\n        Write-Verbose 'Testing blob container SUCCEEDED' -Verbose\r\n\r\n        Write-Verbose ('Uploading file [{0}] to container [{1}]' -f (Split-Path $scriptPath -Leaf), $TargetContainer) -Verbose\r\n        if ($PSCmdlet.ShouldProcess(('File [{0}] to container [{1}]' -f (Split-Path $scriptPath -Leaf), $TargetContainer), 'Upload')) {\r\n            $null = Set-AzStorageBlobContent -File $scriptPath -Container $targetContainer -Context $ctx -Force -ErrorAction 'Stop'\r\n        }\r\n        Write-Verbose 'Upload successful' -Verbose\r\n    } catch {\r\n        throw \"Upload FAILED: $_\"\r\n    }\r\n}\r\n",
+    "$fxv#0": "<#\r\n.SYNOPSIS\r\nRun the Post-Deployment for the storage account deployment & upload required data to the storage account.\r\n\r\n.DESCRIPTION\r\nRun the Post-Deployment for the storage account deployment & upload required data to the storage account.\r\nAny content that should be uploaded must exist as an environment variable with a 'script_' prefix (for example 'script_Initialize-LinuxSoftware_ps1').\r\nThe script will fetch any matching environment variable, store it as a file (for example 'script_Initialize__LinuxSoftware_ps1' is stored as 'Initialize-LinuxSoftware.ps1')\r\nand uploade it as blob to the given container.\r\n\r\n.PARAMETER StorageAccountName\r\nRequired. The name of the Storage Account to upload to\r\n\r\n.PARAMETER TargetContainer\r\nRequired. The container to upload the files to\r\n\r\n.EXAMPLE\r\n. 'Set-StorageContainerContentByEnvVar.ps1' -StorageAccountName 'mystorage' -TargetContainer 'myContainer'\r\n\r\nUpload any required data to the storage account 'mystorage' and container 'myContainer'.\r\n#>\r\n\r\n[CmdletBinding(SupportsShouldProcess = $True)]\r\nparam(\r\n    [Parameter(Mandatory = $true)]\r\n    [string] $StorageAccountName,\r\n\r\n    [Parameter(Mandatory = $true)]\r\n    [string] $TargetContainer\r\n)\r\n\r\nWrite-Verbose 'Fetching & storing scripts' -Verbose\r\n$contentDirectoryName = 'scripts'\r\n$contentDirectory = (New-Item $contentDirectoryName -ItemType 'Directory' -Force).FullName\r\n$scriptPaths = @()\r\nforeach ($scriptEnvVar in (Get-ChildItem 'env:*').Name | Where-Object { $_ -like 'script_*' }) {\r\n    # Handle value like 'script_Initialize__LinuxSoftware_ps1'\r\n    $scriptName = $scriptEnvVar -replace 'script_', '' -replace '__', '-' -replace '_', '.'\r\n    $scriptContent = (Get-Item env:$scriptEnvVar).Value\r\n\r\n    Write-Verbose ('Storing file [{0}] with length [{1}]' -f $scriptName, $scriptContent.Length) -Verbose\r\n    $scriptPaths += (New-Item (Join-Path $contentDirectoryName $scriptName) -ItemType 'File' -Value $scriptContent -Force).FullName\r\n}\r\n\r\nWrite-Verbose 'Getting storage account context.' -Verbose\r\n$ctx = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount\r\n\r\nWrite-Verbose 'Building paths to the local folders to upload.' -Verbose\r\nWrite-Verbose \"Content directory: '$contentDirectory'\" -Verbose\r\n\r\nforeach ($scriptPath in $scriptPaths) {\r\n\r\n    try {\r\n        Write-Verbose 'Testing blob container' -Verbose\r\n        Get-AzStorageContainer -Name $targetContainer -Context $ctx -ErrorAction 'Stop'\r\n        Write-Verbose 'Testing blob container SUCCEEDED' -Verbose\r\n\r\n        Write-Verbose ('Uploading file [{0}] to container [{1}]' -f (Split-Path $scriptPath -Leaf), $TargetContainer) -Verbose\r\n        if ($PSCmdlet.ShouldProcess(('File [{0}] to container [{1}]' -f (Split-Path $scriptPath -Leaf), $TargetContainer), 'Upload')) {\r\n            $null = Set-AzStorageBlobContent -File $scriptPath -Container $targetContainer -Context $ctx -Force -ErrorAction 'Stop'\r\n        }\r\n        Write-Verbose 'Upload successful' -Verbose\r\n    } catch {\r\n        throw \"Upload FAILED: $_\"\r\n    }\r\n}\r\n",
+    "$fxv#1": "<#\n.SYNOPSIS\nFetch the latest build status for the provided image template\n\n.DESCRIPTION\nFetch the latest build status for the provided image template\n\n.PARAMETER ResourceGroupName\nRequired. The name of the Resource Group containing the image template\n\n.PARAMETER ImageTemplateName\nRequired. The name of the image template to query to build status for. E.g. 'lin_it-2022-02-20-16-17-38'\n\n.EXAMPLE\n. 'Wait-ForImageBuild.ps1' -ResourceGroupName' 'myRG' -ImageTemplateName 'lin_it-2022-02-20-16-17-38'\n\nCheck the current build status of Image Template 'lin_it-2022-02-20-16-17-38' in Resource Group 'myRG'\n#>\n[CmdletBinding()]\nparam(\n    [Parameter(Mandatory)]\n    [string] $ResourceGroupName,\n\n    [Parameter(Mandatory)]\n    [string] $ImageTemplateName\n)\n\nbegin {\n    Write-Debug ('[{0} entered]' -f $MyInvocation.MyCommand)\n}\n\nprocess {\n    # Logic\n    # -----\n    $context = Get-AzContext\n    $subscriptionId = $context.Subscription.Id\n    $currentRetry = 1\n    $maximumRetries = 720\n    $timeToWait = 15\n    $maxTimeCalc = '{0:hh\\:mm\\:ss}' -f [timespan]::fromseconds($maximumRetries * $timeToWait)\n    do {\n\n        $path = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2020-02-14' -f $subscriptionId, $ResourceGroupName, $ImageTemplateName\n        $requestInputObject = @{\n            Method = 'GET'\n            Path   = $path\n        }\n\n        $response = ((Invoke-AzRestMethod @requestInputObject).Content | ConvertFrom-Json).properties\n        if ($response.lastRunStatus) {\n            $latestStatus = $response.lastRunStatus\n        } else {\n            Write-Verbose ('Image Build failed with error: [{0}]' -f $response.provisioningError.message) -Verbose\n            $latestStatus = 'failed'\n        }\n\n        if ($latestStatus -eq 'failed' -or $latestStatus.runState.ToLower() -eq 'failed') {\n            $failedMessage = 'Image Template [{0}] build failed with status [{1}]. API reply: [{2}]' -f $ImageTemplateName, $latestStatus.runState, $response.lastRunStatus.message\n            Write-Verbose $failedMessage -Verbose\n            throw $failedMessage\n        }\n\n        if ($latestStatus.runState.ToLower() -notIn @('running', 'new')) {\n            break\n        }\n\n        $currTimeCalc = '{0:hh\\:mm\\:ss}' -f [timespan]::fromseconds($currentRetry * $timeToWait)\n\n        Write-Verbose ('[{0}] Waiting 15 seconds [{1}|{2}]' -f (Get-Date -Format 'HH:mm:ss'), $currTimeCalc, $maxTimeCalc) -Verbose\n        $currentRetry++\n        Start-Sleep $timeToWait\n    } while ($currentRetry -le $maximumRetries)\n\n    if ($latestStatus) {\n        $duration = New-TimeSpan -Start $latestStatus.startTime -End $latestStatus.endTime\n        Write-Verbose ('It took [{0}] minutes and [{1}] seconds to build and distribute the image.' -f $duration.Minutes, $duration.Seconds) -Verbose\n    } else {\n        Write-Warning \"Timeout at [$currTimeCalc]. Note, the Azure Image Builder may still succeed.\"\n    }\n    return $latestStatus\n}\n\nend {\n    Write-Debug ('[{0} existed]' -f $MyInvocation.MyCommand)\n}\n",
     "formattedTime": "[replace(replace(replace(parameters('baseTime'), ':', ''), '-', ''), ' ', '')]"
   },
-  "resources": [
-    {
+  "resources": {
+    "storageFileDataPrivilegedContributorRole": {
+      "existing": true,
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2022-04-01",
+      "scope": "/",
+      "name": "69566ab7-960f-475b-8e7c-b3118f30c6bd"
+    },
+    "contributorRole": {
+      "existing": true,
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2022-04-01",
+      "scope": "/",
+      "name": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+    },
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -221,28 +253,37 @@
         }
       }
     },
-    {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
+    "rg": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2024-03-01",
       "name": "[parameters('resourceGroupName')]",
       "location": "[parameters('location')]"
     },
-    {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
+    "imageMSI_rbac": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(subscription().subscriptionId, parameters('imageManagedIdentityName'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
+      "name": "[guid(subscription().subscriptionId, parameters('imageManagedIdentityName'), tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
       "properties": {
-        "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-image-msi', deployment().name)), '2022-09-01').outputs.principalId.value, '')]",
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), reference('imageMSI').outputs.principalId.value, '')]",
+        "roleDefinitionId": "[tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-image-msi', deployment().name))]"
+        "contributorRole",
+        "imageMSI"
       ]
     },
-    {
+    "dsMsi_existing": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'Only assets & image'), equals(parameters('deploymentsToPerform'), 'Only image'))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/identities",
+      "apiVersion": "2023-01-31",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "name": "[parameters('deploymentScriptManagedIdentityName')]"
+    },
+    "imageTemplateRg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-image-rg', deployment().name)]",
@@ -700,7 +741,8 @@
         }
       }
     },
-    {
+    "dsMsi": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-ds-msi', deployment().name)]",
@@ -1152,11 +1194,11 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+        "rg"
       ]
     },
-    {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
+    "imageMSI": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-image-msi', deployment().name)]",
@@ -1608,11 +1650,11 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+        "rg"
       ]
     },
-    {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
+    "azureComputeGallery": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-acg', deployment().name)]",
@@ -2764,11 +2806,11 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+        "rg"
       ]
     },
-    {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
+    "vnet": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vnet', deployment().name)]",
@@ -2800,7 +2842,7 @@
                 ]
               },
               {
-                "name": "[parameters('deploymentScriptSubnet')]",
+                "name": "[parameters('deploymentScriptSubnetName')]",
                 "addressPrefix": "[parameters('virtualNetworkDeploymentScriptSubnetAddressPrefix')]",
                 "privateLinkServiceNetworkPolicies": "Disabled",
                 "serviceEndpoints": [
@@ -3987,11 +4029,11 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+        "rg"
       ]
     },
-    {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
+    "assetsStorageAccount": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-files-sa', deployment().name)]",
@@ -4016,17 +4058,7 @@
           },
           "networkAcls": {
             "value": {
-              "defaultAction": "Deny",
-              "virtualNetworkRules": [
-                {
-                  "action": "Allow",
-                  "id": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name)), '2022-09-01').outputs.subnetResourceIds.value[0]]"
-                },
-                {
-                  "action": "Allow",
-                  "id": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name)), '2022-09-01').outputs.subnetResourceIds.value[1]]"
-                }
-              ]
+              "defaultAction": "Allow"
             }
           },
           "blobServices": {
@@ -4038,12 +4070,12 @@
                   "roleAssignments": [
                     {
                       "roleDefinitionIdOrName": "Storage Blob Data Contributor",
-                      "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name)), '2022-09-01').outputs.principalId.value, '')]",
+                      "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), reference('dsMsi').outputs.principalId.value, '')]",
                       "principalType": "ServicePrincipal"
                     },
                     {
                       "roleDefinitionIdOrName": "Storage Blob Data Reader",
-                      "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-image-msi', deployment().name)), '2022-09-01').outputs.principalId.value, '')]",
+                      "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), reference('imageMSI').outputs.principalId.value, '')]",
                       "principalType": "ServicePrincipal"
                     }
                   ]
@@ -8688,14 +8720,13 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-image-msi', deployment().name))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name))]"
+        "dsMsi",
+        "imageMSI",
+        "rg"
       ]
     },
-    {
-      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure'))]",
+    "dsStorageAccount": {
+      "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-ds-sa', deployment().name)]",
@@ -8719,7 +8750,7 @@
             "value": [
               {
                 "roleDefinitionIdOrName": "[tenantResourceId('Microsoft.Authorization/roleDefinitions', '69566ab7-960f-475b-8e7c-b3118f30c6bd')]",
-                "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name)), '2022-09-01').outputs.principalId.value, '')]",
+                "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), reference('dsMsi').outputs.principalId.value, '')]",
                 "principalType": "ServicePrincipal"
               }
             ]
@@ -8734,7 +8765,7 @@
               "virtualNetworkRules": [
                 {
                   "action": "Allow",
-                  "id": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name)), '2022-09-01').outputs.subnetResourceIds.value[1]]"
+                  "id": "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('deploymentScriptSubnetName'))]"
                 }
               ]
             }
@@ -13376,13 +13407,14 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name))]"
+        "dsMsi",
+        "rg",
+        "storageFileDataPrivilegedContributorRole",
+        "vnet"
       ]
     },
-    {
-      "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only infrastructure')), equals(parameters('deploymentsToPerform'), 'Only storage & image'))]",
+    "storageAccount_upload": {
+      "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), equals(parameters('deploymentsToPerform'), 'Only assets & image'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-storage-upload-ds', deployment().name)]",
@@ -13408,7 +13440,7 @@
           "managedIdentities": {
             "value": {
               "userAssignedResourcesIds": [
-                "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name)), '2022-09-01').outputs.resourceId.value]"
+                "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('deploymentScriptManagedIdentityName'))]"
               ]
             }
           },
@@ -13419,7 +13451,7 @@
             "value": "[parameters('storageAccountFilesToUpload')]"
           },
           "arguments": {
-            "value": "[format(' -StorageAccountName \"{0}\" -TargetContainer \"{1}\"', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-files-sa', deployment().name)), '2022-09-01').outputs.name.value, parameters('assetsStorageAccountContainerName'))]"
+            "value": "[format(' -StorageAccountName \"{0}\" -TargetContainer \"{1}\"', parameters('assetsStorageAccountName'), parameters('assetsStorageAccountContainerName'))]"
           },
           "timeout": {
             "value": "PT30M"
@@ -13431,11 +13463,11 @@
             "value": "[parameters('location')]"
           },
           "storageAccountResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-sa', deployment().name)), '2022-09-01').outputs.resourceId.value]"
+            "value": "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Storage/storageAccounts', parameters('deploymentScriptStorageAccountName'))]"
           },
           "subnetResourceIds": {
             "value": [
-              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name)), '2022-09-01').outputs.subnetResourceIds.value[1]]"
+              "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('deploymentScriptSubnetName'))]"
             ]
           }
         },
@@ -13936,15 +13968,15 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-files-sa', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-sa', deployment().name))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name))]"
+        "assetsStorageAccount",
+        "dsMsi",
+        "dsStorageAccount",
+        "rg",
+        "vnet"
       ]
     },
-    {
-      "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only storage & image')), equals(parameters('deploymentsToPerform'), 'Only image'))]",
+    "imageTemplate": {
+      "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-it', deployment().name)]",
@@ -13956,7 +13988,7 @@
         "mode": "Incremental",
         "parameters": {
           "customizationSteps": {
-            "value": "[parameters('imageTemplateCustomizationSteps')]"
+            "value": "[coalesce(parameters('imageTemplateCustomizationSteps'), createArray())]"
           },
           "imageSource": {
             "value": "[parameters('imageTemplateImageSource')]"
@@ -13970,7 +14002,7 @@
           "managedIdentities": {
             "value": {
               "userAssignedResourceIds": [
-                "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-image-msi', deployment().name)), '2022-09-01').outputs.resourceId.value]"
+                "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('imageManagedIdentityName'))]"
               ]
             }
           },
@@ -13983,19 +14015,19 @@
             ]
           },
           "subnetResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name)), '2022-09-01').outputs.subnetResourceIds.value[0]]"
+            "value": "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('imageSubnetName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "stagingResourceGroup": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-image-rg', deployment().name)), '2022-09-01').outputs.resourceId.value]"
+            "value": "[reference('imageTemplateRg').outputs.resourceId.value]"
           },
           "roleAssignments": {
             "value": [
               {
                 "roleDefinitionIdOrName": "Contributor",
-                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name)), '2022-09-01').outputs.principalId.value]",
+                "principalId": "[if(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), reference('dsMsi').outputs.principalId.value, reference('dsMsi_existing').principalId)]",
                 "principalType": "ServicePrincipal"
               }
             ]
@@ -14685,18 +14717,19 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-acg', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-image-msi', deployment().name))]",
-        "[subscriptionResourceId('Microsoft.Authorization/roleAssignments', guid(subscription().subscriptionId, parameters('imageManagedIdentityName'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-image-rg', deployment().name))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-storage-upload-ds', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name))]"
+        "azureComputeGallery",
+        "dsMsi",
+        "dsMsi_existing",
+        "imageMSI",
+        "imageMSI_rbac",
+        "imageTemplateRg",
+        "rg",
+        "storageAccount_upload",
+        "vnet"
       ]
     },
-    {
-      "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only storage & image')), equals(parameters('deploymentsToPerform'), 'Only image'))]",
+    "imageTemplate_trigger": {
+      "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-imageTemplate-trigger-ds', deployment().name)]",
@@ -14708,7 +14741,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-{1}-{2}', parameters('imageTemplateDeploymentScriptName'), variables('formattedTime'), if(or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only storage & image')), equals(parameters('deploymentsToPerform'), 'Only image')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-it', deployment().name)), '2022-09-01').outputs.name.value, ''))]"
+            "value": "[format('{0}-{1}-{2}', parameters('imageTemplateDeploymentScriptName'), variables('formattedTime'), if(or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image')), reference('imageTemplate').outputs.name.value, ''))]"
           },
           "kind": {
             "value": "AzurePowerShell"
@@ -14719,14 +14752,14 @@
           "managedIdentities": {
             "value": {
               "userAssignedResourcesIds": [
-                "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name)), '2022-09-01').outputs.resourceId.value]"
+                "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('deploymentScriptManagedIdentityName'))]"
               ]
             }
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "scriptContent": "[if(or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only storage & image')), equals(parameters('deploymentsToPerform'), 'Only image')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-it', deployment().name)), '2022-09-01').outputs.runThisCommand.value), createObject('value', ''))]",
+          "scriptContent": "[if(or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image')), createObject('value', reference('imageTemplate').outputs.runThisCommand.value), createObject('value', ''))]",
           "timeout": {
             "value": "PT30M"
           },
@@ -14737,11 +14770,11 @@
             "value": "[parameters('location')]"
           },
           "storageAccountResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-sa', deployment().name)), '2022-09-01').outputs.resourceId.value]"
+            "value": "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Storage/storageAccounts', parameters('deploymentScriptStorageAccountName'))]"
           },
           "subnetResourceIds": {
             "value": [
-              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name)), '2022-09-01').outputs.subnetResourceIds.value[1]]"
+              "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('deploymentScriptSubnetName'))]"
             ]
           }
         },
@@ -15242,21 +15275,573 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-sa', deployment().name))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-it', deployment().name))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-vnet', deployment().name))]"
+        "dsMsi",
+        "dsStorageAccount",
+        "imageTemplate",
+        "rg",
+        "storageAccount_upload",
+        "vnet"
       ]
-    }
-  ],
-  "outputs": {
-    "imageTemplateName": {
-      "type": "string",
-      "metadata": {
-        "description": "The generated name of the image template."
+    },
+    "imageTemplate_wait": {
+      "condition": "[and(parameters('waitForImageBuild'), or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-imageTemplate-wait-ds', deployment().name)]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('{0}-{1}', parameters('waitDeploymentScriptName'), variables('formattedTime'))]"
+          },
+          "kind": {
+            "value": "AzurePowerShell"
+          },
+          "azPowerShellVersion": {
+            "value": "12.0"
+          },
+          "managedIdentities": {
+            "value": {
+              "userAssignedResourcesIds": [
+                "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('deploymentScriptManagedIdentityName'))]"
+              ]
+            }
+          },
+          "scriptContent": {
+            "value": "[variables('$fxv#1')]"
+          },
+          "environmentVariables": {
+            "value": "[parameters('storageAccountFilesToUpload')]"
+          },
+          "arguments": {
+            "value": "[format(' -ImageTemplateName \"{0}\" -ResourceGroupName \"{1}\"', reference('imageTemplate').outputs.name.value, parameters('resourceGroupName'))]"
+          },
+          "timeout": {
+            "value": "PT30M"
+          },
+          "cleanupPreference": {
+            "value": "Always"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "storageAccountResourceId": {
+            "value": "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Storage/storageAccounts', parameters('deploymentScriptStorageAccountName'))]"
+          },
+          "subnetResourceIds": {
+            "value": [
+              "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('deploymentScriptSubnetName'))]"
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "10535689969364745650"
+            },
+            "name": "Deployment Scripts",
+            "description": "This module deploys Deployment Scripts.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "managedIdentitiesType": {
+              "type": "object",
+              "properties": {
+                "userAssignedResourcesIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Optional. The resource ID(s) to assign to the resource."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "environmentVariableType": {
+              "type": "secureObject",
+              "properties": {
+                "secureList": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "secureValue": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "value": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Optional. The list of environment variables to pass over to the deployment script."
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "maxLength": 90,
+              "metadata": {
+                "description": "Required. Name of the Deployment Script."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "allowedValues": [
+                "AzureCLI",
+                "AzurePowerShell"
+              ],
+              "metadata": {
+                "description": "Required. Specifies the Kind of the Deployment Script."
+              }
+            },
+            "managedIdentities": {
+              "$ref": "#/definitions/managedIdentitiesType",
+              "metadata": {
+                "description": "Optional. The managed identity definition for this resource."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource tags."
+              }
+            },
+            "azPowerShellVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list."
+              }
+            },
+            "azCliVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Azure CLI module version to be used. See a list of supported Azure CLI versions: https://mcr.microsoft.com/v2/azure-cli/tags/list."
+              }
+            },
+            "scriptContent": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead."
+              }
+            },
+            "primaryScriptUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead."
+              }
+            },
+            "environmentVariables": {
+              "$ref": "#/definitions/environmentVariableType",
+              "metadata": {
+                "description": "Optional. The environment variables to pass over to the script. The list is passed as an object with a key name \"secureList\" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object."
+              }
+            },
+            "supportingScriptUris": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent)."
+              }
+            },
+            "subnetResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)."
+              }
+            },
+            "arguments": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Command-line arguments to pass to the script. Arguments are separated by spaces."
+              }
+            },
+            "retentionInterval": {
+              "type": "string",
+              "defaultValue": "P1D",
+              "metadata": {
+                "description": "Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week)."
+              }
+            },
+            "baseTime": {
+              "type": "string",
+              "defaultValue": "[utcNow('yyyy-MM-dd-HH-mm-ss')]",
+              "metadata": {
+                "description": "Generated. Do not provide a value! This date value is used to make sure the script run every time the template is deployed."
+              }
+            },
+            "runOnce": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to false, script will run every time the template is deployed. When set to true, the script will only run once."
+              }
+            },
+            "cleanupPreference": {
+              "type": "string",
+              "defaultValue": "Always",
+              "allowedValues": [
+                "Always",
+                "OnSuccess",
+                "OnExpiration"
+              ],
+              "metadata": {
+                "description": "Optional. The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled)."
+              }
+            },
+            "containerGroupName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Container group name, if not specified then the name will get auto-generated. Not specifying a 'containerGroupName' indicates the system to generate a unique name which might end up flagging an Azure Policy as non-compliant. Use 'containerGroupName' when you have an Azure Policy that expects a specific naming convention or when you want to fully control the name. 'containerGroupName' property must be between 1 and 63 characters long, must contain only lowercase letters, numbers, and dashes and it cannot start or end with a dash and consecutive dashes are not allowed."
+              }
+            },
+            "storageAccountResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account."
+              }
+            },
+            "timeout": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "subnetIds",
+                "count": "[length(coalesce(parameters('subnetResourceIds'), createArray()))]",
+                "input": {
+                  "id": "[coalesce(parameters('subnetResourceIds'), createArray())[copyIndex('subnetIds')]]"
+                }
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            },
+            "containerSettings": {
+              "containerGroupName": "[parameters('containerGroupName')]",
+              "subnetIds": "[if(not(empty(coalesce(variables('subnetIds'), createArray()))), variables('subnetIds'), null())]"
+            },
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+          },
+          "resources": {
+            "storageAccount": {
+              "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2021-04-01",
+              "subscriptionId": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2]]",
+              "resourceGroup": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]]",
+              "name": "[last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.2.4', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "deploymentScript": {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2023-08-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": "[variables('identity')]",
+              "kind": "[parameters('kind')]",
+              "properties": {
+                "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
+                "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
+                "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
+                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
+                "arguments": "[parameters('arguments')]",
+                "environmentVariables": "[if(not(equals(parameters('environmentVariables'), null())), parameters('environmentVariables').secureList, createArray())]",
+                "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
+                "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
+                "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",
+                "cleanupPreference": "[parameters('cleanupPreference')]",
+                "forceUpdateTag": "[if(parameters('runOnce'), resourceGroup().name, parameters('baseTime'))]",
+                "retentionInterval": "[parameters('retentionInterval')]",
+                "timeout": "[parameters('timeout')]"
+              },
+              "dependsOn": [
+                "storageAccount"
+              ]
+            },
+            "deploymentScript_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            },
+            "deploymentScript_roleAssignments": {
+              "copy": {
+                "name": "deploymentScript_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            },
+            "deploymentScriptLogs": {
+              "existing": true,
+              "type": "Microsoft.Resources/deploymentScripts/logs",
+              "apiVersion": "2023-08-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+              "dependsOn": [
+                "deploymentScript"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployment script."
+              },
+              "value": "[resourceId('Microsoft.Resources/deploymentScripts', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the deployment script was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployment script."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('deploymentScript', '2023-08-01', 'full').location]"
+            },
+            "outputs": {
+              "type": "object",
+              "metadata": {
+                "description": "The output of the deployment script."
+              },
+              "value": "[if(contains(reference('deploymentScript'), 'outputs'), reference('deploymentScript').outputs, createObject())]"
+            },
+            "deploymentScriptLogs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "The logs of the deployment script."
+              },
+              "value": "[split(reference('deploymentScriptLogs').log, '\n')]"
+            }
+          }
+        }
       },
-      "value": "[if(or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only storage & image')), equals(parameters('deploymentsToPerform'), 'Only image')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-it', deployment().name)), '2022-09-01').outputs.name.value, '')]"
+      "dependsOn": [
+        "dsMsi",
+        "dsStorageAccount",
+        "imageTemplate",
+        "imageTemplate_trigger",
+        "rg",
+        "vnet"
+      ]
     }
   }
 }

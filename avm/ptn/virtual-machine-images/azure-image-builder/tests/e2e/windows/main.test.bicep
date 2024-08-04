@@ -7,6 +7,10 @@ metadata description = 'This instance deploy a Windows-flavored image definition
 // Parameters //
 // ========== //
 
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-virtualmachineimages.azureimagebuilder-${serviceShort}-rg'
+
 @description('Optional. The location to deploy resource group to.')
 param resourceLocation string = deployment().location
 
@@ -25,12 +29,14 @@ var assetsStorageAccountContainerName = 'aibscripts'
 var installPwshScriptName = 'Install-WindowsPowerShell.ps1'
 var initializeSoftwareScriptName = 'Initialize-WindowsSoftware.ps1'
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      deploymentsToPerform: iteration == 'init' ? 'All' : 'Only base' // Restricting to only infra on re-run as we don't want to back 2 images but only test idempotency
+      resourceGroupName: resourceGroupName
       location: resourceLocation
-      deploymentsToPerform: 'All'
       assetsStorageAccountName: assetsStorageAccountName
       assetsStorageAccountContainerName: assetsStorageAccountContainerName
       computeGalleryName: 'gal${namePrefix}${serviceShort}'

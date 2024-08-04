@@ -15,7 +15,7 @@ Required. The name of the Storage Account to upload to
 Required. The container to upload the files to
 
 .EXAMPLE
-Set-StorageContainerContentByEnvVar -StorageAccountName 'mystorage' -TargetContainer 'myContainer'
+. 'Set-StorageContainerContentByEnvVar.ps1' -StorageAccountName 'mystorage' -TargetContainer 'myContainer'
 
 Upload any required data to the storage account 'mystorage' and container 'myContainer'.
 #>

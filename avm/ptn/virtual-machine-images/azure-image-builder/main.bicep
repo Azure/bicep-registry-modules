@@ -30,8 +30,8 @@ param computeGalleryName string
 param computeGalleryImageDefinitions array
 
 // Storage Account Parameters
-@description('Required. The name of the storage account.')
-param assetsStorageAccountName string
+@description('Optional. The name of the storage account. Only needed if you want to upload scripts to be used during image baking.')
+param assetsStorageAccountName string?
 
 @description('Optional. The name of the storage account.')
 param deploymentScriptStorageAccountName string = '${assetsStorageAccountName}ds'
@@ -53,7 +53,7 @@ param imageSubnetName string = 'subnet-it'
 param virtualNetworkSubnetAddressPrefix string = cidrSubnet(virtualNetworkAddressPrefix, 24, 0)
 
 @description('Optional. The name of the Image Template Virtual Network Subnet to create.')
-param deploymentScriptSubnet string = 'subnet-ds'
+param deploymentScriptSubnetName string = 'subnet-ds'
 
 @description('Optional. The address space of the Virtual Network Subnet used by the deployment script.')
 param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virtualNetworkAddressPrefix, 24, 1)
@@ -68,6 +68,9 @@ param storageAccountFilesToUpload object = {}
 @description('Optional. The name of the Deployment Script to trigger the image template baking.')
 param imageTemplateDeploymentScriptName string = 'ds-triggerBuild-imageTemplate'
 
+@description('Optional. The name of the Deployment Script to wait for the the image template baking.')
+param waitDeploymentScriptName string = 'ds-wait-imageTemplate-build'
+
 // Image Template Parameters
 @description('Optional. The name of the Image Template.')
 param imageTemplateName string = 'it-aib'
@@ -75,8 +78,8 @@ param imageTemplateName string = 'it-aib'
 @description('Required. The image source to use for the Image Template.')
 param imageTemplateImageSource object
 
-@description('Required. The customization steps to use for the Image Template.')
-param imageTemplateCustomizationSteps array
+@description('Optional. The customization steps to use for the Image Template.')
+param imageTemplateCustomizationSteps array?
 
 @description('Required. The name of Image Definition of the Azure Compute Gallery to host the new image version.')
 param computeGalleryImageDefinitionName string
@@ -88,11 +91,14 @@ param location string = deployment().location
 @description('Optional. A parameter to control which deployments should be executed.')
 @allowed([
   'All'
-  'Only infrastructure'
-  'Only storage & image'
+  'Only base'
+  'Only assets & image'
   'Only image'
 ])
-param deploymentsToPerform string = 'Only storage & image'
+param deploymentsToPerform string = 'Only assets & image'
+
+@description('Optional. A parameter to control if the deployment should wait for the image build to complete.')
+param waitForImageBuild bool = true
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -101,6 +107,16 @@ param enableTelemetry bool = true
 param baseTime string = utcNow()
 
 var formattedTime = replace(replace(replace(baseTime, ':', ''), '-', ''), ' ', '')
+
+// Role required for deployment script to be able to use a storage account via private networking
+resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
+  scope: tenant()
+}
+resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+  scope: tenant()
+}
 
 // =========== //
 // Deployments //
@@ -127,7 +143,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 // Resource Groups
-resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
+resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: resourceGroupName
   location: location
 }
@@ -143,8 +159,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.2.4' = {
 }
 
 // User Assigned Identity (MSI)
-// Always deployed as both an infra element & its output is neeeded for image building
-module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = {
+module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-msi'
   scope: rg
   params: {
@@ -154,7 +169,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' =
   }
 }
 
-module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
+module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-image-msi'
   scope: rg
   params: {
@@ -165,30 +180,23 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2
 }
 
 // MSI Subscription contributor assignment
-resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
-  name: guid(
-    subscription().subscriptionId,
-    imageManagedIdentityName,
-    subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  )
+resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+  name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
   properties: {
     // TODO: Tracked issue: https://github.com/Azure/bicep/issues/2371
     //principalId: imageMSI.outputs.principalId // Results in: Deployment template validation failed: 'The template resource 'Microsoft.Resources/deployments/image.deploy-ra' reference to 'Microsoft.Resources/deployments/image.deploy-msi' requires an API version. Please see https://aka.ms/arm-template for usage details.'.
     // Default: reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('rgParam').name), 'Microsoft.Resources/deployments', format('{0}-msi', deployment().name))).outputs.principalId.value
     //principalId: reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, resourceGroupName), 'Microsoft.Resources/deployments', format('{0}-msi', deployment().name)),'2021-04-01').outputs.principalId.value
-    principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure')
+    principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.principalId
       : ''
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    ) // Contributor
+    roleDefinitionId: contributorRole.id
     principalType: 'ServicePrincipal'
   }
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-acg'
   scope: rg
   params: {
@@ -200,7 +208,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = if (deplo
 }
 
 // Image Template Virtual Network
-module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
+module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-vnet'
   scope: rg
   params: {
@@ -220,7 +228,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsT
         ]
       }
       {
-        name: deploymentScriptSubnet
+        name: deploymentScriptSubnetName
         addressPrefix: virtualNetworkDeploymentScriptSubnetAddressPrefix
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
         serviceEndpoints: [
@@ -244,30 +252,30 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsT
 }
 
 // Assets Storage Account
-module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
+module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-files-sa'
   scope: rg
   params: {
-    name: assetsStorageAccountName
+    name: assetsStorageAccountName!
     allowSharedKeyAccess: false // Keys not needed if MSI is granted access
     enableTelemetry: enableTelemetry
     location: location
     networkAcls: {
       // NOTE: If Firewall is enabled, it causes the Image Template to not be able to connect to the storage account. It's NOT a permission issue (ref: https://github.com/danielsollondon/azvmimagebuilder/issues/31#issuecomment-1793779854)
-      // defaultAction: 'Allow'
-      defaultAction: 'Deny'
-      virtualNetworkRules: [
-        {
-          // Allow image template to access data
-          action: 'Allow'
-          id: vnet.outputs.subnetResourceIds[0] // imageSubnet
-        }
-        {
-          // Allow deployment script to access storage account to upload data
-          action: 'Allow'
-          id: vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
-        }
-      ]
+      defaultAction: 'Allow'
+      // defaultAction: 'Deny'
+      // virtualNetworkRules: [
+      //   {
+      //     // Allow image template to access data
+      //     action: 'Allow'
+      //     id: vnet.outputs.subnetResourceIds[0] // imageSubnet
+      //   }
+      //   {
+      //     // Allow deployment script to access storage account to upload data
+      //     action: 'Allow'
+      //     id: vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
+      //   }
+      // ]
     }
     blobServices: {
       containers: [
@@ -278,7 +286,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
             {
               // Allow Infra MSI to access storage account container to upload files - DO NOT REMOVE
               roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-              principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure')
+              principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
                 ? dsMsi.outputs.principalId
                 : '' // Requires condition als Bicep will otherwise try to resolve the null reference
               principalType: 'ServicePrincipal'
@@ -286,7 +294,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
             {
               // Allow image MSI to access storage account container to read files - DO NOT REMOVE
               roleDefinitionIdOrName: 'Storage Blob Data Reader' // 'Storage Blob Data Reader'
-              principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure')
+              principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
                 ? imageMSI.outputs.principalId
                 : '' // Requires condition als Bicep will otherwise try to resolve the null reference
               principalType: 'ServicePrincipal'
@@ -303,13 +311,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
 ////////////////////
 
 // Deployment scripts & their storage account
-// Role required for deployment script to be able to use a storage account via private networking
-resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
-  scope: tenant()
-}
-
-module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure') {
+module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
   scope: rg
   params: {
@@ -320,8 +322,8 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
       {
         // Allow MSI to leverage the storage account for private networking of container instance
         // ref: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep#access-private-virtual-network
-        roleDefinitionIdOrName: storageFileDataPrivilegedContributor.id // Storage File Data Priveleged Contributor
-        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure')
+        roleDefinitionIdOrName: storageFileDataPrivilegedContributorRole.id // Storage File Data Priveleged Contributor
+        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
           ? dsMsi.outputs.principalId
           : '' // Requires condition als Bicep will otherwise try to resolve the null reference
         principalType: 'ServicePrincipal'
@@ -335,17 +337,26 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
         {
           // Allow deployment script to use storage account for private networking of container instance
           action: 'Allow'
-          id: vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
+          id: resourceId(
+            subscription().subscriptionId,
+            resourceGroupName,
+            'Microsoft.Network/virtualNetworks/subnets',
+            virtualNetworkName,
+            deploymentScriptSubnetName
+          )
         }
       ]
     }
   }
+  dependsOn: [
+    vnet
+  ]
 }
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure' || deploymentsToPerform == 'Only storage & image') {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
   name: '${deployment().name}-storage-upload-ds'
-  scope: rg
+  scope: resourceGroup(resourceGroupName)
   params: {
     name: '${storageDeploymentScriptName}-${formattedTime}'
     kind: 'AzurePowerShell'
@@ -353,40 +364,74 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.
     enableTelemetry: enableTelemetry
     managedIdentities: {
       userAssignedResourcesIds: [
-        dsMsi.outputs.resourceId
+        resourceId(
+          subscription().subscriptionId,
+          resourceGroupName,
+          'Microsoft.ManagedIdentity/userAssignedIdentities',
+          deploymentScriptManagedIdentityName
+        )
       ]
     }
     scriptContent: loadTextContent('../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
     environmentVariables: storageAccountFilesToUpload
-    arguments: ' -StorageAccountName "${assetsStorageAccount.outputs.name}" -TargetContainer "${assetsStorageAccountContainerName}"'
+    arguments: ' -StorageAccountName "${assetsStorageAccountName}" -TargetContainer "${assetsStorageAccountContainerName}"'
     timeout: 'PT30M'
     cleanupPreference: 'Always'
     location: location
-    storageAccountResourceId: dsStorageAccount.outputs.resourceId
+    storageAccountResourceId: resourceId(
+      subscription().subscriptionId,
+      resourceGroupName,
+      'Microsoft.Storage/storageAccounts',
+      deploymentScriptStorageAccountName
+    )
     subnetResourceIds: [
-      vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
+      resourceId(
+        subscription().subscriptionId,
+        resourceGroupName,
+        'Microsoft.Network/virtualNetworks/subnets',
+        virtualNetworkName,
+        deploymentScriptSubnetName
+      )
     ]
   }
+  dependsOn: [
+    // Conditionally required
+    rg
+    assetsStorageAccount
+    dsMsi
+    dsStorageAccount
+    vnet
+  ]
 }
 
 // Image template
-module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.2.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image' || deploymentsToPerform == 'Only image') {
+resource dsMsi_existing 'Microsoft.ManagedIdentity/identities@2023-01-31' existing = if (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+  name: deploymentScriptManagedIdentityName
+  scope: resourceGroup(resourceGroupName)
+}
+
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.2.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-it'
-  scope: rg
+  scope: resourceGroup(resourceGroupName)
   params: {
-    customizationSteps: imageTemplateCustomizationSteps
+    customizationSteps: imageTemplateCustomizationSteps ?? []
     imageSource: imageTemplateImageSource
     name: imageTemplateName
     enableTelemetry: enableTelemetry
     managedIdentities: {
       userAssignedResourceIds: [
-        imageMSI.outputs.resourceId
+        resourceId(
+          subscription().subscriptionId,
+          resourceGroupName,
+          'Microsoft.ManagedIdentity/userAssignedIdentities',
+          imageManagedIdentityName
+        )
       ]
     }
     distributions: [
       {
         type: 'SharedImage'
-        sharedImageGalleryImageDefinitionResourceId: az.resourceId(
+        sharedImageGalleryImageDefinitionResourceId: resourceId(
           subscription().subscriptionId,
           resourceGroupName,
           'Microsoft.Compute/galleries/images',
@@ -396,52 +441,137 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
       }
     ]
 
-    subnetResourceId: vnet.outputs.subnetResourceIds[0] // Image Subnet
+    // subnetResourceId: vnet.outputs.subnetResourceIds[0] // Image Subnet
+    subnetResourceId: resourceId(
+      subscription().subscriptionId,
+      resourceGroupName,
+      'Microsoft.Network/virtualNetworks/subnets',
+      virtualNetworkName,
+      imageSubnetName
+    )
     location: location
     stagingResourceGroup: imageTemplateRg.outputs.resourceId
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'
-        principalId: dsMsi.outputs.principalId // Allow deployment script to trigger image build
+        // Allow deployment script to trigger image build
+        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+          ? dsMsi.outputs.principalId
+          : dsMsi_existing.properties.principalId
         principalType: 'ServicePrincipal'
       }
     ]
   }
   dependsOn: [
-    azureComputeGallery
     storageAccount_upload
     imageMSI_rbac
+    rg
+    imageMSI
+    azureComputeGallery
+    vnet
   ]
 }
 
 // Deployment script to trigger image build
-module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-imageTemplate-trigger-ds'
-  scope: rg
+  scope: resourceGroup(resourceGroupName)
   params: {
-    name: '${imageTemplateDeploymentScriptName}-${formattedTime}-${(deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image' || deploymentsToPerform == 'Only image') ? imageTemplate.outputs.name : ''}' // Requires condition als Bicep will otherwise try to resolve the null reference
+    name: '${imageTemplateDeploymentScriptName}-${formattedTime}-${(deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') ? imageTemplate.outputs.name : ''}' // Requires condition als Bicep will otherwise try to resolve the null reference
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
       userAssignedResourcesIds: [
-        dsMsi.outputs.resourceId
+        resourceId(
+          subscription().subscriptionId,
+          resourceGroupName,
+          'Microsoft.ManagedIdentity/userAssignedIdentities',
+          deploymentScriptManagedIdentityName
+        )
       ]
     }
     enableTelemetry: enableTelemetry
-    scriptContent: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image' || deploymentsToPerform == 'Only image')
+    scriptContent: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')
       ? imageTemplate.outputs.runThisCommand
       : '' // Requires condition als Bicep will otherwise try to resolve the null reference
     timeout: 'PT30M'
     cleanupPreference: 'Always'
     location: location
-    storageAccountResourceId: dsStorageAccount.outputs.resourceId
+    // storageAccountResourceId: dsStorageAccount.outputs.resourceId
+    storageAccountResourceId: resourceId(
+      subscription().subscriptionId,
+      resourceGroupName,
+      'Microsoft.Storage/storageAccounts',
+      deploymentScriptStorageAccountName
+    )
     subnetResourceIds: [
-      vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
+      // vnet.outputs.subnetResourceIds[1] // deploymentScriptSubnet
+      resourceId(
+        subscription().subscriptionId,
+        resourceGroupName,
+        'Microsoft.Network/virtualNetworks/subnets',
+        virtualNetworkName,
+        deploymentScriptSubnetName
+      )
     ]
   }
+  dependsOn: [
+    // Always required
+    imageTemplate
+    // Conditionally required
+    rg
+    dsMsi
+    dsStorageAccount
+    storageAccount_upload
+    vnet
+  ]
 }
 
-@description('The generated name of the image template.')
-output imageTemplateName string = (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image' || deploymentsToPerform == 'Only image')
-  ? imageTemplate.outputs.name
-  : '' // Requires condition als Bicep will otherwise try to resolve the null reference
+module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.2.4' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
+  name: '${deployment().name}-imageTemplate-wait-ds'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    name: '${waitDeploymentScriptName}-${formattedTime}'
+    kind: 'AzurePowerShell'
+    azPowerShellVersion: '12.0'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        resourceId(
+          subscription().subscriptionId,
+          resourceGroupName,
+          'Microsoft.ManagedIdentity/userAssignedIdentities',
+          deploymentScriptManagedIdentityName
+        )
+      ]
+    }
+    scriptContent: loadTextContent('../../../utilities/e2e-template-assets/scripts/Wait-ForImageBuild.ps1')
+    environmentVariables: storageAccountFilesToUpload
+    // Requires condition als Bicep will otherwise try to resolve the null reference
+    arguments: ' -ImageTemplateName "${imageTemplate.outputs.name}" -ResourceGroupName "${resourceGroupName}"'
+    timeout: 'PT30M'
+    cleanupPreference: 'Always'
+    location: location
+    storageAccountResourceId: resourceId(
+      subscription().subscriptionId,
+      resourceGroupName,
+      'Microsoft.Storage/storageAccounts',
+      deploymentScriptStorageAccountName
+    )
+    subnetResourceIds: [
+      resourceId(
+        subscription().subscriptionId,
+        resourceGroupName,
+        'Microsoft.Network/virtualNetworks/subnets',
+        virtualNetworkName,
+        deploymentScriptSubnetName
+      )
+    ]
+  }
+  dependsOn: [
+    imageTemplate_trigger
+    rg
+    vnet
+    dsStorageAccount
+    dsMsi
+  ]
+}

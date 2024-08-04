@@ -9,6 +9,7 @@ This module provides you with a packaged solution to create custom images using 
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -53,10 +54,112 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>`.
 
-- [Creating a Linux image with Azure Image Builder](#example-1-creating-a-linux-image-with-azure-image-builder)
-- [Creating a Windows image with Azure Image Builder](#example-2-creating-a-windows-image-with-azure-image-builder)
+- [Using small parameter set](#example-1-using-small-parameter-set)
+- [Creating a Linux image with Azure Image Builder](#example-2-creating-a-linux-image-with-azure-image-builder)
+- [Deploying only the assets & image](#example-3-deploying-only-the-assets-image)
+- [Deploying only the base services](#example-4-deploying-only-the-base-services)
+- [Deploying only the image](#example-5-deploying-only-the-image)
+- [Creating a Windows image with Azure Image Builder](#example-6-creating-a-windows-image-with-azure-image-builder)
 
-### Example 1: _Creating a Linux image with Azure Image Builder_
+### Example 1: _Using small parameter set_
+
+This instance deploys the module with min features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
+  name: 'azureImageBuilderDeployment'
+  params: {
+    // Required parameters
+    computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
+    computeGalleryImageDefinitions: [
+      {
+        hyperVGeneration: 'V2'
+        name: 'sid-linux'
+        offer: 'devops_linux'
+        osType: 'Linux'
+        publisher: 'devops'
+        sku: 'devops_linux_az'
+      }
+    ]
+    computeGalleryName: 'galapvmiaibl'
+    imageTemplateImageSource: {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+    // Non-required parameters
+    deploymentsToPerform: '<deploymentsToPerform>'
+    location: '<location>'
+    resourceGroupName: '<resourceGroupName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "computeGalleryImageDefinitionName": {
+      "value": "<computeGalleryImageDefinitionName>"
+    },
+    "computeGalleryImageDefinitions": {
+      "value": [
+        {
+          "hyperVGeneration": "V2",
+          "name": "sid-linux",
+          "offer": "devops_linux",
+          "osType": "Linux",
+          "publisher": "devops",
+          "sku": "devops_linux_az"
+        }
+      ]
+    },
+    "computeGalleryName": {
+      "value": "galapvmiaibl"
+    },
+    "imageTemplateImageSource": {
+      "value": {
+        "offer": "ubuntu-24_04-lts",
+        "publisher": "canonical",
+        "sku": "server",
+        "type": "PlatformImage",
+        "version": "latest"
+      }
+    },
+    // Non-required parameters
+    "deploymentsToPerform": {
+      "value": "<deploymentsToPerform>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Creating a Linux image with Azure Image Builder_
 
 This instance deploy a Linux-flavored image definition and image using Linux-specific installation scripts.
 
@@ -70,7 +173,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
   name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
-    assetsStorageAccountName: '<assetsStorageAccountName>'
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
     computeGalleryImageDefinitions: [
       {
@@ -83,6 +185,17 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       }
     ]
     computeGalleryName: 'galapvmiaibl'
+    imageTemplateImageSource: {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+    // Non-required parameters
+    assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
+    assetsStorageAccountName: '<assetsStorageAccountName>'
+    deploymentsToPerform: '<deploymentsToPerform>'
     imageTemplateCustomizationSteps: [
       {
         name: 'PowerShell installation'
@@ -103,17 +216,8 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         type: 'Shell'
       }
     ]
-    imageTemplateImageSource: {
-      offer: 'ubuntu-24_04-lts'
-      publisher: 'canonical'
-      sku: 'server'
-      type: 'PlatformImage'
-      version: 'latest'
-    }
-    // Non-required parameters
-    assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
-    deploymentsToPerform: '<deploymentsToPerform>'
     location: '<location>'
+    resourceGroupName: '<resourceGroupName>'
     storageAccountFilesToUpload: {
       secureList: [
         {
@@ -143,9 +247,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "assetsStorageAccountName": {
-      "value": "<assetsStorageAccountName>"
-    },
     "computeGalleryImageDefinitionName": {
       "value": "<computeGalleryImageDefinitionName>"
     },
@@ -163,6 +264,25 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     },
     "computeGalleryName": {
       "value": "galapvmiaibl"
+    },
+    "imageTemplateImageSource": {
+      "value": {
+        "offer": "ubuntu-24_04-lts",
+        "publisher": "canonical",
+        "sku": "server",
+        "type": "PlatformImage",
+        "version": "latest"
+      }
+    },
+    // Non-required parameters
+    "assetsStorageAccountContainerName": {
+      "value": "<assetsStorageAccountContainerName>"
+    },
+    "assetsStorageAccountName": {
+      "value": "<assetsStorageAccountName>"
+    },
+    "deploymentsToPerform": {
+      "value": "<deploymentsToPerform>"
     },
     "imageTemplateCustomizationSteps": {
       "value": [
@@ -186,24 +306,11 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         }
       ]
     },
-    "imageTemplateImageSource": {
-      "value": {
-        "offer": "ubuntu-24_04-lts",
-        "publisher": "canonical",
-        "sku": "server",
-        "type": "PlatformImage",
-        "version": "latest"
-      }
-    },
-    // Non-required parameters
-    "assetsStorageAccountContainerName": {
-      "value": "<assetsStorageAccountContainerName>"
-    },
-    "deploymentsToPerform": {
-      "value": "<deploymentsToPerform>"
-    },
     "location": {
       "value": "<location>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     },
     "storageAccountFilesToUpload": {
       "value": {
@@ -226,7 +333,379 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 </details>
 <p>
 
-### Example 2: _Creating a Windows image with Azure Image Builder_
+### Example 3: _Deploying only the assets & image_
+
+This instance deploys the module with the conditions set up to only update the assets on the assets storage account and build the image, assuming all dependencies are setup.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
+  name: 'azureImageBuilderDeployment'
+  params: {
+    // Required parameters
+    computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
+    computeGalleryImageDefinitions: '<computeGalleryImageDefinitions>'
+    computeGalleryName: '<computeGalleryName>'
+    imageTemplateImageSource: {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+    // Non-required parameters
+    assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
+    assetsStorageAccountName: '<assetsStorageAccountName>'
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
+    deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
+    deploymentsToPerform: 'Only assets & image'
+    imageManagedIdentityName: '<imageManagedIdentityName>'
+    imageSubnetName: '<imageSubnetName>'
+    imageTemplateCustomizationSteps: [
+      {
+        name: 'PowerShell installation'
+        scriptUri: '<scriptUri>'
+        type: 'Shell'
+      }
+    ]
+    imageTemplateResourceGroupName: '<imageTemplateResourceGroupName>'
+    location: '<location>'
+    resourceGroupName: '<resourceGroupName>'
+    storageAccountFilesToUpload: {
+      secureList: [
+        {
+          name: '<name>'
+          value: '<value>'
+        }
+      ]
+    }
+    virtualNetworkName: '<virtualNetworkName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "computeGalleryImageDefinitionName": {
+      "value": "<computeGalleryImageDefinitionName>"
+    },
+    "computeGalleryImageDefinitions": {
+      "value": "<computeGalleryImageDefinitions>"
+    },
+    "computeGalleryName": {
+      "value": "<computeGalleryName>"
+    },
+    "imageTemplateImageSource": {
+      "value": {
+        "offer": "ubuntu-24_04-lts",
+        "publisher": "canonical",
+        "sku": "server",
+        "type": "PlatformImage",
+        "version": "latest"
+      }
+    },
+    // Non-required parameters
+    "assetsStorageAccountContainerName": {
+      "value": "<assetsStorageAccountContainerName>"
+    },
+    "assetsStorageAccountName": {
+      "value": "<assetsStorageAccountName>"
+    },
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "<deploymentScriptStorageAccountName>"
+    },
+    "deploymentScriptSubnetName": {
+      "value": "<deploymentScriptSubnetName>"
+    },
+    "deploymentsToPerform": {
+      "value": "Only assets & image"
+    },
+    "imageManagedIdentityName": {
+      "value": "<imageManagedIdentityName>"
+    },
+    "imageSubnetName": {
+      "value": "<imageSubnetName>"
+    },
+    "imageTemplateCustomizationSteps": {
+      "value": [
+        {
+          "name": "PowerShell installation",
+          "scriptUri": "<scriptUri>",
+          "type": "Shell"
+        }
+      ]
+    },
+    "imageTemplateResourceGroupName": {
+      "value": "<imageTemplateResourceGroupName>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "storageAccountFilesToUpload": {
+      "value": {
+        "secureList": [
+          {
+            "name": "<name>",
+            "value": "<value>"
+          }
+        ]
+      }
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Deploying only the base services_
+
+This instance deploys the module with the conditions set up to only deploy the base resources, that is everything but the image.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
+  name: 'azureImageBuilderDeployment'
+  params: {
+    // Required parameters
+    computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
+    computeGalleryImageDefinitions: [
+      {
+        hyperVGeneration: 'V2'
+        name: 'sid-linux'
+        offer: 'devops_linux'
+        osType: 'Linux'
+        publisher: 'devops'
+        sku: 'devops_linux_az'
+      }
+    ]
+    computeGalleryName: 'galapvmiaibob'
+    imageTemplateImageSource: {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+    // Non-required parameters
+    deploymentsToPerform: 'Only base'
+    location: '<location>'
+    resourceGroupName: '<resourceGroupName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "computeGalleryImageDefinitionName": {
+      "value": "<computeGalleryImageDefinitionName>"
+    },
+    "computeGalleryImageDefinitions": {
+      "value": [
+        {
+          "hyperVGeneration": "V2",
+          "name": "sid-linux",
+          "offer": "devops_linux",
+          "osType": "Linux",
+          "publisher": "devops",
+          "sku": "devops_linux_az"
+        }
+      ]
+    },
+    "computeGalleryName": {
+      "value": "galapvmiaibob"
+    },
+    "imageTemplateImageSource": {
+      "value": {
+        "offer": "ubuntu-24_04-lts",
+        "publisher": "canonical",
+        "sku": "server",
+        "type": "PlatformImage",
+        "version": "latest"
+      }
+    },
+    // Non-required parameters
+    "deploymentsToPerform": {
+      "value": "Only base"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Deploying only the image_
+
+This instance deploys the module with the conditions set up to only deploy and bake the image, assuming all dependencies are setup.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
+  name: 'azureImageBuilderDeployment'
+  params: {
+    // Required parameters
+    computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
+    computeGalleryImageDefinitions: '<computeGalleryImageDefinitions>'
+    computeGalleryName: '<computeGalleryName>'
+    imageTemplateImageSource: {
+      offer: 'ubuntu-24_04-lts'
+      publisher: 'canonical'
+      sku: 'server'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+    // Non-required parameters
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
+    deploymentScriptSubnetName: '<deploymentScriptSubnetName>'
+    deploymentsToPerform: 'Only image'
+    imageManagedIdentityName: '<imageManagedIdentityName>'
+    imageSubnetName: '<imageSubnetName>'
+    imageTemplateCustomizationSteps: [
+      {
+        name: 'PowerShell installation'
+        scriptUri: '<scriptUri>'
+        type: 'Shell'
+      }
+    ]
+    imageTemplateResourceGroupName: '<imageTemplateResourceGroupName>'
+    location: '<location>'
+    resourceGroupName: '<resourceGroupName>'
+    virtualNetworkName: '<virtualNetworkName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "computeGalleryImageDefinitionName": {
+      "value": "<computeGalleryImageDefinitionName>"
+    },
+    "computeGalleryImageDefinitions": {
+      "value": "<computeGalleryImageDefinitions>"
+    },
+    "computeGalleryName": {
+      "value": "<computeGalleryName>"
+    },
+    "imageTemplateImageSource": {
+      "value": {
+        "offer": "ubuntu-24_04-lts",
+        "publisher": "canonical",
+        "sku": "server",
+        "type": "PlatformImage",
+        "version": "latest"
+      }
+    },
+    // Non-required parameters
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "<deploymentScriptStorageAccountName>"
+    },
+    "deploymentScriptSubnetName": {
+      "value": "<deploymentScriptSubnetName>"
+    },
+    "deploymentsToPerform": {
+      "value": "Only image"
+    },
+    "imageManagedIdentityName": {
+      "value": "<imageManagedIdentityName>"
+    },
+    "imageSubnetName": {
+      "value": "<imageSubnetName>"
+    },
+    "imageTemplateCustomizationSteps": {
+      "value": [
+        {
+          "name": "PowerShell installation",
+          "scriptUri": "<scriptUri>",
+          "type": "Shell"
+        }
+      ]
+    },
+    "imageTemplateResourceGroupName": {
+      "value": "<imageTemplateResourceGroupName>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Creating a Windows image with Azure Image Builder_
 
 This instance deploy a Windows-flavored image definition and image using Windows-specific installation scripts.
 
@@ -240,7 +719,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
   name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
-    assetsStorageAccountName: '<assetsStorageAccountName>'
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
     computeGalleryImageDefinitions: [
       {
@@ -252,6 +730,17 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       }
     ]
     computeGalleryName: 'galapvmiaibw'
+    imageTemplateImageSource: {
+      offer: 'Windows-10'
+      publisher: 'MicrosoftWindowsDesktop'
+      sku: '19h2-evd'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+    // Non-required parameters
+    assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
+    assetsStorageAccountName: '<assetsStorageAccountName>'
+    deploymentsToPerform: '<deploymentsToPerform>'
     imageTemplateCustomizationSteps: [
       {
         inline: [
@@ -280,17 +769,8 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         type: 'PowerShell'
       }
     ]
-    imageTemplateImageSource: {
-      offer: 'Windows-10'
-      publisher: 'MicrosoftWindowsDesktop'
-      sku: '19h2-evd'
-      type: 'PlatformImage'
-      version: 'latest'
-    }
-    // Non-required parameters
-    assetsStorageAccountContainerName: '<assetsStorageAccountContainerName>'
-    deploymentsToPerform: 'All'
     location: '<location>'
+    resourceGroupName: '<resourceGroupName>'
     storageAccountFilesToUpload: {
       secureList: [
         {
@@ -320,9 +800,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "assetsStorageAccountName": {
-      "value": "<assetsStorageAccountName>"
-    },
     "computeGalleryImageDefinitionName": {
       "value": "<computeGalleryImageDefinitionName>"
     },
@@ -339,6 +816,25 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     },
     "computeGalleryName": {
       "value": "galapvmiaibw"
+    },
+    "imageTemplateImageSource": {
+      "value": {
+        "offer": "Windows-10",
+        "publisher": "MicrosoftWindowsDesktop",
+        "sku": "19h2-evd",
+        "type": "PlatformImage",
+        "version": "latest"
+      }
+    },
+    // Non-required parameters
+    "assetsStorageAccountContainerName": {
+      "value": "<assetsStorageAccountContainerName>"
+    },
+    "assetsStorageAccountName": {
+      "value": "<assetsStorageAccountName>"
+    },
+    "deploymentsToPerform": {
+      "value": "<deploymentsToPerform>"
     },
     "imageTemplateCustomizationSteps": {
       "value": [
@@ -370,24 +866,11 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         }
       ]
     },
-    "imageTemplateImageSource": {
-      "value": {
-        "offer": "Windows-10",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "19h2-evd",
-        "type": "PlatformImage",
-        "version": "latest"
-      }
-    },
-    // Non-required parameters
-    "assetsStorageAccountContainerName": {
-      "value": "<assetsStorageAccountContainerName>"
-    },
-    "deploymentsToPerform": {
-      "value": "All"
-    },
     "location": {
       "value": "<location>"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     },
     "storageAccountFilesToUpload": {
       "value": {
@@ -417,11 +900,9 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`assetsStorageAccountName`](#parameter-assetsstorageaccountname) | string | The name of the storage account. |
 | [`computeGalleryImageDefinitionName`](#parameter-computegalleryimagedefinitionname) | string | The name of Image Definition of the Azure Compute Gallery to host the new image version. |
 | [`computeGalleryImageDefinitions`](#parameter-computegalleryimagedefinitions) | array | The Image Definitions in the Azure Compute Gallery. |
 | [`computeGalleryName`](#parameter-computegalleryname) | string | The name of the Azure Compute Gallery. |
-| [`imageTemplateCustomizationSteps`](#parameter-imagetemplatecustomizationsteps) | array | The customization steps to use for the Image Template. |
 | [`imageTemplateImageSource`](#parameter-imagetemplateimagesource) | object | The image source to use for the Image Template. |
 
 **Optional parameters**
@@ -429,13 +910,15 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assetsStorageAccountContainerName`](#parameter-assetsstorageaccountcontainername) | string | The name of container in the Storage Account. |
+| [`assetsStorageAccountName`](#parameter-assetsstorageaccountname) | string | The name of the storage account. Only needed if you want to upload scripts to be used during image baking. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the Managed Identity used by deployment scripts. |
 | [`deploymentScriptStorageAccountName`](#parameter-deploymentscriptstorageaccountname) | string | The name of the storage account. |
-| [`deploymentScriptSubnet`](#parameter-deploymentscriptsubnet) | string | The name of the Image Template Virtual Network Subnet to create. |
+| [`deploymentScriptSubnetName`](#parameter-deploymentscriptsubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
 | [`deploymentsToPerform`](#parameter-deploymentstoperform) | string | A parameter to control which deployments should be executed. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`imageManagedIdentityName`](#parameter-imagemanagedidentityname) | string | The name of the Managed Identity used by the Azure Image Builder. |
 | [`imageSubnetName`](#parameter-imagesubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
+| [`imageTemplateCustomizationSteps`](#parameter-imagetemplatecustomizationsteps) | array | The customization steps to use for the Image Template. |
 | [`imageTemplateDeploymentScriptName`](#parameter-imagetemplatedeploymentscriptname) | string | The name of the Deployment Script to trigger the image template baking. |
 | [`imageTemplateName`](#parameter-imagetemplatename) | string | The name of the Image Template. |
 | [`imageTemplateResourceGroupName`](#parameter-imagetemplateresourcegroupname) | string | The name of the Resource Group to deploy the Image Template resources into. |
@@ -447,19 +930,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 | [`virtualNetworkDeploymentScriptSubnetAddressPrefix`](#parameter-virtualnetworkdeploymentscriptsubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the deployment script. |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the Virtual Network. |
 | [`virtualNetworkSubnetAddressPrefix`](#parameter-virtualnetworksubnetaddressprefix) | string | The address space of the Virtual Network Subnet. |
+| [`waitDeploymentScriptName`](#parameter-waitdeploymentscriptname) | string | The name of the Deployment Script to wait for the the image template baking. |
+| [`waitForImageBuild`](#parameter-waitforimagebuild) | bool | A parameter to control if the deployment should wait for the image build to complete. |
 
 **Generated parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a SAS token to access the modules. |
-
-### Parameter: `assetsStorageAccountName`
-
-The name of the storage account.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `computeGalleryImageDefinitionName`
 
@@ -482,13 +960,6 @@ The name of the Azure Compute Gallery.
 - Required: Yes
 - Type: string
 
-### Parameter: `imageTemplateCustomizationSteps`
-
-The customization steps to use for the Image Template.
-
-- Required: Yes
-- Type: array
-
 ### Parameter: `imageTemplateImageSource`
 
 The image source to use for the Image Template.
@@ -503,6 +974,13 @@ The name of container in the Storage Account.
 - Required: No
 - Type: string
 - Default: `'aibscripts'`
+
+### Parameter: `assetsStorageAccountName`
+
+The name of the storage account. Only needed if you want to upload scripts to be used during image baking.
+
+- Required: No
+- Type: string
 
 ### Parameter: `deploymentScriptManagedIdentityName`
 
@@ -520,7 +998,7 @@ The name of the storage account.
 - Type: string
 - Default: `[format('{0}ds', parameters('assetsStorageAccountName'))]`
 
-### Parameter: `deploymentScriptSubnet`
+### Parameter: `deploymentScriptSubnetName`
 
 The name of the Image Template Virtual Network Subnet to create.
 
@@ -534,14 +1012,14 @@ A parameter to control which deployments should be executed.
 
 - Required: No
 - Type: string
-- Default: `'Only storage & image'`
+- Default: `'Only assets & image'`
 - Allowed:
   ```Bicep
   [
     'All'
+    'Only assets & image'
+    'Only base'
     'Only image'
-    'Only infrastructure'
-    'Only storage & image'
   ]
   ```
 
@@ -568,6 +1046,13 @@ The name of the Image Template Virtual Network Subnet to create.
 - Required: No
 - Type: string
 - Default: `'subnet-it'`
+
+### Parameter: `imageTemplateCustomizationSteps`
+
+The customization steps to use for the Image Template.
+
+- Required: No
+- Type: array
 
 ### Parameter: `imageTemplateDeploymentScriptName`
 
@@ -657,6 +1142,22 @@ The address space of the Virtual Network Subnet.
 - Type: string
 - Default: `[cidrSubnet(parameters('virtualNetworkAddressPrefix'), 24, 0)]`
 
+### Parameter: `waitDeploymentScriptName`
+
+The name of the Deployment Script to wait for the the image template baking.
+
+- Required: No
+- Type: string
+- Default: `'ds-wait-imageTemplate-build'`
+
+### Parameter: `waitForImageBuild`
+
+A parameter to control if the deployment should wait for the image build to complete.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `baseTime`
 
 Do not provide a value! This date value is used to generate a SAS token to access the modules.
@@ -668,9 +1169,8 @@ Do not provide a value! This date value is used to generate a SAS token to acces
 
 ## Outputs
 
-| Output | Type | Description |
-| :-- | :-- | :-- |
-| `imageTemplateName` | string | The generated name of the image template. |
+| Output | Type |
+| :-- | :-- |
 
 ## Cross-referenced modules
 
@@ -678,15 +1178,89 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/gallery:0.4.0' = if (deploymentsToPerform == 'All` | Remote reference |
+| `br/public:avm/res/compute/gallery:0.4.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (deploymentsToPerform == 'All` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsToPerform == 'All` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only infrastructure` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.1.6` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.2.4` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.2.4` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All` | Remote reference |
-| `br/public:avm/res/virtual-machine-images/image-template:0.2.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
+| `br/public:avm/res/virtual-machine-images/image-template:0.2.1` | Remote reference |
+
+## Notes
+
+# (Simplified) All
+```mermaid
+  graph TD;
+      imageTemplateRg --> imageTemplate
+      rg --> vnet
+      rg --> dsMsi
+      rg --> imageMSI
+      rg --> azureComputeGallery
+
+      azureComputeGallery --> imageTemplate
+
+      imageMSI --> imageMSI_rbac
+
+      dsMsi --> assetsStorageAccount
+      imageMSI --> assetsStorageAccount
+
+      dsMsi --> dsStorageAccount
+      vnet --> dsStorageAccount
+
+      dsStorageAccount --> storageAccount_upload
+      assetsStorageAccount --> storageAccount_upload
+      dsMsi --> imageTemplate
+      storageAccount_upload ==> imageTemplate
+
+      imageTemplate --> imageTemplate_trigger
+
+      imageTemplate_trigger ==> imageTemplate_wait
+      imageMSI_rbac ==> imageTemplate
+```
+
+
+
+# (Simplified) Only base
+```mermaid
+  graph TD;
+      rg -- provides value to --> azureComputeGallery
+      rg -- provides value to --> vnet
+      rg -- provides value to --> dsMsi
+      rg -- provides value to --> imageMSI
+
+      imageTemplateRg
+
+      vnet -- provides value to --> dsStorageAccount
+
+      dsMsi -- provides value to --> dsStorageAccount
+      dsStorageAccount -- provides value to --> storageAccount_upload
+      assetsStorageAccount -- provides value to --> storageAccount_upload
+
+      dsMsi -- provides value to --> assetsStorageAccount
+      imageMSI -- provides value to --> assetsStorageAccount
+      imageMSI -- provides value to --> imageMSI_rbac
+```
+
+# Only assets & image
+Assumes all other services + permissions are deployed
+```mermaid
+  graph TD;
+      imageTemplateRg -- provides value to --> imageTemplate
+      storageAccount_upload -- must come after --> imageTemplate
+      imageTemplate -- provides value to --> imageTemplate_trigger
+      imageTemplate -- provides value to --> imageTemplate_wait
+      imageTemplate_trigger -- must come after --> imageTemplate_wait
+```
+
+# Only image
+Assumes all other services + permissions are deployed
+```mermaid
+  graph TD;
+      imageTemplateRg -- provides value to --> imageTemplate
+      imageTemplate -- provides value to --> imageTemplate_trigger
+      imageTemplate -- provides value to --> imageTemplate_wait
+      imageTemplate_trigger -- must come after --> imageTemplate_wait
+```
 
 ## Data Collection
 
