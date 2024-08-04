@@ -49,7 +49,7 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-ai'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-oai'
     params: {
       name: '${namePrefix}${serviceShort}002'
       kind: 'OpenAI'
@@ -75,11 +75,6 @@ module testDeployment '../../../main.bicep' = [
             nestedDependencies.outputs.privateDNSZoneResourceId
           ]
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
           ipConfigurations: [
             {
               name: 'myIPconfig'

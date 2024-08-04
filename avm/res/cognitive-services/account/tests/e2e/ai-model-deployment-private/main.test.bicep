@@ -51,10 +51,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-ai'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      name: '${namePrefix}${serviceShort}003'
       kind: 'AIServices'
       location: resourceLocation
-      customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {
           name: 'gpt-35-turbo'
@@ -76,11 +75,6 @@ module testDeployment '../../../main.bicep' = [
             nestedDependencies.outputs.privateDNSZoneResourceId
           ]
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
           ipConfigurations: [
             {
               name: 'myIPconfig'
