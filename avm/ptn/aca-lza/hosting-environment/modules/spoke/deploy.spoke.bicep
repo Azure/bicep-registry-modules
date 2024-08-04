@@ -30,7 +30,7 @@ param tags object = {}
 param hubVNetId string
 
 @description('The resource id of the bastion host.')
-param bastionResourceid string
+param bastionResourceId string
 
 // Spoke
 @description('CIDR of the spoke virtual network. For most landing zone implementations, the spoke network would have been created by your platform team.')
