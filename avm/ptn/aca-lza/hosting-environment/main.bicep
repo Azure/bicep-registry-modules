@@ -152,7 +152,7 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
     //subscriptionId: subscriptionId
     workloadName: workloadName
     hubVNetId: hubVirtualNetworkResourceId
-    bastionResourceid: bastionResourceId
+    bastionResourceId: bastionResourceId
     spokeApplicationGatewaySubnetAddressPrefix: spokeApplicationGatewaySubnetAddressPrefix
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
     spokePrivateEndpointsSubnetAddressPrefix: spokePrivateEndpointsSubnetAddressPrefix
