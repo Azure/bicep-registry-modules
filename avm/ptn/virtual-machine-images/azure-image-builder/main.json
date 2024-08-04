@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9414995170339455848"
+      "templateHash": "9382381343789512610"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -205,6 +205,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.ptn.virtualmachineimages-aib.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -257,6 +258,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -712,6 +716,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -1165,6 +1172,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -1621,6 +1631,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -2808,6 +2821,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -3991,6 +4007,9 @@
           },
           "allowSharedKeyAccess": {
             "value": false
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -8693,6 +8712,9 @@
           "allowSharedKeyAccess": {
             "value": true
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "roleAssignments": {
             "value": [
               {
@@ -13380,6 +13402,9 @@
           "azPowerShellVersion": {
             "value": "12.0"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "managedIdentities": {
             "value": {
               "userAssignedResourcesIds": [
@@ -13938,6 +13963,9 @@
           },
           "name": {
             "value": "[parameters('imageTemplateName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "managedIdentities": {
             "value": {
@@ -14694,6 +14722,9 @@
                 "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-ds-msi', deployment().name)), '2022-09-01').outputs.resourceId.value]"
               ]
             }
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "scriptContent": "[if(or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only storage & image')), equals(parameters('deploymentsToPerform'), 'Only image')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-it', deployment().name)), '2022-09-01').outputs.runThisCommand.value), createObject('value', ''))]",
           "timeout": {

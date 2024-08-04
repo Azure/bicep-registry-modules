@@ -109,6 +109,7 @@ var formattedTime = replace(replace(replace(baseTime, ':', ''), '-', ''), ' ', '
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.virtualmachineimages-aib.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  location: location
   properties: {
     mode: 'Incremental'
     template: {
@@ -137,6 +138,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.2.4' = {
   params: {
     name: imageTemplateResourceGroupName
     location: location
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -148,6 +150,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' =
   params: {
     name: deploymentScriptManagedIdentityName
     location: location
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -157,6 +160,7 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2
   params: {
     name: imageManagedIdentityName
     location: location
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -191,6 +195,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = if (deplo
     name: computeGalleryName
     images: computeGalleryImageDefinitions
     location: location
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -234,6 +239,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsT
       }
     ]
     location: location
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -244,6 +250,7 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
   params: {
     name: assetsStorageAccountName
     allowSharedKeyAccess: false // Keys not needed if MSI is granted access
+    enableTelemetry: enableTelemetry
     location: location
     networkAcls: {
       // NOTE: If Firewall is enabled, it causes the Image Template to not be able to connect to the storage account. It's NOT a permission issue (ref: https://github.com/danielsollondon/azvmimagebuilder/issues/31#issuecomment-1793779854)
@@ -308,6 +315,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
   params: {
     name: deploymentScriptStorageAccountName
     allowSharedKeyAccess: true // May not be disabled to allow deployment script to access storage account files
+    enableTelemetry: enableTelemetry
     roleAssignments: [
       {
         // Allow MSI to leverage the storage account for private networking of container instance
@@ -342,6 +350,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.
     name: '${storageDeploymentScriptName}-${formattedTime}'
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
+    enableTelemetry: enableTelemetry
     managedIdentities: {
       userAssignedResourcesIds: [
         dsMsi.outputs.resourceId
@@ -368,6 +377,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
     customizationSteps: imageTemplateCustomizationSteps
     imageSource: imageTemplateImageSource
     name: imageTemplateName
+    enableTelemetry: enableTelemetry
     managedIdentities: {
       userAssignedResourceIds: [
         imageMSI.outputs.resourceId
@@ -417,6 +427,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.2.
         dsMsi.outputs.resourceId
       ]
     }
+    enableTelemetry: enableTelemetry
     scriptContent: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only storage & image' || deploymentsToPerform == 'Only image')
       ? imageTemplate.outputs.runThisCommand
       : '' // Requires condition als Bicep will otherwise try to resolve the null reference
