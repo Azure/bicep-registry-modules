@@ -510,7 +510,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
     location: location
     tags: tags
     vmName: naming.outputs.resourcesNames.vmJumpBox
-    bastionResourceId: bastionResourceid
+    bastionResourceId: bastionResourceId
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmSshPublicKey: vmLinuxSshAuthorizedKey
