@@ -152,16 +152,6 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       trustPolicyStatus: 'enabled'
-      cacheRules: [
-        {
-          name: 'customRule'
-          sourceRepository: 'docker.io/library/hello-world'
-          targetRepository: 'cached-docker-hub/hello-world'
-        }
-        {
-          sourceRepository: 'docker.io/library/hello-world'
-        }
-      ]
       webhooks: [
         {
           name: '${namePrefix}acrx001webhook'
