@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "2343320964001139856"
+      "version": "0.29.47.4906",
+      "templateHash": "6259766574135261184"
     },
     "name": "Static Web App Site Config",
     "description": "This module deploys a Static Web App Site Config.",
