@@ -45,11 +45,11 @@ module testDeployment '../../../main.bicep' = [
       storageAccountFilesToUpload: {
         secureList: [
           {
-            name: 'script#${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__WindowsPowerShell_ps1 will be Install-WindowsPowerShell.ps1
+            name: '__SCRIPT__${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__WindowsPowerShell_ps1 will be Install-WindowsPowerShell.ps1
             value: loadTextContent('scripts/${installPwshScriptName}')
           }
           {
-            name: 'script#${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__WindowsSoftware_ps1 will be Initialize-WindowsSoftware.ps1
+            name: '__SCRIPT__${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__WindowsSoftware_ps1 will be Initialize-WindowsSoftware.ps1
             value: loadTextContent('scripts/${initializeSoftwareScriptName}')
           }
         ]

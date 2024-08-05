@@ -33,9 +33,9 @@ Write-Verbose 'Fetching & storing scripts' -Verbose
 $contentDirectoryName = 'scripts'
 $contentDirectory = (New-Item $contentDirectoryName -ItemType 'Directory' -Force).FullName
 $scriptPaths = @()
-foreach ($scriptEnvVar in (Get-ChildItem 'env:*').Name | Where-Object { $_ -like 'script_*' }) {
+foreach ($scriptEnvVar in (Get-ChildItem 'env:*').Name | Where-Object { $_ -like '__SCRIPT__*' }) {
     # Handle value like 'script_Initialize__LinuxSoftware_ps1'
-    $scriptName = $scriptEnvVar -replace 'script#', '' -replace '__', '-' -replace '_', '.'
+    $scriptName = $scriptEnvVar -replace '__SCRIPT__', '' -replace '__', '-' -replace '_', '.'
     $scriptContent = (Get-Item env:$scriptEnvVar).Value
 
     Write-Verbose ('Storing file [{0}] with length [{1}]' -f $scriptName, $scriptContent.Length) -Verbose
