@@ -795,26 +795,26 @@ The name of the workload that is being deployed. Up to 10 characters long.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `applicationGatewayFqdn` | string | The FQDN of the Azure Application Gateway. |
-| `applicationGatewayId` | string | The resource ID of the Azure Application Gateway. |
 | `applicationGatewayPublicIp` | string | The public IP address of the Azure Application Gateway. |
+| `applicationGatewayResourceId` | string | The resource ID of the Azure Application Gateway. |
 | `applicationInsightsName` | string | The name of application Insights instance. |
-| `containerAppsEnvironmentId` | string | The resource ID of the container apps environment. |
 | `containerAppsEnvironmentName` | string | The name of the container apps environment. |
-| `containerRegistryId` | string | The resource ID of the container registry. |
+| `containerAppsEnvironmentResourceId` | string | The resource ID of the container apps environment. |
 | `containerRegistryLoginServer` | string | The name of the container registry login server. |
 | `containerRegistryName` | string | The name of the container registry. |
-| `containerRegistryUserAssignedIdentityId` | string | The resource ID of the user assigned managed identity for the container registry to be able to pull images from it. |
+| `containerRegistryResourceId` | string | The resource ID of the container registry. |
+| `containerRegistryUserAssignedIdentityResourceId` | string | The resource ID of the user assigned managed identity for the container registry to be able to pull images from it. |
 | `keyVaultId` | string | The resource ID of the key vault. |
 | `keyVaultName` | string | The name of the Azure key vault. |
-| `logAnalyticsWorkspaceId` | string | The resource ID of the Log Analytics workspace created in the spoke vnet. |
-| `spokeApplicationGatewaySubnetId` | string | The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
+| `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created in the spoke vnet. |
 | `spokeApplicationGatewaySubnetName` | string | The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
+| `spokeApplicationGatewaySubnetResourceId` | string | The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeInfraSubnetId` | string | The resource ID of the Spoke Infrastructure Subnet. |
 | `spokeInfraSubnetName` | string | The name of the Spoke Infrastructure Subnet. |
 | `spokePrivateEndpointsSubnetName` | string | The name of the Spoke Private Endpoints Subnet. |
 | `spokeResourceGroupName` | string | The name of the Spoke resource group. |
-| `spokeVNetId` | string | The  resource ID of the Spoke Virtual Network. |
 | `spokeVnetName` | string | The name of the Spoke Virtual Network. |
+| `spokeVNetResourceId` | string | The  esource ID of the Spoke Virtual Network. |
 | `vmJumpBoxName` | string | The name of the jump box virtual machine. |
 
 ## Cross-referenced modules
