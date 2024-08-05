@@ -76,30 +76,6 @@ module testDeployment '../../../main.bicep' = [
             nestedDependencies.outputs.privateDNSZoneResourceId
           ]
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          ipConfigurations: [
-            {
-              name: 'myIPconfig'
-              properties: {
-                groupId: 'account'
-                memberName: 'default'
-                privateIPAddress: '10.0.0.10'
-              }
-            }
-          ]
-          customDnsConfigs: [
-            {
-              fqdn: 'abc.account.com'
-              ipAddresses: [
-                '10.0.0.10'
-              ]
-            }
-          ]
-        }
-        {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
     }
