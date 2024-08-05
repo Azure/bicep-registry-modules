@@ -140,7 +140,7 @@ param customerManagedKey customerManagedKeyType
 param cacheRules array?
 
 @description('Optional. Array of Credential Sets.')
-param credentialSets array?
+param credentialSets array = []
 
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType
@@ -347,6 +347,9 @@ module registry_cacheRules 'cache-rules/main.bicep' = [
       targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
       credentialSetResourceId: cacheRule.?credentialSetResourceId
     }
+    dependsOn: [
+      registry_credentialSets
+    ]
   }
 ]
 
@@ -503,6 +506,16 @@ output systemAssignedMIPrincipalId string = registry.?identity.?principalId ?? '
 
 @description('The location the resource was deployed into.')
 output location string = registry.location
+
+@description('The Principal IDs of the ACR Credential Sets system-assigned identities.')
+output credentialSetsSystemAssignedMIPrincipalIds array = [
+  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.systemAssignedMIPrincipalId
+]
+
+@description('The Resource IDs of the ACR Credential Sets.')
+output credentialSetsResourceIds array = [
+  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.resourceId
+]
 
 // =============== //
 //   Definitions   //
