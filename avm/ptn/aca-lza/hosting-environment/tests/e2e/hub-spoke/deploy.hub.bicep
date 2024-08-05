@@ -19,6 +19,9 @@ param location string = deployment().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 @description('CIDR of the hub virtual network.')
 param vnetAddressPrefixes array
 
@@ -382,6 +385,7 @@ module hubResourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
     name: rgHubName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -393,6 +397,7 @@ module hubLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspac
     name: naming.outputs.resourcesNames.logAnalyticsWorkspace
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -404,6 +409,7 @@ module vnetHub 'br/public:avm/res/network/virtual-network:0.1.6' = {
     name: naming.outputs.resourcesNames.vnetHub
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     addressPrefixes: vnetAddressPrefixes
     subnets: vnetSubnets
   }
@@ -418,6 +424,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:0.3.2' = {
     azureSkuTier: 'Standard'
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     virtualNetworkResourceId: vnetHub.outputs.resourceId
     applicationRuleCollections: applicationRuleCollections
     networkRuleCollections: networkRules
@@ -446,6 +453,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.2.1' = {
     // Non-required parameters
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
+    enableFileCopy: true
     skuName: bastionSku
   }
 }

@@ -148,6 +148,7 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
     spokeResourceGroupName: rgSpokeName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     environment: environment
     //subscriptionId: subscriptionId
     workloadName: workloadName
@@ -187,6 +188,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
   params: {
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointsSubnetName
     environment: environment
     workloadName: workloadName
@@ -202,6 +204,7 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
   params: {
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     environment: environment
     workloadName: workloadName
     hubVNetId: hubVirtualNetworkResourceId
@@ -220,6 +223,7 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
   params: {
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     containerAppsEnvironmentId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
     workloadProfileName: containerAppsEnvironment.outputs.workloadProfileNames[0]
     containerRegistryUserAssignedIdentityId: supportingServices.outputs.containerRegistryUserAssignedIdentityId
@@ -232,6 +236,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
   params: {
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     environment: environment
     workloadName: workloadName
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
@@ -254,6 +259,7 @@ module frontDoor 'modules/front-door/deploy.front-door.bicep' = if (exposeContai
   params: {
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     environment: environment
     workloadName: workloadName
     containerAppsEnvironmentId: containerAppsEnvironment.outputs.containerAppsEnvironmentId

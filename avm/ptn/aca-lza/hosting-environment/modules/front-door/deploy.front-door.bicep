@@ -18,6 +18,9 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 // Container App Environment
 @description('The ID of the Container Apps environment to be used for the deployment. (e.g. /subscriptions/XXX/resourceGroups/XXX/providers/Microsoft.App/managedEnvironments/XXX)')
 param containerAppsEnvironmentId string
@@ -90,6 +93,7 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.3.0' = {
     location: 'Global'
     sku: 'Premium_AzureFrontDoor'
     tags: tags
+    enableTelemetry: enableTelemetry
     originResponseTimeoutSeconds: 60
     // Non-required parameters
     endpointProperties: {

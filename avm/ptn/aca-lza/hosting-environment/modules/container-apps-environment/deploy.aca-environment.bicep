@@ -18,6 +18,9 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 // Hub
 @description('The resource ID of the existing hub virtual network.')
 param hubVNetId string
@@ -100,6 +103,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = if (en
     name: naming.outputs.resourcesNames.applicationInsights
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     workspaceResourceId: logAnalyticsWorkspaceId
   }
 }
@@ -112,6 +116,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.5.1
     name: naming.outputs.resourcesNames.containerAppsEnvironment
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     internal: true
     managedIdentities: {
       userAssignedResourceIds: [
@@ -141,6 +146,7 @@ module containerAppsEnvironmentPrivateDnsZone 'br/public:avm/res/network/private
     name: containerAppsEnvironment.outputs.defaultDomain
     location: 'global'
     tags: tags
+    enableTelemetry: enableTelemetry
     virtualNetworkLinks: virtualNetworkLinks
     a: [
       {

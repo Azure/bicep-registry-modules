@@ -34,6 +34,7 @@ module hubdeployment 'deploy.hub.bicep' = {
     tags: {
       environment: 'test'
     }
+    enableTelemetry: true
     vnetAddressPrefixes: ['10.0.0.0/24']
     azureFirewallSubnetAddressPrefix: '10.0.0.64/26'
     //azureFirewallSubnetManagementAddressPrefix: '10.0.0.128/26'

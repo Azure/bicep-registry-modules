@@ -18,6 +18,9 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Defines whether to enable telemetry for the modules deployment.')
+param enableTelemetry bool
+
 @description('The FQDN of the Application Gateawy. Must match the TLS certificate.')
 param applicationGatewayFqdn string
 
@@ -88,6 +91,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
     name: naming.outputs.resourcesNames.applicationGatewayUserAssignedIdentity
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -115,6 +119,7 @@ module applicationGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0
     location: location
     name: naming.outputs.resourcesNames.applicationGatewayPip
     tags: tags
+    enableTelemetry: enableTelemetry
     skuName: 'Standard'
     publicIPAllocationMethod: 'Static'
     ddosSettings: enableDdosProtection
@@ -149,6 +154,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.1.0' 
   params: {
     // Required parameters
     name: naming.outputs.resourcesNames.applicationGateway
+    enableTelemetry: enableTelemetry
     // Non-required parameters
     backendAddressPools: [
       {
@@ -359,6 +365,7 @@ module appGwWafPolicy 'br/public:avm/res/network/application-gateway-web-applica
   params: {
     name: '${naming.outputs.resourcesNames.applicationGateway}Policy001'
     location: location
+    enableTelemetry: enableTelemetry
     policySettings: {
       fileUploadLimitInMb: 10
       state: 'Enabled'

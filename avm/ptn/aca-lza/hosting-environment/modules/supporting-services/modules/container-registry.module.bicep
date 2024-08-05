@@ -13,6 +13,9 @@ param containerRegistryName string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 @description('Optional. The resource ID of the Hub Virtual Network.')
 param hubVNetId string = ''
 
@@ -79,6 +82,7 @@ module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
     name: containerRegistryUserAssignedIdentityName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -88,6 +92,7 @@ module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
     name: acrDnsZoneName
     location: 'global'
     tags: tags
+    enableTelemetry: enableTelemetry
     virtualNetworkLinks: virtualNetworkLinks
   }
 }
@@ -98,6 +103,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.3.0' = {
     name: containerRegistryName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     acrSku: 'Premium'
     publicNetworkAccess: 'Disabled'
     acrAdminUserEnabled: false

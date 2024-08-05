@@ -24,6 +24,9 @@ param vmAdminPassword string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 param location string = resourceGroup().location
 
 // ------------------
@@ -40,6 +43,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
     name: vmNetworkSecurityGroupName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     securityRules: !empty(bastionResourceId)
       ? [
           {
@@ -105,6 +109,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.1' = {
     name: vmName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     osType: 'Windows'
     computerName: vmName
     adminUsername: vmAdminUsername

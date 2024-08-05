@@ -25,6 +25,9 @@ param spokeResourceGroupName string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 // Hub
 @description('The resource ID of the existing hub virtual network.')
 param hubVNetId string
@@ -171,6 +174,7 @@ module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   params: {
     name: rgSpokeName
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
   }
 }
@@ -195,6 +199,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
     name: naming.outputs.resourcesNames.vnetSpoke
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     addressPrefixes: spokeVNetAddressPrefixes
     subnets: spokeSubnets
   }
@@ -208,6 +213,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     name: naming.outputs.resourcesNames.logAnalyticsWorkspace
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -219,6 +225,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
     name: naming.outputs.resourcesNames.containerAppsEnvironmentNsg
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     securityRules: [
       {
         name: 'Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP'
@@ -341,6 +348,7 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.2.0' = if (!
     name: naming.outputs.resourcesNames.applicationGatewayNsg
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     securityRules: [
       {
         name: 'HealthProbes'
@@ -429,6 +437,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
     name: naming.outputs.resourcesNames.pepNsg
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     securityRules: [
       {
         name: 'deny-hop-outbound'
@@ -489,6 +498,7 @@ module egressLockdownUdr 'br/public:avm/res/network/route-table:0.2.2' = if (!em
     name: naming.outputs.resourcesNames.routeTable
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     routes: [
       {
         name: 'defaultEgressLockdown'
@@ -509,6 +519,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (vmJumpboxOSType == 'linu
   params: {
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     vmName: naming.outputs.resourcesNames.vmJumpBox
     bastionResourceId: bastionResourceId
     vmAdminUsername: vmAdminUsername
@@ -534,6 +545,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
   params: {
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     vmName: naming.outputs.resourcesNames.vmJumpBox
     bastionResourceId: bastionResourceId
     vmAdminUsername: vmAdminUsername

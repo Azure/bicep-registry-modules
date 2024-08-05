@@ -13,6 +13,9 @@ param keyVaultName string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 @description('The resource ID of the Hub Virtual Network.')
 param hubVNetId string
 
@@ -76,6 +79,7 @@ module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.3.0' = {
     name: vaultDnsZoneName
     location: 'global'
     tags: tags
+    enableTelemetry: enableTelemetry
     virtualNetworkLinks: virtualNetworkLinks
   }
 }
@@ -86,6 +90,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.6.1' = {
     name: keyVaultName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     sku: 'standard'
     networkAcls: {
       bypass: 'AzureServices'

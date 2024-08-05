@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "392798750472740953"
+      "templateHash": "7299109254533069260"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -414,6 +414,9 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "environment": {
             "value": "[parameters('environment')]"
           },
@@ -423,7 +426,7 @@
           "hubVNetId": {
             "value": "[parameters('hubVirtualNetworkResourceId')]"
           },
-          "bastionResourceid": {
+          "bastionResourceId": {
             "value": "[parameters('bastionResourceId')]"
           },
           "spokeApplicationGatewaySubnetAddressPrefix": {
@@ -474,7 +477,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "9130678922425288610"
+              "templateHash": "13622688108195531290"
             }
           },
           "parameters": {
@@ -513,13 +516,19 @@
                 "description": "Optional. The tags to be assigned to the created resources."
               }
             },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to enable deplotment telemetry."
+              }
+            },
             "hubVNetId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the existing hub virtual network."
               }
             },
-            "bastionResourceid": {
+            "bastionResourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource id of the bastion host."
@@ -678,6 +687,9 @@
                   },
                   "location": {
                     "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -1279,6 +1291,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "addressPrefixes": {
                     "value": "[parameters('spokeVNetAddressPrefixes')]"
@@ -2475,6 +2490,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -4457,6 +4475,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "securityRules": {
                     "value": [
                       {
@@ -5276,6 +5297,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "securityRules": {
                     "value": [
                       {
@@ -6059,6 +6083,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "securityRules": {
                     "value": [
@@ -6966,6 +6993,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "routes": {
                     "value": [
                       {
@@ -7333,11 +7363,14 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "vmName": {
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
                   },
                   "bastionResourceId": {
-                    "value": "[parameters('bastionResourceid')]"
+                    "value": "[parameters('bastionResourceId')]"
                   },
                   "vmAdminUsername": {
                     "value": "[parameters('vmAdminUsername')]"
@@ -7386,7 +7419,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "13880913622847848582"
+                      "templateHash": "15037342818970325221"
                     }
                   },
                   "parameters": {
@@ -7450,6 +7483,12 @@
                       "defaultValue": {},
                       "metadata": {
                         "description": "Optional. The tags to be assigned to the created resources."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deplotment telemetry."
                       }
                     },
                     "location": {
@@ -7518,6 +7557,9 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')))), createObject('value', createArray()))]"
                         },
@@ -8214,6 +8256,9 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "osType": {
                             "value": "Linux"
@@ -13705,11 +13750,14 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "vmName": {
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('spokeNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.vmJumpBox]"
                   },
                   "bastionResourceId": {
-                    "value": "[parameters('bastionResourceid')]"
+                    "value": "[parameters('bastionResourceId')]"
                   },
                   "vmAdminUsername": {
                     "value": "[parameters('vmAdminUsername')]"
@@ -13752,7 +13800,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "16532562610166674012"
+                      "templateHash": "8661291685866182643"
                     }
                   },
                   "parameters": {
@@ -13806,6 +13854,12 @@
                       "defaultValue": {},
                       "metadata": {
                         "description": "Optional. The tags to be assigned to the created resources."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deplotment telemetry."
                       }
                     },
                     "location": {
@@ -13874,6 +13928,9 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')))), createObject('value', createArray()))]"
                         },
@@ -14570,6 +14627,9 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "osType": {
                             "value": "Windows"
@@ -20136,6 +20196,9 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "spokePrivateEndpointSubnetName": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokePrivateEndpointsSubnetName.value]"
           },
@@ -20162,7 +20225,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "15133181162308161231"
+              "templateHash": "4540495316729936890"
             }
           },
           "parameters": {
@@ -20193,6 +20256,12 @@
               "defaultValue": {},
               "metadata": {
                 "description": "Optional. The tags to be assigned to the created resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to enable deployment telemetry."
               }
             },
             "hubVNetId": {
@@ -20384,6 +20453,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "spokeVNetId": {
                     "value": "[parameters('spokeVNetId')]"
                   },
@@ -20413,7 +20485,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "3854212434328616083"
+                      "templateHash": "1772796700946624265"
                     }
                   },
                   "parameters": {
@@ -20435,6 +20507,12 @@
                       "defaultValue": {},
                       "metadata": {
                         "description": "Optional. The tags to be assigned to the created resources."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deplotment telemetry."
                       }
                     },
                     "hubVNetId": {
@@ -20511,6 +20589,9 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           }
                         },
                         "template": {
@@ -20962,6 +21043,9 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "virtualNetworkLinks": {
                             "value": "[variables('virtualNetworkLinks')]"
@@ -23839,6 +23923,9 @@
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
                           "acrSku": {
                             "value": "Premium"
                           },
@@ -26083,6 +26170,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "spokeVNetId": {
                     "value": "[parameters('spokeVNetId')]"
                   },
@@ -26106,7 +26196,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "1966596192760382392"
+                      "templateHash": "16272877246531333695"
                     }
                   },
                   "parameters": {
@@ -26128,6 +26218,12 @@
                       "defaultValue": {},
                       "metadata": {
                         "description": "Optional. The tags to be assigned to the created resources."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deplotment telemetry."
                       }
                     },
                     "hubVNetId": {
@@ -26196,6 +26292,9 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "virtualNetworkLinks": {
                             "value": "[variables('virtualNetworkLinks')]"
@@ -29073,6 +29172,9 @@
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
                           "sku": {
                             "value": "standard"
                           },
@@ -31918,7 +32020,7 @@
               },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistryModule-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.containerRegistryUserAssignedIdentityId.value]"
             },
-            "keyVaultId": {
+            "keyVaultResourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the Azure Key Vault."
@@ -31956,6 +32058,9 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "environment": {
             "value": "[parameters('environment')]"
           },
@@ -31991,7 +32096,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "6489695255574859573"
+              "templateHash": "17883690966843525174"
             }
           },
           "parameters": {
@@ -32022,6 +32127,12 @@
               "defaultValue": {},
               "metadata": {
                 "description": "Optional. The tags to be assigned to the created resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to enable deplotment telemetry."
               }
             },
             "hubVNetId": {
@@ -32234,6 +32345,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "workspaceResourceId": {
                     "value": "[parameters('logAnalyticsWorkspaceId')]"
@@ -32862,6 +32976,9 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "internal": {
                     "value": true
                   },
@@ -33365,6 +33482,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "virtualNetworkLinks": {
                     "value": "[variables('virtualNetworkLinks')]"
@@ -36299,6 +36419,9 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "containerAppsEnvironmentId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('containerAppsEnvironment-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.containerAppsEnvironmentId.value]"
           },
@@ -36316,7 +36439,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11186354498086910868"
+              "templateHash": "16668830347449265665"
             }
           },
           "parameters": {
@@ -36332,6 +36455,12 @@
               "defaultValue": {},
               "metadata": {
                 "description": "Optional. The tags to be assigned to the created resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to enable deplotment telemetry."
               }
             },
             "helloWorldContainerAppName": {
@@ -36381,6 +36510,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "environmentId": {
                     "value": "[parameters('containerAppsEnvironmentId')]"
@@ -37294,6 +37426,9 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "environment": {
             "value": "[parameters('environment')]"
           },
@@ -37314,7 +37449,7 @@
             "value": "[parameters('base64Certificate')]"
           },
           "keyVaultId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.keyVaultId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.keyVaultResourceId.value]"
           },
           "deployZoneRedundantResources": {
             "value": "[parameters('deployZoneRedundantResources')]"
@@ -37333,7 +37468,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "17798989579164716901"
+              "templateHash": "13769306330739717588"
             }
           },
           "parameters": {
@@ -37366,6 +37501,12 @@
                 "description": "Optional. The tags to be assigned to the created resources."
               }
             },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Defines whether to enable telemetry for the modules deployment."
+              }
+            },
             "applicationGatewayFqdn": {
               "type": "string",
               "metadata": {
@@ -37392,7 +37533,7 @@
               }
             },
             "base64Certificate": {
-              "type": "string",
+              "type": "securestring",
               "defaultValue": "",
               "metadata": {
                 "description": "The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault."
@@ -37593,6 +37734,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -38143,6 +38287,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "skuName": {
                     "value": "Standard"
@@ -38787,6 +38934,9 @@
                 "parameters": {
                   "name": {
                     "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('agwNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.applicationGateway]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "backendAddressPools": {
                     "value": [
@@ -40572,6 +40722,9 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "policySettings": {
                     "value": {
                       "fileUploadLimitInMb": 10,
@@ -40781,6 +40934,9 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "environment": {
             "value": "[parameters('environment')]"
           },
@@ -40802,7 +40958,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "10740204733648093251"
+              "templateHash": "2374255941922404406"
             }
           },
           "parameters": {
@@ -40833,6 +40989,12 @@
               "defaultValue": {},
               "metadata": {
                 "description": "Optional. The tags to be assigned to the created resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to enable deplotment telemetry."
               }
             },
             "containerAppsEnvironmentId": {
@@ -41172,6 +41334,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "originResponseTimeoutSeconds": {
                     "value": 60
@@ -43403,10 +43568,10 @@
       },
       "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokeResourceGroupName.value]"
     },
-    "spokeVNetId": {
+    "spokeVNetResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The  resource ID of the Spoke Virtual Network."
+        "description": "The  esource ID of the Spoke Virtual Network."
       },
       "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokeVNetId.value]"
     },
@@ -43438,7 +43603,7 @@
       },
       "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokePrivateEndpointsSubnetName.value]"
     },
-    "spokeApplicationGatewaySubnetId": {
+    "spokeApplicationGatewaySubnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Spoke Application Gateway Subnet. If \"spokeApplicationGatewaySubnetAddressPrefix\" is empty, the subnet will not be created and the value returned is empty."
@@ -43452,7 +43617,7 @@
       },
       "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokeApplicationGatewaySubnetName.value]"
     },
-    "logAnalyticsWorkspaceId": {
+    "logAnalyticsWorkspaceResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Log Analytics workspace created in the spoke vnet."
@@ -43466,7 +43631,7 @@
       },
       "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.vmJumpBoxName.value]"
     },
-    "containerRegistryId": {
+    "containerRegistryResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the container registry."
@@ -43487,7 +43652,7 @@
       },
       "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.containerRegistryLoginServer.value]"
     },
-    "containerRegistryUserAssignedIdentityId": {
+    "containerRegistryUserAssignedIdentityResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the user assigned managed identity for the container registry to be able to pull images from it."
@@ -43499,7 +43664,7 @@
       "metadata": {
         "description": "The resource ID of the key vault."
       },
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.keyVaultId.value]"
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.keyVaultResourceId.value]"
     },
     "keyVaultName": {
       "type": "string",
@@ -43508,7 +43673,7 @@
       },
       "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.keyVaultName.value]"
     },
-    "applicationGatewayId": {
+    "applicationGatewayResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Azure Application Gateway."
@@ -43529,7 +43694,7 @@
       },
       "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('applicationGateway-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.applicationGatewayPublicIp.value, '')]"
     },
-    "containerAppsEnvironmentId": {
+    "containerAppsEnvironmentResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the container apps environment."

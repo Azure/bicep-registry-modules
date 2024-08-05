@@ -7,6 +7,9 @@ targetScope = 'managementGroup'
 @description('The location where the resources will be created.')
 param location string
 
+@description('Required. Whether to enable deplotment telemetry.')
+param enableTelemetry bool
+
 @description('The name of the resource group where the resources will be created.')
 param spokeResourceGroupName string
 
@@ -225,6 +228,7 @@ module builtInPolicyAssignment 'br/public:avm/ptn/authorization/policy-assignmen
     params: {
       name: policy.name
       location: location
+      enableTelemetry: enableTelemetry
       policyDefinitionId: policy.policyDefinitionId
       resourceGroupName: spokeResourceGroupName
     }
@@ -253,6 +257,7 @@ module cusomPoliciesAssignement 'br/public:avm/ptn/authorization/policy-assignme
     params: {
       name: policy.name
       location: location
+      enableTelemetry: enableTelemetry
       policyDefinitionId: customPoliciesDefinition[i].id
       resourceGroupName: spokeResourceGroupName
     }

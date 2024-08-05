@@ -19,6 +19,9 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deployment telemetry.')
+param enableTelemetry bool
+
 // Hub
 @description('The resource ID of the existing hub virtual network.')
 param hubVNetId string
@@ -58,6 +61,7 @@ module containerRegistry 'modules/container-registry.module.bicep' = {
     containerRegistryName: naming.outputs.resourcesNames.containerRegistry
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     spokeVNetId: spokeVNetId
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
@@ -75,6 +79,7 @@ module keyVault 'modules/key-vault.bicep' = {
     keyVaultName: naming.outputs.resourcesNames.keyVault
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     spokeVNetId: spokeVNetId
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
