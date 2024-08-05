@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
           wellKnownImageName: 'windows-2022/latest'
         }
       ]
-      fabricProfileSkuName: 'Standard_DS2_v2'
+      fabricProfileSkuName: 'Standard_D2_v5'
       organizationProfile: {
         kind: 'AzureDevOps'
         organizations: [
