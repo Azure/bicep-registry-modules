@@ -100,13 +100,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         ]
         subnetResourceId: '<subnetResourceId>'
       }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneOpenAIResourceId>'
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
     ]
     publicNetworkAccess: 'Disabled'
   }
@@ -176,13 +169,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
               }
             }
           ],
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneOpenAIResourceId>",
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneOpenAIResourceId>",
             "<privateDNSZoneResourceId>"
