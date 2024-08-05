@@ -33,13 +33,14 @@ module testDeployment '../../../main.bicep' = [
       deploymentsToPerform: 'Only base'
       resourceGroupName: resourceGroupName
       location: resourceLocation
+      assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
+      imageManagedIdentityName: 'msi-it-${namePrefix}-${serviceShort}'
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
-      assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
       computeGalleryImageDefinitions: [
         {
           hyperVGeneration: 'V2'
-          name: 'sid-linux'
+          name: computeGalleryImageDefinitionName
           osType: 'Linux'
           publisher: 'devops'
           offer: 'devops_linux'

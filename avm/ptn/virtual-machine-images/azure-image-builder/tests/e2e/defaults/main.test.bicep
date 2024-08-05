@@ -35,6 +35,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
+      assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
       computeGalleryImageDefinitions: [
         {
           hyperVGeneration: 'V2'

@@ -418,7 +418,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.
 // ===================== //
 
 // Image template
-resource dsMsi_existing 'Microsoft.ManagedIdentity/identities@2023-01-31' existing = if (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+resource dsMsi_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: deploymentScriptManagedIdentityName
   scope: resourceGroup(resourceGroupName)
 }

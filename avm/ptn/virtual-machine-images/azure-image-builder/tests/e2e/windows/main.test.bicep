@@ -41,6 +41,7 @@ module testDeployment '../../../main.bicep' = [
       assetsStorageAccountContainerName: assetsStorageAccountContainerName
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
+      imageManagedIdentityName: 'msi-it-${namePrefix}-${serviceShort}'
       storageAccountFilesToUpload: {
         secureList: [
           {
