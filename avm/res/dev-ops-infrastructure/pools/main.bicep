@@ -25,30 +25,14 @@ param devCenterProjectResourceId string
 @description('Optional. The subnet id on which to put all machines created in the pool.')
 param subnetResourceId string?
 
-@description('Optional. The secret management settings of the machines in the pool.')
-#disable-next-line secure-secrets-in-params
-param secretsManagementSettings secretManagementType
-
-@description('Optional. A list of empty data disks to attach.')
-param dataDisks dataDiskType
-
-@description('Optional. The Azure SKU name of the machines in the pool.')
-@allowed([
-  'Premium'
-  'Standard'
-  'StandardSSD'
-])
-param osDiskStorageAccount string?
-
-@description('Optional. Determines how the service should be run. By default, this will be set to Service.')
-@allowed([
-  'Interactive'
-  'Service'
-])
-param logonType string?
-
 @description('Required. Defines how the machine will be handled once it executed a job.')
 param agentProfile agentProfileType
+
+@description('Optional. The OS profile of the agents in the pool.')
+param osProfile osProfileType
+
+@description('Optional. The storage profile of the machines in the pool.')
+param storageProfile storageProfileType
 
 @description('Required. Defines the organization in which the pool will be used.')
 param organizationProfile organizationProfileType
@@ -160,14 +144,8 @@ resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-04-04-prev
             subnetId: subnetResourceId!
           }
         : null
-      osProfile: {
-        secretsManagementSettings: secretsManagementSettings
-        logonType: logonType
-      }
-      storageProfile: {
-        osDiskStorageAccountType: osDiskStorageAccount
-        dataDisks: dataDisks
-      }
+      osProfile: osProfile
+      storageProfile: storageProfile
       kind: 'Vmss'
       images: images
     }
@@ -251,6 +229,43 @@ output location string = managedDevOpsPool.location
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?principalId
 
+type osProfileType = {
+  @description('Required. The logon type of the machine.')
+  logonType: ('Interactive' | 'Service')
+
+  @description('Optional. The secret management settings of the machines in the pool.')
+  secretsManagementSettings: {
+    @description('Required. The secret management settings of the machines in the pool.')
+    keyExportable: bool
+
+    @description('Required. The list of certificates to install on all machines in the pool.')
+    observedCertificates: string[]
+
+    @description('Optional. Where to store certificates on the machine.')
+    certificateStoreLocation: string?
+  }?
+}?
+
+type storageProfileType = {
+  @description('Optional. The Azure SKU name of the machines in the pool.')
+  osDiskStorageAccountType: ('Premium' | 'StandardSSD' | 'Standard')?
+
+  @description('Optional. A list of empty data disks to attach.')
+  dataDisks: {
+    @description('Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.')
+    caching: ('None' | 'ReadOnly' | 'ReadWrite')?
+
+    @description('Optional. The initial disk size in gigabytes.')
+    diskSizeGiB: int?
+
+    @description('Optional. The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed.')
+    driveLetter: string?
+
+    @description('Optional. The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS.')
+    storageAccountType: ('Premium_LRS' | 'Premium_ZRS' | 'StandardSSD_LRS' | 'StandardSSD_ZRS' | 'Standard_LRS')?
+  }[]?
+}?
+
 type imageType = {
   @description('Optional. List of aliases to reference the image by.')
   aliases: string[]?
@@ -258,8 +273,8 @@ type imageType = {
   @description('Optional. The percentage of the buffer to be allocated to this image.')
   buffer: string?
 
-  @description('Optional. The image to use from a well-known set of images made available to customers.')
-  wellKnownImageName: string?
+  @description('Required. The image to use from a well-known set of images made available to customers.')
+  wellKnownImageName: string
 
   @description('Optional. The resource id of the image.')
   resourceId: string?
@@ -283,17 +298,17 @@ type organizationAzureDevOpsType = {
   @description('Required. Azure DevOps organization profile.')
   kind: 'AzureDevOps'
 
-  @description('Required. The type of permission which determines which accounts are admins on the Azure DevOps pool.')
+  @description('Optional. The type of permission which determines which accounts are admins on the Azure DevOps pool.')
   permissionProfile: {
-    @description('Required. Determines who has admin permissions to the Azure DevOps pool.')
-    kind: 'CreatorOnly' | 'Inherit' | 'SpecificAccounts'
+    @description('Optional. Determines who has admin permissions to the Azure DevOps pool.')
+    kind: ('CreatorOnly' | 'Inherit' | 'SpecificAccounts')?
 
     @description('Optional. Group email addresses.')
     groups: string[]?
 
     @description('Optional. User email addresses.')
     users: string[]?
-  }
+  }?
 
   @description('Required. The list of Azure DevOps organizations the pool should be present in..')
   organizations: {
@@ -312,17 +327,6 @@ type organizationAzureDevOpsType = {
 
 @discriminator('kind')
 type organizationProfileType = organizationGitHubType | organizationAzureDevOpsType
-
-type secretManagementType = {
-  @description('Required. The secret management settings of the machines in the pool.')
-  keyExportable: bool
-
-  @description('Required. The list of certificates to install on all machines in the pool.')
-  observedCertificates: string[]
-
-  @description('Optional. Where to store certificates on the machine.')
-  certificateStoreLocation: string?
-}?
 
 type dataDiskType = {
   @description('Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.')

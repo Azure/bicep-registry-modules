@@ -54,10 +54,7 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
     fabricProfileSkuName: 'Standard_DS2_v2'
     images: [
       {
-        aliases: [
-          'windows-2022'
-        ]
-        buffer: '*'
+        wellKnownImageName: 'windows-2022/latest'
       }
     ]
     name: 'mdpmin001'
@@ -65,13 +62,9 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
-          parallelism: 1
           url: '<url>'
         }
       ]
-      permissionProfile: {
-        kind: 'Inherit'
-      }
     }
     // Non-required parameters
     location: '<location>'
@@ -109,10 +102,7 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
     "images": {
       "value": [
         {
-          "aliases": [
-            "windows-2022"
-          ],
-          "buffer": "*"
+          "wellKnownImageName": "windows-2022/latest"
         }
       ]
     },
@@ -124,13 +114,9 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
-            "parallelism": 1,
             "url": "<url>"
           }
-        ],
-        "permissionProfile": {
-          "kind": "Inherit"
-        }
+        ]
       }
     },
     // Non-required parameters
@@ -212,21 +198,18 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
       }
     }
     // Non-required parameters
-    dataDisks: [
-      {
-        caching: 'ReadWrite'
-        diskSizeGiB: 100
-        driveLetter: 'B'
-        storageAccountType: 'Standard_LRS'
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    logonType: 'Interactive'
-    osDiskStorageAccount: 'Standard'
+    osProfile: {
+      logonType: 'Service'
+      secretsManagementSettings: {
+        keyExportable: false
+        observedCertificates: []
+      }
+    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -244,11 +227,16 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
         roleDefinitionIdOrName: 'Owner'
       }
     ]
-    secretsManagementSettings: {
-      keyExportable: true
-      observedCertificates: [
-        ''
+    storageProfile: {
+      dataDisks: [
+        {
+          caching: 'ReadWrite'
+          diskSizeGiB: 100
+          driveLetter: 'B'
+          storageAccountType: 'Standard_LRS'
+        }
       ]
+      osDiskStorageAccountType: 'Standard'
     }
     subnetResourceId: '<subnetResourceId>'
     tags: {
@@ -341,16 +329,6 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
       }
     },
     // Non-required parameters
-    "dataDisks": {
-      "value": [
-        {
-          "caching": "ReadWrite",
-          "diskSizeGiB": 100,
-          "driveLetter": "B",
-          "storageAccountType": "Standard_LRS"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -360,11 +338,14 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "logonType": {
-      "value": "Interactive"
-    },
-    "osDiskStorageAccount": {
-      "value": "Standard"
+    "osProfile": {
+      "value": {
+        "logonType": "Service",
+        "secretsManagementSettings": {
+          "keyExportable": false,
+          "observedCertificates": []
+        }
+      }
     },
     "roleAssignments": {
       "value": [
@@ -385,12 +366,17 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
         }
       ]
     },
-    "secretsManagementSettings": {
+    "storageProfile": {
       "value": {
-        "keyExportable": true,
-        "observedCertificates": [
-          ""
-        ]
+        "dataDisks": [
+          {
+            "caching": "ReadWrite",
+            "diskSizeGiB": 100,
+            "driveLetter": "B",
+            "storageAccountType": "Standard_LRS"
+          }
+        ],
+        "osDiskStorageAccountType": "Standard"
       }
     },
     "subnetResourceId": {
@@ -454,10 +440,7 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
     fabricProfileSkuName: 'Standard_DS2_v2'
     images: [
       {
-        aliases: [
-          'windows-2022'
-        ]
-        buffer: '*'
+        wellKnownImageName: 'windows-2022/latest'
       }
     ]
     name: 'mdpwaf001'
@@ -535,10 +518,7 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
     "images": {
       "value": [
         {
-          "aliases": [
-            "windows-2022"
-          ],
-          "buffer": "*"
+          "wellKnownImageName": "windows-2022/latest"
         }
       ]
     },
@@ -595,16 +575,14 @@ module pools 'br/public:avm/res/dev-ops-infrastructure/pools:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataDisks`](#parameter-datadisks) | array | A list of empty data disks to attach. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The geo-location where the resource lives. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`logonType`](#parameter-logontype) | string | Determines how the service should be run. By default, this will be set to Service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed service identities assigned to this resource. |
-| [`osDiskStorageAccount`](#parameter-osdiskstorageaccount) | string | The Azure SKU name of the machines in the pool. |
+| [`osProfile`](#parameter-osprofile) | object | The OS profile of the agents in the pool. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secretsManagementSettings`](#parameter-secretsmanagementsettings) | object | The secret management settings of the machines in the pool. |
+| [`storageProfile`](#parameter-storageprofile) | object | The storage profile of the machines in the pool. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet id on which to put all machines created in the pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -643,6 +621,12 @@ The VM images of the machines in the pool.
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`wellKnownImageName`](#parameter-imageswellknownimagename) | string | The image to use from a well-known set of images made available to customers. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -650,7 +634,13 @@ The VM images of the machines in the pool.
 | [`aliases`](#parameter-imagesaliases) | array | List of aliases to reference the image by. |
 | [`buffer`](#parameter-imagesbuffer) | string | The percentage of the buffer to be allocated to this image. |
 | [`resourceId`](#parameter-imagesresourceid) | string | The resource id of the image. |
-| [`wellKnownImageName`](#parameter-imageswellknownimagename) | string | The image to use from a well-known set of images made available to customers. |
+
+### Parameter: `images.wellKnownImageName`
+
+The image to use from a well-known set of images made available to customers.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `images.aliases`
 
@@ -673,13 +663,6 @@ The resource id of the image.
 - Required: No
 - Type: string
 
-### Parameter: `images.wellKnownImageName`
-
-The image to use from a well-known set of images made available to customers.
-
-- Required: No
-- Type: string
-
 ### Parameter: `name`
 
 Name of the pool. It needs to be globally unique.
@@ -693,68 +676,6 @@ Defines the organization in which the pool will be used.
 
 - Required: Yes
 - Type: object
-
-### Parameter: `dataDisks`
-
-A list of empty data disks to attach.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`caching`](#parameter-datadiskscaching) | string | The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/. |
-| [`diskSizeGiB`](#parameter-datadisksdisksizegib) | int | The initial disk size in gigabytes. |
-| [`driveLetter`](#parameter-datadisksdriveletter) | string | The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed. |
-| [`storageAccountType`](#parameter-datadisksstorageaccounttype) | string | The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS. |
-
-### Parameter: `dataDisks.caching`
-
-The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'None'
-    'ReadOnly'
-    'ReadWrite'
-  ]
-  ```
-
-### Parameter: `dataDisks.diskSizeGiB`
-
-The initial disk size in gigabytes.
-
-- Required: No
-- Type: int
-
-### Parameter: `dataDisks.driveLetter`
-
-The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataDisks.storageAccountType`
-
-The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Premium_LRS'
-    'Premium_ZRS'
-    'Standard_LRS'
-    'StandardSSD_LRS'
-    'StandardSSD_ZRS'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -954,20 +875,6 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `logonType`
-
-Determines how the service should be run. By default, this will be set to Service.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Interactive'
-    'Service'
-  ]
-  ```
-
 ### Parameter: `managedIdentities`
 
 The managed service identities assigned to this resource.
@@ -1008,20 +915,79 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
-### Parameter: `osDiskStorageAccount`
+### Parameter: `osProfile`
 
-The Azure SKU name of the machines in the pool.
+The OS profile of the agents in the pool.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logonType`](#parameter-osprofilelogontype) | string | The logon type of the machine. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretsManagementSettings`](#parameter-osprofilesecretsmanagementsettings) | object | The secret management settings of the machines in the pool. |
+
+### Parameter: `osProfile.logonType`
+
+The logon type of the machine.
+
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
-    'Premium'
-    'Standard'
-    'StandardSSD'
+    'Interactive'
+    'Service'
   ]
   ```
+
+### Parameter: `osProfile.secretsManagementSettings`
+
+The secret management settings of the machines in the pool.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyExportable`](#parameter-osprofilesecretsmanagementsettingskeyexportable) | bool | The secret management settings of the machines in the pool. |
+| [`observedCertificates`](#parameter-osprofilesecretsmanagementsettingsobservedcertificates) | array | The list of certificates to install on all machines in the pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateStoreLocation`](#parameter-osprofilesecretsmanagementsettingscertificatestorelocation) | string | Where to store certificates on the machine. |
+
+### Parameter: `osProfile.secretsManagementSettings.keyExportable`
+
+The secret management settings of the machines in the pool.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `osProfile.secretsManagementSettings.observedCertificates`
+
+The list of certificates to install on all machines in the pool.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `osProfile.secretsManagementSettings.certificateStoreLocation`
+
+Where to store certificates on the machine.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -1120,46 +1086,96 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsManagementSettings`
+### Parameter: `storageProfile`
 
-The secret management settings of the machines in the pool.
+The storage profile of the machines in the pool.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyExportable`](#parameter-secretsmanagementsettingskeyexportable) | bool | The secret management settings of the machines in the pool. |
-| [`observedCertificates`](#parameter-secretsmanagementsettingsobservedcertificates) | array | The list of certificates to install on all machines in the pool. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`certificateStoreLocation`](#parameter-secretsmanagementsettingscertificatestorelocation) | string | Where to store certificates on the machine. |
+| [`dataDisks`](#parameter-storageprofiledatadisks) | array | A list of empty data disks to attach. |
+| [`osDiskStorageAccountType`](#parameter-storageprofileosdiskstorageaccounttype) | string | The Azure SKU name of the machines in the pool. |
 
-### Parameter: `secretsManagementSettings.keyExportable`
+### Parameter: `storageProfile.dataDisks`
 
-The secret management settings of the machines in the pool.
+A list of empty data disks to attach.
 
-- Required: Yes
-- Type: bool
-
-### Parameter: `secretsManagementSettings.observedCertificates`
-
-The list of certificates to install on all machines in the pool.
-
-- Required: Yes
+- Required: No
 - Type: array
 
-### Parameter: `secretsManagementSettings.certificateStoreLocation`
+**Optional parameters**
 
-Where to store certificates on the machine.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-storageprofiledatadiskscaching) | string | The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/. |
+| [`diskSizeGiB`](#parameter-storageprofiledatadisksdisksizegib) | int | The initial disk size in gigabytes. |
+| [`driveLetter`](#parameter-storageprofiledatadisksdriveletter) | string | The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed. |
+| [`storageAccountType`](#parameter-storageprofiledatadisksstorageaccounttype) | string | The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS. |
+
+### Parameter: `storageProfile.dataDisks.caching`
+
+The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `storageProfile.dataDisks.diskSizeGiB`
+
+The initial disk size in gigabytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `storageProfile.dataDisks.driveLetter`
+
+The drive letter for the empty data disk. If not specified, it will be the first available letter. Letters A, C, D, and E are not allowed.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageProfile.dataDisks.storageAccountType`
+
+The storage Account type to be used for the data disk. If omitted, the default is Standard_LRS.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+  ]
+  ```
+
+### Parameter: `storageProfile.osDiskStorageAccountType`
+
+The Azure SKU name of the machines in the pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium'
+    'Standard'
+    'StandardSSD'
+  ]
+  ```
 
 ### Parameter: `subnetResourceId`
 

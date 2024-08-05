@@ -118,21 +118,25 @@ module testDeployment '../../../main.bicep' = [
           kind: 'CreatorOnly'
         }
       }
-      dataDisks: [
-        {
-          caching: 'ReadWrite'
-          diskSizeGiB: 100
-          driveLetter: 'B'
-          storageAccountType: 'Standard_LRS'
-        }
-      ]
-      logonType: 'Interactive'
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      osDiskStorageAccount: 'Standard'
-      secretsManagementSettings: {
-        keyExportable: true
-        observedCertificates: []
+      storageProfile: {
+        osDiskStorageAccountType: 'Standard'
+        dataDisks: [
+          {
+            caching: 'ReadWrite'
+            diskSizeGiB: 100
+            driveLetter: 'B'
+            storageAccountType: 'Standard_LRS'
+          }
+        ]
       }
+      osProfile: {
+        logonType: 'Service'
+        secretsManagementSettings: {
+          keyExportable: false
+          observedCertificates: []
+        }
+      }
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
       roleAssignments: [
         {
           roleDefinitionIdOrName: subscriptionResourceId(

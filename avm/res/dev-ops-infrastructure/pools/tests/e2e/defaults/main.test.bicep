@@ -62,10 +62,7 @@ module testDeployment '../../../main.bicep' = [
       devCenterProjectResourceId: nestedDependencies.outputs.devCenterProjectResourceId
       images: [
         {
-          aliases: [
-            'windows-2022'
-          ]
-          buffer: '*'
+          wellKnownImageName: 'windows-2022/latest'
         }
       ]
       fabricProfileSkuName: 'Standard_DS2_v2'
@@ -74,12 +71,8 @@ module testDeployment '../../../main.bicep' = [
         organizations: [
           {
             url: 'https://dev.azure.com/${azureDevOpsOrganizationName}'
-            parallelism: 1
           }
         ]
-        permissionProfile: {
-          kind: 'Inherit'
-        }
       }
     }
   }
