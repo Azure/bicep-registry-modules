@@ -96,13 +96,6 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
         }
-        {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-            nestedDependencies.outputs.privateDNSZoneOpenAIResourceId
-          ]
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        }
       ]
     }
   }
