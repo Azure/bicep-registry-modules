@@ -72,7 +72,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       {
         authCredentials: [
           {
-            name: 'default'
+            name: 'Credential1'
             passwordSecretIdentifier: '<passwordSecretIdentifier>'
             usernameSecretIdentifier: '<usernameSecretIdentifier>'
           }
@@ -127,7 +127,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         {
           "authCredentials": [
             {
-              "name": "default",
+              "name": "Credential1",
               "passwordSecretIdentifier": "<passwordSecretIdentifier>",
               "usernameSecretIdentifier": "<usernameSecretIdentifier>"
             }

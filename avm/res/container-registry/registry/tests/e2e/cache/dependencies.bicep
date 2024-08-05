@@ -62,11 +62,12 @@ resource acrCredentialSet 'Microsoft.ContainerRegistry/registries/credentialSets
   properties: {
     authCredentials: [
       {
-        name: 'default'
+        name: 'Credential1'
         passwordSecretIdentifier: keyVaulSecretPwd.properties.secretUri
         usernameSecretIdentifier: keyVaultSecretUserName.properties.secretUri
       }
     ]
+    loginServer: 'docker.io'
   }
 }
 

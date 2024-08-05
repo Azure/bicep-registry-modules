@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
           }
           authCredentials: [
             {
-              name: 'default'
+              name: 'Credential1'
               usernameSecretIdentifier: nestedDependencies.outputs.userNameSecretURI
               passwordSecretIdentifier: nestedDependencies.outputs.pwdSecretURI
             }
