@@ -151,7 +151,7 @@ function New-TemplateDeploymentInner {
         [switch] $DoNotThrow,
 
         [Parameter(Mandatory = $false)]
-        [int] $RetryLimit = 3,
+        [int] $RetryLimit = 1, # TODO: Set back to 3
 
         [Parameter(Mandatory = $false)]
         [string] $RepoRoot

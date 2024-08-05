@@ -63,7 +63,7 @@ param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virt
 param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 
 @description('Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: \'script_Install-LinuxPowerShell_sh\' \n value: loadTextContent(\'../scripts/uploads/linux/Install-LinuxPowerShell.sh\') }.')
-param storageAccountFilesToUpload object = {}
+param storageAccountFilesToUpload object?
 
 @description('Optional. The name of the Deployment Script to trigger the image template baking.')
 param imageTemplateDeploymentScriptName string = 'ds-triggerBuild-imageTemplate'
@@ -546,7 +546,6 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.2.4' 
     }
     scriptContent: loadTextContent('../../../utilities/e2e-template-assets/scripts/Wait-ForImageBuild.ps1')
     environmentVariables: storageAccountFilesToUpload
-    // Requires condition als Bicep will otherwise try to resolve the null reference
     arguments: ' -ImageTemplateName "${imageTemplate.outputs.name}" -ResourceGroupName "${resourceGroupName}"'
     timeout: 'PT30M'
     cleanupPreference: 'Always'
