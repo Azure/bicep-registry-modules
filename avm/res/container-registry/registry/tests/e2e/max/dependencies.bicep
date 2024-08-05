@@ -10,17 +10,6 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
-@description('Required. The name of the Key Vault referenced by the ACR Credential Set.')
-param keyVaultName string
-
-@description('Optional. UserName secret used by the ACR Credential Set deployment. The value is a GUID.')
-@secure()
-param userNameSecret string = newGuid()
-
-@description('Optional. Password secret used by the ACR Credential Set deployment. The value is a GUID.')
-@secure()
-param passwordSecret string = newGuid()
-
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -97,36 +86,6 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
   ]
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
-  name: keyVaultName
-  location: location
-  properties: {
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }
-    tenantId: subscription().tenantId
-    publicNetworkAccess: 'Enabled'
-    enableRbacAuthorization: true
-  }
-}
-
-resource keyVaultSecretUserName 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: keyVault
-  name: 'UserName'
-  properties: {
-    value: userNameSecret
-  }
-}
-
-resource keyVaulSecretPwd 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: keyVault
-  name: 'Password'
-  properties: {
-    value: passwordSecret
-  }
-}
-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -141,9 +100,3 @@ output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The name of the paired region.')
 output pairedRegionName string = getPairedRegionScript.properties.outputs.pairedRegionName
-
-@description('The username key vault secret URI.')
-output userNameSecretURI string = keyVaultSecretUserName.properties.secretUri
-
-@description('The password key vault secret URI.')
-output pwdSecretURI string = keyVaulSecretPwd.properties.secretUri
