@@ -89,18 +89,20 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
             name: 'myIPconfig'
             properties: {
               groupId: 'account'
-              memberName: 'secondary'
+              memberName: 'default'
               privateIPAddress: '10.0.0.10'
             }
           }
         ]
         privateDnsZoneResourceIds: [
+          '<privateDNSZoneOpenAIResourceId>'
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
       }
       {
         privateDnsZoneResourceIds: [
+          '<privateDNSZoneOpenAIResourceId>'
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
@@ -169,18 +171,20 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
               "name": "myIPconfig",
               "properties": {
                 "groupId": "account",
-                "memberName": "secondary",
+                "memberName": "default",
                 "privateIPAddress": "10.0.0.10"
               }
             }
           ],
           "privateDnsZoneResourceIds": [
+            "<privateDNSZoneOpenAIResourceId>",
             "<privateDNSZoneResourceId>"
           ],
           "subnetResourceId": "<subnetResourceId>"
         },
         {
           "privateDnsZoneResourceIds": [
+            "<privateDNSZoneOpenAIResourceId>",
             "<privateDNSZoneResourceId>"
           ],
           "subnetResourceId": "<subnetResourceId>"

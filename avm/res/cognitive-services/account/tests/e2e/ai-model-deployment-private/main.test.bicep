@@ -74,6 +74,7 @@ module testDeployment '../../../main.bicep' = [
         {
           privateDnsZoneResourceIds: [
             nestedDependencies.outputs.privateDNSZoneResourceId
+            nestedDependencies.outputs.privateDNSZoneOpenAIResourceId
           ]
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           ipConfigurations: [
@@ -81,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'myIPconfig'
               properties: {
                 groupId: 'account'
-                memberName: 'secondary'
+                memberName: 'default'
                 privateIPAddress: '10.0.0.10'
               }
             }
@@ -98,6 +99,7 @@ module testDeployment '../../../main.bicep' = [
         {
           privateDnsZoneResourceIds: [
             nestedDependencies.outputs.privateDNSZoneResourceId
+            nestedDependencies.outputs.privateDNSZoneOpenAIResourceId
           ]
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
