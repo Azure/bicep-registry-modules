@@ -76,24 +76,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     location: '<location>'
     privateEndpoints: [
       {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.account.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
-        ipConfigurations: [
-          {
-            name: 'myIPconfig'
-            properties: {
-              groupId: 'account'
-              memberName: 'default'
-              privateIPAddress: '10.0.0.10'
-            }
-          }
-        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneOpenAIResourceId>'
           '<privateDNSZoneResourceId>'
@@ -151,24 +133,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.account.com",
-              "ipAddresses": [
-                "10.0.0.10"
-              ]
-            }
-          ],
-          "ipConfigurations": [
-            {
-              "name": "myIPconfig",
-              "properties": {
-                "groupId": "account",
-                "memberName": "default",
-                "privateIPAddress": "10.0.0.10"
-              }
-            }
-          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneOpenAIResourceId>",
             "<privateDNSZoneResourceId>"
@@ -658,30 +622,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     location: '<location>'
     privateEndpoints: [
       {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.account.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
-        ipConfigurations: [
-          {
-            name: 'myIPconfig'
-            properties: {
-              groupId: 'account'
-              memberName: 'default'
-              privateIPAddress: '10.0.0.10'
-            }
-          }
-        ]
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -737,30 +677,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "privateEndpoints": {
       "value": [
-        {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.account.com",
-              "ipAddresses": [
-                "10.0.0.10"
-              ]
-            }
-          ],
-          "ipConfigurations": [
-            {
-              "name": "myIPconfig",
-              "properties": {
-                "groupId": "account",
-                "memberName": "default",
-                "privateIPAddress": "10.0.0.10"
-              }
-            }
-          ],
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
-        },
         {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
