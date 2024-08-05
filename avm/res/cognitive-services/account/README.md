@@ -58,6 +58,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'AIServices'
     name: 'csadp003'
     // Non-required parameters
+    customSubDomainName: 'xcsadpai'
     deployments: [
       {
         model: {
@@ -130,6 +131,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csadp003"
     },
     // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadpai"
+    },
     "deployments": {
       "value": [
         {
@@ -646,6 +650,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'OpenAI'
     name: 'csoai002'
     // Non-required parameters
+    customSubDomainName: 'xcsoaiai'
     deployments: [
       {
         model: {
@@ -718,6 +723,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csoai002"
     },
     // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsoaiai"
+    },
     "deployments": {
       "value": [
         {

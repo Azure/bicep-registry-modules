@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}003'
       kind: 'AIServices'
       location: resourceLocation
+      customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {
           name: 'gpt-35-turbo'

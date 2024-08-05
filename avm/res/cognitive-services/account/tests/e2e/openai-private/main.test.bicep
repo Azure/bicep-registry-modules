@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}002'
       kind: 'OpenAI'
       location: resourceLocation
+      customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {
           name: 'gpt-35-turbo'
