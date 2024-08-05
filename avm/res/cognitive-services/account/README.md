@@ -56,9 +56,8 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'AIServices'
-    name: 'csadp002'
+    name: 'csadp003'
     // Non-required parameters
-    customSubDomainName: 'xcsadpai'
     deployments: [
       {
         model: {
@@ -98,11 +97,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
       }
       {
         privateDnsZoneResourceIds: [
@@ -133,12 +127,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "AIServices"
     },
     "name": {
-      "value": "csadp002"
+      "value": "csadp003"
     },
     // Non-required parameters
-    "customSubDomainName": {
-      "value": "xcsadpai"
-    },
     "deployments": {
       "value": [
         {
@@ -182,12 +173,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
+          "subnetResourceId": "<subnetResourceId>"
         },
         {
           "privateDnsZoneResourceIds": [
@@ -699,11 +685,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
       }
       {
         privateDnsZoneResourceIds: [
@@ -780,12 +761,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
+          "subnetResourceId": "<subnetResourceId>"
         },
         {
           "privateDnsZoneResourceIds": [
