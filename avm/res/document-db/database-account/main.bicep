@@ -393,7 +393,7 @@ resource databaseAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettin
   }
 ]
 
-resource databaseAccount__roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource databaseAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(databaseAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
