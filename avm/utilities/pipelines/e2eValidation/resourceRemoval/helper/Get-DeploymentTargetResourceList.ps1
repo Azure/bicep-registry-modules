@@ -10,10 +10,13 @@ Get all deployment oeprations at a given scope. By default, the results are filt
 Mandatory. The deployment name to search for
 
 .PARAMETER ResourceGroupName
-Optional. The name of the resource group for scope 'resourcegroup'
+Optional. The name of the resource group for scope 'resourcegroup'. Relevant for resource-group-level deployments.
+
+.PARAMETER SubscriptionId
+Optional. The ID of the subscription to fetch deployments from. Relevant for subscription- & resource-group-level deployments.
 
 .PARAMETER ManagementGroupId
-Optional. The ID of the management group to fetch deployments from. Relevant for management-group level deployments.
+Optional. The ID of the management group to fetch deployments from. Relevant for management-group-level deployments.
 
 .PARAMETER Scope
 Mandatory. The scope to search in
@@ -42,6 +45,9 @@ function Get-DeploymentOperationAtScope {
         [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $false)]
+        [string] $SubscriptionId,
+
+        [Parameter(Mandatory = $false)]
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $false)]
@@ -61,20 +67,31 @@ function Get-DeploymentOperationAtScope {
         [string] $Scope
     )
 
-    $currentContext = Get-AzContext
 
-    $pathPerScope = @{
-        resourcegroup   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Resources/deployments/{2}/operations?api-version=2021-04-01' # subscriptionId, resourceGroupName, deploymentName
-        subscription    = '/subscriptions/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' # subscriptionId, deploymentName
-        managementgroup = '/providers/Microsoft.Management/managementGroups/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' # mamagementGroupId, deploymentName
-        tenant          = '/providers/Microsoft.Resources/deployments/{0}/operations?api-version=2021-04-01' # deploymentName
+    switch ($Scope) {
+        'resourcegroup' {
+            $path = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Resources/deployments/{2}/operations?api-version=2021-04-01' -f $SubscriptionId, $ResourceGroupName, $name
+            break
+        }
+        'subscription' {
+            $path = '/subscriptions/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' -f $SubscriptionId, $name
+            break
+        }
+        'managementgroup' {
+            $path = '/providers/Microsoft.Management/managementGroups/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' -f $ManagementGroupId, $name
+            break
+        }
+        'tenant' {
+            $path = '/providers/Microsoft.Resources/deployments/{0}/operations?api-version=2021-04-01' -f $name
+            break
+        }
     }
 
     ##############################################
     # Get all deployment children based on scope #
     ##############################################
 
-    $response = Invoke-AzRestMethod -Path ($pathPerScope[$scope] -f $currentContext.Subscription.Id, $name)
+    $response = Invoke-AzRestMethod -Method 'GET' -Path $path
 
     if ($response.StatusCode -ne 200) {
         Write-Error ('Failed to fetch deployment operations for deployment [{0}] in scope [{1}]' -f $name, $scope)
@@ -157,7 +174,7 @@ function Get-DeploymentTargetResourceListInner {
     switch ($Scope) {
         'resourcegroup' {
             if (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue') {
-                [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject -ResourceGroupName $resourceGroupName).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
+                [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject -ResourceGroupName $resourceGroupName -SubscriptionId $currentContext.Subscription.Id).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
@@ -166,7 +183,7 @@ function Get-DeploymentTargetResourceListInner {
             break
         }
         'subscription' {
-            [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
+            [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject -SubscriptionId $currentContext.Subscription.Id).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'managementgroup' {

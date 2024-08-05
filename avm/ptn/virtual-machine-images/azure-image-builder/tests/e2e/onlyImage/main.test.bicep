@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = {
     imageTemplateCustomizationSteps: [
       {
         type: 'Shell'
-        name: 'PowerShell installation'
+        name: 'Example script'
         scriptUri: 'https://${nestedDependencies.outputs.assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${nestedDependencies.outputs.assetsStorageAccountContainerName}/${nestedDependencies.outputs.exampleScriptName}'
       }
     ]

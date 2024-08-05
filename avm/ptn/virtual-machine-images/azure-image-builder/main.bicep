@@ -8,6 +8,15 @@ metadata owner = 'AlexanderSehr'
 // Input Parameters //
 // ================ //
 
+@description('Optional. A parameter to control which deployments should be executed.')
+@allowed([
+  'All'
+  'Only base'
+  'Only assets & image'
+  'Only image'
+])
+param deploymentsToPerform string = 'Only assets & image'
+
 // Resource Group Parameters
 @description('Optional. The name of the Resource Group.')
 param resourceGroupName string = 'rg-ado-agents'
@@ -62,7 +71,7 @@ param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virt
 @description('Optional. The name of the Deployment Script to trigger the Image Template baking.')
 param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 
-@description('Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: \'script_Install-LinuxPowerShell_sh\' \n value: loadTextContent(\'../scripts/uploads/linux/Install-LinuxPowerShell.sh\') }.')
+@description('Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: \'script#Install-LinuxPowerShell_sh\' \n value: loadTextContent(\'../scripts/uploads/linux/Install-LinuxPowerShell.sh\') }.')
 param storageAccountFilesToUpload object?
 
 @description('Optional. The name of the Deployment Script to trigger the image template baking.')
@@ -78,27 +87,19 @@ param imageTemplateName string = 'it-aib'
 @description('Required. The image source to use for the Image Template.')
 param imageTemplateImageSource object
 
-@description('Optional. The customization steps to use for the Image Template.')
+@description('Conditional. The customization steps to use for the Image Template. Required if Image Template is deployed.')
+@minLength(1)
 param imageTemplateCustomizationSteps array?
 
 @description('Required. The name of Image Definition of the Azure Compute Gallery to host the new image version.')
 param computeGalleryImageDefinitionName string
 
+@description('Optional. A parameter to control if the deployment should wait for the image build to complete.')
+param waitForImageBuild bool = true
+
 // Shared Parameters
 @description('Optional. The location to deploy into.')
 param location string = deployment().location
-
-@description('Optional. A parameter to control which deployments should be executed.')
-@allowed([
-  'All'
-  'Only base'
-  'Only assets & image'
-  'Only image'
-])
-param deploymentsToPerform string = 'Only assets & image'
-
-@description('Optional. A parameter to control if the deployment should wait for the image build to complete.')
-param waitForImageBuild bool = true
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -427,7 +428,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
-    customizationSteps: imageTemplateCustomizationSteps ?? []
+    customizationSteps: imageTemplateCustomizationSteps!
     imageSource: imageTemplateImageSource
     name: imageTemplateName
     enableTelemetry: enableTelemetry

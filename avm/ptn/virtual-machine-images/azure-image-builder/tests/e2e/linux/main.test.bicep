@@ -55,11 +55,11 @@ module testDeployment '../../../main.bicep' = [
       storageAccountFilesToUpload: {
         secureList: [
           {
-            name: 'script_${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
+            name: 'script#${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
             value: loadTextContent('scripts/${installPwshScriptName}')
           }
           {
-            name: 'script_${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__LinuxSoftware_ps1 will be Initialize-LinuxSoftware.ps1
+            name: 'script#${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__LinuxSoftware_ps1 will be Initialize-LinuxSoftware.ps1
             value: loadTextContent('scripts/${initializeSoftwareScriptName}')
           }
         ]

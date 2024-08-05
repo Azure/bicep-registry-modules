@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = {
     imageTemplateCustomizationSteps: [
       {
         type: 'Shell'
-        name: 'PowerShell installation'
+        name: 'Example script'
         scriptUri: 'https://${nestedDependencies.outputs.assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${nestedDependencies.outputs.assetsStorageAccountContainerName}/${exampleScriptName}'
       }
     ]
@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = {
     storageAccountFilesToUpload: {
       secureList: [
         {
-          name: 'script_${replace(replace(exampleScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
+          name: 'script#${replace(replace(exampleScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
           value: loadTextContent('scripts/${exampleScriptName}')
         }
       ]

@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-virtualmachineimages.azureim
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apvmiaibl'
+param serviceShort string = 'apvmiaibmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,6 +35,15 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
+      imageTemplateCustomizationSteps: [
+        {
+          type: 'Shell'
+          name: 'Example script'
+          inline: [
+            'echo \'Hola folks\''
+          ]
+        }
+      ]
       assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
       computeGalleryImageDefinitions: [
         {

@@ -35,7 +35,7 @@ $contentDirectory = (New-Item $contentDirectoryName -ItemType 'Directory' -Force
 $scriptPaths = @()
 foreach ($scriptEnvVar in (Get-ChildItem 'env:*').Name | Where-Object { $_ -like 'script_*' }) {
     # Handle value like 'script_Initialize__LinuxSoftware_ps1'
-    $scriptName = $scriptEnvVar -replace 'script_', '' -replace '__', '-' -replace '_', '.'
+    $scriptName = $scriptEnvVar -replace 'script#', '' -replace '__', '-' -replace '_', '.'
     $scriptContent = (Get-Item env:$scriptEnvVar).Value
 
     Write-Verbose ('Storing file [{0}] with length [{1}]' -f $scriptName, $scriptContent.Length) -Verbose

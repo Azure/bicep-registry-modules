@@ -184,7 +184,6 @@ function Invoke-ResourceRemoval {
 
             # Remove resource
             if ($PSCmdlet.ShouldProcess("Image Template [$resourceName]", 'Remove')) {
-                Write-Verbose ('[-] Removing resource [{0}] of type [{1}]' -f $resourceName, $Type) -Verbose
 
                 $removeRequestInputObject = @{
                     Method = 'DELETE'

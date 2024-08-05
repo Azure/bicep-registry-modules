@@ -271,11 +271,11 @@ resource assetsStorageAccount_upload 'Microsoft.Resources/deploymentScripts@2023
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
     environmentVariables: [
       {
-        name: 'script_Install__LinuxPowerShell_sh' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'.
+        name: 'script#Install__LinuxPowerShell_sh' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'.
         value: loadTextContent('src/Install-LinuxPowerShell.sh')
       }
       {
-        name: 'script_Initialize__LinuxSoftware_ps1' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'.
+        name: 'script#Initialize__LinuxSoftware_ps1' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'.
         value: loadTextContent('src/Initialize-LinuxSoftware.ps1')
       }
     ]
