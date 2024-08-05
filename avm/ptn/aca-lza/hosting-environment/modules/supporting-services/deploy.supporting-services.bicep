@@ -100,7 +100,7 @@ output containerRegistryLoginServer string = containerRegistry.outputs.container
 output containerRegistryUserAssignedIdentityId string = containerRegistry.outputs.containerRegistryUserAssignedIdentityId
 
 @description('The resource ID of the Azure Key Vault.')
-output keyVaultId string = keyVault.outputs.keyVaultId
+output keyVaultResourceId string = keyVault.outputs.keyVaultId
 
 @description('The name of the Azure Key Vault.')
 output keyVaultName string = keyVault.outputs.keyVaultName

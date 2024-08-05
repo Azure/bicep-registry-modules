@@ -241,7 +241,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
       : ''
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     base64Certificate: base64Certificate
-    keyVaultId: supportingServices.outputs.keyVaultId
+    keyVaultId: supportingServices.outputs.keyVaultResourceId
     deployZoneRedundantResources: deployZoneRedundantResources
     enableDdosProtection: enableDdosProtection
     applicationGatewayLogAnalyticsId: spoke.outputs.logAnalyticsWorkspaceId
@@ -289,8 +289,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 @description('The name of the Spoke resource group.')
 output spokeResourceGroupName string = spoke.outputs.spokeResourceGroupName
 
-@description('The  resource ID of the Spoke Virtual Network.')
-output spokeVNetId string = spoke.outputs.spokeVNetId
+@description('The  esource ID of the Spoke Virtual Network.')
+output spokeVNetResourceId string = spoke.outputs.spokeVNetId
 
 @description('The name of the Spoke Virtual Network.')
 output spokeVnetName string = spoke.outputs.spokeVNetName
@@ -305,20 +305,20 @@ output spokeInfraSubnetName string = spoke.outputs.spokeInfraSubnetName
 output spokePrivateEndpointsSubnetName string = spoke.outputs.spokePrivateEndpointsSubnetName
 
 @description('The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
-output spokeApplicationGatewaySubnetId string = spoke.outputs.spokeApplicationGatewaySubnetId
+output spokeApplicationGatewaySubnetResourceId string = spoke.outputs.spokeApplicationGatewaySubnetId
 
 @description('The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
 output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplicationGatewaySubnetName
 
 @description('The resource ID of the Log Analytics workspace created in the spoke vnet.')
-output logAnalyticsWorkspaceId string = spoke.outputs.logAnalyticsWorkspaceId
+output logAnalyticsWorkspaceResourceId string = spoke.outputs.logAnalyticsWorkspaceId
 
 @description('The name of the jump box virtual machine.')
 output vmJumpBoxName string = spoke.outputs.vmJumpBoxName
 
 // Supporting Services
 @description('The resource ID of the container registry.')
-output containerRegistryId string = supportingServices.outputs.containerRegistryId
+output containerRegistryResourceId string = supportingServices.outputs.containerRegistryId
 
 @description('The name of the container registry.')
 output containerRegistryName string = supportingServices.outputs.containerRegistryName
@@ -327,17 +327,17 @@ output containerRegistryName string = supportingServices.outputs.containerRegist
 output containerRegistryLoginServer string = supportingServices.outputs.containerRegistryLoginServer
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
-output containerRegistryUserAssignedIdentityId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
+output containerRegistryUserAssignedIdentityResourceId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
 
 @description('The resource ID of the key vault.')
-output keyVaultId string = supportingServices.outputs.keyVaultId
+output keyVaultId string = supportingServices.outputs.keyVaultResourceId
 
 @description('The name of the Azure key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
 
 // Application Gateway
 @description('The resource ID of the Azure Application Gateway.')
-output applicationGatewayId string = (exposeContainerAppsWith == 'applicationGateway')
+output applicationGatewayResourceId string = (exposeContainerAppsWith == 'applicationGateway')
   ? applicationGateway.outputs.applicationGatewayResourceId
   : ''
 
@@ -353,7 +353,7 @@ output applicationGatewayPublicIp string = (exposeContainerAppsWith == 'applicat
 
 // Container Apps Environment
 @description('The resource ID of the container apps environment.')
-output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
+output containerAppsEnvironmentResourceId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
 
 @description('The name of the container apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName

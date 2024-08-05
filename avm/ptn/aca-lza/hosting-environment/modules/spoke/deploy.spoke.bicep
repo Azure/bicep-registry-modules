@@ -535,7 +535,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (vmJumpboxOSType == '
     location: location
     tags: tags
     vmName: naming.outputs.resourcesNames.vmJumpBox
-    bastionResourceId: bastionResourceid
+    bastionResourceId: bastionResourceId
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword
     vmSize: vmSize
