@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'myIPconfig'
               properties: {
                 groupId: 'account'
-                memberName: 'default'
+                memberName: 'secondary'
                 privateIPAddress: '10.0.0.10'
               }
             }

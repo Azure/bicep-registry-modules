@@ -89,7 +89,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
             name: 'myIPconfig'
             properties: {
               groupId: 'account'
-              memberName: 'default'
+              memberName: 'secondary'
               privateIPAddress: '10.0.0.10'
             }
           }
@@ -169,7 +169,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
               "name": "myIPconfig",
               "properties": {
                 "groupId": "account",
-                "memberName": "default",
+                "memberName": "secondary",
                 "privateIPAddress": "10.0.0.10"
               }
             }
