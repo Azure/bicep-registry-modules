@@ -127,18 +127,6 @@ resource keyVaulSecretPwd 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   }
 }
 
-resource keyVaultRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${location}-${managedIdentity.id}-SecretsUser-RoleAssignment')
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '4633458b-17de-408a-b874-0445c86b69e6'
-    ) // Key Vault Secrets User
-    principalType: 'ServicePrincipal'
-  }
-}
-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 

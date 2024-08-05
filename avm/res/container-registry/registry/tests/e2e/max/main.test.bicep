@@ -157,17 +157,16 @@ module testDeployment '../../../main.bicep' = [
         {
           name: '${namePrefix}acrx001credset'
           managedIdentities: {
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.managedIdentityResourceId
-            ]
+            systemAssigned: true
           }
           authCredentials: [
             {
-              loginServer: 'docker.io'
-              username: nestedDependencies.outputs.userNameSecretURI
-              password: nestedDependencies.outputs.pwdSecretURI
+              name: 'Credential1'
+              usernameSecretIdentifier: nestedDependencies.outputs.userNameSecretURI
+              passwordSecretIdentifier: nestedDependencies.outputs.pwdSecretURI
             }
           ]
+          loginServer: 'docker.io'
         }
       ]
       cacheRules: [
@@ -176,9 +175,6 @@ module testDeployment '../../../main.bicep' = [
           sourceRepository: 'docker.io/library/hello-world'
           targetRepository: 'cached-docker-hub/hello-world'
           credentialSetResourceId: '${resourceGroup.id}/providers/Microsoft.ContainerRegistry/registries/${namePrefix}${serviceShort}001/credentialSets/${namePrefix}acrx001credset'
-        }
-        {
-          sourceRepository: 'docker.io/library/hello-world'
         }
       ]
       webhooks: [
