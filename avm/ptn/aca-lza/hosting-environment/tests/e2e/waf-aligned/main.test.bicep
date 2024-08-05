@@ -21,17 +21,6 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
-// ================= //
-// Variables Section //
-// ================= //
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-
 // ============== //
 // Test Execution //
 // ============== //
