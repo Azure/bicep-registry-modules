@@ -47,11 +47,33 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         name: 'default'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+          delegations: [
+            {
+              name: 'Microsoft.DevOpsInfrastructure/pools'
+              properties: {
+                serviceName: 'Microsoft.DevOpsInfrastructure/pools'
+              }
+            }
+          ]
         }
       }
     ]
   }
 }
+
+// Reader and Network Contributor role assignment
+resource roleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [
+  for role in ['acdd72a7-3385-48ef-bd42-f606fba81ae7', '4d97b98b-1d4f-4787-a291-c67834d212e7']: {
+    name: guid(subscription().subscriptionId, 'DevOpsInfrastructure', role)
+    properties: {
+      principalId: 'b12c02d0-bcd5-449f-80ae-31af16139058' // DevOpsInfrastructure service principal
+      #disable-next-line use-resource-id-functions
+      roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      principalType: 'ServicePrincipal'
+    }
+    scope: virtualNetwork
+  }
+]
 
 @description('The resource ID of the created DevCenter.')
 output devCenterResourceId string = devCenter.id
