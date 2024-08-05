@@ -40,6 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
   }
 }
 
@@ -152,11 +153,29 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       trustPolicyStatus: 'enabled'
+      credentialSets: [
+        {
+          name: '${namePrefix}acrx001credset'
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
+          authCredentials: [
+            {
+              loginServer: 'docker.io'
+              username: nestedDependencies.outputs.userNameSecretURI
+              password: nestedDependencies.outputs.pwdSecretURI
+            }
+          ]
+        }
+      ]
       cacheRules: [
         {
           name: 'customRule'
           sourceRepository: 'docker.io/library/hello-world'
           targetRepository: 'cached-docker-hub/hello-world'
+          credentialSetResourceId: '${resourceGroup.id}/providers/Microsoft.ContainerRegistry/registries/${namePrefix}${serviceShort}001/credentialSets/${namePrefix}acrx001credset'
         }
         {
           sourceRepository: 'docker.io/library/hello-world'

@@ -136,8 +136,11 @@ param anonymousPullEnabled bool = false
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
-@description('Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).')
+@description('Optional. Array of Cache Rules.')
 param cacheRules array?
+
+@description('Optional. Array of Credential Sets.')
+param credentialSets array?
 
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType
@@ -317,6 +320,19 @@ module registry_replications 'replication/main.bicep' = [
       regionEndpointEnabled: replication.?regionEndpointEnabled
       zoneRedundancy: replication.?zoneRedundancy
       tags: replication.?tags ?? tags
+    }
+  }
+]
+
+module registry_credentialSets 'credential-set/main.bicep' = [
+  for (credentialSet, index) in (credentialSets ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-CredentialSet-${index}'
+    params: {
+      name: credentialSet.name
+      registryName: registry.name
+      managedIdentities: credentialSet.managedIdentities
+      authCredentials: credentialSet.authCredentials
+      loginServer: credentialSet.loginServer
     }
   }
 ]
