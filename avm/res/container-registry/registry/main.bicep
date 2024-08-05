@@ -136,8 +136,11 @@ param anonymousPullEnabled bool = false
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
-@description('Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).')
+@description('Optional. Array of Cache Rules.')
 param cacheRules array?
+
+@description('Optional. Array of Credential Sets.')
+param credentialSets array = []
 
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType
@@ -321,7 +324,20 @@ module registry_replications 'replication/main.bicep' = [
   }
 ]
 
-module registry_cacheRules 'cache-rules/main.bicep' = [
+module registry_credentialSets 'credential-set/main.bicep' = [
+  for (credentialSet, index) in (credentialSets ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-CredentialSet-${index}'
+    params: {
+      name: credentialSet.name
+      registryName: registry.name
+      managedIdentities: credentialSet.managedIdentities
+      authCredentials: credentialSet.authCredentials
+      loginServer: credentialSet.loginServer
+    }
+  }
+]
+
+module registry_cacheRules 'cache-rule/main.bicep' = [
   for (cacheRule, index) in (cacheRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-Registry-Cache-${index}'
     params: {
@@ -331,6 +347,9 @@ module registry_cacheRules 'cache-rules/main.bicep' = [
       targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
       credentialSetResourceId: cacheRule.?credentialSetResourceId
     }
+    dependsOn: [
+      registry_credentialSets
+    ]
   }
 ]
 
@@ -487,6 +506,16 @@ output systemAssignedMIPrincipalId string = registry.?identity.?principalId ?? '
 
 @description('The location the resource was deployed into.')
 output location string = registry.location
+
+@description('The Principal IDs of the ACR Credential Sets system-assigned identities.')
+output credentialSetsSystemAssignedMIPrincipalIds array = [
+  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.systemAssignedMIPrincipalId
+]
+
+@description('The Resource IDs of the ACR Credential Sets.')
+output credentialSetsResourceIds array = [
+  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.resourceId
+]
 
 // =============== //
 //   Definitions   //
