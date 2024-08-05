@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9796320506343928600"
+      "templateHash": "8262521971858161152"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1314,9 +1314,9 @@
         "databaseAccount"
       ]
     },
-    "databaseAccount__roleAssignments": {
+    "databaseAccount_roleAssignments": {
       "copy": {
-        "name": "databaseAccount__roleAssignments",
+        "name": "databaseAccount_roleAssignments",
         "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
