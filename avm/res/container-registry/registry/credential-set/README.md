@@ -83,7 +83,6 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -91,13 +90,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-
-### Parameter: `managedIdentities.userAssignedResourceIds`
-
-The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
-
-- Required: No
-- Type: array
 
 ### Parameter: `name`
 
@@ -121,6 +113,7 @@ The name of the parent registry. Required if the template is used in a standalon
 | `name` | string | The Name of the Credential Set. |
 | `resourceGroupName` | string | The name of the Credential Set. |
 | `resourceId` | string | The resource ID of the Credential Set. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 

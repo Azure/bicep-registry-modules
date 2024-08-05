@@ -199,23 +199,19 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         sourceRepository: 'docker.io/library/hello-world'
         targetRepository: 'cached-docker-hub/hello-world'
       }
-      {
-        sourceRepository: 'docker.io/library/hello-world'
-      }
     ]
     credentialSets: [
       {
         authCredentials: [
           {
-            loginServer: 'docker.io'
-            password: '<password>'
-            username: '<username>'
+            name: 'Credential1'
+            passwordSecretIdentifier: '<passwordSecretIdentifier>'
+            usernameSecretIdentifier: '<usernameSecretIdentifier>'
           }
         ]
+        loginServer: 'docker.io'
         managedIdentities: {
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
+          systemAssigned: true
         }
         name: 'acrx001credset'
       }
@@ -346,9 +342,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "name": "customRule",
           "sourceRepository": "docker.io/library/hello-world",
           "targetRepository": "cached-docker-hub/hello-world"
-        },
-        {
-          "sourceRepository": "docker.io/library/hello-world"
         }
       ]
     },
@@ -357,15 +350,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         {
           "authCredentials": [
             {
-              "loginServer": "docker.io",
-              "password": "<password>",
-              "username": "<username>"
+              "name": "Credential1",
+              "passwordSecretIdentifier": "<passwordSecretIdentifier>",
+              "usernameSecretIdentifier": "<usernameSecretIdentifier>"
             }
           ],
+          "loginServer": "docker.io",
           "managedIdentities": {
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
+            "systemAssigned": true
           },
           "name": "acrx001credset"
         }
@@ -823,6 +815,7 @@ Array of Credential Sets.
 
 - Required: No
 - Type: array
+- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
@@ -1763,6 +1756,8 @@ Whether or not zone redundancy is enabled for this container registry.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `credentialSetsResourceIds` | array | The Resource IDs of the ACR Credential Sets. |
+| `credentialSetsSystemAssignedMIPrincipalIds` | array | The Principal IDs of the ACR Credential Sets system-assigned identities. |
 | `location` | string | The location the resource was deployed into. |
 | `loginServer` | string | The reference to the Azure container registry. |
 | `name` | string | The Name of the Azure container registry. |
