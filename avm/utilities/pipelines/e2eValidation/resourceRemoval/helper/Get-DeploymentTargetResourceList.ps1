@@ -1,6 +1,93 @@
 ﻿#region helper
 <#
 .SYNOPSIS
+Get all deployment operations at a given scope
+
+.DESCRIPTION
+Get all deployment oeprations at a given scope. By default, the results are filtered down to 'create' operations (i.e., excluding 'read' operations that would correspond to 'existing' resources).
+
+.PARAMETER Name
+Mandatory. The deployment name to search for
+
+.PARAMETER ResourceGroupName
+Optional. The name of the resource group for scope 'resourcegroup'
+
+.PARAMETER ManagementGroupId
+Optional. The ID of the management group to fetch deployments from. Relevant for management-group level deployments.
+
+.PARAMETER Scope
+Mandatory. The scope to search in
+
+.PARAMETER ProvisioningOperationsToInclude
+Optional. The provisioning operations to include in the result set. By default, only 'create' operations are included.
+
+.EXAMPLE
+Get-DeploymentOperationAtScope -Scope 'subscription' -Name 'v73rhp24d7jya-test-apvmiaiboaai'
+
+Get all deployment operations for a deployment with name 'v73rhp24d7jya-test-apvmiaiboaai' at scope 'subscription'
+
+.NOTES
+This function is a standin for the Get-AzDeploymentOperation cmdlet, which does not provide the ability to filter by provisioning operation.
+As such, it was also returning 'existing' resources (i.e., with provisioningOperation=Read).
+#>
+function Get-DeploymentOperationAtScope {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [Alias('DeploymentName')]
+        [string] $Name,
+
+        [Parameter(Mandatory = $false)]
+        [string] $ResourceGroupName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $ManagementGroupId,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet(
+            'Create', # any resource creation
+            'Read' # E.g., 'existing' resources
+        )]
+        [string[]] $ProvisioningOperationsToInclude = @('Create'),
+
+        [Parameter(Mandatory)]
+        [ValidateSet(
+            'resourcegroup',
+            'subscription',
+            'managementgroup',
+            'tenant'
+        )]
+        [string] $Scope
+    )
+
+    $currentContext = Get-AzContext
+
+    $pathPerScope = @{
+        resourcegroup   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Resources/deployments/{2}/operations?api-version=2021-04-01' # subscriptionId, resourceGroupName, deploymentName
+        subscription    = '/subscriptions/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' # subscriptionId, deploymentName
+        managementgroup = '/providers/Microsoft.Management/managementGroups/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' # mamagementGroupId, deploymentName
+        tenant          = '/providers/Microsoft.Resources/deployments/{0}/operations?api-version=2021-04-01' # deploymentName
+    }
+
+    ##############################################
+    # Get all deployment children based on scope #
+    ##############################################
+
+    $response = Invoke-AzRestMethod -Path ($pathPerScope[$scope] -f $currentContext.Subscription.Id, $name)
+
+    if ($response.StatusCode -ne 200) {
+        Write-Error ('Failed to fetch deployment operations for deployment [{0}] in scope [{1}]' -f $name, $scope)
+        return
+    } else {
+        $deploymentOperations = ($response.content | ConvertFrom-Json).value.properties
+        $deploymentOperationsFiltered = $deploymentOperations | Where-Object { $_.provisioningOperation -in $ProvisioningOperationsToInclude }
+        return $deploymentOperationsFiltered
+    }
+}
+
+<#
+.SYNOPSIS
 Get all deployments that match a given deployment name in a given scope
 
 .DESCRIPTION
@@ -63,10 +150,14 @@ function Get-DeploymentTargetResourceListInner {
     ##############################################
     # Get all deployment children based on scope #
     ##############################################
+    $baseInputObject = @{
+        Scope          = $Scope
+        DeploymentName = $Name
+    }
     switch ($Scope) {
         'resourcegroup' {
             if (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue') {
-                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+                [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject -ResourceGroupName $resourceGroupName).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
@@ -75,15 +166,15 @@ function Get-DeploymentTargetResourceListInner {
             break
         }
         'subscription' {
-            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'managementgroup' {
-            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject -ManagementGroupId $ManagementGroupId).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'tenant' {
-            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            [array]$deploymentTargets = (Get-DeploymentOperationAtScope @baseInputObject).targetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
     }
