@@ -44,9 +44,6 @@ module hubdeployment 'deploy.hub.bicep' = {
   }
 }
 
-// General resources
-// =================
-
 // ============== //
 // Test Execution //
 // ============== //
