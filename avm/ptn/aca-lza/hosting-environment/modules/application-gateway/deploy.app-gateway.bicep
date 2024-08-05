@@ -31,6 +31,7 @@ param applicationGatewayPrimaryBackendEndFqdn string
 param appGatewayBackendHealthProbePath string = '/'
 
 @description('The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault.')
+@secure()
 param base64Certificate string = ''
 
 @description('The name of the certificate key to use for Application Gateway certificate.')
