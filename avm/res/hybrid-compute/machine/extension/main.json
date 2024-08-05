@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16938870032761436213"
+      "version": "0.29.47.4906",
+      "templateHash": "12739944716751137956"
     },
     "name": "Arc Machine Extensions",
     "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.",
