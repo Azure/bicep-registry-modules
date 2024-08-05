@@ -337,7 +337,7 @@ module registry_credentialSets 'credential-set/main.bicep' = [
   }
 ]
 
-module registry_cacheRules 'cache-rules/main.bicep' = [
+module registry_cacheRules 'cache-rule/main.bicep' = [
   for (cacheRule, index) in (cacheRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-Registry-Cache-${index}'
     params: {

@@ -97,7 +97,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   kind: kind
   location: location
   name: name
