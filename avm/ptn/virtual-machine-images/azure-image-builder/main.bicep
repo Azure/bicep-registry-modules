@@ -142,6 +142,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+//////////////////////////
+//   START: ALL         //
+//   START: ONLY BASE   //
+// ==================== //
+
 // Resource Groups
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: resourceGroupName
@@ -306,10 +311,6 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
   }
 }
 
-////////////////////
-// TEMP RESOURCES //
-////////////////////
-
 // Deployment scripts & their storage account
 module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
@@ -352,6 +353,10 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
     vnet
   ]
 }
+
+////////////////////////////////////
+//   START: ONLY ASSETS & IMAGE   //
+// ============================== //
 
 // Upload storage account files
 module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
@@ -404,6 +409,14 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.
   ]
 }
 
+// ================== //
+//   END: ONLY BASE   //
+////////////////////////
+
+///////////////////////////
+//   START: ONLY IMAGE   //
+// ===================== //
+
 // Image template
 resource dsMsi_existing 'Microsoft.ManagedIdentity/identities@2023-01-31' existing = if (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: deploymentScriptManagedIdentityName
@@ -454,10 +467,10 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'
-        // Allow deployment script to trigger image build
-        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-          ? dsMsi.outputs.principalId
-          : dsMsi_existing.properties.principalId
+        // Allow deployment script to trigger image build. Use 'existing' reference if only part of solution is deployed
+        principalId: (deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')
+          ? dsMsi_existing.properties.principalId
+          : dsMsi.outputs.principalId
         principalType: 'ServicePrincipal'
       }
     ]
@@ -574,3 +587,9 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.2.4' 
     dsMsi
   ]
 }
+
+// ============================= //
+//   END: ALL                    //
+//   END: ONLY ASSETS  & IMAGE   //
+//   END: ONLY IMAGE             //
+///////////////////////////////////

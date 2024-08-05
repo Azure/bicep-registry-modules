@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2018-05-01/subscriptionDeploymentTemplate.json#",
   "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
@@ -241,7 +241,7 @@
       "properties": {
         "mode": "Incremental",
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "resources": [],
           "outputs": {
@@ -305,7 +305,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2018-05-01/subscriptionDeploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -462,7 +462,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -502,7 +502,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -588,7 +588,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -764,7 +764,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -973,7 +973,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -1061,7 +1061,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
@@ -1220,7 +1220,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -1429,7 +1429,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -1517,7 +1517,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
@@ -1679,7 +1679,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -1881,7 +1881,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -1993,7 +1993,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -2350,7 +2350,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -2869,7 +2869,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -3221,7 +3221,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -3389,7 +3389,7 @@
                   "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpoints), createObject('value', createArray()))]"
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -3716,7 +3716,7 @@
                   "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'useRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].useRemoteGateways), createObject('value', false()))]"
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
@@ -3861,7 +3861,7 @@
                   "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringUseRemoteGateways), createObject('value', false()))]"
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
@@ -4085,7 +4085,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -4102,7 +4102,7 @@
             "managedIdentitiesType": {
               "type": "object",
               "properties": {
-                "systemAssigned": {
+                "syste#_namePrefix_#signed": {
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
@@ -4916,7 +4916,7 @@
             "supportsBlobService": "[or(or(or(equals(parameters('kind'), 'BlockBlobStorage'), equals(parameters('kind'), 'BlobStorage')), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
             "supportsFileService": "[or(or(equals(parameters('kind'), 'FileStorage'), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'syste#_namePrefix_#signed'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'Syste#_namePrefix_#signed,UserAssigned', 'Syste#_namePrefix_#signed'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -4963,7 +4963,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -5159,7 +5159,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -5535,7 +5535,7 @@
                       "properties": {
                         "mode": "Incremental",
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "resources": [],
                           "outputs": {
@@ -5631,7 +5631,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
@@ -5782,7 +5782,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
@@ -5891,7 +5891,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -6109,7 +6109,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -6507,7 +6507,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -6777,7 +6777,7 @@
                                   }
                                 },
                                 "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                                   "contentVersion": "1.0.0.0",
                                   "metadata": {
                                     "_generator": {
@@ -6955,7 +6955,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -7236,7 +7236,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -7437,7 +7437,7 @@
                                   }
                                 },
                                 "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                                   "contentVersion": "1.0.0.0",
                                   "metadata": {
                                     "_generator": {
@@ -7462,7 +7462,7 @@
                                   },
                                   "variables": {
                                     "$fxv#0": {
-                                      "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                      "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                                       "contentVersion": "1.0.0.0",
                                       "parameters": {
                                         "scope": {
@@ -7705,7 +7705,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -7950,7 +7950,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -8207,7 +8207,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -8449,7 +8449,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -8702,7 +8702,7 @@
               },
               "value": "[if(and(not(empty(parameters('blobServices'))), contains(parameters('blobServices'), 'containers')), reference(format('Microsoft.Storage/storageAccounts/{0}', parameters('name')), '2019-04-01').primaryEndpoints.blob, '')]"
             },
-            "systemAssignedMIPrincipalId": {
+            "syste#_namePrefix_#signedMIPrincipalId": {
               "type": "string",
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
@@ -8772,7 +8772,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -8789,7 +8789,7 @@
             "managedIdentitiesType": {
               "type": "object",
               "properties": {
-                "systemAssigned": {
+                "syste#_namePrefix_#signed": {
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
@@ -9603,7 +9603,7 @@
             "supportsBlobService": "[or(or(or(equals(parameters('kind'), 'BlockBlobStorage'), equals(parameters('kind'), 'BlobStorage')), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
             "supportsFileService": "[or(or(equals(parameters('kind'), 'FileStorage'), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'syste#_namePrefix_#signed'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'Syste#_namePrefix_#signed,UserAssigned', 'Syste#_namePrefix_#signed'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -9650,7 +9650,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -9846,7 +9846,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -10222,7 +10222,7 @@
                       "properties": {
                         "mode": "Incremental",
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "resources": [],
                           "outputs": {
@@ -10318,7 +10318,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
@@ -10469,7 +10469,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
@@ -10578,7 +10578,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -10796,7 +10796,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -11194,7 +11194,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -11464,7 +11464,7 @@
                                   }
                                 },
                                 "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                                   "contentVersion": "1.0.0.0",
                                   "metadata": {
                                     "_generator": {
@@ -11642,7 +11642,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -11923,7 +11923,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -12124,7 +12124,7 @@
                                   }
                                 },
                                 "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                                   "contentVersion": "1.0.0.0",
                                   "metadata": {
                                     "_generator": {
@@ -12149,7 +12149,7 @@
                                   },
                                   "variables": {
                                     "$fxv#0": {
-                                      "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                      "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                                       "contentVersion": "1.0.0.0",
                                       "parameters": {
                                         "scope": {
@@ -12392,7 +12392,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -12637,7 +12637,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -12894,7 +12894,7 @@
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
@@ -13136,7 +13136,7 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                           "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
@@ -13389,7 +13389,7 @@
               },
               "value": "[if(and(not(empty(parameters('blobServices'))), contains(parameters('blobServices'), 'containers')), reference(format('Microsoft.Storage/storageAccounts/{0}', parameters('name')), '2019-04-01').primaryEndpoints.blob, '')]"
             },
-            "systemAssignedMIPrincipalId": {
+            "syste#_namePrefix_#signedMIPrincipalId": {
               "type": "string",
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
@@ -13472,7 +13472,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -13833,7 +13833,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -14034,7 +14034,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -14368,7 +14368,7 @@
                         },
                         "nullable": true,
                         "metadata": {
-                          "description": "Optional. Array of commands to be run, separated by commas."
+                          "description": "Optional. Array of commands to be run, separated by com#_namePrefix_#."
                         }
                       },
                       "validExitCodes": {
@@ -14592,7 +14592,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -14779,7 +14779,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -15140,7 +15140,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {
@@ -15339,7 +15339,7 @@
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
           "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
@@ -15700,7 +15700,7 @@
               "properties": {
                 "mode": "Incremental",
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/sche#_namePrefix_#/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "resources": [],
                   "outputs": {

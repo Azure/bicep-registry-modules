@@ -64,9 +64,9 @@ module testDeployment '../../../main.bicep' = [
       ]
       imageTemplateImageSource: {
         type: 'PlatformImage'
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'Windows-10'
-        sku: '19h2-evd'
+        publisher: 'microsoftwindowsdesktop'
+        offer: 'windows-11'
+        sku: 'win11-23h2-pro'
         version: 'latest'
       }
       imageTemplateCustomizationSteps: [

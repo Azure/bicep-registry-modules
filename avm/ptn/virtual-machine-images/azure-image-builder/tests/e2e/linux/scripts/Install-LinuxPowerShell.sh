@@ -14,7 +14,7 @@ echo '3. Get the version of Ubuntu'
 # Fetch based on ubuntu version
 # source /etc/os-release
 # echo "Found version $VERSION_ID"
-VERSION_ID='23.10'
+VERSION_ID='22.04'
 
 echo '4. Determine URL'
 url=https://packages.microsoft.com/config/ubuntu/$VERSION_ID/packages-microsoft-prod.deb

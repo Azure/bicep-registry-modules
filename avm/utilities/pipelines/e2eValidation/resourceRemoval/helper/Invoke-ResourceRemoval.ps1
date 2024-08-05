@@ -147,6 +147,89 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.VirtualMachineImages/imageTemplates' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+
+            $getRequestInputObject = @{
+                Method = 'GET'
+                Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
+            }
+            # $getReponse = Invoke-AzRestMethod @getRequestInputObject
+
+            # if ($getReponse.StatusCode -eq 404) {
+            #     Write-Verbose ('[?] Resource [{0}] of type [{1}] not found.' -f $resourceName, $Type) -Verbose
+            #     break
+            # }
+
+            # if (($imageTemplate.content | ConvertFrom-Json).properties.lastRunStatus.RunState -eq 'Running') {
+
+            #     # Trigger build cancellation
+            #     $cancelRequestInputObject = @{
+            #         Method = 'POST'
+            #         Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}/cancel?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
+            #     }
+            #     $cancelReponse = Invoke-AzRestMethod @cancelRequestInputObject
+
+            #     # Wait for build to be stopped
+            #     if ($cancelReponse.StatusCode -like '2*') {
+
+            #     } else {
+            #         Write-Warning ('[!] Failed to stop build for Image Template [{0}] Will proceed to trying an remove resource regardless. Response: [{1}]' -f $resourceName, ($cancelReponse | Out-String))
+            #     }
+            # }
+
+
+            # Stop build if still running. Required as a failed build stops the deployment even though the image template's status is remains 'running' for some time longer
+
+            # Remove resource
+            if ($PSCmdlet.ShouldProcess("Image Template [$resourceName]", 'Remove')) {
+                Write-Verbose ('[-] Removing resource [{0}] of type [{1}]' -f $resourceName, $Type) -Verbose
+
+                $removeRequestInputObject = @{
+                    Method = 'DELETE'
+                    Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
+                }
+                $removalResponse = Invoke-AzRestMethod @removeRequestInputObject
+                if ($removalResponse.StatusCode -notlike '2*') {
+                    $responseContent = $removalResponse.Content | ConvertFrom-Json
+                    throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+                }
+
+                # Wait for template to be removed. If we don't wait, it can happen that its MSI is removed too soon, locking the resource from deletion
+                $retryCount = 0
+                $retryLimit = 240
+                $retryInterval = 15
+                do {
+                    $retryCount++
+                    if ($retryCount -ge $retryLimit) {
+                        Write-Warning ('    [!] Image Template [{0}] was not removed after {1} seconds. Continuing with resource removal.' -f $resourceName, ($retryCount * $retryInterval))
+                        break
+                    }
+                    Write-Verbose ('    [⏱️] Waiting {0} seconds for Image Template to be removed. [{1}/{2}]' -f $retryInterval, $retryCount, $retryLimit) -Verbose
+                    Start-Sleep -Seconds $retryInterval
+
+                    $getReponse = Invoke-AzRestMethod @getRequestInputObject
+
+                    if ($getReponse.StatusCode -eq 400) {
+                        # Invalid request
+                        throw ($imageTgetReponseemplate.Content | ConvertFrom-Json).error.message
+                    } elseif ($getReponse.StatusCode -eq 404) {
+                        # Resource not found, success
+                        $templateExists = $false
+                    } elseif ($getReponse.StatusCode -eq '200') {
+                        # Resource still around
+                        $templateExists = $true
+                    } else {
+                        throw ('Failed request. Response: [{0}]' -f ($getReponse | Out-String))
+                    }
+
+                } while ($templateExists)
+            }
+
+            # Wait until removed
+            break
+        }
         'Microsoft.MachineLearningServices/workspaces' {
             $subscriptionId = $ResourceId.Split('/')[2]
             $resourceGroupName = $ResourceId.Split('/')[4]
