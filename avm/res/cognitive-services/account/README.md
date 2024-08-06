@@ -35,7 +35,7 @@ The following section provides usage examples for the module, which were used to
 - [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using OpenAI and `deployments` in parameter set with private endpoint](#example-5-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-5-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
 - [As Speech Service](#example-6-as-speech-service)
 - [Using Customer-Managed-Keys with System-Assigned identity](#example-7-using-customer-managed-keys-with-system-assigned-identity)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-8-using-customer-managed-keys-with-user-assigned-identity)
@@ -587,7 +587,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using OpenAI and `deployments` in parameter set with private endpoint_
+### Example 5: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
