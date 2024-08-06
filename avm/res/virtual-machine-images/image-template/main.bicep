@@ -26,7 +26,7 @@ param subnetResourceId string?
 param imageSource object
 
 @description('Required. Customization steps to be run when building the VM image.')
-param customizationSteps array
+param customizationSteps array?
 
 @description('Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn\'t exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\'t exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.')
 param stagingResourceGroup string?

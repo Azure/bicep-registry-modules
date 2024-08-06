@@ -46,12 +46,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   name: 'imageTemplateDeployment'
   params: {
     // Required parameters
-    customizationSteps: [
-      {
-        restartTimeout: '30m'
-        type: 'WindowsRestart'
-      }
-    ]
     distributions: [
       {
         imageName: 'mi-vmiitmin-001'
@@ -90,14 +84,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customizationSteps": {
-      "value": [
-        {
-          "restartTimeout": "30m",
-          "type": "WindowsRestart"
-        }
-      ]
-    },
     "distributions": {
       "value": [
         {
@@ -150,26 +136,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   name: 'imageTemplateDeployment'
   params: {
     // Required parameters
-    customizationSteps: [
-      {
-        name: 'PowerShell installation'
-        scriptUri: '<scriptUri>'
-        type: 'Shell'
-      }
-      {
-        destination: 'Initialize-LinuxSoftware.ps1'
-        name: 'Initialize-LinuxSoftware'
-        sourceUri: '<sourceUri>'
-        type: 'File'
-      }
-      {
-        inline: [
-          'pwsh \'Initialize-LinuxSoftware.ps1\''
-        ]
-        name: 'Software installation'
-        type: 'Shell'
-      }
-    ]
     distributions: [
       {
         imageName: 'mi-vmiitmax-001'
@@ -203,6 +169,26 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     name: 'vmiitmax001'
     // Non-required parameters
     buildTimeoutInMinutes: 60
+    customizationSteps: [
+      {
+        name: 'PowerShell installation'
+        scriptUri: '<scriptUri>'
+        type: 'Shell'
+      }
+      {
+        destination: 'Initialize-LinuxSoftware.ps1'
+        name: 'Initialize-LinuxSoftware'
+        sourceUri: '<sourceUri>'
+        type: 'File'
+      }
+      {
+        inline: [
+          'pwsh \'Initialize-LinuxSoftware.ps1\''
+        ]
+        name: 'Software installation'
+        type: 'Shell'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -270,28 +256,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customizationSteps": {
-      "value": [
-        {
-          "name": "PowerShell installation",
-          "scriptUri": "<scriptUri>",
-          "type": "Shell"
-        },
-        {
-          "destination": "Initialize-LinuxSoftware.ps1",
-          "name": "Initialize-LinuxSoftware",
-          "sourceUri": "<sourceUri>",
-          "type": "File"
-        },
-        {
-          "inline": [
-            "pwsh \"Initialize-LinuxSoftware.ps1\""
-          ],
-          "name": "Software installation",
-          "type": "Shell"
-        }
-      ]
-    },
     "distributions": {
       "value": [
         {
@@ -334,6 +298,28 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     // Non-required parameters
     "buildTimeoutInMinutes": {
       "value": 60
+    },
+    "customizationSteps": {
+      "value": [
+        {
+          "name": "PowerShell installation",
+          "scriptUri": "<scriptUri>",
+          "type": "Shell"
+        },
+        {
+          "destination": "Initialize-LinuxSoftware.ps1",
+          "name": "Initialize-LinuxSoftware",
+          "sourceUri": "<sourceUri>",
+          "type": "File"
+        },
+        {
+          "inline": [
+            "pwsh \"Initialize-LinuxSoftware.ps1\""
+          ],
+          "name": "Software installation",
+          "type": "Shell"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -428,12 +414,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   name: 'imageTemplateDeployment'
   params: {
     // Required parameters
-    customizationSteps: [
-      {
-        restartTimeout: '10m'
-        type: 'WindowsRestart'
-      }
-    ]
     distributions: [
       {
         sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
@@ -454,6 +434,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     }
     name: 'vmiitwaf001'
     // Non-required parameters
+    customizationSteps: [
+      {
+        restartTimeout: '10m'
+        type: 'WindowsRestart'
+      }
+    ]
     location: '<location>'
     subnetResourceId: '<subnetResourceId>'
     tags: {
@@ -478,14 +464,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customizationSteps": {
-      "value": [
-        {
-          "restartTimeout": "10m",
-          "type": "WindowsRestart"
-        }
-      ]
-    },
     "distributions": {
       "value": [
         {
@@ -514,6 +492,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": "vmiitwaf001"
     },
     // Non-required parameters
+    "customizationSteps": {
+      "value": [
+        {
+          "restartTimeout": "10m",
+          "type": "WindowsRestart"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -575,7 +561,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 Customization steps to be run when building the VM image.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `distributions`

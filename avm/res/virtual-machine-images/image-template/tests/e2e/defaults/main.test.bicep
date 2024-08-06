@@ -50,12 +50,6 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    customizationSteps: [
-      {
-        restartTimeout: '30m'
-        type: 'WindowsRestart'
-      }
-    ]
     imageSource: {
       offer: 'Windows-11'
       publisher: 'MicrosoftWindowsDesktop'
