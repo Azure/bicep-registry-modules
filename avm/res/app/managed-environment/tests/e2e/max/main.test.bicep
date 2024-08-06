@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
   }
 }
 
@@ -94,6 +95,21 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+
+      storages: [
+        {
+          kind: 'SMB'
+          shareName: 'smbfileshare'
+          accessMode: 'ReadWrite'
+          storageAccountName: nestedDependencies.outputs.storageAccountName
+        }
+        {
+          kind: 'NFS'
+          shareName: 'nfsfileshare'
+          accessMode: 'ReadWrite'
+          storageAccountName: nestedDependencies.outputs.storageAccountName
         }
       ]
 
