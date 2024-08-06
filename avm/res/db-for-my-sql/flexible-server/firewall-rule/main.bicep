@@ -14,11 +14,11 @@ param endIpAddress string
 @description('Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment.')
 param flexibleServerName string
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview' existing = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' existing = {
   name: flexibleServerName
 }
 
-resource firewallRule 'Microsoft.DBforMySQL/flexibleServers/firewallRules@2022-01-01' = {
+resource firewallRule 'Microsoft.DBforMySQL/flexibleServers/firewallRules@2023-06-30' = {
   name: name
   parent: flexibleServer
   properties: {

@@ -30,9 +30,10 @@ The following section provides usage examples for the module, which were used to
 - [Using Azure CLI](#example-1-using-azure-cli)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using Private Networking](#example-4-using-private-networking)
-- [Using Azure PowerShell](#example-5-using-azure-powershell)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using Private Endpoint](#example-4-using-private-endpoint)
+- [Using Private Networking](#example-5-using-private-networking)
+- [Using Azure PowerShell](#example-6-using-azure-powershell)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using Azure CLI_
 
@@ -249,11 +250,13 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     retentionInterval: 'P1D'
     roleAssignments: [
       {
+        name: 'd8eadbae-2c20-4e8f-9a48-4c6d739d0c4a'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -344,11 +347,13 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     "roleAssignments": {
       "value": [
         {
+          "name": "d8eadbae-2c20-4e8f-9a48-4c6d739d0c4a",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -386,7 +391,107 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 4: _Using Private Networking_
+### Example 4: _Using Private Endpoint_
+
+This instance deploys the module with access to a private endpoint.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
+  name: 'deploymentScriptDeployment'
+  params: {
+    // Required parameters
+    kind: 'AzureCLI'
+    name: 'rdspe001'
+    // Non-required parameters
+    azCliVersion: '2.9.1'
+    cleanupPreference: 'Always'
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    retentionInterval: 'P1D'
+    runOnce: true
+    scriptContent: 'echo \'AVM Deployment Script test!\''
+    storageAccountResourceId: '<storageAccountResourceId>'
+    subnetResourceIds: [
+      '<subnetResourceId>'
+    ]
+    timeout: 'PT1H'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AzureCLI"
+    },
+    "name": {
+      "value": "rdspe001"
+    },
+    // Non-required parameters
+    "azCliVersion": {
+      "value": "2.9.1"
+    },
+    "cleanupPreference": {
+      "value": "Always"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "retentionInterval": {
+      "value": "P1D"
+    },
+    "runOnce": {
+      "value": true
+    },
+    "scriptContent": {
+      "value": "echo \"AVM Deployment Script test!\""
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "subnetResourceIds": {
+      "value": [
+        "<subnetResourceId>"
+      ]
+    },
+    "timeout": {
+      "value": "PT1H"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Private Networking_
 
 This instance deploys the module with access to a private network.
 
@@ -486,7 +591,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 5: _Using Azure PowerShell_
+### Example 6: _Using Azure PowerShell_
 
 This instance deploys the module with an Azure PowerShell script.
 
@@ -570,7 +675,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -904,6 +1009,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -950,6 +1056,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string

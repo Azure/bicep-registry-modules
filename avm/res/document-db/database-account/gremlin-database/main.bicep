@@ -54,7 +54,7 @@ module gremlinDatabase_gremlinGraphs 'graph/main.bicep' = [
       name: graph.name
       gremlinDatabaseName: name
       databaseAccountName: databaseAccountName
-      indexingPolicy: contains(graph, 'indexingPolicy') ? graph.indexingPolicy : true
+      indexingPolicy: graph.?indexingPolicy
       partitionKeyPaths: !empty(graph.partitionKeyPaths) ? graph.partitionKeyPaths : []
     }
   }
