@@ -15,6 +15,7 @@ This module deploys an App Managed Environment (also known as a Container App En
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/storages` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -177,6 +178,20 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    storages: [
+      {
+        accessMode: 'ReadWrite'
+        kind: 'SMB'
+        shareName: 'smbfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+      {
+        accessMode: 'ReadWrite'
+        kind: 'NFS'
+        shareName: 'nfsfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -266,6 +281,22 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "storages": {
+      "value": [
+        {
+          "accessMode": "ReadWrite",
+          "kind": "SMB",
+          "shareName": "smbfileshare",
+          "storageAccountName": "<storageAccountName>"
+        },
+        {
+          "accessMode": "ReadWrite",
+          "kind": "NFS",
+          "shareName": "nfsfileshare",
+          "storageAccountName": "<storageAccountName>"
         }
       ]
     },
@@ -478,6 +509,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
 
@@ -775,6 +807,64 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `storages`
+
+The list of storages to mount on the environment.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessMode`](#parameter-storagesaccessmode) | string | Access mode for storage: "ReadOnly" or "ReadWrite". |
+| [`kind`](#parameter-storageskind) | string | Type of storage: "SMB" or "NFS". |
+| [`shareName`](#parameter-storagessharename) | string | File share name. |
+| [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name. |
+
+### Parameter: `storages.accessMode`
+
+Access mode for storage: "ReadOnly" or "ReadWrite".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `storages.kind`
+
+Type of storage: "SMB" or "NFS".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NFS'
+    'SMB'
+  ]
+  ```
+
+### Parameter: `storages.shareName`
+
+File share name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storages.storageAccountName`
+
+Storage account name.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `tags`
 
