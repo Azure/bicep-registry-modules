@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "3755993319783141806"
+      "version": "0.29.47.4906",
+      "templateHash": "6707709888421096485"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -372,6 +372,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -658,6 +665,18 @@
           ],
           "metadata": {
             "description": "Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "maintenanceConfigurationType": {
+      "type": "object",
+      "properties": {
+        "maintenanceWindow": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Maintenance window for the maintenance configuration."
           }
         }
       },
@@ -966,6 +985,12 @@
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
     },
+    "maintenanceConfiguration": {
+      "$ref": "#/definitions/maintenanceConfigurationType",
+      "metadata": {
+        "description": "Optional. Whether or not to use AKS Automatic mode."
+      }
+    },
     "costAnalysisEnabled": {
       "type": "bool",
       "defaultValue": false,
@@ -1058,12 +1083,8 @@
       }
     },
     "enableSecretRotation": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation."
       }
@@ -1125,12 +1146,8 @@
       }
     },
     "autoScalerProfileBalanceSimilarNodeGroups": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster."
       }
@@ -1184,23 +1201,15 @@
       }
     },
     "autoScalerProfileSkipNodesWithLocalStorage": {
-      "type": "string",
-      "defaultValue": "true",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster."
       }
     },
     "autoScalerProfileSkipNodesWithSystemPods": {
-      "type": "string",
-      "defaultValue": "true",
-      "allowedValues": [
-        "false",
-        "true"
-      ],
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster."
       }
@@ -1466,6 +1475,13 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1591,7 +1607,7 @@
           },
           "azureKeyvaultSecretsProvider": {
             "enabled": "[parameters('enableKeyvaultSecretsProvider')]",
-            "config": "[if(parameters('enableKeyvaultSecretsProvider'), createObject('enableSecretRotation', parameters('enableSecretRotation')), null())]"
+            "config": "[if(parameters('enableKeyvaultSecretsProvider'), createObject('enableSecretRotation', toLower(string(parameters('enableSecretRotation')))), null())]"
           }
         },
         "oidcIssuerProfile": "[if(parameters('enableOidcIssuerProfile'), createObject('enabled', parameters('enableOidcIssuerProfile')), null())]",
@@ -1631,7 +1647,7 @@
           "tenantID": "[parameters('aadProfileTenantId')]"
         },
         "autoScalerProfile": {
-          "balance-similar-node-groups": "[parameters('autoScalerProfileBalanceSimilarNodeGroups')]",
+          "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
           "expander": "[parameters('autoScalerProfileExpander')]",
           "max-empty-bulk-delete": "[parameters('autoScalerProfileMaxEmptyBulkDelete')]",
           "max-graceful-termination-sec": "[parameters('autoScalerProfileMaxGracefulTerminationSec')]",
@@ -1646,8 +1662,8 @@
           "scale-down-unready-time": "[parameters('autoScalerProfileScaleDownUnreadyTime')]",
           "scale-down-utilization-threshold": "[parameters('autoScalerProfileUtilizationThreshold')]",
           "scan-interval": "[parameters('autoScalerProfileScanInterval')]",
-          "skip-nodes-with-local-storage": "[parameters('autoScalerProfileSkipNodesWithLocalStorage')]",
-          "skip-nodes-with-system-pods": "[parameters('autoScalerProfileSkipNodesWithSystemPods')]"
+          "skip-nodes-with-local-storage": "[toLower(string(parameters('autoScalerProfileSkipNodesWithLocalStorage')))]",
+          "skip-nodes-with-system-pods": "[toLower(string(parameters('autoScalerProfileSkipNodesWithSystemPods')))]"
         },
         "autoUpgradeProfile": {
           "upgradeChannel": "[parameters('autoUpgradeProfileUpgradeChannel')]"
@@ -1749,20 +1765,20 @@
     "managedCluster_roleAssignments": {
       "copy": {
         "name": "managedCluster_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "managedCluster"
@@ -1788,6 +1804,97 @@
       },
       "dependsOn": [
         "dnsZone",
+        "managedCluster"
+      ]
+    },
+    "managedCluster_maintenanceConfigurations": {
+      "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "maintenanceWindow": {
+            "value": "[parameters('maintenanceConfiguration').maintenanceWindow]"
+          },
+          "managedClusterName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "12168542117744033419"
+            },
+            "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
+            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "maintenanceWindow": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. Maintenance window for the maintenance configuration."
+              }
+            },
+            "managedClusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "aksManagedAutoUpgradeSchedule",
+              "metadata": {
+                "description": "Optional. Name of the maintenance configuration."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+              "apiVersion": "2023-10-01",
+              "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
+              "properties": {
+                "maintenanceWindow": "[parameters('maintenanceWindow')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the maintenance configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the maintenance configuration."
+              },
+              "value": "[resourceId('Microsoft.ContainerService/managedClusters/maintenanceConfigurations', parameters('managedClusterName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the agent pool was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
         "managedCluster"
       ]
     },
@@ -1921,8 +2028,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17795163053989614827"
+              "version": "0.29.47.4906",
+              "templateHash": "2004205618690542488"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",

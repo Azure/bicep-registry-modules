@@ -5,6 +5,9 @@ Parse a Pester output containing checks & results and generate formatted markdow
 .DESCRIPTION
 Parse a Pester output containing checks & results and generate formatted markdown file out of it.
 
+.PARAMETER RepoRootPath
+Optional. The path to the root of the repository
+
 .PARAMETER PesterTestResults
 Mandatory. The Pester tests results to parse. Can be fetched by running Pester with the `-PassThru` parameter. For example:
 
@@ -68,6 +71,9 @@ function Set-PesterGitHubOutput {
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName,
+
         [Parameter(Mandatory = $true)]
         [PSCustomObject] $PesterTestResults,
 
@@ -94,6 +100,8 @@ function Set-PesterGitHubOutput {
     Write-Verbose ('Formatting [{0}] skipped tests' -f $skippedTests.Count)
     Write-Verbose ('Formatting [{0}] tests with explicit warnings' -f $warnings.Count)
 
+    $moduleSplitRegex = '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+
     ######################
     # Set output content #
     ######################
@@ -108,7 +116,7 @@ function Set-PesterGitHubOutput {
     $fileContent += [System.Collections.ArrayList]@(
         '| Total No. of Processed Tests| Passed Tests :white_check_mark: | Failed Tests :x: | Skipped Tests :paperclip: | Tests with warnings :warning: |',
         '| :-- | :-- | :-- | :-- | :-- |',
-    ('| {0} | {1} | {2} | {3} | {4} |' -f $PesterTestResults.TotalCount, $passedTests.count , $failedTests.count, $skippedTests.count, $testsWithWarnings.count),
+        ('| {0} | {1} | {2} | {3} | {4} |' -f $PesterTestResults.TotalCount, $passedTests.count , $failedTests.count, $skippedTests.count, $testsWithWarnings.count),
         ''
     )
 
@@ -134,16 +142,23 @@ function Set-PesterGitHubOutput {
             $intermediateNameElements[-1] = '**{0}**' -f $failedTest.ExpandedName
             $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
-            $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
-            $errorFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-            $errorTestFile = ('avm/{0}/{1}' -f $errorFileIdentifier[1], $errorFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            if ($failedTest.ScriptBlock.File -match $moduleSplitRegex) {
+                # Module test
+                $testFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split $moduleSplitRegex
+                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            } else {
+                # None-module test
+                $testFile = $failedTest.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
+            }
+
+            $testLine = $failedTest.ErrorRecord.TargetObject.Line
             $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
-            $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
+            $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
 
             if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
                 # Creating URL to test file to enable users to 'click' on it
-                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$errorTestFile#L$errorTestLine)"
+                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
             }
 
             $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
@@ -181,10 +196,16 @@ function Set-PesterGitHubOutput {
             $intermediateNameElements[-1] = '**{0}**' -f $passedTest.ExpandedName
             $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
-            $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
-            $testFileIdentifier = $passedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-            $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            if ($passedTest.ScriptBlock.File -match $moduleSplitRegex) {
+                # Module test
+                $testFileIdentifier = $passedTest.ScriptBlock.File -split $moduleSplitRegex
+                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            } else {
+                # None-module test
+                $testFile = $passedTest.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
+            }
 
+            $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
             $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
             if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
                 # Creating URL to test file to enable users to 'click' on it
@@ -229,10 +250,16 @@ function Set-PesterGitHubOutput {
 
             $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
 
-            $testLine = $skippedTest.ScriptBlock.StartPosition.StartLine
-            $testFileIdentifier = $skippedTest.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-            $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            if ($skippedTest.ScriptBlock.File -match $moduleSplitRegex) {
+                # Module test
+                $testFileIdentifier = $skippedTest.ScriptBlock.File -split $moduleSplitRegex
+                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+            } else {
+                # None-module test
+                $testFile = $skippedTest.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
+            }
 
+            $testLine = $skippedTest.ScriptBlock.StartPosition.StartLine
             $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
             if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
                 # Creating URL to test file to enable users to 'click' on it
@@ -275,10 +302,16 @@ function Set-PesterGitHubOutput {
                 $intermediateNameElements[-1] = '**{0}**' -f $test.ExpandedName
                 $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
-                $testLine = $test.ScriptBlock.StartPosition.StartLine
-                $testFileIdentifier = $test.ScriptBlock.File -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
-                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+                if ($test.ScriptBlock.File -match $moduleSplitRegex) {
+                    # Module test
+                    $testFileIdentifier = $test.ScriptBlock.File -split $moduleSplitRegex
+                    $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+                } else {
+                    # None-module test
+                    $testFile = $test.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
+                }
 
+                $testLine = $test.ScriptBlock.StartPosition.StartLine
                 $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
                 if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
                     # Creating URL to test file to enable users to 'click' on it
