@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     appInsightsComponentName: 'dep-${namePrefix}-appinsights-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
   }
 }
 
@@ -86,11 +87,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -102,6 +105,21 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+
+      storages: [
+        {
+          kind: 'SMB'
+          shareName: 'smbfileshare'
+          accessMode: 'ReadWrite'
+          storageAccountName: nestedDependencies.outputs.storageAccountName
+        }
+        {
+          kind: 'NFS'
+          shareName: 'nfsfileshare'
+          accessMode: 'ReadWrite'
+          storageAccountName: nestedDependencies.outputs.storageAccountName
         }
       ]
 
