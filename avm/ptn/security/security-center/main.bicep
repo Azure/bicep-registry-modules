@@ -115,7 +115,7 @@ param containersTier string = 'Free'
 param cosmosDbsTier string = 'Free'
 
 @description('Optional. Security contact data.')
-param securityContactProperties object = {}
+param securityContactsProperties securityContactsType
 
 @description('Optional. Location deployment metadata.')
 param location string = deployment().location
@@ -236,13 +236,26 @@ module iotSecuritySolutions 'modules/iotSecuritySolutions.bicep' = if (!empty(io
   }
 }
 
-resource securityContacts 'Microsoft.Security/securityContacts@2017-08-01-preview' = if (!empty(securityContactProperties)) {
+resource securityContacts 'Microsoft.Security/securityContacts@2023-12-01-preview' = {
   name: 'default'
   properties: {
-    email: securityContactProperties.email
-    phone: securityContactProperties.phone
-    alertNotifications: securityContactProperties.alertNotifications
-    alertsToAdmins: securityContactProperties.alertsToAdmins
+    emails: securityContactsProperties.?emails
+    isEnabled: securityContactsProperties.?isEnabled
+    notificationsByRole: {
+      roles: securityContactsProperties.?notificationsByRole.roles
+      state: securityContactsProperties.?notificationsByRole.state
+    }
+    notificationsSources: [
+      {
+        sourceType: 'Alert'
+        minimalSeverity: securityContactsProperties.alertMinimalSeverity
+      }
+      {
+        sourceType: 'AttackPath'
+        minimalRiskLevel: securityContactsProperties.attackMinimalRiskLevel
+      }
+    ]
+    phone: securityContactsProperties.?phone
   }
 }
 
@@ -262,3 +275,33 @@ output workspaceResourceId string = workspaceResourceId
 
 @description('The name of the security center.')
 output name string = 'Security'
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type securityContactsType = {
+  @description('Optional. List of email addresses (;-delimited) which will get notifications from Microsoft Defender for Cloud by the configurations defined in this security contact.')
+  emails: string?
+
+  @description('Optional. Indicates whether the security contact is enabled.')
+  isEnabled: bool?
+
+  @description('Optional. Defines whether to send email notifications from Microsoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
+  notificationsByRole: {
+    @description('Optional. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.')
+    roles: ['AccountAdmin' | 'Contributor' | 'Owner' | 'ServiceAdmin']?
+
+    @description('Optional. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
+    state: ('On' | 'Off')?
+  }?
+
+  @description('Required. Defines the minimal alert risk level which will be sent as email notifications')
+  alertMinimalSeverity: ('High' | 'Low' | 'Medium')
+
+  @description('Required. Defines the minimal attack path risk level which will be sent as email notifications')
+  attackMinimalRiskLevel: ('Critical' | 'High' | 'Low' | 'Medium')
+
+  @description('''Optional. The security contact's phone number.''')
+  phone: string?
+}?
