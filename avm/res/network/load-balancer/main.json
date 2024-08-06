@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7351695071160963851"
+      "version": "0.29.47.4906",
+      "templateHash": "16763526395876685201"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -163,6 +163,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -411,6 +418,11 @@
         "input": {
           "name": "[coalesce(parameters('backendAddressPools'), createArray())[copyIndex('backendAddressPoolNames')].name]"
         }
+      },
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
     "builtInRoleNames": {
@@ -518,20 +530,20 @@
     "loadBalancer_roleAssignments": {
       "copy": {
         "name": "loadBalancer_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/loadBalancers/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Network/loadBalancers', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/loadBalancers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "loadBalancer"
@@ -567,8 +579,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "1736731506120599540"
+              "version": "0.29.47.4906",
+              "templateHash": "3982666655179652966"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -721,8 +733,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "11398827458130316747"
+              "version": "0.29.47.4906",
+              "templateHash": "6803574874056484597"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",
