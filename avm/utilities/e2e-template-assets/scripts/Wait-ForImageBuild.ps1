@@ -40,19 +40,31 @@ process {
     $maxTimeCalc = '{0:hh\:mm\:ss}' -f [timespan]::fromseconds($maximumRetries * $timeToWait)
     do {
 
-        $path = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2020-02-14' -f $subscriptionId, $ResourceGroupName, $ImageTemplateName
-        $requestInputObject = @{
-            Method = 'GET'
-            Path   = $path
-        }
+        # Runnning fetch in retry as it happened that the status was not available
+        $statusFetchRetryCount = 3
+        $statusFetchCurrentRetry = 1
+        do {
+            $path = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2020-02-14' -f $subscriptionId, $ResourceGroupName, $ImageTemplateName
+            $requestInputObject = @{
+                Method = 'GET'
+                Path   = $path
+            }
 
-        $response = ((Invoke-AzRestMethod @requestInputObject).Content | ConvertFrom-Json).properties
-        if ($response.lastRunStatus) {
-            $latestStatus = $response.lastRunStatus
-        } else {
+            $response = ((Invoke-AzRestMethod @requestInputObject).Content | ConvertFrom-Json).properties
+
+            if ($response.lastRunStatus) {
+                $latestStatus = $response.lastRunStatus
+                break
+            }
+            Start-Sleep 5
+            $statusFetchCurrentRetry++
+        } while ($statusFetchCurrentRetry -le $statusFetchRetryCount)
+
+        if (-not $latestStatus) {
             Write-Verbose ('Image Build failed with error: [{0}]' -f $response.provisioningError.message) -Verbose
             $latestStatus = 'failed'
         }
+
 
         if ($latestStatus -eq 'failed' -or $latestStatus.runState.ToLower() -eq 'failed') {
             $failedMessage = 'Image Template [{0}] build failed with status [{1}]. API reply: [{2}]' -f $ImageTemplateName, $latestStatus.runState, $response.lastRunStatus.message

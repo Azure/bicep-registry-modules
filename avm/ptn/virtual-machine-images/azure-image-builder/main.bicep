@@ -125,7 +125,7 @@ resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' ex
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.virtualmachineimages-aib.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.vmimages-azureimagebuilder.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
     mode: 'Incremental'
@@ -161,6 +161,16 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.2.4' = {
     name: imageTemplateResourceGroupName
     location: location
     enableTelemetry: enableTelemetry
+    roleAssignments: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+      ? [
+          {
+            // TODO: Required above conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
+            principalId: imageMSI.outputs.principalId
+            roleDefinitionIdOrName: contributorRole.id
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      : []
   }
 }
 
@@ -182,22 +192,6 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2
     name: imageManagedIdentityName
     location: location
     enableTelemetry: enableTelemetry
-  }
-}
-
-// MSI Subscription contributor assignment
-resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
-  properties: {
-    // TODO: Tracked issue: https://github.com/Azure/bicep/issues/2371
-    //principalId: imageMSI.outputs.principalId // Results in: Deployment template validation failed: 'The template resource 'Microsoft.Resources/deployments/image.deploy-ra' reference to 'Microsoft.Resources/deployments/image.deploy-msi' requires an API version. Please see https://aka.ms/arm-template for usage details.'.
-    // Default: reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('rgParam').name), 'Microsoft.Resources/deployments', format('{0}-msi', deployment().name))).outputs.principalId.value
-    //principalId: reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, resourceGroupName), 'Microsoft.Resources/deployments', format('{0}-msi', deployment().name)),'2021-04-01').outputs.principalId.value
-    principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-      ? imageMSI.outputs.principalId
-      : ''
-    roleDefinitionId: contributorRole.id
-    principalType: 'ServicePrincipal'
   }
 }
 
@@ -478,7 +472,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   }
   dependsOn: [
     storageAccount_upload
-    imageMSI_rbac
     rg
     imageMSI
     azureComputeGallery

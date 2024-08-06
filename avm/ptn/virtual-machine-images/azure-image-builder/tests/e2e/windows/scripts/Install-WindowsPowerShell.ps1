@@ -2,7 +2,7 @@
 Write-Verbose '#   Entering Install-WindowsPowerShell.ps1   #' -Verbose
 Write-Verbose '##############################################' -Verbose
 
-$psVersion = '7.3.0'
+$psVersion = '7.4.4'
 $ps7Url = "https://github.com/PowerShell/PowerShell/releases/download/v$psVersion/PowerShell-$psVersion-win-x64.zip"
 $downloadFolder = (Get-Location).Path
 $downloadLoc = Join-Path $downloadFolder (Split-Path $ps7Url -Leaf)

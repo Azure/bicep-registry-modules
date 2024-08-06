@@ -11,9 +11,8 @@ echo '2. Install pre-requisite packages'
 sudo apt-get install -y wget apt-transport-https software-properties-common
 
 echo '3. Get the version of Ubuntu'
-# Fetch based on ubuntu version
 # source /etc/os-release
-# echo "Found version $VERSION_ID"
+# echo "Found version $VERSION_ID" - empty
 VERSION_ID='22.04'
 
 echo '4. Determine URL'

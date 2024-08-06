@@ -39,9 +39,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       assetsStorageAccountName: assetsStorageAccountName
       assetsStorageAccountContainerName: assetsStorageAccountContainerName
+      imageManagedIdentityName: 'msi-it-${namePrefix}-${serviceShort}' // TODO: Can be removed from this and linux test
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
-      imageManagedIdentityName: 'msi-it-${namePrefix}-${serviceShort}'
       storageAccountFilesToUpload: {
         secureList: [
           {
@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
           type: 'PowerShell'
           name: 'Software installation'
           inline: [
-            'wget \'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}?\' -O \'${initializeSoftwareScriptName}\''
+            // 'wget \'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}?\' -O \'${initializeSoftwareScriptName}\''
             'pwsh \'${initializeSoftwareScriptName}\''
           ]
           runElevated: true
