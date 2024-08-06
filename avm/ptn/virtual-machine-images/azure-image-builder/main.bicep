@@ -97,6 +97,9 @@ param computeGalleryImageDefinitionName string
 @description('Optional. A parameter to control if the deployment should wait for the image build to complete.')
 param waitForImageBuild bool = true
 
+@description('Optional. A parameter to control the timeout of the deployment script waiting for the image build.')
+param waitForImageBuildTimeout string = 'PT1H'
+
 // Shared Parameters
 @description('Optional. The location to deploy into.')
 param location string = deployment().location
@@ -563,7 +566,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.2.4' 
     scriptContent: loadTextContent('../../../utilities/e2e-template-assets/scripts/Wait-ForImageBuild.ps1')
     environmentVariables: storageAccountFilesToUpload
     arguments: ' -ImageTemplateName "${imageTemplate.outputs.name}" -ResourceGroupName "${resourceGroupName}"'
-    timeout: 'PT30M'
+    timeout: waitForImageBuildTimeout
     cleanupPreference: 'Always'
     location: location
     storageAccountResourceId: resourceId(
