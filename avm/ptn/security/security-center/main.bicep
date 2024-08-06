@@ -296,10 +296,10 @@ type securityContactsType = {
     state: ('On' | 'Off')?
   }?
 
-  @description('Required. Defines the minimal alert risk level which will be sent as email notifications')
+  @description('Required. Defines the minimal alert risk level which will be sent as email notifications.')
   alertMinimalSeverity: ('High' | 'Low' | 'Medium')
 
-  @description('Required. Defines the minimal attack path risk level which will be sent as email notifications')
+  @description('Required. Defines the minimal attack path risk level which will be sent as email notifications.')
   attackMinimalRiskLevel: ('Critical' | 'High' | 'Low' | 'Medium')
 
   @description('''Optional. The security contact's phone number.''')

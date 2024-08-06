@@ -1,15 +1,107 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16141221102197296370"
+      "version": "0.29.47.4906",
+      "templateHash": "16704179632536630039"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "securityContactsType": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of email addresses (;-delimited) which will get notifications from Microsoft Defender for Cloud by the configurations defined in this security contact."
+          }
+        },
+        "isEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the security contact is enabled."
+          }
+        },
+        "notificationsByRole": {
+          "type": "object",
+          "properties": {
+            "roles": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "allowedValues": [
+                    "AccountAdmin",
+                    "Contributor",
+                    "Owner",
+                    "ServiceAdmin"
+                  ]
+                }
+              ],
+              "items": false,
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud."
+              }
+            },
+            "state": {
+              "type": "string",
+              "allowedValues": [
+                "Off",
+                "On"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Defines whether to send email notifications from Microsoft Defender for Cloud to persons with specific RBAC roles on the subscription."
+          }
+        },
+        "alertMinimalSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium"
+          ],
+          "metadata": {
+            "description": "Required. Defines the minimal alert risk level which will be sent as email notifications."
+          }
+        },
+        "attackMinimalRiskLevel": {
+          "type": "string",
+          "allowedValues": [
+            "Critical",
+            "High",
+            "Low",
+            "Medium"
+          ],
+          "metadata": {
+            "description": "Required. Defines the minimal attack path risk level which will be sent as email notifications."
+          }
+        },
+        "phone": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The security contact's phone number."
+          }
+        }
+      },
+      "nullable": true
+    }
   },
   "parameters": {
     "workspaceResourceId": {
@@ -192,9 +284,8 @@
         "description": "Optional. The pricing tier value for CosmosDbs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
       }
     },
-    "securityContactProperties": {
-      "type": "object",
-      "defaultValue": {},
+    "securityContactsProperties": {
+      "$ref": "#/definitions/securityContactsType",
       "metadata": {
         "description": "Optional. Security contact data."
       }
@@ -270,8 +361,8 @@
       }
     ]
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -292,7 +383,7 @@
         }
       }
     },
-    {
+    "pricingTiers": {
       "copy": {
         "name": "pricingTiers",
         "count": "[length(variables('pricings'))]",
@@ -306,7 +397,7 @@
         "pricingTier": "[variables('pricings')[copyIndex()].pricingTier]"
       }
     },
-    {
+    "autoProvisioningSettings": {
       "type": "Microsoft.Security/autoProvisioningSettings",
       "apiVersion": "2017-08-01-preview",
       "name": "default",
@@ -314,7 +405,7 @@
         "autoProvision": "[parameters('autoProvision')]"
       }
     },
-    {
+    "deviceSecurityGroups": {
       "condition": "[not(empty(parameters('deviceSecurityGroupProperties')))]",
       "type": "Microsoft.Security/deviceSecurityGroups",
       "apiVersion": "2019-08-01",
@@ -326,19 +417,31 @@
         "denylistRules": "[parameters('deviceSecurityGroupProperties').denylistRules]"
       }
     },
-    {
-      "condition": "[not(empty(parameters('securityContactProperties')))]",
+    "securityContacts": {
       "type": "Microsoft.Security/securityContacts",
-      "apiVersion": "2017-08-01-preview",
+      "apiVersion": "2023-12-01-preview",
       "name": "default",
       "properties": {
-        "email": "[parameters('securityContactProperties').email]",
-        "phone": "[parameters('securityContactProperties').phone]",
-        "alertNotifications": "[parameters('securityContactProperties').alertNotifications]",
-        "alertsToAdmins": "[parameters('securityContactProperties').alertsToAdmins]"
+        "emails": "[tryGet(parameters('securityContactsProperties'), 'emails')]",
+        "isEnabled": "[tryGet(parameters('securityContactsProperties'), 'isEnabled')]",
+        "notificationsByRole": {
+          "roles": "[tryGet(parameters('securityContactsProperties'), 'notificationsByRole', 'roles')]",
+          "state": "[tryGet(parameters('securityContactsProperties'), 'notificationsByRole', 'state')]"
+        },
+        "notificationsSources": [
+          {
+            "sourceType": "Alert",
+            "minimalSeverity": "[parameters('securityContactsProperties').alertMinimalSeverity]"
+          },
+          {
+            "sourceType": "AttackPath",
+            "minimalRiskLevel": "[parameters('securityContactsProperties').attackMinimalRiskLevel]"
+          }
+        ],
+        "phone": "[tryGet(parameters('securityContactsProperties'), 'phone')]"
       }
     },
-    {
+    "workspaceSettings": {
       "type": "Microsoft.Security/workspaceSettings",
       "apiVersion": "2017-08-01-preview",
       "name": "default",
@@ -347,10 +450,10 @@
         "scope": "[parameters('scope')]"
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Security/autoProvisioningSettings', 'default')]"
+        "autoProvisioningSettings"
       ]
     },
-    {
+    "iotSecuritySolutions": {
       "condition": "[not(empty(parameters('ioTSecuritySolutionProperties')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -372,8 +475,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "11308208185474356622"
+              "version": "0.29.47.4906",
+              "templateHash": "3103874562500398092"
             }
           },
           "parameters": {
@@ -406,7 +509,7 @@
         }
       }
     }
-  ],
+  },
   "outputs": {
     "workspaceResourceId": {
       "type": "string",
