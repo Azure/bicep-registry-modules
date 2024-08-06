@@ -43,7 +43,7 @@ param managedRules managedRulesType = {
 }
 
 @description('Optional. The custom rules inside the policy.')
-param customRules object = {
+param customRules customRulesType = {
   rules: [
     {
       name: 'ApplyGeoFilter'
@@ -234,4 +234,35 @@ type managedRuleSetsType = {
 
   @description('Optional. Defines the rule set action.')
   ruleSetAction: 'Block' | 'Log' | 'Redirect' | null
+}[]?
+
+type customRulesType = {
+  @description('Optional. List of rules.')
+  rules: customRulesRuleType
+}
+
+type customRulesRuleType = {
+  @description('Required. Describes what action to be applied when rule matches.')
+  action: 'Allow' | 'Block' | 'Log' | 'Redirect'
+
+  @description('Required. Describes if the custom rule is in enabled or disabled state.')
+  enabledState: 'Enabled' | 'Disabled'
+
+  @description('Required. List of match conditions. See https://learn.microsoft.com/en-us/azure/templates/microsoft.network/frontdoorwebapplicationfirewallpolicies#matchcondition for details.')
+  matchConditions: array
+
+  @description('Required. Describes the name of the rule.')
+  name: string
+
+  @description('Required. Describes priority of the rule. Rules with a lower value will be evaluated before rules with a higher value.')
+  priority: int
+
+  @description('Optional. Time window for resetting the rate limit count. Default is 1 minute.')
+  rateLimitDurationInMinutes: int?
+
+  @description('Optional. Number of allowed requests per client within the time window.')
+  rateLimitThreshold: int?
+
+  @description('Required. Describes type of rule.')
+  ruleType: 'MatchRule' | 'RateLimitRule'
 }[]?
