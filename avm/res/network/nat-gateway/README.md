@@ -19,8 +19,8 @@ This module deploys a NAT Gateway.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/natGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/natGateways) |
-| `Microsoft.Network/publicIPAddresses` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPAddresses) |
-| `Microsoft.Network/publicIPPrefixes` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPPrefixes) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPPrefixes) |
 
 ## Usage examples
 
@@ -145,19 +145,21 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
         ]
         skuTier: 'Regional'
         zones: [
-          '1'
-          '2'
-          '3'
+          1
+          2
+          3
         ]
       }
     ]
     roleAssignments: [
       {
+        name: '69d7ed51-8af4-4eed-bcea-bdadcccb1200'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -243,9 +245,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
           ],
           "skuTier": "Regional",
           "zones": [
-            "1",
-            "2",
-            "3"
+            1,
+            2,
+            3
           ]
         }
       ]
@@ -253,11 +255,13 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "69d7ed51-8af4-4eed-bcea-bdadcccb1200",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -396,9 +400,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
         name: 'nngwaf001-pip'
         skuTier: 'Regional'
         zones: [
-          '1'
-          '2'
-          '3'
+          1
+          2
+          3
         ]
       }
     ]
@@ -460,9 +464,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
           "name": "nngwaf001-pip",
           "skuTier": "Regional",
           "zones": [
-            "1",
-            "2",
-            "3"
+            1,
+            2,
+            3
           ]
         }
       ]
@@ -641,6 +645,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -691,6 +696,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -731,8 +743,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |
-| `br/public:avm/res/network/public-ip-prefix:0.1.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-prefix:0.4.1` | Remote reference |
 
 ## Data Collection
 

@@ -46,9 +46,20 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource fileShare_roleAssignments 'Microsoft.Resources/deployments@2021-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: '${uniqueString(deployment().name)}-Share-Rbac-${index}'
     properties: {
       mode: 'Incremental'
@@ -61,17 +72,15 @@ resource fileShare_roleAssignments 'Microsoft.Resources/deployments@2021-04-01' 
           value: replace(fileShareResourceId, '/shares/', '/fileShares/')
         }
         name: {
-          value: guid(fileShareResourceId, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName, 'tyfa')
+          value: roleAssignment.?name ?? guid(
+            fileShareResourceId,
+            roleAssignment.principalId,
+            roleAssignment.roleDefinitionId,
+            'tyfa'
+          )
         }
         roleDefinitionId: {
-          value: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-            ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-            : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-                ? roleAssignment.roleDefinitionIdOrName
-                : subscriptionResourceId(
-                    'Microsoft.Authorization/roleDefinitions',
-                    roleAssignment.roleDefinitionIdOrName
-                  )
+          value: roleAssignment.roleDefinitionId
         }
         principalId: {
           value: roleAssignment.principalId
