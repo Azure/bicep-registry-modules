@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12449676949386830906"
+      "templateHash": "14332153924435455705"
     },
-    "name": "Managed DevOps Pools",
-    "description": "This module deploys the Managed DevOps Pools resource.",
+    "name": "Managed DevOps Pool",
+    "description": "This module deploys the Managed DevOps Pool resource.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
