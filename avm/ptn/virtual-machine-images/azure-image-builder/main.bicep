@@ -185,10 +185,16 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2
   }
 }
 
+// MSI Subscription contributor assignment
 resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
+  // name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
+  name: guid(
+    subscription().id,
+    '${subscription().id}/resourceGroups/${resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${imageManagedIdentityName}',
+    contributorRole.id
+  )
   properties: {
-    // TODO: Required above conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
+    // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
     principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
       ? imageMSI.outputs.principalId
       : ''
@@ -474,8 +480,8 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   }
   dependsOn: [
     storageAccount_upload
-    rg
     imageMSI_rbac
+    rg
     imageMSI
     azureComputeGallery
     vnet
