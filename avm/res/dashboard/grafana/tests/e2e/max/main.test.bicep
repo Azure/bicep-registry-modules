@@ -71,9 +71,9 @@ module testDeployment '../../../main.bicep' = [
         smtp: {
           enabled: false
           fromAddress: '0.0.0.0'
-          fromName: 'test.com'
-          host: 'test.com'
-          password: 'fdfff'
+          fromName: 'learn.microsoft.com'
+          host: 'learn.microsoft.com'
+          password: 'Learn@123Micro'
           skipVerify: false
           user: 'admin'
           startTLSPolicy: 'MandatoryStartTLS'
