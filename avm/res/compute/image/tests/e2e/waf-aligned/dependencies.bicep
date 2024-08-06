@@ -25,9 +25,6 @@ param triggerImageDeploymentScriptName string
 @description('Required. The name of the Deployment Script to copy the VHD to a destination storage account.')
 param copyVhdDeploymentScriptName string
 
-@description('Requried. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ciwaf'
-
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -199,7 +196,6 @@ module waitForDeployment 'main.wait.bicep' = {
   scope: resourceGroup()
   name: '${uniqueString(deployment().name, location)}-waitForDeployment'
   params: {
-    serviceShort: serviceShort
     resourceLocation: location
     waitTimeInSeconds: '15'
   }
