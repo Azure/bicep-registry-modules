@@ -24,7 +24,7 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. Describes the managedRules structure.')
-param managedRules object = {
+param managedRules managedRulesType = {
   managedRuleSets: [
     {
       ruleSetType: 'Microsoft_DefaultRuleSet'
@@ -212,4 +212,26 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type managedRulesType = {
+  @description('Optional. List of rule sets.')
+  managedRuleSets: managedRuleSetsType
+}
+
+type managedRuleSetsType = {
+  @description('Required. Defines the rule set type to use.')
+  ruleSetType: string
+
+  @description('Required. Defines the version of the rule set to use.')
+  ruleSetVersion: string
+
+  @description('Required. Defines the rule group overrides to apply to the rule set.')
+  ruleGroupOverrides: array
+
+  @description('Required. Describes the exclusions that are applied to all rules in the set.')
+  exclusions: array
+
+  @description('Optional. Defines the rule set action.')
+  ruleSetAction: 'Block' | 'Log' | 'Redirect' | null
 }[]?
