@@ -226,11 +226,11 @@ type managedRuleSetsType = {
   @description('Required. Defines the version of the rule set to use.')
   ruleSetVersion: string
 
-  @description('Required. Defines the rule group overrides to apply to the rule set.')
-  ruleGroupOverrides: array
+  @description('Optional. Defines the rule group overrides to apply to the rule set.')
+  ruleGroupOverrides: array?
 
-  @description('Required. Describes the exclusions that are applied to all rules in the set.')
-  exclusions: array
+  @description('Optional. Describes the exclusions that are applied to all rules in the set.')
+  exclusions: array?
 
   @description('Optional. Defines the rule set action.')
   ruleSetAction: 'Block' | 'Log' | 'Redirect' | null
