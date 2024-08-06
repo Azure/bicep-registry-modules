@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Using `deployments` in parameter set'
+metadata name = 'Using OpenAI and `deployments` in parameter set with private endpoint'
 metadata description = 'This instance deploys the module with the AI model deployment feature and private endpoint.'
 
 // ========== //
