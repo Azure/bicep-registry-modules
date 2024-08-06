@@ -39,7 +39,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       assetsStorageAccountName: assetsStorageAccountName
       assetsStorageAccountContainerName: assetsStorageAccountContainerName
-      imageManagedIdentityName: 'msi-it-${namePrefix}-${serviceShort}'
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
       computeGalleryImageDefinitions: [
