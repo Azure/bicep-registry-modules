@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13125454306061578309"
+      "version": "0.29.47.4906",
+      "templateHash": "6230115773857876317"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product.",
@@ -126,8 +126,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4018261656720912671"
+              "version": "0.29.47.4906",
+              "templateHash": "1052981479169082206"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API.",
@@ -216,8 +216,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "6078964374640716249"
+              "version": "0.29.47.4906",
+              "templateHash": "5748451278124986706"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group.",
