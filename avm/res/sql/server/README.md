@@ -1093,7 +1093,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1924,7 +1923,6 @@ The vulnerability assessment configuration.
 - Required: No
 - Type: object
 - Default: `{}`
-
 
 ## Outputs
 

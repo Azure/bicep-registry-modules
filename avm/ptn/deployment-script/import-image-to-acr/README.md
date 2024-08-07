@@ -251,7 +251,6 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -444,7 +443,6 @@ Tags of the resource.
       "key2": "value2"
   }
   ```
-
 
 ## Outputs
 

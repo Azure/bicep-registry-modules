@@ -434,7 +434,6 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1132,7 +1131,6 @@ Template Options for the static site.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

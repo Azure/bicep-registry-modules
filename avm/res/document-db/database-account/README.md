@@ -2307,7 +2307,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -3777,7 +3776,6 @@ Tags of the Database Account resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

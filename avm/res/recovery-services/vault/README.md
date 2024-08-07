@@ -1843,7 +1843,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2649,7 +2648,6 @@ Tags of the Recovery Service Vault resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

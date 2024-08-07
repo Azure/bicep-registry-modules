@@ -8,7 +8,6 @@ This module deploys a Local Network Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -311,7 +310,6 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -545,7 +543,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -554,10 +551,6 @@ Tags of the resource.
 | `name` | string | The name of the local network gateway. |
 | `resourceGroupName` | string | The resource group the local network gateway was deployed into. |
 | `resourceId` | string | The resource ID of the local network gateway. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

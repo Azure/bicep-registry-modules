@@ -2136,7 +2136,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -3233,7 +3232,6 @@ A list of availability zones denoting where the resource needs to come from.
 - Required: No
 - Type: array
 - Default: `[]`
-
 
 ## Outputs
 

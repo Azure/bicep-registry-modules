@@ -8,7 +8,6 @@ This module deploys a Maintenance Configuration.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -389,7 +388,6 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -644,7 +642,6 @@ Gets or sets the visibility of the configuration. The default value is 'Custom'.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -653,10 +650,6 @@ Gets or sets the visibility of the configuration. The default value is 'Custom'.
 | `name` | string | The name of the Maintenance Configuration. |
 | `resourceGroupName` | string | The name of the resource group the Maintenance Configuration was created in. |
 | `resourceId` | string | The resource ID of the Maintenance Configuration. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

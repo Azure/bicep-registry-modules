@@ -607,7 +607,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2742,7 +2741,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

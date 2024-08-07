@@ -8,7 +8,6 @@ This module deploys an Activity Log Alert.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -472,7 +471,6 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -666,7 +664,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -675,10 +672,6 @@ Tags of the resource.
 | `name` | string | The name of the activity log alert. |
 | `resourceGroupName` | string | The resource group the activity log alert was deployed into. |
 | `resourceId` | string | The resource ID of the activity log alert. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

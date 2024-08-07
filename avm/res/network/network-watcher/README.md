@@ -8,7 +8,6 @@ This module deploys a Network Watcher.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -509,7 +508,6 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Optional parameters**
@@ -705,7 +703,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -714,10 +711,6 @@ Tags of the resource.
 | `name` | string | The name of the deployed network watcher. |
 | `resourceGroupName` | string | The resource group the network watcher was deployed into. |
 | `resourceId` | string | The resource ID of the deployed network watcher. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

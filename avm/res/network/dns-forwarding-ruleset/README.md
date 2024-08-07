@@ -8,7 +8,6 @@ This template deploys an dns forwarding ruleset.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -327,7 +326,6 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -637,7 +635,6 @@ The name of the virtual network link.
 - Required: No
 - Type: string
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -646,10 +643,6 @@ The name of the virtual network link.
 | `name` | string | The name of the DNS Forwarding Ruleset. |
 | `resourceGroupName` | string | The resource group the DNS Forwarding Ruleset was deployed into. |
 | `resourceId` | string | The resource ID of the DNS Forwarding Ruleset. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

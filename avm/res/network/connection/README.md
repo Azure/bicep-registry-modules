@@ -8,7 +8,6 @@ This module deploys a Virtual Network Gateway Connection.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -303,7 +302,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -574,7 +572,6 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 - Type: securestring
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -583,10 +580,6 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 | `name` | string | The name of the remote connection. |
 | `resourceGroupName` | string | The resource group the remote connection was deployed into. |
 | `resourceId` | string | The resource ID of the remote connection. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
