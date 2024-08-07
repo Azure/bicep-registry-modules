@@ -75,7 +75,6 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
@@ -804,17 +803,17 @@ The name of the workload that is being deployed. Up to 10 characters long.
 | `containerRegistryName` | string | The name of the container registry. |
 | `containerRegistryResourceId` | string | The resource ID of the container registry. |
 | `containerRegistryUserAssignedIdentityResourceId` | string | The resource ID of the user assigned managed identity for the container registry to be able to pull images from it. |
-| `keyVaultId` | string | The resource ID of the key vault. |
 | `keyVaultName` | string | The name of the Azure key vault. |
+| `keyVaultResourceId` | string | The resource ID of the key vault. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created in the spoke vnet. |
 | `spokeApplicationGatewaySubnetName` | string | The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeApplicationGatewaySubnetResourceId` | string | The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
-| `spokeInfraSubnetId` | string | The resource ID of the Spoke Infrastructure Subnet. |
 | `spokeInfraSubnetName` | string | The name of the Spoke Infrastructure Subnet. |
+| `spokeInfraSubnetResourceId` | string | The resource ID of the Spoke Infrastructure Subnet. |
 | `spokePrivateEndpointsSubnetName` | string | The name of the Spoke Private Endpoints Subnet. |
 | `spokeResourceGroupName` | string | The name of the Spoke resource group. |
 | `spokeVnetName` | string | The name of the Spoke Virtual Network. |
-| `spokeVNetResourceId` | string | The  esource ID of the Spoke Virtual Network. |
+| `spokeVNetResourceId` | string | The  resource ID of the Spoke Virtual Network. |
 | `vmJumpBoxName` | string | The name of the jump box virtual machine. |
 
 ## Cross-referenced modules
