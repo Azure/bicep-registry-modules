@@ -21,7 +21,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -30,8 +30,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
+    softDeleteRetentionInDays: 90 // The resource provider requires a 90 day retention period for encryption. Anything less will cause the deployment to fail. Ref: https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-customer-managed-key#requirements-for-configuring-data-encryption-for-azure-database-for-mysql-flexible-server
     enablePurgeProtection: true // Required for encryption to work
-    softDeleteRetentionInDays: 7
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
     enabledForDeployment: true
@@ -39,7 +39,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -65,7 +65,7 @@ resource geoBackupManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentit
   location: geoBackupLocation
 }
 
-resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: geoBackupKeyVaultName
   location: geoBackupLocation
   properties: {
@@ -74,8 +74,8 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
+    softDeleteRetentionInDays: 90 // The resource provider requires a 90 day retention period for encryption. Anything less will cause the deployment to fail. Ref: https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-customer-managed-key#requirements-for-configuring-data-encryption-for-azure-database-for-mysql-flexible-server
     enablePurgeProtection: true // Required for encryption to work
-    softDeleteRetentionInDays: 7
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
     enabledForDeployment: true
@@ -83,7 +83,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
