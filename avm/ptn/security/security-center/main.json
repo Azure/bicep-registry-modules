@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "6305575844099410252"
+      "templateHash": "14651284135971893635"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.",
@@ -131,6 +131,17 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Security Solution data."
+      }
+    },
+    "virtualMachinesSubPlan": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "P1",
+        "P2"
+      ],
+      "metadata": {
+        "description": "Optional. The sub-plan selected for a Standard pricing configuration, when more than one sub-plan is available. Each sub-plan enables a set of security features. When not specified, full plan is applied. For VirtualMachines plan, available sub plans are \"P1\" & \"P2\", where for resource level only \"P1\" sub plan is supported. Only usable if PricingTier = \"Standard\"."
       }
     },
     "virtualMachinesPricingTier": {
@@ -301,55 +312,68 @@
     "pricings": [
       {
         "name": "VirtualMachines",
-        "pricingTier": "[parameters('virtualMachinesPricingTier')]"
+        "pricingTier": "[parameters('virtualMachinesPricingTier')]",
+        "subPlan": "[if(equals(parameters('virtualMachinesPricingTier'), 'Standard'), parameters('virtualMachinesSubPlan'), null())]"
       },
       {
         "name": "SqlServers",
-        "pricingTier": "[parameters('sqlServersPricingTier')]"
+        "pricingTier": "[parameters('sqlServersPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "AppServices",
-        "pricingTier": "[parameters('appServicesPricingTier')]"
+        "pricingTier": "[parameters('appServicesPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "StorageAccounts",
-        "pricingTier": "[parameters('storageAccountsPricingTier')]"
+        "pricingTier": "[parameters('storageAccountsPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "SqlServerVirtualMachines",
-        "pricingTier": "[parameters('sqlServerVirtualMachinesPricingTier')]"
+        "pricingTier": "[parameters('sqlServerVirtualMachinesPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "KubernetesService",
-        "pricingTier": "[parameters('kubernetesServicePricingTier')]"
+        "pricingTier": "[parameters('kubernetesServicePricingTier')]",
+        "subPlan": null
       },
       {
         "name": "ContainerRegistry",
-        "pricingTier": "[parameters('containerRegistryPricingTier')]"
+        "pricingTier": "[parameters('containerRegistryPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "KeyVaults",
-        "pricingTier": "[parameters('keyVaultsPricingTier')]"
+        "pricingTier": "[parameters('keyVaultsPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "Dns",
-        "pricingTier": "[parameters('dnsPricingTier')]"
+        "pricingTier": "[parameters('dnsPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "Arm",
-        "pricingTier": "[parameters('armPricingTier')]"
+        "pricingTier": "[parameters('armPricingTier')]",
+        "subPlan": null
       },
       {
         "name": "OpenSourceRelationalDatabases",
-        "pricingTier": "[parameters('openSourceRelationalDatabasesTier')]"
+        "pricingTier": "[parameters('openSourceRelationalDatabasesTier')]",
+        "subPlan": null
       },
       {
         "name": "Containers",
-        "pricingTier": "[parameters('containersTier')]"
+        "pricingTier": "[parameters('containersTier')]",
+        "subPlan": null
       },
       {
         "name": "CosmosDbs",
-        "pricingTier": "[parameters('cosmosDbsTier')]"
+        "pricingTier": "[parameters('cosmosDbsTier')]",
+        "subPlan": null
       }
     ]
   },
@@ -383,10 +407,11 @@
         "batchSize": 1
       },
       "type": "Microsoft.Security/pricings",
-      "apiVersion": "2018-06-01",
+      "apiVersion": "2024-01-01",
       "name": "[variables('pricings')[copyIndex()].name]",
       "properties": {
-        "pricingTier": "[variables('pricings')[copyIndex()].pricingTier]"
+        "pricingTier": "[variables('pricings')[copyIndex()].pricingTier]",
+        "subPlan": "[variables('pricings')[copyIndex()].subPlan]"
       }
     },
     "autoProvisioningSettings": {

@@ -18,7 +18,7 @@ This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 | `Microsoft.Security/autoProvisioningSettings` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/autoProvisioningSettings) |
 | `Microsoft.Security/deviceSecurityGroups` | [2019-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/deviceSecurityGroups) |
 | `Microsoft.Security/iotSecuritySolutions` | [2019-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/iotSecuritySolutions) |
-| `Microsoft.Security/pricings` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2018-06-01/pricings) |
+| `Microsoft.Security/pricings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2024-01-01/pricings) |
 | `Microsoft.Security/securityContacts` | [2023-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2023-12-01-preview/securityContacts) |
 | `Microsoft.Security/workspaceSettings` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/workspaceSettings) |
 
@@ -120,6 +120,8 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
       }
       phone: '+12345678'
     }
+    virtualMachinesPricingTier: 'Standard'
+    virtualMachinesSubPlan: 'P2'
   }
 }
 ```
@@ -168,6 +170,12 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
         },
         "phone": "+12345678"
       }
+    },
+    "virtualMachinesPricingTier": {
+      "value": "Standard"
+    },
+    "virtualMachinesSubPlan": {
+      "value": "P2"
     }
   }
 }
@@ -261,6 +269,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 | [`sqlServerVirtualMachinesPricingTier`](#parameter-sqlservervirtualmachinespricingtier) | string | The pricing tier value for SqlServerVirtualMachines. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`storageAccountsPricingTier`](#parameter-storageaccountspricingtier) | string | The pricing tier value for StorageAccounts. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`virtualMachinesPricingTier`](#parameter-virtualmachinespricingtier) | string | The pricing tier value for VMs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
+| [`virtualMachinesSubPlan`](#parameter-virtualmachinessubplan) | string | The sub-plan selected for a Standard pricing configuration, when more than one sub-plan is available. Each sub-plan enables a set of security features. When not specified, full plan is applied. For VirtualMachines plan, available sub plans are "P1" & "P2", where for resource level only "P1" sub plan is supported. Only usable if PricingTier = "Standard". |
 
 ### Parameter: `scope`
 
@@ -634,6 +643,20 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
   [
     'Free'
     'Standard'
+  ]
+  ```
+
+### Parameter: `virtualMachinesSubPlan`
+
+The sub-plan selected for a Standard pricing configuration, when more than one sub-plan is available. Each sub-plan enables a set of security features. When not specified, full plan is applied. For VirtualMachines plan, available sub plans are "P1" & "P2", where for resource level only "P1" sub plan is supported. Only usable if PricingTier = "Standard".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'P1'
+    'P2'
   ]
   ```
 
