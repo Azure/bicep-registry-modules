@@ -71,8 +71,8 @@ param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virt
 @description('Optional. The name of the Deployment Script to trigger the Image Template baking.')
 param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 
-@description('Optional. The files to upload to the Assets Storage Account. The syntax of each item should be like: { name: \'__SCRIPT__Install-LinuxPowerShell_sh\' \n value: loadTextContent(\'../scripts/uploads/linux/Install-LinuxPowerShell.sh\') }.')
-param storageAccountFilesToUpload object?
+@description('Optional. The files to upload to the Assets Storage Account.')
+param storageAccountFilesToUpload storageAccountFilesToUploadType[]?
 
 @description('Optional. The name of the Deployment Script to trigger the image template baking.')
 param imageTemplateDeploymentScriptName string = 'ds-triggerBuild-imageTemplate'
@@ -158,13 +158,9 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToP
 }
 
 // Always deployed as both an infra element & needed as a staging resource group for image building
-module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.2.4' = {
-  name: '${deployment().name}-image-rg'
-  params: {
-    name: imageTemplateResourceGroupName
-    location: location
-    enableTelemetry: enableTelemetry
-  }
+resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+  name: imageTemplateResourceGroupName
+  location: location
 }
 
 // User Assigned Identity (MSI)
@@ -365,7 +361,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
 // ============================== //
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.3.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -384,7 +380,18 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.
       ]
     }
     scriptContent: loadTextContent('../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
-    environmentVariables: storageAccountFilesToUpload
+    // environmentVariables: [
+    //   map(range(0, length(storageAccountFilesToUpload ?? [])), index => {
+    //     name: '__SCRIPT__${storageAccountFilesToUpload![index].name}'
+    //     value: storageAccountFilesToUpload![index].?value
+    //     secureValue: storageAccountFilesToUpload![index].?secureValue
+    //   })
+    // ]
+    environmentVariables: map(storageAccountFilesToUpload ?? [], file => {
+      name: '__SCRIPT__${replace(replace(file.name, '-', '__'), '.', '_') }' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
+      value: file.?value
+      secureValue: file.?secureValue
+    })
     arguments: ' -StorageAccountName "${assetsStorageAccountName}" -TargetContainer "${assetsStorageAccountContainerName}"'
     timeout: 'PT30M'
     cleanupPreference: 'Always'
@@ -469,7 +476,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
       imageSubnetName
     )
     location: location
-    stagingResourceGroup: imageTemplateRg.outputs.resourceId
+    stagingResourceGroup: imageTemplateRg.id
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'
@@ -492,7 +499,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
 }
 
 // Deployment script to trigger image build
-module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.2.4' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.3.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-imageTemplate-trigger-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -546,7 +553,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.2.
   ]
 }
 
-module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.2.4' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
+module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.3.1' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
   name: '${deployment().name}-imageTemplate-wait-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -564,7 +571,6 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.2.4' 
       ]
     }
     scriptContent: loadTextContent('../../../utilities/e2e-template-assets/scripts/Wait-ForImageBuild.ps1')
-    environmentVariables: storageAccountFilesToUpload
     arguments: ' -ImageTemplateName "${imageTemplate.outputs.name}" -ResourceGroupName "${resourceGroupName}"'
     timeout: waitForImageBuildTimeout
     cleanupPreference: 'Always'
@@ -599,3 +605,19 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.2.4' 
 //   END: ONLY ASSETS  & IMAGE   //
 //   END: ONLY IMAGE             //
 ///////////////////////////////////
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type storageAccountFilesToUploadType = {
+  @description('Required. The name of the environment variable.')
+  name: string
+
+  @description('Required. The value of the secure environment variable.')
+  @secure()
+  secureValue: string?
+
+  @description('Required. The value of the environment variable.')
+  value: string?
+}

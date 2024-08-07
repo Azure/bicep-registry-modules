@@ -227,7 +227,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
 }
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.4' = {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.3.1' = {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -245,14 +245,13 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.2.
       ]
     }
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
-    environmentVariables: {
-      secureList: [
-        {
-          name: '__SCRIPT__${replace(replace(exampleScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
-          value: loadTextContent('scripts/${exampleScriptName}')
-        }
-      ]
-    }
+    environmentVariables: [
+      {
+        name: exampleScriptName
+        value: loadTextContent('scripts/${exampleScriptName}')
+      }
+    ]
+
     arguments: ' -StorageAccountName "${assetsStorageAccountName}" -TargetContainer "${assetsStorageAccountContainerName}"'
     timeout: 'PT30M'
     cleanupPreference: 'Always'

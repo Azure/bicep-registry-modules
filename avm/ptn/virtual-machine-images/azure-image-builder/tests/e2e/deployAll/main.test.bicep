@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Creating a Linux image with Azure Image Builder'
-metadata description = 'This instance deploy a Linux-flavored image definition and image using Linux-specific installation scripts.'
+metadata name = 'Deploying all resources'
+metadata description = 'This instance deploys the module with the conditions set up to deploy all resource and build the image.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-virtualmachineimages.azureim
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apvmiaibl'
+param serviceShort string = 'apvmiaiba'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -51,18 +51,16 @@ module testDeployment '../../../main.bicep' = [
           sku: 'devops_linux_az'
         }
       ]
-      storageAccountFilesToUpload: {
-        secureList: [
-          {
-            name: '__SCRIPT__${replace(replace(installPwshScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
-            value: loadTextContent('scripts/${installPwshScriptName}')
-          }
-          {
-            name: '__SCRIPT__${replace(replace(initializeSoftwareScriptName, '-', '__'), '.', '_')}' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Initialize__LinuxSoftware_ps1 will be Initialize-LinuxSoftware.ps1
-            value: loadTextContent('scripts/${initializeSoftwareScriptName}')
-          }
-        ]
-      }
+      storageAccountFilesToUpload: [
+        {
+          name: installPwshScriptName
+          value: loadTextContent('scripts/${installPwshScriptName}')
+        }
+        {
+          name: initializeSoftwareScriptName
+          value: loadTextContent('scripts/${initializeSoftwareScriptName}')
+        }
+      ]
       imageTemplateImageSource: {
         type: 'PlatformImage'
         publisher: 'canonical'
@@ -74,12 +72,12 @@ module testDeployment '../../../main.bicep' = [
         {
           type: 'Shell'
           name: 'PowerShell installation'
-          scriptUri: 'https://${assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}'
+          scriptUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}'
         }
         {
           type: 'File'
           name: 'Download ${initializeSoftwareScriptName}'
-          sourceUri: 'https://${assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
+          sourceUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
           destination: initializeSoftwareScriptName
         }
         {
@@ -90,6 +88,49 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
+
+      // Windoes example
+      // var installPwshScriptName = 'Install-WindowsPowerShell.ps1'
+      // var initializeSoftwareScriptName = 'Initialize-WindowsSoftware.ps1'
+      // computeGalleryImageDefinitions: [
+      //   {
+      //     hyperVGeneration: 'V2'
+      //     name: 'sid-windows'
+      //     osType: 'Windows'
+      //     publisher: 'devops'
+      //     offer: 'devops_windows'
+      //     sku: 'devops_windows_az'
+      //   }
+      // ]
+      // imageTemplateImageSource: {
+      //   type: 'PlatformImage'
+      //   publisher: 'microsoftwindowsdesktop'
+      //   offer: 'windows-11'
+      //   sku: 'win11-23h2-pro'
+      //   version: 'latest'
+      // }
+      // imageTemplateCustomizationSteps: [
+      //   {
+      //     type: 'PowerShell'
+      //     name: 'PowerShell installation'
+      //     scriptUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${installPwshScriptName}'
+      //     runElevated: true
+      //   }
+      //   {
+      //     type: 'File'
+      //     name: 'Download ${initializeSoftwareScriptName}'
+      //     sourceUri: 'https://${assetsStorageAccountName}.blob.${environment().suffixes.storage}/${assetsStorageAccountContainerName}/${initializeSoftwareScriptName}'
+      //     destination: initializeSoftwareScriptName
+      //   }
+      //   {
+      //     type: 'PowerShell'
+      //     name: 'Software installation'
+      //     inline: [
+      //       'pwsh \'${initializeSoftwareScriptName}\''
+      //     ]
+      //     runElevated: true
+      //   }
+      // ]
     }
   }
 ]
