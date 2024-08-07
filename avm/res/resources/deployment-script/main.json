@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5318642198380728784"
+      "templateHash": "11095024633645020544"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -127,32 +127,29 @@
       "nullable": true
     },
     "environmentVariableType": {
-      "type": "secureObject",
+      "type": "object",
       "properties": {
-        "secureList": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "secureValue": {
-                "type": "string",
-                "nullable": true
-              },
-              "value": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          },
+        "name": {
+          "type": "string",
           "metadata": {
-            "description": "Optional. The list of environment variables to pass over to the deployment script."
+            "description": "Required. The name of the environment variable."
+          }
+        },
+        "secureValue": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The value of the secure environment variable."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The value of the environment variable."
           }
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -222,9 +219,13 @@
       }
     },
     "environmentVariables": {
-      "$ref": "#/definitions/environmentVariableType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/environmentVariableType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The environment variables to pass over to the script. The list is passed as an object with a key name \"secureList\" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object."
+        "description": "Optional. The environment variables to pass over to the script."
       }
     },
     "supportingScriptUris": {
@@ -398,7 +399,7 @@
         "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
         "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
         "arguments": "[parameters('arguments')]",
-        "environmentVariables": "[if(not(equals(parameters('environmentVariables'), null())), parameters('environmentVariables').secureList, createArray())]",
+        "environmentVariables": "[parameters('environmentVariables')]",
         "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
         "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
         "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",
@@ -491,7 +492,7 @@
       "metadata": {
         "description": "The output of the deployment script."
       },
-      "value": "[if(contains(reference('deploymentScript'), 'outputs'), reference('deploymentScript').outputs, createObject())]"
+      "value": "[coalesce(tryGet(reference('deploymentScript'), 'outputs'), createObject())]"
     },
     "deploymentScriptLogs": {
       "type": "array",

@@ -37,8 +37,8 @@ param scriptContent string?
 @description('Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.')
 param primaryScriptUri string?
 
-@description('Optional. The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a \'name\' and a \'value\' or a \'secretValue\' property for each object.')
-param environmentVariables environmentVariableType
+@description('Optional. The environment variables to pass over to the script.')
+param environmentVariables environmentVariableType[]?
 
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
 param supportingScriptUris array?
@@ -187,7 +187,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     containerSettings: !empty(containerSettings) ? containerSettings : null
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
-    environmentVariables: environmentVariables != null ? environmentVariables!.secureList : []
+    environmentVariables: environmentVariables
     scriptContent: !empty(scriptContent) ? scriptContent : null
     primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
     supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
@@ -247,7 +247,7 @@ output name string = deploymentScript.name
 output location string = deploymentScript.location
 
 @description('The output of the deployment script.')
-output outputs object = contains(deploymentScript.properties, 'outputs') ? deploymentScript.properties.outputs : {}
+output outputs object = deploymentScript.properties.?outputs ?? {}
 
 @description('The logs of the deployment script.')
 output deploymentScriptLogs string[] = split(deploymentScriptLogs.properties.log, '\n')
@@ -295,12 +295,14 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-@secure()
 type environmentVariableType = {
-  @description('Optional. The list of environment variables to pass over to the deployment script.')
-  secureList: {
-    name: string
-    secureValue: string?
-    value: string?
-  }[]
-}?
+  @description('Required. The name of the environment variable.')
+  name: string
+
+  @description('Required. The value of the secure environment variable.')
+  @secure()
+  secureValue: string?
+
+  @description('Required. The value of the environment variable.')
+  value: string?
+}
