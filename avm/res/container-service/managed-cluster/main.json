@@ -1418,6 +1418,13 @@
         "description": "Optional. Enables Kubernetes Event-driven Autoscaling (KEDA)."
       }
     },
+    "vpaAddon": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to enable VPA add-on in cluster. Default value is false."
+      }
+    },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
@@ -1618,6 +1625,9 @@
         "workloadAutoScalerProfile": {
           "keda": {
             "enabled": "[parameters('kedaAddon')]"
+          },
+          "verticalPodAutoscaler": {
+            "enabled": "[parameters('vpaAddon')]"
           }
         },
         "networkProfile": {

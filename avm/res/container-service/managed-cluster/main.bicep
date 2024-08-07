@@ -356,6 +356,9 @@ param identityProfile object?
 @description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
 
+@description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
+param vpaAddon bool = false
+
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -625,6 +628,9 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     workloadAutoScalerProfile: {
       keda: {
         enabled: kedaAddon
+      }
+      verticalPodAutoscaler: {
+        enabled: vpaAddon
       }
     }
     networkProfile: {
