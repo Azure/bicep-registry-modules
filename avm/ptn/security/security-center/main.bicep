@@ -289,11 +289,11 @@ type securityContactsType = {
 
   @description('Optional. Defines whether to send email notifications from Microsoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
   notificationsByRole: {
-    @description('Optional. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.')
-    roles: ('AccountAdmin' | 'Contributor' | 'Owner' | 'ServiceAdmin')[]?
+    @description('Conditional. Required if using notificationsByRole. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.')
+    roles: ('AccountAdmin' | 'Contributor' | 'Owner' | 'ServiceAdmin')[]
 
-    @description('Optional. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
-    state: ('On' | 'Off')?
+    @description('Conditional. Required if using notificationsByRole. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
+    state: ('On' | 'Off')
   }?
 
   @description('Required. Defines the minimal alert risk level which will be sent as email notifications.')

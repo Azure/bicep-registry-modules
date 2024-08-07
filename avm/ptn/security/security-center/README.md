@@ -533,18 +533,18 @@ Defines whether to send email notifications from Microsoft Defender for Cloud to
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`roles`](#parameter-securitycontactspropertiesnotificationsbyroleroles) | array | Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud. |
-| [`state`](#parameter-securitycontactspropertiesnotificationsbyrolestate) | string | Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription. |
+| [`roles`](#parameter-securitycontactspropertiesnotificationsbyroleroles) | array | Required if using notificationsByRole. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud. |
+| [`state`](#parameter-securitycontactspropertiesnotificationsbyrolestate) | string | Required if using notificationsByRole. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription. |
 
 ### Parameter: `securityContactsProperties.notificationsByRole.roles`
 
-Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.
+Required if using notificationsByRole. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.
 
-- Required: No
+- Required: Yes
 - Type: array
 - Allowed:
   ```Bicep
@@ -558,9 +558,9 @@ Defines which RBAC roles will get email notifications from Microsoft Defender fo
 
 ### Parameter: `securityContactsProperties.notificationsByRole.state`
 
-Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.
+Required if using notificationsByRole. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
