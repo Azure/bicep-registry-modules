@@ -309,6 +309,8 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
           ]
         }
       ]
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 10
     }
   }
 }
