@@ -18,7 +18,7 @@ Mandatory. The URL of the GitHub pull request, like 'https://github.com/Azure/bi
 Set-AvmGitHubPrLabels -Repo 'Azure/bicep-registry-modules' -PrUrl 'https://github.com/Azure/bicep-registry-modules/pull/2540'
 
 .NOTES
-Will be triggered by the workflow avm.platform.set-avm-github-pr-labels.yml
+Will be triggered by the corresponding platform workflow
 #>
 function Set-AvmGitHubPrLabels {
     param (
