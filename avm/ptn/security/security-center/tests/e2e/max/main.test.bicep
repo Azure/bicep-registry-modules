@@ -52,10 +52,17 @@ module testDeployment '../../../main.bicep' = [
       scope: subscription().id
       workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
-      securityContactProperties: {
-        alertNotifications: 'Off'
-        alertsToAdmins: 'Off'
-        email: 'foo@contoso.com'
+      securityContactsProperties: {
+        alertMinimalSeverity: 'Low'
+        attackMinimalRiskLevel: 'Low'
+        emails: 'foo@contoso.com'
+        isEnabled: true
+        notificationsByRole: {
+          roles: [
+            'AccountAdmin'
+            'Contributor'
+          ]
+        }
         phone: '+12345678'
       }
       deviceSecurityGroupProperties: {}

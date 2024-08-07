@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/security/security-center:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
-- [Max](#example-2-max)
+- [Using default parameter set](#example-2-using-default-parameter-set)
 - [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using default parameter set_
@@ -86,7 +86,10 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using default parameter set_
+
+This instance deploys the module with default parameters.
+
 
 <details>
 
@@ -103,10 +106,17 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     deviceSecurityGroupProperties: {}
     ioTSecuritySolutionProperties: {}
     location: '<location>'
-    securityContactProperties: {
-      alertNotifications: 'Off'
-      alertsToAdmins: 'Off'
-      email: 'foo@contoso.com'
+    securityContactsProperties: {
+      alertMinimalSeverity: 'Low'
+      attackMinimalRiskLevel: 'Low'
+      emails: 'foo@contoso.com'
+      isEnabled: true
+      notificationsByRole: {
+        roles: [
+          'AccountAdmin'
+          'Contributor'
+        ]
+      }
       phone: '+12345678'
     }
   }
@@ -142,11 +152,18 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "securityContactProperties": {
+    "securityContactsProperties": {
       "value": {
-        "alertNotifications": "Off",
-        "alertsToAdmins": "Off",
-        "email": "foo@contoso.com",
+        "alertMinimalSeverity": "Low",
+        "attackMinimalRiskLevel": "Low",
+        "emails": "foo@contoso.com",
+        "isEnabled": true,
+        "notificationsByRole": {
+          "roles": [
+            "AccountAdmin",
+            "Contributor"
+          ]
+        },
         "phone": "+12345678"
       }
     }
@@ -527,6 +544,15 @@ Defines which RBAC roles will get email notifications from Microsoft Defender fo
 
 - Required: No
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'AccountAdmin'
+    'Contributor'
+    'Owner'
+    'ServiceAdmin'
+  ]
+  ```
 
 ### Parameter: `securityContactsProperties.notificationsByRole.state`
 

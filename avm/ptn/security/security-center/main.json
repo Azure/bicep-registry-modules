@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16704179632536630039"
+      "templateHash": "1104248755307814384"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.",
@@ -35,18 +35,12 @@
           "properties": {
             "roles": {
               "type": "array",
-              "prefixItems": [
-                {
-                  "type": "string",
-                  "allowedValues": [
-                    "AccountAdmin",
-                    "Contributor",
-                    "Owner",
-                    "ServiceAdmin"
-                  ]
-                }
+              "allowedValues": [
+                "AccountAdmin",
+                "Contributor",
+                "Owner",
+                "ServiceAdmin"
               ],
-              "items": false,
               "nullable": true,
               "metadata": {
                 "description": "Optional. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud."
@@ -418,6 +412,7 @@
       }
     },
     "securityContacts": {
+      "condition": "[not(equals(parameters('securityContactsProperties'), null()))]",
       "type": "Microsoft.Security/securityContacts",
       "apiVersion": "2023-12-01-preview",
       "name": "default",

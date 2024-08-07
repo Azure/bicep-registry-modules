@@ -236,7 +236,7 @@ module iotSecuritySolutions 'modules/iotSecuritySolutions.bicep' = if (!empty(io
   }
 }
 
-resource securityContacts 'Microsoft.Security/securityContacts@2023-12-01-preview' = {
+resource securityContacts 'Microsoft.Security/securityContacts@2023-12-01-preview' = if (securityContactsProperties != null) {
   name: 'default'
   properties: {
     emails: securityContactsProperties.?emails
@@ -248,11 +248,11 @@ resource securityContacts 'Microsoft.Security/securityContacts@2023-12-01-previe
     notificationsSources: [
       {
         sourceType: 'Alert'
-        minimalSeverity: securityContactsProperties.alertMinimalSeverity
+        minimalSeverity: securityContactsProperties!.alertMinimalSeverity
       }
       {
         sourceType: 'AttackPath'
-        minimalRiskLevel: securityContactsProperties.attackMinimalRiskLevel
+        minimalRiskLevel: securityContactsProperties!.attackMinimalRiskLevel
       }
     ]
     phone: securityContactsProperties.?phone
@@ -290,7 +290,7 @@ type securityContactsType = {
   @description('Optional. Defines whether to send email notifications from Microsoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
   notificationsByRole: {
     @description('Optional. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.')
-    roles: ['AccountAdmin' | 'Contributor' | 'Owner' | 'ServiceAdmin']?
+    roles: ('AccountAdmin' | 'Contributor' | 'Owner' | 'ServiceAdmin')[]?
 
     @description('Optional. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
     state: ('On' | 'Off')?
