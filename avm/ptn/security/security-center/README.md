@@ -116,6 +116,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
           'AccountAdmin'
           'Contributor'
         ]
+        state: 'Off'
       }
       phone: '+12345678'
     }
@@ -162,7 +163,8 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
           "roles": [
             "AccountAdmin",
             "Contributor"
-          ]
+          ],
+          "state": "Off"
         },
         "phone": "+12345678"
       }

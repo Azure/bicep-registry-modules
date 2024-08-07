@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [
             'AccountAdmin'
             'Contributor'
           ]
+          state: 'Off'
         }
         phone: '+12345678'
       }
