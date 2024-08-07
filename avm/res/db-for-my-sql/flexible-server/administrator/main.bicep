@@ -17,11 +17,11 @@ param login string
 @description('Optional. The tenantId of the Active Directory administrator.')
 param tenantId string = tenant().tenantId
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-01-01' existing = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' existing = {
   name: flexibleServerName
 }
 
-resource administrator 'Microsoft.DBforMySQL/flexibleServers/administrators@2022-01-01' = {
+resource administrator 'Microsoft.DBforMySQL/flexibleServers/administrators@2023-06-30' = {
   name: 'ActiveDirectory'
   parent: flexibleServer
   properties: {

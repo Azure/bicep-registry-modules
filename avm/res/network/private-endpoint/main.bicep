@@ -17,11 +17,8 @@ param customNetworkInterfaceName string?
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
 param ipConfigurations ipConfigurationsType
 
-@description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-param privateDnsZoneGroupName string?
-
-@description('Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-param privateDnsZoneResourceIds array?
+@description('Optional. The private DNS zone group to configure for the private endpoint.')
+param privateDnsZoneGroup privateDnsZoneGroupType?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -81,6 +78,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-privateendpoint.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -121,12 +129,12 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   }
 }
 
-module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' = if (!empty(privateDnsZoneResourceIds)) {
+module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' = if (!empty(privateDnsZoneGroup)) {
   name: '${uniqueString(deployment().name)}-PrivateEndpoint-PrivateDnsZoneGroup'
   params: {
-    name: privateDnsZoneGroupName ?? 'default'
-    privateDNSResourceIds: privateDnsZoneResourceIds ?? []
+    name: privateDnsZoneGroup.?name
     privateEndpointName: privateEndpoint.name
+    privateDnsZoneConfigs: privateDnsZoneGroup!.privateDnsZoneGroupConfigs
   }
 }
 
@@ -142,14 +150,10 @@ resource privateEndpoint_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!
 }
 
 resource privateEndpoint_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(privateEndpoint.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(privateEndpoint.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -176,6 +180,9 @@ output location string = privateEndpoint.location
 @description('The custom DNS configurations of the private endpoint.')
 output customDnsConfig customDnsConfigType = privateEndpoint.properties.customDnsConfigs
 
+@description('The IDs of the network interfaces associated with the private endpoint.')
+output networkInterfaceIds array = privateEndpoint.properties.networkInterfaces
+
 @description('The group Id for the private endpoint Group.')
 output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections) && length(privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds) > 0
   ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
@@ -187,7 +194,20 @@ output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServi
 // Definitions      //
 // ================ //
 
+import { privateDnsZoneGroupConfigType } from 'private-dns-zone-group/main.bicep'
+
+type privateDnsZoneGroupType = {
+  @description('Optional. The name of the Private DNS Zone Group.')
+  name: string?
+
+  @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+  privateDnsZoneGroupConfigs: privateDnsZoneGroupConfigType[]
+}
+
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
