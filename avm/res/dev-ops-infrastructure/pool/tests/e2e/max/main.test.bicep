@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'mdpmax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'jxo'
 
 // ========= //
 // Variables //
@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
           wellKnownImageName: 'windows-2022/latest'
         }
       ]
-      fabricProfileSkuName: 'Standard_D2_v5'
+      fabricProfileSkuName: 'Standard_D2_v2'
       organizationProfile: {
         kind: 'AzureDevOps'
         organizations: [

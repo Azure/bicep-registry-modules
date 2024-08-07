@@ -98,7 +98,7 @@ module testDeployment '../../../main.bicep' = [
           wellKnownImageName: 'windows-2022/latest'
         }
       ]
-      fabricProfileSkuName: 'Standard_D2_v5'
+      fabricProfileSkuName: 'Standard_D2_v2'
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       organizationProfile: {
         kind: 'AzureDevOps'
