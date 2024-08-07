@@ -1,0 +1,4 @@
+name: "avm.res.dev-ops-infrastructure.pool"
+
+on:
+  workflow_dispatch:
