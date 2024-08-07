@@ -397,7 +397,6 @@ An XML configuration specification for a WebTest.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `description`
 

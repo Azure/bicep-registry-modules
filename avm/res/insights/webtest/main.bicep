@@ -69,7 +69,7 @@ param retryEnabled bool = true
 param validationRules object = {}
 
 @sys.description('Optional. An XML configuration specification for a WebTest.')
-param configuration object = {}
+param configuration object?
 
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType

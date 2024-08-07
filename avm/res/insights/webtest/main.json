@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14711752656492458826"
+      "version": "0.27.1.19265",
+      "templateHash": "7223657716552669834"
     },
     "name": "Web Tests",
     "description": "This module deploys a Web Test.",
@@ -237,7 +237,7 @@
     },
     "configuration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. An XML configuration specification for a WebTest."
       }

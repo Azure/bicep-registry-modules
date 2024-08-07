@@ -27,9 +27,9 @@ This module deploys a DocumentDB Database Account.
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -342,6 +342,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -480,6 +481,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -522,9 +524,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'kv-ref'
     // Non-required parameters
     location: '<location>'
-    secretsKeyVault: {
-      keyVaultName: '<keyVaultName>'
-      primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
+      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
+      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
+      primaryWriteKeySecretName: 'primaryWriteKey'
+      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
+      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
+      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
+      secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
   }
 }
@@ -550,10 +559,17 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "location": {
       "value": "<location>"
     },
-    "secretsKeyVault": {
+    "secretsExportConfiguration": {
       "value": {
-        "keyVaultName": "<keyVaultName>",
-        "primaryReadonlyConnectionStringSecretName": "custom-secret-name"
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryReadonlyConnectionStringSecretName": "primaryReadonlyConnectionString",
+        "primaryReadOnlyKeySecretName": "primaryReadOnlyKey",
+        "primaryWriteConnectionStringSecretName": "primaryWriteConnectionString",
+        "primaryWriteKeySecretName": "primaryWriteKey",
+        "secondaryReadonlyConnectionStringSecretName": "secondaryReadonlyConnectionString",
+        "secondaryReadonlyKeySecretName": "secondaryReadonlyKey",
+        "secondaryWriteConnectionStringSecretName": "secondaryWriteConnectionString",
+        "secondaryWriteKeySecretName": "secondaryWriteKey"
       }
     }
   }
@@ -593,6 +609,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -643,6 +660,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -900,6 +918,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -1170,6 +1189,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -2159,9 +2179,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'Sql'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -2236,9 +2260,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "Sql",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -2292,7 +2320,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Default to true. Enable automatic failover for regions. |
+| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
 | [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
@@ -2302,11 +2330,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Cosmos DB database account. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
-| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
-| [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
-| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
+| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
+| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. |
+| [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether Free Tier is enabled. |
+| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
@@ -2319,7 +2347,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`secretsKeyVault`](#parameter-secretskeyvault) | object | Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
 | [`sqlRoleAssignmentsPrincipalIds`](#parameter-sqlroleassignmentsprincipalids) | array | SQL Role Definitions configurations. |
@@ -2335,7 +2363,7 @@ Name of the Database Account.
 
 ### Parameter: `automaticFailover`
 
-Default to true. Enable automatic failover for regions.
+Enable automatic failover for regions.
 
 - Required: No
 - Type: bool
@@ -2602,7 +2630,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `disableKeyBasedMetadataWriteAccess`
 
-Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys.
+Disable write operations on metadata resources (databases, containers, throughput) via account keys.
 
 - Required: No
 - Type: bool
@@ -2610,15 +2638,15 @@ Default to false. Disable write operations on metadata resources (databases, con
 
 ### Parameter: `disableLocalAuth`
 
-Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
+Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableAnalyticalStorage`
 
-Default to false. Flag to indicate whether to enable storage analytics.
+Flag to indicate whether to enable storage analytics.
 
 - Required: No
 - Type: bool
@@ -2626,7 +2654,7 @@ Default to false. Flag to indicate whether to enable storage analytics.
 
 ### Parameter: `enableFreeTier`
 
-Default to false. Flag to indicate whether Free Tier is enabled.
+Flag to indicate whether Free Tier is enabled.
 
 - Required: No
 - Type: bool
@@ -2634,7 +2662,7 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 ### Parameter: `enableMultipleWriteLocations`
 
-Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.
+Enables the account to write in multiple locations. Periodic backup must be used if enabled.
 
 - Required: No
 - Type: bool
@@ -2893,8 +2921,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -3084,19 +3111,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -3134,6 +3206,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -3184,6 +3257,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -3230,6 +3310,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -3280,6 +3361,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -3297,9 +3385,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsKeyVault`
+### Parameter: `secretsExportConfiguration`
 
-Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account.
+Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
@@ -3308,88 +3396,80 @@ Key vault reference and secret settings to add the connection strings and keys g
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultName`](#parameter-secretskeyvaultkeyvaultname) | string | The key vault name where to store the keys and connection strings generated by the modules. |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretskeyvaultprimaryreadonlyconnectionstringsecretname) | string | Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create. |
-| [`primaryReadOnlyKeySecretName`](#parameter-secretskeyvaultprimaryreadonlykeysecretname) | string | Default to Primary-Readonly-Key. The primary readonly key secret name to create. |
-| [`primaryWriteConnectionStringSecretName`](#parameter-secretskeyvaultprimarywriteconnectionstringsecretname) | string | Default to Primary-Write-ConnectionString. The primary write connection string secret name to create. |
-| [`primaryWriteKeySecretName`](#parameter-secretskeyvaultprimarywritekeysecretname) | string | Default to Primary-Write-Key. The primary write key secret name to create. |
-| [`resourceGroupName`](#parameter-secretskeyvaultresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
-| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretskeyvaultsecondaryreadonlyconnectionstringsecretname) | string | Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create. |
-| [`secondaryReadonlyKeySecretName`](#parameter-secretskeyvaultsecondaryreadonlykeysecretname) | string | Default to Secondary-Readonly-Key. The primary readonly key secret name to create. |
-| [`secondaryWriteConnectionStringSecretName`](#parameter-secretskeyvaultsecondarywriteconnectionstringsecretname) | string | Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create. |
-| [`secondaryWriteKeySecretName`](#parameter-secretskeyvaultsecondarywritekeysecretname) | string | Default to Secondary-Write-Key. The primary write key secret name to create. |
+| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationprimaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
+| [`primaryReadOnlyKeySecretName`](#parameter-secretsexportconfigurationprimaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
+| [`primaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationprimarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
+| [`primaryWriteKeySecretName`](#parameter-secretsexportconfigurationprimarywritekeysecretname) | string | The primary write key secret name to create. |
+| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
+| [`secondaryReadonlyKeySecretName`](#parameter-secretsexportconfigurationsecondaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
+| [`secondaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
+| [`secondaryWriteKeySecretName`](#parameter-secretsexportconfigurationsecondarywritekeysecretname) | string | The primary write key secret name to create. |
 
-### Parameter: `secretsKeyVault.keyVaultName`
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
-The key vault name where to store the keys and connection strings generated by the modules.
+The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsKeyVault.primaryReadonlyConnectionStringSecretName`
+### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
 
-Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.primaryReadOnlyKeySecretName`
-
-Default to Primary-Readonly-Key. The primary readonly key secret name to create.
+The primary readonly connection string secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.primaryWriteConnectionStringSecretName`
+### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
 
-Default to Primary-Write-ConnectionString. The primary write connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.primaryWriteKeySecretName`
-
-Default to Primary-Write-Key. The primary write key secret name to create.
+The primary readonly key secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.resourceGroupName`
+### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
 
-Default to the resource group where this account is. The resource group name where the key vault is.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.secondaryReadonlyConnectionStringSecretName`
-
-Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create.
+The primary write connection string secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.secondaryReadonlyKeySecretName`
+### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
 
-Default to Secondary-Readonly-Key. The primary readonly key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.secondaryWriteConnectionStringSecretName`
-
-Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create.
+The primary write key secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.secondaryWriteKeySecretName`
+### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
 
-Default to Secondary-Write-Key. The primary write key secret name to create.
+The primary readonly connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
+
+The primary readonly key secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
+
+The primary write connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
+
+The primary write key secret name to create.
 
 - Required: No
 - Type: string
@@ -3704,6 +3784,7 @@ Tags of the Database Account resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `endpoint` | string | The endpoint of the database account. |
+| `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |
@@ -3716,7 +3797,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.0` | Remote reference |
 
 ## Data Collection
 
