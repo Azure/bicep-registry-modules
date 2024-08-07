@@ -881,7 +881,7 @@ The condition for the role assignment.
 
 The type of template for the role assignment condition.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 ### Parameter: `roleAssignments.roleAssignmentCondition.conditionVersion`

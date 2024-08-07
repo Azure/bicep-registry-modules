@@ -764,7 +764,7 @@ type constrainedDelegationTemplatesType =
 @export()
 type roleAssignmentCondtionType = {
   @description('Required. The type of template for the role assignment condition.')
-  roleConditionType: constrainedDelegationTemplatesType?
+  roleConditionType: constrainedDelegationTemplatesType
 
   @description('Optional. The version of the condition template.')
   conditionVersion: '2.0'?

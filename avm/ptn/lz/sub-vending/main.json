@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16545319675189146964"
+      "templateHash": "3965598967300696958"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -161,7 +161,6 @@
       "properties": {
         "roleConditionType": {
           "$ref": "#/definitions/_1.constrainedDelegationTemplatesType",
-          "nullable": true,
           "metadata": {
             "description": "Required. The type of template for the role assignment condition."
           }
@@ -984,7 +983,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "1993221052366370645"
+              "templateHash": "12372204218501607257"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1164,7 +1163,6 @@
               "properties": {
                 "roleConditionType": {
                   "$ref": "#/definitions/constrainedDelegationTemplatesType",
-                  "nullable": true,
                   "metadata": {
                     "description": "Required. The type of template for the role assignment condition."
                   }
