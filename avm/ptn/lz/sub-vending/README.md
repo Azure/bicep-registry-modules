@@ -340,6 +340,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           roleConditionType: {
             principleTypesToAssign: [
               'Group'
+              'ServicePrincipal'
             ]
             rolesToAssign: [
               'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -391,7 +392,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "roleAssignmentCondition": {
             "roleConditionType": {
               "principleTypesToAssign": [
-                "Group"
+                "Group",
+                "ServicePrincipal"
               ],
               "rolesToAssign": [
                 "b24988ac-6180-42a0-ab88-20f7382dd24c"
