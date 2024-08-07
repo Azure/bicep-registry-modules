@@ -295,14 +295,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 @description('The name of the Spoke resource group.')
 output spokeResourceGroupName string = spoke.outputs.spokeResourceGroupName
 
-@description('The  esource ID of the Spoke Virtual Network.')
+@description('The  resource ID of the Spoke Virtual Network.')
 output spokeVNetResourceId string = spoke.outputs.spokeVNetId
 
 @description('The name of the Spoke Virtual Network.')
 output spokeVnetName string = spoke.outputs.spokeVNetName
 
 @description('The resource ID of the Spoke Infrastructure Subnet.')
-output spokeInfraSubnetId string = spoke.outputs.spokeInfraSubnetId
+output spokeInfraSubnetResourceId string = spoke.outputs.spokeInfraSubnetId
 
 @description('The name of the Spoke Infrastructure Subnet.')
 output spokeInfraSubnetName string = spoke.outputs.spokeInfraSubnetName
@@ -336,7 +336,7 @@ output containerRegistryLoginServer string = supportingServices.outputs.containe
 output containerRegistryUserAssignedIdentityResourceId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
 
 @description('The resource ID of the key vault.')
-output keyVaultId string = supportingServices.outputs.keyVaultResourceId
+output keyVaultResourceId string = supportingServices.outputs.keyVaultResourceId
 
 @description('The name of the Azure key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName

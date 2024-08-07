@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12869152213977765355"
+      "templateHash": "16535725536619244187"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
@@ -43394,7 +43394,7 @@
     "spokeVNetResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The  esource ID of the Spoke Virtual Network."
+        "description": "The  resource ID of the Spoke Virtual Network."
       },
       "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokeVNetId.value]"
     },
@@ -43405,7 +43405,7 @@
       },
       "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.spokeVNetName.value]"
     },
-    "spokeInfraSubnetId": {
+    "spokeInfraSubnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Spoke Infrastructure Subnet."
@@ -43482,7 +43482,7 @@
       },
       "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgSpokeName')), 'Microsoft.Resources/deployments', take(format('supportingServices-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.containerRegistryUserAssignedIdentityId.value]"
     },
-    "keyVaultId": {
+    "keyVaultResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the key vault."
