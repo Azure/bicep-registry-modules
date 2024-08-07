@@ -62,12 +62,10 @@ function Set-AvmGitHubPrLabels {
 
         foreach ($module in $modules) {
             if ($module.ModuleName.Replace('-', '').Replace('/', '-') -eq $moduleName) {
-                break
+                if ($module.ModuleStatus -eq 'Orphaned :eyes:') {
+                    gh pr edit $pr.url --add-label 'Status: Module Orphaned :eyes:' --repo $Repo
+                }
             }
-        }
-
-        if ($module.ModuleStatus -eq 'Orphaned :eyes:') {
-            gh pr edit $pr.url --add-label 'Status: Module Orphaned :eyes:' --repo $Repo
         }
     }
 }
