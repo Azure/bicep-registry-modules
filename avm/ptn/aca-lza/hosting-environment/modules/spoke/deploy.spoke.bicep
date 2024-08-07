@@ -108,16 +108,6 @@ var namingRules = json(loadTextContent('../naming/naming-rules.jsonc'))
 var rgSpokeName = !empty(spokeResourceGroupName)
   ? spokeResourceGroupName
   : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-${environment}-${namingRules.regionAbbreviations[toLower(location)]}-spoke'
-var hubVNetResourceIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
-
-@description('The ID of the subscription containing the hub virtual network.')
-var hubSubscriptionId = !empty(hubVNetId) ? hubVNetResourceIdTokens[2] : ''
-
-@description('The name of the resource group containing the hub virtual network.')
-var hubResourceGroupName = !empty(hubVNetId) ? hubVNetResourceIdTokens[4] : ''
-
-@description('The name of the hub virtual network.')
-var hubVNetName = !empty(hubVNetId) ? hubVNetResourceIdTokens[8] : ''
 
 // Subnet definition taking in consideration feature flags
 var defaultSubnets = [
@@ -202,6 +192,21 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.1.6' = {
     enableTelemetry: enableTelemetry
     addressPrefixes: spokeVNetAddressPrefixes
     subnets: spokeSubnets
+    peerings: (!empty(hubVNetId))
+      ? [
+          {
+            allowForwardedTraffic: true
+            allowGatewayTransit: false
+            allowVirtualNetworkAccess: true
+            remotePeeringAllowForwardedTraffic: true
+            remotePeeringAllowVirtualNetworkAccess: true
+            remotePeeringEnabled: true
+            remotePeeringName: 'spokeToHub'
+            remoteVirtualNetworkId: hubVNetId
+            useRemoteGateways: false
+          }
+        ]
+      : null
   }
 }
 
@@ -462,31 +467,6 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.2.0' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-  }
-}
-
-//TODO: This needs to be replaced once the peering module is available in the avm modules
-@description('Spoke peering to regional hub network. This peering would normally already be provisioned by your subscription vending process.')
-module peerSpokeToHub '../networking/peering.bicep' = if (!empty(hubVNetId)) {
-  name: take('${deployment().name}-peerSpokeToHubDeployment', 64)
-  scope: resourceGroup(rgSpokeName)
-  params: {
-    localVnetName: vnetSpoke.outputs.name
-    remoteSubscriptionId: hubSubscriptionId
-    remoteRgName: hubResourceGroupName
-    remoteVnetName: hubVNetName
-  }
-}
-
-@description('Regional hub peering to this spoke network. This peering would normally already be provisioned by your subscription vending process.')
-module peerHubToSpoke '../networking/peering.bicep' = if (!empty(hubVNetId)) {
-  name: take('${deployment().name}-peerHubToSpokeDeployment', 64)
-  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
-  params: {
-    localVnetName: hubVNetName
-    remoteSubscriptionId: last(split(subscription().id, '/'))!
-    remoteRgName: spokeResourceGroup.outputs.name
-    remoteVnetName: naming.outputs.resourcesNames.vnetSpoke
   }
 }
 
