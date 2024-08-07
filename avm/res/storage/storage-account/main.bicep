@@ -642,6 +642,11 @@ output location string = storageAccount.location
 @description('All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint.')
 output serviceEndpoints object = storageAccount.properties.primaryEndpoints
 
+@description('The array of networ interfaces IDs associated with private endpoints.')
+output privateEndpointsNetworkInterfaceIds array = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): storageAccount_privateEndpoints[index].outputs.networkInterfaceIds
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
