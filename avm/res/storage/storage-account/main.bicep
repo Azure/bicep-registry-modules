@@ -634,6 +634,16 @@ output primaryBlobEndpoint string = !empty(blobServices) && contains(blobService
   ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.blob
   : ''
 
+@description('The primary queue endpoint reference if queue services are deployed.')
+output primaryQueueEndpoint string = kind == 'StorageV2' || kind == 'Storage'
+  ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.queue
+  : ''
+
+@description('The primary table endpoint reference if table services are deployed.')
+output primaryTableEndpoint string = kind == 'StorageV2' || kind == 'Storage'
+  ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.table
+  : ''
+
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalId ?? ''
 
