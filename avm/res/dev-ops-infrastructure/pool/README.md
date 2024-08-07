@@ -171,7 +171,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_D2_v5'
+    fabricProfileSkuName: 'Standard_D2_v2'
     images: [
       {
         aliases: [
@@ -295,7 +295,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_D2_v5"
+      "value": "Standard_D2_v2"
     },
     "images": {
       "value": [
@@ -437,7 +437,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_D2_v5'
+    fabricProfileSkuName: 'Standard_D2_v2'
     images: [
       {
         wellKnownImageName: 'windows-2022/latest'
@@ -513,7 +513,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_D2_v5"
+      "value": "Standard_D2_v2"
     },
     "images": {
       "value": [
