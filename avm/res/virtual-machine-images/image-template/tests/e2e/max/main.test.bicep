@@ -60,7 +60,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    stagingResourceGroup: '${subscription().id}/resourcegroups/${resourceGroupName}-staging'
+    stagingResourceGroupResourceId: '${subscription().id}/resourcegroups/${resourceGroupName}-staging'
     customizationSteps: [
       {
         type: 'Shell'
