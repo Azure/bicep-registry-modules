@@ -105,7 +105,9 @@ param highAvailability string = 'Disabled'
   'Create'
   'Default'
   'PointInTimeRestore'
-  'Update'
+  'Update',
+  'GeoRestore',
+  'Replica'
 ])
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
@@ -272,7 +274,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
         }
       : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
-    sourceServerResourceId: createMode == 'PointInTimeRestore' ? sourceServerResourceId : null
+    sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica') ? sourceServerResourceId : null
     storage: {
       storageSizeGB: storageSizeGB
     }
