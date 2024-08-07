@@ -779,10 +779,11 @@ integrated into the solution in a transparent way so cloud and security team can
 One of the design goals is to have all the services that are part of the solution
 connected to one virtual network to make the traffic between services private (use of private endpoints).
 A virtual network can be either created along with the solution or
-an existing virtual network (Hub/Spoke model – spoke VNET made by network enterprise team) can be chosen.
+an existing / pre-defined virtual network (Hub/Spoke model – spoke VNET made by network enterprise team) can be chosen.
 
 The solution's services save diagnostics data to Azure Log Analytics Workspace,
-either existing or new. Secrets such as connection string or data source credentials should
+either created along with the solution or an existing / pre-defined.
+Secrets such as connection string or data source credentials should
 go to secrets store securely. Analytical tools use secure credentials to access data sources.
 Secrets can go to Azure Key Vault, either existing or new.
 
@@ -791,9 +792,51 @@ by enterprise network team), Azure Log Analytics workspace for diagnostics and m
 (either created or given by cloud team) and Azure Key Vault as secrets
 store (either created or given by cloud team).
 
+Every resource in the solution can be tagged and locked.
+The owner role for every resource can be given with the "solutionAdministrators" parameter.
+All resources are named according to the provided input parameter "name".
+All resources gather diagnostic and monitoring data, which is then stored in either a newly created or an existing Log Analytics Workspace.
+
+The solution may optionally include additional analytical services, for instance by enabling the "enableDatabricks" parameter.
+The parameter "advancedOptions" allows for finer customization of the solution.
+Certain Azure services within the solution can be reached via a public endpoint (if preferred) and can also be limited using network access control lists by permitting only the public IP of the accessing client.
+
+This solution invariably demands a Virtual network presence.
+At the very least, it necessitates a single subnet to cater to private link endpoints.
+The incorporation of additional optional services implies further prerequisites for the network,
+such as subnets, their sizes, network security groups, NSG access control lists,
+private endpoints, DNS zones, etc.
+For instance, activating the Azure Databricks service would automatically generate a virtual network and its essential components per established best practices.
+When an enterprise's virtual network is supplied by either the network or cloud team, it has to comply with the requirements of the services being activated.
+It's crucial that Network Security Groups, Network Security Group Rules, DNS Zones and DNS forwarding, private endpoints,
+and domain zones for services like Key Vault and Azure Databricks, along with subnet delegations, are all set up correctly.
+For example, refer to the documentation here: https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#--virtual-network-requirements.
+
 ### Supported Use Cases
 
-#### Use Case 1: New, Isolated Virtual Network from the enterprise network
+#### Use Case 1: Brand new deployment into single region, Isolated from the enterprise network
+
+
+
+
+
+
+Pros:
+- Relatively easy, fast and still secure deployment
+- All in one deployment
+- Requires public access in controlled way
+- Ideal for projects where environment needs to be deployed quickly and still in secure way
+Cons:
+-	Solution not reachable from inside private enterprise network (reachable only via. Internet through specific IP address)
+-	Accessible only from specified public client IP addresses
+- Not reachable from enterprise network.
+
+
+
+UC1 (New environment in single region fully build)
+
+
+
 
 - Not reachable from enterprise network.
 - Accessible only from specified public IP addresses.
@@ -801,6 +844,10 @@ store (either created or given by cloud team).
 - Identity of the solution administrator or group needs to be provided to access and manage the solution.
 - Easy to provision and manage.
 - When Azure Databricks is enabled, the public IP must be enabled manually.
+- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview
+- https://accounts.azuredatabricks.net/login | https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-account#enable-ip-access-lists
+- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-workspace
+- https://learn.microsoft.com/en-us/azure/databricks/compute/web-terminal |
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
@@ -838,6 +885,14 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   - Delegation, RT, NSG, subnets, VNET with large size, DNS, Peerings, PL DNS
   - ADB UDR?? https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/udr
   - solutionAdministrators are owners for all resources, KV administrator
+
+
+#### Use Case 8: Integration with core enterprise infrastructure
+
+- Integrating with Existing KV, Log, VNET
+- Customer is responsible for creating VNET, ...
+- PV
+
 
 
 ## Data Collection
