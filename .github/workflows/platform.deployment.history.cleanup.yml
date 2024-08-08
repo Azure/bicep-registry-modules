@@ -97,6 +97,7 @@ jobs:
   job_cleanup_managementGroup_deployments:
     runs-on: ubuntu-latest
     name: "Remove Management Group deployments"
+    environment: avm-validation
     needs:
       - job_initialize_pipeline
     if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleManagementGroupScope == 'true' }}
