@@ -151,37 +151,6 @@ function Invoke-ResourceRemoval {
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
 
-            $getRequestInputObject = @{
-                Method = 'GET'
-                Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
-            }
-            # $getReponse = Invoke-AzRestMethod @getRequestInputObject
-
-            # if ($getReponse.StatusCode -eq 404) {
-            #     Write-Verbose ('[?] Resource [{0}] of type [{1}] not found.' -f $resourceName, $Type) -Verbose
-            #     break
-            # }
-
-            # if (($imageTemplate.content | ConvertFrom-Json).properties.lastRunStatus.RunState -eq 'Running') {
-
-            #     # Trigger build cancellation
-            #     $cancelRequestInputObject = @{
-            #         Method = 'POST'
-            #         Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}/cancel?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
-            #     }
-            #     $cancelReponse = Invoke-AzRestMethod @cancelRequestInputObject
-
-            #     # Wait for build to be stopped
-            #     if ($cancelReponse.StatusCode -like '2*') {
-
-            #     } else {
-            #         Write-Warning ('[!] Failed to stop build for Image Template [{0}] Will proceed to trying an remove resource regardless. Response: [{1}]' -f $resourceName, ($cancelReponse | Out-String))
-            #     }
-            # }
-
-
-            # Stop build if still running. Required as a failed build stops the deployment even though the image template's status is remains 'running' for some time longer
-
             # Remove resource
             if ($PSCmdlet.ShouldProcess("Image Template [$resourceName]", 'Remove')) {
 
@@ -200,6 +169,10 @@ function Invoke-ResourceRemoval {
                 $retryLimit = 240
                 $retryInterval = 15
                 do {
+                    $getRequestInputObject = @{
+                        Method = 'GET'
+                        Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
+                    }
                     $getReponse = Invoke-AzRestMethod @getRequestInputObject
 
                     if ($getReponse.StatusCode -eq 400) {
