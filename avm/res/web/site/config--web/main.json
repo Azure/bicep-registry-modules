@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7398783464530025432"
+      "version": "0.29.47.4906",
+      "templateHash": "7195763436259190781"
     },
     "name": "Site Api Management Config",
     "description": "This module deploys a Site Api Management Configuration.",
