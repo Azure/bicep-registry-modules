@@ -380,7 +380,7 @@ function Get-DeploymentTargetResourceList {
     if ($searchRetryCount -gt $searchRetryLimit) {
         $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
 
-        # We don't want to outright throw an exception as we want to remove as many resources as possible before failing the script in the calling functino
+        # We don't want to outright throw an exception as we want to remove as many resources as possible before failing the script in the calling function
         return @{
             resolveError      = ('No deployment for the deployment name(s) [{0}] found' -f ($remainingDeploymentNames -join ', '))
             resourcesToRemove = $resourcesToRemove
