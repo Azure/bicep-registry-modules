@@ -18,11 +18,6 @@ on:
         description: "The number of days to keep deployments with status [failed]" # 'Running' are always excluded
         required: false
         default: "14"
-      customManagementGroupId:
-        type: string
-        description: "The ID of the management group. Defaults to the default AVM group" # 'Running' are always excluded
-        required: false
-        default: ""
   schedule:
     - cron: "0 0 * * *"
 
@@ -121,13 +116,15 @@ jobs:
 
             $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
 
-            $functionInput = @{
-              ManagementGroupId            = [String]::IsNullOrEmpty($mgmtGroupIdInput) ? '${{ secrets.ARM_MGMTGROUP_ID }}' : $mgmtGroupIdInput
-              maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child-nonExistend')) {
+              $functionInput = @{
+                ManagementGroupId            = $mgmtGroupId
+                maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+              }
+
+              Write-Verbose "Invoke task with" -Verbose
+              Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+              Clear-ManagementGroupDeploymentHistory @functionInput
             }
-
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-            Clear-ManagementGroupDeploymentHistory @functionInput
           azPSVersion: "latest"
