@@ -38,6 +38,7 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - ""
+        - "avm/ptn/aca-lza/hosting-environment"
         - "avm/ptn/ai-platform/baseline"
         - "avm/ptn/authorization/policy-assignment"
         - "avm/ptn/authorization/resource-role-assignment"
