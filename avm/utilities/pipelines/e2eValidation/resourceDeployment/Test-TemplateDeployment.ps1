@@ -116,6 +116,12 @@ function Test-TemplateDeployment {
 
         # Additional parameter object provided yes/no
         if ($AdditionalParameters) {
+            # Convert any secure strings to plain text
+            foreach ($name in @($AdditionalParameters.Keys)) {
+                if ($AdditionalParameters[$name] -is [System.Security.SecureString]) {
+                    $AdditionalParameters[$name] = ConvertFrom-SecureString $AdditionalParameters[$name] -AsPlainText
+                }
+            }
             $DeploymentInputs += $AdditionalParameters
         }
 
