@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "7745731490945968065"
+      "templateHash": "18368347705077063517"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule.",
@@ -103,7 +103,7 @@
     },
     "alertDisplayName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The display name of the scheduled query rule."
       }
@@ -281,7 +281,7 @@
         "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
         "criteria": "[parameters('criterias')]",
         "description": "[parameters('alertDescription')]",
-        "displayName": "[if(not(empty(parameters('alertDisplayName'))), parameters('alertDisplayName'), parameters('name'))]",
+        "displayName": "[coalesce(parameters('alertDisplayName'), parameters('name'))]",
         "enabled": "[parameters('enabled')]",
         "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
         "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",

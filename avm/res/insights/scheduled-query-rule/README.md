@@ -586,7 +586,6 @@ The display name of the scheduled query rule.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `autoMitigate`
 
