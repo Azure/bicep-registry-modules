@@ -225,8 +225,8 @@ runs:
           # -----------------------------------
           # $customSecrets = Get-ChildItem env: | Where-Object -Property 'Name' -match "^CUSTOM_.+"
           # Write-Verbose ('Found [{0}] custom secrets.' -f $customSecrets.Count) -Verbose
-          Get-ChildItem env:*
-          $keyVaultName = "${{ vars.KEY_VAULT_NAME }}"
+
+          $keyVaultName = "${{ env.KEY_VAULT_NAME }}"
           $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CUSTOM-.+' }
 
           foreach($customSecret in $customKeyVaultSecrets) {
