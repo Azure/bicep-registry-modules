@@ -99,7 +99,7 @@ function Get-DeploymentOperationAtScope {
     } else {
         $deploymentOperations = ($response.content | ConvertFrom-Json).value.properties
         $deploymentOperationsFiltered = $deploymentOperations | Where-Object { $_.provisioningOperation -in $ProvisioningOperationsToInclude }
-        return $deploymentOperationsFiltered
+        return $deploymentOperationsFiltered ?? $true # Returning true to indicate that the deployment was found, but did not contain any relevant operations
     }
 }
 
