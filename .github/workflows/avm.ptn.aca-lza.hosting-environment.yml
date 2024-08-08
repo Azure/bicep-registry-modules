@@ -1,4 +1,4 @@
-name: "avm.res.web.hosting-environment"
+name: "avm.ptn.aca-lza.hosting-environment"
 
 on:
   workflow_dispatch:
@@ -22,21 +22,23 @@ on:
         type: string
         description: "Default location overwrite (e.g., eastus)"
         required: false
+        default: 'northeurope'
   push:
     branches:
       - main
+      - avm-ptn-acalza-hostingenvironment
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.web.hosting-environment.yml"
-      - "avm/res/web/hosting-environment/**"
+      - ".github/workflows/avm.ptn.aca-lza.hosting-environment.yml"
+      - "avm/ptn/aca-lza/hosting-environment/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/web/hosting-environment"
-  workflowPath: ".github/workflows/avm.res.web.hosting-environment.yml"
+  modulePath: "avm/ptn/aca-lza/hosting-environment"
+  workflowPath: ".github/workflows/avm.ptn.aca-lza.hosting-environment.yml"
 
 concurrency:
   group: ${{ github.workflow }}
