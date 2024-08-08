@@ -10,7 +10,7 @@ This is the orchestration module that is used and called by a consumer of the mo
 targetScope = 'managementGroup'
 
 //Imports
-import * as imports from 'modules/subResourceWrapper.bicep'
+import { roleAssignmentType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -199,7 +199,7 @@ Each object must contain the following `keys`:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
     2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
 ''')
-param roleAssignments imports.roleAssignmentType = []
+param roleAssignments roleAssignmentType = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

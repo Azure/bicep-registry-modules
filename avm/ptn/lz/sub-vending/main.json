@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17533609298288070328"
+      "templateHash": "10857300366772429018"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -190,7 +190,7 @@
         }
       }
     },
-    "_1.roleAssignmentType": {
+    "roleAssignmentType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -229,119 +229,6 @@
       }
     }
   },
-  "functions": [
-    {
-      "namespace": "_1",
-      "members": {
-        "generateCodeExcludeRoles": {
-          "parameters": [
-            {
-              "$ref": "#/definitions/_1.excludeRolesType",
-              "name": "excludeRoles"
-            }
-          ],
-          "output": {
-            "type": "string",
-            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', _1.joinArray(parameters('excludeRoles').ExludededRoles), _1.joinArray(parameters('excludeRoles').ExludededRoles))]"
-          },
-          "metadata": {
-            "description": "Generates the code for the \"Exclude Roles\" condition template.",
-            "__bicep_imported_from!": {
-              "sourceTemplate": "modules/subResourceWrapper.bicep"
-            }
-          }
-        },
-        "generateCodeRolesAndPrincipals": {
-          "parameters": [
-            {
-              "$ref": "#/definitions/_1.constrainRolesAndPrincipalsType",
-              "name": "constrainRolesAndPrincipals"
-            }
-          ],
-          "output": {
-            "type": "string",
-            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{3}}})))', _1.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), _1.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo), _1.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), _1.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo))]"
-          },
-          "metadata": {
-            "description": "Generates the code for the \"Constrain Roles and Principals\" condition template.",
-            "__bicep_imported_from!": {
-              "sourceTemplate": "modules/subResourceWrapper.bicep"
-            }
-          }
-        },
-        "generateCodeRolesAndPrincipalsTypes": {
-          "parameters": [
-            {
-              "$ref": "#/definitions/_1.constrainRolesAndPrincipalTypesType",
-              "name": "constrainRolesAndPrincipalsTypes"
-            }
-          ],
-          "output": {
-            "type": "string",
-            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{3}}})))', _1.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), _1.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign), _1.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), _1.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign))]"
-          },
-          "metadata": {
-            "description": "Generates the code for the \"Constrain Roles and Principal types\" condition template.",
-            "__bicep_imported_from!": {
-              "sourceTemplate": "modules/subResourceWrapper.bicep"
-            }
-          }
-        },
-        "generateCodeRolesType": {
-          "parameters": [
-            {
-              "$ref": "#/definitions/_1.constrainRolesType",
-              "name": "constrainRoles"
-            }
-          ],
-          "output": {
-            "type": "string",
-            "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}})) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}}) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{1}}}))))', _1.joinArray(parameters('constrainRoles').rolesToAssign), _1.joinArray(parameters('constrainRoles').rolesToAssign))]"
-          },
-          "metadata": {
-            "description": "Generates the code for the \"Constrain Roles\" condition template.",
-            "__bicep_imported_from!": {
-              "sourceTemplate": "modules/subResourceWrapper.bicep"
-            }
-          }
-        },
-        "joinArray": {
-          "parameters": [
-            {
-              "type": "array",
-              "name": "roles"
-            }
-          ],
-          "output": {
-            "type": "string",
-            "value": "[replace(join(parameters('roles'), ','), '\"', '')]"
-          },
-          "metadata": {
-            "__bicep_imported_from!": {
-              "sourceTemplate": "modules/subResourceWrapper.bicep"
-            }
-          }
-        },
-        "joinArrayIgnoreCase": {
-          "parameters": [
-            {
-              "type": "array",
-              "name": "principalTypes"
-            }
-          ],
-          "output": {
-            "type": "string",
-            "value": "[format('''{0}''', replace(replace(join(parameters('principalTypes'), ','), '\"', ''''), ',', ''','''))]"
-          },
-          "metadata": {
-            "__bicep_imported_from!": {
-              "sourceTemplate": "modules/subResourceWrapper.bicep"
-            }
-          }
-        }
-      }
-    }
-  ],
   "parameters": {
     "subscriptionAliasEnabled": {
       "type": "bool",
@@ -565,7 +452,7 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/_1.roleAssignmentType",
+      "$ref": "#/definitions/roleAssignmentType",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
