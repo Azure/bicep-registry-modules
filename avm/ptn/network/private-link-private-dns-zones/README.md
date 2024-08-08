@@ -178,7 +178,6 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
-
 ## Parameters
 
 **Optional parameters**
@@ -301,7 +300,6 @@ An array of Virtual Network Resource IDs to link to the Private Link Private DNS
 - Required: No
 - Type: array
 - Default: `[]`
-
 
 ## Outputs
 

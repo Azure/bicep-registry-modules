@@ -8,7 +8,6 @@ This module deploys a Private Link Service.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -163,11 +162,13 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     }
     roleAssignments: [
       {
+        name: 'fec82bb5-8552-4c4b-a3f6-65bdae54d7f4'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -258,11 +259,13 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     "roleAssignments": {
       "value": [
         {
+          "name": "fec82bb5-8552-4c4b-a3f6-65bdae54d7f4",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -431,7 +434,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -584,6 +586,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -634,6 +637,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -666,7 +676,6 @@ Controls the exposure settings for your Private Link service. Service providers 
 - Type: object
 - Default: `{}`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -675,10 +684,6 @@ Controls the exposure settings for your Private Link service. Service providers 
 | `name` | string | The name of the private link service. |
 | `resourceGroupName` | string | The resource group the private link service was deployed into. |
 | `resourceId` | string | The resource ID of the private link service. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

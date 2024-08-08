@@ -8,7 +8,6 @@ This module deploys a Disk Encryption Set. The module will attempt to set permis
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -417,7 +416,6 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -693,7 +691,6 @@ Tags of the disk encryption resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -705,10 +702,6 @@ Tags of the disk encryption resource.
 | `resourceGroupName` | string | The resource group the disk encryption set was deployed into. |
 | `resourceId` | string | The resource ID of the disk encryption set. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

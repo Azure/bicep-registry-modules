@@ -66,11 +66,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: '${namePrefix}${serviceShort}001-pip'
           skuTier: 'Regional'
-          zones: [
-            '1'
-            '2'
-            '3'
-          ]
+          zones: [1, 2, 3]
           diagnosticSettings: [
             {
               name: 'customSetting'

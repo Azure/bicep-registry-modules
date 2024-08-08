@@ -1,5 +1,10 @@
 # Azure Front Doors `[Microsoft.Network/frontDoors]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Front Door.
 
 ## Navigation
@@ -8,7 +13,6 @@ This module deploys an Azure Front Door.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -377,11 +381,13 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -551,11 +557,13 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "b2c1ef5f-3422-4a49-8e55-7789fe980b64",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -851,7 +859,6 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1166,6 +1173,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1216,6 +1224,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1248,7 +1263,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1256,10 +1270,6 @@ Resource tags.
 | `name` | string | The name of the front door. |
 | `resourceGroupName` | string | The resource group the front door was deployed into. |
 | `resourceId` | string | The resource ID of the front door. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

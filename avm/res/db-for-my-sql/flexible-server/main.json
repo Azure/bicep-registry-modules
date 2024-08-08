@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1184108192387381357"
+      "version": "0.28.1.47646",
+      "templateHash": "13929385437976763418"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -1153,6 +1153,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('flexibleServer', '2023-12-30', 'full').location]"
+    },
+    "fqdn": {
+      "type": "string",
+      "metadata": {
+        "description": "The FQDN of the MySQL Flexible server."
+      },
+      "value": "[reference('flexibleServer').fullyQualifiedDomainName]"
     }
   }
 }

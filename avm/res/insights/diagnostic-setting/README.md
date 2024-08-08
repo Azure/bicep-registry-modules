@@ -8,7 +8,6 @@ This module deploys a Subscription wide export of the Activity Log.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -221,7 +220,6 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 </details>
 <p>
 
-
 ## Parameters
 
 **Optional parameters**
@@ -384,7 +382,6 @@ Resource ID of the diagnostic log analytics workspace.
 - Required: No
 - Type: string
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -392,10 +389,6 @@ Resource ID of the diagnostic log analytics workspace.
 | `name` | string | The name of the diagnostic settings. |
 | `resourceId` | string | The resource ID of the diagnostic settings. |
 | `subscriptionName` | string | The name of the subscription to deploy into. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -8,7 +8,6 @@ This module deploys a DBforMySQL Flexible Server.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -629,7 +628,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1385,19 +1383,15 @@ MySQL Server version.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fqdn` | string | The FQDN of the MySQL Flexible server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed MySQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed MySQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed MySQL Flexible server. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

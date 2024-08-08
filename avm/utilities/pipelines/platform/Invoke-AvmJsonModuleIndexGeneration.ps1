@@ -74,7 +74,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $anyErrorsOccurred = $false
     $moduleIndexData = @()
 
-    foreach ($avmModuleRoot in @('avm/res', 'avm/ptn')) {
+    foreach ($avmModuleRoot in @('avm/res', 'avm/ptn', 'avm/utl')) {
         $avmModuleGroups = (Get-ChildItem -Path $avmModuleRoot -Directory).Name
 
         foreach ($moduleGroup in $avmModuleGroups) {

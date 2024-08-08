@@ -1537,7 +1537,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -3352,7 +3351,6 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 

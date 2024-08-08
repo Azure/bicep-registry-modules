@@ -8,7 +8,6 @@ This module deploys a Policy Assignment at a Management Group, Subscription or R
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -847,7 +846,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1044,7 +1042,6 @@ The Resource ID for the user assigned identity to assign to the policy assignmen
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1053,10 +1050,6 @@ The Resource ID for the user assigned identity to assign to the policy assignmen
 | `name` | string | Policy Assignment Name. |
 | `principalId` | string | Policy Assignment principal ID. |
 | `resourceId` | string | Policy Assignment resource ID. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

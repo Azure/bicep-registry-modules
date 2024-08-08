@@ -427,7 +427,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1197,7 +1196,6 @@ The topic names which are associated with the domain.
 
 - Required: No
 - Type: array
-
 
 ## Outputs
 

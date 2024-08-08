@@ -8,7 +8,6 @@ This module deploys a Private Endpoint.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -563,7 +562,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1042,7 +1040,6 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1051,12 +1048,9 @@ Tags to be applied on all resources/resource groups in this deployment.
 | `groupId` | string | The group Id for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
+| `networkInterfaceIds` | array | The IDs of the network interfaces associated with the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
 | `resourceId` | string | The resource ID of the private endpoint. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -8,7 +8,6 @@ This module deploys a Consumption Budget for Subscriptions.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -251,7 +250,6 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -449,7 +447,6 @@ Percent thresholds of budget for when to get a notification. Can be up to 5 thre
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -457,10 +454,6 @@ Percent thresholds of budget for when to get a notification. Can be up to 5 thre
 | `name` | string | The name of the budget. |
 | `resourceId` | string | The resource ID of the budget. |
 | `subscriptionName` | string | The subscription the budget was deployed into. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

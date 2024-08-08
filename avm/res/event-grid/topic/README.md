@@ -531,7 +531,6 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1284,7 +1283,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

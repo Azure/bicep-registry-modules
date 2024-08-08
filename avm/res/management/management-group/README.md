@@ -12,7 +12,6 @@ This module has some known **limitations**:
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -194,7 +193,6 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -251,17 +249,12 @@ The management group parent ID. Defaults to current scope.
 - Type: string
 - Default: `[last(split(managementGroup().id, '/'))]`
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the management group. |
 | `resourceId` | string | The resource ID of the management group. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

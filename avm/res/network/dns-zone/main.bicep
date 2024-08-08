@@ -285,7 +285,7 @@ resource dnsZone_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lo
 
 resource dnsZone_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: roleAssignment.?name ?? guid(dnsZone.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    name: roleAssignment.?name ?? guid(dnsZone.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
       roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
@@ -327,6 +327,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

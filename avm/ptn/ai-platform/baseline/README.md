@@ -331,7 +331,6 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -620,7 +619,6 @@ The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
-
 
 ## Outputs
 

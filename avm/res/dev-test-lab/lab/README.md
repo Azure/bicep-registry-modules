@@ -8,7 +8,6 @@ This module deploys a DevTest Lab.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -707,7 +706,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1156,7 +1154,6 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 - Type: string
 - Default: `[resourceGroup().id]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1167,10 +1164,6 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 | `resourceId` | string | The resource ID of the lab. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `uniqueIdentifier` | string | The unique identifier for the lab. Used to track tags that the lab applies to each resource that it creates. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

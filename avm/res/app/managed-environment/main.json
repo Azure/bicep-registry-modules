@@ -133,6 +133,47 @@
         }
       },
       "nullable": true
+    },
+    "storageType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "accessMode": {
+            "type": "string",
+            "allowedValues": [
+              "ReadOnly",
+              "ReadWrite"
+            ],
+            "metadata": {
+              "description": "Required. Access mode for storage: \"ReadOnly\" or \"ReadWrite\"."
+            }
+          },
+          "kind": {
+            "type": "string",
+            "allowedValues": [
+              "NFS",
+              "SMB"
+            ],
+            "metadata": {
+              "description": "Required. Type of storage: \"SMB\" or \"NFS\"."
+            }
+          },
+          "storageAccountName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Storage account name."
+            }
+          },
+          "shareName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. File share name."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -186,6 +227,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "appInsightsConnectionString": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Application Insights connection string."
       }
     },
     "daprAIConnectionString": {
@@ -271,6 +319,13 @@
         "description": "Optional. The lock settings of the service."
       }
     },
+    "openTelemetryConfiguration": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Open Telemetry configuration."
+      }
+    },
     "workloadProfiles": {
       "type": "array",
       "defaultValue": [],
@@ -283,6 +338,12 @@
       "defaultValue": "[take(format('ME_{0}', parameters('name')), 63)]",
       "metadata": {
         "description": "Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "storages": {
+      "$ref": "#/definitions/storageType",
+      "metadata": {
+        "description": "Optional. The list of storages to mount on the environment."
       }
     }
   },
@@ -305,6 +366,22 @@
     }
   },
   "resources": {
+    "managedEnvironment::storage": {
+      "copy": {
+        "name": "storage",
+        "count": "[length(coalesce(parameters('storages'), createArray()))]"
+      },
+      "type": "Microsoft.App/managedEnvironments/storages",
+      "apiVersion": "2023-11-02-preview",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
+      "properties": {
+        "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', format('{0}.file.{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, environment().suffixes.storage), 'shareName', format('/{0}/{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, coalesce(parameters('storages'), createArray())[copyIndex()].shareName)), null())]",
+        "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'SMB'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName), '2023-01-01').keys[0].value, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), null())]"
+      },
+      "dependsOn": [
+        "managedEnvironment"
+      ]
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -329,7 +406,7 @@
       "condition": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2021-06-01",
+      "apiVersion": "2023-09-01",
       "subscriptionId": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]]",
       "name": "[last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))]"
@@ -342,11 +419,14 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
+        "appInsightsConfiguration": {
+          "connectionString": "[parameters('appInsightsConnectionString')]"
+        },
         "appLogsConfiguration": {
           "destination": "[parameters('logsDestination')]",
           "logAnalyticsConfiguration": {
             "customerId": "[reference('logAnalyticsWorkspace').customerId]",
-            "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2021-06-01').primarySharedKey]"
+            "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey]"
           }
         },
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
@@ -356,6 +436,7 @@
           "certificateValue": "[if(not(empty(parameters('certificateValue'))), parameters('certificateValue'), null())]",
           "dnsSuffix": "[parameters('dnsSuffix')]"
         },
+        "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
           "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
