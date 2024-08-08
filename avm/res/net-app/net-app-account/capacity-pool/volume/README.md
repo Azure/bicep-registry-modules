@@ -15,7 +15,10 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-11-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -38,12 +41,34 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`backupEnabled`](#parameter-backupenabled) | bool | Indicates whether the backup policy is enabled. |
+| [`backupLabel`](#parameter-backuplabel) | string | The label of the backup. |
+| [`backupName`](#parameter-backupname) | string | The name of the backup. |
+| [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The location of the backup policy. |
+| [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
+| [`backupVaultLocation`](#parameter-backupvaultlocation) | string | The location of the backup vault. |
+| [`backupVaultName`](#parameter-backupvaultname) | string | The name of the backup vault. |
+| [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
+| [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
+| [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
+| [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
+| [`endpointType`](#parameter-endpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
+| [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
+| [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
+| [`remoteVolumeRegion`](#parameter-remotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
+| [`remoteVolumeResourceId`](#parameter-remotevolumeresourceid) | string | The resource ID of the remote volume. |
+| [`replicationSchedule`](#parameter-replicationschedule) | string | The replication schedule for the volume. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`snapshotName`](#parameter-snapshotname) | string | The name of the snapshot. |
+| [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Indicates whether to use an existing snapshot. |
+| [`volumeResourceId`](#parameter-volumeresourceid) | string | The resource ID of the volume. |
+| [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
+| [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `name`
 
@@ -80,6 +105,82 @@ The name of the parent NetApp account. Required if the template is used in a sta
 - Required: Yes
 - Type: string
 
+### Parameter: `backupEnabled`
+
+Indicates whether the backup policy is enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `backupLabel`
+
+The label of the backup.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupName`
+
+The name of the backup.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupPolicyLocation`
+
+The location of the backup policy.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
+### Parameter: `backupPolicyName`
+
+The name of the backup policy.
+
+- Required: No
+- Type: string
+- Default: `'backupPolicy'`
+
+### Parameter: `backupVaultLocation`
+
+The location of the backup vault.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
+### Parameter: `backupVaultName`
+
+The name of the backup vault.
+
+- Required: No
+- Type: string
+- Default: `'vault'`
+
+### Parameter: `coolAccess`
+
+If enabled (true) the pool can contain cool Access enabled volumes.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `coolAccessRetrievalPolicy`
+
+determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+
+### Parameter: `coolnessPeriod`
+
+Specifies the number of days after which data that is not accessed by clients will be tiered.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `creationToken`
 
 A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription.
@@ -87,6 +188,20 @@ A unique file path for the volume. This is the name of the volume export. A volu
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
+
+### Parameter: `dailyBackupsToKeep`
+
+The daily backups to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `endpointType`
+
+Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `exportPolicyRules`
 
@@ -104,6 +219,30 @@ Location of the pool volume.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `monthlyBackupsToKeep`
+
+The monthly backups to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `networkFeatures`
+
+Network feature for the volume.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Basic_Standard'
+    'Standard'
+    'Standard_Basic'
+  ]
+  ```
+
 ### Parameter: `protocolTypes`
 
 Set of protocol types.
@@ -111,6 +250,27 @@ Set of protocol types.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `remoteVolumeResourceId`
+
+The resource ID of the remote volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replicationSchedule`
+
+The replication schedule for the volume.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -134,6 +294,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -184,6 +345,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -215,6 +383,47 @@ The pool service level. Must match the one of the parent capacity pool.
     'Standard'
     'StandardZRS'
     'Ultra'
+  ]
+  ```
+
+### Parameter: `snapshotName`
+
+The name of the snapshot.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `useExistingSnapshot`
+
+Indicates whether to use an existing snapshot.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `volumeResourceId`
+
+The resource ID of the volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `weeklyBackupsToKeep`
+
+The weekly backups to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `zones`
+
+Zone where the volume will be placed.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    '1'
   ]
   ```
 

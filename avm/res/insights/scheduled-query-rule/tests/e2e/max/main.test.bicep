@@ -86,11 +86,13 @@ module testDeployment '../../../main.bicep' = [
       queryTimeRange: 'PT5M'
       roleAssignments: [
         {
+          name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
