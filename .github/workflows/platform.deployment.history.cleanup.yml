@@ -48,7 +48,7 @@ jobs:
   #   Removal   #
   ###############
   job_cleanup_subscription_deployments:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: "Remove Subscription deployments"
     needs:
       - job_initialize_pipeline
@@ -87,7 +87,7 @@ jobs:
           azPSVersion: "latest"
 
   job_cleanup_managementGroup_deployments:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: "Remove Management Group deployments"
     needs:
       - job_initialize_pipeline
