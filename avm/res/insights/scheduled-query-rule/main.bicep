@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 param alertDescription string = ''
 
 @description('Optional. The display name of the scheduled query rule.')
-param alertDisplayName string = ''
+param alertDisplayName string?
 
 @description('Optional. The flag which indicates whether this scheduled query rule is enabled.')
 param enabled bool = true
