@@ -36,7 +36,7 @@ function Remove-ResourceListInner {
 
         foreach ($resource in $resourcesToRemove) {
             $resourceName = Split-Path $resource.resourceId -Leaf
-            $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}*' -f $_) }).Count -gt 0) : $false
+            $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}/*' -f $_) }).Count -gt 0) : $false
 
             if ($alreadyProcessed) {
                 # Skipping
