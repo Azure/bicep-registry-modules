@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "1527748615955553712"
+      "version": "0.29.47.4906",
+      "templateHash": "5589296472144391886"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -108,8 +108,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "6235322895830297683"
+              "version": "0.29.47.4906",
+              "templateHash": "2005645426653376123"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
             "description": "This module deploys a MongoDB Database Collection.",

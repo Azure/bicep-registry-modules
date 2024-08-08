@@ -132,9 +132,6 @@ param cloningInfo object?
 @description('Optional. Size of the function container.')
 param containerSize int?
 
-@description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
-param customDomainVerificationId string?
-
 @description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
 param dailyMemoryTimeQuota int?
 
@@ -211,6 +208,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -254,7 +262,6 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     clientCertMode: clientCertMode
     cloningInfo: cloningInfo
     containerSize: containerSize
-    customDomainVerificationId: customDomainVerificationId
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
     hostNameSslStates: hostNameSslStates
@@ -270,7 +277,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
   params: {
     appName: app.name
@@ -333,7 +340,7 @@ module app_slots 'slot/main.bicep' = [
       appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
       authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
       diagnosticSettings: slot.?diagnosticSettings
-      roleAssignments: slot.?roleAssignments ?? roleAssignments
+      roleAssignments: slot.?roleAssignments
       appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
       lock: slot.?lock ?? lock
@@ -426,14 +433,10 @@ resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
 ]
 
 resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(app.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(app.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -445,7 +448,7 @@ resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
   }
 ]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -527,6 +530,9 @@ output location string = app.location
 @description('Default hostname of the app.')
 output defaultHostname string = app.properties.defaultHostName
 
+@description('Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
+output customDomainVerificationId string = app.properties.customDomainVerificationId
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -548,6 +554,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

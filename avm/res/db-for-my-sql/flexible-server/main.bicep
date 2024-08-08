@@ -44,6 +44,9 @@ param tier string
 @description('Optional. Availability zone information of the server. Default will have no preference set.')
 param availabilityZone string = ''
 
+@description('Optional. Standby availability zone information of the server. Default will have no preference set.')
+param highAvailabilityZone string = ''
+
 @minValue(1)
 @maxValue(35)
 @description('Optional. Backup retention days for the server.')
@@ -80,7 +83,7 @@ param customerManagedKeyGeo customerManagedKeyType
   'ZoneRedundant'
 ])
 @description('Optional. The mode for High Availability (HA). It is not supported for the Burstable pricing tier and Zone redundant HA can only be set during server provisioning.')
-param highAvailability string = 'Disabled'
+param highAvailability string = 'ZoneRedundant'
 
 @description('Optional. Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".')
 param maintenanceWindow object = {}
@@ -145,7 +148,7 @@ param storageSizeGB int = 64
   '8.0.21'
 ])
 @description('Optional. MySQL Server version.')
-param version string = '5.7'
+param version string = '8.0.21'
 
 @description('Optional. The databases to create in the server.')
 param databases array = []
@@ -161,6 +164,14 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+var standByAvailabilityZoneTable = {
+  Disabled: null
+  SameZone: availabilityZone
+  ZoneRedundant: highAvailabilityZone
+}
+
+var standByAvailabilityZone = standByAvailabilityZoneTable[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -192,6 +203,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -252,7 +274,7 @@ resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdent
   )
 }
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview' = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
   name: name
   location: location
   tags: tags
@@ -287,7 +309,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2022-09-30-preview
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: highAvailability == 'SameZone' ? availabilityZone : null
+      standbyAvailabilityZone: standByAvailabilityZone
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
@@ -328,14 +350,10 @@ resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
 }
 
 resource flexibleServer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -425,6 +443,9 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = flexibleServer.location
 
+@description('The FQDN of the MySQL Flexible server.')
+output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -443,6 +464,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
