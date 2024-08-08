@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1915887869991537739"
+      "templateHash": "12389184335821053349"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -160,7 +160,7 @@
       "type": "string",
       "defaultValue": "ds-triggerUpload-storage",
       "metadata": {
-        "description": "Optional. The name of the Deployment Script to trigger the Image Template baking."
+        "description": "Optional. The name of the Deployment Script to upload files to the assets storage account."
       }
     },
     "storageAccountFilesToUpload": {
@@ -184,7 +184,7 @@
       "type": "string",
       "defaultValue": "ds-wait-imageTemplate-build",
       "metadata": {
-        "description": "Optional. The name of the Deployment Script to wait for the the image template baking."
+        "description": "Optional. The name of the Deployment Script to wait for for the image baking to conclude."
       }
     },
     "imageTemplateName": {

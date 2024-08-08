@@ -764,12 +764,12 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 | [`location`](#parameter-location) | string | The location to deploy into. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The name of the Resource Group. |
 | [`storageAccountFilesToUpload`](#parameter-storageaccountfilestoupload) | array | The files to upload to the Assets Storage Account. |
-| [`storageDeploymentScriptName`](#parameter-storagedeploymentscriptname) | string | The name of the Deployment Script to trigger the Image Template baking. |
+| [`storageDeploymentScriptName`](#parameter-storagedeploymentscriptname) | string | The name of the Deployment Script to upload files to the assets storage account. |
 | [`virtualNetworkAddressPrefix`](#parameter-virtualnetworkaddressprefix) | string | The address space of the Virtual Network. |
 | [`virtualNetworkDeploymentScriptSubnetAddressPrefix`](#parameter-virtualnetworkdeploymentscriptsubnetaddressprefix) | string | The address space of the Virtual Network Subnet used by the deployment script. |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the Virtual Network. |
 | [`virtualNetworkSubnetAddressPrefix`](#parameter-virtualnetworksubnetaddressprefix) | string | The address space of the Virtual Network Subnet. |
-| [`waitDeploymentScriptName`](#parameter-waitdeploymentscriptname) | string | The name of the Deployment Script to wait for the the image template baking. |
+| [`waitDeploymentScriptName`](#parameter-waitdeploymentscriptname) | string | The name of the Deployment Script to wait for for the image baking to conclude. |
 | [`waitForImageBuild`](#parameter-waitforimagebuild) | bool | A parameter to control if the deployment should wait for the image build to complete. |
 | [`waitForImageBuildTimeout`](#parameter-waitforimagebuildtimeout) | string | A parameter to control the timeout of the deployment script waiting for the image build. |
 
@@ -972,7 +972,7 @@ The value of the environment variable.
 
 ### Parameter: `storageDeploymentScriptName`
 
-The name of the Deployment Script to trigger the Image Template baking.
+The name of the Deployment Script to upload files to the assets storage account.
 
 - Required: No
 - Type: string
@@ -1012,7 +1012,7 @@ The address space of the Virtual Network Subnet.
 
 ### Parameter: `waitDeploymentScriptName`
 
-The name of the Deployment Script to wait for the the image template baking.
+The name of the Deployment Script to wait for for the image baking to conclude.
 
 - Required: No
 - Type: string

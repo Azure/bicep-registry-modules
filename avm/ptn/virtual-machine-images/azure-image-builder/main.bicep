@@ -68,7 +68,7 @@ param deploymentScriptSubnetName string = 'subnet-ds'
 param virtualNetworkDeploymentScriptSubnetAddressPrefix string = cidrSubnet(virtualNetworkAddressPrefix, 24, 1)
 
 // Deployment Script Parameters
-@description('Optional. The name of the Deployment Script to trigger the Image Template baking.')
+@description('Optional. The name of the Deployment Script to upload files to the assets storage account.')
 param storageDeploymentScriptName string = 'ds-triggerUpload-storage'
 
 @description('Optional. The files to upload to the Assets Storage Account.')
@@ -77,7 +77,7 @@ param storageAccountFilesToUpload storageAccountFilesToUploadType[]?
 @description('Optional. The name of the Deployment Script to trigger the image template baking.')
 param imageTemplateDeploymentScriptName string = 'ds-triggerBuild-imageTemplate'
 
-@description('Optional. The name of the Deployment Script to wait for the the image template baking.')
+@description('Optional. The name of the Deployment Script to wait for for the image baking to conclude.')
 param waitDeploymentScriptName string = 'ds-wait-imageTemplate-build'
 
 // Image Template Parameters

@@ -24,7 +24,7 @@ param assetsStorageAccountName string
 @description('Required. The name of the storage account.')
 param deploymentScriptStorageAccountName string
 
-@description('Required. The name of the Deployment Script to trigger the Image Template baking.')
+@description('Required. The name of the Deployment Script to the Storage Upload.')
 param storageDeploymentScriptName string
 
 // Virtual Network Parameters
@@ -247,7 +247,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.3.
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
     environmentVariables: [
       {
-        name: exampleScriptName
+        name: '__SCRIPT__${replace(replace(exampleScriptName, '-', '__'), '.', '_') }' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
         value: loadTextContent('scripts/${exampleScriptName}')
       }
     ]
