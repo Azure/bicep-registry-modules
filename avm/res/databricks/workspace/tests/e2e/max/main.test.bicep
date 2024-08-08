@@ -23,6 +23,10 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and its value must be configured in the CI secrets as \'CUSTOM_AZUREDATABRICKS_ENTERPRISEAPPLICATION_OBJECTID\'')
+@secure()
+param azureDatabricksEnterpriseApplicationObjectId string
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -47,7 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
-    databricksApplicationObjectId: '711330f9-cfad-4b10-a462-d82faa92027d' // Tenant-specific 'AzureDatabricks' Enterprise Application Object Id
+    databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
     keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
