@@ -147,58 +147,6 @@ function Invoke-ResourceRemoval {
             }
             break
         }
-        'Microsoft.VirtualMachineImages/imageTemplates' {
-            $resourceGroupName = $ResourceId.Split('/')[4]
-            $resourceName = Split-Path $ResourceId -Leaf
-
-            # Remove resource
-            if ($PSCmdlet.ShouldProcess("Image Template [$resourceName]", 'Remove')) {
-
-                $removeRequestInputObject = @{
-                    Method = 'DELETE'
-                    Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
-                }
-                $removalResponse = Invoke-AzRestMethod @removeRequestInputObject
-                if ($removalResponse.StatusCode -notlike '2*') {
-                    $responseContent = $removalResponse.Content | ConvertFrom-Json
-                    throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
-                }
-
-                # Wait for template to be removed. If we don't wait, it can happen that its MSI is removed too soon, locking the resource from deletion
-                $retryCount = 1
-                $retryLimit = 240
-                $retryInterval = 15
-                do {
-                    $getRequestInputObject = @{
-                        Method = 'GET'
-                        Path   = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.VirtualMachineImages/imageTemplates/{2}?api-version=2022-07-01' -f $subscriptionId, $resourceGroupName, $resourceName
-                    }
-                    $getReponse = Invoke-AzRestMethod @getRequestInputObject
-
-                    if ($getReponse.StatusCode -eq 400) {
-                        # Invalid request
-                        throw ($imageTgetReponseemplate.Content | ConvertFrom-Json).error.message
-                    } elseif ($getReponse.StatusCode -eq 404) {
-                        # Resource not found, removal was successful
-                        $templateExists = $false
-                    } elseif ($getReponse.StatusCode -eq '200') {
-                        # Resource still around - try again
-                        $templateExists = $true
-                        Write-Verbose ('    [⏱️] Waiting {0} seconds for Image Template to be removed. [{1}/{2}]' -f $retryInterval, $retryCount, $retryLimit) -Verbose
-                        Start-Sleep -Seconds $retryInterval
-                        $retryCount++
-                    } else {
-                        throw ('Failed request. Response: [{0}]' -f ($getReponse | Out-String))
-                    }
-                } while ($templateExists -and $retryCount -lt $retryLimit)
-
-                if ($retryCount -ge $retryLimit) {
-                    Write-Warning ('    [!] Image Template [{0}] was not removed after {1} seconds. Continuing with resource removal.' -f $resourceName, ($retryCount * $retryInterval))
-                    break
-                }
-            }
-            break
-        }
         'Microsoft.MachineLearningServices/workspaces' {
             $subscriptionId = $ResourceId.Split('/')[2]
             $resourceGroupName = $ResourceId.Split('/')[4]
