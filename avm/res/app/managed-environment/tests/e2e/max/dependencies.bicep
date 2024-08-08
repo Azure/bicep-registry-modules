@@ -4,6 +4,9 @@ param location string = resourceGroup().location
 @description('Required. The name of the Log Analytics Workspace to create.')
 param logAnalyticsWorkspaceName string
 
+@description('Required. The name of the Application Insights Component to create.')
+param appInsightsComponentName string
+
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
@@ -27,6 +30,16 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
       name: 'PerGB2018'
     }
   })
+}
+
+resource appInsightsComponent 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsightsComponentName
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+  }
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -120,6 +133,9 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The Connection String of the created Application Insights Component.')
+output appInsightsConnectionString string = appInsightsComponent.properties.ConnectionString
 
 @description('The name of the created Storage Account.')
 output storageAccountName string = storageAccount.name

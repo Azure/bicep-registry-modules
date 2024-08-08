@@ -31,15 +31,127 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Using `deployments` in parameter set](#example-1-using-deployments-in-parameter-set)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [As Speech Service](#example-4-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-1-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
+- [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-5-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-6-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-7-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-8-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-9-waf-aligned)
 
-### Example 1: _Using `deployments` in parameter set_
+### Example 1: _Using `AIServices` with `deployments` in parameter set and private endpoints_
+
+This instance deploys the module with the AI model deployment feature and private endpoint.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csadp003'
+    // Non-required parameters
+    customSubDomainName: 'xcsadpai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-35-turbo'
+          version: '0301'
+        }
+        name: 'gpt-35-turbo'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneOpenAIResourceId>'
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csadp003"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadpai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-35-turbo",
+            "version": "0301"
+          },
+          "name": "gpt-35-turbo",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneOpenAIResourceId>",
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using `AIServices` with `deployments` in parameter set_
 
 This instance deploys the module with the AI model deployment feature.'
 
@@ -131,7 +243,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -183,7 +295,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -475,7 +587,115 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 4: _As Speech Service_
+### Example 5: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+
+This instance deploys the module with the AI model deployment feature and private endpoint.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'OpenAI'
+    name: 'csoai002'
+    // Non-required parameters
+    customSubDomainName: 'xcsoaiai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-35-turbo'
+          version: '0301'
+        }
+        name: 'gpt-35-turbo'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "OpenAI"
+    },
+    "name": {
+      "value": "csoai002"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsoaiai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-35-turbo",
+            "version": "0301"
+          },
+          "name": "gpt-35-turbo",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -589,7 +809,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 7: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -671,7 +891,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 8: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -759,7 +979,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
