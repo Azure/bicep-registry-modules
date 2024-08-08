@@ -50,6 +50,7 @@ jobs:
   job_cleanup_subscription_deployments:
     runs-on: ubuntu-latest
     name: "Remove Subscription deployments"
+    environment: avm-validation
     needs:
       - job_initialize_pipeline
     if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleSubscriptionScope == 'true' }}
