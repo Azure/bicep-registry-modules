@@ -116,7 +116,7 @@ jobs:
 
             $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
 
-            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child-nonExistend')) {
+            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
               Write-Verbose "Processing mgmtGroupId [$mgmtGroupId]" -Verbose
               $functionInput = @{
                 ManagementGroupId            = $mgmtGroupId
