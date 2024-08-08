@@ -19,7 +19,7 @@ param serviceShort string = 'dfpsfsmin'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
-param administratorLoginPassword string = newGuid()
+param administratorLoginPass string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       administratorLogin: 'adminUserName'
-      administratorLoginPassword: administratorLoginPassword
+      administratorLoginPassword: administratorLoginPass
       skuName: 'Standard_B2s'
       tier: 'Burstable'
       geoRedundantBackup: 'Enabled'
