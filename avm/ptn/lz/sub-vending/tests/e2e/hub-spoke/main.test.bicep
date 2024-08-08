@@ -17,7 +17,7 @@ param namePrefix string = '#_namePrefix_#'
 param serviceShort string = 'ssahs'
 
 @description('Optional. A short guid for the subscription name.')
-param subscriptionGuid string = toLower(substring(newGuid(), 0, 3))
+param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 
 @description('Optional. The subscription id of the existing hub virtual network.')
 param vnetHubSubId string = '9948cae8-8c7c-4f5f-81c1-c53317cab23d'
