@@ -70,10 +70,10 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ env.AZURE_CREDENTIALS }}
-          client-id: ${{ env.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ env.VALIDATE_TENANT_ID }}
-          subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
       - name: Remove deployments
@@ -116,10 +116,10 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ env.AZURE_CREDENTIALS }}
-          client-id: ${{ env.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ env.VALIDATE_TENANT_ID }}
-          subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
       - name: Remove deployments
