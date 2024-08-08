@@ -53,7 +53,8 @@ function Get-DeploymentOperationAtScope {
         [Parameter(Mandatory = $false)]
         [ValidateSet(
             'Create', # any resource creation
-            'Read' # E.g., 'existing' resources
+            'Read', # E.g., 'existing' resources
+            'EvaluateDeploymentOutput' # Nobody knows
         )]
         [string[]] $ProvisioningOperationsToInclude = @('Create'),
 
