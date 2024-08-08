@@ -130,6 +130,6 @@ function Remove-ResourceList {
     if ($resourcesToRetry.Count -gt 0) {
         throw ('The removal failed for resources [{0}]' -f ((Split-Path $resourcesToRetry.resourceId -Leaf) -join ', '))
     } else {
-        Write-Verbose 'The removal completed successfully'
+        Write-Verbose ('The removal of the [{0}] completed successfully' -f $ResourcesToRemove.Count)
     }
 }
