@@ -814,40 +814,17 @@ For example, refer to the documentation here: https://learn.microsoft.com/en-us/
 
 ### Supported Use Cases
 
-#### Use Case 1: Brand new deployment into single region, Isolated from the enterprise network
+#### Use Case 1: Greenfield, isolated deployment from the enterprise network
 
+This solution is fairly simple to provision while ensuring security.
+Ideal for rapid problem-solving that requires an analytical workspace for swift development.
+The solution will create all the required components such as VNET, Monitoring, Key Vault, permissions, and analytical services.
+All utilizing recommended practices.
 
-
-
-
-
-Pros:
-- Relatively easy, fast and still secure deployment
-- All in one deployment
-- Requires public access in controlled way
-- Ideal for projects where environment needs to be deployed quickly and still in secure way
-Cons:
--	Solution not reachable from inside private enterprise network (reachable only via. Internet through specific IP address)
--	Accessible only from specified public client IP addresses
-- Not reachable from enterprise network.
-
-
-
-UC1 (New environment in single region fully build)
-
-
-
-
-- Not reachable from enterprise network.
-- Accessible only from specified public IP addresses.
-- Public IP addresses or ranges needs to be provided to allow network access to the solution.
-- Identity of the solution administrator or group needs to be provided to access and manage the solution.
-- Easy to provision and manage.
-- When Azure Databricks is enabled, the public IP must be enabled manually.
-- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview
-- https://accounts.azuredatabricks.net/login | https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-account#enable-ip-access-lists
-- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-workspace
-- https://learn.microsoft.com/en-us/azure/databricks/compute/web-terminal |
+Because of the isolated network configuration, public IP addresses of customers must be designated as authorized to access the environment through secure public endpoints.
+The solution will only be accessible from predetermined public IP addresses.
+The identity of the solution administrator or the managing group must be submitted to gain access and control over the solution.
+There is no requirement to pre-establish a virtual network or any additional components.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
@@ -869,9 +846,21 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     advancedOptions: {
       networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution
     }
+    tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
   }
 }
 ```
+
+
+
+
+
+- When Azure Databricks is enabled, the public IP must be enabled manually.
+- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview
+- https://accounts.azuredatabricks.net/login | https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-account#enable-ip-access-lists
+- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-workspace
+- https://learn.microsoft.com/en-us/azure/databricks/compute/web-terminal |
+
 
 #### Use Case 3: Provided Virtual Network
 
