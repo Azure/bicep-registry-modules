@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "901557491249861564"
+      "templateHash": "890546444303772798"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -688,6 +688,13 @@
         "description": "The custom DNS configurations of the private endpoint."
       },
       "value": "[reference('privateEndpoint').customDnsConfigs]"
+    },
+    "networkInterfaceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The IDs of the network interfaces associated with the private endpoint."
+      },
+      "value": "[reference('privateEndpoint').networkInterfaces]"
     },
     "groupId": {
       "type": "string",
