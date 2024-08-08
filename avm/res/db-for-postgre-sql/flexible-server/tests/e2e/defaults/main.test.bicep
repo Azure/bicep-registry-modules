@@ -19,7 +19,7 @@ param serviceShort string = 'dfpsfsmin'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
-param password string = newGuid()
+param administratorLoginPassword string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -40,16 +40,18 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    skuName: 'Standard_B2s'
-    tier: 'Burstable'
-    geoRedundantBackup: 'Enabled'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: administratorLoginPassword
+      skuName: 'Standard_B2s'
+      tier: 'Burstable'
+      geoRedundantBackup: 'Enabled'
+    }
   }
-}]
+]

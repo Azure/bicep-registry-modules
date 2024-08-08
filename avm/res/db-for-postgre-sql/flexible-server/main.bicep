@@ -317,8 +317,8 @@ module flexibleServer_databases 'database/main.bicep' = [
     params: {
       name: database.name
       flexibleServerName: flexibleServer.name
-      collation: contains(database, 'collation') ? database.collation : ''
-      charset: contains(database, 'charset') ? database.charset : ''
+      collation: database.?collation ?? ''
+      charset: database.?charset ?? ''
     }
   }
 ]
@@ -345,8 +345,8 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
     params: {
       name: configuration.name
       flexibleServerName: flexibleServer.name
-      source: contains(configuration, 'source') ? configuration.source : ''
-      value: contains(configuration, 'value') ? configuration.value : ''
+      source: configuration.?source ?? ''
+      value: configuration.?value ?? ''
     }
     dependsOn: [
       flexibleServer_firewallRules
@@ -362,7 +362,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       objectId: administrator.objectId
       principalName: administrator.principalName
       principalType: administrator.principalType
-      tenantId: contains(administrator, 'tenantId') ? administrator.tenantId : tenant().tenantId
+      tenantId: administrator.?tenantId ?? tenant().tenantId
     }
   }
 ]
