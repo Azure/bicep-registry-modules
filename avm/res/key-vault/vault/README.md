@@ -1067,7 +1067,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2587,7 +2586,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

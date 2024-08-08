@@ -8,7 +8,6 @@ This module deploys an Azure Virtual Desktop Scaling Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -546,7 +545,6 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -911,7 +909,6 @@ Time zone of the Scaling Plan. Defaults to UTC.
 - Type: string
 - Default: `'UTC'`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -920,10 +917,6 @@ Time zone of the Scaling Plan. Defaults to UTC.
 | `name` | string | The name of the Scaling Plan. |
 | `resourceGroupName` | string | The name of the resource group the Scaling Plan was created in. |
 | `resourceId` | string | The resource ID of the Scaling Plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -472,7 +472,6 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1202,7 +1201,6 @@ Upstream templates to enable. For more information, see https://learn.microsoft.
 
 - Required: No
 - Type: array
-
 
 ## Outputs
 

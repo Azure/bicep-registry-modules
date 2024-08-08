@@ -8,7 +8,6 @@ This module deploys a Web Test.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -331,7 +330,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -653,7 +651,6 @@ The collection of validation rule properties.
 - Type: object
 - Default: `{}`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -662,10 +659,6 @@ The collection of validation rule properties.
 | `name` | string | The name of the webtest. |
 | `resourceGroupName` | string | The resource group the resource was deployed into. |
 | `resourceId` | string | The resource ID of the webtest. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

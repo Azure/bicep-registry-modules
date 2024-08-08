@@ -66,7 +66,11 @@ function Get-DeploymentTargetResourceListInner {
     switch ($Scope) {
         'resourcegroup' {
             if (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue') {
-                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+                if ($op = Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName) {
+                    [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+                } else {
+                    throw 'NoDeploymentFound'
+                }
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
@@ -75,15 +79,25 @@ function Get-DeploymentTargetResourceListInner {
             break
         }
         'subscription' {
-            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            if ($op = Get-AzDeploymentOperation -DeploymentName $name) {
+                [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            } else {
+                throw 'NoDeploymentFound'
+            }
             break
         }
         'managementgroup' {
-            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
-            break
+            if ($op = Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId) {
+                [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            }
+            throw 'NoDeploymentFound'
         }
         'tenant' {
-            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            if ($op = Get-AzTenantDeploymentOperation -DeploymentName $name) {
+                [array]$deploymentTargets = $op.TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
+            } else {
+                throw 'NoDeploymentFound'
+            }
             break
         }
     }
@@ -235,12 +249,16 @@ function Get-DeploymentTargetResourceList {
             if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
                 $innerInputObject['ManagementGroupId'] = $ManagementGroupId
             }
-
-            [array]$targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
-            if ($targetResources.Count -gt 0) {
-                Write-Verbose ('Found & resolved deployment [{0}]' -f $deploymentNameObject.Name) -Verbose
+            try {
+                $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
+                Write-Verbose ('Found & resolved deployment [{0}]. [{1}] resources found to remove.' -f $deploymentNameObject.Name, $targetResources.Count) -Verbose
                 $deploymentNameObject.Resolved = $true
                 $resourcesToRemove += $targetResources
+            } catch {
+                $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
+                Write-Verbose ('No deployment found by name(s) [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f ($remainingDeploymentNames -join ', '), $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
+                Start-Sleep $searchRetryInterval
+                $searchRetryCount++
             }
         }
 
@@ -248,17 +266,18 @@ function Get-DeploymentTargetResourceList {
         if ($deploymentNameObjects.Resolved -notcontains $false) {
             break
         }
-
-        $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
-        Write-Verbose ('No deployment found by name(s) [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f ($remainingDeploymentNames -join ', '), $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
-        Start-Sleep $searchRetryInterval
-        $searchRetryCount++
     } while ($searchRetryCount -le $searchRetryLimit)
 
-    if (-not $resourcesToRemove) {
-        Write-Warning ('No deployment target resources found for [{0}]' -f ($DeploymentNames -join ', '))
-        return @()
-    }
+    if ($searchRetryCount -gt $searchRetryLimit) {
+        $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
 
-    return $resourcesToRemove
+        # We don't want to outright throw an exception as we want to remove as many resources as possible before failing the script in the calling functino
+        return @{
+            resolveError      = ('No deployment for the deployment name(s) [{0}] found' -f ($remainingDeploymentNames -join ', '))
+            resourcesToRemove = $resourcesToRemove
+        }
+    }
+    return @{
+        resourcesToRemove = $resourcesToRemove
+    }
 }

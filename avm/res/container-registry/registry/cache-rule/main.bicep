@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string
 
-@description('Optional. The name of the cache rule. Will be dereived from the source repository name if not defined.')
+@description('Optional. The name of the cache rule. Will be derived from the source repository name if not defined.')
 param name string = replace(replace(sourceRepository, '/', '-'), '.', '-')
 
 @description('Required. Source repository pulled from upstream.')

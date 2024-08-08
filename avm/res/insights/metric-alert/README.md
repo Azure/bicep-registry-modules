@@ -8,7 +8,6 @@ This module deploys a Metric Alert.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -366,7 +365,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -650,7 +648,6 @@ the period of time (in ISO 8601 duration format) that is used to monitor alert a
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -659,10 +656,6 @@ the period of time (in ISO 8601 duration format) that is used to monitor alert a
 | `name` | string | The name of the metric alert. |
 | `resourceGroupName` | string | The resource group the metric alert was deployed into. |
 | `resourceId` | string | The resource ID of the metric alert. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

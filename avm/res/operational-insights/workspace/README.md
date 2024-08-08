@@ -1685,7 +1685,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2227,7 +2226,6 @@ Set to 'true' to use resource or workspace permissions and 'false' (or leave emp
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 

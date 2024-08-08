@@ -8,7 +8,6 @@ This module deploys a Network Interface.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -403,7 +402,6 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -822,7 +820,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -831,10 +828,6 @@ Resource tags.
 | `name` | string | The name of the deployed resource. |
 | `resourceGroupName` | string | The resource group of the deployed resource. |
 | `resourceId` | string | The resource ID of the deployed resource. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

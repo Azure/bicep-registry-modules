@@ -8,7 +8,6 @@ This module deploys an Application Gateway Web Application Firewall (WAF) Policy
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -297,7 +296,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -368,7 +366,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -377,10 +374,6 @@ Resource tags.
 | `name` | string | The name of the application gateway WAF policy. |
 | `resourceGroupName` | string | The resource group the application gateway WAF policy was deployed into. |
 | `resourceId` | string | The resource ID of the application gateway WAF policy. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -100,7 +100,7 @@ function Set-PesterGitHubOutput {
     Write-Verbose ('Formatting [{0}] skipped tests' -f $skippedTests.Count)
     Write-Verbose ('Formatting [{0}] tests with explicit warnings' -f $warnings.Count)
 
-    $moduleSplitRegex = '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+    $moduleSplitRegex = '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
 
     ######################
     # Set output content #

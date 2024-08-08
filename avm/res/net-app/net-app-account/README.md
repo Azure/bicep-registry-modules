@@ -8,7 +8,6 @@ This module deploys an Azure NetApp File.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -679,7 +678,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1058,7 +1056,6 @@ Tags for all resources.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1068,10 +1065,6 @@ Tags for all resources.
 | `resourceGroupName` | string | The name of the Resource Group the NetApp account was created in. |
 | `resourceId` | string | The Resource ID of the NetApp account. |
 | `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
