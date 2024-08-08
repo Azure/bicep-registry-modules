@@ -114,13 +114,18 @@ jobs:
             # Load used functions
             . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-ManagementGroupDeploymentHistory.ps1')
 
-            $functionInput = @{
-              ManagementGroupId            = '${{ secrets.ARM_MGMTGROUP_ID }}'
-              maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+            $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
+
+            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
+              Write-Verbose "Processing mgmtGroupId [$mgmtGroupId]" -Verbose
+              $functionInput = @{
+                ManagementGroupId            = $mgmtGroupId
+                maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+              }
+
+              Write-Verbose "Invoke task with" -Verbose
+              Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+              Clear-ManagementGroupDeploymentHistory @functionInput
             }
-
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-            Clear-ManagementGroupDeploymentHistory @functionInput
           azPSVersion: "latest"
