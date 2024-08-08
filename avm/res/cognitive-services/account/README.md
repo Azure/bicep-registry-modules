@@ -1115,7 +1115,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2151,7 +2150,6 @@ The storage accounts for this resource.
 
 - Required: No
 - Type: array
-
 
 ## Outputs
 

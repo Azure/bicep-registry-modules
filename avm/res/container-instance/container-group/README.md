@@ -8,7 +8,6 @@ This module deploys a Container Instance Container Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -930,7 +929,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1728,7 +1726,6 @@ Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to yo
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1739,10 +1736,6 @@ Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to yo
 | `resourceGroupName` | string | The resource group the container group was deployed into. |
 | `resourceId` | string | The resource ID of the container group. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

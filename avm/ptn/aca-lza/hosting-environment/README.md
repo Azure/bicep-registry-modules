@@ -495,7 +495,6 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -787,7 +786,6 @@ The name of the workload that is being deployed. Up to 10 characters long.
 - Required: No
 - Type: string
 - Default: `'aca-lza'`
-
 
 ## Outputs
 

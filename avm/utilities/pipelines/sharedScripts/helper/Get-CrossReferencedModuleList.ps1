@@ -91,8 +91,8 @@ function Get-ReferenceObject {
     foreach ($involvedFilePath in (@($ModuleTemplateFilePath) + @($involvedFilePaths))) {
         $moduleContent = $TemplateMap[$involvedFilePath]
 
-        $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+)' .+$" } | ForEach-Object { $matches[1] }
-        $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+)' .+$" } | ForEach-Object { $matches[1] }
+        $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+?)' .+$" } | ForEach-Object { $matches[1] }
+        $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+?)' .+$" } | ForEach-Object { $matches[1] }
     }
 
     return @{
@@ -110,7 +110,7 @@ Get a list of all resource/module references in a given module path
 .DESCRIPTION
 As an output you will receive a hashtable that (for each provider namespace) lists the
 - Directly deployed resources (e.g. via "resource myDeployment 'Microsoft.(..)/(..)@(..)'")
-- Linked remote module tempaltes (e.g. via "module rg 'br/modules:(..):(..)'")
+- Linked remote module templates (e.g. via "module rg 'br/modules:(..):(..)'")
 
 .PARAMETER Path
 Optional. The path to search in. Defaults to the 'res' folder.

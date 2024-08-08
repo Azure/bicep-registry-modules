@@ -1327,7 +1327,6 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2197,7 +2196,6 @@ Indicates if Topic Spaces Configuration is enabled for the namespace. This enabl
     'Enabled'
   ]
   ```
-
 
 ## Outputs
 
