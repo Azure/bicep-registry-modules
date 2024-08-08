@@ -235,7 +235,7 @@ runs:
             if($moduleTemplatePossibleParameters -contains $formattedName) {
               Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
               $functionInput.AdditionalParameters += @{
-                $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSecrets.Name).SecretValue
+                $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
               }
             }
           }
