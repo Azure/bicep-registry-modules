@@ -818,13 +818,52 @@ For example, refer to the documentation here: https://learn.microsoft.com/en-us/
 
 This solution is fairly simple to provision while ensuring security.
 Ideal for rapid problem-solving that requires an analytical workspace for swift development.
-The solution will create all the required components such as VNET, Monitoring, Key Vault, permissions, and analytical services.
+The solution will create all the required components such as Virtual Network, Monitoring, Key Vault, permissions, and analytical services.
 All utilizing recommended practices.
 
 Because of the isolated network configuration, public IP addresses of customers must be designated as authorized to access the environment through secure public endpoints.
 The solution will only be accessible from predetermined public IP addresses.
 The identity of the solution administrator or the managing group must be submitted to gain access and control over the solution.
 There is no requirement to pre-establish a virtual network or any additional components.
+
+##### Virtual Network
+
+A Virtual Network will be created with all necessary components and will be established to accommodate the designated Azure Services.
+This will include the creation of appropriate subnets, private links, and Network Security Groups.
+Additionally, it will leverage Azure DNS along with Azure DNS zones for the configuration of private endpoints, which will be associated with the Virtual Network.
+
+The assigned IP address range of a Virtual Network may conflict with that of an enterprise network. As a result, this virtual network should not be connected, or peered, with the enterprise network. In this scenario, the virtual network is established as an isolated segment.
+
+Since it's an isolated island, in order to access client resources such as key vault and others, the client's public IP must be included in the allowed range within the ```advancedOptions.networkAcls.ipRules``` parameter.
+
+For a dedicated virtual network to be provisioned for you, the VNET ```id``` parameter needs to remain unfilled.
+
+##### Monitoring of the Solution
+
+If the parameter ```logAnalyticsWorkspaceResourceId``` is left unspecified or set to ```null```, a new Azure Log Analytics Workspace will be created as part of the solution. The diagnostic settings for most services within the solution will be configured to channel into this newly created Azure Log Analytics Workspace.</br>
+Additional creation configurations for the Azure Log Analytics Workspace are available under the parameter ```advancedOptions.logAnalyticsWorkspace.*```.</br>
+The ```logAnalyticsWorkspaceResourceId``` parameter may be configured to use an existing Azure Log Analytics Workspace, which is beneficial for enterprises that prefer to centralize their diagnostic data.</br>
+
+##### Storing Secrets - Key Vault
+
+If the parameter ```keyVaultResourceId``` is left unspecified or set to ```null```, a new Azure Key Vault will be created as part of the solution.</br>
+Additional creation configurations for the Azure Key Vault are available under the parameter ```advancedOptions.keyVault.*```.</br>
+As part of the solution, a private endpoint and a DNS Key Vault Zone are created. To handle secrets through the Azure Portal, Public Access must be provided for the given public IP within the parameter ```advancedOptions.networkAcls.ipRules```.</br>
+For the handling of secrets, users need to have privileged roles. Those listed in the ```solutionAdministrators.*``` parameter will receive 'Key Vault Administrator' privileges specifically for Azure Key Vaults that are newly created.</br>
+
+##### Solution Administrators
+
+In order to grant administrative rights for the newly created services that have been added to the solution, you should utilize the parameter ```solutionAdministrators.*```. You can designate User or Entra ID Groups for this purpose.</br>
+The specified identities will be granted ownership of the solution, enabling them to delegate permissions as necessary. Additionally, they will obtain 'Key Vault Administrator' rights, which apply solely to the Azure Key Vaults that have been created as part of the solution.</br>
+It's essential to designate an individual as the Solution Administrator to utilize the solution effectively.</br>
+
+##### Analytical Service - Azure Databricks
+
+If the parameter ```enableDatabricks``` is set to ```true```, a new Azure Databricks instance will be created as part of the solution.</br>
+Additional creation configurations for the Azure Databricks are available under the parameter ```advancedOptions.databricks.*```.</br>
+As part of the solution, two subnets with delegations, two private endpoints, network security groups and a Azure Databricks Zone are created.</br>
+To access Azure Databricks integrated into the isolated Virtual Network, Public Access must be provided for the given public IP within the parameter ```advancedOptions.networkAcls.ipRules```.</br>
+Additional manual setup is required to restrict public access for different clients. Refer to this guide for more information: <https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview></br>
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
@@ -840,7 +879,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     solutionAdministrators: [
       {
         principalId: <EntraGroupId>       // Specified group will have enough permissions to manage the solution
-        principalType: 'Group'            // Group but User type can be specified
+        principalType: 'Group'            // Group and/or User type can be specified
       }
     ]
     advancedOptions: {
@@ -855,6 +894,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 
 
+
+
+#### Use Case 3: Provided Virtual Network
+
+
+
 - When Azure Databricks is enabled, the public IP must be enabled manually.
 - https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview
 - https://accounts.azuredatabricks.net/login | https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-account#enable-ip-access-lists
@@ -862,7 +907,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 - https://learn.microsoft.com/en-us/azure/databricks/compute/web-terminal |
 
 
-#### Use Case 3: Provided Virtual Network
+
 
 - Customer needs to provide Spoke Virtual Network dedicated to the workload with subnets for the solution.
   - Spoke Network needs to be peered with Hub Network - typically with central Firewall and connectivity to enterprise network.
