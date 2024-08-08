@@ -23,6 +23,13 @@ param deviceSecurityGroupProperties object = {}
 @description('Optional. Security Solution data.')
 param ioTSecuritySolutionProperties object = {}
 
+@description('Optional. The sub-plan selected for a Standard pricing configuration, when more than one sub-plan is available. Each sub-plan enables a set of security features. When not specified, full plan is applied. For VirtualMachines plan, available sub plans are "P1" & "P2", where for resource level only "P1" sub plan is supported. Only usable if PricingTier = "Standard".')
+@allowed([
+  'P1'
+  'P2'
+])
+param virtualMachinesSubPlan string?
+
 @description('Optional. The pricing tier value for VMs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
@@ -115,7 +122,7 @@ param containersTier string = 'Free'
 param cosmosDbsTier string = 'Free'
 
 @description('Optional. Security contact data.')
-param securityContactProperties object = {}
+param securityContactsProperties securityContactsType
 
 @description('Optional. Location deployment metadata.')
 param location string = deployment().location
@@ -127,54 +134,67 @@ var pricings = [
   {
     name: 'VirtualMachines'
     pricingTier: virtualMachinesPricingTier
+    subPlan: (virtualMachinesPricingTier == 'Standard' ? virtualMachinesSubPlan : null)
   }
   {
     name: 'SqlServers'
     pricingTier: sqlServersPricingTier
+    subPlan: null
   }
   {
     name: 'AppServices'
     pricingTier: appServicesPricingTier
+    subPlan: null
   }
   {
     name: 'StorageAccounts'
     pricingTier: storageAccountsPricingTier
+    subPlan: null
   }
   {
     name: 'SqlServerVirtualMachines'
     pricingTier: sqlServerVirtualMachinesPricingTier
+    subPlan: null
   }
   {
     name: 'KubernetesService'
     pricingTier: kubernetesServicePricingTier
+    subPlan: null
   }
   {
     name: 'ContainerRegistry'
     pricingTier: containerRegistryPricingTier
+    subPlan: null
   }
   {
     name: 'KeyVaults'
     pricingTier: keyVaultsPricingTier
+    subPlan: null
   }
   {
     name: 'Dns'
     pricingTier: dnsPricingTier
+    subPlan: null
   }
   {
     name: 'Arm'
     pricingTier: armPricingTier
+    subPlan: null
   }
   {
     name: 'OpenSourceRelationalDatabases'
     pricingTier: openSourceRelationalDatabasesTier
+    subPlan: null
   }
   {
     name: 'Containers'
     pricingTier: containersTier
+    subPlan: null
   }
   {
     name: 'CosmosDbs'
     pricingTier: cosmosDbsTier
+    subPlan: null
   }
 ]
 
@@ -202,11 +222,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 @batchSize(1)
-resource pricingTiers 'Microsoft.Security/pricings@2018-06-01' = [
+resource pricingTiers 'Microsoft.Security/pricings@2024-01-01' = [
   for (pricing, index) in pricings: {
     name: pricing.name
     properties: {
       pricingTier: pricing.pricingTier
+      subPlan: pricing.subPlan
     }
   }
 ]
@@ -236,13 +257,26 @@ module iotSecuritySolutions 'modules/iotSecuritySolutions.bicep' = if (!empty(io
   }
 }
 
-resource securityContacts 'Microsoft.Security/securityContacts@2017-08-01-preview' = if (!empty(securityContactProperties)) {
+resource securityContacts 'Microsoft.Security/securityContacts@2023-12-01-preview' = if (securityContactsProperties != null) {
   name: 'default'
   properties: {
-    email: securityContactProperties.email
-    phone: securityContactProperties.phone
-    alertNotifications: securityContactProperties.alertNotifications
-    alertsToAdmins: securityContactProperties.alertsToAdmins
+    emails: securityContactsProperties.?emails
+    isEnabled: securityContactsProperties.?isEnabled
+    notificationsByRole: {
+      roles: securityContactsProperties.?notificationsByRole.roles
+      state: securityContactsProperties.?notificationsByRole.state
+    }
+    notificationsSources: [
+      {
+        sourceType: 'Alert'
+        minimalSeverity: securityContactsProperties!.alertMinimalSeverity
+      }
+      {
+        sourceType: 'AttackPath'
+        minimalRiskLevel: securityContactsProperties!.attackMinimalRiskLevel
+      }
+    ]
+    phone: securityContactsProperties.?phone
   }
 }
 
@@ -262,3 +296,33 @@ output workspaceResourceId string = workspaceResourceId
 
 @description('The name of the security center.')
 output name string = 'Security'
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type securityContactsType = {
+  @description('Optional. List of email addresses (;-delimited) which will get notifications from Microsoft Defender for Cloud by the configurations defined in this security contact.')
+  emails: string?
+
+  @description('Optional. Indicates whether the security contact is enabled.')
+  isEnabled: bool?
+
+  @description('Optional. Defines whether to send email notifications from Microsoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
+  notificationsByRole: {
+    @description('Conditional. Required if using notificationsByRole. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.')
+    roles: ('AccountAdmin' | 'Contributor' | 'Owner' | 'ServiceAdmin')[]
+
+    @description('Conditional. Required if using notificationsByRole. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.')
+    state: ('On' | 'Off')
+  }?
+
+  @description('Required. Defines the minimal alert risk level which will be sent as email notifications.')
+  alertMinimalSeverity: ('High' | 'Low' | 'Medium')
+
+  @description('Required. Defines the minimal attack path risk level which will be sent as email notifications.')
+  attackMinimalRiskLevel: ('Critical' | 'High' | 'Low' | 'Medium')
+
+  @description('''Optional. The security contact's phone number.''')
+  phone: string?
+}?

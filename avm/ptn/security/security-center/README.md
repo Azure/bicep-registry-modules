@@ -18,8 +18,8 @@ This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 | `Microsoft.Security/autoProvisioningSettings` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/autoProvisioningSettings) |
 | `Microsoft.Security/deviceSecurityGroups` | [2019-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/deviceSecurityGroups) |
 | `Microsoft.Security/iotSecuritySolutions` | [2019-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/iotSecuritySolutions) |
-| `Microsoft.Security/pricings` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2018-06-01/pricings) |
-| `Microsoft.Security/securityContacts` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/securityContacts) |
+| `Microsoft.Security/pricings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2024-01-01/pricings) |
+| `Microsoft.Security/securityContacts` | [2023-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2023-12-01-preview/securityContacts) |
 | `Microsoft.Security/workspaceSettings` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/workspaceSettings) |
 
 ## Usage examples
@@ -106,12 +106,22 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     deviceSecurityGroupProperties: {}
     ioTSecuritySolutionProperties: {}
     location: '<location>'
-    securityContactProperties: {
-      alertNotifications: 'Off'
-      alertsToAdmins: 'Off'
-      email: 'foo@contoso.com'
+    securityContactsProperties: {
+      alertMinimalSeverity: 'Low'
+      attackMinimalRiskLevel: 'Low'
+      emails: 'foo@contoso.com'
+      isEnabled: true
+      notificationsByRole: {
+        roles: [
+          'AccountAdmin'
+          'Contributor'
+        ]
+        state: 'Off'
+      }
       phone: '+12345678'
     }
+    virtualMachinesPricingTier: 'Standard'
+    virtualMachinesSubPlan: 'P2'
   }
 }
 ```
@@ -145,13 +155,27 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "securityContactProperties": {
+    "securityContactsProperties": {
       "value": {
-        "alertNotifications": "Off",
-        "alertsToAdmins": "Off",
-        "email": "foo@contoso.com",
+        "alertMinimalSeverity": "Low",
+        "attackMinimalRiskLevel": "Low",
+        "emails": "foo@contoso.com",
+        "isEnabled": true,
+        "notificationsByRole": {
+          "roles": [
+            "AccountAdmin",
+            "Contributor"
+          ],
+          "state": "Off"
+        },
         "phone": "+12345678"
       }
+    },
+    "virtualMachinesPricingTier": {
+      "value": "Standard"
+    },
+    "virtualMachinesSubPlan": {
+      "value": "P2"
     }
   }
 }
@@ -240,11 +264,12 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 | [`kubernetesServicePricingTier`](#parameter-kubernetesservicepricingtier) | string | The pricing tier value for KubernetesService. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`openSourceRelationalDatabasesTier`](#parameter-opensourcerelationaldatabasestier) | string | The pricing tier value for OpenSourceRelationalDatabases. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
-| [`securityContactProperties`](#parameter-securitycontactproperties) | object | Security contact data. |
+| [`securityContactsProperties`](#parameter-securitycontactsproperties) | object | Security contact data. |
 | [`sqlServersPricingTier`](#parameter-sqlserverspricingtier) | string | The pricing tier value for SqlServers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`sqlServerVirtualMachinesPricingTier`](#parameter-sqlservervirtualmachinespricingtier) | string | The pricing tier value for SqlServerVirtualMachines. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`storageAccountsPricingTier`](#parameter-storageaccountspricingtier) | string | The pricing tier value for StorageAccounts. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`virtualMachinesPricingTier`](#parameter-virtualmachinespricingtier) | string | The pricing tier value for VMs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
+| [`virtualMachinesSubPlan`](#parameter-virtualmachinessubplan) | string | The sub-plan selected for a Standard pricing configuration, when more than one sub-plan is available. Each sub-plan enables a set of security features. When not specified, full plan is applied. For VirtualMachines plan, available sub plans are "P1" & "P2", where for resource level only "P1" sub plan is supported. Only usable if PricingTier = "Standard". |
 
 ### Parameter: `scope`
 
@@ -442,13 +467,124 @@ The pricing tier value for OpenSourceRelationalDatabases. Azure Security Center 
   ]
   ```
 
-### Parameter: `securityContactProperties`
+### Parameter: `securityContactsProperties`
 
 Security contact data.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alertMinimalSeverity`](#parameter-securitycontactspropertiesalertminimalseverity) | string | Defines the minimal alert risk level which will be sent as email notifications. |
+| [`attackMinimalRiskLevel`](#parameter-securitycontactspropertiesattackminimalrisklevel) | string | Defines the minimal attack path risk level which will be sent as email notifications. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emails`](#parameter-securitycontactspropertiesemails) | string | List of email addresses (;-delimited) which will get notifications from Microsoft Defender for Cloud by the configurations defined in this security contact. |
+| [`isEnabled`](#parameter-securitycontactspropertiesisenabled) | bool | Indicates whether the security contact is enabled. |
+| [`notificationsByRole`](#parameter-securitycontactspropertiesnotificationsbyrole) | object | Defines whether to send email notifications from Microsoft Defender for Cloud to persons with specific RBAC roles on the subscription. |
+| [`phone`](#parameter-securitycontactspropertiesphone) | string | The security contact's phone number. |
+
+### Parameter: `securityContactsProperties.alertMinimalSeverity`
+
+Defines the minimal alert risk level which will be sent as email notifications.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'High'
+    'Low'
+    'Medium'
+  ]
+  ```
+
+### Parameter: `securityContactsProperties.attackMinimalRiskLevel`
+
+Defines the minimal attack path risk level which will be sent as email notifications.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Critical'
+    'High'
+    'Low'
+    'Medium'
+  ]
+  ```
+
+### Parameter: `securityContactsProperties.emails`
+
+List of email addresses (;-delimited) which will get notifications from Microsoft Defender for Cloud by the configurations defined in this security contact.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityContactsProperties.isEnabled`
+
+Indicates whether the security contact is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `securityContactsProperties.notificationsByRole`
+
+Defines whether to send email notifications from Microsoft Defender for Cloud to persons with specific RBAC roles on the subscription.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roles`](#parameter-securitycontactspropertiesnotificationsbyroleroles) | array | Required if using notificationsByRole. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud. |
+| [`state`](#parameter-securitycontactspropertiesnotificationsbyrolestate) | string | Required if using notificationsByRole. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription. |
+
+### Parameter: `securityContactsProperties.notificationsByRole.roles`
+
+Required if using notificationsByRole. Defines which RBAC roles will get email notifications from Microsoft Defender for Cloud.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'AccountAdmin'
+    'Contributor'
+    'Owner'
+    'ServiceAdmin'
+  ]
+  ```
+
+### Parameter: `securityContactsProperties.notificationsByRole.state`
+
+Required if using notificationsByRole. Defines whether to send email notifications from AMicrosoft Defender for Cloud to persons with specific RBAC roles on the subscription.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Off'
+    'On'
+  ]
+  ```
+
+### Parameter: `securityContactsProperties.phone`
+
+The security contact's phone number.
+
+- Required: No
+- Type: string
 
 ### Parameter: `sqlServersPricingTier`
 
@@ -507,6 +643,20 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
   [
     'Free'
     'Standard'
+  ]
+  ```
+
+### Parameter: `virtualMachinesSubPlan`
+
+The sub-plan selected for a Standard pricing configuration, when more than one sub-plan is available. Each sub-plan enables a set of security features. When not specified, full plan is applied. For VirtualMachines plan, available sub plans are "P1" & "P2", where for resource level only "P1" sub plan is supported. Only usable if PricingTier = "Standard".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'P1'
+    'P2'
   ]
   ```
 
