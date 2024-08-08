@@ -17,10 +17,6 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dfpsfsmin'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param administratorLoginPass string = newGuid()
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -35,6 +31,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: resourceLocation
+  }
+}
 // ============== //
 // Test Execution //
 // ============== //
@@ -47,8 +51,13 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      administratorLogin: 'adminUserName'
-      administratorLoginPassword: administratorLoginPass
+      administrators: [
+        {
+          objectId: nestedDependencies.outputs.managedIdentityClientId
+          principalName: nestedDependencies.outputs.managedIdentityName
+          principalType: 'ServicePrincipal'
+        }
+      ]
       skuName: 'Standard_B2s'
       tier: 'Burstable'
       geoRedundantBackup: 'Enabled'
