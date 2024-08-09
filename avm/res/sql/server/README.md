@@ -904,7 +904,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     restrictOutboundNetworkAccess: 'Disabled'
     securityAlertPolicies: [
       {
+        disabledAlerts: []
         emailAccountAdmins: true
+        emailAddresses: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
         name: 'Default'
         state: 'Enabled'
       }
@@ -1047,7 +1052,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "securityAlertPolicies": {
       "value": [
         {
+          "disabledAlerts": [],
           "emailAccountAdmins": true,
+          "emailAddresses": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
           "name": "Default",
           "state": "Enabled"
         }
