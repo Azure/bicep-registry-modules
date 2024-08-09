@@ -49,6 +49,9 @@ param ruleSets array = []
 @description('Optional. Array of AFD endpoint objects.')
 param afdEndpoints array = []
 
+@description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
+param securityPolicies array = []
+
 @description('Optional. Endpoint tags.')
 param tags object?
 
@@ -247,6 +250,22 @@ module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
       enabledState: afdEndpoint.?enabledState
       routes: afdEndpoint.?routes
       tags: afdEndpoint.?tags ?? tags
+    }
+  }
+]
+
+module profile_securityPolicies 'securityPolicies/main.bicep' = [
+  for (securityPolicy, index) in securityPolicies: {
+    name: '${uniqueString(deployment().name)}-Profile-SecurityPolicy-${index}'
+    dependsOn: [
+      profile_afdEndpoints
+      profile_customDomains
+    ]
+    params: {
+      name: securityPolicy.name
+      profileName: profile.name
+      associations: securityPolicy.associations
+      wafPolicyResourceId: securityPolicy.wafPolicyResourceId
     }
   }
 ]
