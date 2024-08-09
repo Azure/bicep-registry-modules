@@ -52,7 +52,7 @@ param customData string = ''
 @description('Optional. Specifies set of certificates that should be installed onto the virtual machine.')
 param certificatesToBeInstalled array = []
 
-@description('Optional. Specifies the priority for the virtual machine. ')
+@description('Optional. Specifies the priority for the virtual machine.')
 @allowed([
   'Regular'
   'Low'
