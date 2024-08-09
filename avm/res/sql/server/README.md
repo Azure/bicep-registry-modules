@@ -1792,7 +1792,6 @@ Whether or not to restrict outbound network access for this server.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
