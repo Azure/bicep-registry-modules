@@ -369,7 +369,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     securityAlertPolicies: [
       {
+        disabledAlerts: []
         emailAccountAdmins: true
+        emailAddresses: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
         name: 'Default'
         state: 'Enabled'
       }
@@ -551,7 +556,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "securityAlertPolicies": {
       "value": [
         {
+          "disabledAlerts": [],
           "emailAccountAdmins": true,
+          "emailAddresses": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
           "name": "Default",
           "state": "Enabled"
         }
@@ -606,7 +616,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   name: 'serverDeployment'
   params: {
     // Required parameters
-    name: 'sqlsec-sec'
+    name: 'sqlsc-sec'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -644,7 +654,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsec-sec"
+      "value": "sqlsc-sec"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -696,7 +706,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   name: 'serverDeployment'
   params: {
     // Required parameters
-    name: 'sqlsvln'
+    name: 'sqlvln'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -750,7 +760,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsvln"
+      "value": "sqlvln"
     },
     // Non-required parameters
     "administratorLogin": {

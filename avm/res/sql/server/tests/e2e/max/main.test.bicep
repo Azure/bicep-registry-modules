@@ -162,6 +162,11 @@ module testDeployment '../../../main.bicep' = {
         name: 'Default'
         state: 'Enabled'
         emailAccountAdmins: true
+        disabledAlerts: []
+        emailAddresses: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
       }
     ]
     keys: [

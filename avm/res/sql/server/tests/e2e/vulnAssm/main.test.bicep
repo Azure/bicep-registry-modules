@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sqlsvln'
+param serviceShort string = 'sqlvln'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -40,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}cdnstore${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}cdnstore${serviceShort}'
     location: resourceLocation
   }
 }
