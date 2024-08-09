@@ -37,6 +37,7 @@ function Set-AvmGitHubPrLabels {
     . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
     . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
 
+    Write-Host 'This is a test'
     $pr = gh pr view $PrUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
     $allTeamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $PrUrl.Replace('api.', '').Replace('repos/', ''))
     $teamNames = [array]($allTeamNames | Where-Object { $_ -ne 'bicep-admins' -and $_ -ne 'avm-core-team-technical-bicep' -and $_ -ne 'avm-module-reviewers-bicep' })
