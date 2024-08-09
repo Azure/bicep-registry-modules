@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Public access with private endpoints'
+metadata description = 'This instance deploys the module with public access and private endpoints.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleserv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfpsfsmin'
+param serviceShort string = 'dfpsfspe'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -35,6 +35,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -52,6 +61,26 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Standard_D2ds_v5'
       tier: 'GeneralPurpose'
       geoRedundantBackup: 'Enabled'
+      highAvailability: 'ZoneRedundant'
+      maintenanceWindow: {
+        customWindow: 'Enabled'
+        dayOfWeek: '0'
+        startHour: '1'
+        startMinute: '0'
+      }
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+      ]
     }
   }
 ]
