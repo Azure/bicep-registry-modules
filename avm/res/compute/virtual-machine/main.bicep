@@ -281,6 +281,9 @@ param rebootSetting string = 'IfRequired'
 ])
 param patchAssessmentMode string = 'ImageDefault'
 
+@description('Optional. Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the \'provisionVMAgent\' must be set to true and \'patchMode\' must be set to \'AutomaticByPlatform\'')
+param enableHotpatching bool = true
+
 @description('Optional. Specifies the time zone of the virtual machine. e.g. \'Pacific Standard Time\'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`.')
 param timeZone string = ''
 
@@ -327,6 +330,7 @@ var windowsConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
+        enableHotpatching: (patchMode =~ 'AutomaticByPlatform') ? enableHotpatching : false
         automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
           ? {
               bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
