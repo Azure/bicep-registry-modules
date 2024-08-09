@@ -238,48 +238,34 @@ module server_databases 'database/main.bicep' = [
     params: {
       name: database.name
       serverName: server.name
-      skuTier: contains(database, 'skuTier') ? database.skuTier : 'GeneralPurpose'
-      skuName: contains(database, 'skuName') ? database.skuName : 'GP_Gen5_2'
+      skuTier: database.?skuTier ?? 'GeneralPurpose'
+      skuName: database.?skuName ?? 'GP_Gen5_2'
       skuCapacity: database.?skuCapacity
-      skuFamily: contains(database, 'skuFamily') ? database.skuFamily : ''
-      skuSize: contains(database, 'skuSize') ? database.skuSize : ''
-      collation: contains(database, 'collation') ? database.collation : 'SQL_Latin1_General_CP1_CI_AS'
-      maxSizeBytes: contains(database, 'maxSizeBytes') ? database.maxSizeBytes : 34359738368
-      autoPauseDelay: contains(database, 'autoPauseDelay') ? database.autoPauseDelay : 0
+      skuFamily: database.?skuFamily ?? ''
+      skuSize: database.?skuSize ?? ''
+      collation: database.?collation ?? 'SQL_Latin1_General_CP1_CI_AS'
+      maxSizeBytes: database.?maxSizeBytes ?? 34359738368
+      autoPauseDelay: database.?autoPauseDelay ?? 0
       diagnosticSettings: database.?diagnosticSettings
-      isLedgerOn: contains(database, 'isLedgerOn') ? database.isLedgerOn : false
+      isLedgerOn: database.?isLedgerOn ?? false
       location: location
-      licenseType: contains(database, 'licenseType') ? database.licenseType : ''
-      maintenanceConfigurationId: contains(database, 'maintenanceConfigurationId')
-        ? database.maintenanceConfigurationId
-        : ''
-      minCapacity: contains(database, 'minCapacity') ? database.minCapacity : ''
-      highAvailabilityReplicaCount: contains(database, 'highAvailabilityReplicaCount')
-        ? database.highAvailabilityReplicaCount
-        : 0
-      readScale: contains(database, 'readScale') ? database.readScale : 'Disabled'
-      requestedBackupStorageRedundancy: contains(database, 'requestedBackupStorageRedundancy')
-        ? database.requestedBackupStorageRedundancy
-        : ''
-      sampleName: contains(database, 'sampleName') ? database.sampleName : ''
+      licenseType: database.?licenseType ?? ''
+      maintenanceConfigurationId: database.?maintenanceConfigurationId ?? ''
+      minCapacity: database.?minCapacity ?? ''
+      highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount ?? 0
+      readScale: database.?readScale ?? 'Disabled'
+      requestedBackupStorageRedundancy: database.?requestedBackupStorageRedundancy ?? ''
+      sampleName: database.?sampleName ?? ''
       tags: database.?tags ?? tags
-      zoneRedundant: contains(database, 'zoneRedundant') ? database.zoneRedundant : false
-      elasticPoolId: contains(database, 'elasticPoolId') ? database.elasticPoolId : ''
-      backupShortTermRetentionPolicy: contains(database, 'backupShortTermRetentionPolicy')
-        ? database.backupShortTermRetentionPolicy
-        : {}
-      backupLongTermRetentionPolicy: contains(database, 'backupLongTermRetentionPolicy')
-        ? database.backupLongTermRetentionPolicy
-        : {}
-      createMode: contains(database, 'createMode') ? database.createMode : 'Default'
-      sourceDatabaseResourceId: contains(database, 'sourceDatabaseResourceId') ? database.sourceDatabaseResourceId : ''
-      sourceDatabaseDeletionDate: contains(database, 'sourceDatabaseDeletionDate')
-        ? database.sourceDatabaseDeletionDate
-        : ''
-      recoveryServicesRecoveryPointResourceId: contains(database, 'recoveryServicesRecoveryPointResourceId')
-        ? database.recoveryServicesRecoveryPointResourceId
-        : ''
-      restorePointInTime: contains(database, 'restorePointInTime') ? database.restorePointInTime : ''
+      zoneRedundant: database.?zoneRedundant ?? false
+      elasticPoolId: database.?elasticPoolId ?? ''
+      backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy ?? {}
+      backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy ?? {}
+      createMode: database.?createMode ?? 'Default'
+      sourceDatabaseResourceId: database.?sourceDatabaseResourceId ?? ''
+      sourceDatabaseDeletionDate: database.?sourceDatabaseDeletionDate ?? ''
+      recoveryServicesRecoveryPointResourceId: database.?recoveryServicesRecoveryPointResourceId ?? ''
+      restorePointInTime: database.?restorePointInTime ?? ''
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
@@ -293,19 +279,17 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
     params: {
       name: elasticPool.name
       serverName: server.name
-      databaseMaxCapacity: contains(elasticPool, 'databaseMaxCapacity') ? elasticPool.databaseMaxCapacity : 2
-      databaseMinCapacity: contains(elasticPool, 'databaseMinCapacity') ? elasticPool.databaseMinCapacity : 0
+      databaseMaxCapacity: elasticPool.?databaseMaxCapacity ?? 2
+      databaseMinCapacity: elasticPool.?databaseMinCapacity ?? 0
       highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
-      licenseType: contains(elasticPool, 'licenseType') ? elasticPool.licenseType : 'LicenseIncluded'
-      maintenanceConfigurationId: contains(elasticPool, 'maintenanceConfigurationId')
-        ? elasticPool.maintenanceConfigurationId
-        : ''
-      maxSizeBytes: contains(elasticPool, 'maxSizeBytes') ? elasticPool.maxSizeBytes : 34359738368
+      licenseType: elasticPool.?licenseType ?? 'LicenseIncluded'
+      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId ?? ''
+      maxSizeBytes: elasticPool.?maxSizeBytes ?? 34359738368
       minCapacity: elasticPool.?minCapacity
-      skuCapacity: contains(elasticPool, 'skuCapacity') ? elasticPool.skuCapacity : 2
-      skuName: contains(elasticPool, 'skuName') ? elasticPool.skuName : 'GP_Gen5'
-      skuTier: contains(elasticPool, 'skuTier') ? elasticPool.skuTier : 'GeneralPurpose'
-      zoneRedundant: contains(elasticPool, 'zoneRedundant') ? elasticPool.zoneRedundant : false
+      skuCapacity: elasticPool.?skuCapacity ?? 2
+      skuName: elasticPool.?skuName ?? 'GP_Gen5'
+      skuTier: elasticPool.?skuTier ?? 'GeneralPurpose'
+      zoneRedundant: elasticPool.?zoneRedundant ?? false
       location: location
       tags: elasticPool.?tags ?? tags
     }
@@ -371,8 +355,8 @@ module server_firewallRules 'firewall-rule/main.bicep' = [
     params: {
       name: firewallRule.name
       serverName: server.name
-      endIpAddress: contains(firewallRule, 'endIpAddress') ? firewallRule.endIpAddress : '0.0.0.0'
-      startIpAddress: contains(firewallRule, 'startIpAddress') ? firewallRule.startIpAddress : '0.0.0.0'
+      endIpAddress: firewallRule.?endIpAddress ?? '0.0.0.0'
+      startIpAddress: firewallRule.?startIpAddress ?? '0.0.0.0'
     }
   }
 ]
@@ -383,9 +367,7 @@ module server_virtualNetworkRules 'virtual-network-rule/main.bicep' = [
     params: {
       name: virtualNetworkRule.name
       serverName: server.name
-      ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint')
-        ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint
-        : false
+      ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint ?? false
       virtualNetworkSubnetId: virtualNetworkRule.virtualNetworkSubnetId
     }
   }
@@ -397,17 +379,13 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
     params: {
       name: securityAlertPolicy.name
       serverName: server.name
-      disabledAlerts: contains(securityAlertPolicy, 'disabledAlerts') ? securityAlertPolicy.disabledAlerts : []
-      emailAccountAdmins: contains(securityAlertPolicy, 'emailAccountAdmins')
-        ? securityAlertPolicy.emailAccountAdmins
-        : false
-      emailAddresses: contains(securityAlertPolicy, 'emailAddresses') ? securityAlertPolicy.emailAddresses : []
-      retentionDays: contains(securityAlertPolicy, 'retentionDays') ? securityAlertPolicy.retentionDays : 0
-      state: contains(securityAlertPolicy, 'state') ? securityAlertPolicy.state : 'Disabled'
-      storageAccountAccessKey: contains(securityAlertPolicy, 'storageAccountAccessKey')
-        ? securityAlertPolicy.storageAccountAccessKey
-        : ''
-      storageEndpoint: contains(securityAlertPolicy, 'storageEndpoint') ? securityAlertPolicy.storageEndpoint : ''
+      disabledAlerts: securityAlertPolicy[?securityAlertPolicy.disabledAlerts] ?? []
+      emailAccountAdmins: securityAlertPolicy.?securityAlertPolicy.emailAccountAdmins ?? false
+      emailAddresses: securityAlertPolicy[?securityAlertPolicy.emailAddresses] ?? []
+      retentionDays: securityAlertPolicy.?retentionDays ?? 0
+      state: securityAlertPolicy.?state ?? 'Disabled'
+      storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey ?? ''
+      storageEndpoint: securityAlertPolicy.?storageEndpoint ?? ''
     }
   }
 ]
@@ -417,25 +395,12 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
   params: {
     serverName: server.name
     name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
-      ? vulnerabilityAssessmentsObj.recurringScansEmails
-      : []
-    recurringScansEmailSubscriptionAdmins: contains(
-        vulnerabilityAssessmentsObj,
-        'recurringScansEmailSubscriptionAdmins'
-      )
-      ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
-      : false
-    recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
-      ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
-      : false
+    recurringScansEmails: vulnerabilityAssessmentsObj[?vulnerabilityAssessmentsObj.recurringScansEmails] ?? []
+    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins ?? false
+    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled ?? false
     storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
-      ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
-      : false
-    createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
-      ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
-      : true
+    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey ?? false
+    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment ?? true
   }
   dependsOn: [
     server_securityAlertPolicies
@@ -448,8 +413,8 @@ module server_keys 'key/main.bicep' = [
     params: {
       name: key.?name
       serverName: server.name
-      serverKeyType: contains(key, 'serverKeyType') ? key.serverKeyType : 'ServiceManaged'
-      uri: contains(key, 'uri') ? key.uri : ''
+      serverKeyType: key.?serverKeyType ?? 'ServiceManaged'
+      uri: key.?uri ?? ''
     }
   }
 ]
@@ -459,12 +424,8 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty
   params: {
     sqlServerName: server.name
     serverKeyName: encryptionProtectorObj.serverKeyName
-    serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
-      ? encryptionProtectorObj.serverKeyType
-      : 'ServiceManaged'
-    autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
-      ? encryptionProtectorObj.autoRotationEnabled
-      : true
+    serverKeyType: encryptionProtectorObj.?encryptionProtectorObj.serverKeyType ?? 'ServiceManaged'
+    autoRotationEnabled: encryptionProtectorObj.?encryptionProtectorObj.autoRotationEnabled ?? true
   }
   dependsOn: [
     server_keys
