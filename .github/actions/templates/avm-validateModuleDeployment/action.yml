@@ -220,7 +220,7 @@ runs:
             }
           }
 
-          # Fetch & addd custom secrets, if any
+          # Fetch & add custom secrets, if any
           # -----------------------------------
           $keyVaultName = "${{ env.KEY_VAULT_NAME }}"
           # Note: Also requires at least Key Vault Secrets User role assignment
