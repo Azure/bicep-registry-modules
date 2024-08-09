@@ -144,21 +144,21 @@ function Set-PesterGitHubOutput {
 
             if ($failedTest.ScriptBlock.File -match $moduleSplitRegex) {
                 # Module test
-                $errorFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split $moduleSplitRegex
-                $errorTestFile = ('avm/{0}/{1}' -f $errorFileIdentifier[1], $errorFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+                $testFileIdentifier = $failedTest.ErrorRecord.TargetObject.File -split $moduleSplitRegex
+                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
             } else {
                 # None-module test
                 $testFile = $failedTest.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
             }
 
-            $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
+            $testLine = $failedTest.ErrorRecord.TargetObject.Line
             $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
-            $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
+            $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
 
             if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
                 # Creating URL to test file to enable users to 'click' on it
-                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$errorTestFile#L$errorTestLine)"
+                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
             }
 
             $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
@@ -304,15 +304,14 @@ function Set-PesterGitHubOutput {
 
                 if ($test.ScriptBlock.File -match $moduleSplitRegex) {
                     # Module test
-                    $testLine = $test.ScriptBlock.StartPosition.StartLine
                     $testFileIdentifier = $test.ScriptBlock.File -split $moduleSplitRegex
+                    $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
                 } else {
                     # None-module test
                     $testFile = $test.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
                 }
 
-                $testFile = ('avm/{0}/{1}' -f $testFileIdentifier[1], $testFileIdentifier[2]) -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-
+                $testLine = $test.ScriptBlock.StartPosition.StartLine
                 $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
                 if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
                     # Creating URL to test file to enable users to 'click' on it
