@@ -130,6 +130,7 @@ module testDeployment '../../../main.bicep' = {
         name: 'Default'
         state: 'Enabled'
         emailAccountAdmins: true
+        disabledAlerts: []
       }
     ]
     keys: [
