@@ -39,7 +39,7 @@ function Set-AvmGitHubPrLabels {
 
     $sanitizedPrUrl = $PrUrl.Replace('api.', '').Replace('repos/', '').Replace('pulls/', 'pull/')
     $pr = gh pr view $sanitizedPrUrl --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
-    $allTeamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $sanitizedPrUrl)
+    $allTeamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $pr.url)
     $teamNames = [array]($allTeamNames | Where-Object { $_ -ne 'bicep-admins' -and $_ -ne 'avm-core-team-technical-bicep' -and $_ -ne 'avm-module-reviewers-bicep' })
     Write-Host 'TEST'
     # core team is already assigned, no or more than one module reviewer team is assigned
