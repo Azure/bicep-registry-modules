@@ -198,8 +198,10 @@ function Get-DeploymentTargetResourceListInner {
         'managementgroup' {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject -ManagementGroupId $ManagementGroupId) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
+            } else {
+                throw 'NoDeploymentFound'
             }
-            throw 'NoDeploymentFound'
+            break
         }
         'tenant' {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject) {
