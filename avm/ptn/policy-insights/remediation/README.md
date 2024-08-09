@@ -8,7 +8,6 @@ This module deploys a Policy Insights Remediation.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -448,7 +447,6 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -583,7 +581,6 @@ The target scope for the remediation. The subscription ID of the subscription fo
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -591,10 +588,6 @@ The target scope for the remediation. The subscription ID of the subscription fo
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the remediation. |
 | `resourceId` | string | The resource ID of the remediation. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

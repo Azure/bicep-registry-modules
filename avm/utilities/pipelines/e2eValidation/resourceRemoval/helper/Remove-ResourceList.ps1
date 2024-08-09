@@ -36,7 +36,7 @@ function Remove-ResourceListInner {
 
         foreach ($resource in $resourcesToRemove) {
             $resourceName = Split-Path $resource.resourceId -Leaf
-            $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}*' -f $_) }).Count -gt 0) : $false
+            $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}/*' -f $_) }).Count -gt 0) : $false
 
             if ($alreadyProcessed) {
                 # Skipping
@@ -130,6 +130,6 @@ function Remove-ResourceList {
     if ($resourcesToRetry.Count -gt 0) {
         throw ('The removal failed for resources [{0}]' -f ((Split-Path $resourcesToRetry.resourceId -Leaf) -join ', '))
     } else {
-        Write-Verbose 'The removal completed successfully'
+        Write-Verbose ('The removal of the [{0}] completed successfully' -f $ResourcesToRemove.Count)
     }
 }

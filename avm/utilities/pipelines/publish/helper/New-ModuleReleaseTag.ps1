@@ -28,7 +28,7 @@ function New-ModuleReleaseTag {
         [string] $TargetVersion
     )
 
-    $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
 
     # 1 Build Tag
     $tagName = '{0}/{1}' -f $ModuleRelativeFolderPath, $TargetVersion

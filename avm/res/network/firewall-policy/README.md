@@ -8,7 +8,6 @@ This module deploys a Firewall Policy.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -394,7 +393,6 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -662,7 +660,6 @@ List of workspaces for Firewall Policy Insights.
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -671,10 +668,6 @@ List of workspaces for Firewall Policy Insights.
 | `name` | string | The name of the deployed firewall policy. |
 | `resourceGroupName` | string | The resource group of the deployed firewall policy. |
 | `resourceId` | string | The resource ID of the deployed firewall policy. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

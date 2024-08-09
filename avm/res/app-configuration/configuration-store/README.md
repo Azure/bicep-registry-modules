@@ -668,7 +668,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1496,7 +1495,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

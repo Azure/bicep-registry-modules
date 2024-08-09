@@ -21,6 +21,6 @@ function Get-BRMRepositoryName {
         [string] $TemplateFilePath
     )
 
-    $moduleIdentifier = (Split-Path $TemplateFilePath -Parent) -split '[\/|\\]avm[\/|\\](res|ptn)[\/|\\]'
+    $moduleIdentifier = (Split-Path $TemplateFilePath -Parent) -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
     return ('avm/{0}/{1}' -f $moduleIdentifier[1], $moduleIdentifier[2]) -replace '\\', '/'
 }

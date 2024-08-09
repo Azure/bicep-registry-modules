@@ -629,7 +629,6 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1950,7 +1949,6 @@ Address prefix for Managed virtual network.
 - Required: No
 - Type: string
 - Default: `'10.139'`
-
 
 ## Outputs
 

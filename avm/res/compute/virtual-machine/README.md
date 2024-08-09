@@ -363,7 +363,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     imageReference: {
       offer: '0001-com-ubuntu-server-focal'
       publisher: 'Canonical'
-      sku: '<sku>'
+      sku: '20_04-lts-gen2'
       version: 'latest'
     }
     name: 'cvmlinmax'
@@ -648,7 +648,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "offer": "0001-com-ubuntu-server-focal",
         "publisher": "Canonical",
-        "sku": "<sku>",
+        "sku": "20_04-lts-gen2",
         "version": "latest"
       }
     },
@@ -3179,7 +3179,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -4337,7 +4336,6 @@ Do not provide a value! This date value is used to generate a registration token
 - Required: No
 - Type: string
 - Default: `[utcNow('u')]`
-
 
 ## Outputs
 

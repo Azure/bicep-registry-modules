@@ -764,7 +764,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1827,7 +1826,6 @@ Whether or not zone redundancy is enabled for this container registry.
     'Enabled'
   ]
   ```
-
 
 ## Outputs
 

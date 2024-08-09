@@ -8,7 +8,6 @@ This module deploys a Power BI Dedicated Capacity.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -311,7 +310,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -570,7 +568,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -579,10 +576,6 @@ Tags of the resource.
 | `name` | string | The Name of the PowerBi Embedded instance. |
 | `resourceGroupName` | string | The name of the resource group the PowerBi Embedded was created in. |
 | `resourceId` | string | The resource ID of the PowerBi Embedded instance. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

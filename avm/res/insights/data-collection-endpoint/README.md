@@ -8,7 +8,6 @@ This module deploys a Data Collection Endpoint.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -269,7 +268,6 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -491,7 +489,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -500,10 +497,6 @@ Resource tags.
 | `name` | string | The name of the dataCollectionEndpoint. |
 | `resourceGroupName` | string | The name of the resource group the dataCollectionEndpoint was created in. |
 | `resourceId` | string | The resource ID of the dataCollectionEndpoint. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

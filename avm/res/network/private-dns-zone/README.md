@@ -8,7 +8,6 @@ This module deploys a Private DNS zone.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -727,7 +726,6 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -2336,7 +2334,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2345,10 +2342,6 @@ Resource tags.
 | `name` | string | The name of the private DNS zone. |
 | `resourceGroupName` | string | The resource group the private DNS zone was deployed into. |
 | `resourceId` | string | The resource ID of the private DNS zone. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

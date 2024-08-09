@@ -758,7 +758,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1682,7 +1681,6 @@ Git integration settings.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

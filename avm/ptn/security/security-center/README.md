@@ -8,7 +8,6 @@ This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -211,7 +210,6 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -510,17 +508,12 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the security center. |
 | `workspaceResourceId` | string | The resource ID of the used log analytics workspace. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
