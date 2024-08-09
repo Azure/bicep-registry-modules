@@ -79,7 +79,7 @@ param publicNetworkAccess string = ''
   'Enabled'
   'Disabled'
 ])
-param restrictOutboundNetworkAccess string?
+param restrictOutboundNetworkAccess string = ''
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
