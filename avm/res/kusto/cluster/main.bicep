@@ -129,7 +129,9 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -296,7 +298,7 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
       principalId: principalAssignment.principalId
       principalType: principalAssignment.principalType
       role: principalAssignment.role
-      tenantId: contains(principalAssignment, 'tenantId') ? principalAssignment.tenantId : tenant().tenantId
+      tenantId: principalAssignment.?tenantId ?? tenant().tenantId
     }
   }
 ]
@@ -467,6 +469,9 @@ type lockType = {
 }?
 
 type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
   @description('Optional. The resource id(s) to assign to the resource.')
   userAssignedResourceIds: string[]
 }?
