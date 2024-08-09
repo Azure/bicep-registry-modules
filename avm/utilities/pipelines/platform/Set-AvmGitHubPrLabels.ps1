@@ -41,7 +41,7 @@ function Set-AvmGitHubPrLabels {
     $pr = gh pr view $sanitizedPrUrl --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
     $allTeamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $sanitizedPrUrl)
     $teamNames = [array]($allTeamNames | Where-Object { $_ -ne 'bicep-admins' -and $_ -ne 'avm-core-team-technical-bicep' -and $_ -ne 'avm-module-reviewers-bicep' })
-
+    Write-Host 'TEST'
     # core team is already assigned, no or more than one module reviewer team is assigned
     if ($allTeamNames.Contains('avm-core-team-technical-bicep') -or $teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
         gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
