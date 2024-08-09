@@ -64,7 +64,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   name: 'serverDeployment'
   params: {
     // Required parameters
-    name: 'sqlsadmin'
+    name: 'sqladmin'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -91,7 +91,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsadmin"
+      "value": "sqladmin"
     },
     // Non-required parameters
     "administrators": {
@@ -720,7 +720,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
     securityAlertPolicies: [
       {
+        disabledAlerts: []
         emailAccountAdmins: true
+        emailAddresses: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
         name: 'Default'
         state: 'Enabled'
       }
@@ -786,7 +791,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "securityAlertPolicies": {
       "value": [
         {
+          "disabledAlerts": [],
           "emailAccountAdmins": true,
+          "emailAddresses": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
           "name": "Default",
           "state": "Enabled"
         }
