@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7446053749806505838"
+      "templateHash": "5830079553323852254"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -4727,6 +4727,20 @@
         "description": "The primary blob endpoint reference if blob services are deployed."
       },
       "value": "[if(and(not(empty(parameters('blobServices'))), contains(parameters('blobServices'), 'containers')), reference(format('Microsoft.Storage/storageAccounts/{0}', parameters('name')), '2019-04-01').primaryEndpoints.blob, '')]"
+    },
+    "primaryQueueEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The primary queue endpoint reference if queue services are deployed."
+      },
+      "value": "[if(or(equals(parameters('kind'), 'StorageV2'), equals(parameters('kind'), 'Storage')), reference(format('Microsoft.Storage/storageAccounts/{0}', parameters('name')), '2019-04-01').primaryEndpoints.queue, '')]"
+    },
+    "primaryTableEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The primary table endpoint reference if table services are deployed."
+      },
+      "value": "[if(or(equals(parameters('kind'), 'StorageV2'), equals(parameters('kind'), 'Storage')), reference(format('Microsoft.Storage/storageAccounts/{0}', parameters('name')), '2019-04-01').primaryEndpoints.table, '')]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
