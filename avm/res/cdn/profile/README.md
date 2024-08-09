@@ -28,6 +28,7 @@ This module deploys a CDN Profile.
 | `Microsoft.Cdn/profiles/ruleSets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets) |
 | `Microsoft.Cdn/profiles/ruleSets/rules` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets/rules) |
 | `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
+| `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/profiles/securityPolicies) |
 
 ## Usage examples
 
@@ -37,12 +38,245 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cdn/profile:<version>`.
 
-- [As Azure Front Door](#example-1-as-azure-front-door)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [As Azure Front Door Premium](#example-1-as-azure-front-door-premium)
+- [As Azure Front Door](#example-2-as-azure-front-door)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _As Azure Front Door_
+### Example 1: _As Azure Front Door Premium_
+
+This instance deploys the module as Azure Front Door Premium.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module profile 'br/public:avm/res/cdn/profile:<version>' = {
+  name: 'profileDeployment'
+  params: {
+    // Required parameters
+    name: 'dep-test-cdnpafdp'
+    sku: 'Premium_AzureFrontDoor'
+    // Non-required parameters
+    afdEndpoints: [
+      {
+        name: 'dep-test-cdnpafdp-afd-endpoint'
+        routes: [
+          {
+            customDomainNames: [
+              'dep-test-cdnpafdp-custom-domain'
+            ]
+            name: 'dep-test-cdnpafdp-afd-route'
+            originGroupName: 'dep-test-cdnpafdp-origin-group'
+            ruleSets: [
+              {
+                name: 'deptestcdnpafdpruleset'
+              }
+            ]
+          }
+        ]
+      }
+    ]
+    customDomains: [
+      {
+        certificateType: 'ManagedCertificate'
+        hostName: 'dep-test-cdnpafdp-custom-domain.azurewebsites.net'
+        name: 'dep-test-cdnpafdp-custom-domain'
+      }
+    ]
+    location: 'global'
+    originGroups: [
+      {
+        loadBalancingSettings: {
+          additionalLatencyInMilliseconds: 50
+          sampleSize: 4
+          successfulSamplesRequired: 3
+        }
+        name: 'dep-test-cdnpafdp-origin-group'
+        origins: [
+          {
+            hostName: 'dep-test-cdnpafdp-origin.azurewebsites.net'
+            name: 'dep-test-cdnpafdp-origin'
+          }
+        ]
+      }
+    ]
+    originResponseTimeoutSeconds: 60
+    ruleSets: [
+      {
+        name: 'deptestcdnpafdpruleset'
+        rules: [
+          {
+            actions: [
+              {
+                name: 'UrlRedirect'
+                parameters: {
+                  customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+                  customPath: '/test123'
+                  destinationProtocol: 'Https'
+                  redirectType: 'PermanentRedirect'
+                  typeName: 'DeliveryRuleUrlRedirectActionParameters'
+                }
+              }
+            ]
+            name: 'deptestcdnpafdprule'
+            order: 1
+          }
+        ]
+      }
+    ]
+    securityPolicies: [
+      {
+        associations: [
+          {
+            domains: [
+              {
+                id: '<id>'
+              }
+            ]
+            patternsToMatch: [
+              '/*'
+            ]
+          }
+        ]
+        name: 'deptestcdnpafdpsecpol'
+        wafPolicyResourceId: '<wafPolicyResourceId>'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dep-test-cdnpafdp"
+    },
+    "sku": {
+      "value": "Premium_AzureFrontDoor"
+    },
+    // Non-required parameters
+    "afdEndpoints": {
+      "value": [
+        {
+          "name": "dep-test-cdnpafdp-afd-endpoint",
+          "routes": [
+            {
+              "customDomainNames": [
+                "dep-test-cdnpafdp-custom-domain"
+              ],
+              "name": "dep-test-cdnpafdp-afd-route",
+              "originGroupName": "dep-test-cdnpafdp-origin-group",
+              "ruleSets": [
+                {
+                  "name": "deptestcdnpafdpruleset"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "customDomains": {
+      "value": [
+        {
+          "certificateType": "ManagedCertificate",
+          "hostName": "dep-test-cdnpafdp-custom-domain.azurewebsites.net",
+          "name": "dep-test-cdnpafdp-custom-domain"
+        }
+      ]
+    },
+    "location": {
+      "value": "global"
+    },
+    "originGroups": {
+      "value": [
+        {
+          "loadBalancingSettings": {
+            "additionalLatencyInMilliseconds": 50,
+            "sampleSize": 4,
+            "successfulSamplesRequired": 3
+          },
+          "name": "dep-test-cdnpafdp-origin-group",
+          "origins": [
+            {
+              "hostName": "dep-test-cdnpafdp-origin.azurewebsites.net",
+              "name": "dep-test-cdnpafdp-origin"
+            }
+          ]
+        }
+      ]
+    },
+    "originResponseTimeoutSeconds": {
+      "value": 60
+    },
+    "ruleSets": {
+      "value": [
+        {
+          "name": "deptestcdnpafdpruleset",
+          "rules": [
+            {
+              "actions": [
+                {
+                  "name": "UrlRedirect",
+                  "parameters": {
+                    "customHostname": "dev-etradefd.trade.azure.defra.cloud",
+                    "customPath": "/test123",
+                    "destinationProtocol": "Https",
+                    "redirectType": "PermanentRedirect",
+                    "typeName": "DeliveryRuleUrlRedirectActionParameters"
+                  }
+                }
+              ],
+              "name": "deptestcdnpafdprule",
+              "order": 1
+            }
+          ]
+        }
+      ]
+    },
+    "securityPolicies": {
+      "value": [
+        {
+          "associations": [
+            {
+              "domains": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "patternsToMatch": [
+                "/*"
+              ]
+            }
+          ],
+          "name": "deptestcdnpafdpsecpol",
+          "wafPolicyResourceId": "<wafPolicyResourceId>"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _As Azure Front Door_
 
 This instance deploys the module as Azure Front Door.
 
@@ -236,7 +470,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -288,7 +522,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -456,7 +690,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -605,6 +839,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ruleSets`](#parameter-rulesets) | array | Array of rule set objects. |
 | [`secrets`](#parameter-secrets) | array | Array of secret objects. |
+| [`securityPolicies`](#parameter-securitypolicies) | array | Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details). |
 | [`tags`](#parameter-tags) | object | Endpoint tags. |
 
 ### Parameter: `name`
@@ -844,6 +1079,14 @@ Array of rule set objects.
 ### Parameter: `secrets`
 
 Array of secret objects.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `securityPolicies`
+
+Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).
 
 - Required: No
 - Type: array
