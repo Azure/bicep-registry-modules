@@ -48,9 +48,24 @@ module testDeployment '../../../main.bicep' = {
   params: {
     location: enforcedLocation
     name: '${namePrefix}-kv-ref'
-    secretsKeyVault: {
-      keyVaultName: nestedDependencies.outputs.keyVaultName
-      primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
+    secretsExportConfiguration: {
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
+      primaryWriteKeySecretName: 'primaryWriteKey'
+      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
+      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
+      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
+      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
+      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
+      secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
   }
 }
+
+// Output usage examples
+output specificSecret string = testDeployment.outputs.exportedSecrets.primaryReadOnlyKey.secretResourceId
+output allEportedSecrets object = testDeployment.outputs.exportedSecrets
+output allExportedSecretResourceIds array = map(
+  items(testDeployment.outputs.exportedSecrets),
+  item => item.value.secretResourceId
+)

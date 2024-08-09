@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3456931451481989704"
+      "version": "0.29.47.4906",
+      "templateHash": "10632901635628178846"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster.",
@@ -176,6 +176,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -553,6 +560,11 @@
           "notificationLevel": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationLevel'), parameters('notifications')[copyIndex('notificationsVar')].notificationLevel, 'All')]",
           "notificationTargets": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationTargets'), parameters('notifications')[copyIndex('notificationsVar')].notificationTargets, createArray())]"
         }
+      },
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
     "upgradeDescriptionVar": "[union(createObject('deltaHealthPolicy', createObject('applicationDeltaHealthPolicies', coalesce(tryGet(parameters('upgradeDescription'), 'applicationDeltaHealthPolicies'), createObject()), 'maxPercentDeltaUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyApplications'), 0), 'maxPercentDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyNodes'), 0), 'maxPercentUpgradeDomainDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentUpgradeDomainDeltaUnhealthyNodes'), 0)), 'forceRestart', if(contains(parameters('upgradeDescription'), 'forceRestart'), parameters('upgradeDescription').forceRestart, false()), 'healthCheckRetryTimeout', if(contains(parameters('upgradeDescription'), 'healthCheckRetryTimeout'), parameters('upgradeDescription').healthCheckRetryTimeout, '00:45:00'), 'healthCheckStableDuration', if(contains(parameters('upgradeDescription'), 'healthCheckStableDuration'), parameters('upgradeDescription').healthCheckStableDuration, '00:01:00'), 'healthCheckWaitDuration', if(contains(parameters('upgradeDescription'), 'healthCheckWaitDuration'), parameters('upgradeDescription').healthCheckWaitDuration, '00:00:30'), 'upgradeDomainTimeout', if(contains(parameters('upgradeDescription'), 'upgradeDomainTimeout'), parameters('upgradeDescription').upgradeDomainTimeout, '02:00:00'), 'upgradeReplicaSetCheckTimeout', if(contains(parameters('upgradeDescription'), 'upgradeReplicaSetCheckTimeout'), parameters('upgradeDescription').upgradeReplicaSetCheckTimeout, '1.00:00:00'), 'upgradeTimeout', if(contains(parameters('upgradeDescription'), 'upgradeTimeout'), parameters('upgradeDescription').upgradeTimeout, '02:00:00')), if(contains(parameters('upgradeDescription'), 'healthPolicy'), createObject('healthPolicy', createObject('applicationHealthPolicies', if(contains(parameters('upgradeDescription').healthPolicy, 'applicationHealthPolicies'), parameters('upgradeDescription').healthPolicy.applicationHealthPolicies, createObject()), 'maxPercentUnhealthyApplications', if(contains(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyApplications'), parameters('upgradeDescription').healthPolicy.maxPercentUnhealthyApplications, 0), 'maxPercentUnhealthyNodes', if(contains(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyNodes'), parameters('upgradeDescription').healthPolicy.maxPercentUnhealthyNodes, 0))), createObject()))]",
@@ -640,20 +652,20 @@
     "serviceFabricCluster_roleAssignments": {
       "copy": {
         "name": "serviceFabricCluster_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ServiceFabric/clusters/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.ServiceFabric/clusters', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ServiceFabric/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "serviceFabricCluster"
@@ -690,8 +702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "10847125060034010702"
+              "version": "0.29.47.4906",
+              "templateHash": "8632559494589711330"
             },
             "name": "Service Fabric Cluster Application Types",
             "description": "This module deploys a Service Fabric Cluster Application Type.",
