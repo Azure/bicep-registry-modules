@@ -515,7 +515,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 ### Example 5: _Public access_
 
-This instance deploys the module with public access.
+This instance deploys the module with public access and most of its features enabled.
 
 
 <details>

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Public access'
-metadata description = 'This instance deploys the module with public access.'
+metadata description = 'This instance deploys the module with public access and most of its features enabled.'
 
 // ========== //
 // Parameters //
