@@ -196,7 +196,6 @@ runs:
             $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
           }
 
-
           # ----------------- #
           # Invoke validation #
           # ----------------- #
