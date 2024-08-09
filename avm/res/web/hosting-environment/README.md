@@ -336,6 +336,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
+    zoneRedundant: true
   }
 }
 ```
@@ -423,6 +424,9 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "upgradePreference": {
       "value": "Late"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }

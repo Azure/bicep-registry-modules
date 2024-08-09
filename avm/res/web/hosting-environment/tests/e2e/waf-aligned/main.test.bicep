@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'whewaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'az'
 
 // ============ //
 // Dependencies //
@@ -73,6 +73,7 @@ module testDeployment '../../../main.bicep' = [
         resourceType: 'App Service Environment'
         hostingEnvironmentName: '${namePrefix}${serviceShort}001'
       }
+      zoneRedundant: true
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       internalLoadBalancingMode: 'Web, Publishing'
       clusterSettings: [
