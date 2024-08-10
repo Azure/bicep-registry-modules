@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5335025861120249733"
+      "templateHash": "12784031181076258611"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -2705,13 +2705,13 @@
             "value": "[parameters('name')]"
           },
           "disabledAlerts": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], parameters('securityAlertPolicies')[copyIndex()].disabledAlerts), createArray())]"
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'securityAlertPolicy', 'disabledAlerts'), createArray())]"
           },
           "emailAccountAdmins": {
             "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'securityAlertPolicy', 'emailAccountAdmins'), false())]"
           },
           "emailAddresses": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], parameters('securityAlertPolicies')[copyIndex()].emailAddresses), createArray())]"
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'securityAlertPolicy', 'emailAddresses'), createArray())]"
           },
           "retentionDays": {
             "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'retentionDays'), 0)]"
@@ -2869,7 +2869,7 @@
             "value": "[parameters('vulnerabilityAssessmentsObj').name]"
           },
           "recurringScansEmails": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), parameters('vulnerabilityAssessmentsObj').recurringScansEmails), createArray())]"
+            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'vulnerabilityAssessmentsObj', 'recurringScansEmails'), createArray())]"
           },
           "recurringScansEmailSubscriptionAdmins": {
             "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'vulnerabilityAssessmentsObj', 'recurringScansEmailSubscriptionAdmins'), false())]"

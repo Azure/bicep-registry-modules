@@ -379,9 +379,9 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
     params: {
       name: securityAlertPolicy.name
       serverName: server.name
-      disabledAlerts: securityAlertPolicy[?securityAlertPolicy.disabledAlerts] ?? []
+      disabledAlerts: securityAlertPolicy.?securityAlertPolicy.disabledAlerts ?? []
       emailAccountAdmins: securityAlertPolicy.?securityAlertPolicy.emailAccountAdmins ?? false
-      emailAddresses: securityAlertPolicy[?securityAlertPolicy.emailAddresses] ?? []
+      emailAddresses: securityAlertPolicy.?securityAlertPolicy.emailAddresses ?? []
       retentionDays: securityAlertPolicy.?retentionDays ?? 0
       state: securityAlertPolicy.?state ?? 'Disabled'
       storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey ?? ''
@@ -395,7 +395,7 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
   params: {
     serverName: server.name
     name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: vulnerabilityAssessmentsObj[?vulnerabilityAssessmentsObj.recurringScansEmails] ?? []
+    recurringScansEmails: vulnerabilityAssessmentsObj.?vulnerabilityAssessmentsObj.recurringScansEmails ?? []
     recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins ?? false
     recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled ?? false
     storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
