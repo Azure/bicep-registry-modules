@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "14332153924435455705"
+      "templateHash": "13514609454867966180"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -57,8 +57,7 @@
             "description": "Optional. The secret management settings of the machines in the pool."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "storageProfileType": {
       "type": "object",
@@ -824,6 +823,13 @@
     },
     "osProfile": {
       "$ref": "#/definitions/osProfileType",
+      "defaultValue": {
+        "logonType": "Interactive",
+        "secretsManagementSettings": {
+          "keyExportable": false,
+          "observedCertificates": []
+        }
+      },
       "metadata": {
         "description": "Optional. The OS profile of the agents in the pool."
       }
@@ -903,7 +909,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.di.mdp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.devopsinfrastructure-pool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

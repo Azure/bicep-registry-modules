@@ -203,13 +203,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    osProfile: {
-      logonType: 'Service'
-      secretsManagementSettings: {
-        keyExportable: false
-        observedCertificates: []
-      }
-    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -336,15 +329,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
-      }
-    },
-    "osProfile": {
-      "value": {
-        "logonType": "Service",
-        "secretsManagementSettings": {
-          "keyExportable": false,
-          "observedCertificates": []
-        }
       }
     },
     "roleAssignments": {
@@ -921,6 +905,16 @@ The OS profile of the agents in the pool.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      logonType: 'Interactive'
+      secretsManagementSettings: {
+        keyExportable: false
+        observedCertificates: []
+      }
+  }
+  ```
 
 **Required parameters**
 

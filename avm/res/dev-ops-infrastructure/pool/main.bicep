@@ -29,7 +29,13 @@ param subnetResourceId string?
 param agentProfile agentProfileType
 
 @description('Optional. The OS profile of the agents in the pool.')
-param osProfile osProfileType
+param osProfile osProfileType = {
+  logonType: 'Interactive'
+  secretsManagementSettings: {
+    keyExportable: false
+    observedCertificates: []
+  }
+}
 
 @description('Optional. The storage profile of the machines in the pool.')
 param storageProfile storageProfileType
@@ -244,7 +250,7 @@ type osProfileType = {
     @description('Optional. Where to store certificates on the machine.')
     certificateStoreLocation: string?
   }?
-}?
+}
 
 type storageProfileType = {
   @description('Optional. The Azure SKU name of the machines in the pool.')

@@ -129,13 +129,6 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      osProfile: {
-        logonType: 'Service'
-        secretsManagementSettings: {
-          keyExportable: false
-          observedCertificates: []
-        }
-      }
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       roleAssignments: [
         {
