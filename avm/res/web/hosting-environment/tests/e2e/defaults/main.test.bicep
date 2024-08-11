@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'ASEv3'
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      zoneRedundant: true
     }
   }
 ]

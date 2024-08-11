@@ -52,6 +52,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     // Non-required parameters
     kind: 'ASEv3'
     location: '<location>'
+    zoneRedundant: true
   }
 }
 ```
@@ -81,6 +82,9 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "location": {
       "value": "<location>"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -163,6 +167,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
+    zoneRedundant: true
   }
 }
 ```
@@ -275,6 +280,9 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "upgradePreference": {
       "value": "Late"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }

@@ -105,6 +105,7 @@ module testDeployment '../../../main.bicep' = [
           value: '1'
         }
       ]
+      zoneRedundant: true
       allowNewPrivateEndpointConnections: true
       ftpEnabled: true
       inboundIpAddressOverride: '10.0.0.10'
