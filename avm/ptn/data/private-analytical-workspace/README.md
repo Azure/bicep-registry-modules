@@ -835,8 +835,9 @@ The assigned IP address range of a Virtual Network may conflict with that of an 
 
 Since it's an isolated segment, in order to access client resources such as key vault and others, the client's public IP must be included in the allowed range within the ```advancedOptions.networkAcls.ipRules``` parameter.
 
-For a dedicated virtual network to be provisioned for you (this use case), the Virtual Network ```id``` parameter needs to remain unfilled.
+For a dedicated virtual network to be provisioned for you (this use case), the Virtual Network ```virtualNetworkResourceId``` parameter needs to remain unfilled.
 
+<a name="monitoring-uc1"></a>
 ##### Monitoring of the Solution
 
 If the parameter ```logAnalyticsWorkspaceResourceId``` is left unspecified or set to ```null```, a new Azure Log Analytics Workspace will be created as part of the solution. The diagnostic settings for most services within the solution will be configured to channel into this newly created Azure Log Analytics Workspace.</br>
@@ -893,7 +894,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 This use case seeks to align with the expectations of enterprise infrastructure. For instance, certain companies prohibit the use of public IP addresses in their solutions.
 
-The solution will generate certain elements such as Monitoring, Key Vault, permissions, and analytics services. However, additional configurations may be required before and after deployment.
+The solution will provision certain elements such as Monitoring, Key Vault, permissions, and analytics services. However, additional configurations may be required before and after deployment.
 
 Choosing this option allows you to tailor the infrastructure, but typically requires customized services from the cloud, security, and network teams, leading to less agility and project delays.
 
@@ -901,14 +902,88 @@ This case presents a balance between an extended deployment timeline and complia
 
 Complexity could be notably high on the Virtual Network side.
 
-Anticipate the need for virtual network peering arrangements using a hub and spoke design, configuration of DNS, private zones, private endpoints, DNS forwarding for private links, virtual network delegations, and so on. Additionally, various analytics services may each have distinct virtual network requirements.
+Anticipate the need for virtual network peering arrangements using a hub and spoke design, route tables, configuration of DNS, private zones, private endpoints, DNS forwarding for private links, virtual network delegations, and so on. Additionally, various analytics services may each have distinct virtual network requirements.
 
-This use case does not require any public IP addresses to be exposed. All services can utilize private access exclusively.
+This use case does not require any public IP addresses to be exposed. All services can utilize private Enterprise Network access exclusively.
 
 The identity of the solution administrator or the managing group must be submitted to gain access and control over the solution.
 
+##### Virtual Network
+
+The enterprise network team needs to set up a virtual network with necessary components and settings in advance. This must be a spoke-type network connected to the central hub network with central Enterprise Firewall and connectivity to enterprise network - following the hub and spoke architecture.
+
+The Customer/Network team must set up a unique virtual network without overlapping the corporate address space, designate the right-sized subnets, manage network delegations, route tables, set up corporate DNS at the Virtual Network level, enroll private links in enterprise-grade private DNS zones with forwarding for resolving private links, and create specific Network Security Groups with tailored rules for certain services enabled in the solution.
+
+Creating at least a /26 subnet is essential for hosting private endpoints. As additional analytical services are activated, there will generally be a need for a greater number of subnets of varying sizes.
+The services within the solution vary in their requirements. For instance, consider the needs of Azure Databricks:
+
+- https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#network-security-group-rules-for-workspaces
+- https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/udr
+
+Review the necessary subnets, subnet sizing, routing, DNS settings, network security groups, delegations for 'Microsoft.Databricks/workspaces', and private endpoints.
+
+If only full private access is required, the ```advancedOptions.networkAcls.ipRules``` parameter should not be configured.
+
+When utilizing a pre-defined virtual network provided by the Enterprise Network team (this use case), the ```virtualNetworkResourceId``` parameter should be set to reference the existing Virtual Network.
+
+<a name="monitoring-uc2"></a>
+##### Monitoring of the Solution
+
+The rules outlined here: [Monitoring of the Solution for Use Case 1](#monitoring-uc1) apply to this use case as well.
 
 
+
+
+
+
+
+
+
+##### Storing Secrets - Key Vault
+
+If the parameter ```keyVaultResourceId``` is left unspecified or set to ```null```, a new Azure Key Vault will be created as part of the solution.</br>
+Additional creation configurations for the Azure Key Vault are available under the parameter ```advancedOptions.keyVault.*```.</br>
+As part of the solution, a private endpoint and a DNS Key Vault Zone are created. To handle secrets through the Azure Portal, Public Access must be provided for the given public IP within the parameter ```advancedOptions.networkAcls.ipRules```.</br>
+For the handling of secrets, users need to have privileged roles. Those listed in the ```solutionAdministrators.*``` parameter will receive 'Key Vault Administrator' privileges specifically for Azure Key Vaults that are newly created.</br>
+
+##### Solution Administrators
+
+In order to grant administrative rights for the newly created services that have been added to the solution, you should utilize the parameter ```solutionAdministrators.*```. You can designate User or Entra ID Groups for this purpose.</br>
+The specified identities will be granted ownership of the solution, enabling them to delegate permissions as necessary. Additionally, they will obtain 'Key Vault Administrator' rights, which apply solely to the Azure Key Vaults that have been created as part of the solution.</br>
+It's essential to designate an individual as the Solution Administrator to utilize the solution effectively.</br>
+
+##### Analytical Service - Azure Databricks
+
+If the parameter ```enableDatabricks``` is set to ```true```, a new Azure Databricks instance will be created as part of the solution.</br>
+Additional creation configurations for the Azure Databricks are available under the parameter ```advancedOptions.databricks.*```.</br>
+As part of the solution, two subnets with delegations, two private endpoints, network security groups and a Azure Databricks Zone are created.</br>
+To access Azure Databricks integrated into the isolated Virtual Network, Public Access must be provided for the given public IP within the parameter ```advancedOptions.networkAcls.ipRules```.</br>
+Additional manual setup is required to restrict public access for different clients. Refer to this guide for more information: <https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview></br>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'UC1'
+  params: {
+    // Required parameters
+    name: 'pawuc1'
+    // Non-required parameters
+    virtualNetworkResourceId: null        // null means new VNET will be created
+    logAnalyticsWorkspaceResourceId: null // null means new Log Analytical Workspace will be created
+    keyVaultResourceId: null              // null means new Azure key Vault will be created
+    enableDatabricks: true                // Part of the solution and VNET will be new instance of the Azure Databricks
+    solutionAdministrators: [
+      {
+        principalId: <EntraGroupId>       // Specified group will have enough permissions to manage the solution
+        principalType: 'Group'            // Group and/or User type can be specified
+      }
+    ]
+    advancedOptions: {
+      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution
+    }
+    tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
+  }
+}
+```
 
 
 
