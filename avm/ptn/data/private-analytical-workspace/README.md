@@ -815,13 +815,13 @@ For example, refer to the documentation here: https://learn.microsoft.com/en-us/
 
 #### Use Case 1: Greenfield, isolated deployment from the enterprise network
 
-This solution is fairly simple to provision while ensuring security.
+This use case is fairly simple to provision while ensuring security.
 Ideal for rapid problem-solving that requires an analytical workspace for swift development.
 The solution will create all the required components such as Virtual Network, Monitoring, Key Vault, permissions, and analytical services.
 All utilizing recommended practices.
 
 Because of the isolated network configuration, public IP addresses of customers must be designated as authorized to access the environment through secure public endpoints.
-The solution will only be accessible from predetermined public IP addresses.
+The solution will only be accessible from predetermined public IP addresses. This use case may not be suitable for highly restrictive enterprises that have strict no public IP policies.</br>
 The identity of the solution administrator or the managing group must be submitted to gain access and control over the solution.
 There is no requirement to pre-establish a virtual network or any additional components.
 
@@ -831,11 +831,11 @@ A Virtual Network will be created with all necessary components and will be esta
 This will include the creation of appropriate subnets, private links, and Network Security Groups.
 Additionally, it will leverage Azure DNS along with Azure DNS zones for the configuration of private endpoints, which will be associated with the Virtual Network.
 
-The assigned IP address range of a Virtual Network may conflict with that of an enterprise network. As a result, this virtual network should not be connected, or peered, with the enterprise network. In this scenario, the virtual network is established as an isolated segment.
+The assigned IP address range of a Virtual Network may conflict with that of an enterprise network. As a result, this virtual network should not be connected, or peered, with any enterprise network. In this use case, the virtual network is established as an isolated segment.
 
-Since it's an isolated island, in order to access client resources such as key vault and others, the client's public IP must be included in the allowed range within the ```advancedOptions.networkAcls.ipRules``` parameter.
+Since it's an isolated segment, in order to access client resources such as key vault and others, the client's public IP must be included in the allowed range within the ```advancedOptions.networkAcls.ipRules``` parameter.
 
-For a dedicated virtual network to be provisioned for you, the VNET ```id``` parameter needs to remain unfilled.
+For a dedicated virtual network to be provisioned for you (this use case), the Virtual Network ```id``` parameter needs to remain unfilled.
 
 ##### Monitoring of the Solution
 
