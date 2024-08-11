@@ -773,10 +773,9 @@ for data analysis in a secure and enterprise-ready way.
 
 Data scientists should not worry about infrastructure details.<br>
 Ideally, data scientists should only focus on the data analytics tools they need for the solution. For example Databricks, Machine learning, database, etc.<br>
-Enterprise security, monitoring, secrets storage, databases, access over a private network should be
-integrated into the solution in a transparent way so cloud and security team can approve the whole solution easily.
+Enterprise security, monitoring, secrets storage, databases, access over a private network should be built into the solution in a transparent way so cloud and security team can approve the whole solution easily.
 
-One of the design goals is to have all the services that are part of the solution
+One of the design goals of this pattern is to have all the services that are part of the solution
 connected to one virtual network to make the traffic between services private (use of private endpoints).
 A virtual network can be either created along with the solution or
 an existing / pre-defined virtual network (Hub/Spoke model – spoke VNET made by network enterprise team) can be chosen.
@@ -793,12 +792,12 @@ by enterprise network team), Azure Log Analytics workspace for diagnostics and m
 store (either created or given by cloud team).
 
 Every resource in the solution can be tagged and locked.
-The owner role for every resource can be given with the "solutionAdministrators" parameter.
-All resources are named according to the provided input parameter "name".
+The owner role for every resource can be given with the ```solutionAdministrators.*``` parameter.</br>
+All resources are named according to the provided input parameter ```name```.</br>
 All resources gather diagnostic and monitoring data, which is then stored in either a newly created or an existing Log Analytics Workspace.
 
-The solution may optionally include additional analytical services, for instance by enabling the "enableDatabricks" parameter.
-The parameter "advancedOptions" allows for finer customization of the solution.
+The solution may optionally include additional analytical services, for instance by enabling the ```enableDatabricks``` parameter.</br>
+The parameter ```advancedOptions.*``` allows for finer customization of the solution.
 Certain Azure services within the solution can be reached via a public endpoint (if preferred) and can also be limited using network access control lists by permitting only the public IP of the accessing client.
 
 This solution invariably demands a Virtual network presence.
@@ -806,7 +805,7 @@ At the very least, it necessitates a single subnet to cater to private link endp
 The incorporation of additional optional services implies further prerequisites for the network,
 such as subnets, their sizes, network security groups, NSG access control lists,
 private endpoints, DNS zones, etc.
-For instance, activating the Azure Databricks service would automatically generate a virtual network and its essential components per established best practices.
+For instance, activating the Azure Databricks service would automatically generate a virtual network and its essential components per established best practices.</br>
 When an enterprise's virtual network is supplied by either the network or cloud team, it has to comply with the requirements of the services being activated.
 It's crucial that Network Security Groups, Network Security Group Rules, DNS Zones and DNS forwarding, private endpoints,
 and domain zones for services like Key Vault and Azure Databricks, along with subnet delegations, are all set up correctly.
