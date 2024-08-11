@@ -889,13 +889,28 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 }
 ```
 
+#### Use Case 2: Brownfield, Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment
+
+This use case seeks to align with the expectations of enterprise infrastructure. For instance, certain companies prohibit the use of public IP addresses in their solutions.
+
+The solution will generate certain elements such as Monitoring, Key Vault, permissions, and analytics services. However, additional configurations may be required before and after deployment.
+
+Choosing this option allows you to tailor the infrastructure, but typically requires customized services from the cloud, security, and network teams, leading to less agility and project delays.
+
+This case presents a balance between an extended deployment timeline and compliance with corporate policies and infrastructure requirements.
+
+Complexity could be notably high on the Virtual Network side.
+
+Anticipate the need for virtual network peering arrangements using a hub and spoke design, configuration of DNS, private zones, private endpoints, DNS forwarding for private links, virtual network delegations, and so on. Additionally, various analytics services may each have distinct virtual network requirements.
+
+This use case does not require any public IP addresses to be exposed. All services can utilize private access exclusively.
+
+The identity of the solution administrator or the managing group must be submitted to gain access and control over the solution.
 
 
 
 
 
-
-#### Use Case 3: Provided Virtual Network
 
 
 
