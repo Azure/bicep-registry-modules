@@ -208,7 +208,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         version: 'latest'
       }
       maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
-      name: 'vm-aipbmax'
+      name: '<name>'
       nicConfigurationConfiguration: {
         ipConfigName: 'ipcfg-aipbmax'
         name: 'nic-aipbmax'
@@ -347,7 +347,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
           "version": "latest"
         },
         "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>",
-        "name": "vm-aipbmax",
+        "name": "<name>",
         "nicConfigurationConfiguration": {
           "ipConfigName": "ipcfg-aipbmax",
           "name": "nic-aipbmax",
