@@ -202,9 +202,9 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       enabled: true
       encryptionAtHost: false
       imageReference: {
-        offer: 'dsvm-win-2019'
+        offer: 'dsvm-win-2022'
         publisher: 'microsoft-dsvm'
-        sku: 'server-2019'
+        sku: 'winserver-2022'
         version: 'latest'
       }
       maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
@@ -341,9 +341,9 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "enabled": true,
         "encryptionAtHost": false,
         "imageReference": {
-          "offer": "dsvm-win-2019",
+          "offer": "dsvm-win-2022",
           "publisher": "microsoft-dsvm",
-          "sku": "server-2019",
+          "sku": "winserver-2022",
           "version": "latest"
         },
         "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>",

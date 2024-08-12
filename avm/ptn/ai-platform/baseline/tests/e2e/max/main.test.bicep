@@ -125,8 +125,8 @@ module testDeployment '../../../main.bicep' = [
         }
         imageReference: {
           publisher: 'microsoft-dsvm'
-          offer: 'dsvm-win-2019'
-          sku: 'server-2019'
+          offer: 'dsvm-win-2022'
+          sku: 'winserver-2022'
           version: 'latest'
         }
         osDisk: {
