@@ -156,7 +156,7 @@
         }
       }
     },
-    "_1.roleAssignmentCondtionType": {
+    "_1.roleAssignmentConditionType": {
       "type": "object",
       "properties": {
         "roleConditionType": {
@@ -214,7 +214,7 @@
             }
           },
           "roleAssignmentCondition": {
-            "$ref": "#/definitions/_1.roleAssignmentCondtionType",
+            "$ref": "#/definitions/_1.roleAssignmentConditionType",
             "nullable": true,
             "metadata": {
               "description": "Optional. The condition for the role assignment."
@@ -902,7 +902,7 @@
                     }
                   },
                   "roleAssignmentCondition": {
-                    "$ref": "#/definitions/roleAssignmentCondtionType",
+                    "$ref": "#/definitions/roleAssignmentConditionType",
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. The condition for the role assignment."
@@ -1046,7 +1046,7 @@
                 "__bicep_export!": true
               }
             },
-            "roleAssignmentCondtionType": {
+            "roleAssignmentConditionType": {
               "type": "object",
               "properties": {
                 "roleConditionType": {

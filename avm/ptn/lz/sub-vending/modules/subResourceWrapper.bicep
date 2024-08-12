@@ -684,7 +684,7 @@ type roleAssignmentType = {
   relativeScope: string
 
   @description('Optional. The condition for the role assignment.')
-  roleAssignmentCondition: roleAssignmentCondtionType?
+  roleAssignmentCondition: roleAssignmentConditionType?
 }[]
 
 // "Constrain Roles" - Condition template
@@ -744,7 +744,7 @@ type constrainedDelegationTemplatesType =
 
 // Role Assignment Condition type
 @export()
-type roleAssignmentCondtionType = {
+type roleAssignmentConditionType = {
   @description('Required. The type of template for the role assignment condition.')
   roleConditionType: constrainedDelegationTemplatesType?
 
