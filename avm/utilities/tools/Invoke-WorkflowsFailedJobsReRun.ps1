@@ -90,6 +90,55 @@ function Get-GitHubModuleWorkflowList {
 
 <#
 .SYNOPSIS
+Invoke the re-run for a given set of workflow runs.
+
+.DESCRIPTION
+Invoke the re-run for a given set of workflow runs.
+
+.PARAMETER RestInputObject
+Mandatory. The REST parameters to use for the re-run. Must contain the 'RepositoryOwner' and 'RepositoryName' keys and may contain the 'PersonalAccessToken' key.
+
+.PARAMETER RunsToReTrigger
+Manadatory. The workflow runs to re-trigger.
+
+.PARAMETER TotalNumberOfWorkflows
+Mandatory. The total number of workflows to re-trigger.
+
+.EXAMPLE
+Invoke-ReRun -RestInputObject @{ RepositoryOwner = 'Azure'; RepositoryName = 'bicep-registry-modules' } -RunsToReTrigger @(@{ id = 123; name = 'keyvaultworkflow'}) -TotalNumberOfWorkflows 123
+
+Re-run the failed jobs for all provided runs in the repository [Azure/bicep-registry-modules].
+#>
+function Invoke-ReRun {
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory)]
+        [hashtable] $RestInputObject,
+
+        [Parameter(Mandatory)]
+        [object[]] $RunsToReTrigger,
+
+        [Parameter(Mandatory)]
+        [int] $TotalNumberOfWorkflows
+    )
+
+    $totalCount = $RunsToReTrigger.Count
+    $currentCount = 1
+    Write-Verbose ('Runs to re-run failed jobs for [{0}/{1}]' -f $RunsToReTrigger.Count, $TotalNumberOfWorkflows) -Verbose
+    foreach ($run in $RunsToReTrigger) {
+        $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
+        Write-Progress -Activity ('Re-running failed jobs for workflow [{0}]' -f $run.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
+
+        if ($PSCmdlet.ShouldProcess(("Re-run of failed jobs for GitHub workflow [{0}] for branch [$TargetBranch]" -f $run.name), 'Invoke')) {
+            $null = Invoke-GitHubWorkflowRunFailedJobsReRun @RestInputObject -RunId $run.id
+        }
+        $currentCount++
+    }
+}
+
+<#
+.SYNOPSIS
 Get the latest run of a GitHub workflow for a given branch.
 
 .DESCRIPTION
@@ -340,17 +389,26 @@ function Invoke-WorkflowsFailedJobsReRun {
     ##############################
     #   Re-trigger failed runs   #
     ##############################
-    $totalCount = $runsToReTrigger.Count
-    $currentCount = 1
-    Write-Verbose ('Runs to re-run failed jobs for [{0}/{1}]' -f $runsToReTrigger.Count, $workflows.count) -Verbose
-    foreach ($run in $runsToReTrigger) {
-        $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
-        Write-Progress -Activity ('Re-running failed jobs for workflow [{0}]' -f $run.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
+    $reRunInputObject = @{
+        RestInputObject        = $baseInputObject
+        RunsToReTrigger        = $runsToReTrigger
+        TotalNumberOfWorkflows = $workflows.Count
+    }
+    $null = Invoke-ReRun @reRunInputObject -WhatIf:$WhatIfPreference
 
-        if ($PSCmdlet.ShouldProcess(("Re-run of failed jobs for GitHub workflow [{0}] for branch [$TargetBranch]" -f $run.name), 'Invoke')) {
-            $null = Invoke-GitHubWorkflowRunFailedJobsReRun @baseInputObject -RunId $run.id
+    # Enable the user to execute the invocation if the whatif looked good
+    if ($WhatIfPreference) {
+        do {
+            $userInput = Read-Host -Prompt 'Should apply (y/n)?'
         }
-        $currentCount++
+        while ($userInput -notin @('y', 'n'))
+
+        switch ($userInput) {
+            'y' {
+                $null = Invoke-ReRun @reRunInputObject -WhatIf:$false
+            }
+            'n' { return }
+        }
     }
 
     Write-Verbose 'Re-triggerung complete' -Verbose
