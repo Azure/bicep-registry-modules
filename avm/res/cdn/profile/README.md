@@ -1092,6 +1092,69 @@ Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/te
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`associations`](#parameter-securitypoliciesassociations) | array | Domain names and URL patterns to math with this association. |
+| [`name`](#parameter-securitypoliciesname) | string | Name of the security policy. |
+| [`wafPolicyResourceId`](#parameter-securitypolicieswafpolicyresourceid) | string | Resource ID of WAF policy. |
+
+### Parameter: `securityPolicies.associations`
+
+Domain names and URL patterns to math with this association.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`domains`](#parameter-securitypoliciesassociationsdomains) | array | List of domain resource id to associate with this resource. |
+| [`patternsToMatch`](#parameter-securitypoliciesassociationspatternstomatch) | array | List of patterns to match with this association. |
+
+### Parameter: `securityPolicies.associations.domains`
+
+List of domain resource id to associate with this resource.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-securitypoliciesassociationsdomainsid) | string | ResourceID to domain that will be associated. |
+
+### Parameter: `securityPolicies.associations.domains.id`
+
+ResourceID to domain that will be associated.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityPolicies.associations.patternsToMatch`
+
+List of patterns to match with this association.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `securityPolicies.name`
+
+Name of the security policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityPolicies.wafPolicyResourceId`
+
+Resource ID of WAF policy.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `tags`
 
 Endpoint tags.

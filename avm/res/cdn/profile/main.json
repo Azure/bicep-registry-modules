@@ -6,13 +6,39 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16790658876279622393"
+      "templateHash": "6019968709413308978"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "securityPolicyType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the security policy."
+            }
+          },
+          "associations": {
+            "$ref": "#/definitions/associationsType",
+            "metadata": {
+              "description": "Required. Domain names and URL patterns to math with this association."
+            }
+          },
+          "wafPolicyResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Resource ID of WAF policy."
+            }
+          }
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -110,6 +136,45 @@
         }
       },
       "nullable": true
+    },
+    "associationsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "domains": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. ResourceID to domain that will be associated."
+                  }
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. List of domain resource id to associate with this resource."
+            }
+          },
+          "patternsToMatch": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. List of patterns to match with this association."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "securityPolicies/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -203,7 +268,7 @@
       }
     },
     "securityPolicies": {
-      "type": "array",
+      "$ref": "#/definitions/securityPolicyType",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details)."
@@ -2162,7 +2227,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "17200679565089581087"
+              "templateHash": "17489697362891034133"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy.",
@@ -2201,6 +2266,9 @@
                     }
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             }
           },
