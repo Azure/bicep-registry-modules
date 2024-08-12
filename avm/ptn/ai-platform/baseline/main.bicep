@@ -213,7 +213,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
   name: '${uniqueString(deployment().name, location)}-virtual-machine'
   params: {
     name: virtualMachineConfiguration.?name ?? 'vm-${name}'
-    computerName: take(virtualMachineConfiguration.?name ?? 'vm-${name}', 15)
+    computerName: virtualMachineConfiguration.?name ?? 'vm-${name}'
     location: location
     enableTelemetry: enableTelemetry
     adminUsername: virtualMachineConfiguration.?adminUsername ?? ''
@@ -758,6 +758,7 @@ type virtualMachineConfigurationType = {
   enabled: bool?
 
   @description('Optional. The name of the virtual machine.')
+  @maxLength(15)
   name: string?
 
   @description('Optional. The availability zone of the virtual machine. If set to 0, no availability zone is used (default).')
