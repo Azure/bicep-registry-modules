@@ -341,6 +341,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     location: location
     skuName: storageAccountSettings.?sku ?? 'Standard_RAGZRS'
     enableTelemetry: enableTelemetry
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: storageAccountSettings.?allowSharedKeyAccess ?? false
+    defaultToOAuthAuthentication: !(storageAccountSettings.?allowSharedKeyAccess ?? false)
     publicNetworkAccess: 'Disabled'
     networkAcls: {
       defaultAction: 'Deny'
@@ -610,6 +613,9 @@ type storageAccountSettingType = {
     | 'Premium_ZRS'
     | 'Standard_GZRS'
     | 'Standard_RAGZRS'?
+
+  @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to \'false\'.')
+  allowSharedKeyAccess: bool?
 }?
 
 type containerRegistrySettingType = {
