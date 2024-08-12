@@ -50,7 +50,7 @@ param ruleSets array = []
 param afdEndpoints array = []
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
-param securityPolicies array = []
+param securityPolicies securityPolicyType = []
 
 @description('Optional. Endpoint tags.')
 param tags object?
@@ -297,6 +297,18 @@ output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : 
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { associationsType } from 'securityPolicies/main.bicep'
+type securityPolicyType = {
+  @description('Required. Name of the security policy.')
+  name: string
+
+  @description('Required. Domain names and URL patterns to math with this association.')
+  associations: associationsType
+
+  @description('Required. Resource ID of WAF policy.')
+  wafPolicyResourceId: string
+}[]
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

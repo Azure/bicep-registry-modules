@@ -33,6 +33,7 @@ resource securityPolicies 'Microsoft.Cdn/profiles/securityPolicies@2024-02-01' =
   }
 }
 
+@export()
 type associationsType = {
   @description('Required. List of domain resource id to associate with this resource.')
   domains: {
