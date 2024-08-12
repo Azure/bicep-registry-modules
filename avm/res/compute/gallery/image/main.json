@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "7059991596058545894"
+      "version": "0.29.47.4906",
+      "templateHash": "16910019400576294016"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -18,6 +18,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -78,11 +85,105 @@
         }
       },
       "nullable": true
+    },
+    "resourceRangeType": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "metadata": {
+            "description": "Optional. The minimum number of the resource."
+          }
+        },
+        "max": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum number of the resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "disallowedType": {
+      "type": "object",
+      "properties": {
+        "diskTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "example": "  [\n    'Standard_LRS'\n  ]",
+            "description": "Required. A list of disk types."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "identifierType": {
+      "type": "object",
+      "properties": {
+        "publisher": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the gallery image definition publisher."
+          }
+        },
+        "offer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the gallery image definition offer."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the gallery image definition SKU."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "purchasePlanType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The plan ID."
+          }
+        },
+        "product": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The product ID."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The publisher ID."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
       "metadata": {
         "description": "Required. Name of the image definition."
       }
@@ -101,138 +202,64 @@
         "description": "Conditional. The name of the parent Azure Shared Image Gallery. Required if the template is used in a standalone deployment."
       }
     },
-    "osType": {
-      "type": "string",
-      "allowedValues": [
-        "Windows",
-        "Linux"
-      ],
+    "identifier": {
+      "$ref": "#/definitions/identifierType",
       "metadata": {
-        "description": "Required. OS type of the image to be created."
+        "description": "Required. This is the gallery image definition identifier."
       }
     },
     "osState": {
       "type": "string",
-      "defaultValue": "Generalized",
       "allowedValues": [
         "Generalized",
         "Specialized"
       ],
       "metadata": {
-        "description": "Optional. This property allows the user to specify whether the virtual machines created under this image are 'Generalized' or 'Specialized'."
+        "description": "Required. This property allows the user to specify the state of the OS of the image."
       }
     },
-    "publisher": {
+    "osType": {
       "type": "string",
-      "metadata": {
-        "description": "Required. The name of the gallery Image Definition publisher."
-      }
-    },
-    "offer": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the gallery Image Definition offer."
-      }
-    },
-    "sku": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the gallery Image Definition SKU."
-      }
-    },
-    "minRecommendedvCPUs": {
-      "type": "int",
-      "defaultValue": 1,
-      "minValue": 1,
-      "maxValue": 128,
-      "metadata": {
-        "description": "Optional. The minimum number of the CPU cores recommended for this image."
-      }
-    },
-    "maxRecommendedvCPUs": {
-      "type": "int",
-      "defaultValue": 4,
-      "minValue": 1,
-      "maxValue": 128,
-      "metadata": {
-        "description": "Optional. The maximum number of the CPU cores recommended for this image."
-      }
-    },
-    "minRecommendedMemory": {
-      "type": "int",
-      "defaultValue": 4,
-      "minValue": 1,
-      "maxValue": 4000,
-      "metadata": {
-        "description": "Optional. The minimum amount of RAM in GB recommended for this image."
-      }
-    },
-    "maxRecommendedMemory": {
-      "type": "int",
-      "defaultValue": 16,
-      "minValue": 1,
-      "maxValue": 4000,
-      "metadata": {
-        "description": "Optional. The maximum amount of RAM in GB recommended for this image."
-      }
-    },
-    "hyperVGeneration": {
-      "type": "string",
-      "nullable": true,
       "allowedValues": [
-        "V1",
-        "V2"
+        "Linux",
+        "Windows"
       ],
       "metadata": {
-        "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
-      }
-    },
-    "securityType": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "TrustedLaunch",
-        "ConfidentialVM",
-        "ConfidentialVMSupported"
-      ],
-      "metadata": {
-        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
-      }
-    },
-    "isHibernateSupported": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Specifiy if the image supports hibernation."
-      }
-    },
-    "isAcceleratedNetworkSupported": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
-      }
-    },
-    "description": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The description of this gallery Image Definition resource. This property is updatable."
-      }
-    },
-    "eula": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The Eula agreement for the gallery Image Definition. Has to be a valid URL."
+        "description": "Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image."
       }
     },
     "privacyStatementUri": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The privacy statement uri. Has to be a valid URL."
+        "description": "Optional. The privacy statement uri."
+      }
+    },
+    "purchasePlan": {
+      "$ref": "#/definitions/purchasePlanType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Describes the gallery image definition purchase plan. This is used by marketplace images."
+      }
+    },
+    "vCPUs": {
+      "$ref": "#/definitions/resourceRangeType",
+      "defaultValue": {
+        "min": 1,
+        "max": 4
+      },
+      "metadata": {
+        "description": "Optional. Describes the resource range (1-128 CPU cores)."
+      }
+    },
+    "memory": {
+      "$ref": "#/definitions/resourceRangeType",
+      "defaultValue": {
+        "min": 4,
+        "max": 16
+      },
+      "metadata": {
+        "description": "Optional. Describes the resource range (1-4000 GB RAM)."
       }
     },
     "releaseNoteUri": {
@@ -242,39 +269,81 @@
         "description": "Optional. The release note uri. Has to be a valid URL."
       }
     },
-    "productName": {
+    "securityType": {
+      "type": "string",
+      "allowedValues": [
+        "ConfidentialVM",
+        "ConfidentialVMSupported",
+        "Standard",
+        "TrustedLaunch"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
+      }
+    },
+    "isAcceleratedNetworkSupported": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Specify if the image supports accelerated networking."
+      }
+    },
+    "isHibernateSupported": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifiy if the image supports hibernation."
+      }
+    },
+    "architecture": {
+      "type": "string",
+      "allowedValues": [
+        "Arm64",
+        "x64"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The architecture of the image. Applicable to OS disks only."
+      }
+    },
+    "description": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The product ID."
+        "description": "Optional. The description of this gallery image definition resource. This property is updatable."
       }
     },
-    "planName": {
+    "disallowed": {
+      "$ref": "#/definitions/disallowedType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Describes the disallowed disk types."
+      }
+    },
+    "endOfLifeDate": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The plan ID."
+        "description": "Optional. The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable."
       }
     },
-    "planPublisherName": {
+    "eula": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The publisher ID."
+        "description": "Optional. The Eula agreement for the gallery image definition."
       }
     },
-    "endOfLife": {
+    "hyperVGeneration": {
       "type": "string",
-      "defaultValue": "",
+      "allowedValues": [
+        "V1",
+        "V2"
+      ],
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
-      }
-    },
-    "excludedDiskTypes": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. List of the excluded disk types (e.g., Standard_LRS)."
+        "description": "Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
       }
     },
     "roleAssignments": {
@@ -287,11 +356,19 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags for all resources."
+        "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
+        "description": "Optional. Tags for all the image."
       }
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "builtInRoleNames": {
       "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -305,48 +382,39 @@
     "gallery": {
       "existing": true,
       "type": "Microsoft.Compute/galleries",
-      "apiVersion": "2022-03-03",
+      "apiVersion": "2023-07-03",
       "name": "[parameters('galleryName')]"
     },
     "image": {
       "type": "Microsoft.Compute/galleries/images",
-      "apiVersion": "2022-03-03",
+      "apiVersion": "2023-07-03",
       "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "osType": "[parameters('osType')]",
-        "osState": "[parameters('osState')]",
-        "identifier": {
-          "publisher": "[parameters('publisher')]",
-          "offer": "[parameters('offer')]",
-          "sku": "[parameters('sku')]"
-        },
-        "recommended": {
-          "vCPUs": {
-            "min": "[parameters('minRecommendedvCPUs')]",
-            "max": "[parameters('maxRecommendedvCPUs')]"
-          },
-          "memory": {
-            "min": "[parameters('minRecommendedMemory')]",
-            "max": "[parameters('maxRecommendedMemory')]"
-          }
-        },
-        "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
-        "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported'))), createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), if(not(equals(parameters('securityType'), 'Standard')), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType'))), createArray()))]",
+        "architecture": "[parameters('architecture')]",
         "description": "[parameters('description')]",
-        "eula": "[parameters('eula')]",
-        "privacyStatementUri": "[parameters('privacyStatementUri')]",
-        "releaseNoteUri": "[parameters('releaseNoteUri')]",
-        "purchasePlan": {
-          "product": "[parameters('productName')]",
-          "name": "[parameters('planName')]",
-          "publisher": "[parameters('planPublisherName')]"
-        },
-        "endOfLifeDate": "[parameters('endOfLife')]",
         "disallowed": {
-          "diskTypes": "[parameters('excludedDiskTypes')]"
-        }
+          "diskTypes": "[coalesce(tryGet(parameters('disallowed'), 'diskTypes'), createArray())]"
+        },
+        "endOfLifeDate": "[parameters('endOfLifeDate')]",
+        "eula": "[parameters('eula')]",
+        "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), if(not(equals(parameters('securityType'), null())), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
+        "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1'))]",
+        "identifier": {
+          "publisher": "[parameters('identifier').publisher]",
+          "offer": "[parameters('identifier').offer]",
+          "sku": "[parameters('identifier').sku]"
+        },
+        "osState": "[parameters('osState')]",
+        "osType": "[parameters('osType')]",
+        "privacyStatementUri": "[parameters('privacyStatementUri')]",
+        "purchasePlan": "[coalesce(parameters('purchasePlan'), null())]",
+        "recommended": {
+          "vCPUs": "[parameters('vCPUs')]",
+          "memory": "[parameters('memory')]"
+        },
+        "releaseNoteUri": "[parameters('releaseNoteUri')]"
       },
       "dependsOn": [
         "gallery"
@@ -355,20 +423,20 @@
     "image_roleAssignments": {
       "copy": {
         "name": "image_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Compute/galleries/{0}/images/{1}', parameters('galleryName'), parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "image"
@@ -402,7 +470,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('image', '2022-03-03', 'full').location]"
+      "value": "[reference('image', '2023-07-03', 'full').location]"
     }
   }
 }

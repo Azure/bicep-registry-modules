@@ -236,6 +236,11 @@ The domain name specific to the Azure ADDS service.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  - 'contoso.onmicrosoft.com'
+  - 'aaddscontoso.com'
+  ```
 
 ### Parameter: `pfxCertificate`
 
@@ -260,6 +265,11 @@ The email recipient value to receive alerts.
 - Required: No
 - Type: array
 - Default: `[]`
+- Example:
+  ```Bicep
+  - ['john@doh.org']
+  - ['john@doh.org','jane@doh.org']
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -481,7 +491,7 @@ The value is to enable Kerberos requests that use RC4 encryption.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -593,7 +603,7 @@ The value is to enable clients making request using NTLM v1.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -629,6 +639,7 @@ The id of the subnet that Domain Services will be deployed on. The subnet has so
 
 - Required: Yes
 - Type: string
+- Example: `/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<resourceGroup>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>`
 
 ### Parameter: `roleAssignments`
 
@@ -652,6 +663,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -698,6 +710,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -771,6 +790,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      "key1": "value1",
+      "key2": "value2"
+  }
+  ```
 
 ### Parameter: `tlsV1`
 
@@ -778,7 +804,7 @@ The value is to enable clients making request using TLSv1.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [

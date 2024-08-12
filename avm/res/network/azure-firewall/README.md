@@ -19,7 +19,7 @@ This module deploys an Azure Firewall.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/azureFirewalls` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/azureFirewalls) |
-| `Microsoft.Network/publicIPAddresses` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 
 ## Usage examples
 
@@ -30,12 +30,14 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/azure-firewall:<version>`.
 
 - [Add-PIP](#example-1-add-pip)
-- [Custom-PIP](#example-2-custom-pip)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Hub-commom](#example-4-hub-commom)
-- [Hub-min](#example-5-hub-min)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Basic SKU](#example-2-basic-sku)
+- [Custom-PIP](#example-3-custom-pip)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Hub-commom](#example-5-hub-commom)
+- [Hub-min](#example-6-hub-min)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [Public-IP-Prefix](#example-8-public-ip-prefix)
+- [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _Add-PIP_
 
@@ -129,7 +131,71 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 2: _Custom-PIP_
+### Example 2: _Basic SKU_
+
+This instance deploys the module with the Basic SKU.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  name: 'azureFirewallDeployment'
+  params: {
+    // Required parameters
+    name: 'nafbasic001'
+    // Non-required parameters
+    azureSkuTier: 'Basic'
+    location: '<location>'
+    networkRuleCollections: []
+    threatIntelMode: 'Deny'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nafbasic001"
+    },
+    // Non-required parameters
+    "azureSkuTier": {
+      "value": "Basic"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkRuleCollections": {
+      "value": []
+    },
+    "threatIntelMode": {
+      "value": "Deny"
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Custom-PIP_
 
 This instance deploys the module and will create a public IP address.
 
@@ -239,7 +305,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -291,7 +357,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 4: _Hub-commom_
+### Example 5: _Hub-commom_
 
 This instance deploys the module a vWAN in a typical hub setting.
 
@@ -359,7 +425,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 5: _Hub-min_
+### Example 6: _Hub-min_
 
 This instance deploys the module a vWAN minimum hub setting.
 
@@ -423,7 +489,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -558,11 +624,13 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     publicIPResourceID: '<publicIPResourceID>'
     roleAssignments: [
       {
+        name: '3a8da184-d6d8-4bea-b992-e27cc053ef21'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -737,11 +805,13 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "3a8da184-d6d8-4bea-b992-e27cc053ef21",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -777,7 +847,99 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _Public-IP-Prefix_
+
+This instance deploys the module and will use a public IP prefix.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  name: 'azureFirewallDeployment'
+  params: {
+    // Required parameters
+    name: 'nafpip001'
+    // Non-required parameters
+    azureSkuTier: 'Basic'
+    location: '<location>'
+    managementIPAddressObject: {
+      managementIPAllocationMethod: 'Static'
+      managementIPPrefixResourceId: '<managementIPPrefixResourceId>'
+      name: 'managementIP01'
+      skuName: 'Standard'
+      skuTier: 'Regional'
+    }
+    publicIPAddressObject: {
+      name: 'publicIP01'
+      publicIPAllocationMethod: 'Static'
+      publicIPPrefixResourceId: '<publicIPPrefixResourceId>'
+      skuName: 'Standard'
+      skuTier: 'Regional'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    zones: []
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nafpip001"
+    },
+    // Non-required parameters
+    "azureSkuTier": {
+      "value": "Basic"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managementIPAddressObject": {
+      "value": {
+        "managementIPAllocationMethod": "Static",
+        "managementIPPrefixResourceId": "<managementIPPrefixResourceId>",
+        "name": "managementIP01",
+        "skuName": "Standard",
+        "skuTier": "Regional"
+      }
+    },
+    "publicIPAddressObject": {
+      "value": {
+        "name": "publicIP01",
+        "publicIPAllocationMethod": "Static",
+        "publicIPPrefixResourceId": "<publicIPPrefixResourceId>",
+        "skuName": "Standard",
+        "skuTier": "Regional"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    },
+    "zones": {
+      "value": []
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1934,6 +2096,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1980,6 +2143,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2033,9 +2203,9 @@ Zone numbers e.g. 1,2,3.
 - Default:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
   ]
   ```
 
@@ -2044,12 +2214,12 @@ Zone numbers e.g. 1,2,3.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `applicationRuleCollections` | array | List of Application Rule Collections. |
+| `applicationRuleCollections` | array | List of Application Rule Collections used by Azure Firewall. |
 | `ipConfAzureFirewallSubnet` | object | The Public IP configuration object for the Azure Firewall Subnet. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Azure Firewall. |
-| `natRuleCollections` | array | Collection of NAT rule collections used by Azure Firewall. |
-| `networkRuleCollections` | array | List of Network Rule Collections. |
+| `natRuleCollections` | array | List of NAT rule collections used by Azure Firewall. |
+| `networkRuleCollections` | array | List of Network Rule Collections used by Azure Firewall. |
 | `privateIp` | string | The private IP of the Azure firewall. |
 | `resourceGroupName` | string | The resource group the Azure firewall was deployed into. |
 | `resourceId` | string | The resource ID of the Azure Firewall. |
@@ -2060,7 +2230,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
 
 ## Data Collection
 

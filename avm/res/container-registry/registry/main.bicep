@@ -35,14 +35,14 @@ param exportPolicyStatus string = 'disabled'
   'disabled'
   'enabled'
 ])
-@description('Optional. The value that indicates whether the quarantine policy is enabled or not.')
+@description('Optional. The value that indicates whether the quarantine policy is enabled or not. Note, requires the \'acrSku\' to be \'Premium\'.')
 param quarantinePolicyStatus string = 'disabled'
 
 @allowed([
   'disabled'
   'enabled'
 ])
-@description('Optional. The value that indicates whether the trust policy is enabled or not.')
+@description('Optional. The value that indicates whether the trust policy is enabled or not. Note, requires the \'acrSku\' to be \'Premium\'.')
 param trustPolicyStatus string = 'disabled'
 
 @allowed([
@@ -136,8 +136,14 @@ param anonymousPullEnabled bool = false
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
-@description('Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).')
+@description('Optional. Array of Cache Rules.')
 param cacheRules array?
+
+@description('Optional. Array of Credential Sets.')
+param credentialSets array = []
+
+@description('Optional. Scope maps setting.')
+param scopeMaps scopeMapsType
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -148,8 +154,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -183,47 +189,55 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.containerregistry-registry.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerregistry-registry.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = {
   name: name
@@ -258,13 +272,17 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
             status: exportPolicyStatus
           }
         : null
-      quarantinePolicy: {
-        status: quarantinePolicyStatus
-      }
-      trustPolicy: {
-        type: 'Notary'
-        status: trustPolicyStatus
-      }
+      quarantinePolicy: acrSku == 'Premium'
+        ? {
+            status: quarantinePolicyStatus
+          }
+        : null
+      trustPolicy: acrSku == 'Premium'
+        ? {
+            type: 'Notary'
+            status: trustPolicyStatus
+          }
+        : null
       retentionPolicy: acrSku == 'Premium'
         ? {
             days: retentionPolicyDays
@@ -291,6 +309,18 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
   }
 }
 
+module registry_scopeMaps 'scope-map/main.bicep' = [
+  for (scopeMap, index) in (scopeMaps ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-Scope-${index}'
+    params: {
+      name: scopeMap.?name
+      actions: scopeMap.actions
+      description: scopeMap.?description
+      registryName: registry.name
+    }
+  }
+]
+
 module registry_replications 'replication/main.bicep' = [
   for (replication, index) in (replications ?? []): {
     name: '${uniqueString(deployment().name, location)}-Registry-Replication-${index}'
@@ -305,7 +335,20 @@ module registry_replications 'replication/main.bicep' = [
   }
 ]
 
-module registry_cacheRules 'cache-rules/main.bicep' = [
+module registry_credentialSets 'credential-set/main.bicep' = [
+  for (credentialSet, index) in (credentialSets ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-CredentialSet-${index}'
+    params: {
+      name: credentialSet.name
+      registryName: registry.name
+      managedIdentities: credentialSet.managedIdentities
+      authCredentials: credentialSet.authCredentials
+      loginServer: credentialSet.loginServer
+    }
+  }
+]
+
+module registry_cacheRules 'cache-rule/main.bicep' = [
   for (cacheRule, index) in (cacheRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-Registry-Cache-${index}'
     params: {
@@ -315,6 +358,9 @@ module registry_cacheRules 'cache-rules/main.bicep' = [
       targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
       credentialSetResourceId: cacheRule.?credentialSetResourceId
     }
+    dependsOn: [
+      registry_credentialSets
+    ]
   }
 ]
 
@@ -341,17 +387,16 @@ module registry_webhooks 'webhook/main.bicep' = [
   }
 ]
 
-resource registry_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: registry
+resource registry_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: registry
+}
 
 resource registry_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -383,14 +428,10 @@ resource registry_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
 ]
 
 resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(registry.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(registry.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -402,23 +443,26 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   }
 ]
 
-module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
-      privateLinkServiceConnections: [
-        {
-          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
-          properties: {
-            privateLinkServiceId: registry.id
-            groupIds: [
-              privateEndpoint.?service ?? 'registry'
-            ]
-          }
-        }
-      ]
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
+              properties: {
+                privateLinkServiceId: registry.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'registry'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
@@ -470,6 +514,16 @@ output systemAssignedMIPrincipalId string = registry.?identity.?principalId ?? '
 @description('The location the resource was deployed into.')
 output location string = registry.location
 
+@description('The Principal IDs of the ACR Credential Sets system-assigned identities.')
+output credentialSetsSystemAssignedMIPrincipalIds array = [
+  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.systemAssignedMIPrincipalId
+]
+
+@description('The Resource IDs of the ACR Credential Sets.')
+output credentialSetsResourceIds array = [
+  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.resourceId
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -491,6 +545,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -519,6 +576,9 @@ type privateEndpointType = {
 
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
+
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
 
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
@@ -583,6 +643,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
@@ -642,3 +705,14 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type scopeMapsType = {
+  @description('Optional. The name of the scope map.')
+  name: string?
+
+  @description('Required. The list of scoped permissions for registry artifacts.')
+  actions: string[]
+
+  @description('Optional. The user friendly description of the scope map.')
+  description: string?
+}[]?

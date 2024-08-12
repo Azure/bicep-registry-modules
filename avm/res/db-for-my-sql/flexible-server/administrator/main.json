@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2817201491275445304"
+      "version": "0.29.47.4906",
+      "templateHash": "166868353165081250"
     },
     "name": "DBforMySQL Flexible Server Administrators",
     "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
@@ -47,7 +47,7 @@
   "resources": [
     {
       "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
-      "apiVersion": "2022-01-01",
+      "apiVersion": "2023-06-30",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
       "properties": {
         "administratorType": "ActiveDirectory",

@@ -56,7 +56,7 @@ module afdEndpoint_routes 'route/main.bicep' = [
       profileName: profile.name
       afdEndpointName: afdEndpoint.name
       cacheConfiguration: route.?cacheConfiguration
-      customDomainName: route.?customDomainName
+      customDomainNames: route.?customDomainNames
       enabledState: route.?enabledState
       forwardingProtocol: route.?forwardingProtocol
       httpsRedirect: route.?httpsRedirect
@@ -81,3 +81,6 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = afdEndpoint.location
+
+@description('The list of routes assigned to the AFD endpoint.')
+output routes array = routes ?? []

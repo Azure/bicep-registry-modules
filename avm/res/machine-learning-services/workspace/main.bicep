@@ -20,14 +20,23 @@ param location string = resourceGroup().location
 ])
 param sku string
 
-@sys.description('Required. The resource ID of the associated Storage Account.')
-param associatedStorageAccountResourceId string
+@sys.description('Optional. The type of Azure Machine Learning workspace to create.')
+@allowed([
+  'Default'
+  'Project'
+  'Hub'
+  'FeatureStore'
+])
+param kind string = 'Default'
 
-@sys.description('Required. The resource ID of the associated Key Vault.')
-param associatedKeyVaultResourceId string
+@sys.description('Conditional. The resource ID of the associated Storage Account. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
+param associatedStorageAccountResourceId string?
 
-@sys.description('Required. The resource ID of the associated Application Insights.')
-param associatedApplicationInsightsResourceId string
+@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
+param associatedKeyVaultResourceId string?
+
+@sys.description('Conditional. The resource ID of the associated Application Insights. Required if \'kind\' is \'Default\' or \'FeatureStore\'.')
+param associatedApplicationInsightsResourceId string?
 
 @sys.description('Optional. The resource ID of the associated Container Registry.')
 param associatedContainerRegistryResourceId string?
@@ -38,8 +47,8 @@ param lock lockType
 @sys.description('Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.')
 param hbiWorkspace bool = false
 
-@sys.description('Optional. The flag to indicate whether to allow public access when behind VNet.')
-param allowPublicAccessWhenBehindVnet bool = false
+@sys.description('Conditional. The resource ID of the hub to associate with the workspace. Required if \'kind\' is set to \'Project\'.')
+param hubResourceId string?
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -60,6 +69,25 @@ param enableTelemetry bool = true
 param managedIdentities managedIdentitiesType = {
   systemAssigned: true
 }
+
+@sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
+param featureStoreSettings featureStoreSettingType
+
+@sys.description('Optional. Managed Network settings for a machine learning workspace.')
+param managedNetworkSettings managedNetworkSettingType
+
+@sys.description('Optional. Settings for serverless compute created in the workspace.')
+param serverlessComputeSettings serverlessComputeSettingType
+
+@sys.description('Optional. The authentication mode used by the workspace when connecting to the default storage account.')
+@allowed([
+  'accessKey'
+  'identity'
+])
+param systemDatastoresAuthMode string?
+
+@sys.description('Optional. Configuration for workspace hub settings.')
+param workspaceHubConfig workspaceHubConfigType
 
 // Diagnostic Settings
 
@@ -87,12 +115,12 @@ param serviceManagedResourcesSettings object?
 @sys.description('Optional. The list of shared private link resources in this workspace. Note: This property is not idempotent.')
 param sharedPrivateLinkResources array?
 
-@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
+@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string?
+param publicNetworkAccess string = 'Disabled'
 
 // ================//
 // Variables       //
@@ -146,49 +174,58 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.machinelearningservices-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.machinelearningservices-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
+// Preview API version for 'systemDatastoresAuthMode'
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -206,7 +243,6 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
       applicationInsights: associatedApplicationInsightsResourceId
       containerRegistry: associatedContainerRegistryResourceId
       hbiWorkspace: hbiWorkspace
-      allowPublicAccessWhenBehindVnet: allowPublicAccessWhenBehindVnet
       description: description
       discoveryUrl: discoveryUrl
       encryption: !empty(customerManagedKey)
@@ -227,10 +263,14 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         : null
       imageBuildCompute: imageBuildCompute
       primaryUserAssignedIdentity: primaryUserAssignedIdentity
-      publicNetworkAccess: !empty(publicNetworkAccess)
-        ? any(publicNetworkAccess)
-        : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+      systemDatastoresAuthMode: systemDatastoresAuthMode
+      publicNetworkAccess: publicNetworkAccess
       serviceManagedResourcesSettings: serviceManagedResourcesSettings
+      featureStoreSettings: featureStoreSettings
+      hubResourceId: hubResourceId
+      managedNetwork: managedNetworkSettings
+      serverlessComputeSettings: serverlessComputeSettings
+      workspaceHubConfig: workspaceHubConfig
     },
     // Parameters only added if not empty
     !empty(sharedPrivateLinkResources)
@@ -239,6 +279,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
         }
       : {}
   )
+  kind: kind
 }
 
 module workspace_computes 'compute/main.bicep' = [
@@ -265,17 +306,16 @@ module workspace_computes 'compute/main.bicep' = [
   }
 ]
 
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: workspace
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: workspace
+}
 
 resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -306,12 +346,13 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
   }
 ]
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'amlworkspace'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'amlworkspace'}-${index}'
@@ -324,7 +365,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'amlworkspace'}-${index}'
@@ -346,8 +387,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -359,14 +399,10 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
 ]
 
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -418,6 +454,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -447,22 +486,35 @@ type privateEndpointType = {
   @sys.description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @sys.description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @sys.description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @sys.description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @sys.description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @sys.description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @sys.description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @sys.description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @sys.description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
+  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
   manualConnectionRequestMessage: string?
 
   @sys.description('Optional. Custom DNS configurations.')
@@ -509,7 +561,105 @@ type privateEndpointType = {
 
   @sys.description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
+
+type featureStoreSettingType = {
+  @sys.description('Optional. Compute runtime config for feature store type workspace.')
+  computeRuntime: {
+    @sys.description('Optional. The spark runtime version.')
+    sparkRuntimeVersion: string?
+  }?
+
+  @sys.description('Optional. The offline store connection name.')
+  offlineStoreConnectionName: string?
+
+  @sys.description('Optional. The online store connection name.')
+  onlineStoreConnectionName: string?
+}?
+
+@discriminator('type')
+type OutboundRuleType = FqdnOutboundRuleType | PrivateEndpointOutboundRule | ServiceTagOutboundRule
+
+type FqdnOutboundRuleType = {
+  @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
+  type: 'FQDN'
+
+  @sys.description('Required. Fully Qualified Domain Name to allow for outbound traffic.')
+  destination: string
+
+  @sys.description('Optional. Category of a managed network Outbound Rule of a machine learning workspace.')
+  category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
+}
+
+type PrivateEndpointOutboundRule = {
+  @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\' or \'AllowInternetOutbound\'.')
+  type: 'PrivateEndpoint'
+
+  @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.')
+  destination: {
+    @sys.description('Required. The resource ID of the target resource for the private endpoint.')
+    serviceResourceId: string
+
+    @sys.description('Optional. Whether the private endpoint can be used by jobs running on Spark.')
+    sparkEnabled: bool?
+
+    @sys.description('Required. The sub resource to connect for the private endpoint.')
+    subresourceTarget: string
+  }
+
+  @sys.description('Optional. Category of a managed network Outbound Rule of a machine learning workspace.')
+  category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
+}
+
+type ServiceTagOutboundRule = {
+  @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
+  type: 'ServiceTag'
+
+  @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.')
+  destination: {
+    @sys.description('Required. The name of the service tag to allow.')
+    portRanges: string
+
+    @sys.description('Required. The protocol to allow. Provide an asterisk(*) to allow any protocol.')
+    protocol: 'TCP' | 'UDP' | 'ICMP' | '*'
+
+    @sys.description('Required. Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.')
+    serviceTag: string
+  }
+
+  @sys.description('Optional. Category of a managed network Outbound Rule of a machine learning workspace.')
+  category: 'Dependency' | 'Recommended' | 'Required' | 'UserDefined'?
+}
+
+type managedNetworkSettingType = {
+  @sys.description('Required. Isolation mode for the managed network of a machine learning workspace.')
+  isolationMode: 'AllowInternetOutbound' | 'AllowOnlyApprovedOutbound' | 'Disabled'
+
+  @sys.description('Optional. Outbound rules for the managed network of a machine learning workspace.')
+  outboundRules: {
+    @sys.description('Required. The outbound rule. The name of the rule is the object key.')
+    *: OutboundRuleType
+  }?
+}?
+
+type serverlessComputeSettingType = {
+  @sys.description('Optional. The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed.')
+  serverlessComputeCustomSubnet: string?
+
+  @sys.description('Optional. The flag to signal if serverless compute nodes deployed in custom vNet would have no public IP addresses for a workspace with private endpoint.')
+  serverlessComputeNoPublicIP: bool?
+}?
+
+type workspaceHubConfigType = {
+  @sys.description('Optional. The resource IDs of additional storage accounts to attach to the workspace.')
+  additionalWorkspaceStorageAccounts: string[]?
+
+  @sys.description('Optional. The resource ID of the default resource group for projects created in the workspace hub.')
+  defaultWorkspaceResourceGroup: string?
+}?
 
 type diagnosticSettingType = {
   @sys.description('Optional. The name of diagnostic setting.')

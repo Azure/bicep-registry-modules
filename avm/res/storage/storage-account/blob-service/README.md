@@ -34,7 +34,7 @@ This module deploys a Storage Account Blob Service.
 | :-- | :-- | :-- |
 | [`automaticSnapshotPolicyEnabled`](#parameter-automaticsnapshotpolicyenabled) | bool | Automatic Snapshot is enabled if set to true. |
 | [`changeFeedEnabled`](#parameter-changefeedenabled) | bool | The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service. |
-| [`changeFeedRetentionInDays`](#parameter-changefeedretentionindays) | int | Indicates the duration of changeFeed retention in days. Minimum value is 1 day and maximum value is 146000 days (400 years). A null value indicates an infinite retention of the change feed. |
+| [`changeFeedRetentionInDays`](#parameter-changefeedretentionindays) | int | Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed. |
 | [`containerDeleteRetentionPolicyAllowPermanentDelete`](#parameter-containerdeleteretentionpolicyallowpermanentdelete) | bool | This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share. |
 | [`containerDeleteRetentionPolicyDays`](#parameter-containerdeleteretentionpolicydays) | int | Indicates the number of days that the deleted item should be retained. |
 | [`containerDeleteRetentionPolicyEnabled`](#parameter-containerdeleteretentionpolicyenabled) | bool | The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled. |
@@ -75,7 +75,7 @@ The blob service properties for change feed events. Indicates whether change fee
 
 ### Parameter: `changeFeedRetentionInDays`
 
-Indicates the duration of changeFeed retention in days. Minimum value is 1 day and maximum value is 146000 days (400 years). A null value indicates an infinite retention of the change feed.
+Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed.
 
 - Required: No
 - Type: int

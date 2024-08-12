@@ -90,20 +90,17 @@ function Remove-Deployment {
 
             # Fetch deployments
             # =================
-
-            foreach ($deploymentName in $DeploymentNames) {
-                $deploymentsInputObject = @{
-                    Name  = $deploymentName
-                    Scope = $deploymentScope
-                }
-                if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
-                    $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
-                }
-                if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-                    $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
-                }
-                $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
+            $deploymentsInputObject = @{
+                DeploymentNames = $DeploymentNames
+                Scope           = $deploymentScope
             }
+            if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+                $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
+            }
+            if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+                $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
+            }
+            $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
 
             if ($deployedTargetResources.Count -eq 0) {
                 throw 'No deployment target resources found.'
@@ -116,7 +113,7 @@ function Remove-Deployment {
 
         # Pre-Filter & order items
         # ========================
-        $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
+        $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Culture 'en-US' -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
         Write-Verbose ('Total number of deployment target resources after pre-filtering (duplicates) & ordering items [{0}]' -f $rawTargetResourceIdsToRemove.Count) -Verbose
 
         # Format items

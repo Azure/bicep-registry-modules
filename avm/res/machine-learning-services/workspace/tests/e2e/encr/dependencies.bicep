@@ -15,6 +15,9 @@ param applicationInsightsName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
+@description('Required. The name of the additional Storage Account to create.')
+param secondaryStorageAccountName string
+
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
   location: location
@@ -87,6 +90,15 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   kind: 'StorageV2'
 }
 
+resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+  name: secondaryStorageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+}
+
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
 
@@ -98,6 +110,9 @@ output applicationInsightsResourceId string = applicationInsights.id
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
+
+@description('The resource ID of the additional created Storage Account.')
+output secondaryStorageAccountResourceId string = secondaryStorageAccount.id
 
 @description('The name of the Key Vault Encryption Key.')
 output keyVaultEncryptionKeyName string = keyVault::key.name

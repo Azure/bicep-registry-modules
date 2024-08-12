@@ -14,7 +14,7 @@ param changeFeedEnabled bool = false
 
 @minValue(1)
 @maxValue(146000)
-@description('Optional. Indicates the duration of changeFeed retention in days. Minimum value is 1 day and maximum value is 146000 days (400 years). A null value indicates an infinite retention of the change feed.')
+@description('Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed.')
 param changeFeedRetentionInDays int?
 
 @description('Optional. The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled.')
