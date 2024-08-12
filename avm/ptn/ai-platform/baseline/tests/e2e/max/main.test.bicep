@@ -65,29 +65,29 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}'
-      managedIdentitySettings: {
+      managedIdentityConfiguration: {
         name: '${namePrefix}-id-${serviceShort}'
       }
-      logAnalyticsSettings: {
+      logAnalyticsConfiguration: {
         name: '${namePrefix}-log-${serviceShort}'
       }
-      keyVaultSettings: {
+      keyVaultConfiguration: {
         name: '${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
         enablePurgeProtection: false
       }
-      storageAccountSettings: {
+      storageAccountConfiguration: {
         name: '${namePrefix}st${serviceShort}'
         sku: 'Standard_GRS'
         allowSharedKeyAccess: true
       }
-      containerRegistrySettings: {
+      containerRegistryConfiguration: {
         name: '${namePrefix}cr${serviceShort}'
         trustPolicyStatus: 'disabled'
       }
-      applicationInsightsSettings: {
+      applicationInsightsConfiguration: {
         name: '${namePrefix}-appi-${serviceShort}'
       }
-      virtualNetworkSettings: {
+      virtualNetworkConfiguration: {
         name: '${namePrefix}-vnet-${serviceShort}'
         addressPrefix: '10.1.0.0/16'
         enabled: true
@@ -97,7 +97,7 @@ module testDeployment '../../../main.bicep' = [
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
         }
       }
-      bastionSettings: {
+      bastionConfiguration: {
         enabled: true
         name: '${namePrefix}-bas-${serviceShort}'
         sku: 'Standard'
@@ -110,14 +110,14 @@ module testDeployment '../../../main.bicep' = [
         enableShareableLink: true
         scaleUnits: 3
       }
-      virtualMachineSettings: {
+      virtualMachineConfiguration: {
         enabled: true
         name: '${namePrefix}-vm-${serviceShort}'
         zone: 1
         size: 'Standard_DS1_v2'
         adminUsername: username
         adminPassword: password
-        nicConfigurationSettings: {
+        nicConfigurationConfiguration: {
           name: '${namePrefix}-nic-${serviceShort}'
           ipConfigName: '${namePrefix}-ipcfg-${serviceShort}'
           privateIPAllocationMethod: 'Dynamic'
@@ -145,7 +145,7 @@ module testDeployment '../../../main.bicep' = [
         enableAzureMonitorAgent: true
         maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       }
-      workspaceHubSettings: {
+      workspaceHubConfiguration: {
         name: '${namePrefix}-hub-${serviceShort}'
         computes: [
           {

@@ -17,47 +17,47 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Settings for the user-assigned managed identity.')
-param managedIdentitySettings managedIdentitySettingType
+@description('Optional. Configuration for the user-assigned managed identity.')
+param managedIdentityConfiguration managedIdentityConfigurationType
 
-@description('Optional. Settings for the Log Analytics workspace.')
-param logAnalyticsSettings logAnalyticsSettingType
+@description('Optional. Configuration for the Log Analytics workspace.')
+param logAnalyticsConfiguration logAnalyticsConfigurationType
 
-@description('Optional. Settings for the key vault.')
-param keyVaultSettings keyVaultSettingType
+@description('Optional. Configuration for the key vault.')
+param keyVaultConfiguration keyVaultConfigurationType
 
-@description('Optional. Settings for the storage account.')
-param storageAccountSettings storageAccountSettingType
+@description('Optional. Configuration for the storage account.')
+param storageAccountConfiguration storageAccountConfigurationType
 
-@description('Optional. Settings for the container registry.')
-param containerRegistrySettings containerRegistrySettingType
+@description('Optional. Configuration for the container registry.')
+param containerRegistryConfiguration containerRegistryConfigurationType
 
-@description('Optional. Settings for Application Insights.')
-param applicationInsightsSettings applicationInsightsSettingType
+@description('Optional. Configuration for Application Insights.')
+param applicationInsightsConfiguration applicationInsightsConfigurationType
 
-@description('Optional. Settings for the AI Studio workspace hub.')
-param workspaceHubSettings workspaceHubSettingType
+@description('Optional. Configuration for the AI Studio workspace hub.')
+param workspaceHubConfiguration workspaceHubConfigurationType
 
-@description('Optional. Settings for the virtual network.')
-param virtualNetworkSettings virtualNetworkSettingType
+@description('Optional. Configuration for the virtual network.')
+param virtualNetworkConfiguration virtualNetworkConfigurationType
 
-@description('Optional. Settings for the Azure Bastion host.')
-param bastionSettings bastionSettingType
+@description('Optional. Configuration for the Azure Bastion host.')
+param bastionConfiguration bastionConfigurationType
 
-@description('Optional. Settings for the virtual machine.')
-param virtualMachineSettings virtualMachineSettingType
+@description('Optional. Configuration for the virtual machine.')
+param virtualMachineConfiguration virtualMachineConfigurationType
 
 // ============== //
 // Variables      //
 // ============== //
 
-var createVirtualNetwork = virtualNetworkSettings.?enabled != false
+var createVirtualNetwork = virtualNetworkConfiguration.?enabled != false
 
-var createBastion = createVirtualNetwork && bastionSettings.?enabled != false
+var createBastion = createVirtualNetwork && bastionConfiguration.?enabled != false
 
-var createVirtualMachine = createVirtualNetwork && virtualMachineSettings.?enabled != false
+var createVirtualMachine = createVirtualNetwork && virtualMachineConfiguration.?enabled != false
 
-var createDefaultNsg = virtualNetworkSettings.?subnet.networkSecurityGroupResourceId == null
+var createDefaultNsg = virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId == null
 
 var subnetResourceId = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : null
 
@@ -161,28 +161,28 @@ module defaultNetworkSecurityGroup 'br/public:avm/res/network/network-security-g
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = if (createVirtualNetwork) {
   name: '${uniqueString(deployment().name, location)}-virtual-network'
   params: {
-    name: virtualNetworkSettings.?name ?? 'vnet-${name}'
+    name: virtualNetworkConfiguration.?name ?? 'vnet-${name}'
     location: location
     enableTelemetry: enableTelemetry
     addressPrefixes: [
-      virtualNetworkSettings.?addressPrefix ?? '10.0.0.0/16'
+      virtualNetworkConfiguration.?addressPrefix ?? '10.0.0.0/16'
     ]
     subnets: union(
       [
         {
-          addressPrefix: virtualNetworkSettings.?subnet.addressPrefix ?? '10.0.0.0/24'
-          name: virtualNetworkSettings.?subnet.name ?? 'default'
+          addressPrefix: virtualNetworkConfiguration.?subnet.addressPrefix ?? '10.0.0.0/24'
+          name: virtualNetworkConfiguration.?subnet.name ?? 'default'
           networkSecurityGroupResourceId: createDefaultNsg
             ? defaultNetworkSecurityGroup.outputs.resourceId
-            : virtualNetworkSettings.?subnet.networkSecurityGroupResourceId
+            : virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId
         }
       ],
       createBastion
         ? [
             {
-              addressPrefix: bastionSettings.?subnetAddressPrefix ?? '10.0.1.0/26'
+              addressPrefix: bastionConfiguration.?subnetAddressPrefix ?? '10.0.1.0/26'
               name: 'AzureBastionSubnet'
-              networkSecurityGroupResourceId: bastionSettings.?networkSecurityGroupResourceId
+              networkSecurityGroupResourceId: bastionConfiguration.?networkSecurityGroupResourceId
             }
           ]
         : []
@@ -194,17 +194,17 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = if (cr
 module bastion 'br/public:avm/res/network/bastion-host:0.2.2' = if (createBastion) {
   name: '${uniqueString(deployment().name, location)}-bastion-host'
   params: {
-    name: bastionSettings.?name ?? 'bas-${name}'
+    name: bastionConfiguration.?name ?? 'bas-${name}'
     location: location
-    skuName: bastionSettings.?sku ?? 'Standard'
+    skuName: bastionConfiguration.?sku ?? 'Standard'
     enableTelemetry: enableTelemetry
     virtualNetworkResourceId: virtualNetwork.outputs.resourceId
-    disableCopyPaste: bastionSettings.?disableCopyPaste
-    enableFileCopy: bastionSettings.?enableFileCopy
-    enableIpConnect: bastionSettings.?enableIpConnect
-    enableKerberos: bastionSettings.?enableKerberos
-    enableShareableLink: bastionSettings.?enableShareableLink
-    scaleUnits: bastionSettings.?scaleUnits
+    disableCopyPaste: bastionConfiguration.?disableCopyPaste
+    enableFileCopy: bastionConfiguration.?enableFileCopy
+    enableIpConnect: bastionConfiguration.?enableIpConnect
+    enableKerberos: bastionConfiguration.?enableKerberos
+    enableShareableLink: bastionConfiguration.?enableShareableLink
+    scaleUnits: bastionConfiguration.?scaleUnits
     tags: tags
   }
 }
@@ -212,33 +212,33 @@ module bastion 'br/public:avm/res/network/bastion-host:0.2.2' = if (createBastio
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (createVirtualMachine) {
   name: '${uniqueString(deployment().name, location)}-virtual-machine'
   params: {
-    name: virtualMachineSettings.?name ?? 'vm-${name}'
-    computerName: take(virtualMachineSettings.?name ?? 'vm-${name}', 15)
+    name: virtualMachineConfiguration.?name ?? 'vm-${name}'
+    computerName: take(virtualMachineConfiguration.?name ?? 'vm-${name}', 15)
     location: location
     enableTelemetry: enableTelemetry
-    adminUsername: virtualMachineSettings.?adminUsername ?? ''
-    adminPassword: virtualMachineSettings.?adminPassword
+    adminUsername: virtualMachineConfiguration.?adminUsername ?? ''
+    adminPassword: virtualMachineConfiguration.?adminPassword
     nicConfigurations: [
       {
-        name: virtualMachineSettings.?nicConfigurationSettings.name ?? 'nic-vm-${name}'
+        name: virtualMachineConfiguration.?nicConfigurationConfiguration.name ?? 'nic-vm-${name}'
         location: location
-        networkSecurityGroupResourceId: virtualMachineSettings.?nicConfigurationSettings.networkSecurityGroupResourceId
+        networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
         ipConfigurations: [
           {
-            name: virtualMachineSettings.?nicConfigurationSettings.ipConfigName ?? 'nic-vm-${name}-ipconfig'
-            privateIPAllocationMethod: virtualMachineSettings.?nicConfigurationSettings.privateIPAllocationMethod ?? 'Dynamic'
+            name: virtualMachineConfiguration.?nicConfigurationConfiguration.ipConfigName ?? 'nic-vm-${name}-ipconfig'
+            privateIPAllocationMethod: virtualMachineConfiguration.?nicConfigurationConfiguration.privateIPAllocationMethod ?? 'Dynamic'
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
           }
         ]
       }
     ]
-    imageReference: virtualMachineSettings.?imageReference ?? {
+    imageReference: virtualMachineConfiguration.?imageReference ?? {
       publisher: 'microsoft-dsvm'
       offer: 'dsvm-win-2022'
       sku: 'winserver-2022'
       version: 'latest'
     }
-    osDisk: virtualMachineSettings.?osDisk ?? {
+    osDisk: virtualMachineConfiguration.?osDisk ?? {
       createOption: 'FromImage'
       managedDisk: {
         storageAccountType: 'Premium_ZRS'
@@ -246,35 +246,35 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
       diskSizeGB: 128
       caching: 'ReadWrite'
     }
-    patchMode: virtualMachineSettings.?patchMode
+    patchMode: virtualMachineConfiguration.?patchMode
     osType: 'Windows'
-    encryptionAtHost: virtualMachineSettings.?encryptionAtHost ?? true
-    vmSize: virtualMachineSettings.?size ?? 'Standard_D2s_v3'
-    zone: virtualMachineSettings.?zone ?? 0
-    extensionAadJoinConfig: virtualMachineSettings.?enableAadLoginExtension == true
+    encryptionAtHost: virtualMachineConfiguration.?encryptionAtHost ?? true
+    vmSize: virtualMachineConfiguration.?size ?? 'Standard_D2s_v3'
+    zone: virtualMachineConfiguration.?zone ?? 0
+    extensionAadJoinConfig: virtualMachineConfiguration.?enableAadLoginExtension == true
       ? {
           enabled: true
           typeHandlerVersion: '1.0'
         }
       : null
-    extensionMonitoringAgentConfig: virtualMachineSettings.?enableAzureMonitorAgent == true
+    extensionMonitoringAgentConfig: virtualMachineConfiguration.?enableAzureMonitorAgent == true
       ? {
           enabled: true
         }
       : null
-    maintenanceConfigurationResourceId: virtualMachineSettings.?maintenanceConfigurationResourceId
+    maintenanceConfigurationResourceId: virtualMachineConfiguration.?maintenanceConfigurationResourceId
     tags: tags
   }
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: managedIdentitySettings.?name ?? 'id-${name}'
+  name: managedIdentityConfiguration.?name ?? 'id-${name}'
   location: location
   tags: tags
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
-  name: logAnalyticsSettings.?name ?? 'log-${name}'
+  name: logAnalyticsConfiguration.?name ?? 'log-${name}'
   location: location
   tags: tags
 }
@@ -294,7 +294,7 @@ resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2
 module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
-    name: keyVaultSettings.?name ?? 'kv-${name}'
+    name: keyVaultConfiguration.?name ?? 'kv-${name}'
     location: location
     enableTelemetry: enableTelemetry
     enableRbacAuthorization: true
@@ -306,7 +306,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
       bypass: 'AzureServices'
     }
     publicNetworkAccess: 'Disabled'
-    enablePurgeProtection: keyVaultSettings.?enablePurgeProtection ?? true
+    enablePurgeProtection: keyVaultConfiguration.?enablePurgeProtection ?? true
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
@@ -337,13 +337,13 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
 module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
-    name: storageAccountSettings.?name ?? 'st${name}'
+    name: storageAccountConfiguration.?name ?? 'st${name}'
     location: location
-    skuName: storageAccountSettings.?sku ?? 'Standard_RAGZRS'
+    skuName: storageAccountConfiguration.?sku ?? 'Standard_RAGZRS'
     enableTelemetry: enableTelemetry
     allowBlobPublicAccess: false
-    allowSharedKeyAccess: storageAccountSettings.?allowSharedKeyAccess ?? false
-    defaultToOAuthAuthentication: !(storageAccountSettings.?allowSharedKeyAccess ?? false)
+    allowSharedKeyAccess: storageAccountConfiguration.?allowSharedKeyAccess ?? false
+    defaultToOAuthAuthentication: !(storageAccountConfiguration.?allowSharedKeyAccess ?? false)
     publicNetworkAccess: 'Disabled'
     networkAcls: {
       defaultAction: 'Deny'
@@ -384,14 +384,14 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
-    name: containerRegistrySettings.?name ?? 'cr${name}'
+    name: containerRegistryConfiguration.?name ?? 'cr${name}'
     acrSku: 'Premium'
     location: location
     enableTelemetry: enableTelemetry
     publicNetworkAccess: 'Disabled'
     networkRuleBypassOptions: 'AzureServices'
     zoneRedundancy: 'Enabled'
-    trustPolicyStatus: containerRegistrySettings.?trustPolicyStatus ?? 'enabled'
+    trustPolicyStatus: containerRegistryConfiguration.?trustPolicyStatus ?? 'enabled'
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
@@ -411,7 +411,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' =
 module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
   name: '${uniqueString(deployment().name, location)}-appi'
   params: {
-    name: applicationInsightsSettings.?name ?? 'appi-${name}'
+    name: applicationInsightsConfiguration.?name ?? 'appi-${name}'
     location: location
     kind: 'web'
     enableTelemetry: enableTelemetry
@@ -430,7 +430,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
 module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-hub'
   params: {
-    name: workspaceHubSettings.?name ?? 'hub-${name}'
+    name: workspaceHubConfiguration.?name ?? 'hub-${name}'
     sku: 'Standard'
     location: location
     enableTelemetry: enableTelemetry
@@ -448,10 +448,10 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
       ]
     }
     primaryUserAssignedIdentity: managedIdentity.id
-    computes: workspaceHubSettings.?computes
+    computes: workspaceHubConfiguration.?computes
     managedNetworkSettings: {
-      isolationMode: workspaceHubSettings.?networkIsolationMode ?? 'AllowInternetOutbound'
-      outboundRules: workspaceHubSettings.?networkOutboundRules
+      isolationMode: workspaceHubConfiguration.?networkIsolationMode ?? 'AllowInternetOutbound'
+      outboundRules: workspaceHubConfiguration.?networkOutboundRules
     }
     privateEndpoints: subnetResourceId != null
       ? [
@@ -581,17 +581,17 @@ output virtualMachineName string = createVirtualMachine ? virtualMachine.outputs
 // Definitions      //
 // ================ //
 
-type managedIdentitySettingType = {
+type managedIdentityConfigurationType = {
   @description('Optional. The name of the user-assigned managed identity.')
   name: string?
 }?
 
-type logAnalyticsSettingType = {
+type logAnalyticsConfigurationType = {
   @description('Optional. The name of the Log Analytics workspace.')
   name: string?
 }?
 
-type keyVaultSettingType = {
+type keyVaultConfigurationType = {
   @description('Optional. The name of the key vault.')
   name: string?
 
@@ -599,7 +599,7 @@ type keyVaultSettingType = {
   enablePurgeProtection: bool?
 }?
 
-type storageAccountSettingType = {
+type storageAccountConfigurationType = {
   @description('Optional. The name of the storage account.')
   name: string?
 
@@ -618,7 +618,7 @@ type storageAccountSettingType = {
   allowSharedKeyAccess: bool?
 }?
 
-type containerRegistrySettingType = {
+type containerRegistryConfigurationType = {
   @description('Optional. The name of the container registry.')
   name: string?
 
@@ -626,12 +626,12 @@ type containerRegistrySettingType = {
   trustPolicyStatus: 'enabled' | 'disabled'?
 }?
 
-type applicationInsightsSettingType = {
+type applicationInsightsConfigurationType = {
   @description('Optional. The name of the Application Insights resource.')
   name: string?
 }?
 
-type workspaceHubSettingType = {
+type workspaceHubConfigurationType = {
   @description('Optional. The name of the AI Studio workspace hub.')
   name: string?
 
@@ -645,7 +645,7 @@ type workspaceHubSettingType = {
   networkOutboundRules: networkOutboundRuleType
 }?
 
-type virtualNetworkSubnetSettingType = {
+type virtualNetworkSubnetConfigurationType = {
   @description('Optional. The name of the subnet to create.')
   name: string?
 
@@ -656,7 +656,7 @@ type virtualNetworkSubnetSettingType = {
   networkSecurityGroupResourceId: string?
 }?
 
-type virtualNetworkSettingType = {
+type virtualNetworkConfigurationType = {
   @description('Optional. Whether to create an associated virtual network. Defaults to \'true\'.')
   enabled: bool?
 
@@ -666,11 +666,11 @@ type virtualNetworkSettingType = {
   @description('Optional. The address prefix of the virtual network to create.')
   addressPrefix: string?
 
-  @description('Optional. Settings for the virual network subnet.')
-  subnet: virtualNetworkSubnetSettingType
+  @description('Optional. Configuration for the virual network subnet.')
+  subnet: virtualNetworkSubnetConfigurationType
 }?
 
-type bastionSettingType = {
+type bastionConfigurationType = {
   @description('Optional. Whether to create a Bastion host in the virtual network. Defaults to \'true\'.')
   enabled: bool?
 
@@ -705,7 +705,7 @@ type bastionSettingType = {
   scaleUnits: int?
 }?
 
-type nicConfigurationSettingType = {
+type nicConfigurationConfigurationType = {
   @description('Optional. The name of the network interface.')
   name: string?
 
@@ -753,7 +753,7 @@ type osDiskType = {
 }?
 
 @secure()
-type virtualMachineSettingType = {
+type virtualMachineConfigurationType = {
   @description('Optional. Whether to create a virtual machine in the associated virtual network. Defaults to \'true\'.')
   enabled: bool?
 
@@ -772,8 +772,8 @@ type virtualMachineSettingType = {
   @description('Conditional. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
   adminPassword: string?
 
-  @description('Optional. Settings for the virtual machine network interface.')
-  nicConfigurationSettings: nicConfigurationSettingType
+  @description('Optional. Configuration for the virtual machine network interface.')
+  nicConfigurationConfiguration: nicConfigurationConfigurationType
 
   @description('Optional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
   imageReference: object?
