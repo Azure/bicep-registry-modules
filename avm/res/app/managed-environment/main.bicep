@@ -26,6 +26,10 @@ param logsDestination string = 'log-analytics'
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Application Insights connection string.')
+@secure()
+param appInsightsConnectionString string = ''
+
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
 @secure()
 param daprAIConnectionString string = ''
@@ -65,6 +69,9 @@ param dnsSuffix string = ''
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
+
+@description('Optional. Open Telemetry configuration.')
+param openTelemetryConfiguration object = {}
 
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param workloadProfiles array = []
@@ -134,7 +141,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
   name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
   scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
 }
@@ -145,6 +152,9 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
   tags: tags
   identity: identity
   properties: {
+    appInsightsConfiguration: {
+      connectionString: appInsightsConnectionString
+    }
     appLogsConfiguration: {
       destination: logsDestination
       logAnalyticsConfiguration: {
@@ -159,6 +169,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
     }
+    openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
     vnetConfiguration: {
       internal: internal
       infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
