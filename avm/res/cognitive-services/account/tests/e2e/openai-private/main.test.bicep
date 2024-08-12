@@ -1,14 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using `AIServices` with `deployments` in parameter set'
-metadata description = '''
-This instance deploys the module with the AI model deployment feature.'
-
-Note, this test is temporarily disabled as it needs to be enabled on the subscription.
-As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
-You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
-And register here: https://aka.ms/oai/access
-'''
+metadata name = 'Using `OpenAI` and `deployments` in parameter set with private endpoint'
+metadata description = 'This instance deploys the module with the AI model deployment feature and private endpoint.'
 
 // ========== //
 // Parameters //
@@ -22,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csad'
+param serviceShort string = 'csoai'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -38,6 +31,17 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -45,10 +49,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-ai'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-oai'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      kind: 'AIServices'
+      kind: 'OpenAI'
       location: resourceLocation
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
@@ -63,6 +67,15 @@ module testDeployment '../../../main.bicep' = [
             name: 'Standard'
             capacity: 10
           }
+        }
+      ]
+      publicNetworkAccess: 'Disabled'
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
     }

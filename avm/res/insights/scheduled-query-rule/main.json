@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12034267134047308763"
+      "templateHash": "17672964122833676180"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule.",
@@ -108,6 +108,13 @@
         "description": "Optional. The description of the scheduled query rule."
       }
     },
+    "alertDisplayName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The display name of the scheduled query rule."
+      }
+    },
     "enabled": {
       "type": "bool",
       "defaultValue": true,
@@ -158,6 +165,13 @@
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
         "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "ruleResolveConfiguration": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert."
       }
     },
     "scopes": {
@@ -268,7 +282,7 @@
     },
     "queryRule": {
       "type": "Microsoft.Insights/scheduledQueryRules",
-      "apiVersion": "2021-02-01-preview",
+      "apiVersion": "2023-03-15-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -281,11 +295,12 @@
         "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
         "criteria": "[parameters('criterias')]",
         "description": "[parameters('alertDescription')]",
-        "displayName": "[parameters('name')]",
+        "displayName": "[coalesce(parameters('alertDisplayName'), parameters('name'))]",
         "enabled": "[parameters('enabled')]",
         "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
         "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
         "overrideQueryTimeRange": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('queryTimeRange')))), parameters('queryTimeRange'), null())]",
+        "ruleResolveConfiguration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('ruleResolveConfiguration')))), parameters('ruleResolveConfiguration'), null())]",
         "scopes": "[parameters('scopes')]",
         "severity": "[if(equals(parameters('kind'), 'LogAlert'), parameters('severity'), null())]",
         "skipQueryValidation": "[if(equals(parameters('kind'), 'LogAlert'), parameters('skipQueryValidation'), null())]",
@@ -343,7 +358,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('queryRule', '2021-02-01-preview', 'full').location]"
+      "value": "[reference('queryRule', '2023-03-15-preview', 'full').location]"
     }
   }
 }
