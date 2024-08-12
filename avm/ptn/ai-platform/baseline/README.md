@@ -105,7 +105,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Required parameters
     name: '<name>'
     // Non-required parameters
-    virtualMachineSettings: {
+    virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
       adminUsername: '<adminUsername>'
     }
@@ -130,7 +130,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "virtualMachineSettings": {
+    "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
         "adminUsername": "<adminUsername>"
@@ -159,10 +159,10 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Required parameters
     name: 'aipbmax'
     // Non-required parameters
-    applicationInsightsSettings: {
+    applicationInsightsConfiguration: {
       name: 'appi-aipbmax'
     }
-    bastionSettings: {
+    bastionConfiguration: {
       disableCopyPaste: true
       enabled: true
       enableFileCopy: true
@@ -175,25 +175,26 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       sku: 'Standard'
       subnetAddressPrefix: '10.1.1.0/26'
     }
-    containerRegistrySettings: {
+    containerRegistryConfiguration: {
       name: 'craipbmax'
       trustPolicyStatus: 'disabled'
     }
-    keyVaultSettings: {
+    keyVaultConfiguration: {
       enablePurgeProtection: false
       name: '<name>'
     }
-    logAnalyticsSettings: {
+    logAnalyticsConfiguration: {
       name: 'log-aipbmax'
     }
-    managedIdentitySettings: {
+    managedIdentityConfiguration: {
       name: 'id-aipbmax'
     }
-    storageAccountSettings: {
+    storageAccountConfiguration: {
+      allowSharedKeyAccess: true
       name: 'staipbmax'
       sku: 'Standard_GRS'
     }
-    virtualMachineSettings: {
+    virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
       adminUsername: '<adminUsername>'
       enableAadLoginExtension: true
@@ -208,7 +209,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
       maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
       name: 'vm-aipbmax'
-      nicConfigurationSettings: {
+      nicConfigurationConfiguration: {
         ipConfigName: 'ipcfg-aipbmax'
         name: 'nic-aipbmax'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
@@ -228,7 +229,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       size: 'Standard_DS1_v2'
       zone: 1
     }
-    virtualNetworkSettings: {
+    virtualNetworkConfiguration: {
       addressPrefix: '10.1.0.0/16'
       enabled: true
       name: 'vnet-aipbmax'
@@ -238,7 +239,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
     }
-    workspaceHubSettings: {
+    workspaceHubConfiguration: {
       computes: [
         {
           computeType: 'ComputeInstance'
@@ -282,12 +283,12 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       "value": "aipbmax"
     },
     // Non-required parameters
-    "applicationInsightsSettings": {
+    "applicationInsightsConfiguration": {
       "value": {
         "name": "appi-aipbmax"
       }
     },
-    "bastionSettings": {
+    "bastionConfiguration": {
       "value": {
         "disableCopyPaste": true,
         "enabled": true,
@@ -302,35 +303,36 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "subnetAddressPrefix": "10.1.1.0/26"
       }
     },
-    "containerRegistrySettings": {
+    "containerRegistryConfiguration": {
       "value": {
         "name": "craipbmax",
         "trustPolicyStatus": "disabled"
       }
     },
-    "keyVaultSettings": {
+    "keyVaultConfiguration": {
       "value": {
         "enablePurgeProtection": false,
         "name": "<name>"
       }
     },
-    "logAnalyticsSettings": {
+    "logAnalyticsConfiguration": {
       "value": {
         "name": "log-aipbmax"
       }
     },
-    "managedIdentitySettings": {
+    "managedIdentityConfiguration": {
       "value": {
         "name": "id-aipbmax"
       }
     },
-    "storageAccountSettings": {
+    "storageAccountConfiguration": {
       "value": {
+        "allowSharedKeyAccess": true,
         "name": "staipbmax",
         "sku": "Standard_GRS"
       }
     },
-    "virtualMachineSettings": {
+    "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
         "adminUsername": "<adminUsername>",
@@ -346,7 +348,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         },
         "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>",
         "name": "vm-aipbmax",
-        "nicConfigurationSettings": {
+        "nicConfigurationConfiguration": {
           "ipConfigName": "ipcfg-aipbmax",
           "name": "nic-aipbmax",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
@@ -367,7 +369,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "zone": 1
       }
     },
-    "virtualNetworkSettings": {
+    "virtualNetworkConfiguration": {
       "value": {
         "addressPrefix": "10.1.0.0/16",
         "enabled": true,
@@ -379,7 +381,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         }
       }
     },
-    "workspaceHubSettings": {
+    "workspaceHubConfiguration": {
       "value": {
         "computes": [
           {
@@ -427,10 +429,10 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Required parameters
     name: '<name>'
     // Non-required parameters
-    bastionSettings: {
+    bastionConfiguration: {
       enabled: false
     }
-    virtualMachineSettings: {
+    virtualMachineConfiguration: {
       enabled: false
     }
   }
@@ -454,12 +456,12 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "bastionSettings": {
+    "bastionConfiguration": {
       "value": {
         "enabled": false
       }
     },
-    "virtualMachineSettings": {
+    "virtualMachineConfiguration": {
       "value": {
         "enabled": false
       }
@@ -487,7 +489,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Required parameters
     name: '<name>'
     // Non-required parameters
-    virtualNetworkSettings: {
+    virtualNetworkConfiguration: {
       enabled: false
     }
   }
@@ -511,7 +513,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "virtualNetworkSettings": {
+    "virtualNetworkConfiguration": {
       "value": {
         "enabled": false
       }
@@ -543,7 +545,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
     }
-    virtualMachineSettings: {
+    virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
       adminUsername: '<adminUsername>'
       enableAadLoginExtension: true
@@ -552,7 +554,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       patchMode: 'AutomaticByPlatform'
       zone: 1
     }
-    workspaceHubSettings: {
+    workspaceHubConfiguration: {
       networkIsolationMode: 'AllowOnlyApprovedOutbound'
       networkOutboundRules: {
         rule: {
@@ -592,7 +594,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "hidden-title": "This is visible in the resource name"
       }
     },
-    "virtualMachineSettings": {
+    "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
         "adminUsername": "<adminUsername>",
@@ -603,7 +605,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "zone": 1
       }
     },
-    "workspaceHubSettings": {
+    "workspaceHubConfiguration": {
       "value": {
         "networkIsolationMode": "AllowOnlyApprovedOutbound",
         "networkOutboundRules": {
@@ -638,19 +640,19 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationInsightsSettings`](#parameter-applicationinsightssettings) | object | Settings for Application Insights. |
-| [`bastionSettings`](#parameter-bastionsettings) | object | Settings for the Azure Bastion host. |
-| [`containerRegistrySettings`](#parameter-containerregistrysettings) | object | Settings for the container registry. |
+| [`applicationInsightsConfiguration`](#parameter-applicationinsightsconfiguration) | object | Configuration for Application Insights. |
+| [`bastionConfiguration`](#parameter-bastionconfiguration) | object | Configuration for the Azure Bastion host. |
+| [`containerRegistryConfiguration`](#parameter-containerregistryconfiguration) | object | Configuration for the container registry. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`keyVaultSettings`](#parameter-keyvaultsettings) | object | Settings for the key vault. |
+| [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Configuration for the key vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`logAnalyticsSettings`](#parameter-loganalyticssettings) | object | Settings for the Log Analytics workspace. |
-| [`managedIdentitySettings`](#parameter-managedidentitysettings) | object | Settings for the user-assigned managed identity. |
-| [`storageAccountSettings`](#parameter-storageaccountsettings) | object | Settings for the storage account. |
+| [`logAnalyticsConfiguration`](#parameter-loganalyticsconfiguration) | object | Configuration for the Log Analytics workspace. |
+| [`managedIdentityConfiguration`](#parameter-managedidentityconfiguration) | object | Configuration for the user-assigned managed identity. |
+| [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Configuration for the storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
-| [`virtualMachineSettings`](#parameter-virtualmachinesettings) | secureObject | Settings for the virtual machine. |
-| [`virtualNetworkSettings`](#parameter-virtualnetworksettings) | object | Settings for the virtual network. |
-| [`workspaceHubSettings`](#parameter-workspacehubsettings) | object | Settings for the AI Studio workspace hub. |
+| [`virtualMachineConfiguration`](#parameter-virtualmachineconfiguration) | secureObject | Configuration for the virtual machine. |
+| [`virtualNetworkConfiguration`](#parameter-virtualnetworkconfiguration) | object | Configuration for the virtual network. |
+| [`workspaceHubConfiguration`](#parameter-workspacehubconfiguration) | object | Configuration for the AI Studio workspace hub. |
 
 ### Parameter: `name`
 
@@ -659,9 +661,9 @@ Alphanumberic suffix to use for resource naming.
 - Required: Yes
 - Type: string
 
-### Parameter: `applicationInsightsSettings`
+### Parameter: `applicationInsightsConfiguration`
 
-Settings for Application Insights.
+Configuration for Application Insights.
 
 - Required: No
 - Type: object
@@ -670,18 +672,18 @@ Settings for Application Insights.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-applicationinsightssettingsname) | string | The name of the Application Insights resource. |
+| [`name`](#parameter-applicationinsightsconfigurationname) | string | The name of the Application Insights resource. |
 
-### Parameter: `applicationInsightsSettings.name`
+### Parameter: `applicationInsightsConfiguration.name`
 
 The name of the Application Insights resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `bastionSettings`
+### Parameter: `bastionConfiguration`
 
-Settings for the Azure Bastion host.
+Configuration for the Azure Bastion host.
 
 - Required: No
 - Type: object
@@ -690,82 +692,82 @@ Settings for the Azure Bastion host.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`disableCopyPaste`](#parameter-bastionsettingsdisablecopypaste) | bool | Choose to disable or enable Copy Paste. |
-| [`enabled`](#parameter-bastionsettingsenabled) | bool | Whether to create a Bastion host in the virtual network. Defaults to 'true'. |
-| [`enableFileCopy`](#parameter-bastionsettingsenablefilecopy) | bool | Choose to disable or enable File Copy. |
-| [`enableIpConnect`](#parameter-bastionsettingsenableipconnect) | bool | Choose to disable or enable IP Connect. |
-| [`enableKerberos`](#parameter-bastionsettingsenablekerberos) | bool | Choose to disable or enable Kerberos authentication. |
-| [`enableShareableLink`](#parameter-bastionsettingsenableshareablelink) | bool | Choose to disable or enable Shareable Link. |
-| [`name`](#parameter-bastionsettingsname) | string | The name of the Bastion host to create. |
-| [`networkSecurityGroupResourceId`](#parameter-bastionsettingsnetworksecuritygroupresourceid) | string | The resource ID of an existing network security group to associate with the Azure Bastion subnet. |
-| [`scaleUnits`](#parameter-bastionsettingsscaleunits) | int | The scale units for the Bastion Host resource. |
-| [`sku`](#parameter-bastionsettingssku) | string | The SKU of the Bastion host to create. |
-| [`subnetAddressPrefix`](#parameter-bastionsettingssubnetaddressprefix) | string | The address prefix of the Azure Bastion subnet. |
+| [`disableCopyPaste`](#parameter-bastionconfigurationdisablecopypaste) | bool | Choose to disable or enable Copy Paste. |
+| [`enabled`](#parameter-bastionconfigurationenabled) | bool | Whether to create a Bastion host in the virtual network. Defaults to 'true'. |
+| [`enableFileCopy`](#parameter-bastionconfigurationenablefilecopy) | bool | Choose to disable or enable File Copy. |
+| [`enableIpConnect`](#parameter-bastionconfigurationenableipconnect) | bool | Choose to disable or enable IP Connect. |
+| [`enableKerberos`](#parameter-bastionconfigurationenablekerberos) | bool | Choose to disable or enable Kerberos authentication. |
+| [`enableShareableLink`](#parameter-bastionconfigurationenableshareablelink) | bool | Choose to disable or enable Shareable Link. |
+| [`name`](#parameter-bastionconfigurationname) | string | The name of the Bastion host to create. |
+| [`networkSecurityGroupResourceId`](#parameter-bastionconfigurationnetworksecuritygroupresourceid) | string | The resource ID of an existing network security group to associate with the Azure Bastion subnet. |
+| [`scaleUnits`](#parameter-bastionconfigurationscaleunits) | int | The scale units for the Bastion Host resource. |
+| [`sku`](#parameter-bastionconfigurationsku) | string | The SKU of the Bastion host to create. |
+| [`subnetAddressPrefix`](#parameter-bastionconfigurationsubnetaddressprefix) | string | The address prefix of the Azure Bastion subnet. |
 
-### Parameter: `bastionSettings.disableCopyPaste`
+### Parameter: `bastionConfiguration.disableCopyPaste`
 
 Choose to disable or enable Copy Paste.
 
 - Required: No
 - Type: bool
 
-### Parameter: `bastionSettings.enabled`
+### Parameter: `bastionConfiguration.enabled`
 
 Whether to create a Bastion host in the virtual network. Defaults to 'true'.
 
 - Required: No
 - Type: bool
 
-### Parameter: `bastionSettings.enableFileCopy`
+### Parameter: `bastionConfiguration.enableFileCopy`
 
 Choose to disable or enable File Copy.
 
 - Required: No
 - Type: bool
 
-### Parameter: `bastionSettings.enableIpConnect`
+### Parameter: `bastionConfiguration.enableIpConnect`
 
 Choose to disable or enable IP Connect.
 
 - Required: No
 - Type: bool
 
-### Parameter: `bastionSettings.enableKerberos`
+### Parameter: `bastionConfiguration.enableKerberos`
 
 Choose to disable or enable Kerberos authentication.
 
 - Required: No
 - Type: bool
 
-### Parameter: `bastionSettings.enableShareableLink`
+### Parameter: `bastionConfiguration.enableShareableLink`
 
 Choose to disable or enable Shareable Link.
 
 - Required: No
 - Type: bool
 
-### Parameter: `bastionSettings.name`
+### Parameter: `bastionConfiguration.name`
 
 The name of the Bastion host to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `bastionSettings.networkSecurityGroupResourceId`
+### Parameter: `bastionConfiguration.networkSecurityGroupResourceId`
 
 The resource ID of an existing network security group to associate with the Azure Bastion subnet.
 
 - Required: No
 - Type: string
 
-### Parameter: `bastionSettings.scaleUnits`
+### Parameter: `bastionConfiguration.scaleUnits`
 
 The scale units for the Bastion Host resource.
 
 - Required: No
 - Type: int
 
-### Parameter: `bastionSettings.sku`
+### Parameter: `bastionConfiguration.sku`
 
 The SKU of the Bastion host to create.
 
@@ -779,16 +781,16 @@ The SKU of the Bastion host to create.
   ]
   ```
 
-### Parameter: `bastionSettings.subnetAddressPrefix`
+### Parameter: `bastionConfiguration.subnetAddressPrefix`
 
 The address prefix of the Azure Bastion subnet.
 
 - Required: No
 - Type: string
 
-### Parameter: `containerRegistrySettings`
+### Parameter: `containerRegistryConfiguration`
 
-Settings for the container registry.
+Configuration for the container registry.
 
 - Required: No
 - Type: object
@@ -797,17 +799,17 @@ Settings for the container registry.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-containerregistrysettingsname) | string | The name of the container registry. |
-| [`trustPolicyStatus`](#parameter-containerregistrysettingstrustpolicystatus) | string | Whether the trust policy is enabled for the container registry. Defaults to 'enabled'. |
+| [`name`](#parameter-containerregistryconfigurationname) | string | The name of the container registry. |
+| [`trustPolicyStatus`](#parameter-containerregistryconfigurationtrustpolicystatus) | string | Whether the trust policy is enabled for the container registry. Defaults to 'enabled'. |
 
-### Parameter: `containerRegistrySettings.name`
+### Parameter: `containerRegistryConfiguration.name`
 
 The name of the container registry.
 
 - Required: No
 - Type: string
 
-### Parameter: `containerRegistrySettings.trustPolicyStatus`
+### Parameter: `containerRegistryConfiguration.trustPolicyStatus`
 
 Whether the trust policy is enabled for the container registry. Defaults to 'enabled'.
 
@@ -829,9 +831,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `keyVaultSettings`
+### Parameter: `keyVaultConfiguration`
 
-Settings for the key vault.
+Configuration for the key vault.
 
 - Required: No
 - Type: object
@@ -840,17 +842,17 @@ Settings for the key vault.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enablePurgeProtection`](#parameter-keyvaultsettingsenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. Defaults to 'true'. |
-| [`name`](#parameter-keyvaultsettingsname) | string | The name of the key vault. |
+| [`enablePurgeProtection`](#parameter-keyvaultconfigurationenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. Defaults to 'true'. |
+| [`name`](#parameter-keyvaultconfigurationname) | string | The name of the key vault. |
 
-### Parameter: `keyVaultSettings.enablePurgeProtection`
+### Parameter: `keyVaultConfiguration.enablePurgeProtection`
 
 Provide 'true' to enable Key Vault's purge protection feature. Defaults to 'true'.
 
 - Required: No
 - Type: bool
 
-### Parameter: `keyVaultSettings.name`
+### Parameter: `keyVaultConfiguration.name`
 
 The name of the key vault.
 
@@ -865,9 +867,9 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `logAnalyticsSettings`
+### Parameter: `logAnalyticsConfiguration`
 
-Settings for the Log Analytics workspace.
+Configuration for the Log Analytics workspace.
 
 - Required: No
 - Type: object
@@ -876,18 +878,18 @@ Settings for the Log Analytics workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-loganalyticssettingsname) | string | The name of the Log Analytics workspace. |
+| [`name`](#parameter-loganalyticsconfigurationname) | string | The name of the Log Analytics workspace. |
 
-### Parameter: `logAnalyticsSettings.name`
+### Parameter: `logAnalyticsConfiguration.name`
 
 The name of the Log Analytics workspace.
 
 - Required: No
 - Type: string
 
-### Parameter: `managedIdentitySettings`
+### Parameter: `managedIdentityConfiguration`
 
-Settings for the user-assigned managed identity.
+Configuration for the user-assigned managed identity.
 
 - Required: No
 - Type: object
@@ -896,18 +898,18 @@ Settings for the user-assigned managed identity.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-managedidentitysettingsname) | string | The name of the user-assigned managed identity. |
+| [`name`](#parameter-managedidentityconfigurationname) | string | The name of the user-assigned managed identity. |
 
-### Parameter: `managedIdentitySettings.name`
+### Parameter: `managedIdentityConfiguration.name`
 
 The name of the user-assigned managed identity.
 
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountSettings`
+### Parameter: `storageAccountConfiguration`
 
-Settings for the storage account.
+Configuration for the storage account.
 
 - Required: No
 - Type: object
@@ -916,17 +918,25 @@ Settings for the storage account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-storageaccountsettingsname) | string | The name of the storage account. |
-| [`sku`](#parameter-storageaccountsettingssku) | string | Storage account SKU. Defaults to 'Standard_RAGZRS'. |
+| [`allowSharedKeyAccess`](#parameter-storageaccountconfigurationallowsharedkeyaccess) | bool | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'. |
+| [`name`](#parameter-storageaccountconfigurationname) | string | The name of the storage account. |
+| [`sku`](#parameter-storageaccountconfigurationsku) | string | Storage account SKU. Defaults to 'Standard_RAGZRS'. |
 
-### Parameter: `storageAccountSettings.name`
+### Parameter: `storageAccountConfiguration.allowSharedKeyAccess`
+
+Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'.
+
+- Required: No
+- Type: bool
+
+### Parameter: `storageAccountConfiguration.name`
 
 The name of the storage account.
 
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountSettings.sku`
+### Parameter: `storageAccountConfiguration.sku`
 
 Storage account SKU. Defaults to 'Standard_RAGZRS'.
 
@@ -953,16 +963,16 @@ Resource tags.
 - Required: No
 - Type: object
 
-### Parameter: `virtualMachineSettings`
+### Parameter: `virtualMachineConfiguration`
 
-Settings for the virtual machine.
+Configuration for the virtual machine.
 
 - Required: No
 - Type: secureObject
 
-### Parameter: `virtualNetworkSettings`
+### Parameter: `virtualNetworkConfiguration`
 
-Settings for the virtual network.
+Configuration for the virtual network.
 
 - Required: No
 - Type: object
@@ -971,35 +981,35 @@ Settings for the virtual network.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-virtualnetworksettingsaddressprefix) | string | The address prefix of the virtual network to create. |
-| [`enabled`](#parameter-virtualnetworksettingsenabled) | bool | Whether to create an associated virtual network. Defaults to 'true'. |
-| [`name`](#parameter-virtualnetworksettingsname) | string | The name of the virtual network to create. |
-| [`subnet`](#parameter-virtualnetworksettingssubnet) | object | Settings for the virual network subnet. |
+| [`addressPrefix`](#parameter-virtualnetworkconfigurationaddressprefix) | string | The address prefix of the virtual network to create. |
+| [`enabled`](#parameter-virtualnetworkconfigurationenabled) | bool | Whether to create an associated virtual network. Defaults to 'true'. |
+| [`name`](#parameter-virtualnetworkconfigurationname) | string | The name of the virtual network to create. |
+| [`subnet`](#parameter-virtualnetworkconfigurationsubnet) | object | Configuration for the virual network subnet. |
 
-### Parameter: `virtualNetworkSettings.addressPrefix`
+### Parameter: `virtualNetworkConfiguration.addressPrefix`
 
 The address prefix of the virtual network to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `virtualNetworkSettings.enabled`
+### Parameter: `virtualNetworkConfiguration.enabled`
 
 Whether to create an associated virtual network. Defaults to 'true'.
 
 - Required: No
 - Type: bool
 
-### Parameter: `virtualNetworkSettings.name`
+### Parameter: `virtualNetworkConfiguration.name`
 
 The name of the virtual network to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `virtualNetworkSettings.subnet`
+### Parameter: `virtualNetworkConfiguration.subnet`
 
-Settings for the virual network subnet.
+Configuration for the virual network subnet.
 
 - Required: No
 - Type: object
@@ -1008,34 +1018,34 @@ Settings for the virual network subnet.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-virtualnetworksettingssubnetaddressprefix) | string | The address prefix of the subnet to create. |
-| [`name`](#parameter-virtualnetworksettingssubnetname) | string | The name of the subnet to create. |
-| [`networkSecurityGroupResourceId`](#parameter-virtualnetworksettingssubnetnetworksecuritygroupresourceid) | string | The resource ID of an existing network security group to associate with the subnet. |
+| [`addressPrefix`](#parameter-virtualnetworkconfigurationsubnetaddressprefix) | string | The address prefix of the subnet to create. |
+| [`name`](#parameter-virtualnetworkconfigurationsubnetname) | string | The name of the subnet to create. |
+| [`networkSecurityGroupResourceId`](#parameter-virtualnetworkconfigurationsubnetnetworksecuritygroupresourceid) | string | The resource ID of an existing network security group to associate with the subnet. |
 
-### Parameter: `virtualNetworkSettings.subnet.addressPrefix`
+### Parameter: `virtualNetworkConfiguration.subnet.addressPrefix`
 
 The address prefix of the subnet to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `virtualNetworkSettings.subnet.name`
+### Parameter: `virtualNetworkConfiguration.subnet.name`
 
 The name of the subnet to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `virtualNetworkSettings.subnet.networkSecurityGroupResourceId`
+### Parameter: `virtualNetworkConfiguration.subnet.networkSecurityGroupResourceId`
 
 The resource ID of an existing network security group to associate with the subnet.
 
 - Required: No
 - Type: string
 
-### Parameter: `workspaceHubSettings`
+### Parameter: `workspaceHubConfiguration`
 
-Settings for the AI Studio workspace hub.
+Configuration for the AI Studio workspace hub.
 
 - Required: No
 - Type: object
@@ -1044,26 +1054,26 @@ Settings for the AI Studio workspace hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`computes`](#parameter-workspacehubsettingscomputes) | array | Computes to create and attach to the workspace hub. |
-| [`name`](#parameter-workspacehubsettingsname) | string | The name of the AI Studio workspace hub. |
-| [`networkIsolationMode`](#parameter-workspacehubsettingsnetworkisolationmode) | string | The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'. |
-| [`networkOutboundRules`](#parameter-workspacehubsettingsnetworkoutboundrules) | object | The outbound rules for the managed network of the workspace hub. |
+| [`computes`](#parameter-workspacehubconfigurationcomputes) | array | Computes to create and attach to the workspace hub. |
+| [`name`](#parameter-workspacehubconfigurationname) | string | The name of the AI Studio workspace hub. |
+| [`networkIsolationMode`](#parameter-workspacehubconfigurationnetworkisolationmode) | string | The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'. |
+| [`networkOutboundRules`](#parameter-workspacehubconfigurationnetworkoutboundrules) | object | The outbound rules for the managed network of the workspace hub. |
 
-### Parameter: `workspaceHubSettings.computes`
+### Parameter: `workspaceHubConfiguration.computes`
 
 Computes to create and attach to the workspace hub.
 
 - Required: No
 - Type: array
 
-### Parameter: `workspaceHubSettings.name`
+### Parameter: `workspaceHubConfiguration.name`
 
 The name of the AI Studio workspace hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `workspaceHubSettings.networkIsolationMode`
+### Parameter: `workspaceHubConfiguration.networkIsolationMode`
 
 The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'.
 
@@ -1077,7 +1087,7 @@ The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbo
   ]
   ```
 
-### Parameter: `workspaceHubSettings.networkOutboundRules`
+### Parameter: `workspaceHubConfiguration.networkOutboundRules`
 
 The outbound rules for the managed network of the workspace hub.
 
@@ -1088,9 +1098,9 @@ The outbound rules for the managed network of the workspace hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-workspacehubsettingsnetworkoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
+| [`>Any_other_property<`](#parameter-workspacehubconfigurationnetworkoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
 
-### Parameter: `workspaceHubSettings.networkOutboundRules.>Any_other_property<`
+### Parameter: `workspaceHubConfiguration.networkOutboundRules.>Any_other_property<`
 
 The outbound rule. The name of the rule is the object key.
 

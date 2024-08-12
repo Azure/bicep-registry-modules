@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12477608761456313002"
+      "templateHash": "11556352783157704605"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentitySettingType": {
+    "managedIdentityConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -26,7 +26,7 @@
       },
       "nullable": true
     },
-    "logAnalyticsSettingType": {
+    "logAnalyticsConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -39,7 +39,7 @@
       },
       "nullable": true
     },
-    "keyVaultSettingType": {
+    "keyVaultConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -59,7 +59,7 @@
       },
       "nullable": true
     },
-    "storageAccountSettingType": {
+    "storageAccountConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -85,11 +85,18 @@
           "metadata": {
             "description": "Optional. Storage account SKU. Defaults to 'Standard_RAGZRS'."
           }
+        },
+        "allowSharedKeyAccess": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to 'false'."
+          }
         }
       },
       "nullable": true
     },
-    "containerRegistrySettingType": {
+    "containerRegistryConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -113,7 +120,7 @@
       },
       "nullable": true
     },
-    "applicationInsightsSettingType": {
+    "applicationInsightsConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -126,7 +133,7 @@
       },
       "nullable": true
     },
-    "workspaceHubSettingType": {
+    "workspaceHubConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -163,7 +170,7 @@
       },
       "nullable": true
     },
-    "virtualNetworkSubnetSettingType": {
+    "virtualNetworkSubnetConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -190,7 +197,7 @@
       },
       "nullable": true
     },
-    "virtualNetworkSettingType": {
+    "virtualNetworkConfigurationType": {
       "type": "object",
       "properties": {
         "enabled": {
@@ -215,15 +222,15 @@
           }
         },
         "subnet": {
-          "$ref": "#/definitions/virtualNetworkSubnetSettingType",
+          "$ref": "#/definitions/virtualNetworkSubnetConfigurationType",
           "metadata": {
-            "description": "Optional. Settings for the virual network subnet."
+            "description": "Optional. Configuration for the virual network subnet."
           }
         }
       },
       "nullable": true
     },
-    "bastionSettingType": {
+    "bastionConfigurationType": {
       "type": "object",
       "properties": {
         "enabled": {
@@ -310,7 +317,7 @@
       },
       "nullable": true
     },
-    "nicConfigurationSettingType": {
+    "nicConfigurationConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -434,7 +441,7 @@
       },
       "nullable": true
     },
-    "virtualMachineSettingType": {
+    "virtualMachineConfigurationType": {
       "type": "secureObject",
       "properties": {
         "enabled": {
@@ -447,6 +454,7 @@
         "name": {
           "type": "string",
           "nullable": true,
+          "maxLength": 15,
           "metadata": {
             "description": "Optional. The name of the virtual machine."
           }
@@ -485,10 +493,10 @@
             "description": "Conditional. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module."
           }
         },
-        "nicConfigurationSettings": {
-          "$ref": "#/definitions/nicConfigurationSettingType",
+        "nicConfigurationConfiguration": {
+          "$ref": "#/definitions/nicConfigurationConfigurationType",
           "metadata": {
-            "description": "Optional. Settings for the virtual machine network interface."
+            "description": "Optional. Configuration for the virtual machine network interface."
           }
         },
         "imageReference": {
@@ -754,72 +762,72 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "managedIdentitySettings": {
-      "$ref": "#/definitions/managedIdentitySettingType",
+    "managedIdentityConfiguration": {
+      "$ref": "#/definitions/managedIdentityConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the user-assigned managed identity."
+        "description": "Optional. Configuration for the user-assigned managed identity."
       }
     },
-    "logAnalyticsSettings": {
-      "$ref": "#/definitions/logAnalyticsSettingType",
+    "logAnalyticsConfiguration": {
+      "$ref": "#/definitions/logAnalyticsConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the Log Analytics workspace."
+        "description": "Optional. Configuration for the Log Analytics workspace."
       }
     },
-    "keyVaultSettings": {
-      "$ref": "#/definitions/keyVaultSettingType",
+    "keyVaultConfiguration": {
+      "$ref": "#/definitions/keyVaultConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the key vault."
+        "description": "Optional. Configuration for the key vault."
       }
     },
-    "storageAccountSettings": {
-      "$ref": "#/definitions/storageAccountSettingType",
+    "storageAccountConfiguration": {
+      "$ref": "#/definitions/storageAccountConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the storage account."
+        "description": "Optional. Configuration for the storage account."
       }
     },
-    "containerRegistrySettings": {
-      "$ref": "#/definitions/containerRegistrySettingType",
+    "containerRegistryConfiguration": {
+      "$ref": "#/definitions/containerRegistryConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the container registry."
+        "description": "Optional. Configuration for the container registry."
       }
     },
-    "applicationInsightsSettings": {
-      "$ref": "#/definitions/applicationInsightsSettingType",
+    "applicationInsightsConfiguration": {
+      "$ref": "#/definitions/applicationInsightsConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for Application Insights."
+        "description": "Optional. Configuration for Application Insights."
       }
     },
-    "workspaceHubSettings": {
-      "$ref": "#/definitions/workspaceHubSettingType",
+    "workspaceHubConfiguration": {
+      "$ref": "#/definitions/workspaceHubConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the AI Studio workspace hub."
+        "description": "Optional. Configuration for the AI Studio workspace hub."
       }
     },
-    "virtualNetworkSettings": {
-      "$ref": "#/definitions/virtualNetworkSettingType",
+    "virtualNetworkConfiguration": {
+      "$ref": "#/definitions/virtualNetworkConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the virtual network."
+        "description": "Optional. Configuration for the virtual network."
       }
     },
-    "bastionSettings": {
-      "$ref": "#/definitions/bastionSettingType",
+    "bastionConfiguration": {
+      "$ref": "#/definitions/bastionConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the Azure Bastion host."
+        "description": "Optional. Configuration for the Azure Bastion host."
       }
     },
-    "virtualMachineSettings": {
-      "$ref": "#/definitions/virtualMachineSettingType",
+    "virtualMachineConfiguration": {
+      "$ref": "#/definitions/virtualMachineConfigurationType",
       "metadata": {
-        "description": "Optional. Settings for the virtual machine."
+        "description": "Optional. Configuration for the virtual machine."
       }
     }
   },
   "variables": {
-    "createVirtualNetwork": "[not(equals(tryGet(parameters('virtualNetworkSettings'), 'enabled'), false()))]",
-    "createBastion": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('bastionSettings'), 'enabled'), false())))]",
-    "createVirtualMachine": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('virtualMachineSettings'), 'enabled'), false())))]",
-    "createDefaultNsg": "[equals(tryGet(parameters('virtualNetworkSettings'), 'subnet', 'networkSecurityGroupResourceId'), null())]",
+    "createVirtualNetwork": "[not(equals(tryGet(parameters('virtualNetworkConfiguration'), 'enabled'), false()))]",
+    "createBastion": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('bastionConfiguration'), 'enabled'), false())))]",
+    "createVirtualMachine": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('virtualMachineConfiguration'), 'enabled'), false())))]",
+    "createDefaultNsg": "[equals(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'networkSecurityGroupResourceId'), null())]",
     "mlTargetSubResource": "amlworkspace",
     "mlPrivateDnsZones": {
       "privatelink.api.azureml.ms": "[variables('mlTargetSubResource')]",
@@ -854,14 +862,14 @@
     "managedIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "name": "[coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name')))]",
+      "name": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'name'), format('id-{0}', parameters('name')))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
     },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2023-09-01",
-      "name": "[coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name')))]",
+      "name": "[coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name')))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
     },
@@ -7296,7 +7304,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('virtualNetworkSettings'), 'name'), format('vnet-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7306,11 +7314,11 @@
           },
           "addressPrefixes": {
             "value": [
-              "[coalesce(tryGet(parameters('virtualNetworkSettings'), 'addressPrefix'), '10.0.0.0/16')]"
+              "[coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'addressPrefix'), '10.0.0.0/16')]"
             ]
           },
           "subnets": {
-            "value": "[union(createArray(createObject('addressPrefix', coalesce(tryGet(parameters('virtualNetworkSettings'), 'subnet', 'addressPrefix'), '10.0.0.0/24'), 'name', coalesce(tryGet(parameters('virtualNetworkSettings'), 'subnet', 'name'), 'default'), 'networkSecurityGroupResourceId', if(variables('createDefaultNsg'), reference('defaultNetworkSecurityGroup').outputs.resourceId.value, tryGet(parameters('virtualNetworkSettings'), 'subnet', 'networkSecurityGroupResourceId')))), if(variables('createBastion'), createArray(createObject('addressPrefix', coalesce(tryGet(parameters('bastionSettings'), 'subnetAddressPrefix'), '10.0.1.0/26'), 'name', 'AzureBastionSubnet', 'networkSecurityGroupResourceId', tryGet(parameters('bastionSettings'), 'networkSecurityGroupResourceId'))), createArray()))]"
+            "value": "[union(createArray(createObject('addressPrefix', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'addressPrefix'), '10.0.0.0/24'), 'name', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'name'), 'default'), 'networkSecurityGroupResourceId', if(variables('createDefaultNsg'), reference('defaultNetworkSecurityGroup').outputs.resourceId.value, tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'networkSecurityGroupResourceId')))), if(variables('createBastion'), createArray(createObject('addressPrefix', coalesce(tryGet(parameters('bastionConfiguration'), 'subnetAddressPrefix'), '10.0.1.0/26'), 'name', 'AzureBastionSubnet', 'networkSecurityGroupResourceId', tryGet(parameters('bastionConfiguration'), 'networkSecurityGroupResourceId'))), createArray()))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -8492,13 +8500,13 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('bastionSettings'), 'name'), format('bas-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('bastionConfiguration'), 'name'), format('bas-{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "skuName": {
-            "value": "[coalesce(tryGet(parameters('bastionSettings'), 'sku'), 'Standard')]"
+            "value": "[coalesce(tryGet(parameters('bastionConfiguration'), 'sku'), 'Standard')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -8507,22 +8515,22 @@
             "value": "[reference('virtualNetwork').outputs.resourceId.value]"
           },
           "disableCopyPaste": {
-            "value": "[tryGet(parameters('bastionSettings'), 'disableCopyPaste')]"
+            "value": "[tryGet(parameters('bastionConfiguration'), 'disableCopyPaste')]"
           },
           "enableFileCopy": {
-            "value": "[tryGet(parameters('bastionSettings'), 'enableFileCopy')]"
+            "value": "[tryGet(parameters('bastionConfiguration'), 'enableFileCopy')]"
           },
           "enableIpConnect": {
-            "value": "[tryGet(parameters('bastionSettings'), 'enableIpConnect')]"
+            "value": "[tryGet(parameters('bastionConfiguration'), 'enableIpConnect')]"
           },
           "enableKerberos": {
-            "value": "[tryGet(parameters('bastionSettings'), 'enableKerberos')]"
+            "value": "[tryGet(parameters('bastionConfiguration'), 'enableKerberos')]"
           },
           "enableShareableLink": {
-            "value": "[tryGet(parameters('bastionSettings'), 'enableShareableLink')]"
+            "value": "[tryGet(parameters('bastionConfiguration'), 'enableShareableLink')]"
           },
           "scaleUnits": {
-            "value": "[tryGet(parameters('bastionSettings'), 'scaleUnits')]"
+            "value": "[tryGet(parameters('bastionConfiguration'), 'scaleUnits')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -9676,10 +9684,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'name'), format('vm-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'name'), format('vm-{0}', parameters('name')))]"
           },
           "computerName": {
-            "value": "[take(coalesce(tryGet(parameters('virtualMachineSettings'), 'name'), format('vm-{0}', parameters('name'))), 15)]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'name'), format('vm-{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -9688,21 +9696,21 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "adminUsername": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'adminUsername'), '')]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'adminUsername'), '')]"
           },
           "adminPassword": {
-            "value": "[tryGet(parameters('virtualMachineSettings'), 'adminPassword')]"
+            "value": "[tryGet(parameters('virtualMachineConfiguration'), 'adminPassword')]"
           },
           "nicConfigurations": {
             "value": [
               {
-                "name": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'nicConfigurationSettings', 'name'), format('nic-vm-{0}', parameters('name')))]",
+                "name": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'nicConfigurationConfiguration', 'name'), format('nic-vm-{0}', parameters('name')))]",
                 "location": "[parameters('location')]",
-                "networkSecurityGroupResourceId": "[tryGet(parameters('virtualMachineSettings'), 'nicConfigurationSettings', 'networkSecurityGroupResourceId')]",
+                "networkSecurityGroupResourceId": "[tryGet(parameters('virtualMachineConfiguration'), 'nicConfigurationConfiguration', 'networkSecurityGroupResourceId')]",
                 "ipConfigurations": [
                   {
-                    "name": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'nicConfigurationSettings', 'ipConfigName'), format('nic-vm-{0}-ipconfig', parameters('name')))]",
-                    "privateIPAllocationMethod": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'nicConfigurationSettings', 'privateIPAllocationMethod'), 'Dynamic')]",
+                    "name": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'nicConfigurationConfiguration', 'ipConfigName'), format('nic-vm-{0}-ipconfig', parameters('name')))]",
+                    "privateIPAllocationMethod": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'nicConfigurationConfiguration', 'privateIPAllocationMethod'), 'Dynamic')]",
                     "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]"
                   }
                 ]
@@ -9710,30 +9718,30 @@
             ]
           },
           "imageReference": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'imageReference'), createObject('publisher', 'microsoft-dsvm', 'offer', 'dsvm-win-2022', 'sku', 'winserver-2022', 'version', 'latest'))]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'imageReference'), createObject('publisher', 'microsoft-dsvm', 'offer', 'dsvm-win-2022', 'sku', 'winserver-2022', 'version', 'latest'))]"
           },
           "osDisk": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'osDisk'), createObject('createOption', 'FromImage', 'managedDisk', createObject('storageAccountType', 'Premium_ZRS'), 'diskSizeGB', 128, 'caching', 'ReadWrite'))]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'osDisk'), createObject('createOption', 'FromImage', 'managedDisk', createObject('storageAccountType', 'Premium_ZRS'), 'diskSizeGB', 128, 'caching', 'ReadWrite'))]"
           },
           "patchMode": {
-            "value": "[tryGet(parameters('virtualMachineSettings'), 'patchMode')]"
+            "value": "[tryGet(parameters('virtualMachineConfiguration'), 'patchMode')]"
           },
           "osType": {
             "value": "Windows"
           },
           "encryptionAtHost": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'encryptionAtHost'), true())]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'encryptionAtHost'), true())]"
           },
           "vmSize": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'size'), 'Standard_D2s_v3')]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'size'), 'Standard_D2s_v3')]"
           },
           "zone": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineSettings'), 'zone'), 0)]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'zone'), 0)]"
           },
-          "extensionAadJoinConfig": "[if(equals(tryGet(parameters('virtualMachineSettings'), 'enableAadLoginExtension'), true()), createObject('value', createObject('enabled', true(), 'typeHandlerVersion', '1.0')), createObject('value', null()))]",
-          "extensionMonitoringAgentConfig": "[if(equals(tryGet(parameters('virtualMachineSettings'), 'enableAzureMonitorAgent'), true()), createObject('value', createObject('enabled', true())), createObject('value', null()))]",
+          "extensionAadJoinConfig": "[if(equals(tryGet(parameters('virtualMachineConfiguration'), 'enableAadLoginExtension'), true()), createObject('value', createObject('enabled', true(), 'typeHandlerVersion', '1.0')), createObject('value', null()))]",
+          "extensionMonitoringAgentConfig": "[if(equals(tryGet(parameters('virtualMachineConfiguration'), 'enableAzureMonitorAgent'), true()), createObject('value', createObject('enabled', true())), createObject('value', null()))]",
           "maintenanceConfigurationResourceId": {
-            "value": "[tryGet(parameters('virtualMachineSettings'), 'maintenanceConfigurationResourceId')]"
+            "value": "[tryGet(parameters('virtualMachineConfiguration'), 'maintenanceConfigurationResourceId')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -15136,7 +15144,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('keyVaultSettings'), 'name'), format('kv-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('keyVaultConfiguration'), 'name'), format('kv-{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -15166,7 +15174,7 @@
             "value": "Disabled"
           },
           "enablePurgeProtection": {
-            "value": "[coalesce(tryGet(parameters('keyVaultSettings'), 'enablePurgeProtection'), true())]"
+            "value": "[coalesce(tryGet(parameters('keyVaultConfiguration'), 'enablePurgeProtection'), true())]"
           },
           "roleAssignments": {
             "value": [
@@ -15185,7 +15193,7 @@
           "diagnosticSettings": {
             "value": [
               {
-                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name'))))]",
+                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name'))))]",
                 "logCategoriesAndGroups": [
                   {
                     "category": "AuditEvent",
@@ -17943,16 +17951,25 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('storageAccountSettings'), 'name'), format('st{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('storageAccountConfiguration'), 'name'), format('st{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "skuName": {
-            "value": "[coalesce(tryGet(parameters('storageAccountSettings'), 'sku'), 'Standard_RAGZRS')]"
+            "value": "[coalesce(tryGet(parameters('storageAccountConfiguration'), 'sku'), 'Standard_RAGZRS')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "allowBlobPublicAccess": {
+            "value": false
+          },
+          "allowSharedKeyAccess": {
+            "value": "[coalesce(tryGet(parameters('storageAccountConfiguration'), 'allowSharedKeyAccess'), false())]"
+          },
+          "defaultToOAuthAuthentication": {
+            "value": "[not(coalesce(tryGet(parameters('storageAccountConfiguration'), 'allowSharedKeyAccess'), false()))]"
           },
           "publicNetworkAccess": {
             "value": "Disabled"
@@ -22661,7 +22678,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('containerRegistrySettings'), 'name'), format('cr{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('containerRegistryConfiguration'), 'name'), format('cr{0}', parameters('name')))]"
           },
           "acrSku": {
             "value": "Premium"
@@ -22682,7 +22699,7 @@
             "value": "Enabled"
           },
           "trustPolicyStatus": {
-            "value": "[coalesce(tryGet(parameters('containerRegistrySettings'), 'trustPolicyStatus'), 'enabled')]"
+            "value": "[coalesce(tryGet(parameters('containerRegistryConfiguration'), 'trustPolicyStatus'), 'enabled')]"
           },
           "roleAssignments": {
             "value": [
@@ -24833,7 +24850,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('applicationInsightsSettings'), 'name'), format('appi-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('applicationInsightsConfiguration'), 'name'), format('appi-{0}', parameters('name')))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -24845,7 +24862,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "workspaceResourceId": {
-            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name'))))]"
+            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name'))))]"
           },
           "roleAssignments": {
             "value": [
@@ -25470,7 +25487,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('workspaceHubSettings'), 'name'), format('hub-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('workspaceHubConfiguration'), 'name'), format('hub-{0}', parameters('name')))]"
           },
           "sku": {
             "value": "Standard"
@@ -25504,20 +25521,20 @@
           "managedIdentities": {
             "value": {
               "userAssignedResourceIds": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name'))))]"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'name'), format('id-{0}', parameters('name'))))]"
               ]
             }
           },
           "primaryUserAssignedIdentity": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name'))))]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'name'), format('id-{0}', parameters('name'))))]"
           },
           "computes": {
-            "value": "[tryGet(parameters('workspaceHubSettings'), 'computes')]"
+            "value": "[tryGet(parameters('workspaceHubConfiguration'), 'computes')]"
           },
           "managedNetworkSettings": {
             "value": {
-              "isolationMode": "[coalesce(tryGet(parameters('workspaceHubSettings'), 'networkIsolationMode'), 'AllowInternetOutbound')]",
-              "outboundRules": "[tryGet(parameters('workspaceHubSettings'), 'networkOutboundRules')]"
+              "isolationMode": "[coalesce(tryGet(parameters('workspaceHubConfiguration'), 'networkIsolationMode'), 'AllowInternetOutbound')]",
+              "outboundRules": "[tryGet(parameters('workspaceHubConfiguration'), 'networkOutboundRules')]"
             }
           },
           "privateEndpoints": "[if(not(equals(if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], null()), null())), createObject('value', createArray(createObject('name', format('pep-{0}-{1}', variables('mlTargetSubResource'), parameters('name')), 'customNetworkInterfaceName', format('nic-{0}-{1}', variables('mlTargetSubResource'), parameters('name')), 'service', variables('mlTargetSubResource'), 'subnetResourceId', if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], null()), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', map(objectKeys(variables('mlPrivateDnsZones')), lambda('zone', createObject('name', replace(lambdaVariables('zone'), '.', '-'), 'privateDnsZoneResourceId', resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone'))))))))), createObject('value', null()))]",
@@ -27839,28 +27856,28 @@
       "metadata": {
         "description": "The resource ID of the log analytics workspace."
       },
-      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name'))))]"
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name'))))]"
     },
     "logAnalyticsWorkspaceName": {
       "type": "string",
       "metadata": {
         "description": "The name of the log analytics workspace."
       },
-      "value": "[coalesce(tryGet(parameters('logAnalyticsSettings'), 'name'), format('log-{0}', parameters('name')))]"
+      "value": "[coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name')))]"
     },
     "managedIdentityResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the user assigned managed identity."
       },
-      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name'))))]"
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'name'), format('id-{0}', parameters('name'))))]"
     },
     "managedIdentityName": {
       "type": "string",
       "metadata": {
         "description": "The name of the user assigned managed identity."
       },
-      "value": "[coalesce(tryGet(parameters('managedIdentitySettings'), 'name'), format('id-{0}', parameters('name')))]"
+      "value": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'name'), format('id-{0}', parameters('name')))]"
     },
     "managedIdentityPrincipalId": {
       "type": "string",

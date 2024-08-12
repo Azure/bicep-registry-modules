@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
-      virtualMachineSettings: {
+      virtualMachineConfiguration: {
         adminUsername: username
         adminPassword: password
       }
