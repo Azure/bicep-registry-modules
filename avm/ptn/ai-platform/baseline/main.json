@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11556352783157704605"
+      "templateHash": "4742766792790464387"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
@@ -9687,7 +9687,7 @@
             "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'name'), format('vm-{0}', parameters('name')))]"
           },
           "computerName": {
-            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'name'), format('vm-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'name'), take(format('vm-{0}', parameters('name')), 15))]"
           },
           "location": {
             "value": "[parameters('location')]"

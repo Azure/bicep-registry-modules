@@ -213,7 +213,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
   name: '${uniqueString(deployment().name, location)}-virtual-machine'
   params: {
     name: virtualMachineConfiguration.?name ?? 'vm-${name}'
-    computerName: virtualMachineConfiguration.?name ?? 'vm-${name}'
+    computerName: virtualMachineConfiguration.?name ?? take('vm-${name}', 15)
     location: location
     enableTelemetry: enableTelemetry
     adminUsername: virtualMachineConfiguration.?adminUsername ?? ''
