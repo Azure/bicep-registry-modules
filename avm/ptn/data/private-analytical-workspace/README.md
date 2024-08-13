@@ -844,6 +844,7 @@ If the parameter ```logAnalyticsWorkspaceResourceId``` is left unspecified or se
 Additional creation configurations for the Azure Log Analytics Workspace are available under the parameter ```advancedOptions.logAnalyticsWorkspace.*```.</br>
 The ```logAnalyticsWorkspaceResourceId``` parameter may be configured to use an existing Azure Log Analytics Workspace, which is beneficial for enterprises that prefer to centralize their diagnostic data.</br>
 
+<a name="kv-uc1"></a>
 ##### Storing Secrets - Key Vault
 
 If the parameter ```keyVaultResourceId``` is left unspecified or set to ```null```, a new Azure Key Vault will be created as part of the solution.</br>
@@ -926,27 +927,35 @@ If only full private access is required, the ```advancedOptions.networkAcls.ipRu
 
 When utilizing a pre-defined virtual network provided by the Enterprise Network team (this use case), the ```virtualNetworkResourceId``` parameter should be set to reference the existing Virtual Network.
 
-<a name="monitoring-uc2"></a>
 ##### Monitoring of the Solution
 
 The rules outlined here: [Monitoring of the Solution for Use Case 1](#monitoring-uc1) apply to this use case as well.
-
-
-
-
-
-
-
-
 
 ##### Storing Secrets - Key Vault
 
 If the parameter ```keyVaultResourceId``` is left unspecified or set to ```null```, a new Azure Key Vault will be created as part of the solution.</br>
 Additional creation configurations for the Azure Key Vault are available under the parameter ```advancedOptions.keyVault.*```.</br>
-As part of the solution, a private endpoint and a DNS Key Vault Zone are created. To handle secrets through the Azure Portal, Public Access must be provided for the given public IP within the parameter ```advancedOptions.networkAcls.ipRules```.</br>
-For the handling of secrets, users need to have privileged roles. Those listed in the ```solutionAdministrators.*``` parameter will receive 'Key Vault Administrator' privileges specifically for Azure Key Vaults that are newly created.</br>
+
+This use case resembles use case [Storing Secrets - Key Vault for Use Case 1](#kv-uc1).
+The difference is that the customer usually needs full private access in own virtual network and must configure private endpoints for the created Azure Key Vault.
+This includes registering DNS records pointing to the private IP address under the private endpoint for Network Interface Card.
+Additionally, the customer must create or use an existing Azure Key Vault private DNS zone to support private endpoint resolution
+and integrate it with enterprise DNS and DNS forwarding mechanisms.
+
+To allow both private and public access, you can set the ```advancedOptions.networkAcls.ipRules``` parameter
+to include the client's public IP (enables public endpoints for some services).
+
+For the handling of secrets, users need to have privileged roles.
+Those listed in the ```solutionAdministrators.*``` parameter will receive 'Key Vault Administrator'
+privileges specifically for Azure Key Vaults that are newly created.</br>
 
 ##### Solution Administrators
+
+
+
+
+
+
 
 In order to grant administrative rights for the newly created services that have been added to the solution, you should utilize the parameter ```solutionAdministrators.*```. You can designate User or Entra ID Groups for this purpose.</br>
 The specified identities will be granted ownership of the solution, enabling them to delegate permissions as necessary. Additionally, they will obtain 'Key Vault Administrator' rights, which apply solely to the Azure Key Vaults that have been created as part of the solution.</br>
