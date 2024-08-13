@@ -216,7 +216,7 @@ function Get-DeploymentTargetResourceListInner {
     ###########################
     # Manage nested resources #
     ###########################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/deployments\/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/Microsoft\.Resources\/deployments\/' } )) {
         Write-Verbose ('Found deployed resource [{0}]' -f $deployment)
         [array]$resultSet += $deployment
     }
@@ -224,7 +224,7 @@ function Get-DeploymentTargetResourceListInner {
     #############################
     # Manage nested deployments #
     #############################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/deployments\/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/Microsoft\.Resources\/deployments\/' } )) {
         $name = Split-Path $deployment -Leaf
         if ($deployment -match '/resourceGroups/') {
             # Resource Group Level Child Deployments #
