@@ -852,12 +852,14 @@ Additional creation configurations for the Azure Key Vault are available under t
 As part of the solution, a private endpoint and a DNS Key Vault Zone are created. To handle secrets through the Azure Portal, Public Access must be provided for the given public IP within the parameter ```advancedOptions.networkAcls.ipRules```.</br>
 For the handling of secrets, users need to have privileged roles. Those listed in the ```solutionAdministrators.*``` parameter will receive 'Key Vault Administrator' privileges specifically for Azure Key Vaults that are newly created.</br>
 
+<a name="sol-admin-uc1"></a>
 ##### Solution Administrators
 
 In order to grant administrative rights for the newly created services that have been added to the solution, you should utilize the parameter ```solutionAdministrators.*```. You can designate User or Entra ID Groups for this purpose.</br>
 The specified identities will be granted ownership of the solution, enabling them to delegate permissions as necessary. Additionally, they will obtain 'Key Vault Administrator' rights, which apply solely to the Azure Key Vaults that have been created as part of the solution.</br>
 It's essential to designate an individual as the Solution Administrator to utilize the solution effectively.</br>
 
+<a name="adb-uc1"></a>
 ##### Analytical Service - Azure Databricks
 
 If the parameter ```enableDatabricks``` is set to ```true```, a new Azure Databricks instance will be created as part of the solution.</br>
@@ -884,7 +886,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     ]
     advancedOptions: {
-      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution
+      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution (enables public endpoints for some services)
     }
     tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
   }
@@ -893,22 +895,23 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 #### Use Case 2: Brownfield, Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment
 
-This use case seeks to align with the expectations of enterprise infrastructure. For instance, certain companies prohibit the use of public IP addresses in their solutions.
+This use case seeks to align with the expectations of enterprise infrastructure.</br>
+For instance, certain companies prohibit the use of public IP addresses in their solutions.</br>
+The solution will provision certain elements such as Monitoring, Key Vault, permissions, and analytics services.</br>
+However, additional configurations may be required before and after deployment.</br>
+Choosing this option allows you to tailor the infrastructure, but typically requires customized services from the cloud, security, and network teams, leading to less agility and project delays.</br>
+This case presents a balance between an extended deployment timeline and compliance with corporate policies and infrastructure requirements.</br>
 
-The solution will provision certain elements such as Monitoring, Key Vault, permissions, and analytics services. However, additional configurations may be required before and after deployment.
+Complexity could be notably high on the Virtual Network side.</br>
+Anticipate the need for virtual network peering arrangements using a hub and spoke design, route tables, configuration of DNS, private zones, private endpoints, DNS forwarding for private links, virtual network delegations, and so on.</br>
+Additionally, various analytics services may each have distinct virtual network requirements.
 
-Choosing this option allows you to tailor the infrastructure, but typically requires customized services from the cloud, security, and network teams, leading to less agility and project delays.
-
-This case presents a balance between an extended deployment timeline and compliance with corporate policies and infrastructure requirements.
-
-Complexity could be notably high on the Virtual Network side.
-
-Anticipate the need for virtual network peering arrangements using a hub and spoke design, route tables, configuration of DNS, private zones, private endpoints, DNS forwarding for private links, virtual network delegations, and so on. Additionally, various analytics services may each have distinct virtual network requirements.
-
-This use case does not require any public IP addresses to be exposed. All services can utilize private Enterprise Network access exclusively.
+This use case does not require any public IP addresses to be exposed.</br>
+All services can utilize private Enterprise Network access exclusively.
 
 The identity of the solution administrator or the managing group must be submitted to gain access and control over the solution.
 
+<a name="vnet-uc2"></a>
 ##### Virtual Network
 
 The enterprise network team needs to set up a virtual network with necessary components and settings in advance. This must be a spoke-type network connected to the central hub network with central Enterprise Firewall and connectivity to enterprise network - following the hub and spoke architecture.
@@ -951,32 +954,39 @@ privileges specifically for Azure Key Vaults that are newly created.</br>
 
 ##### Solution Administrators
 
-
-
-
-
-
-
-In order to grant administrative rights for the newly created services that have been added to the solution, you should utilize the parameter ```solutionAdministrators.*```. You can designate User or Entra ID Groups for this purpose.</br>
-The specified identities will be granted ownership of the solution, enabling them to delegate permissions as necessary. Additionally, they will obtain 'Key Vault Administrator' rights, which apply solely to the Azure Key Vaults that have been created as part of the solution.</br>
-It's essential to designate an individual as the Solution Administrator to utilize the solution effectively.</br>
+The rules outlined here: [Solution Administrators for Use Case 1](#sol-admin-uc1) apply to this use case as well.
 
 ##### Analytical Service - Azure Databricks
 
 If the parameter ```enableDatabricks``` is set to ```true```, a new Azure Databricks instance will be created as part of the solution.</br>
 Additional creation configurations for the Azure Databricks are available under the parameter ```advancedOptions.databricks.*```.</br>
-As part of the solution, two subnets with delegations, two private endpoints, network security groups and a Azure Databricks Zone are created.</br>
-To access Azure Databricks integrated into the isolated Virtual Network, Public Access must be provided for the given public IP within the parameter ```advancedOptions.networkAcls.ipRules```.</br>
-Additional manual setup is required to restrict public access for different clients. Refer to this guide for more information: <https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview></br>
+
+This use case resembles use case [Analytical Service - Azure Databricks for Use Case 1](#adb-uc1).
+The difference is that the customer usually needs full private access in own virtual network and must configure private endpoints for the created Azure Databricks.
+This includes registering DNS records pointing to the private IP address under the private endpoint for Network Interface Card.
+Additionally, the customer must create or use an existing Azure Databricks private DNS zone to support private endpoint resolution
+and integrate it with enterprise DNS and DNS forwarding mechanisms.
+
+This use case usually involves integrating with a private virtual network. Refer to: [Virtual Network for Use Case 2](#vnet-uc2).
+The network team needs to set up the virtual network to include a private links subnet and two additional subnets delegated for Azure Databricks.
+Then, create two private endpoints, network security groups, and an Azure Databricks Zone.
+
+Refer to this guide for more information: <https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject>
+and this: <https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/private-link></br>
+
+To allow both private and public access, you can set the ```advancedOptions.networkAcls.ipRules``` parameter
+to include the client's public IP (enables public endpoints for some services).
+If you allow public access, additional manual setup is required to restrict public access for different clients.
+Refer to this guide for more information: <https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview></br>
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'UC1'
+  name: 'UC2'
   params: {
     // Required parameters
-    name: 'pawuc1'
+    name: 'pawuc2'
     // Non-required parameters
-    virtualNetworkResourceId: null        // null means new VNET will be created
+    virtualNetworkResourceId: '/subscriptions/{SUBSCRIPTION-ID}/resourceGroups/{NAME-OF-RG}/providers/Microsoft.Network/virtualNetworks/{NAME-OF-VNET}'
     logAnalyticsWorkspaceResourceId: null // null means new Log Analytical Workspace will be created
     keyVaultResourceId: null              // null means new Azure key Vault will be created
     enableDatabricks: true                // Part of the solution and VNET will be new instance of the Azure Databricks
@@ -987,37 +997,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     ]
     advancedOptions: {
-      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution
+      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution (enables public endpoints for some services)
     }
     tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
   }
 }
 ```
-
-
-
-
-
-- When Azure Databricks is enabled, the public IP must be enabled manually.
-- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list#ip-access-lists-overview
-- https://accounts.azuredatabricks.net/login | https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-account#enable-ip-access-lists
-- https://learn.microsoft.com/en-us/azure/databricks/security/network/front-end/ip-access-list-workspace
-- https://learn.microsoft.com/en-us/azure/databricks/compute/web-terminal |
-
-
-
-
-- Customer needs to provide Spoke Virtual Network dedicated to the workload with subnets for the solution.
-  - Spoke Network needs to be peered with Hub Network - typically with central Firewall and connectivity to enterprise network.
-  - Private Link Subnet, front-end and backend-end subnet for Azure Databricks
-  - !!! Subnets for Azure Databricks must have delegations for 'Microsoft.Databricks/workspaces' enabled
-  - Each subnet for Azure Databricks must have same NSG associated
-  - NSG for ADb must have following rules - https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#network-security-group-rules-for-workspaces
-  - ADB PEPs
-  - Delegation, RT, NSG, subnets, VNET with large size, DNS, Peerings, PL DNS
-  - ADB UDR?? https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/udr
-  - solutionAdministrators are owners for all resources, KV administrator
-
 
 #### Use Case 8: Integration with core enterprise infrastructure
 
