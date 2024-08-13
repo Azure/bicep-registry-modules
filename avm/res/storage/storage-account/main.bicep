@@ -241,6 +241,14 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'db58b8e5-c6ad-4a2a-8342-4190687cbf4a'
   )
+  'Storage File Data Privileged Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+  )
+  'Storage File Data Privileged Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b8eda974-7b85-4f76-af95-65846b26df6d'
+  )
   'Storage File Data SMB Share Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
