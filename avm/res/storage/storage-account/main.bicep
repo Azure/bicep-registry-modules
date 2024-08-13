@@ -633,34 +633,34 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
     keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
     secretsToSet: union(
       [],
-      contains(secretsExportConfiguration!, 'Key1Key')
+      contains(secretsExportConfiguration!, 'key1')
         ? [
             {
-              name: secretsExportConfiguration!.Key1Key
+              name: secretsExportConfiguration!.key1
               value: storageAccount.listKeys().keys[0].value
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'Key1ConnectionString')
+      contains(secretsExportConfiguration!, 'connectionString1')
         ? [
             {
-              name: secretsExportConfiguration!.Key1ConnectionString
+              name: secretsExportConfiguration!.connectionString1
               value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0]};EndpointSuffix=core.windows.net'
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'Key2Key')
+      contains(secretsExportConfiguration!, 'key2')
         ? [
             {
-              name: secretsExportConfiguration!.Key2Key
+              name: secretsExportConfiguration!.key2
               value: storageAccount.listKeys().keys[1].value
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'Key2ConnectionString')
+      contains(secretsExportConfiguration!, 'connectionString2')
         ? [
             {
-              name: secretsExportConfiguration!.Key2ConnectionString
+              name: secretsExportConfiguration!.connectionString2
               value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1]};EndpointSuffix=core.windows.net'
             }
           ]
@@ -898,14 +898,14 @@ type secretsExportConfigurationType = {
   keyVaultResourceId: string
 
   @description('Optional. Default to Key1Key. The primary key secret name to create.')
-  Key1Key: string?
+  key1: string?
 
   @description('Optional. Default to Key1-ConnectionString. The primary connection string secret name to create.')
-  Key1ConnectionString: string?
+  connectionString1: string?
 
   @description('Optional. Default to Key2-Key. The secondary key secret name to create.')
-  Key2Key: string?
+  key2: string?
 
   @description('Optional. Default to Key2-ConnectionString. The secondary connection string secret name to create.')
-  Key2ConnectionString: string?
+  connectionString2: string?
 }

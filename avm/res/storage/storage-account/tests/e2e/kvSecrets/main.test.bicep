@@ -49,7 +49,10 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}kvref'
     secretsExportConfiguration: {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultId
-      Key1Key: 'custom-secret-name'
+      key1: 'custom-key1-name'
+      key2: 'custom-key2-name'
+      connectionString1: 'custom-connectionString1-name'
+      connectionString2: 'custom-connectionString2-name'
     }
   }
 }
