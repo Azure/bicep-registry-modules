@@ -641,10 +641,10 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
     keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
     secretsToSet: union(
       [],
-      contains(secretsExportConfiguration!, 'key1')
+      contains(secretsExportConfiguration!, 'accessKey1')
         ? [
             {
-              name: secretsExportConfiguration!.key1
+              name: secretsExportConfiguration!.accessKey1
               value: storageAccount.listKeys().keys[0].value
             }
           ]
@@ -657,10 +657,10 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'key2')
+      contains(secretsExportConfiguration!, 'accessKey2')
         ? [
             {
-              name: secretsExportConfiguration!.key2
+              name: secretsExportConfiguration!.accessKey2
               value: storageAccount.listKeys().keys[1].value
             }
           ]
@@ -906,13 +906,13 @@ type secretsExportConfigurationType = {
   keyVaultResourceId: string
 
   @description('Optional. Default to Key1Key. The primary key secret name to create.')
-  key1: string?
+  accessKey1: string?
 
   @description('Optional. Default to Key1-ConnectionString. The primary connection string secret name to create.')
   connectionString1: string?
 
   @description('Optional. Default to Key2-Key. The secondary key secret name to create.')
-  key2: string?
+  accessKey2: string?
 
   @description('Optional. Default to Key2-ConnectionString. The secondary connection string secret name to create.')
   connectionString2: string?
