@@ -47,9 +47,9 @@ module testDeployment '../../../main.bicep' = {
   params: {
     location: resourceLocation
     name: '${namePrefix}kvref'
-    secretsKeyVault: {
-      keyVaultName: nestedDependencies.outputs.keyVaultName
-      primaryConnectionStringSecretName: 'custom-secret-name'
+    secretsExportConfiguration: {
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultId
+      Key1Key: 'custom-secret-name'
     }
   }
 }
