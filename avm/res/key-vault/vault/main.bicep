@@ -286,7 +286,7 @@ module keyVault_keys 'key/main.bicep' = [
     params: {
       name: key.name
       keyVaultName: keyVault.name
-      attributesEnabled: key.?attributes.?enab
+      attributesEnabled: key.?attributes.?enabled
       attributesExp: key.?atrributes.?exp
       attributesNbf: key.?atrributes.?nbf
       curveName: (key.?kty != 'RSA' && key.?kty != 'RSA-HSM') ? (key.?curveName ?? 'P-256') : null
