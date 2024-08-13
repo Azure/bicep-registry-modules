@@ -270,9 +270,9 @@ module keyVault_secrets 'secret/main.bicep' = [
       name: secret.name
       value: secret.value
       keyVaultName: keyVault.name
-      attributesEnabled: secret.?attributesEnabled
-      attributesExp: secret.?attributesExp
-      attributesNbf: secret.?attributesNbf
+      attributesEnabled: secret.?atrributes.?enabled
+      attributesExp: secret.?atrributes.?exp
+      attributesNbf: secret.?atrributes.?nbf
       contentType: secret.?contentType
       tags: secret.?tags ?? tags
       roleAssignments: secret.?roleAssignments
@@ -286,9 +286,9 @@ module keyVault_keys 'key/main.bicep' = [
     params: {
       name: key.name
       keyVaultName: keyVault.name
-      attributesEnabled: key.?attributesEnabled
-      attributesExp: key.?attributesExp
-      attributesNbf: key.?attributesNbf
+      attributesEnabled: key.?attributes.?enab
+      attributesExp: key.?atrributes.?exp
+      attributesNbf: key.?atrributes.?nbf
       curveName: (key.?kty != 'RSA' && key.?kty != 'RSA-HSM') ? (key.?curveName ?? 'P-256') : null
       keyOps: key.?keyOps
       keySize: (key.?kty == 'RSA' || key.?kty == 'RSA-HSM') ? (key.?keySize ?? 4096) : null
