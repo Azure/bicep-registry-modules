@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13514907472495855174"
+      "version": "0.29.47.4906",
+      "templateHash": "2378205016082649078"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -112,7 +112,7 @@
       "apiVersion": "2018-06-01",
       "name": "[variables('dataFactoryName')]",
       "location": "[parameters('location')]",
-      "tags": "[union(variables('resourceTags'), if(contains(parameters('tagsByResource'), 'Microsoft.DataFactory/factories'), parameters('tagsByResource')['Microsoft.DataFactory/factories'], createObject()))]",
+      "tags": "[union(variables('resourceTags'), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.DataFactory/factories'), createObject()))]",
       "identity": {
         "type": "SystemAssigned"
       },
@@ -210,8 +210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7548608522101382905"
+              "version": "0.29.47.4906",
+              "templateHash": "4568813132024947706"
             }
           },
           "parameters": {
@@ -291,14 +291,14 @@
             }
           },
           "variables": {
-            "$fxv#0": "Write-Output 'Updating settings.json file...'\r\nWrite-Output \"Storage account: $env:storageAccountName\"\r\nWrite-Output \"Container: $env:containerName\"\r\n\r\n$validateScopes = { $_.Length -gt 45 }\r\n\r\n# Initialize variables\r\n$fileName = 'settings.json'\r\n$filePath = Join-Path -Path . -ChildPath $fileName\r\n$newScopes = $env:exportScopes.Split('|') | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\r\n\r\n# Get storage context\r\n$storageContext = @{\r\n  Context   = New-AzStorageContext -StorageAccountName $env:storageAccountName -UseConnectedAccount\r\n  Container = $env:containerName\r\n}\r\n\r\n# Download existing settings, if they exist\r\n$blob = Get-AzStorageBlobContent @storageContext -Blob $fileName -Destination $filePath -Force\r\nif ($blob) {\r\n  Write-Output 'Existing settings.json file found. Updating...'\r\n  $text = Get-Content $filePath -Raw\r\n  Write-Output '---------'\r\n  Write-Output $text\r\n  Write-Output '---------'\r\n  $json = $text | ConvertFrom-Json\r\n\r\n  # Rename exportScopes to scopes + convert to object array\r\n  if ($json.exportScopes) {\r\n    Write-Output '  Updating exportScopes...'\r\n    if ($json.exportScopes[0] -is [string]) {\r\n      Write-Output '    Converting string array to object array...'\r\n      $json.exportScopes = $json.exportScopes | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\r\n      if (-not ($json.exportScopes -is [array])) {\r\n        Write-Output '    Converting single object to object array...'\r\n        $json.exportScopes = @($json.exportScopes)\r\n      }\r\n    }\r\n\r\n    Write-Output \"    Renaming to 'scopes'...\"\r\n    $json | Add-Member -MemberType NoteProperty -Name scopes -Value $json.exportScopes\r\n    $json.PSObject.Properties.Remove('exportScopes')\r\n  }\r\n}\r\n\r\n# Set default if not found\r\nif (!$json) {\r\n  Write-Output 'No existing settings.json file found. Creating new file...'\r\n  $json = [ordered]@{\r\n    '$schema' = 'https://aka.ms/finops/hubs/settings-schema'\r\n    type      = 'HubInstance'\r\n    version   = ''\r\n    learnMore = 'https://aka.ms/finops/hubs'\r\n    scopes    = @()\r\n  }\r\n}\r\n\r\n# Updating settings\r\nWrite-Output \"Updating version to $env:ftkVersion...\"\r\n$json.version = $env:ftkVersion\r\nif ($newScopes) {\r\n  Write-Output \"Merging $($newScopes.Count) scopes...\"\r\n  $json.scopes = Compare-Object -ReferenceObject $json.scopes -DifferenceObject $newScopes -Property scope -PassThru -IncludeEqual\r\n\r\n  # Remove the SideIndicator property from the Compare-Object output\r\n  $json.scopes | ForEach-Object { $_.PSObject.Properties.Remove('SideIndicator') } | ConvertTo-Json\r\n\r\n  if (-not ($json.scopes -is [array])) {\r\n    $json.scopes = @($json.scopes)\r\n  }\r\n  Write-Output \"$($json.scopes.Count) scopes found.\"\r\n}\r\n$text = $json | ConvertTo-Json\r\nWrite-Output '---------'\r\nWrite-Output $text\r\nWrite-Output '---------'\r\n$text | Out-File $filePath\r\n\r\n# Upload new/updated settings\r\nWrite-Output 'Uploading settings.json file...'\r\nSet-AzStorageBlobContent @storageContext -File $filePath -Force\r\n"
+            "$fxv#0": "Write-Output 'Updating settings.json file...'\nWrite-Output \"Storage account: $env:storageAccountName\"\nWrite-Output \"Container: $env:containerName\"\n\n$validateScopes = { $_.Length -gt 45 }\n\n# Initialize variables\n$fileName = 'settings.json'\n$filePath = Join-Path -Path . -ChildPath $fileName\n$newScopes = $env:exportScopes.Split('|') | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\n\n# Get storage context\n$storageContext = @{\n    Context   = New-AzStorageContext -StorageAccountName $env:storageAccountName -UseConnectedAccount\n    Container = $env:containerName\n}\n\n# Download existing settings, if they exist\n$blob = Get-AzStorageBlobContent @storageContext -Blob $fileName -Destination $filePath -Force\nif ($blob) {\n    Write-Output 'Existing settings.json file found. Updating...'\n    $text = Get-Content $filePath -Raw\n    Write-Output '---------'\n    Write-Output $text\n    Write-Output '---------'\n    $json = $text | ConvertFrom-Json\n\n    # Rename exportScopes to scopes + convert to object array\n    if ($json.exportScopes) {\n        Write-Output '  Updating exportScopes...'\n        if ($json.exportScopes[0] -is [string]) {\n            Write-Output '    Converting string array to object array...'\n            $json.exportScopes = $json.exportScopes | Where-Object $validateScopes | ForEach-Object { @{ scope = $_ } }\n            if (-not ($json.exportScopes -is [array])) {\n                Write-Output '    Converting single object to object array...'\n                $json.exportScopes = @($json.exportScopes)\n            }\n        }\n\n        Write-Output \"    Renaming to 'scopes'...\"\n        $json | Add-Member -MemberType NoteProperty -Name scopes -Value $json.exportScopes\n        $json.PSObject.Properties.Remove('exportScopes')\n    }\n}\n\n# Set default if not found\nif (!$json) {\n    Write-Output 'No existing settings.json file found. Creating new file...'\n    $json = [ordered]@{\n        '$schema' = 'https://aka.ms/finops/hubs/settings-schema'\n        type      = 'HubInstance'\n        version   = ''\n        learnMore = 'https://aka.ms/finops/hubs'\n        scopes    = @()\n    }\n}\n\n# Updating settings\nWrite-Output \"Updating version to $env:ftkVersion...\"\n$json.version = $env:ftkVersion\nif ($newScopes) {\n    Write-Output \"Merging $($newScopes.Count) scopes...\"\n    $json.scopes = Compare-Object -ReferenceObject $json.scopes -DifferenceObject $newScopes -Property scope -PassThru -IncludeEqual\n\n    # Remove the SideIndicator property from the Compare-Object output\n    $json.scopes | ForEach-Object { $_.PSObject.Properties.Remove('SideIndicator') } | ConvertTo-Json\n\n    if (-not ($json.scopes -is [array])) {\n        $json.scopes = @($json.scopes)\n    }\n    Write-Output \"$($json.scopes.Count) scopes found.\"\n}\n$text = $json | ConvertTo-Json\nWrite-Output '---------'\nWrite-Output $text\nWrite-Output '---------'\n$text | Out-File $filePath\n\n# Upload new/updated settings\nWrite-Output 'Uploading settings.json file...'\nSet-AzStorageBlobContent @storageContext -File $filePath -Force\n"
           },
           "resources": {
             "identity": {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2023-01-31",
               "name": "[format('{0}_blobManager', parameters('storageAccountName'))]",
-              "tags": "[union(coalesce(parameters('tags'), createObject()), if(contains(parameters('tagsByResource'), 'Microsoft.ManagedIdentity/userAssignedIdentities'), parameters('tagsByResource')['Microsoft.ManagedIdentity/userAssignedIdentities'], createObject()))]",
+              "tags": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.ManagedIdentity/userAssignedIdentities'), createObject()))]",
               "location": "[parameters('location')]"
             },
             "storageAccount": {
@@ -321,7 +321,7 @@
                     "value": "BlockBlobStorage"
                   },
                   "tags": {
-                    "value": "[union(coalesce(parameters('tags'), createObject()), if(contains(parameters('tagsByResource'), 'Microsoft.Storage/storageAccounts'), parameters('tagsByResource')['Microsoft.Storage/storageAccounts'], createObject()))]"
+                    "value": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.Storage/storageAccounts'), createObject()))]"
                   },
                   "supportsHttpsTrafficOnly": {
                     "value": true
@@ -5027,7 +5027,7 @@
                   },
                   "location": "[if(startsWith(parameters('location'), 'china'), createObject('value', 'chinaeast2'), createObject('value', parameters('location')))]",
                   "tags": {
-                    "value": "[union(coalesce(parameters('tags'), createObject()), if(contains(parameters('tagsByResource'), 'Microsoft.Resources/deploymentScripts'), parameters('tagsByResource')['Microsoft.Resources/deploymentScripts'], createObject()))]"
+                    "value": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.Resources/deploymentScripts'), createObject()))]"
                   },
                   "managedIdentities": {
                     "value": {
@@ -5614,8 +5614,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13824362730485492490"
+              "version": "0.29.47.4906",
+              "templateHash": "17793535838056076246"
             }
           },
           "parameters": {
@@ -5699,9 +5699,9 @@
                 }
               }
             ],
-            "$fxv#0": "# Init outputs\r\n$DeploymentScriptOutputs = @{}\r\n\r\n$adfParams = @{\r\n  ResourceGroupName = $env:DataFactoryResourceGroup\r\n  DataFactoryName   = $env:DataFactoryName\r\n}\r\n\r\n# Delete old triggers\r\n$triggers = Get-AzDataFactoryV2Trigger @adfParams -ErrorAction SilentlyContinue `\r\n| Where-Object { $_.Name -match '^msexports?$' }\r\n$DeploymentScriptOutputs['stopTriggers'] = $triggers | Stop-AzDataFactoryV2Trigger -Force -ErrorAction SilentlyContinue\r\n$DeploymentScriptOutputs['deleteTriggers'] = $triggers | Remove-AzDataFactoryV2Trigger -Force -ErrorAction SilentlyContinue\r\n\r\n# Delete old pipelines\r\n$DeploymentScriptOutputs['pipelines'] = Get-AzDataFactoryV2Pipeline @adfParams -ErrorAction SilentlyContinue `\r\n| Where-Object { $_.Name -match '^msexports_(extract|transform)$' } `\r\n| Remove-AzDataFactoryV2Pipeline -Force -ErrorAction SilentlyContinue\r\n",
-            "$fxv#1": "Param(\r\n  [switch] $Stop\r\n)\r\n# Init outputs\r\n$DeploymentScriptOutputs = @{}\r\n\r\nif (-not $Stop) {\r\n  Start-Sleep -Seconds 10\r\n}\r\n\r\n# Loop through triggers\r\n$env:Triggers.Split('|') `\r\n| ForEach-Object {\r\n  $trigger = $_\r\n  if ($Stop) {\r\n    Write-Host \"Stopping trigger $trigger...\" -NoNewline\r\n    $triggerOutput = Stop-AzDataFactoryV2Trigger `\r\n      -ResourceGroupName $env:DataFactoryResourceGroup `\r\n      -DataFactoryName $env:DataFactoryName `\r\n      -Name $trigger `\r\n      -Force `\r\n      -ErrorAction SilentlyContinue\r\n  } else {\r\n    Write-Host \"Starting trigger $trigger...\" -NoNewline\r\n    $triggerOutput = Start-AzDataFactoryV2Trigger `\r\n      -ResourceGroupName $env:DataFactoryResourceGroup `\r\n      -DataFactoryName $env:DataFactoryName `\r\n      -Name $trigger `\r\n      -Force\r\n  }\r\n  if ($triggerOutput) {\r\n    Write-Host 'done'\r\n  } else {\r\n    Write-Host 'failed'\r\n  }\r\n  $DeploymentScriptOutputs[$trigger] = $triggerOutput\r\n}\r\n\r\nif ($Stop) {\r\n  Start-Sleep -Seconds 10\r\n}\r\n",
-            "$fxv#2": "Param(\r\n  [switch] $Stop\r\n)\r\n# Init outputs\r\n$DeploymentScriptOutputs = @{}\r\n\r\nif (-not $Stop) {\r\n  Start-Sleep -Seconds 10\r\n}\r\n\r\n# Loop through triggers\r\n$env:Triggers.Split('|') `\r\n| ForEach-Object {\r\n  $trigger = $_\r\n  if ($Stop) {\r\n    Write-Host \"Stopping trigger $trigger...\" -NoNewline\r\n    $triggerOutput = Stop-AzDataFactoryV2Trigger `\r\n      -ResourceGroupName $env:DataFactoryResourceGroup `\r\n      -DataFactoryName $env:DataFactoryName `\r\n      -Name $trigger `\r\n      -Force `\r\n      -ErrorAction SilentlyContinue\r\n  } else {\r\n    Write-Host \"Starting trigger $trigger...\" -NoNewline\r\n    $triggerOutput = Start-AzDataFactoryV2Trigger `\r\n      -ResourceGroupName $env:DataFactoryResourceGroup `\r\n      -DataFactoryName $env:DataFactoryName `\r\n      -Name $trigger `\r\n      -Force\r\n  }\r\n  if ($triggerOutput) {\r\n    Write-Host 'done'\r\n  } else {\r\n    Write-Host 'failed'\r\n  }\r\n  $DeploymentScriptOutputs[$trigger] = $triggerOutput\r\n}\r\n\r\nif ($Stop) {\r\n  Start-Sleep -Seconds 10\r\n}\r\n",
+            "$fxv#0": "# Init outputs\n$DeploymentScriptOutputs = @{}\n\n$adfParams = @{\n    ResourceGroupName = $env:DataFactoryResourceGroup\n    DataFactoryName   = $env:DataFactoryName\n}\n\n# Delete old triggers\n$triggers = Get-AzDataFactoryV2Trigger @adfParams -ErrorAction SilentlyContinue `\n| Where-Object { $_.Name -match '^msexports?$' }\n$DeploymentScriptOutputs['stopTriggers'] = $triggers | Stop-AzDataFactoryV2Trigger -Force -ErrorAction SilentlyContinue\n$DeploymentScriptOutputs['deleteTriggers'] = $triggers | Remove-AzDataFactoryV2Trigger -Force -ErrorAction SilentlyContinue\n\n# Delete old pipelines\n$DeploymentScriptOutputs['pipelines'] = Get-AzDataFactoryV2Pipeline @adfParams -ErrorAction SilentlyContinue `\n| Where-Object { $_.Name -match '^msexports_(extract|transform)$' } `\n| Remove-AzDataFactoryV2Pipeline -Force -ErrorAction SilentlyContinue\n",
+            "$fxv#1": "Param(\n    [switch] $Stop\n)\n# Init outputs\n$DeploymentScriptOutputs = @{}\n\nif (-not $Stop) {\n    Start-Sleep -Seconds 10\n}\n\n# Loop through triggers\n$env:Triggers.Split('|') `\n| ForEach-Object {\n    $trigger = $_\n    if ($Stop) {\n        Write-Host \"Stopping trigger $trigger...\" -NoNewline\n        $triggerOutput = Stop-AzDataFactoryV2Trigger `\n            -ResourceGroupName $env:DataFactoryResourceGroup `\n            -DataFactoryName $env:DataFactoryName `\n            -Name $trigger `\n            -Force `\n            -ErrorAction SilentlyContinue\n    } else {\n        Write-Host \"Starting trigger $trigger...\" -NoNewline\n        $triggerOutput = Start-AzDataFactoryV2Trigger `\n            -ResourceGroupName $env:DataFactoryResourceGroup `\n            -DataFactoryName $env:DataFactoryName `\n            -Name $trigger `\n            -Force\n    }\n    if ($triggerOutput) {\n        Write-Host 'done'\n    } else {\n        Write-Host 'failed'\n    }\n    $DeploymentScriptOutputs[$trigger] = $triggerOutput\n}\n\nif ($Stop) {\n    Start-Sleep -Seconds 10\n}\n",
+            "$fxv#2": "Param(\n    [switch] $Stop\n)\n# Init outputs\n$DeploymentScriptOutputs = @{}\n\nif (-not $Stop) {\n    Start-Sleep -Seconds 10\n}\n\n# Loop through triggers\n$env:Triggers.Split('|') `\n| ForEach-Object {\n    $trigger = $_\n    if ($Stop) {\n        Write-Host \"Stopping trigger $trigger...\" -NoNewline\n        $triggerOutput = Stop-AzDataFactoryV2Trigger `\n            -ResourceGroupName $env:DataFactoryResourceGroup `\n            -DataFactoryName $env:DataFactoryName `\n            -Name $trigger `\n            -Force `\n            -ErrorAction SilentlyContinue\n    } else {\n        Write-Host \"Starting trigger $trigger...\" -NoNewline\n        $triggerOutput = Start-AzDataFactoryV2Trigger `\n            -ResourceGroupName $env:DataFactoryResourceGroup `\n            -DataFactoryName $env:DataFactoryName `\n            -Name $trigger `\n            -Force\n    }\n    if ($triggerOutput) {\n        Write-Host 'done'\n    } else {\n        Write-Host 'failed'\n    }\n    $DeploymentScriptOutputs[$trigger] = $triggerOutput\n}\n\nif ($Stop) {\n    Start-Sleep -Seconds 10\n}\n",
             "datasetPropsDelimitedText": {
               "columnDelimiter": ",",
               "compressionLevel": "Optimal",
@@ -6123,7 +6123,7 @@
               "apiVersion": "2023-01-31",
               "name": "[format('{0}_triggerManager', parameters('dataFactoryName'))]",
               "location": "[parameters('location')]",
-              "tags": "[union(coalesce(parameters('tags'), createObject()), if(contains(parameters('tagsByResource'), 'Microsoft.ManagedIdentity/userAssignedIdentities'), parameters('tagsByResource')['Microsoft.ManagedIdentity/userAssignedIdentities'], createObject()))]"
+              "tags": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.ManagedIdentity/userAssignedIdentities'), createObject()))]"
             },
             "identityRoleAssignments": {
               "copy": {
@@ -7235,7 +7235,7 @@
                     "value": "AzurePowerShell"
                   },
                   "tags": {
-                    "value": "[union(coalesce(parameters('tags'), createObject()), if(contains(parameters('tagsByResource'), 'Microsoft.Resources/deploymentScripts'), parameters('tagsByResource')['Microsoft.Resources/deploymentScripts'], createObject()))]"
+                    "value": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.Resources/deploymentScripts'), createObject()))]"
                   },
                   "azPowerShellVersion": {
                     "value": "9.7"
@@ -7782,7 +7782,7 @@
                     "value": "[parameters('location')]"
                   },
                   "tags": {
-                    "value": "[union(coalesce(parameters('tags'), createObject()), if(contains(parameters('tagsByResource'), 'Microsoft.Resources/deploymentScripts'), parameters('tagsByResource')['Microsoft.Resources/deploymentScripts'], createObject()))]"
+                    "value": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.Resources/deploymentScripts'), createObject()))]"
                   },
                   "kind": {
                     "value": "AzurePowerShell"
@@ -8386,8 +8386,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "2821773295072797810"
+              "version": "0.29.47.4906",
+              "templateHash": "2016642433151139575"
             }
           },
           "parameters": {
@@ -8457,10 +8457,10 @@
                 "name": "formattedAccessPolicies",
                 "count": "[length(parameters('accessPolicies'))]",
                 "input": {
-                  "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-                  "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
+                  "applicationId": "[coalesce(tryGet(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
+                  "objectId": "[coalesce(tryGet(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), '')]",
                   "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
-                  "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+                  "tenantId": "[coalesce(tryGet(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
                 }
               }
             ],
@@ -8492,7 +8492,7 @@
                     "value": "[parameters('location')]"
                   },
                   "tags": {
-                    "value": "[union(coalesce(parameters('tags'), createObject()), if(contains(parameters('tagsByResource'), 'Microsoft.KeyVault/vaults'), parameters('tagsByResource')['Microsoft.KeyVault/vaults'], createObject()))]"
+                    "value": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('tagsByResource'), 'Microsoft.KeyVault/vaults'), createObject()))]"
                   },
                   "enableVaultForDeployment": {
                     "value": true

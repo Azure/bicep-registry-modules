@@ -65,18 +65,16 @@ module testDeployment '../../../main.bicep' = {
     }
     containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
     arguments: '-argument1 \\"test\\"'
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'var1'
-          value: 'test'
-        }
-        {
-          name: 'var2'
-          secureValue: guid(deployment().name)
-        }
-      ]
-    }
+    environmentVariables: [
+      {
+        name: 'var1'
+        value: 'test'
+      }
+      {
+        name: 'var2'
+        secureValue: guid(deployment().name)
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         nestedDependencies.outputs.managedIdentityResourceId
@@ -84,11 +82,13 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
+        name: 'd8eadbae-2c20-4e8f-9a48-4c6d739d0c4a'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

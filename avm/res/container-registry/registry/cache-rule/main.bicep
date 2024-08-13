@@ -14,8 +14,8 @@ param sourceRepository string
 @description('Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.')
 param targetRepository string = sourceRepository
 
-@description('Optional. The resource ID of the credential store which is associated with the cache rule.')
-param credentialSetResourceId string?
+@description('Required. The resource ID of the credential store which is associated with the cache rule.')
+param credentialSetResourceId string
 
 resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
   name: registryName
