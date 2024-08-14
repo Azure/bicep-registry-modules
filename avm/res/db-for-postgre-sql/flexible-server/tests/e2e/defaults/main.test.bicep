@@ -68,7 +68,6 @@ module testDeployment '../../../main.bicep' = [
         startMinute: 0
       }
       highAvailability: 'ZoneRedundant'
-      availabilityZone: ''
     }
   }
 ]
