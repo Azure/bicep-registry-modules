@@ -700,6 +700,11 @@ output location string = storageAccount.location
 @description('All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint.')
 output serviceEndpoints object = storageAccount.properties.primaryEndpoints
 
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -916,4 +921,10 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The connectionString2 secret name to create.')
   connectionString2: string?
+}
+
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
 }

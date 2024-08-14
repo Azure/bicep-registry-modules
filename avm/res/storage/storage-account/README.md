@@ -3352,6 +3352,7 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed storage account. |
 | `primaryBlobEndpoint` | string | The primary blob endpoint reference if blob services are deployed. |
