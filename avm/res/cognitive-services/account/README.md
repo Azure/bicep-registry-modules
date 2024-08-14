@@ -2267,6 +2267,7 @@ The storage accounts for this resource.
 | :-- | :-- | :-- |
 | `endpoint` | string | The service endpoint of the cognitive services account. |
 | `endpoints` |  | All endpoints available for the cognitive services account, types depends on the cognitive service kind. |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the cognitive services account. |
 | `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |

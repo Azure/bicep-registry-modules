@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "10871768153265508734"
+      "templateHash": "3373676976391534092"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -596,6 +596,38 @@
           "metadata": {
             "description": "Optional. The accessKey2 secret name to create."
           }
+        }
+      }
+    },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/secretSetType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      }
+    },
+    "secretSetType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/keyVaultExport.bicep"
         }
       }
     }
@@ -1909,6 +1941,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('cognitiveService', '2023-05-01', 'full').location]"
+    },
+    "exportedSecrets": {
+      "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
+      },
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     }
   }
 }

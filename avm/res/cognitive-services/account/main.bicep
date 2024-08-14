@@ -522,6 +522,11 @@ output systemAssignedMIPrincipalId string = cognitiveService.?identity.?principa
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
 
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
+
 // ================ //
 // Definitions      //
 // ================ //
@@ -749,4 +754,10 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The accessKey2 secret name to create.')
   accessKey2: string?
+}
+
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
 }
