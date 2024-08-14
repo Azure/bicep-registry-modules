@@ -53,8 +53,8 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
-    skuName: 'Standard_D2s_v3'
-    tier: 'Burstable'
+    skuName: 'Standard_D2ds_v5'
+    tier: 'GeneralPurpose'
     // Non-required parameters
     administrators: [
       {
@@ -93,10 +93,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "dfpsfsmin001"
     },
     "skuName": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2ds_v5"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
     "administrators": {
