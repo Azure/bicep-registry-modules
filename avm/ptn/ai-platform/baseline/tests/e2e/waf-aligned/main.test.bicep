@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
         patchMode: 'AutomaticByPlatform'
         zone: 1
       }
-      workspaceHubConfiguration: {
+      workspaceConfiguration: {
         networkIsolationMode: 'AllowOnlyApprovedOutbound'
         networkOutboundRules: {
           rule: {

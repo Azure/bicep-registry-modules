@@ -66,7 +66,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}'
       managedIdentityConfiguration: {
-        name: '${namePrefix}-id-${serviceShort}'
+        hubName: '${namePrefix}-id-hub-${serviceShort}'
+        projectName: '${namePrefix}-id-project-${serviceShort}'
       }
       logAnalyticsConfiguration: {
         name: '${namePrefix}-log-${serviceShort}'
@@ -145,8 +146,9 @@ module testDeployment '../../../main.bicep' = [
         enableAzureMonitorAgent: true
         maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       }
-      workspaceHubConfiguration: {
+      workspaceConfiguration: {
         name: '${namePrefix}-hub-${serviceShort}'
+        projectName: '${namePrefix}-project-${serviceShort}'
         computes: [
           {
             computeType: 'ComputeInstance'
