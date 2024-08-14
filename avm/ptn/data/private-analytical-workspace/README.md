@@ -893,6 +893,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 }
 ```
 
+<a name="uc2"></a>
 #### Use Case 2: Brownfield, Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment
 
 This use case seeks to align with the expectations of enterprise infrastructure.</br>
@@ -934,6 +935,7 @@ When utilizing a pre-defined virtual network provided by the Enterprise Network 
 
 The rules outlined here: [Monitoring of the Solution for Use Case 1](#monitoring-uc1) apply to this use case as well.
 
+<a name="kv-uc2"></a>
 ##### Storing Secrets - Key Vault
 
 If the parameter ```keyVaultResourceId``` is left unspecified or set to ```null```, a new Azure Key Vault will be created as part of the solution.</br>
@@ -956,6 +958,7 @@ privileges specifically for Azure Key Vaults that are newly created.</br>
 
 The rules outlined here: [Solution Administrators for Use Case 1](#sol-admin-uc1) apply to this use case as well.
 
+<a name="adb-uc2"></a>
 ##### Analytical Service - Azure Databricks
 
 If the parameter ```enableDatabricks``` is set to ```true```, a new Azure Databricks instance will be created as part of the solution.</br>
@@ -989,7 +992,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     virtualNetworkResourceId: '/subscriptions/{SUBSCRIPTION-ID}/resourceGroups/{NAME-OF-RG}/providers/Microsoft.Network/virtualNetworks/{NAME-OF-VNET}'
     logAnalyticsWorkspaceResourceId: null // null means new Log Analytical Workspace will be created
     keyVaultResourceId: null              // null means new Azure key Vault will be created
-    enableDatabricks: true                // Part of the solution and VNET will be new instance of the Azure Databricks
+    enableDatabricks: true                // Part of the solution will be new instance of the Azure Databricks
     solutionAdministrators: [
       {
         principalId: <EntraGroupId>       // Specified group will have enough permissions to manage the solution
@@ -997,20 +1000,80 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     ]
     advancedOptions: {
-      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the isolated solution (enables public endpoints for some services)
+      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the solution (enables public endpoints for some services)
     }
     tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
   }
 }
 ```
 
-#### Use Case 8: Integration with core enterprise infrastructure
+#### Use Case 3: Integration with existing private core Infrastructure
 
-- Integrating with Existing KV, Log, VNET
-- Customer is responsible for creating VNET, ...
-- PV
+This use case aims to meet the specific needs of enterprise infrastructure, similar to use case
+[Use Case 2: Brownfield, Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment](#uc2) but more advanced.</br>
+It integrates with a pre-provisioned virtual network for private traffic and pre-provisioned Azure Key Vault and central Azure Log Analytics workspace.</br>
+This allows the cloud and network teams to provide core components, and the solution linking them together.</br>
 
+Cloud and network teams remain responsible for configuring prerequisites and providing elements like private endpoints, private endpoint zones, DNS resolution, and access permissions.</br>
+Find further information here: [Use Case 2: Brownfield, Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment](#uc2)</br>
 
+This use case does not require any public IP addresses to be exposed,
+but you can enable public access with the ```advancedOptions.networkAcls.ipRules``` parameter if necessary.</br>
+All services can utilize private Enterprise Network access exclusively.
+
+##### Virtual Network
+
+The rules outlined here: [Virtual Network for Use Case 2](#vnet-uc2) apply to this use case as well.
+
+##### Monitoring of the Solution
+
+The rules outlined here: [Monitoring of the Solution for Use Case 1](#monitoring-uc1) apply to this use case as well.
+
+The ```logAnalyticsWorkspaceResourceId``` parameter should be set to use an existing Azure Log Analytics Workspace.</br>
+
+The team responsible for resource management must set up Azure Log Analytics Workspace access for the necessary end users.</br>
+
+##### Storing Secrets - Key Vault
+
+The rules outlined here: [Storing Secrets - Key Vault for Use Case 2](#kv-uc2) apply to this use case as well.
+
+The ```keyVaultResourceId``` parameter should be set to use an existing Azure Key Vault.</br>
+
+The team responsible for resource management must set up Azure Key Vault access for the necessary end users.</br>
+
+##### Solution Administrators
+
+The rules outlined here: [Solution Administrators for Use Case 1](#sol-admin-uc1) apply to this use case as well.</br>
+However, role assignments will apply exclusively to resources generated within this use case, excluding those pre-created by the network and cloud team.</br>
+
+##### Analytical Service - Azure Databricks
+
+The rules outlined here: [Analytical Service - Azure Databricks for Use Case 2](#adb-uc2) apply to this use case as well.
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'UC3'
+  params: {
+    // Required parameters
+    name: 'pawuc3'
+    // Non-required parameters
+    virtualNetworkResourceId: '/subscriptions/{SUBSCRIPTION-ID}/resourceGroups/{NAME-OF-RG}/providers/Microsoft.Network/virtualNetworks/{NAME-OF-VNET}'
+    logAnalyticsWorkspaceResourceId: '/subscriptions/{SUBSCRIPTION-ID}/resourceGroups/{NAME-OF-RG}/providers/Microsoft.OperationalInsights/workspaces/{NAME-OF-LOG}'
+    keyVaultResourceId: '/subscriptions/{SUBSCRIPTION-ID}/resourceGroups/{NAME-OF-RG}/providers/Microsoft.KeyVault/vaults/{NAME-OF-KV}'
+    enableDatabricks: true                // Part of the solution will be new instance of the Azure Databricks
+    solutionAdministrators: [
+      {
+        principalId: <EntraGroupId>       // Specified group will have enough permissions to manage the solution
+        principalType: 'Group'            // Group and/or User type can be specified
+      }
+    ]
+    advancedOptions: {
+      networkAcls: { ipRules: [<AllowedPublicIPAddress>] } // Which public IP addresses of the end users can access the solution (enables public endpoints for some services)
+    }
+    tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
+  }
+}
+```
 
 ## Data Collection
 
