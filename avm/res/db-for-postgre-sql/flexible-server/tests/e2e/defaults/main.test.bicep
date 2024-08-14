@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      skuName: 'Standard_B2s'
+      skuName: 'Standard_D2s_v3'
       tier: 'Burstable'
       geoRedundantBackup: 'Enabled'
       maintenanceWindow: {
