@@ -23,6 +23,14 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. The username to leverage for the login.')
+@secure()
+param username string = uniqueString(newGuid())
+
+@description('Generated. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -39,6 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -54,7 +63,16 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
-      workspaceHubSettings: {
+      virtualMachineConfiguration: {
+        adminUsername: username
+        adminPassword: password
+        enableAadLoginExtension: true
+        enableAzureMonitorAgent: true
+        maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+        patchMode: 'AutomaticByPlatform'
+        zone: 1
+      }
+      workspaceHubConfiguration: {
         networkIsolationMode: 'AllowOnlyApprovedOutbound'
         networkOutboundRules: {
           rule: {
