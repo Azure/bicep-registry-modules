@@ -63,6 +63,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
+    availabilityZone: ''
     geoRedundantBackup: 'Enabled'
     highAvailability: 'ZoneRedundant'
     location: '<location>'
@@ -107,6 +108,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
+    },
+    "availabilityZone": {
+      "value": ""
     },
     "geoRedundantBackup": {
       "value": "Enabled"
