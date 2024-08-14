@@ -20,6 +20,7 @@ This module deploys a Cognitive Service.
 | `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
 | `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -33,13 +34,14 @@ The following section provides usage examples for the module, which were used to
 
 - [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-1-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
 - [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-5-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-6-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-7-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-8-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Using defaults with key vault](#example-3-using-defaults-with-key-vault)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-6-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-7-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _Using `AIServices` with `deployments` in parameter set and private endpoints_
 
@@ -243,7 +245,71 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Using defaults with key vault_
+
+This instance deploys the module with the minimum set of required parameters and stores the keys in key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csakv001'
+    // Non-required parameters
+    location: '<location>'
+    secretsExportConfiguration: {
+      accessKey1: 'Custom-key1-name'
+      accessKey2: 'Custom-key2-name'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csakv001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "accessKey1": "Custom-key1-name",
+        "accessKey2": "Custom-key2-name",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -295,7 +361,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -587,7 +653,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 6: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -695,7 +761,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 6: _As Speech Service_
+### Example 7: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -809,7 +875,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -891,7 +957,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 8: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -979,7 +1045,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1153,7 +1219,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 | [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secretsKeyVault`](#parameter-secretskeyvault) | object | Key vault reference and secret settings to add the connection strings and keys generated by the storage account. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`sku`](#parameter-sku) | string | SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`userOwnedStorage`](#parameter-userownedstorage) | array | The storage accounts for this resource. |
@@ -2109,9 +2175,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsKeyVault`
+### Parameter: `secretsExportConfiguration`
 
-Key vault reference and secret settings to add the connection strings and keys generated by the storage account.
+Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
@@ -2120,40 +2186,32 @@ Key vault reference and secret settings to add the connection strings and keys g
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultName`](#parameter-secretskeyvaultkeyvaultname) | string | The key vault name where to store the keys and connection strings generated by the modules. |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The key vault name where to store the keys and connection strings generated by the modules. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`key1`](#parameter-secretskeyvaultkey1) | string | Default to CSKey1. The key1 secret name to create. |
-| [`key2`](#parameter-secretskeyvaultkey2) | string | Default to CSKey2. The key2 secret name to create. |
-| [`resourceGroupName`](#parameter-secretskeyvaultresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
+| [`accessKey1`](#parameter-secretsexportconfigurationaccesskey1) | string | The accessKey1 secret name to create. |
+| [`accessKey2`](#parameter-secretsexportconfigurationaccesskey2) | string | The accessKey2 secret name to create. |
 
-### Parameter: `secretsKeyVault.keyVaultName`
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
 The key vault name where to store the keys and connection strings generated by the modules.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsKeyVault.key1`
+### Parameter: `secretsExportConfiguration.accessKey1`
 
-Default to CSKey1. The key1 secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.key2`
-
-Default to CSKey2. The key2 secret name to create.
+The accessKey1 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.resourceGroupName`
+### Parameter: `secretsExportConfiguration.accessKey2`
 
-Default to the resource group where this account is. The resource group name where the key vault is.
+The accessKey2 secret name to create.
 
 - Required: No
 - Type: string

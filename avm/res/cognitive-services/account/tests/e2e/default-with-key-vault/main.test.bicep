@@ -53,9 +53,10 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       kind: 'SpeechServices'
       location: resourceLocation
-      secretsKeyVault: {
-        keyVaultName: nestedDependencies.outputs.keyVaultName
-        key1: 'custom-secret-name'
+      secretsExportConfiguration: {
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        accessKey1: 'Custom-key1-name'
+        accessKey2: 'Custom-key2-name'
       }
     }
   }
